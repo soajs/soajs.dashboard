@@ -174,7 +174,7 @@ var navigation = [
 	}
 ];
 
-var whitelistedDomain = ['localhost', 'rest-proxy', 'api.soajs.org'];
+var whitelistedDomain = ['localhost', '127.0.0.1', 'api.soajs.org'];
 
 var apiConfiguration = {
 	domain: 'http://api.soajs.org',

@@ -1,9 +1,0 @@
-<div id="mainMenu">
-    <div class="content">
-        <ul>
-            <li ng-repeat="link in mainMenu.links" ng-class="{'first': $first, 'last': $last, selected:row.selected, active: link.url === mainMenu.selectedMenu}"
-                ng-click="mainMenu.activateMenu(link);">{{link.label}}
-            </li>
-        </ul>
-    </div>
-</div>
