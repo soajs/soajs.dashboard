@@ -1,0 +1,22 @@
+<section>
+    <div ng-controller="tenantCtrl">
+        <div class="t-right">
+            <a href="#/multi-tenancy"><span class="glyphicon glyphicon-chevron-left"></span> Go Back to Tenants Listing</a>
+        </div><br />
+        <div ng-init="editTenant()">
+            <ngform></ngform>
+        </div>
+    </div>
+    <hr/>
+    <div ng-controller="tenantOauthCtrl">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        <ngform></ngform>
+    </div>
+    <hr/>
+    <div ng-controller="tenantApplicationsCtrl" >
+        <form><div class="header"><h3>Tenant Applications</h3></div></form>
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        <a href="" ng-click="addApplication()" class="btn btn-primary">Add New Application</a><br/><br/>
+        <nglist></nglist>
+    </div>
+</section>

@@ -1,0 +1,92 @@
+<div class='grid'>
+    <div ng-show="grid.filteredRows.length > 0">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tr class="header">
+                <td>
+                    <div ng-show="grid.topActions.length > 0">
+                        Select: <a href="" ng-click="grid.selectAll()">All</a> - <a href="" ng-click="grid.selectNone()">None</a> |
+                        <div class="btn-sm btn-group" dropdown>
+                            <button type="button" class="btn btn-sm btn-danger dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+                                More Action <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li ng-repeat="action in grid.topActions">
+                                    <a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command()">{{action.label}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+                <td align="right">
+                    <div ng-show="grid.search">
+                        Search: <input ng-model="grid.query" type="text"/>
+                        <button ng-click="grid.query=''" class="btn-filter btn btn-sm btn-danger">Clear</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="middle">
+                    <ul class="gridRPP">
+                        <li ng-repeat="recordsPerPage in grid.recordsPerPageArray">
+                            <a href="" ng-class="{active:recordsPerPage === grid.itemsPerPage}" ng-click="grid.changeLimitTo(recordsPerPage)">{{recordsPerPage}}</a>
+                        </li>
+                    </ul>
+                </td>
+                <td align="right">
+                    <pagination total-items="grid.rows.length" ng-model="grid.currentPage" items-per-page="grid.filteredRows.length" num-pages="grid.totalPages" max-size="grid.maxPageSize"
+                                class="pagination-sm"
+                                boundary-links="true"
+                                rotate="false"></pagination>
+                </td>
+            </tr>
+        </table>
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <th colspan="{{(grid.topActions.length > 0) ? (grid.leftActions.length + 1) : grid.leftActions.length}}"></th>
+                <th ng-repeat="column in grid.columns">
+                    <a href="" ng-class="{active:grid.sortField===column.field}" ng-click="grid.changeSort(column.field);">{{column.label}}</a>
+                </th>
+            </tr>
+            <tr ng-repeat="row in grid.filteredRows | filter: grid.filterData(grid.query) | orderBy:grid.sortField:grid.reverse |limitTo: grid.itemsPerPage"
+                ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td class='leftAction' ng-show="grid.topActions.length > 0">
+                    <input ng-model="row.selected" name="IDS[]" type="checkbox" value="{{row['ID']}}"/>
+                </td>
+                <td ng-repeat="action in grid.leftActions" class="leftAction">
+                    <a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command(row)"><img ng-src="themes/{{grid.themeToUse}}/img/{{action.icon}}.png" tooltip="{{action.label}}" border="0"/></a>
+                </td>
+                <td ng-repeat="column in grid.columns">
+                    <span ng-if="column.filter">{{row[column.field] | filterPicker: column.filter}}</span>
+                    <span ng-if="!column.filter">{{row[column.field]}}</span>
+                </td>
+            </tr>
+        </table>
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <td valign="middle">
+                <ul class="gridRPP">
+                    <li ng-repeat="recordsPerPage in grid.recordsPerPageArray">
+                        <a href="" ng-class="{active:recordsPerPage === grid.itemsPerPage}" ng-click="grid.changeLimitTo(recordsPerPage)">{{recordsPerPage}}</a>
+                    </li>
+                </ul>
+            </td>
+            <td align="right">
+                <pagination total-items="grid.rows.length" ng-model="grid.currentPage" items-per-page="grid.filteredRows.length" num-pages="grid.totalPages" max-size="grid.maxPageSize"
+                            class="pagination-sm"
+                            boundary-links="true"
+                            rotate="false"></pagination>
+            </td>
+        </tr>
+        <tr>
+            <td align="right" colspan="2">
+                <div class="range-label">Displaying {{ grid.range.lower }} - {{ grid.range.upper }} of {{ grid.rows.length }}</div>
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div ng-show="grid.filteredRows.length ===0">
+        <div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable">
+            <span class="ng-scope ng-binding">No Records Found. Please add.</span>
+        </div>
+    </div>
+</div>

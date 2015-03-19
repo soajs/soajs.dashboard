@@ -1,0 +1,433 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #E5EAEE;
+}
+
+#header {
+    height: 80px;
+    background: #424951;
+}
+
+#header #logo {
+    float: left;
+    margin: 10px 10px 0 10px;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 36px;
+    text-transform: uppercase;
+}
+
+#header #slogan {
+    font-style: italic;
+    color: #337ab7;
+    font-size: 10px;
+}
+
+#header #userMenu {
+    float: right;
+    margin: 10px 20px 0 0;
+    height: 20px;
+    min-width: 15%;
+    font-weight: bold;
+}
+
+#header #userMenu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#header #userMenu ul li {
+    float: left;
+    margin-right: 10px;
+    color: #bfc0c1;
+}
+
+#header #userMenu ul li a {
+    color: #E5EAEE;
+    outline: 0;
+}
+
+#header #userMenu ul li a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+#page {
+    width: 100%;
+    display: table;
+    clear: both;
+    position: relative;
+    top: -35px;
+}
+
+#noMainMenu{
+    margin-top: 35px;
+    float: left;
+    width: 13%;
+    position: relative;
+    border-bottom: solid 1px white;
+}
+
+#mainMenu {
+    margin-top: 35px;
+    background-color: #515E67;
+    float: left;
+    width: 13%;
+    min-height: 525px;
+    position: relative;
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+}
+
+#mainMenu h4 {
+    margin: 0;
+    background-color: #70808D;
+    padding: 5px 10px;
+    border-top: 1px solid #989eaa;
+    border-bottom: solid 1px #4F5762;
+}
+
+#mainMenu ul {
+    border-top: solid 1px #606d76;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#mainMenu li {
+    padding: 10px 0 10px 10px;
+    border-top: solid 1px #606d76;
+    border-bottom: solid 1px #4F5762;
+    cursor: pointer;
+    height: 41px;
+}
+
+#mainMenu ul li a {
+    display: block;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+    text-decoration: none;
+    outline: 0;
+}
+
+#mainMenu li:first-child {
+    border-top: none;
+}
+
+#mainMenu ul li:hover {
+    background-color: #222222;
+    color: white;
+}
+
+#mainMenu ul li.active {
+    background-color: white;
+}
+
+#mainMenu ul li.active > a {
+    color: #337ab7;
+    text-shadow: none;
+}
+
+#page .wrapper {
+    width: 87%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper .inner-line {
+    border-left: 1px solid white;
+    height: 35px;
+    left: -1px;
+    position: absolute;
+    top: -1px;
+}
+
+#tracker {
+    background: white;
+    padding: 3px 10px;
+    border: solid 1px #cccccc;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#tracker ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#tracker ul li {
+    float: left;
+    padding-left: 5px;
+}
+
+#notifications {
+    clear: both;
+    background: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.alert {
+    margin: 0px;
+}
+
+#page section {
+    display: inline-block;
+    width: 100%;
+    background: #ffffff;
+    border: solid 1px #cccccc;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 300px;
+}
+
+#page section aside {
+    float: left;
+    min-height: 450px;
+    display: inline-block;
+}
+
+#footer {
+    border-top: solid 1px white;
+    width: 100%;
+    min-height: 80px;
+    background: #404449;
+    color: #e5eaee;
+}
+
+#footer .separator {
+    border-top: solid 1px #4F5762;
+}
+
+#footer .menu {
+    font-size: 11px;
+    margin-top: 10px;
+    list-style-type: none;
+    float: left;
+}
+
+#footer .menu li {
+    float: left;
+    padding: 0 5px;
+}
+
+#footer .menu li + li::before {
+    content: ". ";
+    margin-right: 5px;
+}
+
+#footer .menu li a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+#footer .menu li a.active {
+    color: white;
+    text-decoration: none;
+}
+
+#footer .copyright {
+    margin-top: 10px;
+    margin-right: 20px;
+    float: right;
+    font-size: 11px;
+    text-style: italic;
+    letter-spacing: 1px;
+}
+
+.w20 {
+    width: 20%;
+}
+
+.w80 {
+    width: 80%;
+}
+
+.t-right {
+    text-align: right;
+}
+
+.f-right {
+    float: right;
+}
+
+/**
+    THEME SPECIFIC
+**/
+#header #userMenu ul li a#guestMenu-register,
+#header #userMenu ul li a#userMenu-myAccount {
+    background: url("../img/icons.png") no-repeat 0 -372px;
+    padding-left: 28px;
+    display: block;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+#header #userMenu ul li a#guestMenu-login,
+#header #userMenu ul li a#userMenu-logout {
+    background: url("../img/icons.png") no-repeat 0 -392px;
+    padding-left: 28px;
+    display: block;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+#mainMenu ul li a#mainMenu-home{
+    background: url("../img/icons.png") no-repeat 0 -3px;
+    padding-left: 25px;
+    display: block;
+}
+
+#mainMenu ul li a#mainMenu-members {
+    background: url("../img/icons.png") no-repeat 0 -66px;
+    padding-left: 25px;
+    display: block;
+}
+
+#mainMenu ul li a#mainMenu-environments {
+    background: url("../img/icons.png") no-repeat 0 -154px;
+    padding-left: 25px;
+    display: block;
+}
+
+#mainMenu ul li a#mainMenu-productization {
+    background: url("../img/icons.png") no-repeat 0 -45px;
+    padding-left: 25px;
+    display: block;
+}
+
+#mainMenu ul li a#mainMenu-multi-tenancy {
+    background: url("../img/icons.png") no-repeat 0 -220px;
+    padding-left: 25px;
+    display: block;
+}
+
+/**
+    THEME ENDS HERE
+    CUSTOM CSS STARTS HERE
+**/
+
+div.entryBoxes {
+    width: 100%;
+    display: table;
+}
+
+#page div.entryBoxes div.entryBox {
+    border: solid 1px #cccccc;
+    padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#page div.entryBoxesGrid div.entryBox {
+    float: left;
+    display: table;
+    width: 16%;
+    margin: 5px;
+}
+
+#page div.entryBoxes div.entryBox label {
+    text-decoration: underline;
+}
+
+#page div.entryBoxes div.blueBox,
+#page div.entryBoxes div.entryBox:hover {
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+}
+
+div.entryBox div.entryAction {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+}
+
+div.entryBox ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.entryBox li {
+    padding: 5px;
+    margin: 5px;
+    display: block;
+    border: solid 1px #337ab7;
+    float: left;
+    border-radius: 5px;
+    background-color: #DEF1F7;
+    text-align: center;
+    position: relative;
+}
+
+#page div.entryBoxes div.entryBox:hover li {
+    background-color: white;
+}
+
+div.entryBox li a {
+    margin-top: 5px;
+}
+
+div.entryBox li.row-list a {
+    position: relative;
+    top: 0;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.modal-dialog {
+    position: relative;
+    top: 100px;
+}
+
+form .ng-invalid {
+    border-color: red;
+}
+
+form .ng-valid {
+    border-color: green;
+}
+
+form .header, form .modal-header {
+    background-color: #9EBC5D !important;
+}
+
+form .header {
+    border-radius: 5px;
+    border: solid 1px #8A9E5B !important;
+    margin-bottom: 10px !important;
+}
+
+form .header h3 {
+    padding: 10px 15px !important;
+}
+
+.grid .header {
+    background-color: #70808d !important;
+    border: solid 1px #424951 !important;
+    border-radius: 5px !important;;
+    width: 100% !important;;
+    font-size: 12px !important;
+    color:white;
+}
+
+.grid .header a {
+    color: #424951 !important;
+}
+
+.grid table th {
+    background-color: #99C9FF !important;
+}

@@ -1,0 +1,9 @@
+<div id="footer">
+    <div class="separator"></div>
+    <ul class="menu">
+        <li ng-repeat="link in footerMenu.links" ng-class="{'first': $first, 'last': $last}">
+            <a href="{{link.url}}" class="footerMenu{{$index}}" ng-class="{selected:link.selected, active: link.url === footerMenu.selectedMenu}" id="footer-{{link.id}}">{{link.label}}</a>
+        </li>
+    </ul>
+    <div class="copyright">Copyright &#169; SOAJS. All Rights Reserved. <b>[v1.0]</b></div>
+</div>

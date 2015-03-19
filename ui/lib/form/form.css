@@ -1,0 +1,38 @@
+form .label {
+    background-color: #f8f8f8;
+    color: black;
+}
+
+form .actions input {
+    margin-right: 5px;
+}
+
+form tr label {
+    margin-top: 15px;
+}
+
+form .header, form .modal-header {
+    background-color: #5BC0DE;
+    color: white;
+}
+
+form .header h3,
+form .modal-header h3 {
+    margin: 0;
+}
+
+form .ng-dirty.ng-invalid{
+    border-color:red;
+}
+
+form .ng-dirty.ng-valid{
+    border-color:green;
+}
+
+form .footer{
+    text-align: right;
+}
+
+form .header h3{
+	padding: 15px;
+}

@@ -1,0 +1,17 @@
+<section>
+    <div ng-controller="productCtrl as productsCtrl">
+        <div class="t-right">
+            <a href="#/productization"><span class="glyphicon glyphicon-chevron-left"></span> Go Back to Productization Listing</a>
+        </div><br />
+        <div ng-init="editProduct()">
+            <ngform></ngform>
+        </div>
+    </div>
+    <hr/>
+    <div ng-controller="productPackagesCtrl" ng-show="grid.rows">
+        <form><div class="header"><h3>Product Packages</h3></div></form>
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        <a href="" ng-click="addPackage()" class="btn btn-primary">Add New Package</a><br/><br/>
+        <nglist></nglist>
+    </div>
+</section>

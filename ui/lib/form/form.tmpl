@@ -1,0 +1,93 @@
+<form name="{{form.name}}" class="css-form" novalidate>
+    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3></div>
+    <div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
+        <div ng-show="form.modal">
+            <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+        <div ng-show="form.msgs.header" class="header-msg" ng-bind-html="form.msgs.header|toTrustedHtml"></div>
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tr ng-repeat="entry in form.entries" class="form-group" ng-switch="entry.type">
+                <td ng-switch-when="textarea">
+                    <label>{{entry.label}}</label>
+                        <textarea name="{{entry.name}}" rows="{{entry.rows}}" ng-model="form.formData[entry.name]" class="form-control" placeholder="{{entry.placeholder}}"
+                                  tooltip="{{entry.tooltip}}" ng-required="entry.required">{{entry.value}}</textarea>
+
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="radio">
+                    <label>{{entry.label}}</label>
+                    <ul>
+                        <li ng-repeat="dv in entry.value">
+                            <input type="radio" name="{{entry.name}}" ng-model="form.formData[entry.name]" value="{{dv.v}}" tooltip="{{entry.tooltip}}"
+                                   ng-checked="dv.selected"/>
+                            {{dv.v}}
+                        </li>
+                    </ul>
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="select">
+                    <label>{{entry.label}}</label>
+                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]">
+                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.v}}</option>
+                    </select>
+
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="checkbox">
+                    <label>{{entry.label}}</label>
+                    <ul>
+                        <li ng-repeat="dv in entry.value">
+                            <input type="checkbox" name="{{entry.name}}" ng-checked="dv.selected" tooltip="{{entry.tooltip}}"
+                                   ng-click="form.toggleSelection(entry.name, dv.v)"/>
+                            {{dv.v}}
+                        </li>
+                    </ul>
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="multi-select">
+                    <label>{{entry.label}}</label>
+                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" multiple="multiple">
+                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.v}}</option>
+                    </select>
+
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="readonly">
+                    <label>{{entry.label}}</label>
+                    <input class="form-control" name="{{entry.name}}" type="{{entry.type}}" value="{{entry.value}}" disabled="disabled" readonly=""/>
+
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+
+                <td ng-switch-when="date-picker">
+                    <label>{{entry.label}}</label>
+                    <p class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" min-date="'{{entry.min}}'"name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                      </span>
+                    </p>
+                </td>
+
+                <td ng-switch-default="">
+                    <label>{{entry.label}}</label>
+                    <input class="form-control" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
+                           tooltip="{{entry.tooltip}}" ng-required="entry.required"/>
+
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}"><br/>
+
+        <div ng-show="form.msgs.footer" class="footer-msg" ng-bind-html="form.msgs.footer|toTrustedHtml"></div>
+        <input type="submit" name="submit" value="{{form.labels.submit}}" ng-click="form.submit()" class="btn btn-sm btn-primary"/>
+        <input type="reset" ng-show="form.cancel" value="{{form.labels.cancel}}" ng-click="form.cancel()" class="btn btn-sm btn-danger"/>
+    </div>
+</form>

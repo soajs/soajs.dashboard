@@ -1,0 +1,22 @@
+<section ng-controller="tenantCtrl">
+    <a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br/><br/>
+
+    <div class="entryBoxes">
+        <div ng-repeat="column in grid.rows">
+            <div ng-repeat="row in column" valign="top" class="entryBox">
+                <label>Code:</label> {{row['code']}}<br/>
+                <label>Name:</label> {{row['name']}}<br/>
+                <label>Description:</label> {{row['description']}}<br/>
+                <label ng-show="row.applications.length > 0">Applications:</label>
+                <ul>
+                    <li ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b><a href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication(row['_id'], application['appId']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove" /></a>
+                    </li>
+                </ul>
+                <div class="entryAction">
+                    <a href="" ng-click="grid.actions.edit.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>&nbsp;
+                    <a href="" ng-confirm-click="{{grid.actions.delete.commandMsg}}" ng-click="grid.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,23 @@
+<section ng-controller="productCtrl" ng-show="grid.rows">
+    <a href="" ng-click="addProduct()" class="btn btn-primary">Add New Product</a><br/><br/>
+
+    <div class="entryBoxes">
+        <div ng-repeat="column in grid.rows">
+            <div ng-repeat="row in column" valign="top" class="entryBox">
+                <label>Code:</label> {{row['code']}}<br/>
+                <label>Name:</label> {{row['name']}}<br/>
+                <label>Description:</label> {{row['description']}}<br/>
+                <label ng-show="row.packages.length > 0">Packages:</label>
+                <ul>
+                    <li ng-repeat="package in row.packages"><b>{{package['name']}}</b>&nbsp;<a href="" ng-confirm-click="Are you sure you want to remove the selected package ?"
+                                                                                              ng-click="removeProductPackage(row['_id'], package['code']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove" /></a>
+                    </li>
+                </ul>
+                <div class="entryAction">
+                    <a href="" ng-click="grid.actions.edit.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>&nbsp;
+                    <a href="" ng-confirm-click="{{grid.actions.delete.commandMsg}}" ng-click="grid.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove" /></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
