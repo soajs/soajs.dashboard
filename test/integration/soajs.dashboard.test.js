@@ -2,12 +2,12 @@
 var assert = require('assert');
 var request = require("request");
 var soajs = require('soajs');
-var controller = require("soajs.controller");
 var helper = require("../helper.js");
-var dashboard = null;
+var shell = require('shelljs');
+var controller, dashboard;
 
-var config = null;
-var errorCodes = null;
+var config = helper.requireModule('./service/config');
+var errorCodes = config.errors;
 
 var Mongo = soajs.mongo;
 var dbConfig = require("./db.config.test.js");
@@ -15,10 +15,6 @@ var dbConfig = require("./db.config.test.js");
 var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
-
-var mongoskin = require('mongoskin');
-var testTenantRecord = helper.requireModule("test/provision/tenant")(mongoskin.ObjectID);
-var testProductRecord = helper.requireModule("test/provision/product")(mongoskin.ObjectID);
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
@@ -62,27 +58,32 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-function resetCoreDb(cb) {
-	mongo.insert('tenants', testTenantRecord, function(error) {
-		assert.ifError(error);
-		cb();
+describe("importing sample data", function() {
+	it("do import", function(done) {
+
+		shell.pushd(__dirname + '/../../tools/');
+		shell.exec('./soajs.mongo.sh', function(code, output) {
+			mongo.remove('environment', {}, function(error) {
+				assert.ifError(error);
+				console.log('test data imported.');
+				shell.popd();
+				done();
+			});
+		});
+
 	});
-}
+
+	after(function(done) {
+		controller = require("soajs.controller");
+		dashboard = helper.requireModule('./service/index');
+		setTimeout(function() {
+			done();
+		}, 2000);
+	});
+});
 
 describe("DASHBOARD UNIT TESTS", function() {
 	var expDateValue = new Date().toISOString();
-	before(function(done) {
-		dashboard = helper.requireModule('./service/index');
-		config = helper.requireModule('./service/config');
-		errorCodes = config.errors;
-		setTimeout(function() {
-			mongo.dropDatabase(function() {
-				resetCoreDb(function() {
-					done();
-				});
-			});
-		}, 1000);
-	});
 
 	describe("environment tests", function() {
 		var envId;
@@ -96,8 +97,8 @@ describe("DASHBOARD UNIT TESTS", function() {
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
 					assert.ok(body.data);
-
 					done();
 				});
 			});
@@ -296,6 +297,12 @@ describe("DASHBOARD UNIT TESTS", function() {
 		var productId;
 
 		describe("product", function() {
+			before(function(done){
+				mongo.remove('products', {}, function(error){
+					assert.ifError(error);
+					done();
+				});
+			});
 			describe("add product tests", function() {
 				it("success - will add product", function(done) {
 					var params = {
@@ -2250,7 +2257,7 @@ describe("DASHBOARD UNIT TESTS", function() {
 		});
 	});
 
-	describe('mongo check db', function() {
+	describe.skip('mongo check db', function() {
 		it('asserting environment record', function(done) {
 			mongo.find('environment', {}, {}, function(error, record) {
 				assert.ifError(error);
