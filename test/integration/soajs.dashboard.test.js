@@ -2257,7 +2257,7 @@ describe("DASHBOARD UNIT TESTS", function() {
 		});
 	});
 
-	describe.skip('mongo check db', function() {
+	describe('mongo check db', function() {
 		it('asserting environment record', function(done) {
 			mongo.find('environment', {}, {}, function(error, record) {
 				assert.ifError(error);
