@@ -59,7 +59,11 @@ module.exports = {
 		"443": "Unable to remove tenant application ext Key",
 		"444": "Unable to get the tenant application configuration",
 		"445": "Unable to update the tenant application configuration",
-		"446": "Invalid environment provided"
+		"446": "Invalid environment provided",
+		
+		"500": "This record is locked. You cannot delete it",
+		"501": "This record is locked. You cannot modify or delete it",
+		"600": "Database error"
 	},
 
 	"schema": {

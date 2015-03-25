@@ -205,7 +205,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.dashboard = [];
 				var user = $cookieStore.get('soajs_user');
 				if(user.config && user.config.dashboard) {
-					$scope.dashboard = $scope.dashboard.concat(user.config.dashboard);
+					$scope.dashboard = $scope.dashboard.concat(user.config.dashboard.permissions);
 				}
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;

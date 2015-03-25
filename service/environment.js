@@ -34,11 +34,26 @@ module.exports = {
   "delete": function(config, mongo, req, res) {
     validateId(mongo, req, function(err) {
       if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
-
-      mongo.remove(colName, {"_id": req.soajs.inputmaskData.id}, function(error) {
-        if(error) { return res.jsonp(req.soajs.buildResponse({"code": 404, "msg": config.errors[404]})); }
-        return res.jsonp(req.soajs.buildResponse(null, "environment delete successful"));
-      });
+      
+      var criteria1 = {
+    		  '_id': req.soajs.inputmaskData.id, 'locked': true
+      };
+      mongo.findOne(colName, criteria1 , function(error, record) {
+    	  if(error) { return res.jsonp(req.soajs.buildResponse({"code": 404, "msg": config.errors[404]})); }	
+    	  if(record){
+				// return error msg that this record is locked
+				return res.jsonp(req.soajs.buildResponse({"code": 500, "msg": config.errors[500]})); 
+    	  }
+    	  else{
+    		  var criteria = {
+    	    		  '_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+    	      };
+    		  mongo.remove(colName, criteria , function(error) {
+    		        if(error) { return res.jsonp(req.soajs.buildResponse({"code": 404, "msg": config.errors[404]})); }
+    		        return res.jsonp(req.soajs.buildResponse(null, "environment delete successful"));
+    		  });    		  
+    	  }					
+      });  
     });
   },
 
