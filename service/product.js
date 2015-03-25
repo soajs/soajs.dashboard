@@ -181,49 +181,49 @@ module.exports = {
     validateId(mongo, req, function(err) {
       if(err) { return res.jsonp(req.soajs.buildResponse({"code": 409, "msg": config.errors[409]})); }
       req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
+      
+      checkCanEdit(mongo, req, function(err) {
+    	  if(err) { 
+    		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+    	  }
+    	  
+    	  var criteria = {
+    			  '_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+          };
+    	  mongo.findOne(colName, criteria, function(error, productRecord) {
+  	        if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 415, "msg": config.errors[415]})); }
+  	
+  	        var prefix = productRecord.code + '_';
+  	
+  	        for(var i = 0; i < productRecord.packages.length; i++) {
+  	          if(productRecord.packages[i].code === prefix + req.soajs.inputmaskData.code) {
+  	            return res.jsonp(req.soajs.buildResponse({"code": 418, "msg": config.errors[418]}));
+  	          }
+  	        }
+  	
+  	        var newPackage = {
+  	          "code": prefix + req.soajs.inputmaskData.code,
+  	          "name": req.soajs.inputmaskData.name,
+  	          "description": req.soajs.inputmaskData.description,
+  	          "acl": req.soajs.inputmaskData.acl,
+  	          "_TTL": req.soajs.inputmaskData._TTL * 3600
+  	        };
+  	        productRecord.packages.push(newPackage);
+  	
+  	        mongo.save(colName, productRecord, function(error) {
+  	          if(error) { return res.jsonp(req.soajs.buildResponse({"code": 415, "msg": config.errors[415]})); }
+  	          return res.jsonp(req.soajs.buildResponse(null, "product package add successful"));
+  	        });
+  	      });
+ 
+    	  
+      });
 
-      /// to add check also ?
-      
-      
-      
-	      var criteria = {
-	    		  '_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-	      };
-	      mongo.findOne(colName, {"_id": req.soajs.inputmaskData.id}, function(error, productRecord) {
-	        if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 415, "msg": config.errors[415]})); }
-	
-	        var prefix = productRecord.code + '_';
-	
-	        for(var i = 0; i < productRecord.packages.length; i++) {
-	          if(productRecord.packages[i].code === prefix + req.soajs.inputmaskData.code) {
-	            return res.jsonp(req.soajs.buildResponse({"code": 418, "msg": config.errors[418]}));
-	          }
-	        }
-	
-	        var newPackage = {
-	          "code": prefix + req.soajs.inputmaskData.code,
-	          "name": req.soajs.inputmaskData.name,
-	          "description": req.soajs.inputmaskData.description,
-	          "acl": req.soajs.inputmaskData.acl,
-	          "_TTL": req.soajs.inputmaskData._TTL * 3600
-	        };
-	        productRecord.packages.push(newPackage);
-	
-	        mongo.save(colName, productRecord, function(error) {
-	          if(error) { return res.jsonp(req.soajs.buildResponse({"code": 415, "msg": config.errors[415]})); }
-	          return res.jsonp(req.soajs.buildResponse(null, "product package add successful"));
-	        });
-	      });
-      
-      
-      
       
     });
   },
 
   "updatePackage": function(config, mongo, req, res) {
-	  console.log(' ** updatePackage **  req:  ' );
-      console.log( req ) ; 
 	validateId(mongo, req, function(err) {
       if(err) { return res.jsonp(req.soajs.buildResponse({"code": 409, "msg": config.errors[409]})); }
       req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();     
@@ -236,8 +236,7 @@ module.exports = {
 
 		  var criteria = {
 	    		  '_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-	      };
-	      // 		  
+	      };		  
 		  mongo.findOne(colName, {"_id": req.soajs.inputmaskData.id}, function(error, productRecord) {
 		        if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 416, "msg": config.errors[416]})); }
 
