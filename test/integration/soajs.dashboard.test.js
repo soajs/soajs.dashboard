@@ -228,7 +228,6 @@ describe("DASHBOARD UNIT TESTS", function() {
 				};
 				executeMyRequest(params, 'environment/delete', 'get', function(body) {
 					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
-
 					done();
 				});
 			});
@@ -239,7 +238,6 @@ describe("DASHBOARD UNIT TESTS", function() {
 				};
 				executeMyRequest(params, 'environment/delete', 'get', function(body) {
 					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
-
 					done();
 				});
 			});
@@ -324,7 +322,6 @@ describe("DASHBOARD UNIT TESTS", function() {
 					};
 					executeMyRequest(params, 'product/add', 'post', function(body) {
 						assert.ok(body.data);
-
 						done();
 					});
 				});
