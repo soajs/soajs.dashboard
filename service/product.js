@@ -40,13 +40,10 @@ module.exports = {
 	      mongo.remove(colName, criteria , function(error) {
 	        if(error) { return res.jsonp(req.soajs.buildResponse({"code": 414, "msg": config.errors[414]})); }
 	        return res.jsonp(req.soajs.buildResponse(null, "product delete successful"));
-	      });  		  
-	  
-      	  
+	      });  		  	  
       	  
       });
-      
-      
+    
       
     });
   },
@@ -95,17 +92,15 @@ module.exports = {
     	  }
     	  
     	  var criteria = {
-        		  '_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+        	'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
           };
           mongo.update(colName, criteria , s, {'upsert': false, 'safe': true}, function(err, data) {
             if(err) { return res.jsonp(req.soajs.buildResponse({"code": 411, "msg": config.errors[411]})); }
             return res.jsonp(req.soajs.buildResponse(null, "product update successful"));
           });
- 
     	  
       });
-      
-      
+       
     });
   },
 
@@ -144,9 +139,6 @@ module.exports = {
 	        }
 	
 	        if(found) {
-	        	console.log('found: ' + found) ; 
-	        	console.log('productRecord: ' ) ; 
-	        	console.log( productRecord) ;
 	          mongo.save(colName, productRecord, function(error) {
 	            if(error) { console.log('2. error ** 419 *** does not allow to save empty packages object, on purpose ? ');
 	            	return res.jsonp(req.soajs.buildResponse({"code": 419, "msg": config.errors[419]})); 

@@ -115,7 +115,6 @@ module.exports = {
 			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** delete tenent err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -125,12 +124,8 @@ module.exports = {
 	  	      mongo.remove(colName, criteria, function(error) {
 	  	    	  	if(error) { return res.jsonp(req.soajs.buildResponse({"code": 424, "msg": config.errors[424]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "tenant delete successful"));
-	  	      }); 
-		      	  
-		      	  
-		    });  
- 
-		      
+	  	      }); 	      	  		      	  
+		    });   		      
 		});
 	},
 
@@ -175,7 +170,6 @@ module.exports = {
 			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** delete tenent err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -210,7 +204,6 @@ module.exports = {
 			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -239,12 +232,9 @@ module.exports = {
 
 	"saveOAuth": function(config, code, msg, mongo, req, res) {
 		validateId(mongo, req, function(err) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			
-			
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -275,7 +265,6 @@ module.exports = {
 				
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** delete tenent err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -292,9 +281,8 @@ module.exports = {
 					} else {
 						return res.jsonp(req.soajs.buildResponse({"code": 432, "msg": config.errors[432]}));
 					}
-				});
-			      	  
-			      	  
+				});			      	  
+		      	  
 		    }); 
 				
 		});
@@ -316,7 +304,6 @@ module.exports = {
 			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** addApplication err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -369,7 +356,6 @@ module.exports = {
 			
 			checkCanEdit(mongo, req, function(err) {
 	      	  if(err) { 
-	      		  console.log(' ** err: ' + err);
 	      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
 	      	  }    
 
@@ -412,36 +398,44 @@ module.exports = {
 		});
 	},
 
-	"createApplicationKey": function(config, mongo, req, res) {
-		console.log(' ** createApplicationKey ** ') ; 
+	"createApplicationKey": function(config, mongo, req, res) { 
 		validateId(mongo, req, function(err) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			var criteria = {
-				'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-		    };
-			mongo.findOne(colName, criteria , function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]})); }
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }	
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  }    
 
-				var x = getRequestedSubElementsPositions(tenantRecord, req);
-				if(x.found) {
-					var provision = require("soajs/modules/soajs.provision");
-					provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
-					provision.generateInternalKey(function(error, internalKey) {
-						if(error) {
+		      	var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				    };
+					mongo.findOne(colName, criteria , function(error, tenantRecord) {
+						if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]})); }
+
+						var x = getRequestedSubElementsPositions(tenantRecord, req);
+						if(x.found) {
+							var provision = require("soajs/modules/soajs.provision");
+							provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
+							provision.generateInternalKey(function(error, internalKey) {
+								if(error) {
+									return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]}));
+								}
+
+								tenantRecord.applications[x.position[0]].keys.push({
+									"key": internalKey,
+									"extKeys": [],
+									"config": {}
+								});
+								saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 436, "application key add successful");
+							});
+						} else {
 							return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]}));
 						}
-
-						tenantRecord.applications[x.position[0]].keys.push({
-							"key": internalKey,
-							"extKeys": [],
-							"config": {}
-						});
-						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 436, "application key add successful");
 					});
-				} else {
-					return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]}));
-				}
-			});
+				     		  
+			      	  
+			   });
+			
 		});
 	},
 
@@ -465,20 +459,27 @@ module.exports = {
 	"deleteApplicationKey": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-			};
-			mongo.findOne(colName, criteria, function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 437, "msg": config.errors[437]})); }
-
-				var x = getRequestedSubElementsPositions(tenantRecord, req);
-				if(x.found) {
-					tenantRecord.applications[x.position[0]].keys.splice(x.position[1], 1);
-					saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 437, "application key remove successful");
-				} else {
-					return res.jsonp(req.soajs.buildResponse({"code": 437, "msg": config.errors[437]}));
-				}
-			});
+			
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  }  
+		      	var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				};
+				mongo.findOne(colName, criteria, function(error, tenantRecord) {
+					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 437, "msg": config.errors[437]})); }
+	
+					var x = getRequestedSubElementsPositions(tenantRecord, req);
+					if(x.found) {
+						tenantRecord.applications[x.position[0]].keys.splice(x.position[1], 1);
+						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 437, "application key remove successful");
+					} else {
+						return res.jsonp(req.soajs.buildResponse({"code": 437, "msg": config.errors[437]}));
+					}
+				});		      	  
+			  });
+		
 		});
 	},
 
@@ -501,76 +502,98 @@ module.exports = {
 	"addApplicationExtKeys": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-			};
-			mongo.findOne(colName, criteria , function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
-
-				var x = getRequestedSubElementsPositions(tenantRecord, req);
-				if(x.found) {
-					var provision = require("soajs/modules/soajs.provision");
-					provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
-					provision.generateExtKey(req.soajs.inputmaskData.key, req.soajs.servicesConfig.key, function(error, extKeyValue) {
-						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
-
-						var newExtKey = {
-							"expDate": new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL,
-							"extKey": extKeyValue,
-							"device": req.soajs.inputmaskData.device,
-							"geo": req.soajs.inputmaskData.geo
-						};
-						//push new extKey
-						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.push(newExtKey);
-						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 440, "tenant application ext key add successful");
-					});
-				} else {
-					return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]}));
-				}
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  } 
+			
+			
+				var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				};
+				mongo.findOne(colName, criteria , function(error, tenantRecord) {
+					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
+	
+					var x = getRequestedSubElementsPositions(tenantRecord, req);
+					if(x.found) {
+						var provision = require("soajs/modules/soajs.provision");
+						provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
+						provision.generateExtKey(req.soajs.inputmaskData.key, req.soajs.servicesConfig.key, function(error, extKeyValue) {
+							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
+	
+							var newExtKey = {
+								"expDate": new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL,
+								"extKey": extKeyValue,
+								"device": req.soajs.inputmaskData.device,
+								"geo": req.soajs.inputmaskData.geo
+							};
+							//push new extKey
+							tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.push(newExtKey);
+							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 440, "tenant application ext key add successful");
+						});
+					} else {
+						return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]}));
+					}
+				});
+			
 			});
+			
+			
 		});
 	},
 
 	"updateApplicationExtKeys": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-			};
-			mongo.findOne(colName, criteria, function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 441, "msg": config.errors[441]})); }
-
-				var x = getRequestedSubElementsPositions(tenantRecord, req);
-				if(x.found) {
-					tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
-					tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].device = req.soajs.inputmaskData.device;
-					tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].geo = req.soajs.inputmaskData.geo;
-
-					saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 441, "tenant application ext key update successful");
-				} else {
-					return res.jsonp(req.soajs.buildResponse({"code": 441, "msg": config.errors[441]}));
-				}
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  } 	
+				var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				};
+				mongo.findOne(colName, criteria, function(error, tenantRecord) {
+					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 441, "msg": config.errors[441]})); }
+	
+					var x = getRequestedSubElementsPositions(tenantRecord, req);
+					if(x.found) {
+						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
+						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].device = req.soajs.inputmaskData.device;
+						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].geo = req.soajs.inputmaskData.geo;
+	
+						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 441, "tenant application ext key update successful");
+					} else {
+						return res.jsonp(req.soajs.buildResponse({"code": 441, "msg": config.errors[441]}));
+					}
+				});
 			});
+		
 		});
 	},
 
 	"deleteApplicationExtKeys": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-			};
-			mongo.findOne(colName, criteria, function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 443, "msg": config.errors[443]})); }
-
-				var x = getRequestedSubElementsPositions(tenantRecord, req);
-				if(x.found) {
-					tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.splice(x.position[2], 1);
-					saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 443, "tenant application ext key delete successful");
-				} else {
-					return res.jsonp(req.soajs.buildResponse({"code": 443, "msg": config.errors[443]}));
-				}
-			});
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  } 
+			
+				var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				};
+				mongo.findOne(colName, criteria, function(error, tenantRecord) {
+					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 443, "msg": config.errors[443]})); }
+	
+					var x = getRequestedSubElementsPositions(tenantRecord, req);
+					if(x.found) {
+						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.splice(x.position[2], 1);
+						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 443, "tenant application ext key delete successful");
+					} else {
+						return res.jsonp(req.soajs.buildResponse({"code": 443, "msg": config.errors[443]}));
+					}
+				});
+			});	
 		});
 	},
 
@@ -578,26 +601,35 @@ module.exports = {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 			req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.envCode.toUpperCase();
-			var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
-			};
-			mongo.findOne(colName, criteria , function(error, tenantRecord) {
-				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
-
-				checkIfEnvironmentExists(mongo, req.soajs.inputmaskData.envCode, function(error, exists) {
-					if(error) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
-
-					if(!exists) { return res.jsonp(req.soajs.buildResponse({"code": 446, "msg": config.errors[446]})); }
-
-					var x = getRequestedSubElementsPositions(tenantRecord, req);
-					if(x.found) {
-						tenantRecord.applications[x.position[0]].keys[x.position[1]].config[req.soajs.inputmaskData.envCode] = req.soajs.inputmaskData.config;
-						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 445, "tenant application configuration update successful");
-					} else {
-						return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]}));
-					}
+			checkCanEdit(mongo, req, function(err) {
+		      	  if(err) { 
+		      		  return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); 
+		      	  } 	
+				
+				var criteria = {
+						'_id': req.soajs.inputmaskData.id, 'locked': { $ne: true }
+				};
+				mongo.findOne(colName, criteria , function(error, tenantRecord) {
+					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
+	
+					checkIfEnvironmentExists(mongo, req.soajs.inputmaskData.envCode, function(error, exists) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
+	
+						if(!exists) { return res.jsonp(req.soajs.buildResponse({"code": 446, "msg": config.errors[446]})); }
+	
+						var x = getRequestedSubElementsPositions(tenantRecord, req);
+						if(x.found) {
+							tenantRecord.applications[x.position[0]].keys[x.position[1]].config[req.soajs.inputmaskData.envCode] = req.soajs.inputmaskData.config;
+							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 445, "tenant application configuration update successful");
+						} else {
+							return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]}));
+						}
+					});
 				});
+				
 			});
+			
+			
 		});
 	},
 
