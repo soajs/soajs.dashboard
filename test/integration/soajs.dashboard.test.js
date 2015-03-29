@@ -16,7 +16,7 @@ var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
 
-var sampleData = require("soajs.mongodb.data/modules/oauth");
+var sampleData = require("soajs.mongodb.data/modules/dashboard");
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
@@ -97,6 +97,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	var envId;
 	describe("environment tests", function() {
 		
+		before(function(done){
+			mongo.remove('environment', {}, function(error) {
+				assert.ifError(error);
+				done();
+			});	
+		});
+	
 		describe("add environment tests", function() {
 			it("success - will add environment", function(done) {
 				var params = {
@@ -230,7 +237,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it('fail - invalid environment id provided', function(done) {
 				var params = {
-					qs: {'id': 'aaaabbbbccccdddd'}
+					qs: {'id': 'aaaabbcdddd'}
 				};
 				executeMyRequest(params, 'environment/delete', 'get', function(body) {
 					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
@@ -362,8 +369,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"packages": []
 						});
 						done();
-					});
-					
+					});				
 					
 				});
 			});
@@ -477,7 +483,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 				
-				it.skip('mongo test', function(done) {
+				it('mongo test', function(done) {
 					mongo.find('products', {}, {}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
@@ -770,7 +776,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
-				it.skip('mongo test', function(done) {
+				it('mongo test', function(done) {
 					mongo.find('products', {}, {}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
@@ -926,7 +932,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					};
 					executeMyRequest(params, 'tenant/update', 'post', function(body) {
 						assert.ok(body.data);
-
 						done();
 					});
 					
@@ -969,7 +974,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 				it('fail - invalid tenant id provided', function(done) {
 					var params = {
-						qs: {"id": "aaaabbbbccccdddd"},
+						qs: {"id": "aaaabbdd"},
 						form: {
 							"description": 'this is a dummy description',
 							"name": 'test tenant updated'
@@ -988,15 +993,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				it('fail - missing params', function(done) {
 					executeMyRequest({}, 'tenant/delete', 'get', function(body) {
 						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
-
 						done();
 					});
 				});
 
 				it('fail - invalid tenant id provided', function(done) {
-					executeMyRequest({qs: {id: 'aaaabbbbccccdddd'}}, 'tenant/delete', 'get', function(body) {
+					executeMyRequest({qs: {id: 'aaaabdddd'}}, 'tenant/delete', 'get', function(body) {
 						assert.deepEqual(body.errors.details[0], {"code": 438, "message": errorCodes[438]});
-
 						done();
 					});
 				});
@@ -1008,23 +1011,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
-				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 1);
-						done();
-					});
-				});
+				
 			});
 
 			describe("list tenant tests", function() {
 				it("success - will get empty list", function(done) {
 					executeMyRequest({}, 'tenant/list', 'get', function(body) {
-						assert.ok(body.data);
-						assert.equal(body.data.length, 1);
-
+						assert.ok(body.data);						
 						done();
 					});
 				});
@@ -1037,28 +1030,16 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function(body) {
-						assert.ok(body.data);
-
-						done();
-					});
-				});
-				it("success - will list tenant", function(done) {
-					executeMyRequest({}, 'tenant/list', 'get', function(body) {
-						assert.ok(body.data);
-						assert.equal(body.data.length, 2);
-
-						tenantId = body.data[1]._id.toString();
-						delete body.data[1]._id;
-						assert.deepEqual(body.data[1], {
-							"code": "TSTN",
-							"name": "test tenant",
-							"description": "this is a dummy description",
-							"applications": [],
-							"oauth": {}
+						assert.ok(body.data);						
+						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
+							assert.ifError(error);						
+							tenantId = tenantRecord._id.toString() ;
+							console.log(JSON.stringify(tenantRecord));
+							done();				
 						});
-						done();
 					});
 				});
+				
 			});
 		});
 
@@ -1074,9 +1055,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"redirectURI": "http://www.myredirecturi.com/"
 						}
 					};
+					
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function(body) {
+						console.log(JSON.stringify(body));
 						assert.ok(body.data);
-
+						 
 						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
 							assert.ifError(error);						
 							assert.deepEqual(tenantRecord.oauth, {
@@ -1162,16 +1145,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
-				it.skip('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.equal(JSON.stringify(records[1].oauth), '{}');
-						done();
-					});
-				});
+				
 			});
 
 			describe("list oauth tests", function() {
@@ -1179,7 +1153,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/list/', 'get', function(body) {
 						assert.ok(body.data);
 						assert.equal(JSON.stringify(body.data), '{}');
-
 						done();
 					});
 				});
@@ -1298,15 +1271,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						applicationId = records[1].applications[0].appId.toString();
-						delete records[1].applications[0].appId;
-						assert.deepEqual(records[1].applications[0], {
+						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						applicationId = records.applications[0].appId.toString();
+						delete records.applications[0].appId;
+						assert.deepEqual(records.applications[0], {
 							"product": "TPROD",
 							"package": "TPROD_BASIC",
 							"description": "this is a dummy description",
@@ -1418,14 +1391,14 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.ok(records[1].applications.length, 2);
-						delete records[1].applications[0].appId;
-						assert.deepEqual(records[1].applications[0], {
+						
+						assert.ok(records.applications);
+						assert.ok(records.applications.length, 2);
+						delete records.applications[0].appId;
+						assert.deepEqual(records.applications[0], {
 							"product": "TPROD",
 							"package": "TPROD_BASIC",
 							"description": "this is a dummy description updated",
@@ -1471,15 +1444,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
-				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.equal(records[1].applications.length, 0);
-						done();
-					});
-				});
+				
 			});
 
 			describe("list applications tests", function() {
@@ -1583,15 +1548,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						key = records[1].applications[0].keys[0].key;
+						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						assert.equal(records.applications[0].keys.length, 1);
+						assert.ok(records.applications[0].keys[0].key);
+						key = records.applications[0].keys[0].key;
 						done();
 					});
 				});
@@ -1623,6 +1588,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'tenant/application/key/delete', 'get', function(body) {
 						assert.ok(body);
 						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {"code": 437, "message": "Unable to remove key from the tenant application"});
 						done();
 					});
 				});
@@ -1639,18 +1605,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
-				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 0);
-						done();
-					});
-				});
+			
 			});
 
 			describe("list application keys", function() {
@@ -1770,46 +1725,21 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
+				
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants',{"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						key = records[1].applications[0].keys[0].key;
-						assert.equal(records[1].applications[0].keys[0].extKeys.length, 1);
-						extKey = records[1].applications[0].keys[0].extKeys[0].extKey;
-						delete records[1].applications[0].keys[0].extKeys[0].extKey;
-						assert.deepEqual(records[1].applications[0].keys[0].extKeys[0], {
-							'expDate': new Date(expDateValue).getTime() + config.expDateTTL,
-							'device': {
-								'a': 'b'
-							},
-							'geo': {
-								'x': 'y'
-							}
-						});
-						done();
-					});
-				});
-				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						key = records[1].applications[0].keys[0].key;
-						assert.equal(records[1].applications[0].keys[0].extKeys.length, 1);
-						extKey = records[1].applications[0].keys[0].extKeys[0].extKey;
-						delete records[1].applications[0].keys[0].extKeys[0].extKey;
-						assert.deepEqual(records[1].applications[0].keys[0].extKeys[0], {
+						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						assert.equal(records.applications[0].keys.length, 1);
+						assert.ok(records.applications[0].keys[0].key);
+						key = records.applications[0].keys[0].key;
+						assert.equal(records.applications[0].keys[0].extKeys.length, 1);
+						extKey = records.applications[0].keys[0].extKeys[0].extKey;
+						delete records.applications[0].keys[0].extKeys[0].extKey;
+						assert.deepEqual(records.applications[0].keys[0].extKeys[0], {
 							'expDate': new Date(expDateValue).getTime() + config.expDateTTL,
 							'device': {
 								'a': 'b'
@@ -1898,19 +1828,19 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						key = records[1].applications[0].keys[0].key;
-						assert.equal(records[1].applications[0].keys[0].extKeys.length, 1);
-						extKey = records[1].applications[0].keys[0].extKeys[0].extKey;
-						delete records[1].applications[0].keys[0].extKeys[0].extKey;
-						assert.deepEqual(records[1].applications[0].keys[0].extKeys[0], {
+						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						assert.equal(records.applications[0].keys.length, 1);
+						assert.ok(records.applications[0].keys[0].key);
+						key = records.applications[0].keys[0].key;
+						assert.equal(records.applications[0].keys[0].extKeys.length, 1);
+						extKey = records.applications[0].keys[0].extKeys[0].extKey;
+						delete records.applications[0].keys[0].extKeys[0].extKey;
+						assert.deepEqual(records.applications[0].keys[0].extKeys[0], {
 							'expDate': new Date(expDateValue).getTime() + config.expDateTTL,
 							'device': {
 								'a': 'b'
@@ -1976,16 +1906,16 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						key = records[1].applications[0].keys[0].key;
-						assert.equal(records[1].applications[0].keys[0].extKeys.length, 0);
+						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						assert.equal(records.applications[0].keys.length, 1);
+						assert.ok(records.applications[0].keys[0].key);
+						key = records.applications[0].keys[0].key;
+						assert.equal(records.applications[0].keys[0].extKeys.length, 0);
 						done();
 					});
 				});
@@ -2014,15 +1944,16 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							key: 'fffdfs'
 						}
 					};
-					///////////// ckeck this
+					console.log(params);
+					///////////// check this . no error msg. just empty data
 					executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function(body) {
 						console.log(body);
+						console.log( ' ******************************** ');
 						//assert.ok(body.errors);						
 						done();
 					});
 				});
 				
-
 				it("success - will add ext key", function(done) {
 					var params = {
 						qs: {
@@ -2112,6 +2043,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function(body) {
 						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], 
+								{"code": 445, "message": "Unable to update the tenant application configuration"});
+						 
 						done();
 					});
 				});
@@ -2129,7 +2063,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function(body) {
 						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: config"});
-
 						done();
 					});
 				});
@@ -2160,24 +2093,23 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.find('tenants', {}, {}, function(error, records) {
+					mongo.findOne('tenants', {"code":"TSTN"}, function(error, records) {
 						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(records.length, 2);
-						assert.ok(records[1].applications);
-						assert.equal(records[1].applications.length, 1);
-						assert.equal(records[1].applications[0].keys.length, 1);
-						assert.ok(records[1].applications[0].keys[0].key);
-						assert.ok(records[1].applications[0].keys[0].config);
-						assert.ok(records[1].applications[0].keys[0].config.DEV);
-						assert.ok(records[1].applications[0].keys[0].config.DEV.mail);
-						assert.ok(records[1].applications[0].keys[0].config.DEV.urac);
+						assert.ok(records);						
+						assert.ok(records.applications);
+						assert.equal(records.applications.length, 1);
+						assert.equal(records.applications[0].keys.length, 1);
+						assert.ok(records.applications[0].keys[0].key);
+						assert.ok(records.applications[0].keys[0].config);
+						assert.ok(records.applications[0].keys[0].config.DEV);
+						assert.ok(records.applications[0].keys[0].config.DEV.mail);
+						assert.ok(records.applications[0].keys[0].config.DEV.urac);
 
-						assert.deepEqual(records[1].applications[0].keys[0].config.DEV.mail, {
+						assert.deepEqual(records.applications[0].keys[0].config.DEV.mail, {
 							'a': 'b'
 						});
 
-						assert.deepEqual(records[1].applications[0].keys[0].config.DEV.urac, {
+						assert.deepEqual(records.applications[0].keys[0].config.DEV.urac, {
 							'x': 'y'
 						});
 						done();
@@ -2214,12 +2146,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							key: 'dfgdfg'
 						}
 					};
-					/////////// check
+					///// no error msg returned. just empty objct
 					executeMyRequest(params, 'tenant/application/key/config/list', 'get', function(body) {
 						assert.ok(body);
-						console.log(body);
-						//assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: config"});
-
+						console.log(JSON.stringify(body));
 						done();
 					});
 				});
@@ -2230,12 +2160,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 	describe('mongo check db', function() {
 		it('asserting environment record', function(done) {
-			mongo.find('environment', {}, {}, function(error, record) {
+			mongo.findOne('environment', {"code": "DEV"}, function(error, record) {
 				assert.ifError(error);
 				assert.ok(record);
-				assert.ok(record[0]);
-				delete record[0]._id;
-				assert.deepEqual(record[0], {
+				delete record._id;
+				assert.deepEqual(record, {
 					"code": "DEV",
 					"description": 'this is a dummy description',
 					"ips": ['127.0.0.1', '192.168.0.1']
@@ -2245,12 +2174,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		});
 
 		it('asserting product record', function(done) {
-			mongo.find('products', {}, {}, function(error, record) {
+			mongo.findOne('products', {"code": "TPROD"}, function(error, record) {
 				assert.ifError(error);
-				assert.ok(record);
-				assert.ok(record[0]);
-				delete record[0]._id;
-				assert.deepEqual(record[0], {
+				assert.ok(record);				
+				delete record._id;
+				assert.deepEqual(record, {
 					"code": "TPROD",
 					"name": "test product",
 					"description": "this is a dummy description",
@@ -2286,28 +2214,28 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		});
 
 		it('asserting tenant record', function(done) {
-			mongo.find('tenants', {}, {}, function(error, record) {
+			//TSTN
+			mongo.findOne('tenants', {"code":'TSTN'}, function(error, record) {
 				assert.ifError(error);
 				assert.ok(record);
-				assert.ok(record[1]);
-				delete record[1]._id;
-				delete record[1].applications[0].appId;
+				delete record._id;
+				delete record.applications[0].appId;
 
-				assert.ok(record[1].applications[0].keys[0].key);
-				delete record[1].applications[0].keys[0].key;
+				assert.ok(record.applications[0].keys[0].key);
+				delete record.applications[0].keys[0].key;
 
-				assert.ok(record[1].applications[0].keys[0].extKeys[0].extKey);
-				delete record[1].applications[0].keys[0].extKeys[0].extKey;
+				assert.ok(record.applications[0].keys[0].extKeys[0].extKey);
+				delete record.applications[0].keys[0].extKeys[0].extKey;
 
-				assert.deepEqual(record[1].oauth, {
+				assert.deepEqual(record.oauth, {
 					"secret": "my secret key",
 					"redirectURI": "http://www.myredirecturi.com/",
 					"grants": [
 						"password", "refresh_token"
 					]
 				});
-				delete record[1].oauth;
-				assert.deepEqual(record[1].applications, [
+				delete record.oauth;
+				assert.deepEqual(record.applications, [
 					{
 						"product": "TPROD",
 						"package": "TPROD_BASIC",
@@ -2349,8 +2277,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						]
 					}
 				]);
-				delete record[1].applications;
-				assert.deepEqual(record[1], {
+				delete record.applications;
+				assert.deepEqual(record, {
 					"code": "TSTN",
 					"name": "test tenant",
 					"description": "this is a dummy description"

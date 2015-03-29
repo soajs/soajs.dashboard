@@ -488,8 +488,9 @@ module.exports = {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 			mongo.findOne(colName, {'_id': req.soajs.inputmaskData.id}, function(error, tenantRecord) {
 				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 442, "msg": config.errors[442]})); }
-
+				
 				var x = getRequestedSubElementsPositions(tenantRecord, req);
+				
 				if(x.found) {
 					return res.jsonp(req.soajs.buildResponse(null, tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys));
 				} else {
@@ -629,7 +630,6 @@ module.exports = {
 				
 			});
 			
-			
 		});
 	},
 
@@ -638,8 +638,9 @@ module.exports = {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 			mongo.findOne(colName, {'_id': req.soajs.inputmaskData.id}, function(error, tenantRecord) {
 				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 444, "msg": config.errors[444]})); }
-
+				
 				var x = getRequestedSubElementsPositions(tenantRecord, req);
+				
 				if(x.found) {
 					return res.jsonp(req.soajs.buildResponse(null, tenantRecord.applications[x.position[0]].keys[x.position[1]].config));
 				} else {

@@ -519,11 +519,9 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function(body) {
-						assert.ok(body);
-						
+						assert.ok(body);						
 						console.log(' applicationId: ' + applicationId );
-						console.log(' key: ' + key );
-						
+						console.log(' key: ' + key );						
 						done();
 					});
 				});
