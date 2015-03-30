@@ -321,7 +321,7 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 					};
 					if(formData.acl) {
-						postData.acl = formData.acl;
+						postData.acl = JSON.parse(formData.acl);
 					}
 
 					getSendDataFromServer(ngDataApi, {
@@ -373,7 +373,7 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 					};
 					if(formData.acl) {
-						postData.acl = formData.acl;
+						postData.acl = JSON.parse(formData.acl);
 					}
 
 					getSendDataFromServer(ngDataApi, {

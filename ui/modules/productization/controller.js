@@ -238,9 +238,10 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 					};
 					if(formData.acl) {
-						postData.acl = formData.acl;
+						postData.acl = JSON.parse(formData.acl);
 					}
 
+					console.log(postData);
 					getSendDataFromServer(ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/product/packages/add",
@@ -288,7 +289,7 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 					};
 					if(formData.acl) {
-						postData.acl = formData.acl;
+						postData.acl = JSON.parse(formData.acl);
 					}
 
 					getSendDataFromServer(ngDataApi, {
