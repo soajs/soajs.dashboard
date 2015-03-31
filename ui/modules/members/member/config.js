@@ -27,7 +27,7 @@ var membersConfig = {
 				'type': 'text',
 				'placeholder': 'Enter Username...',
 				'value': '',
-				'tooltip': 'Usernames are alphanumeric and support _ character only',
+				'tooltip': 'Usernames are alphanumeric and support _ & - characters only',
 				'required': true
 			},
 			{

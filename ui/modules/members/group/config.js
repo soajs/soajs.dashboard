@@ -23,9 +23,9 @@ var groupsConfig = {
 				'name': 'code',
 				'label': 'Code',
 				'type': 'text',
-				'placeholder': 'Enter Code...',
+				'placeholder': 'Enter the Code of the Group',
 				'value': '',
-				'tooltip': 'Usernames are alphanumeric and support _ character only',
+				'tooltip': 'Group codes are alphanumeric and support _ character only',
 				'required': true
 			},
 			{
@@ -43,7 +43,24 @@ var groupsConfig = {
 				'type': 'text',
 				'placeholder': 'Enter Last Name...',
 				'value': '',
-				'tooltip': 'Enter the Last Name of the User',
+				'tooltip': 'Enter the Description of the Group',
+				'required': true
+			}
+		]
+	},
+	users: {
+		'name': '',
+		'label': '',
+		'msgs':{},
+		'actions': {},
+		'entries': [
+			{
+				'name': 'users',
+				'label': 'Users',
+				'type': 'checkbox',
+				'placeholder': 'Add users',
+				'value': '',
+				'tooltip': 'Check to add user to group',
 				'required': true
 			}
 		]
