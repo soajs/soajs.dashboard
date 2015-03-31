@@ -11,7 +11,7 @@ var groupsConfig = {
 		'leftActions': [],
 		'topActions': [],
 		'defaultSortField': '',
-		'defaultLimit': 5
+		'defaultLimit': 10
 	},
 
 	form: {
