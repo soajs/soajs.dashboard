@@ -112,10 +112,9 @@ var navigation = [
 		'url': '#/members',
 		'tplPath': 'modules/members/directives/list.tmpl',
 		'mainMenu': true,
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js'],
+		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js' ],
 		'ancestor': ['Home']
 	},
-
 	{
 		'id': 'environments',
 		'label': 'Environments',

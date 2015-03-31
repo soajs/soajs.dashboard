@@ -13,7 +13,7 @@ var membersConfig = {
 		'leftActions': [],
 		'topActions': [],
 		'defaultSortField': '',
-		'defaultLimit': 5
+		'defaultLimit': 10
 	},
 
 	form: {
