@@ -431,3 +431,12 @@ form .header h3 {
 .grid table th {
     background-color: #99C9FF !important;
 }
+
+.nav-tabs > li.active > a, 
+.nav-tabs > li.active > a:hover, 
+.nav-tabs > li.active > a:focus{
+}
+
+.nav-tabs li a:focus {
+    outline: 0;
+}
