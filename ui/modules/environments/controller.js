@@ -46,6 +46,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			label: 'Add New Environment',
 			actions: {
 				submit: function(formData) {
+					formData.ips = formData.ips.replace(/ /g,''); 
 					var postData = {
 						'code': formData.code,
 						'description': formData.description,
@@ -88,6 +89,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			'data': data,
 			'actions': {
 				submit: function(formData) {
+					formData.ips = formData.ips.replace(/ /g,''); 
 					var postData = {
 						'code': formData.code,
 						'description': formData.description,

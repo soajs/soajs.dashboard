@@ -183,6 +183,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		});
 
 		$scope.isUserLoggedIn = function() {
+			console.log(' isUserLoggedIn ') ; 
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
 
 				$cookieStore.remove('soajs_auth');
@@ -207,6 +208,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if(user.config && user.config.dashboard) {
 					$scope.dashboard = $scope.dashboard.concat(user.config.dashboard.permissions);
 				}
+				//console.log( $scope.dashboard );
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;
 				$scope.userLastName = user.lastName;
