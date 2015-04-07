@@ -187,7 +187,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				var len = response.length;
 				var value = [];
 				var sel = false;
-				console.log( data.code );
+				//console.log( data.code );
 				for(var x=0; x<len; x++){					
 					sel = false;					
 					if( (response[x].groups) && response[x].groups.indexOf( data.code ) > -1  ){
@@ -200,7 +200,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				}
 			
 				var config = angular.copy(groupsConfig.users);
-				console.log( 'config' );console.log( config );
+				//console.log( 'config:' );console.log( config );
 				config.entries[0].value = value;
 				
 				var options = {
@@ -212,8 +212,8 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 						},
 						actions: {
 							submit: function(formData) {
-								console.log(formData);
-								console.log(data);
+								//console.log(formData);
+								//console.log(data);
 								
 								var postData = {									
 									'groupCode': data.code,
@@ -232,6 +232,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 										$scope.modalInstance.close();
 										$scope.form.formData = {};
 										$scope.listGroups();
+										$scope.$parent.$emit('reloadMembers', {});
 									}
 								});
 								
@@ -242,8 +243,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 							}
 						}
 					};
-				buildFormWithModal($scope, $modal, options);
-			
+				buildFormWithModal($scope, $modal, options);			
 			}
 		});
 	};

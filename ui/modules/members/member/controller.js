@@ -2,7 +2,11 @@
 var membersApp = soajsApp.components;
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-
+	
+	$scope.$parent.$on('reloadMembers', function(event, args) {
+		$scope.listMembers();
+	});
+	
 	$scope.listMembers = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",

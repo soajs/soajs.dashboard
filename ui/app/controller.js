@@ -183,9 +183,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		});
 
 		$scope.isUserLoggedIn = function() {
-			console.log(' isUserLoggedIn ') ; 
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
-
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$scope.enableInterface = false;
