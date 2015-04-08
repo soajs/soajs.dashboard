@@ -12,9 +12,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				var total = Math.ceil(response.length / 3);
 				$scope.grid = {
-					rows: response
+					rows: new Array(total)
 				};
+
+				for(var i = 0; i < total; ++i) {
+					$scope.grid.rows[i] = response.slice(i * 3, (i + 1) * 3);
+				}
 				$scope.grid.actions = {
 					'editTenant':{
 						'label': 'Edit Tenant',
@@ -111,8 +116,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		
 
 		buildFormWithModal($scope, $modal, options);
-		//$scope.$parent.$emit('listOAuth', {'tenantRecord': response.oauth});
-		//$scope.$parent.$emit('listApplications', {'tenantRecord': response.applications});
 	
 	}
 	$scope.editOauth = function(data) {
@@ -309,8 +312,36 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						}
 					});
 				}
+				var actions= [
+						{
+							'type': 'submit',
+							'label': 'Submit',
+							'btn': 'primary',
+							'action': function(formData) {
 
-				formConfig.actions = {};
+								var postData = {
+									'name': formData.name,
+									'description': formData.description
+								};
+								getSendDataFromServer(ngDataApi, {
+									"method": "send",
+									"routeName": "/dashboard/tenant/update",
+									"data": postData,
+									"params": {"id": tenantId}
+								}, function(error, response) {
+									if(error) {
+										$scope.$parent.displayAlert('danger', error.message);
+									}
+									else {
+										$scope.$parent.displayAlert('success', 'Tenant Upated Successfully.');
+										$scope.$parent.go("/multi-tenancy/edit/" + tenantId);
+									}
+								});
+							
+							}
+						}
+					];
+				formConfig.actions = actions ;
 
 				buildForm($scope, false, formConfig);
 				$scope.$parent.$emit('listOAuth', {'tenantRecord': response.oauth});
@@ -490,7 +521,86 @@ multiTenantApp.controller('tenantOauthCtrl', ['$scope', '$timeout', '$modal', '$
 		$scope.printOAuthForm(args.tenantRecord);
 	});
 
-	$scope.printOAuthForm = function(oAuth) {};
+	$scope.printOAuthForm = function(oAuth) {
+		var tenantId = $routeParams.id;
+		if(!tenantId) {
+			$scope.$parent.displayAlert('danger', 'Invalid Tenant Id Provided.');
+			$scope.$parent.go("/multi-tenancy");
+		}
+
+		var formConfig = angular.copy(tenantConfig.form.oauth);
+		formConfig.name = 'editTenantOAuth';
+		formConfig.label = 'Edit Tenant OAuth';
+		formConfig.timeout = $timeout;
+		formConfig.buttonLabels = {
+			submit: 'Update',
+			cancel: 'Remove'
+		};
+
+		var keys = Object.keys(oAuth);
+		for(var i = 0; i < formConfig.entries.length; i++) {
+			keys.forEach(function(inputName) {
+				if(formConfig.entries[i].name === inputName) {
+					formConfig.entries[i].value = oAuth[inputName];
+				}
+			});
+		}
+		
+		var actions= [
+			{
+				'type': 'submit',
+				'label': 'Submit',
+				'btn': 'primary',
+				'action': function(formData) {
+					var postData = {
+							'secret': formData.secret,
+							'redirectURI': formData.redirectURI
+						};
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/oauth/update",
+							"data": postData,
+							"params": {"id": tenantId}
+						}, function(error, response) {
+							if(error) {
+								$scope.$parent.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Tenant OAuth Upated Successfully.');
+								$scope.$parent.go("/multi-tenancy/edit/" + tenantId);
+							}
+						});
+					}
+			},
+			{
+				'type': 'submit',
+				'label': 'Delete oAuth',
+				'btn': 'danger',
+				'action': function(formData) {
+
+					getSendDataFromServer(ngDataApi, {
+						"method": "get",
+						"routeName": "/dashboard/tenant/oauth/delete",
+						"params": {"id": tenantId}
+					}, function(error, response) {
+						if(error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'Tenant OAuth Deleted Successfully.');
+							$scope.$parent.go("/multi-tenancy/edit/" + tenantId);
+						}
+					});
+				
+				}
+			}
+		];
+		
+		formConfig.actions = actions;
+
+		buildForm($scope, false, formConfig);
+
+	};
 }]);
 
 multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
