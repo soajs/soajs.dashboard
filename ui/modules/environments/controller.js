@@ -21,11 +21,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						'icon': 'edit',
 						'handler': 'editEnvironment'
 					},
-						{
-							'label': 'Analytics',
-							'icon': 'analytics',
-							'handler': 'openAnalyticsPage'
-						},
+						//{
+						//	'label': 'Analytics',
+						//	'icon': 'analytics',
+						//	'handler': 'openAnalyticsPage'
+						//},
 						{
 							'label': 'Remove',
 							'icon': 'remove',
@@ -147,51 +147,56 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.openAnalyticsPage = function(data) {
-		data.ips = data.ips.join(",");
-
-		var ips = [];
-		data.ips = data.ips.split(",");
-		for(var x = 0; x < data.ips.length; x++) {
-			ips.push({'v': data.ips[x]});
-		}
-
-		var options = {
-			timeout: $timeout,
-			form: environmentConfig.analytics,
-			'name': 'analyticsEnvironment',
-			'label': 'Run Environment Analytics Operations',
-			'data': {
-				'code': data.code,
-				'ips': ips
-			},
-
-			'actions': [
-				{
-					'type': 'submit',
-					'label': 'Perform Maintenance',
-					'btn': 'primary',
-					'action': function(formData) {
-						console.log(formData);
-
-						//$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
-						$scope.modalInstance.close();
-						$scope.form.formData = {};
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-		buildFormWithModal($scope, $modal, options);
-	};
+	//$scope.openAnalyticsPage = function(data) {
+	//	data.ips = data.ips.join(",");
+	//
+	//	var ips = [];
+	//	data.ips = data.ips.split(",");
+	//	for(var x = 0; x < data.ips.length; x++) {
+	//		ips.push({'v': data.ips[x]});
+	//	}
+	//
+	//	var options = {
+	//		timeout: $timeout,
+	//		form: environmentConfig.analytics,
+	//		'name': 'analyticsEnvironment',
+	//		'label': 'Run Environment Analytics Operations',
+	//		'data': {
+	//			'code': data.code,
+	//			'ips': ips
+	//		},
+	//
+	//		'actions': [
+	//			{
+	//				'type': 'submit',
+	//				'label': 'Perform Maintenance',
+	//				'btn': 'primary',
+	//				'action': function(formData) {
+	//					console.log(formData);
+	//					if(!formData.ips || (Array.isArray(formData.ips) && formData.ips.length === 0) || formData.ips ===''){
+	//						$scope.form.displayAlert('danger', 'Please choose an IP address.');
+	//					}
+	//					else{
+	//
+	//					}
+	//					//
+	//					//$scope.modalInstance.close();
+	//					//$scope.form.formData = {};
+	//				}
+	//			},
+	//			{
+	//				'type': 'reset',
+	//				'label': 'Cancel',
+	//				'btn': 'danger',
+	//				'action': function() {
+	//					$scope.modalInstance.dismiss('cancel');
+	//					$scope.form.formData = {};
+	//				}
+	//			}
+	//		]
+	//	};
+	//	buildFormWithModal($scope, $modal, options);
+	//};
 
 	$scope.removeEnvironment = function(row) {
 		getSendDataFromServer(ngDataApi, {
