@@ -59,7 +59,8 @@ function buildForm(context, modal, configuration) {
 		timeout: configuration.timeout,
 		labels: {
 			submit: (configuration.buttonLabels && configuration.buttonLabels.submit) ? configuration.buttonLabels.submit : 'Submit',
-			cancel: (configuration.buttonLabels && configuration.buttonLabels.cancel) ? configuration.buttonLabels.cancel : 'Cancel'
+			cancel: (configuration.buttonLabels && configuration.buttonLabels.cancel) ? configuration.buttonLabels.cancel : 'Cancel',
+			remove: (configuration.buttonLabels && configuration.buttonLabels.remove) ? configuration.buttonLabels.remove : 'Remove'
 		},
 		modal: modal,
 		formData: {}
@@ -110,7 +111,11 @@ function buildForm(context, modal, configuration) {
 	if(configuration.actions.cancel) {
 		context.form.cancel = configuration.actions.cancel;
 	}
-
+	
+	if(configuration.actions.remove) {
+		context.form.remove = configuration.actions.remove;
+	}
+	
 	context.form.itemsAreValid = function() {
 		var entries = context.form.entries;
 		var data = context.form.formData;

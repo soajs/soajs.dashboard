@@ -85,9 +85,10 @@
         </table>
     </div>
     <div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}"><br/>
-
         <div ng-show="form.msgs.footer" class="footer-msg" ng-bind-html="form.msgs.footer|toTrustedHtml"></div>
+        <input type="remove" ng-show="form.remove" name="remove" value="{{form.labels.remove}}" ng-click="form.remove()" class="btn btn-sm btn-primary"/>
         <input type="submit" name="submit" value="{{form.labels.submit}}" ng-click="form.submit()" class="btn btn-sm btn-primary"/>
         <input type="reset" ng-show="form.cancel" value="{{form.labels.cancel}}" ng-click="form.cancel()" class="btn btn-sm btn-danger"/>
+        
     </div>
 </form>

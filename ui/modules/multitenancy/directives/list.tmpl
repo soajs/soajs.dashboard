@@ -1,37 +1,39 @@
 <section ng-controller="tenantCtrl">
-	<a href="" ng-click="addTenant()" class="btn btn-primary">Add New
-		Tenant</a><br />
+	<a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br />
 	<br />
 
 	<div class="entryBoxes">
-		<div ng-repeat="column in grid.rows">
-			<div ng-repeat="row in column" valign="top" class="entryBox">
+		
+			<div ng-repeat="row in grid.rows" valign="top" class="entryBox">
 				<div class="header">
 					{{row['name']}}<span>[ {{row['code']}} ]</span>
 				</div>
 				<div class="body">
 					<div class="description">{{row['description']}}</div>
 					<label ng-show="row.applications.length > 0">Applications:</label>
-					<a class="btn btn-sm btn-primary" href="" ng-click="">Add New Application</a>
+					<a class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">Add New Application</a>
 					<ul>
-						<li ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b><a
-							href=""
-							ng-confirm-click="Are you sure you want to remove the selected application ?"
+						<li ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b>
+						<a href="" ng-confirm-click="Are you sure you want to remove the selected application ?"
 							ng-click="removeTenantApplication(row['_id'], application['appId']);"><img
 								ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
-								alt="Remove" /></a></li>
+								alt="Remove" /></a>
+						<a href="" ng-click="editTenantApplication(row['_id'], application)"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
+						</a>
+						
+						
+						</li>
 					</ul>
 					<div class="entryAction">
-						<a href="" ng-click="grid.actions.edit.command(row);"><img
-							ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
-							alt="Edit" /></a>&nbsp; <a href=""
-							ng-confirm-click="{{grid.actions.delete.commandMsg}}"
-							ng-click="grid.actions.delete.command(row);"><img
-							ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
+						<a href="" ng-click="grid.actions.editoAuth.command(row);"> Edit oAuth</a>&nbsp;
+							
+						<a href="" ng-click="grid.actions.edit.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
+							alt="Edit" /></a>&nbsp; <a href="" ng-confirm-click="{{grid.actions.delete.commandMsg}}"
+							ng-click="grid.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
 							alt="Remove" /></a>
 					</div>
 				</div>
 			</div>
-		</div>
+		
 	</div>
 </section>

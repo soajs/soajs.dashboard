@@ -15,6 +15,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.grid = {
 					rows: response
 				};
+
 				$scope.grid.actions = {
 					'edit': {
 						'label': 'Edit',
