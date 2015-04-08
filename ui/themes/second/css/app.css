@@ -414,6 +414,9 @@ div.entryBox .floating li {
     position: relative;
     text-align: center;
 }
+div.entryBox ul.floating {
+    margin-top:0;
+}
 
 /*#page div.entryBoxes div.entryBox:hover li {*/
     /*background-color: white;*/
