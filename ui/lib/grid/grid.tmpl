@@ -19,13 +19,13 @@
                 </td>
                 <td align="right">
                     <div ng-show="grid.search">
-                        Search: <input ng-model="grid.query" type="text" ng-click="grid.applySearch=true"/>
+                        Search: <input class="searchInput" ng-model="grid.query" type="text" ng-click="grid.applySearch=true"/>
                         <button ng-click="grid.query=''" class="btn-filter btn btn-sm btn-danger">Clear</button>
                     </div>
                 </td>
             </tr>
          </table>
-         <div ng-if="grid.filteredRows.length > 0">        
+         <div ng-show="grid.filteredRows.length > 0">        
          <table border="0" cellspacing="0" cellpadding="0" width="100%" class="navigation">
             <tr>
                 <td valign="middle">
