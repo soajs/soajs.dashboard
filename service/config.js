@@ -9,6 +9,10 @@ var accessSchema = {
 module.exports = {
 	"serviceName": "dashboard",
 	"expDateTTL": 86400000,
+	"hasher":{
+		"hashIterations": 1024,
+		"seedLength": 32
+	},
 
 	"errors": {
 		"400": "Unable to add the environment record",
@@ -52,6 +56,7 @@ module.exports = {
 		"436": "Unable to add a new key to the tenant application",
 		"437": "Unable to remove key from the tenant application",
 		"438": "Invalid tenant Id provided",
+		"439": "Invalid tenant oauth user Id provided",
 
 		"440": "Unable to add the tenant application ext Key",
 		"441": "Unable to update the tenant application ext Key",
@@ -60,7 +65,13 @@ module.exports = {
 		"444": "Unable to get the tenant application configuration",
 		"445": "Unable to update the tenant application configuration",
 		"446": "Invalid environment provided",
-		
+
+		"447": "Unable to get tenant oAuth Users",
+		"448": "tenant oAuth User already exists",
+		"449": "Unable to add tenant oAuth User",
+		"450": "Unable to remove tenant oAuth User",
+		"451": "Unable to updated tenant oAuth User",
+
 		"500": "This record is locked. You cannot delete it",
 		"501": "This record is locked. You cannot modify or delete it",
 		"600": "Database error"
@@ -316,6 +327,61 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"format": "uri"
+				}
+			}
+		},
+
+		"/tenant/oauth/users/list" :{
+			"commonFields": ['id']
+		},
+		"/tenant/oauth/users/delete" :{
+			"commonFields": ['id'],
+			"uId":{
+				"source": ['query.uId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/tenant/oauth/users/add" :{
+			"commonFields": ['id'],
+			"userId":{
+				"source": ['body.userId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"password": {
+				"source": ['body.password'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/tenant/oauth/users/update" :{
+			"commonFields": ['id'],
+			"uId":{
+				"source": ['query.uId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"userId":{
+				"source": ['body.userId'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"password": {
+				"source": ['body.password'],
+				"required": false,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
