@@ -554,7 +554,7 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Update Tenant',
+					'label': 'Add Application',
 					'btn': 'primary',
 					'action': function(formData) {
 
