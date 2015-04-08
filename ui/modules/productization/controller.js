@@ -12,20 +12,14 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				var total = Math.ceil(response.length / 3);
 				$scope.grid = {
-					rows: new Array(total)
+					rows: response
 				};
-
-				for(var i = 0; i < total; ++i) {
-					$scope.grid.rows[i] = response.slice(i * 3, (i + 1) * 3);
-				}
-
 				$scope.grid.actions = {
 					'edit': {
 						'label': 'Edit',
 						'command': function(row) {
-							$scope.$parent.go("/productization/edit/" + row._id);
+							$scope.editProduct(row);
 						}
 					},
 					'delete': {
@@ -96,133 +90,76 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editProduct = function() {
+	$scope.editProduct = function(row) {
 
-		var productId = $routeParams.id;
-		if(!productId) {
-			$scope.$parent.displayAlert('danger', 'Invalid Product Id Provided.');
-			$scope.$parent.go("/productization");
+		var formConfig = angular.copy(productizationConfig.form.product);
+		formConfig.entries[0].type = 'readonly';
+		formConfig.name = 'editProduct';
+		formConfig.label = 'Edit Product';
+		formConfig.timeout = $timeout;
+
+		var keys = Object.keys(row);
+		for(var i = 0; i < formConfig.entries.length; i++) {
+			keys.forEach(function(inputName) {
+				if(formConfig.entries[i].name === inputName) {
+					formConfig.entries[i].value = row[inputName];
+				}
+			});
 		}
 
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/product/get",
-			"params": {'id': productId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-				$scope.$parent.go("/productization");
-			}
-			else {
-				var formConfig = angular.copy(productizationConfig.form.product);
-				formConfig.entries[0].type = 'readonly';
-				formConfig.name = 'editProduct';
-				formConfig.label = 'Edit Product';
-				formConfig.timeout = $timeout;
-
-				var keys = Object.keys(response);
-				for(var i = 0; i < formConfig.entries.length; i++) {
-					keys.forEach(function(inputName) {
-						if(formConfig.entries[i].name === inputName) {
-							formConfig.entries[i].value = response[inputName];
-						}
-					});
-				}
-
-				formConfig.actions = {
-					submit: function(formData) {
-						var postData = {
-							'name': formData.name,
-							'description': formData.description
-						};
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/product/update",
-							"data": postData,
-							"params": {"id": productId}
-						}, function(error, response) {
-							if(error) {
-								$scope.$parent.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Product Upated Successfully.');
-								$scope.$parent.go("/productization/edit/" + productId);
-							}
-						});
-					}
+		formConfig.actions = {
+			submit: function(formData) {
+				var postData = {
+					'name': formData.name,
+					'description': formData.description
 				};
-
-				buildForm($scope, false, formConfig);
-				$scope.$parent.$emit('listPackages', {'productRecord': response.packages});
+				getSendDataFromServer(ngDataApi, {
+					"method": "send",
+					"routeName": "/dashboard/product/update",
+					"data": postData,
+					"params": {"id": row['_id']}
+				}, function(error, response) {
+					if(error) {
+						$scope.$parent.displayAlert('danger', error.message);
+					}
+					else {
+						$scope.$parent.displayAlert('success', 'Product Updated Successfully.');
+						$scope.modalInstance.close();
+						$scope.form.formData = {};
+						$scope.listProducts();
+					}
+				});
+			},
+			cancel: function() {
+				$scope.modalInstance.dismiss('cancel');
+				$scope.form.formData = {};
 			}
-		});
-	};
-
-	$scope.removeProductPackage = function(productId, packageCode) {
-		packageCode = packageCode.split("_")[1];
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/product/packages/delete",
-			"params": {"id": productId, "code": packageCode}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', "Selected Package has been removed.");
-				$scope.listProducts();
-			}
-		});
-	};
-
-	//default operation
-	$scope.listProducts();
-}]);
-
-productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
-
-	$scope.listPackages = function(packagesList) {
-		//print the grid of packages
-		var options = {
-			grid: productizationConfig.grid.package,
-			data: packagesList,
-			defaultSortField: 'code',
-			left: [{
-				'label': 'Edit',
-				'icon': 'edit',
-				'handler': 'editPackage'
-			}, {
-				'label': 'Remove',
-				'icon': 'remove',
-				'msg': "Are you sure you want to remove this package?",
-				'handler': 'removePackage'
-			}],
-			top: [{
-				'label': 'Remove',
-				'msg': "Are you sure you want to remove the selected package(s)?",
-				'handler': 'removeMultiplePackages'
-			}]
 		};
-		buildGrid($scope, options);
+
+		buildFormWithModal($scope, $modal, formConfig);
+		$scope.$parent.$emit('listPackages', {'productRecord': response.packages});
 	};
 
-	$scope.reloadPackages = function() {
+	$scope.reloadPackages = function(productId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/list",
-			"params": {"id": $routeParams.id}
+			"params": {"id": productId}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.listPackages(response);
+				for(var i = 0; i < $scope.grid.rows.length; i++) {
+					if($scope.grid.rows[i]['_id'] === productId) {
+						$scope.grid.rows[i].packages = response;
+					}
+				}
 			}
 		});
 	};
 
-	$scope.addPackage = function() {
+	$scope.addPackage = function(productId) {
 		var options = {
 			timeout: $timeout,
 			form: productizationConfig.form.package,
@@ -241,12 +178,11 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 						postData.acl = JSON.parse(formData.acl);
 					}
 
-					console.log(postData);
 					getSendDataFromServer(ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/product/packages/add",
 						"data": postData,
-						"params": {"id": $routeParams.id}
+						"params": {"id": productId}
 					}, function(error, response) {
 						if(error) {
 							$scope.form.displayAlert('danger', error.message);
@@ -255,7 +191,7 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 							$scope.$parent.displayAlert('success', 'Package Added Successfully.');
 							$scope.modalInstance.close();
 							$scope.form.formData = {};
-							$scope.reloadPackages();
+							$scope.reloadPackages(productId);
 						}
 					});
 				},
@@ -269,7 +205,7 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editPackage = function(data) {
+	$scope.editPackage = function(productId, data) {
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
 		recordData._TTL = recordData._TTL / 3600;
@@ -296,7 +232,7 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 						"method": "send",
 						"routeName": "/dashboard/product/packages/update",
 						"data": postData,
-						"params": {"id": $routeParams.id, "code": data.code.split("_")[1]}
+						"params": {"id": productId, "code": data.code.split("_")[1]}
 					}, function(error, response) {
 						if(error) {
 							$scope.form.displayAlert('danger', error.message);
@@ -305,7 +241,7 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 							$scope.$parent.displayAlert('success', 'Package Updated Successfully.');
 							$scope.modalInstance.close();
 							$scope.form.formData = {};
-							$scope.reloadPackages();
+							$scope.reloadPackages(productId);
 						}
 					});
 				},
@@ -319,44 +255,23 @@ productizationApp.controller('productPackagesCtrl', ['$scope', '$timeout', '$mod
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.removePackage = function(data) {
+	$scope.removeProductPackage = function(productId, packageCode) {
+		packageCode = packageCode.split("_")[1];
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/delete",
-			"params": {"id": $routeParams.id, "code": data.code.split("_")[1]}
+			"params": {"id": productId, "code": packageCode}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.$parent.displayAlert('success', "Selected Package has been removed.");
-				$scope.reloadPackages();
+				$scope.reloadPackages(productId);
 			}
 		});
 	};
 
-	$scope.removeMultiplePackages = function() {
-		var config = {
-			'routeName': "/dashboard/product/packages/delete",
-			"params": {'id': $routeParams.id, 'code': '%code%'},
-			"override": {
-				"fieldName": "code",
-				"fieldReshape": function(value) {
-					return value.split("_")[1];
-				}
-			},
-			'msg': {
-				'error': 'one or more of the selected Package(s) status was not removed.',
-				'success': 'Selected Package(s) has been removed.'
-			}
-		};
-
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
-			$scope.reloadPackages();
-		});
-	};
-
-	$scope.$parent.$on('listPackages', function(event, args) {
-		$scope.listPackages(args.productRecord);
-	});
+	//default operation
+	$scope.listProducts();
 }]);

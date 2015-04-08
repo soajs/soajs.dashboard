@@ -323,7 +323,6 @@ div.entryBoxes {
 
 #page div.entryBoxes div.entryBox {
     border: solid 1px #cccccc;
-    padding: 10px;
     position: relative;
     border-radius: 8px;
     display: table;
@@ -342,43 +341,73 @@ div.entryBoxes {
     text-decoration: underline;
 }
 
-#page div.entryBoxes div.blueBox,
-#page div.entryBoxes div.entryBox:hover {
+#page div.entryBoxes div.blueBox{
+/*#page div.entryBoxes div.entryBox:hover {*/
     background: #DEF1F7;
     border: solid 1px #337ab7;
     color: black;
 }
 
+div.entryBox .header{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom:solid 1px #cccccc;
+    padding:5px;
+    font-weight:bold;
+    background-color:#eeeeee;
+}
+
+div.entryBox .header span{
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+div.entryBox .body{
+    padding:5px;
+}
+
+div.entryBox .body .description{
+    color:#666666;
+    font-style:italic;
+}
+
+div.entryBox .body .btn-primary{
+    float:right;
+    position:relative;
+    top:-10px;
+}
+
 div.entryBox div.entryAction {
     position: absolute;
-    top: 10px;
+    top: 5px;
     right: 10px;
     text-align: center;
 }
 
 div.entryBox ul {
-    margin: 0;
+    margin: 10px 0;
     padding: 0;
 }
 
 div.entryBox li {
     padding: 5px;
-    margin: 5px;
+    margin-bottom:5px;
     display: block;
     border: solid 1px #337ab7;
-    float: left;
+    width:100%;
     border-radius: 5px;
     background-color: #DEF1F7;
-    text-align: center;
+    text-align: left;
     position: relative;
 }
 
-#page div.entryBoxes div.entryBox:hover li {
-    background-color: white;
-}
+/*#page div.entryBoxes div.entryBox:hover li {*/
+    /*background-color: white;*/
+/*}*/
 
 div.entryBox li a {
-    margin-top: 5px;
+    margin-right: 5px;
+    float:right;
 }
 
 div.entryBox li.row-list a {
