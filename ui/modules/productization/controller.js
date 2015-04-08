@@ -137,7 +137,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			}
 		};
 
-		console.log(formConfig);
 		buildFormWithModal($scope, $modal, formConfig);
 	};
 

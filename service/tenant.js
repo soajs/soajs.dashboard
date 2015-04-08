@@ -1,8 +1,10 @@
 'use strict';
 var colName = "tenants";
+var oauthUsersColName = "oauth_urac";
 var prodColName = "products";
 var envColName = "environment";
 
+var Hasher = require("./hasher.js");
 
 function validateId(mongo, req, cb) {
 	try {
@@ -231,6 +233,95 @@ module.exports = {
 				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": code, "msg": config.errors[code]})); }
 					return res.jsonp(req.soajs.buildResponse(null, msg));
+				});
+			});
+		});
+	},
+
+	"getOAuthUsers": function(config, mongo, req, res){
+		validateId(mongo, req, function(err) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+			mongo.find(oauthUsersColName, {"tId": req.soajs.inputmaskData.id}, function(err, tenantOauthUsers) {
+				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+				return res.jsonp(req.soajs.buildResponse(null, tenantOauthUsers));
+			});
+		});
+	},
+
+	"deleteOAuthUsers": function(config, mongo, req, res){
+		validateId(mongo, req, function(err) {
+			try{
+				req.soajs.inputmaskData.uId = mongo.ObjectId(req.soajs.inputmaskData.uId);
+			}
+			catch(e){
+				return res.jsonp(req.soajs.buildResponse({"code": 439, "msg": config.errors[439]}));
+			}
+
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+			mongo.remove(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "_id": req.soajs.inputmaskData.uId}, function(err) {
+				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 450, "msg": config.errors[450]})); }
+				return res.jsonp(req.soajs.buildResponse(null, "tenant oauth user removed successful"));
+			});
+		});
+	},
+
+	"addOAuthUsers": function(config, mongo, req, res){
+		validateId(mongo, req, function(err) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId }, function(err, tenantOauthUser) {
+				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+				if(tenantOauthUser){ return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
+
+				var hasher = new Hasher(config.hasher);
+				var newPassword = hasher.hashSync(req.soajs.inputmaskData.password);
+				var oauthUserRecord = {
+					"userId" : req.soajs.inputmaskData.userId,
+					"password" : newPassword,
+					"tId": req.soajs.inputmaskData.id,
+					"keys": null
+				};
+
+				mongo.insert(oauthUsersColName, oauthUserRecord, function(error){
+					if(error){ return res.jsonp(req.soajs.buildResponse({"code": 449, "msg": config.errors[449]})); }
+					return res.jsonp(req.soajs.buildResponse(null, "tenant oauth user added successful"));
+				});
+			});
+		});
+	},
+
+	"updateOAuthUsers": function(config, mongo, req, res){
+		validateId(mongo, req, function(err) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+
+			try{
+				req.soajs.inputmaskData.uId = mongo.ObjectId(req.soajs.inputmaskData.uId);
+			}
+			catch(e){
+				return res.jsonp(req.soajs.buildResponse({"code": 439, "msg": config.errors[439]}));
+			}
+			if(!req.soajs.inputmaskData.userId && ! req.soajs.inputmaskData.password){
+				return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]}));
+			}
+			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId, "_id": {$ne: req.soajs.inputmaskData.uId} }, function(err, tenantOauthUser) {
+				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+				if(tenantOauthUser){ return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
+
+				mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "_id": req.soajs.inputmaskData.uId}, function(error, tenantOauthUser){
+					if(err || ! tenantOauthUser) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+
+					if(req.soajs.inputmaskData.userId){
+						tenantOauthUser.userId = req.soajs.inputmaskData.userId;
+					}
+					if(req.soajs.inputmaskData.password){
+						var hasher = new Hasher(config.hasher);
+						var newPassword = hasher.hashSync(req.soajs.inputmaskData.password);
+						tenantOauthUser.password = newPassword;
+					}
+
+					mongo.save(oauthUsersColName, tenantOauthUser, function(error){
+						if(error){ return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]})); }
+						return res.jsonp(req.soajs.buildResponse(null, "tenant oauth user updated successful"));
+					});
 				});
 			});
 		});

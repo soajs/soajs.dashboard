@@ -1183,6 +1183,216 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 
+		describe("oauth users", function() {
+			var oauthUserId, oauthUserId2;
+			describe("add oauth users tests", function() {
+				it("success - will add oauth user", function(done) {
+					var params = {
+						qs: {
+							'id': tenantId
+						},
+						form: {
+							"userId": "oauth_user",
+							"password": "password1"
+						}
+					};
+
+					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function(body) {
+						console.log(JSON.stringify(body));
+						assert.ok(body.data);
+
+						mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function(error, tenantRecord) {
+							assert.ifError(error);
+							assert.ok(tenantRecord);
+							assert.equal(tenantRecord.userId, "oauth_user");
+							assert.equal(tenantRecord.tId.toString(), tenantId);
+							oauthUserId = tenantRecord._id.toString();
+							done();
+						});
+					});
+				});
+
+				it('fail - missing params', function(done) {
+					var params = {
+						qs: {},
+						form: {
+							"userId": "oauth_user",
+							"password": "password1"
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+
+						done();
+					});
+				});
+
+			});
+
+			describe("update oauth users tests", function() {
+				it("success - will update oauth users", function(done) {
+					var params = {
+						qs: {
+							id: tenantId,
+							uId: oauthUserId
+						},
+						form: {
+							"userId": "oauth_user_up",
+							"password": "password2"
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function(body) {
+						assert.ok(body.data);
+						mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function(error, tenantRecord) {
+							assert.ifError(error);
+							assert.ok(tenantRecord);
+							assert.equal(tenantRecord.userId, 'oauth_user_up');
+							assert.equal(tenantRecord.tId.toString(), tenantId);
+							oauthUserId2 = tenantRecord._id.toString();
+							done();
+						});
+					});
+				});
+
+				it('fail - missing params', function(done) {
+					var params = {
+						qs: {
+							uId: oauthUserId
+						},
+						form: {
+							"userId": "oauth_user_up",
+							"password": "password2"
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+
+						done();
+					});
+				});
+
+				it('fail - user does not exist', function(done) {
+					var params = {
+						qs: {
+							'id': tenantId,
+							uId: '22d2cb5fc04ce51e06000001'
+						},
+						form: {
+							"userId": "invalid",
+							"password": "password2"
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 447, "message": "Unable to get tenant oAuth Users"});
+
+						done();
+					});
+				});
+
+				it('fail - invalid userid given', function(done) {
+					var params = {
+						qs: {
+							'id': tenantId,
+							'uId': 'invalid'
+						},
+						form: {
+							"userId": "invalid",
+							"password": "password2"
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 439, "message": "Invalid tenant oauth user Id provided"});
+
+						done();
+					});
+				});
+
+				it('fail - userid already exist in another account', function(done){
+					var params = {
+						qs: {
+							'id': tenantId
+						},
+						form: {
+							"userId": "oauth_user2",
+							"password": "password1"
+						}
+					};
+
+					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function(body) {
+						console.log(JSON.stringify(body));
+						assert.ok(body.data);
+
+
+						var params = {
+							qs: {
+								id: tenantId,
+								uId: oauthUserId
+							},
+							form: {
+								"userId": "oauth_user2",
+								"password": "password2"
+							}
+						};
+						executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function(body) {
+							assert.deepEqual(body.errors.details[0], {"code": 448, "message": "tenant oAuth User already exists"});
+
+							done();
+						});
+					});
+				});
+			});
+
+			describe("delete oauth tests", function() {
+				it('fail - missing params', function(done) {
+					executeMyRequest({qs: {uId: oauthUserId}}, 'tenant/oauth/users/delete', 'get', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+
+						done();
+					});
+				});
+
+				it("success - will delete oauth user", function(done) {
+					executeMyRequest({qs: {id: tenantId, 'uId': oauthUserId}}, 'tenant/oauth/users/delete/', 'get', function(body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+			});
+
+			describe("list oauth users tests", function() {
+
+				it("success - will get oauth users", function(done) {
+					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/users/list/', 'get', function(body) {
+						assert.ok(body.data);
+						assert.equal(body.data.length, 1);
+						done();
+					});
+				});
+
+				it("success - will remove oauth user", function(done) {
+					var params = {
+						qs: {
+							id: tenantId,
+							uId: oauthUserId2
+						}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/delete/', 'get', function(body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+				it("success - will get empty object", function(done) {
+					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/users/list/', 'get', function(body) {
+						assert.ok(body.data);
+						assert.equal(body.data.length, 1);
+						done();
+					});
+				});
+			});
+		});
+
 		describe("applications", function() {
 
 			describe("add applications tests", function() {

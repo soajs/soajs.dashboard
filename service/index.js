@@ -117,6 +117,26 @@ service.get("/tenant/oauth/delete", function(req, res) {
   tenant.deleteOAuth(config, mongo, req, res);
 });
 
+service.get("/tenant/oauth/users/list", function(req, res){
+	checkForMongo(req);
+	tenant.getOAuthUsers(config, mongo, req, res);
+});
+
+service.get("/tenant/oauth/users/delete", function(req, res){
+	checkForMongo(req);
+	tenant.deleteOAuthUsers(config, mongo, req, res);
+});
+
+service.post("/tenant/oauth/users/add", function(req, res){
+	checkForMongo(req);
+	tenant.addOAuthUsers(config, mongo, req, res);
+});
+
+service.post("/tenant/oauth/users/update", function(req, res){
+	checkForMongo(req);
+	tenant.updateOAuthUsers(config, mongo, req, res);
+});
+
 service.get("/tenant/application/list", function(req, res) {
 	checkForMongo(req);
   tenant.listApplication(config, mongo, req, res);
