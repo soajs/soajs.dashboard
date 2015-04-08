@@ -12,23 +12,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				var total = Math.ceil(response.length / 3);
-				/*
-				$scope.grid = {
-					rows: new Array(total)
-				};
-
-				for(var i = 0; i < total; ++i) {
-					$scope.grid.rows[i] = response.slice(i * 3, (i + 1) * 3);
-				}
-				*/
-				
 				$scope.grid = {
 					rows: response
 				};
-				
-				console.log( $scope.grid );
-				
 				$scope.grid.actions = {
 					'editTenant':{
 						'label': 'Edit Tenant',
