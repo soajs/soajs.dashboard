@@ -92,17 +92,18 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.editProduct = function(row) {
 
-		var formConfig = angular.copy(productizationConfig.form.product);
-		formConfig.entries[0].type = 'readonly';
+		var formConfig = {};
+		formConfig.form = angular.copy(productizationConfig.form.product);
+		formConfig.form.entries[0].type = 'readonly';
 		formConfig.name = 'editProduct';
 		formConfig.label = 'Edit Product';
 		formConfig.timeout = $timeout;
 
 		var keys = Object.keys(row);
-		for(var i = 0; i < formConfig.entries.length; i++) {
+		for(var i = 0; i < formConfig.form.entries.length; i++) {
 			keys.forEach(function(inputName) {
-				if(formConfig.entries[i].name === inputName) {
-					formConfig.entries[i].value = row[inputName];
+				if(formConfig.form.entries[i].name === inputName) {
+					formConfig.form.entries[i].value = row[inputName];
 				}
 			});
 		}
@@ -136,8 +137,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			}
 		};
 
+		console.log(formConfig);
 		buildFormWithModal($scope, $modal, formConfig);
-		$scope.$parent.$emit('listPackages', {'productRecord': response.packages});
 	};
 
 	$scope.reloadPackages = function(productId) {

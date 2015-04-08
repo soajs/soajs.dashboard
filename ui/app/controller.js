@@ -180,7 +180,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					}
 				}
 			}
-			console.log($scope.tracker);
 		});
 
 		$scope.isUserLoggedIn = function() {
