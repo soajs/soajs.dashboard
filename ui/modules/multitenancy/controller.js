@@ -47,8 +47,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.edit_Tenant = function(data) {
-		console.log( data ) ; 
-
 		var formConfig = angular.copy(tenantConfig.form.tenant);
 		formConfig.entries[0].type = 'readonly';
 		formConfig.name = 'editTenant';
@@ -646,8 +644,7 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 							$scope.form.formData = {};
 							$scope.reloadApplications();
 						}
-					});
-				
+					});				
 				}
 			},
 			{
