@@ -10,7 +10,7 @@
                 <a class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
                 <ul>
                     <li ng-repeat="package in row.packages"><b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ] <em>{{package['description']}}</em>&nbsp;
-                        ( {{package['_TTL']}} )
+                        ( {{package['_TTL'] | TTL}} hours )
 
                         <a href="" ng-confirm-click="Are you sure you want to remove the selected package ?"
                            ng-click="removeProductPackage(row['_id'], package['code']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove Package"/></a>&nbsp;

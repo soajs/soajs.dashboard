@@ -95,7 +95,8 @@ var navigation = [
 		'tplPath': 'modules/dashboard/directives/dashboard.tmpl',
 		'scripts': ['modules/dashboard/controller.js'],
 		'mainMenu': true,
-		'private': true
+		'private': true,
+		'tracker': true
 	},
 	{
 		'id': 'myAccount',
@@ -112,6 +113,7 @@ var navigation = [
 		'url': '#/members',
 		'tplPath': 'modules/members/directives/list.tmpl',
 		'mainMenu': true,
+		'tracker': true,
 		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js' ],
 		'ancestor': ['Home']
 	},
@@ -121,6 +123,7 @@ var navigation = [
 		'url': '#/environments',
 		'tplPath': 'modules/environments/directives/list.tmpl',
 		'mainMenu': true,
+		'tracker': true,
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js'],
 		'ancestor': ['Home']
 	},
@@ -131,25 +134,17 @@ var navigation = [
 		'url': '#/productization',
 		'tplPath': 'modules/productization/directives/list.tmpl',
 		'mainMenu': true,
+		'tracker': true,
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
 		'ancestor': ['Home']
 	},
-	{
-		'id': 'productization_packages',
-		'label': 'Edit Productization',
-		'url': '#/productization/edit/:id',
-		'tplPath': 'modules/productization/directives/edit.tmpl',
-		'mainMenu': false,
-		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
-		'ancestor': ['Home', 'Productization']
-	},
-
 	{
 		'id': 'multi-tenancy',
 		'label': 'Multi-Tenancy',
 		'url': '#/multi-tenancy',
 		'tplPath': 'modules/multitenancy/directives/list.tmpl',
 		'mainMenu': true,
+		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home']
 	},
@@ -159,6 +154,7 @@ var navigation = [
 		'url': '#/multi-tenancy/edit/:id',
 		'tplPath': 'modules/multitenancy/directives/edit.tmpl',
 		'mainMenu': false,
+		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home', 'Multi-Tenancy']
 	},
@@ -168,6 +164,7 @@ var navigation = [
 		'url': '#/multi-tenancy/:id/application/:appId/keys',
 		'tplPath': 'modules/multitenancy/directives/edit-application.tmpl',
 		'mainMenu': false,
+		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home', 'Multi-Tenancy', 'Edit Tenant']
 	}

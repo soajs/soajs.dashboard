@@ -160,7 +160,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.updateSelectedMenus();
 
 			for(var i = 0; i < navigation.length; i++) {
-				if(navigation[i].url === '#' + $route.current.originalPath) {
+				if(navigation[i].tracker && navigation[i].url === '#' + $route.current.originalPath) {
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
 						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
@@ -168,7 +168,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 
-					if(navigation[i].ancestor && Array.isArray(navigation[i].ancestor) && navigation[i].ancestor.length > 0) {
+					if(navigation[i].tracker && navigation[i].ancestor && Array.isArray(navigation[i].ancestor) && navigation[i].ancestor.length > 0) {
 						for(var j = navigation[i].ancestor.length - 1; j >= 0; j--) {
 							findAndcestorProperties($scope.tracker, navigation[i].ancestor[j], $route.current.params);
 						}
@@ -180,6 +180,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					}
 				}
 			}
+			console.log($scope.tracker);
 		});
 
 		$scope.isUserLoggedIn = function() {
@@ -323,7 +324,7 @@ soajsApp.directive('ngConfirmClick', [
 
 function findAndcestorProperties(tracker, ancestorName, params) {
 	for(var i = 0; i < navigation.length; i++) {
-		if(navigation[i].label === ancestorName) {
+		if(navigation[i].tracker && navigation[i].label === ancestorName) {
 			var link = navigation[i].url;
 			for(var i in params) {
 				link = link.replace(":" + i, params[i]);

@@ -5,7 +5,16 @@ soajsApp.filter('filterPicker', function($filter) {
 	}
 });
 
-soajsApp.filter('TTL', function() { return function(value) { return value / 3600; } });
+soajsApp.filter('TTL', function() {
+	return function(value) {
+		//check if value is in milliseconds
+		value = value / 3600;
+		if(value.toString().length > 2) {
+			value = value / 1000;
+		}
+		return value;
+	}
+});
 
 soajsApp.filter('toTrustedHtml', ['$sce', function($sce) {
 	return function(text) {
