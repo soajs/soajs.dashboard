@@ -20,19 +20,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				for(var i = 0; i < total; ++i) {
 					$scope.grid.rows[i] = response.slice(i * 3, (i + 1) * 3);
 				}
-				$scope.grid.actions = {
-					'editTenant':{
-						'label': 'Edit Tenant',
-						'command': function(row) {
-							$scope.edit_Tenant(row);
-						}
-					},
-					'editoAuth': {
-						'label': 'Edit Oauth',
-						'command': function(row) {
-							$scope.editOauth(row);
-						}
-					},	
+				$scope.grid.actions = {	
 					'edit': {
 						'label': 'Edit',
 						'command': function(row) {
@@ -51,167 +39,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.edit_Tenant = function(data) {
-		console.log( data ) ; 
-
-		var formConfig = angular.copy(tenantConfig.form.tenant);
-		formConfig.entries[0].type = 'readonly';
-		formConfig.name = 'editTenant';
-		formConfig.label = 'Edit Basic Tenant Information';
-		formConfig.timeout = $timeout;
-
-		var keys = Object.keys(data);
-		for(var i = 0; i < formConfig.entries.length; i++) {
-			keys.forEach(function(inputName) {
-				if(formConfig.entries[i].name === inputName) {
-					formConfig.entries[i].value = data[inputName];
-				}
-			});
-		}
-		
-		var options = {
-				timeout: $timeout,
-				form: formConfig,
-				name: 'editTenant',
-				label: 'Edit Basic Tenant Information',
-				data: {},
-				actions: [
-					{
-						'type': 'submit',
-						'label': 'Update Tenant',
-						'btn': 'primary',
-						'action': function(formData) {
-							var postData = {
-									'name': formData.name,
-									'description': formData.description
-								};
-								getSendDataFromServer(ngDataApi, {
-									"method": "send",
-									"routeName": "/dashboard/tenant/update",
-									"data": postData,
-									"params": {"id": data['_id'] }
-								}, function(error, response) {
-									if(error) {
-										$scope.$parent.displayAlert('danger', error.message);
-									}
-									else {
-										$scope.$parent.displayAlert('success', 'Tenant Upated Successfully.');
-										$scope.modalInstance.close();
-										$scope.form.formData = {};
-										$scope.listTenants();
-									}
-								});
-							}
-					},
-					{
-						'type': 'reset',
-						'label': 'Cancel',
-						'btn': 'danger',
-						'action': function() {
-							$scope.modalInstance.dismiss('cancel');
-							$scope.form.formData = {};
-						}
-					}]
-			};
-		
-
-		buildFormWithModal($scope, $modal, options);
-	
-	}
-	$scope.editOauth = function(data) {
-		console.log( data ) ; 
-		var oAuth = data.oauth;
-		
-		var formConfig = angular.copy(tenantConfig.form.oauth);
-		formConfig.name = 'editTenantOAuth';
-		formConfig.label = 'Edit Tenant OAuth';
-		formConfig.timeout = $timeout;
-		formConfig.buttonLabels = {
-			submit: 'Update',
-			remove: 'Remove',
-			cancel: 'Cancel'
-		};
-		
-		var keys = Object.keys(oAuth);
-		for(var i = 0; i < formConfig.entries.length; i++) {
-			keys.forEach(function(inputName) {
-				if(formConfig.entries[i].name === inputName) {
-					formConfig.entries[i].value = oAuth[inputName];
-				}
-			});
-		}
-		
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editTenantOAuth',
-			label: 'Edit Tenant OAuth',
-			data: {},			
-			actions: [
-			{
-				'type': 'submit',
-				'label': 'Save oAuth',
-				'btn': 'primary',
-				'action': function(formData) {
-					var postData = {
-						'secret': formData.secret,
-						'redirectURI': formData.redirectURI
-					};										
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/tenant/oauth/update",
-						"data": postData,
-						"params": {"id": data['_id'] }
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Tenant OAuth Upated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listTenants();
-						}
-					});				
-				}
-			},
-			{
-				'type': 'submit',
-				'label': 'Delete oAuth',
-				'btn': 'danger',
-				'action': function(formData) {
-					getSendDataFromServer(ngDataApi, {
-						"method": "get",
-						"routeName": "/dashboard/tenant/oauth/delete",						
-						"params": {"id": data['_id'] }
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Tenant OAuth Deleted Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listTenants();
-						}
-					});
-				
-				}
-			},
-			{
-				'type': 'reset',
-				'label': 'Cancel',
-				'btn': 'danger',
-				'action': function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
-				}
-			}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
 	
 	$scope.removeTenant = function(row) {
 		getSendDataFromServer(ngDataApi, {
@@ -262,8 +89,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.formData = {};
 								$scope.listTenants();
 							}
-						});
-					
+						});					
 					}
 				},
 				{
@@ -315,10 +141,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				var actions= [
 						{
 							'type': 'submit',
-							'label': 'Submit',
+							'label': 'Update Tenant',
 							'btn': 'primary',
 							'action': function(formData) {
-
 								var postData = {
 									'name': formData.name,
 									'description': formData.description
@@ -350,65 +175,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.addTenantApplication = function(tId) {
-		console.log( 'tId: ' + tId) ; 
-		var options = {
-			timeout: $timeout,
-			form: tenantConfig.form.application,
-			name: 'addApplication',
-			label: 'Add New Application',
-			sub: true,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Add Application',
-					'btn': 'primary',
-					'action': function(formData) {
-						var postData = {
-							'productCode': formData.product,
-							'packageCode': formData.package,
-							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-						};
-						if(formData.acl) {
-							postData.acl = JSON.parse(formData.acl);
-						}
-
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/tenant/application/add",
-							"data": postData,
-							"params": {"id": tId}
-						}, function(error, response) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Application Added Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.reloadApplications(tId);
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
+	$scope.addTenantApplication = function(tId) {};
 	
 	$scope.editTenantApplication = function(tId, data) {
-		console.log( 'tId: ' + tId) ; 
 		var formConfig = angular.copy(tenantConfig.form.application);
 		var recordData = angular.copy(data);
 		recordData.package = recordData.package.split("_")[1];
@@ -473,7 +242,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.reloadApplications = function(tId) {
-		console.log( 'reloadApplications tId: ' + tId) ; 
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/list",
@@ -483,7 +251,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				console.log( $scope.grid.rows );
 				for(var i = 0; i < $scope.grid.rows.length; i++) {
 					if($scope.grid.rows[i]['_id'] === tId) {
 						$scope.grid.rows[i].applications = response;
@@ -549,7 +316,7 @@ multiTenantApp.controller('tenantOauthCtrl', ['$scope', '$timeout', '$modal', '$
 		var actions= [
 			{
 				'type': 'submit',
-				'label': 'Submit',
+				'label': 'Save oAuth',
 				'btn': 'primary',
 				'action': function(formData) {
 					var postData = {
@@ -664,7 +431,7 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': 'Add Application',
 					'btn': 'primary',
 					'action': function(formData) {
 
@@ -1027,7 +794,6 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 				'label': 'Submit',
 				'btn': 'primary',
 				'action': function(formData) {
-
 					var postData = {
 						'expDate': formData.expDate,
 						'device': formData.device,
