@@ -34,15 +34,13 @@
                 </td>
                 <td align="right">
                     <pagination total-items="grid.rows.length" ng-model="grid.currentPage" items-per-page="grid.filteredRows.length" num-pages="grid.totalPages" max-size="grid.maxPageSize"
-                                class="pagination-sm"
-                                boundary-links="true"
-                                rotate="false"></pagination>
+                                class="pagination-sm" boundary-links="true" rotate="false"></pagination>
                 </td>
             </tr>
         </table>
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
             <tr>
-                <th colspan="{{(grid.topActions.length > 0) ? (grid.leftActions.length + 1) : grid.leftActions.length}}"></th>
+                <th ng-show="(grid.topActions.length > 0)||(grid.leftActions.length > 0)" colspan="{{(grid.topActions.length > 0) ? (grid.leftActions.length + 1) : grid.leftActions.length}}"></th>
                 <th ng-repeat="column in grid.columns">
                     <a href="" ng-class="{active:grid.sortField===column.field}" ng-click="grid.changeSort(column.field);">{{column.label}}</a>
                 </th>
