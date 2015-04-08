@@ -59,11 +59,12 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				actions: {
 					submit: function(formData) {
 						console.log(formData);
-						
+						formData.permissions = formData.permissions.replace(/ /g,'') ;
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
-							'description': formData.description
+							'description': formData.description,
+							'permissions': formData.permissions.split(",")
 						};
 
 						getSendDataFromServer(ngDataApi, {
@@ -94,21 +95,25 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 
 	$scope.editGroup = function(data) {
 		console.log(data);
+		data.permissions = data.permissions.join(",");
 		var config = angular.copy(groupsConfig.form);
 		config.entries[0].type = 'readonly';
 		var options = {
 			timeout: $timeout,
 			form: config,
-			'name': 'editMember',
-			'label': 'Edit Member',
+			'name': 'editGroup',
+			'label': 'Edit Group',
 			'data': data,
 			'actions': {
 				submit: function(formData) {
+					formData.permissions = formData.permissions.replace(/ /g,'') ;
+					
 					var postData = {
 						'name': formData.name,
-						'description': formData.description
+						'description': formData.description,
+						'permissions': formData.permissions.split(",")
 					};
-					
+		
 					console.log(formData);
 					
 					getSendDataFromServer(ngDataApi, {
@@ -182,10 +187,8 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				var len = response.length;
 				var value = [];
 				var sel = false;
-				console.log( data.code );
+				//console.log( data.code );
 				for(var x=0; x<len; x++){					
-					console.log(response[x]);
-					console.log(response[x].groups);
 					sel = false;					
 					if( (response[x].groups) && response[x].groups.indexOf( data.code ) > -1  ){
 						sel = true;
@@ -197,20 +200,20 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				}
 			
 				var config = angular.copy(groupsConfig.users);
-				console.log( 'config' );console.log( config );
+				//console.log( 'config:' );console.log( config );
 				config.entries[0].value = value;
 				
 				var options = {
 						timeout: $timeout,
 						form: config,
 						name: 'addGroup',
-						label: 'Add Users to Group '+data.name,
+						label: 'Add Users to Group: '+data.name,
 						'msgs':{
 						},
 						actions: {
 							submit: function(formData) {
-								console.log(formData);
-								console.log(data);
+								//console.log(formData);
+								//console.log(data);
 								
 								var postData = {									
 									'groupCode': data.code,
@@ -229,6 +232,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 										$scope.modalInstance.close();
 										$scope.form.formData = {};
 										$scope.listGroups();
+										$scope.$parent.$emit('reloadMembers', {});
 									}
 								});
 								
@@ -239,8 +243,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 							}
 						}
 					};
-				buildFormWithModal($scope, $modal, options);
-			
+				buildFormWithModal($scope, $modal, options);			
 			}
 		});
 	};

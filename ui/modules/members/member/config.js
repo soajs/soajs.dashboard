@@ -8,7 +8,8 @@ var membersConfig = {
 			{'label': 'First Name', 'field': 'firstName'},
 			{'label': 'Last Name', 'field': 'lastName'},
 			{'label': 'Email', 'field': 'email'},
-			{'label': 'Status', 'field': 'status'}
+			{'label': 'Status', 'field': 'status'},
+			{'label': 'Groups', 'field': 'grpsArr'}
 		],
 		'leftActions': [],
 		'topActions': [],

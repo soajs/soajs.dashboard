@@ -25,7 +25,7 @@ var groupsConfig = {
 				'type': 'text',
 				'placeholder': 'Enter the Code of the Group',
 				'value': '',
-				'tooltip': 'Group codes are alphanumeric and support _ character only',
+				'tooltip': 'Group codes are alphanumeric. Maximum length 20 characters',
 				'required': true
 			},
 			{
@@ -40,11 +40,22 @@ var groupsConfig = {
 			{
 				'name': 'description',
 				'label': 'Description',
-				'type': 'text',
+				'type': 'textarea',
+				'rows': 2,
 				'placeholder': 'Enter Last Name...',
 				'value': '',
 				'tooltip': 'Enter the Description of the Group',
 				'required': true
+			},
+			{
+				'name': 'permissions',
+				'label': 'Permissions',
+				'type': 'textarea',
+				'placeholder': ' members,environments',
+				'value': '',
+				'rows': 2,
+				'tooltip': 'Enter the Permissions of the Group. Separate them using a comma.',
+				'required': false
 			}
 		]
 	},

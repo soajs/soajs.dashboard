@@ -40,6 +40,7 @@
 .grid table td {
     padding: 4px;
     font-size:13px;
+    word-break: break-all;
 }
 
 .grid td.leftAction {

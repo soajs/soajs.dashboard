@@ -2,7 +2,11 @@
 var membersApp = soajsApp.components;
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-
+	
+	$scope.$parent.$on('reloadMembers', function(event, args) {
+		$scope.listMembers();
+	});
+	
 	$scope.listMembers = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -11,7 +15,17 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			if(error) {
 				$scope.$parent.displayAlert("danger", error.message);
 			}
-			else {
+			else {				
+				var len = response.length;
+				var usersRecords=[];
+				for(var x=0; x<len; x++){
+					if(response[x].groups){
+						response[x].grpsArr = response[x].groups.join(', ');
+					}
+					else{
+						response[x].grpsArr ='';
+					}
+				}
 				
 				var options = {
 					grid: membersConfig.grid,
@@ -41,7 +55,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 
 	$scope.addMember = function() {
 		var config = angular.copy(membersConfig.form);
-		console.log(' addMember ');
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
@@ -70,8 +83,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 						label: 'Add New Member',
 						actions: {
 							submit: function(formData) {
-								console.log(formData);
-								console.log(formData.groups);
 								var postData = {
 									'username': formData.username,
 									'firstName': formData.firstName,
@@ -102,9 +113,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 							}
 						}
 					};
-				buildFormWithModal($scope, $modal, options);
-				
-				
+				buildFormWithModal($scope, $modal, options);				
 			}
 		});	
 		
@@ -123,16 +132,13 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			}
 			else {
 				var len = response.length;
-				var grps=[];
-				console.log(data.groups);				
+				var grps=[];				
 				if(data.groups)
 					var datagroups = data.groups;
 				else
 					var datagroups = [];
 				var sel = false;
-				var ind = 0;
 				for(var x=0; x<len; x++){
-					console.log(response[x]);
 					sel = false;
 					if( datagroups.indexOf( response[x].code ) > -1  ){
 						sel = true;
@@ -170,10 +176,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 									'groups': formData.groups,
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
-								
-								console.log(formData);
-								console.log(formData.groups);
-								
+
 								getSendDataFromServer(ngDataApi, {
 									"method": "send",
 									"routeName": "/urac/admin/editUser",
@@ -197,12 +200,9 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 							}
 						}
 					};
-					buildFormWithModal($scope, $modal, options);
-				
+					buildFormWithModal($scope, $modal, options);				
 			}
-		});
-		
-		
+		});			
 	};
 
 	$scope.activateMembers = function() {
