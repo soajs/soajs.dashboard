@@ -14,32 +14,42 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 			'timeout': $timeout,
 			'name': 'changeEmail',
 			'label': 'Change Email',
-			'actions': {
-				submit: function(formData) {
-					var postData = {
-						'email': formData.email
-					};
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/urac/account/changeEmail",
-						"params": {"uId": $scope.memberData._id},
-						"data": postData
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'A link will be sent to your new email address to validate the change.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-						}
-					});
+			'actions': [
+				{
+					'type': 'submit',
+					'label': 'Change Email',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'email': formData.email
+						};
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/urac/account/changeEmail",
+							"params": {"uId": $scope.memberData._id},
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'A link will be sent to your new email address to validate the change.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
@@ -51,38 +61,48 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 			'timeout': $timeout,
 			'name': 'changePassword',
 			'label': 'Change Password',
-			'actions': {
-				submit: function(formData) {
-					var postData = {
-						'password': formData.password,
-						'oldPassword': formData.oldPassword,
-						'confirmation': formData.confirmPassword
-					};
-					if(formData.password != formData.confirmPassword) {
-						$scope.form.displayAlert('danger', 'Your password and confirm password fields do not match!');
-						return;
+			'actions': [
+				{
+					'type': 'submit',
+					'label': 'Change Password',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'password': formData.password,
+							'oldPassword': formData.oldPassword,
+							'confirmation': formData.confirmPassword
+						};
+						if(formData.password != formData.confirmPassword) {
+							$scope.form.displayAlert('danger', 'Your password and confirm password fields do not match!');
+							return;
+						}
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/urac/account/changePassword",
+							"params": {"uId": $scope.memberData._id},
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Password Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+							}
+						});
 					}
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/urac/account/changePassword",
-						"params": {"uId": $scope.memberData._id},
-						"data": postData
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Password Updated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-						}
-					});
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
@@ -98,8 +118,11 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		'label': 'Edit Profile',
 		'entries': [],
 		'data': {},
-		'actions': {
-			submit: function(formData) {
+		'actions': [{
+			'type': 'submit',
+			'label': 'Edit Profile',
+			'btn': 'primary',
+			'action': function(formData) {
 				if(formData.profile && (formData.profile != "")) {
 					try {
 						var profileObj = JSON.parse(formData.profile);
@@ -139,7 +162,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					}
 				});
 			}
-		},
+		}],
 		form: profileConfig.formConf
 	};
 
@@ -228,8 +251,11 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function($scope, ngDataApi, isUserLoggedIn) {
 	
 	var formConfig = registerConfig.formConf;
-	formConfig.actions = {
-		submit: function(formData) {
+	formConfig.actions = [{
+		'type': 'submit',
+		'label': 'Register',
+		'btn': 'primary',
+		'action': function(formData) {
 			if(formData.password != formData.confirmPassword) {
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
@@ -255,7 +281,7 @@ myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				}
 			});
 		}
-	};
+	}];
 	
 	if(!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
@@ -301,10 +327,10 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	};
 
 	if(!isUserLoggedIn()) {
-		if($route.current.originalPath ==='/join/validate'){
+		if($route.current.originalPath === '/join/validate') {
 			$scope.valiadteJoin();
 		}
-		else if($route.current.originalPath === '/changeEmail/validate'){
+		else if($route.current.originalPath === '/changeEmail/validate') {
 			$scope.validateChangeEmail();
 		}
 	}
@@ -316,8 +342,11 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 
 myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', function($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn) {
 	var formConfig = loginConfig.formConf;
-	formConfig.actions = {
-		submit: function(formData) {
+	formConfig.actions = [{
+		'type': 'submit',
+		'label': 'Login',
+		'btn': 'primary',
+		'action': function(formData) {
 			var postData = {
 				'username': formData.username, 'password': formData.password
 			};
@@ -339,7 +368,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}
 			});
 		}
-	};
+	}];
 	
 	if(!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
@@ -353,8 +382,11 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 
 myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function($scope, ngDataApi, isUserLoggedIn) {
 	var formConfig = forgetPwConfig.formConf;
-	formConfig.actions = {
-		submit: function(formData) {
+	formConfig.actions = [{
+		'type': 'submit',
+		'label': 'Submit',
+		'btn': 'primary',
+		'action': function(formData) {
 			var postData = {
 				'username': formData.username, 'email': formData.email
 			};
@@ -373,7 +405,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				}
 			});
 		}
-	};
+	}];
 
 	if(!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
@@ -387,8 +419,11 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
 	var formConfig = {};
 	formConfig = setPasswordConfig.formConf;
-	formConfig.actions = {
-		submit: function(formData) {
+	formConfig.actions = [{
+		'type': 'submit',
+		'label': 'Submit',
+		'btn': 'primary',
+		'action': function(formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
@@ -411,7 +446,8 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				}
 			});
 		}
-	};
+	}];
+
 	if(!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
@@ -424,8 +460,11 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
 	var formConfig = {};
 	formConfig = resetPwConfig.formConf;
-	formConfig.actions = {
-		submit: function(formData) {
+	formConfig.actions = [{
+		'type': 'submit',
+		'label': 'Submit',
+		'btn': 'primary',
+		'action': function(formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
@@ -448,7 +487,8 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				}
 			});
 		}
-	};
+	}];
+
 	if(!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}

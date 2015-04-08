@@ -5,6 +5,7 @@ function buildFormWithModal($scope, $modal, opts) {
 	formConfig.actions = opts.actions;
 	formConfig.timeout = opts.timeout;
 	formConfig.msgs = opts.msgs;
+	formConfig.buttonLabels = opts.buttonLabels;
 
 	if(opts.data) {
 		var keys = Object.keys(opts.data);
@@ -54,15 +55,11 @@ function buildForm(context, modal, configuration) {
 		label: configuration.label,
 		msgs: configuration.msgs,
 		action: configuration.action,
-		submit: configuration.submit,
 		entries: configuration.entries,
 		timeout: configuration.timeout,
-		labels: {
-			submit: (configuration.buttonLabels && configuration.buttonLabels.submit) ? configuration.buttonLabels.submit : 'Submit',
-			cancel: (configuration.buttonLabels && configuration.buttonLabels.cancel) ? configuration.buttonLabels.cancel : 'Cancel',
-			remove: (configuration.buttonLabels && configuration.buttonLabels.remove) ? configuration.buttonLabels.remove : 'Remove'
-		},
 		modal: modal,
+		actions: configuration.actions,
+		labels: {},
 		formData: {}
 	};
 
@@ -102,20 +99,17 @@ function buildForm(context, modal, configuration) {
 		}
 	}
 
-	context.form.submit = function() {
-		if(context.form.itemsAreValid()) {
-			configuration.actions.submit(context.form.formData);
+	context.form.do = function(functionObj) {
+		if(functionObj.type === 'submit') {
+			if(context.form.itemsAreValid()) {
+				functionObj.action(context.form.formData);
+			}
+		}
+		else {
+			functionObj.action();
 		}
 	};
 
-	if(configuration.actions.cancel) {
-		context.form.cancel = configuration.actions.cancel;
-	}
-	
-	if(configuration.actions.remove) {
-		context.form.remove = configuration.actions.remove;
-	}
-	
 	context.form.itemsAreValid = function() {
 		var entries = context.form.entries;
 		var data = context.form.formData;

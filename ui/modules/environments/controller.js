@@ -20,12 +20,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						'label': 'Edit',
 						'icon': 'edit',
 						'handler': 'editEnvironment'
-					}, {
-						'label': 'Remove',
-						'icon': 'remove',
-						'msg': "Are you sure you want to remove this environment?",
-						'handler': 'removeEnvironment'
-					}],
+					},
+						{
+							'label': 'Analytics',
+							'icon': 'analytics',
+							'handler': 'openAnalyticsPage'
+						},
+						{
+							'label': 'Remove',
+							'icon': 'remove',
+							'msg': "Are you sure you want to remove this environment?",
+							'handler': 'removeEnvironment'
+						}],
 					top: [{
 						'label': 'Remove',
 						'msg': "Are you sure you want to remove the selected environment(s)?",
@@ -44,36 +50,46 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			form: environmentConfig.form,
 			name: 'addEnvironment',
 			label: 'Add New Environment',
-			actions: {
-				submit: function(formData) {
-					formData.ips = formData.ips.replace(/ /g,''); 
-					var postData = {
-						'code': formData.code,
-						'description': formData.description,
-						'ips': formData.ips.split(",")
-					};
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						formData.ips = formData.ips.replace(/ /g, '');
+						var postData = {
+							'code': formData.code,
+							'description': formData.description,
+							'ips': formData.ips.split(",")
+						};
 
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/environment/add",
-						"data": postData
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Environment Added Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listEnvironments();
-						}
-					});
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/environment/add",
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Environment Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listEnvironments();
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 
 		buildFormWithModal($scope, $modal, options);
@@ -87,37 +103,92 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			'name': 'editEnvironment',
 			'label': 'Edit Environment',
 			'data': data,
-			'actions': {
-				submit: function(formData) {
-					formData.ips = formData.ips.replace(/ /g,''); 
-					var postData = {
-						'code': formData.code,
-						'description': formData.description,
-						'ips': formData.ips.split(",")
-					};
+			'actions': [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						formData.ips = formData.ips.replace(/ /g, '');
+						var postData = {
+							'code': formData.code,
+							'description': formData.description,
+							'ips': formData.ips.split(",")
+						};
 
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/environment/update",
-						"params": {"id": data['_id']},
-						"data": postData
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listEnvironments();
-						}
-					});
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/environment/update",
+							"params": {"id": data['_id']},
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listEnvironments();
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'cancel',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}]
+		};
+		buildFormWithModal($scope, $modal, options);
+	};
+
+	$scope.openAnalyticsPage = function(data) {
+		data.ips = data.ips.join(",");
+
+		var ips = [];
+		data.ips = data.ips.split(",");
+		for(var x = 0; x < data.ips.length; x++) {
+			ips.push({'v': data.ips[x]});
+		}
+
+		var options = {
+			timeout: $timeout,
+			form: environmentConfig.analytics,
+			'name': 'analyticsEnvironment',
+			'label': 'Run Environment Analytics Operations',
+			'data': {
+				'code': data.code,
+				'ips': ips
+			},
+
+			'actions': [
+				{
+					'type': 'submit',
+					'label': 'Perform Maintenance',
+					'btn': 'primary',
+					'action': function(formData) {
+						console.log(formData);
+
+						//$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
+						$scope.modalInstance.close();
+						$scope.form.formData = {};
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 		buildFormWithModal($scope, $modal, options);
 	};

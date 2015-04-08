@@ -1544,6 +1544,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'post', function(body) {
+						console.log(body);
 						assert.ok(body.errors);
 						done();
 					});

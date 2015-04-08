@@ -423,12 +423,11 @@ module.exports = {
 					mongo.findOne(colName, criteria, function(error, tenantRecord) {
 						if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 430, "msg": config.errors[430]})); }
 
+						var found = false;
 						for(var i = 0; i < tenantRecord.applications.length; i++) {
 							if(tenantRecord.applications[i].product === req.soajs.inputmaskData.productCode) {
 								if(tenantRecord.applications[i].package === req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode) {
-									if(tenantRecord.applications[i].appId.toString() !== req.soajs.inputmaskData.appId) {
-										return res.jsonp(req.soajs.buildResponse({"code": 433, "msg": config.errors[433]}));
-									} else {
+									if(tenantRecord.applications[i].appId.toString() === req.soajs.inputmaskData.appId) {
 										tenantRecord.applications[i].product = req.soajs.inputmaskData.productCode;
 										tenantRecord.applications[i].package = req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode;
 										tenantRecord.applications[i].description = req.soajs.inputmaskData.description;
@@ -436,11 +435,18 @@ module.exports = {
 										if(req.soajs.inputmaskData.acl) {
 											tenantRecord.applications[i].acl = req.soajs.inputmaskData.acl;
 										}
+										found = true;
+										break;
 									}
 								}
 							}
 						}
-						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 430, "tenant application update successful");
+						if(!found){
+							return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]}));
+						}
+						else{
+							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 430, "tenant application update successful");
+						}
 					});
 				});
 			});

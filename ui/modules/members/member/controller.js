@@ -15,15 +15,15 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			if(error) {
 				$scope.$parent.displayAlert("danger", error.message);
 			}
-			else {				
+			else {
 				var len = response.length;
-				var usersRecords=[];
-				for(var x=0; x<len; x++){
-					if(response[x].groups){
+				var usersRecords = [];
+				for(var x = 0; x < len; x++) {
+					if(response[x].groups) {
 						response[x].grpsArr = response[x].groups.join(', ');
 					}
-					else{
-						response[x].grpsArr ='';
+					else {
+						response[x].grpsArr = '';
 					}
 				}
 				
@@ -41,11 +41,11 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 						'msg': "Are you sure you want to activate the selected member(s)?",
 						'handler': 'activateMembers'
 					},
-					{
-						'label': 'Deactivate',
-						'msg': "Are you sure you want to deactivate the selected member(s)?",
-						'handler': 'deactivateMembers'
-					}]
+						{
+							'label': 'Deactivate',
+							'msg': "Are you sure you want to deactivate the selected member(s)?",
+							'handler': 'deactivateMembers'
+						}]
 				};
 
 				buildGrid($scope, options);
@@ -60,14 +60,15 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			"routeName": "/urac/admin/group/list",
 			"data": {}
 		}, function(error, response) {
-			if(error) { console.log(' error ');
+			if(error) {
+				console.log(' error ');
 				$scope.form.displayAlert('danger', error.message);
 			}
 			else {
 				var len = response.length;
-				var grps=[];
-				for(var x=0; x<len; x++){
-					grps.push({ 'v': response[x].code, 'lb': response[x].name, 'selected':false });
+				var grps = [];
+				for(var x = 0; x < len; x++) {
+					grps.push({'v': response[x].code, 'lb': response[x].name, 'selected': false});
 				}
 				config.entries.push({
 					'name': 'groups',
@@ -77,12 +78,16 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					'tooltip': 'Assign groups'
 				});
 				var options = {
-						timeout: $timeout,
-						form: config,
-						name: 'addMember',
-						label: 'Add New Member',
-						actions: {
-							submit: function(formData) {
+					timeout: $timeout,
+					form: config,
+					name: 'addMember',
+					label: 'Add New Member',
+					actions: [
+						{
+							'type': 'submit',
+							'label': 'Add Member',
+							'btn': 'primary',
+							'action': function(formData) {
 								var postData = {
 									'username': formData.username,
 									'firstName': formData.firstName,
@@ -106,16 +111,22 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 										$scope.listMembers();
 									}
 								});
-							},
-							cancel: function() {
+							}
+						},
+						{
+							'type': 'reset',
+							'label': 'Cancel',
+							'btn': 'danger',
+							'action': function() {
 								$scope.modalInstance.dismiss('cancel');
 								$scope.form.formData = {};
 							}
 						}
-					};
-				buildFormWithModal($scope, $modal, options);				
+					]
+				};
+				buildFormWithModal($scope, $modal, options);
 			}
-		});	
+		});
 		
 	};
 
@@ -132,18 +143,19 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			}
 			else {
 				var len = response.length;
-				var grps=[];				
-				if(data.groups)
+				var grps = [];
+				if(data.groups) {
 					var datagroups = data.groups;
-				else
+				} else {
 					var datagroups = [];
+				}
 				var sel = false;
-				for(var x=0; x<len; x++){
+				for(var x = 0; x < len; x++) {
 					sel = false;
-					if( datagroups.indexOf( response[x].code ) > -1  ){
+					if(datagroups.indexOf(response[x].code) > -1) {
 						sel = true;
-					}					
-					grps.push({ 'v': response[x].code, 'lb': response[x].name , 'selected':sel });
+					}
+					grps.push({'v': response[x].code, 'lb': response[x].name, 'selected': sel});
 				}
 				config.entries.push({
 					'name': 'groups',
@@ -161,13 +173,17 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 				});
 				
 				var options = {
-						timeout: $timeout,
-						form: config,
-						'name': 'editMember',
-						'label': 'Edit Member',
-						'data': data,
-						'actions': {
-							submit: function(formData) {
+					timeout: $timeout,
+					form: config,
+					'name': 'editMember',
+					'label': 'Edit Member',
+					'data': data,
+					'actions': [
+						{
+							'type': 'submit',
+							'label': 'Edit Member',
+							'btn': 'primary',
+							'action': function(formData) {
 								var postData = {
 									'username': formData.username,
 									'firstName': formData.firstName,
@@ -193,16 +209,22 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 										$scope.listMembers();
 									}
 								});
-							},
-							cancel: function() {
+							}
+						},
+						{
+							'type': 'reset',
+							'label': 'Cancel',
+							'btn': 'danger',
+							'action': function() {
 								$scope.modalInstance.dismiss('cancel');
 								$scope.form.formData = {};
 							}
 						}
-					};
-					buildFormWithModal($scope, $modal, options);				
+					]
+				};
+				buildFormWithModal($scope, $modal, options);
 			}
-		});			
+		});
 	};
 
 	$scope.activateMembers = function() {

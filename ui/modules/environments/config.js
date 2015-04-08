@@ -46,5 +46,27 @@ var environmentConfig = {
 				'required': true
 			}
 		]
+	},
+	analytics: {
+		'name': '',
+		'label': '',
+		'actions': {},
+		'entries': [
+			{
+				'name': 'code',
+				'label': 'Code',
+				'type': 'readonly',
+				'placeholder': 'DEV...',
+				'value': '',
+				'tooltip': 'Enter Environment Code; maximum 5 characters.',
+				'required': true
+			},
+			{
+				'name': 'ips',
+				'label': 'IP(s)',
+				'type': 'radio',
+				'value': null
+			}
+		]
 	}
 };

@@ -58,34 +58,43 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			type: 'product',
 			name: 'addProduct',
 			label: 'Add New Product',
-			actions: {
-				submit: function(formData) {
-					var postData = {
-						'code': formData.code,
-						'name': formData.name,
-						'description': formData.description
-					};
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/product/add",
-						"data": postData
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Product Added Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listProducts();
-						}
-					});
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Add Product',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'code': formData.code,
+							'name': formData.name,
+							'description': formData.description
+						};
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/product/add",
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Product Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listProducts();
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
-				}
-			}
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}]
 		};
 
 		buildFormWithModal($scope, $modal, options);
@@ -109,34 +118,43 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			});
 		}
 
-		formConfig.actions = {
-			submit: function(formData) {
-				var postData = {
-					'name': formData.name,
-					'description': formData.description
-				};
-				getSendDataFromServer(ngDataApi, {
-					"method": "send",
-					"routeName": "/dashboard/product/update",
-					"data": postData,
-					"params": {"id": row['_id']}
-				}, function(error, response) {
-					if(error) {
-						$scope.$parent.displayAlert('danger', error.message);
-					}
-					else {
-						$scope.$parent.displayAlert('success', 'Product Updated Successfully.');
-						$scope.modalInstance.close();
-						$scope.form.formData = {};
-						$scope.listProducts();
-					}
-				});
+		formConfig.actions = [
+			{
+				'type': 'submit',
+				'label': 'Edit Product',
+				'btn': 'primary',
+				'action': function(formData) {
+					var postData = {
+						'name': formData.name,
+						'description': formData.description
+					};
+					getSendDataFromServer(ngDataApi, {
+						"method": "send",
+						"routeName": "/dashboard/product/update",
+						"data": postData,
+						"params": {"id": row['_id']}
+					}, function(error, response) {
+						if(error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'Product Updated Successfully.');
+							$scope.modalInstance.close();
+							$scope.form.formData = {};
+							$scope.listProducts();
+						}
+					});
+				}
 			},
-			cancel: function() {
-				$scope.modalInstance.dismiss('cancel');
-				$scope.form.formData = {};
-			}
-		};
+			{
+				'type': 'reset',
+				'label': 'Cancel',
+				'btn': 'danger',
+				'action': function() {
+					$scope.modalInstance.dismiss('cancel');
+					$scope.form.formData = {};
+				}
+			}];
 
 		buildFormWithModal($scope, $modal, formConfig);
 	};
@@ -167,40 +185,50 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,
-			actions: {
-				submit: function(formData) {
-					var postData = {
-						'code': formData.code,
-						'name': formData.name,
-						'description': formData.description,
-						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-					};
-					if(formData.acl) {
-						postData.acl = JSON.parse(formData.acl);
-					}
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Add Package',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'code': formData.code,
+							'name': formData.name,
+							'description': formData.description,
+							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+						};
+						if(formData.acl) {
+							postData.acl = JSON.parse(formData.acl);
+						}
 
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/product/packages/add",
-						"data": postData,
-						"params": {"id": productId}
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Package Added Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.reloadPackages(productId);
-						}
-					});
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/product/packages/add",
+							"data": postData,
+							"params": {"id": productId}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Package Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.reloadPackages(productId);
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 
 		buildFormWithModal($scope, $modal, options);
@@ -218,39 +246,49 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'editPackage',
 			label: 'Edit Package',
 			data: recordData,
-			actions: {
-				submit: function(formData) {
-					var postData = {
-						'name': formData.name,
-						'description': formData.description,
-						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-					};
-					if(formData.acl) {
-						postData.acl = JSON.parse(formData.acl);
-					}
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Edit Product',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'name': formData.name,
+							'description': formData.description,
+							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+						};
+						if(formData.acl) {
+							postData.acl = JSON.parse(formData.acl);
+						}
 
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/product/packages/update",
-						"data": postData,
-						"params": {"id": productId, "code": data.code.split("_")[1]}
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Package Updated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.reloadPackages(productId);
-						}
-					});
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/product/packages/update",
+							"data": postData,
+							"params": {"id": productId, "code": data.code.split("_")[1]}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Package Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.reloadPackages(productId);
+							}
+						});
+					}
 				},
-				cancel: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
 				}
-			}
+			]
 		};
 
 		buildFormWithModal($scope, $modal, options);
