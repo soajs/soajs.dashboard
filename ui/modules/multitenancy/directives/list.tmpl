@@ -3,12 +3,12 @@
 
     <div class="entryBoxes">
         <div ng-repeat="column in grid.rows">
-            <div ng-repeat="row in column" valign="top" class="entryBox" style="padding:5px">
+            <div ng-repeat="row in column" valign="top" class="entryBox" style="padding:10px">
                 <label>Code:</label> {{row['code']}}<br/>
                 <label>Name:</label> {{row['name']}}<br/>
                 <label>Description:</label> {{row['description']}}<br/>
                 <label ng-show="row.applications.length > 0">Applications:</label>
-                <ul>
+                <ul class="floating">
                     <li ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b><a href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication(row['_id'], application['appId']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove" /></a>
                     </li>
                 </ul>

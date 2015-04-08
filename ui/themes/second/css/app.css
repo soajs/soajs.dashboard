@@ -394,11 +394,25 @@ div.entryBox li {
     margin-bottom:5px;
     display: block;
     border: solid 1px #337ab7;
-    width:100%;
     border-radius: 5px;
     background-color: #DEF1F7;
     text-align: left;
     position: relative;
+}
+div.entryBox .openfull li {
+    width:100%;
+    text-align: left;
+}
+div.entryBox .floating li {
+    background-color: #def1f7;
+    border: 1px solid #337ab7;
+    border-radius: 5px;
+    display: block;
+    float: left;
+    margin: 5px;
+    padding: 5px;
+    position: relative;
+    text-align: center;
 }
 
 /*#page div.entryBoxes div.entryBox:hover li {*/
