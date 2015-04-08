@@ -30,6 +30,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				console.log( $scope.grid );
 				
 				$scope.grid.actions = {
+					'editTenant':{
+						'label': 'Edit Tenant',
+						'command': function(row) {
+							$scope.edit_Tenant(row);
+						}
+					},
 					'editoAuth': {
 						'label': 'Edit Oauth',
 						'command': function(row) {
@@ -54,6 +60,67 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
+	$scope.edit_Tenant = function(data) {
+		console.log( data ) ; 
+
+		var formConfig = angular.copy(tenantConfig.form.tenant);
+		formConfig.entries[0].type = 'readonly';
+		formConfig.name = 'editTenant';
+		formConfig.label = 'Edit Basic Tenant Information';
+		formConfig.timeout = $timeout;
+
+		var keys = Object.keys(data);
+		for(var i = 0; i < formConfig.entries.length; i++) {
+			keys.forEach(function(inputName) {
+				if(formConfig.entries[i].name === inputName) {
+					formConfig.entries[i].value = data[inputName];
+				}
+			});
+		}
+		
+		var options = {
+				timeout: $timeout,
+				form: formConfig,
+				name: 'editTenant',
+				label: 'Edit Basic Tenant Information',
+				data: {},
+				actions: {
+					submit: function(formData) {
+						var postData = {
+							'name': formData.name,
+							'description': formData.description
+						};
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/update",
+							"data": postData,
+							"params": {"id": data['_id'] }
+						}, function(error, response) {
+							if(error) {
+								$scope.$parent.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Tenant Upated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listTenants();
+							}
+						});
+					},
+					cancel: function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					},
+					remove: function() {}
+				}
+			};
+		
+
+		buildFormWithModal($scope, $modal, options);
+		//$scope.$parent.$emit('listOAuth', {'tenantRecord': response.oauth});
+		//$scope.$parent.$emit('listApplications', {'tenantRecord': response.applications});
+	
+	}
 	$scope.editOauth = function(data) {
 		console.log( data ) ; 
 		var oAuth = data.oauth;
@@ -114,8 +181,22 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					$scope.form.formData = {};
 				},
 				remove: function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
+					console.log( data ) ; 
+					getSendDataFromServer(ngDataApi, {
+						"method": "get",
+						"routeName": "/dashboard/tenant/oauth/delete",						
+						"params": {"id": data['_id'] }
+					}, function(error, response) {
+						if(error) {
+							$scope.form.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'Tenant OAuth Deleted Successfully.');
+							$scope.modalInstance.close();
+							$scope.form.formData = {};
+							$scope.listTenants();
+						}
+					});
 				}
 			}
 		};
@@ -180,7 +261,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.editTenant = function() {
-
+		console.log(' ***** editTenant ');
 		var tenantId = $routeParams.id;
 		if(!tenantId) {
 			$scope.$parent.displayAlert('danger', 'Invalid Tenant Id Provided.');
