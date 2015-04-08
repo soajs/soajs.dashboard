@@ -1,6 +1,9 @@
 <section ng-controller="dahsboardCtrl">
     <h3>Environments</h3>
 
+	<div ng-controller="environmentsCtrl">
+        <nglist></nglist>
+    </div>
     <p>
         Integer pharetra blandit nunc at elementum. Ut orci ligula, semper et odio ac, sagittis porttitor justo. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus
         et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
@@ -9,6 +12,12 @@
     <hr/>
     <h3>Productization</h3>
 
+	
+	<div ng-controller="productsCtrl" >
+        <div class="header"><h3>Products</h3></div>
+        <nglist></nglist>
+    </div>
+    
     <p>
         Integer pharetra blandit nunc at elementum. Ut orci ligula, semper et odio ac, sagittis porttitor justo. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus
         et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
@@ -22,5 +31,12 @@
         et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
         leo sed ullamcorper mollis, augue sem tincidunt lacus, eget bibendum nibh nunc vitae risus. Suspendisse mattis faucibus nisl sit amet lacinia. Nam non nunc et elit egestas posuere.
     </p>
+    <div ng-controller="tenantsCtrl" >
+        <div class="header"><h3>Tenants</h3></div>
+        <nglist></nglist>
+    </div>
+    
     <hr/>
 </section>
+	
+    
