@@ -7,8 +7,6 @@
         <div ng-init="editTenant()">           
         </div>
     </div>
-    <hr/>
-
     <div ng-controller="tenantApplicationsCtrl" >
         <form><div class="header"><h3>Tenant Applications</h3></div></form>
         <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
