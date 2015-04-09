@@ -66,7 +66,7 @@ function buildGrid($scope, opts) {
 				var filtered = [];
 				for(var i = 0; i < context.grid.rows.length; i++) {
 					for(var j = 0; j < context.grid.columns.length; j++) {
-						if(context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
+						if(context.grid.rows[i][context.grid.columns[j].field] && context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
 							filtered.push(context.grid.rows[i]);
 							break;
 						}
