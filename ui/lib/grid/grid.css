@@ -98,3 +98,7 @@
 .small-text .grid td {
     font-size: 10px;
 }
+
+input.searchInput{
+	color:#333;
+}

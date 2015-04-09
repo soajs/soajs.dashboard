@@ -1,6 +1,6 @@
 <div class='grid'>
-    <div ng-show="grid.filteredRows.length > 0">
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+    <div ng-show="grid.filteredRows.length > 0 || grid.applySearch">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" class="">
             <tr class="header">
                 <td>
                     <div ng-show="grid.topActions.length > 0">
@@ -19,11 +19,14 @@
                 </td>
                 <td align="right">
                     <div ng-show="grid.search">
-                        Search: <input ng-model="grid.query" type="text"/>
+                        Search: <input class="searchInput" ng-model="grid.query" type="text" ng-click="grid.applySearch=true"/>
                         <button ng-click="grid.query=''" class="btn-filter btn btn-sm btn-danger">Clear</button>
                     </div>
                 </td>
             </tr>
+         </table>
+         <div ng-show="grid.filteredRows.length > 0">        
+         <table border="0" cellspacing="0" cellpadding="0" width="100%" class="navigation">
             <tr>
                 <td valign="middle">
                     <ul class="gridRPP">
@@ -38,7 +41,7 @@
                 </td>
             </tr>
         </table>
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" class="">
             <tr>
                 <th ng-show="(grid.topActions.length > 0)||(grid.leftActions.length > 0)" colspan="{{(grid.topActions.length > 0) ? (grid.leftActions.length + 1) : grid.leftActions.length}}"></th>
                 <th ng-repeat="column in grid.columns">
@@ -59,7 +62,7 @@
                 </td>
             </tr>
         </table>
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" class="navigation">
         <tr>
             <td valign="middle">
                 <ul class="gridRPP">
@@ -80,7 +83,9 @@
         </tr>
     </table>
     </div>
+    </div>
     <div ng-show="grid.filteredRows.length ===0">
+    	<br>
         <div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable">
             <span class="ng-scope ng-binding">No Records Found. Please add.</span>
         </div>
