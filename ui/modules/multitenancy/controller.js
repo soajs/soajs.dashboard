@@ -826,9 +826,22 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
+						if(formData.config && (formData.config != "")) {
+							try {
+								var configObj = JSON.parse(formData.config);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid Config Json object ');
+								return;
+							}
+						}
+						else {
+							var configObj = {};
+						}
+						
 						var postData = {
 							'envCode': formData.envCode,
-							'config': formData.config
+							'config': configObj
 						};
 
 						getSendDataFromServer(ngDataApi, {
