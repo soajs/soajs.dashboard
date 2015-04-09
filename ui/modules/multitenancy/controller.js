@@ -690,7 +690,6 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.updateConfiguration = function(data) {
-		console.log(data);
 		var options = {
 			timeout: $timeout,
 			form: tenantConfig.form.keyConfig,
