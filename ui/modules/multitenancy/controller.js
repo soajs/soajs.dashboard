@@ -825,10 +825,35 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 				'label': 'Submit',
 				'btn': 'primary',
 				'action': function(formData) {
+					if(formData.device && (formData.device != "")) {
+						try {
+							var deviceObj = JSON.parse(formData.device);
+						}
+						catch(e) {
+							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+							return;
+						}
+					}
+					else {
+						var deviceObj = {};
+					}
+					if(formData.geo && (formData.geo != "")) {
+						try {
+							var geoObj = JSON.parse(formData.geo);
+						}
+						catch(e) {
+							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+							return;
+						}
+					}
+					else {
+						var geoObj = {};
+					}
+					
 					var postData = {
 						'expDate': formData.expDate,
-						'device': formData.device,
-						'geo': formData.geo
+						'device': deviceObj,
+						'geo': geoObj
 					};
 
 					getSendDataFromServer(ngDataApi, {
@@ -889,11 +914,35 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 				'label': 'Submit',
 				'btn': 'primary',
 				'action': function(formData) {
-
+					
+					if(formData.device && (formData.device != "")) {
+						try {
+							var deviceObj = JSON.parse(formData.device);
+						}
+						catch(e) {
+							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+							return;
+						}
+					}
+					else {
+						var deviceObj = {};
+					}
+					if(formData.geo && (formData.geo != "")) {
+						try {
+							var geoObj = JSON.parse(formData.geo);
+						}
+						catch(e) {
+							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+							return;
+						}
+					}
+					else {
+						var geoObj = {};
+					}
 					var postData = {
 						'expDate': new Date(formData.expDate).toISOString(),
-						'device': formData.device,
-						'geo': formData.geo,
+						'device': deviceObj,
+						'geo': geoObj,
 						'extKey': data.extKey
 					};
 
