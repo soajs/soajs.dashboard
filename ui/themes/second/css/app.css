@@ -384,12 +384,12 @@ div.entryBox div.entryAction {
     text-align: center;
 }
 
-div.entryBox ul {
+div.entryBox ul.blueListing {
     margin: 10px 0;
     padding: 0;
 }
 
-div.entryBox li {
+div.entryBox .blueListing li {
     padding: 5px;
     margin-bottom:5px;
     display: block;
@@ -405,12 +405,12 @@ div.entryBox li {
     /*background-color: white;*/
 /*}*/
 
-div.entryBox li a {
+div.entryBox .blueListing li a {
     margin-right: 5px;
     float:right;
 }
 
-div.entryBox li.row-list a {
+div.entryBox .blueListing li.row-list a {
     position: relative;
     top: 0;
     margin: 0;

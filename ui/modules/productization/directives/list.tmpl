@@ -8,7 +8,7 @@
                 <div class="description">{{row['description']}}</div>
                 <label ng-show="row.packages.length > 0">Packages:</label>
                 <a class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
-                <ul>
+                <ul class="blueListing">
                     <li ng-repeat="package in row.packages"><b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ] <em>{{package['description']}}</em>&nbsp;
                         ( {{package['_TTL'] | TTL}} hours )
 
