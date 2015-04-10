@@ -38,6 +38,17 @@ var tenantConfig = {
 			'topActions': [],
 			'defaultSortField': 'expDate',
 			'defaultLimit': 5
+		},
+		'usersOauth': {
+			search: false,
+			recordsPerPageArray: [5, 10, 50, 100],
+			'columns': [
+				{'label': 'User Id', 'field': 'userId' }
+			],
+			'leftActions': [],
+			'topActions': [],
+			'defaultSortField': '',
+			'defaultLimit': 5
 		}
 	},
 	'form': {
@@ -97,6 +108,31 @@ var tenantConfig = {
 					'placeholder': 'redirectURI...',
 					'value': '',
 					'tooltip': 'Enter Tenant oAuth redirectURI.',
+					'required': true
+				}
+			]
+		},
+		'oauthUser': {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'userId',
+					'label': 'user Id',
+					'type': 'text',
+					'placeholder': '..',
+					'value': '',
+					'tooltip': 'Enter the user Id.',
+					'required': true
+				},
+				{
+					'name': 'password',
+					'label': 'password',
+					'type': 'text',
+					'placeholder': 'password...',
+					'value': '',
+					'tooltip': 'Enter oAuth user password.',
 					'required': true
 				}
 			]
