@@ -61,14 +61,16 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					'label': 'Add Group',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.permissions = formData.permissions.replace(/ /g, '');
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
-							'description': formData.description,
-							'permissions': formData.permissions.split(",")
+							'description': formData.description
 						};
-
+						if(formData.permissions){
+							formData.permissions = formData.permissions.replace(/ /g, '');
+							postData.permissions = formData.permissions.split(",");		
+						}
+						
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/admin/group/add",
@@ -118,16 +120,16 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					'label': 'Edit Group',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.permissions = formData.permissions.replace(/ /g, '');
-
 						var postData = {
 							'name': formData.name,
-							'description': formData.description,
-							'permissions': formData.permissions.split(",")
+							'description': formData.description
 						};
-
-						console.log(formData);
-
+						if(formData.permissions){
+							formData.permissions = formData.permissions.replace(/ /g, '');
+							postData.permissions = formData.permissions.split(",");		
+						}
+						
+						
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/admin/group/edit",

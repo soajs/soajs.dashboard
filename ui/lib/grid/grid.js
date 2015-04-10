@@ -1,5 +1,5 @@
 "use strict";
-
+var gridId=1;
 function getRandomString(len, charSet) {
     charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var randomString = '';
@@ -14,7 +14,10 @@ function buildGrid($scope, opts) {
 	var gridConfig = opts.grid;
 	gridConfig.defaultSortField = opts.defaultSortField;
 	gridConfig.rows = opts.data;
-
+	if(opts.gridId)
+	{
+		gridConfig.gridId = opts.gridId;
+	}
 	if(opts.left) {
 		gridConfig.leftActions = [];
 		opts.left.forEach(function(oneLeftAction) {
@@ -49,14 +52,15 @@ function buildGrid($scope, opts) {
 			gridId = configuration.gridId;
 		}
 		else{
-			gridId= getRandomString(10);
+			gridId= getRandomString(12);
 			console.log(gridId);
 		}
 		context.grid[gridId] = {
-			  
+			myGridId: gridId
 		}
 		  
 		context.grid = {
+			thisGridId: gridId,	
 			themeToUse: themeToUse,
 			columns: configuration.columns,
 			topActions: configuration.topActions,
@@ -68,7 +72,7 @@ function buildGrid($scope, opts) {
 			recordsPerPageArray: configuration.recordsPerPageArray,
 			search: (configuration.search === false) ? false : true
 		};
-
+		
 		calculateRange(1, configuration.defaultLimit);
 
 		context.$watch('grid.currentPage + grid.numPerPage', function() {
@@ -135,12 +139,16 @@ function buildGrid($scope, opts) {
 			context.grid.maxPageSize = context.grid.rows.length / context.grid.filteredRows.length;
 			context.grid.maxPageSize = (context.grid.maxPageSize > context.grid.totalPages) ? context.grid.totalPages : 3;
 		}
+		//console.log(context.grid);
 	}
 }
 
 soajsApp.directive('nglist', function() {
 	return {
 		restrict: 'E',
-		templateUrl: 'lib/grid/grid.tmpl'
+		templateUrl: 'lib/grid/grid.tmpl',
+		controllerAs : 'myGrid', 
+		controller: function($scope){
+		}
 	};
 });

@@ -335,6 +335,7 @@ div.entryBoxes {
     display: table;
     width: 16%;
     margin: 5px;
+    padding-left:5px;
 }
 
 #page div.entryBoxes div.entryBox label {
@@ -389,7 +390,7 @@ div.entryBox ul.blueListing {
     padding: 0;
 }
 
-div.entryBox .blueListing li {
+div.entryBox .blueListing li.blueLi {
     padding: 5px;
     margin-bottom:5px;
     display: block;
@@ -400,7 +401,7 @@ div.entryBox .blueListing li {
     text-align: left;
     position: relative;
 }
-div.entryBox .listoUsers li {
+div.entryBox .listoUsers li.blueLi {
     display:in-line;
     width: auto;
     float: left;
@@ -411,11 +412,12 @@ div.entryBox .listoUsers li {
     /*background-color: white;*/
 /*}*/
 
-div.entryBox .blueListing li a {
+div.entryBox .blueListing li.blueLi a {
     margin-right: 5px;
-    float:right;
 }
-
+.rightActions a{
+	    float:right;	
+}
 div.entryBox .blueListing li.row-list a {
     position: relative;
     top: 0;
@@ -423,6 +425,23 @@ div.entryBox .blueListing li.row-list a {
     margin-left: 10px;
 }
 
+div.entryBox .blueListing li .keysAccordion a {
+    margin-right: 5px;
+    float:none;
+}
+#keysAccordion .panel-heading{
+	padding: 5px 15px;	
+}
+#keysAccordion .panel-title{
+	font-size:12px;
+}
+#keysAccordion .panel-group{
+	margin-bottom:5px;
+}
+.appKeys{
+	background-color:white;
+	padding:5px;
+}
 .modal-dialog {
     position: relative;
     top: 100px;

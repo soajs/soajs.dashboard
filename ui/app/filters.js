@@ -30,3 +30,11 @@ soajsApp.filter('trimmed', function() {
 		return value;
 	};
 });
+soajsApp.filter('trimmed100', function() {
+	return function(value) {
+		if(value.length > 100) {
+			value = value.slice(0, 100) + " ...";
+		}
+		return value;
+	};
+});

@@ -1,8 +1,44 @@
 "use strict";
 var multiTenantApp = soajsApp.components;
-multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$routeParams','$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
+multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$routeParams','$compile','ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile,ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-
+	var currentApp = null;
+	$scope.viewKeys = function(id, app) {
+		if (currentApp && ( currentApp['appId']!= app['appId'] ))
+		{
+			currentApp.showKeys = false;
+		}
+		if (app.showKeys)
+			app.showKeys = false;
+		else
+			app.showKeys = true;	
+		currentApp = app;
+	};
+	$scope.removeAppKey = function(id, app, key, event) {
+		console.log('key: ' +key);
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/application/key/delete",
+			"params": {"id": id, "appId": app.appId, "key": key}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.$parent.displayAlert('success', 'Application Key Removed Successfully.');
+				//$scope.reloadApplications(id);
+				for(var i = 0; i < app.keys.length; i++) {
+					if( app.keys[i]['key'] === key) {							
+						app.keys.splice(i, 1);
+						break;
+					}
+				}			
+			}
+		});
+		if(event)
+			event.stopPropoagation();
+	};
+	
 	$scope.listTenants = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -89,8 +125,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						}
 					}
 				}
-				
-			
 			}
 		});
 		}
@@ -1124,6 +1158,7 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 					}]
 				};
 				buildGrid($scope, options);
+				console.log(options);
 				var extGrid = angular.element(document.getElementById('externalKeys' + index));
 				$compile(extGrid.contents())($scope);
 				$scope.currentApplicationKey = key;
