@@ -61,14 +61,15 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					'label': 'Add Group',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.permissions = formData.permissions.replace(/ /g, '');
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
-							'description': formData.description,
-							'permissions': formData.permissions.split(",")
+							'description': formData.description						
 						};
-
+						if(formData.permissions){
+							formData.permissions = formData.permissions.replace(/ /g, '');
+							postData.permissions = formData.permissions.split(",");		
+						}
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/admin/group/add",
@@ -102,7 +103,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 	};
 
 	$scope.editGroup = function(data) {
-		console.log(data);
 		data.permissions = data.permissions.join(",");
 		var config = angular.copy(groupsConfig.form);
 		config.entries[0].type = 'readonly';
@@ -118,15 +118,15 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					'label': 'Edit Group',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.permissions = formData.permissions.replace(/ /g, '');
-
 						var postData = {
 							'name': formData.name,
-							'description': formData.description,
-							'permissions': formData.permissions.split(",")
+							'description': formData.description
 						};
 
-						console.log(formData);
+						if(formData.permissions){
+							formData.permissions = formData.permissions.replace(/ /g, '');
+							postData.permissions = formData.permissions.split(",");		
+						}
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
@@ -176,7 +176,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 		});
 	};
 	$scope.delete1Group = function(data) {
-		console.log(data);
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
@@ -192,7 +191,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 		});
 	};
 	$scope.assignUsers = function(data) {
-		console.log(data);
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers",
@@ -205,7 +203,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				var len = response.length;
 				var value = [];
 				var sel = false;
-				//console.log( data.code );
 				for(var x = 0; x < len; x++) {
 					sel = false;
 					if((response[x].groups) && response[x].groups.indexOf(data.code) > -1) {
@@ -213,13 +210,12 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					}
 					value.push({
 						'v': response[x].username,
-						'lb': response[x].username + '(' + response[x].firstName + ' ' + response[x].lastName + ')',
+						'lb': response[x].username + ' (' + response[x].firstName + ' ' + response[x].lastName + ')',
 						'selected': sel
 					});
 				}
 
 				var config = angular.copy(groupsConfig.users);
-				//console.log( 'config:' );console.log( config );
 				config.entries[0].value = value;
 				
 				var options = {
@@ -234,9 +230,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 							'label': 'Assing Users',
 							'btn': 'primary',
 							'action': function(formData) {
-								//console.log(formData);
-								//console.log(data);
-
 								var postData = {
 									'groupCode': data.code,
 									'users': formData.users
