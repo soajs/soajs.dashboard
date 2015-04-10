@@ -19,7 +19,7 @@
                         <label ng-show="row.applications.length > 0">Available Applications:</label>
                         <ul class="blueListing">
 						<li ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b> [{{application['package']}}] 
-						 &nbsp; ( {{application['_TTL'] | TTL}} hours )
+						 &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
 						 
 						<a href="" ng-confirm-click="Are you sure you want to remove the selected application ?"
 							ng-click="removeTenantApplication(row['_id'], application['appId']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
@@ -36,14 +36,14 @@
 					</ul>
 					
                         </tab>
-                        <tab heading="OAuth Users" ng-click="listOauthUsers(row, $index)">
+                        <tab heading="oAuth Users" ng-click="listOauthUsers(row, $index)">
                         <div>
                         </div>
                         <br/> 
                         
                         <a class="btn btn-sm btn-primary" ng-click="addOauthUser(row['_id'])">Add oAuth User</a>
                         <div class="" id="oUsers{{$index}}">
-                            <label ng-show="row.oAuthUsers.length > 0">Available Users:</label>
+                            <label ng-show="row.oAuthUsers.length > 0">Tenant oAuth Users:</label>
                              <ul class="blueListing listoUsers">
 						<li ng-repeat="user in row.oAuthUsers" class="row-list"><b>{{user['userId']}}</b>  
 						 &nbsp;  
