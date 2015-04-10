@@ -58,7 +58,7 @@
 
                         <div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
                         
-                        <button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br />
+                        <button class="btn btn-primary btn-sm" ng-click="updateConfiguration();">Add New Configuration</button><br /><br />
                         <div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
                         <b>{{env}} Environment</b>&nbsp;&nbsp;
                         <a href="" ng-click="updateConfiguration(value);">
@@ -68,7 +68,7 @@
                     </tab>
                     <tab heading="External Keys" ng-click="listExtKeys(key.key, $index);">
                         <br/>
-                        <a href="" ng-click="addNewExtKey()" class="btn btn-primary">Add New Application External Key</a>
+                        <button ng-click="addNewExtKey()" class="btn btn-primary btn-sm">Add New Application External Key</button>
                         <br/> 
 
                         <div class="small-text" id="externalKeys{{$index}}">
@@ -96,7 +96,7 @@
                     <a ng-click="removeExtKey(extnlKey)" ng-confirm-click="Are you sure you want to remove this external key?" href=""><img border="0" tooltip="Remove" ng-src="themes/second/img/remove.png" src="themes/second/img/remove.png"></a>
                 </td>
                 
-                <td> {{extnlKey.extKey|trimmed100}}</td> 
+                <td> {{extnlKey.extKey}}</td> 
                 <td> {{extnlKey.expDate|date}}</td> 
             </tr>
         </tbody></table></div> 
