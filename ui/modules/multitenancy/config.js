@@ -112,6 +112,32 @@ var tenantConfig = {
 				}
 			]
 		},
+		
+		'oauthUserUpdate': {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'userId',
+					'label': 'user Id',
+					'type': 'text',
+					'placeholder': 'oauthUser ..',
+					'value': '',
+					'tooltip': 'Enter the user Id.',
+					'required': true
+				},
+				{
+					'name': 'password',
+					'label': 'Password',
+					'type': 'text',
+					'placeholder': 'Enter a new password...',
+					'value': '',
+					'tooltip': 'Keep it empty to maintain the old password.',
+					'required': false
+				}
+			]
+		},
 		'oauthUser': {
 			'name': '',
 			'label': '',
@@ -121,7 +147,7 @@ var tenantConfig = {
 					'name': 'userId',
 					'label': 'user Id',
 					'type': 'text',
-					'placeholder': '..',
+					'placeholder': 'oauthUser ..',
 					'value': '',
 					'tooltip': 'Enter the user Id.',
 					'required': true

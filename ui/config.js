@@ -166,7 +166,7 @@ var navigation = [
 		'mainMenu': false,
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
-		'ancestor': ['Home', 'Multi-Tenancy', 'Edit Tenant']
+		'ancestor': ['Home', 'Multi-Tenancy']
 	}
 ];
 

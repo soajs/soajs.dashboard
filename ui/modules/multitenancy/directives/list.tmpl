@@ -48,9 +48,12 @@
 						<li ng-repeat="user in row.oAuthUsers" class="row-list"><b>{{user['userId']}}</b>  
 						 &nbsp;  
 						 
-						<a href="" ng-confirm-click="Are you sure you want to remove the selected user ?"
+						<a href="" ng-confirm-click="Are you sure you want to remove this user ?"
 							ng-click="removeTenantOauthUser(row['_id'], user);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
-								alt="Remove" /></a>
+								alt="Remove" /></a>&nbsp; 
+								<a href="" ng-click="editTenantOauthUser(row['_id'], user)"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
+						</a>
+						
 								</li></ul>
                         </div>
                         
@@ -59,12 +62,11 @@
 					
 					
 					<div class="entryAction">
-						<a href="" ng-click="tenantsList.actions.editTenant.command(row);"> Edit Tenant</a>&nbsp;
+						<a href="" ng-click="tenantsList.actions.editTenant.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
+							alt="Edit Tenant" /></a>&nbsp;
 						
 						<a href="" ng-click="tenantsList.actions.editoAuth.command(row);"> Edit oAuth</a>&nbsp;
-							
-						<a href="" ng-click="tenantsList.actions.edit.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
-							alt="Edit" /></a>&nbsp; <a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
+						<a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
 							ng-click="tenantsList.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
 							alt="Remove" /></a>
 					</div>

@@ -49,13 +49,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.listOauthUsers = function(row, index) {
 		console.log(row);
 		var tId = row['_id'];
-		console.log(' listOauthUsers of  '+tId); 
-		console.log(' index '+index);
 		if(row.alreadyGotAuthUsers)
 		{
 			console.log(' ************** ');
 		}
-		else{
+		if(!row.alreadyGotAuthUsers){
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/oauth/users/list",
@@ -65,8 +63,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				row.alreadyGotAuthUsers = true;
-				console.log(response);
+				row.alreadyGotAuthUsers = true;				
 				if(response.length>0)
 				{
 					/*
@@ -90,7 +87,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					$compile(usersGrid.contents())($scope);
 					*/
 					for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
-						console.log('i = : '+i) ; 
 						if($scope.tenantsList.rows[i]['_id'] === tId) {							
 							$scope.tenantsList.rows[i].oAuthUsers = response;
 							break;
@@ -386,20 +382,85 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				if(response.length>0)
-				{					
-					for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
-						if($scope.tenantsList.rows[i]['_id'] === tId) {							
-							$scope.tenantsList.rows[i].oAuthUsers = response;
-							break;
-						}
+				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
+					if($scope.tenantsList.rows[i]['_id'] === tId) {							
+						$scope.tenantsList.rows[i].oAuthUsers = response;
+						break;
 					}
 				}
 
 			}
 		});
-		
+	};
 	
+	$scope.removeTenantOauthUser = function(tId, user) {
+		console.log(user);
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/oauth/users/delete",
+			"params": {"id": tId, 'uId':user['_id']}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'User Deleted Successfully.');
+				$scope.reloadOauthUsers(tId);
+			}
+		});
+	};
+	
+	$scope.editTenantOauthUser = function(tId, user) {
+		console.log(user);
+		user.password=null;
+		var options = {
+			timeout: $timeout,
+			form: tenantConfig.form.oauthUserUpdate,
+			name: 'updateUser',
+			label: 'Update User',
+			sub: true,
+			data: user,
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Update User',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'userId': formData.userId,
+							'password': formData.password
+						};
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/oauth/users/update",
+							"data": postData,
+							"params": {"id": tId, 'uId':user['_id']}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'User Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.reloadOauthUsers(tId);
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
 	};
 	$scope.addOauthUser = function(tId) {
 		console.log( 'tId: ' + tId) ; 

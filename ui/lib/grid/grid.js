@@ -31,8 +31,21 @@ function buildGrid($scope, opts) {
 		});
 	}
 	constructGrid($scope, gridConfig);
-
+	
 	function constructGrid(context, configuration) {
+		context.grid = {};
+		var gridId = null;
+		if(configuration.gridId){
+			gridId = configuration.gridId;
+		}
+		else{
+			// gridId= getRandomString();
+			gridId= '12345poiu890';
+		}
+		context.grid[gridId] = {
+			  
+		}
+		  
 		context.grid = {
 			themeToUse: themeToUse,
 			columns: configuration.columns,
