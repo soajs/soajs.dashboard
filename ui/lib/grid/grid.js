@@ -1,5 +1,15 @@
 "use strict";
 
+function getRandomString(len, charSet) {
+    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+    	var randomPoz = Math.floor(Math.random() * charSet.length);
+    	randomString += charSet.substring(randomPoz,randomPoz+1);
+    }
+    return randomString;
+}
+
 function buildGrid($scope, opts) {
 	var gridConfig = opts.grid;
 	gridConfig.defaultSortField = opts.defaultSortField;
@@ -39,8 +49,8 @@ function buildGrid($scope, opts) {
 			gridId = configuration.gridId;
 		}
 		else{
-			// gridId= getRandomString();
-			gridId= '12345poiu890';
+			gridId= getRandomString(10);
+			console.log(gridId);
 		}
 		context.grid[gridId] = {
 			  
@@ -79,7 +89,7 @@ function buildGrid($scope, opts) {
 				var filtered = [];
 				for(var i = 0; i < context.grid.rows.length; i++) {
 					for(var j = 0; j < context.grid.columns.length; j++) {
-						if(context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
+						if(context.grid.rows[i][context.grid.columns[j].field] && context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
 							filtered.push(context.grid.rows[i]);
 							break;
 						}

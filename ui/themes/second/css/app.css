@@ -400,6 +400,12 @@ div.entryBox .blueListing li {
     text-align: left;
     position: relative;
 }
+div.entryBox .listoUsers li {
+    display:in-line;
+    width: auto;
+    float: left;
+    margin-right:10px;
+}
 
 /*#page div.entryBoxes div.entryBox:hover li {*/
     /*background-color: white;*/
