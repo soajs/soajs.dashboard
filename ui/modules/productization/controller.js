@@ -197,10 +197,20 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						if(formData.acl) {
-							postData.acl = JSON.parse(formData.acl);
+						
+						if(formData.acl && (formData.acl != "")) {
+							try {
+								var aclObj = JSON.parse(formData.acl);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid Json object ');
+								return;
+							}
 						}
-
+						else {
+							var aclObj = {};
+						}	
+						postData.acl = aclObj;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/add",
@@ -257,10 +267,20 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						if(formData.acl) {
-							postData.acl = JSON.parse(formData.acl);
+						
+						if(formData.acl && (formData.acl != "")) {
+							try {
+								var aclObj = JSON.parse(formData.acl);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid Json object ');
+								return;
+							}
 						}
-
+						else {
+							var aclObj = {};
+						}	
+						postData.acl = aclObj;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",

@@ -434,17 +434,26 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 					'label': 'Add Application',
 					'btn': 'primary',
 					'action': function(formData) {
-
+						if(formData.acl && (formData.acl != "")) {
+							try {
+								var aclObj = JSON.parse(formData.acl);							
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
+								return;
+							}
+						}
+						else {
+							var aclObj = {};
+						}
 						var postData = {
 							'productCode': formData.product,
 							'packageCode': formData.package,
+							'acl' : aclObj,
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						if(formData.acl) {
-							postData.acl = JSON.parse(formData.acl);
-						}
-
+						
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/add",
@@ -497,27 +506,26 @@ multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$mod
 				'label': 'Submit',
 				'btn': 'primary',
 				'action': function(formData) {
-
-					var postData = {
-						'productCode': formData.product,
-						'packageCode': formData.package,
-						'description': formData.description,
-						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-					};					
 					if(formData.acl && (formData.acl != "")) {
 						try {
-							var aclObj = JSON.parse(formData.acl);
-							postData.acl = aclObj;
+							var aclObj = JSON.parse(formData.acl);							
 						}
 						catch(e) {
 							$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
 							return;
 						}
-					}/*
+					}
 					else {
 						var aclObj = {};
 					}
-					*/
+					var postData = {
+						'productCode': formData.product,
+						'packageCode': formData.package,
+						'acl': aclObj ,
+						'description': formData.description,
+						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+					};	
+					
 					getSendDataFromServer(ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/tenant/application/update",
