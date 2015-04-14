@@ -712,6 +712,210 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 
+	$scope.addNewKey = function(tId, appId) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/tenant/application/key/add",
+			"params": {"id": tId, "appId": appId}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'Application Key Added Successfully.');
+				$scope.reloadApplications(tId);
+			}
+		});
+	};
+
+	$scope.addNewExtKey = function(tId, appId, key) {
+		console.log( 'addNewExtKey for key: '+ key);
+		var options = {
+			timeout: $timeout,
+			form: tenantConfig.form.extKey,
+			name: 'addExtKey',
+			label: 'Add New External Key',
+			sub: true,
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						if(formData.device && (formData.device != "")) {
+							try {
+								var deviceObj = JSON.parse(formData.device);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+								return;
+							}
+						}
+						else {
+							var deviceObj = {};
+						}
+						if(formData.geo && (formData.geo != "")) {
+							try {
+								var geoObj = JSON.parse(formData.geo);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+								return;
+							}
+						}
+						else {
+							var geoObj = {};
+						}
+						var postData = {
+							'expDate': formData.expDate,
+							'device': deviceObj,
+							'geo': geoObj
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/application/key/ext/add",
+							"data": postData,
+							"params": {"id": tId, "appId": appId, "key": key}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'External Key Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.reloadApplications(tId);
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}]
+		};
+
+		buildFormWithModal($scope, $modal, options);
+	};
+
+	$scope.editExtKey = function(tId, appId, data, key) {
+		console.log('tId: ' + tId) ;
+		console.log('appId: ' + appId) ;
+		console.log('key: ' + key) ;
+
+		if(data.geo) { data.geo = JSON.stringify(data.geo, null, "\t"); }
+		if(data.device) { data.device = JSON.stringify(data.device, null, "\t"); }
+
+		var formConfig = angular.copy(tenantConfig.form.extKey);
+		formConfig.entries.unshift({
+			'name': 'extKey',
+			'label': 'External Key Value',
+			'type': 'textarea',
+			'rows': 3,
+			'required': false
+		});
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'editExtKey',
+			label: 'Edit External Key',
+			sub: true,
+			data: data,
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						if(formData.device && (formData.device != "")) {
+							try {
+								var deviceObj = JSON.parse(formData.device);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+								return;
+							}
+						}
+						else {
+							var deviceObj = {};
+						}
+						if(formData.geo && (formData.geo != "")) {
+							try {
+								var geoObj = JSON.parse(formData.geo);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+								return;
+							}
+						}
+						else {
+							var geoObj = {};
+						}
+
+						var postData = {
+							'expDate': new Date(formData.expDate).toISOString(),
+							'device': deviceObj,
+							'geo': geoObj,
+							'extKey': data.extKey
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/application/key/ext/update",
+							"data": postData,
+							"params": {"id": tId, "appId": appId, "key": key}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'External Key Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.reloadApplications(tId);
+							}
+						});
+
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}]
+		};
+		buildFormWithModal($scope, $modal, options);
+	};
+
+	$scope.removeExtKey = function(tId, appId, data, key) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/tenant/application/key/ext/delete",
+			"data": {'extKey': data.extKey},
+			"params": {"id": tId, "appId": appId, "key": key}
+		}, function(error, response) {
+			if(error) {
+				$scope.form.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
+				$scope.modalInstance.close();
+				$scope.form.formData = {};
+				$scope.reloadApplications(tId);
+			}
+		});
+	};
+
 	//default operation
 	$scope.listTenants();
 }]);
@@ -1168,6 +1372,7 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addNewExtKey = function() {
+		console.log( 'addNewExtKey for key: '+ $scope.currentApplicationKey);
 		var options = {
 			timeout: $timeout,
 			form: tenantConfig.form.extKey,
@@ -1244,6 +1449,7 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.editExtKey = function(data) {
 
+		console.log( 'currentApplicationKey: '+$scope.currentApplicationKey );
 		if(data.geo) { data.geo = JSON.stringify(data.geo, null, "\t"); }
 		if(data.device) { data.device = JSON.stringify(data.device, null, "\t"); }
 
@@ -1350,4 +1556,6 @@ multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$r
 			}
 		});
 	};
+
+
 }]);

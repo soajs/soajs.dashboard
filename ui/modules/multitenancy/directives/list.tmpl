@@ -1,158 +1,167 @@
 <section ng-controller="tenantCtrl">
-	<a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br />
-	<br />
+	<a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br/>
+	<br/>
 
 	<div class="entryBoxes">
-		
-			<div ng-repeat="row in tenantsList.rows" valign="top" class="entryBox">
-				<div class="header">
-					{{row['name']}}<span>[ {{row['code']}} ]</span>
-				</div>
-				<div class="body">
-					<div class="description">{{row['description']}}</div>
-					 <br/> 
-					<tabset>
-                    <tab heading="Manage Applications" ng-click="">
-                        <br/> 
-                        <a class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">Add New Application</a>
-					
-                        <label ng-show="row.applications.length > 0">Available Applications:</label>
-                        <ul class="blueListing">
-						<li class="blueLi" ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b> [{{application['package']}}] 
-						 &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
+
+		<div ng-repeat="row in tenantsList.rows" valign="top" class="entryBox">
+			<div class="header">
+				{{row['name']}}<span>[ {{row['code']}} ]</span>
+			</div>
+			<div class="body">
+				<div class="description">{{row['description']}}</div>
+				<br/>
+				<tabset>
+					<tab heading="Manage Applications" ng-click="">
+						<br/>
+						<a class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">Add New Application</a>
+
+						<label ng-show="row.applications.length > 0">Available Applications:</label>
+						<ul class="blueListing">
+							<li class="blueLi" ng-repeat="application in row.applications" class="row-list"><b>{{application['description']}}</b> [{{application['package']}}]
+							                                                                                                                      &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
 						 <span class="rightActions">
 						<a href="" ng-confirm-click="Are you sure you want to remove the selected application ?"
-							ng-click="removeTenantApplication(row['_id'], application['appId']);">
+						   ng-click="removeTenantApplication(row['_id'], application['appId']);">
 							<img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
-								alt="Remove" /></a>
-								
+							     alt="Remove"/></a>
+
 						<a href="" ng-click="editTenantApplication(row['_id'], application)">
-						<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
+							<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
 						</a>
-						
+
 						<a ng-click="browseApplication(row['_id'], application)" href="">
-						<img border="0" tooltip="Browse" ng-src="themes/{{$parent.themeToUse}}/img/view.png" src="themes/second/img/view.png"></a>
+							<img border="0" tooltip="Browse" ng-src="themes/{{$parent.themeToUse}}/img/view.png"></a>
 						<a ng-click="viewKeys(row['_id'], application)" href="">View Keys
 						</a></span>
-			<div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
-			<div> Tenant Application Keys: 
-			 <a href="" ng-click="addNewKey()" tooltip="Add New Application Key">+</a>
-       
-        </div>
-			 <div class="keysAccordion" id="keysAccordion">
-		
-						
-			<accordion close-others="true" ng-show="application.keys.length > 0">
-			
-            <accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
-                <accordion-heading> Key >>> {{key.key}} 
-                <a href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
-                <img ng-src="themes/{{$parent.$parent.themeToUse}}/img/remove.png" border="0"
-								alt="Remove" /></a> 
-                </accordion-heading>
-                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-                
-                <tabset>
-                    <tab heading="Key Configuration" ng-click="listConfiguration(key.key, $index);">
-                        <br/>
 
-                        <div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
-                        
-                        <button class="btn btn-primary btn-sm" ng-click="updateConfiguration();">Add New Configuration</button><br /><br />
-                        <div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
-                        <b>{{env}} Environment</b>&nbsp;&nbsp;
-                        <a href="" ng-click="updateConfiguration(value);">
-                        <img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" />
-                        </a>
-                        </div></div>
-                    </tab>
-                    <tab heading="External Keys" ng-click="listExtKeys(key.key, $index);">
-                        <br/>
-                        <button ng-click="addNewExtKey()" class="btn btn-primary btn-sm">Add New Application External Key</button>
-                        <br/> 
+								<div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
+									<div> Tenant Application Keys:
+										<a href="" ng-click="addNewKey(row['_id'],application['appId'])" tooltip="Add New Application Key">+ <img ng-src="themes/{{$parent.themeToUse}}/img/add.png"></a>
 
-                        <div class="small-text" id="externalKeys{{$index}}">
-                       <ul style="display:none;"><li ng-repeat="extnlKey in key.extKeys">
-                        <span style="word-break: break-all;">{{extnlKey.extKey|trimmed100}}</span>
-                        </li>
-                       </ul> 
-                        
-                            <nglist> </nglist>
-                            
-                 <div  class='grid' ng-show="key.extKeys.length>0"><table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
-            <tbody><tr>
-                <th colspan="2"></th>
-                <th>  External Key  </th>
-                <th class="ng-scope"> Expiry Date 
-                </th>
-            </tr>
-            <tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:row.selected}" class="ng-scope odd first last">
-               
-                <td class="leftAction">
-                    <a ng-click="editExtKey(extnlKey)" href="">
-                    <img border="0" tooltip="Edit" ng-src="themes/second/img/edit.png" src="themes/second/img/edit.png"></a>
-                </td> 
-                <td class="leftAction">
-                    <a ng-click="removeExtKey(extnlKey)" ng-confirm-click="Are you sure you want to remove this external key?" href=""><img border="0" tooltip="Remove" ng-src="themes/second/img/remove.png" src="themes/second/img/remove.png"></a>
-                </td>
-                
-                <td> {{extnlKey.extKey}}</td> 
-                <td> {{extnlKey.expDate|date}}</td> 
-            </tr>
-        </tbody></table></div> 
-        
-        
-                        </div>
-                    </tab>
-                </tabset>
-            </accordion-group>
-        </accordion>
-        
-        
+									</div>
+									<div class="keysAccordion" id="keysAccordion">
+
+
+										<accordion close-others="true" ng-show="application.keys.length > 0">
+
+											<accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
+												<accordion-heading> Key >>> {{key.key}}
+													<a href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
+														<img ng-src="themes/{{$parent.$parent.themeToUse}}/img/remove.png" border="0"
+														     alt="Remove"/></a>
+												</accordion-heading>
+												<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+												<tabset>
+													<tab heading="Key Configuration" ng-click="listConfiguration(key.key, $index);">
+														<br/>
+
+														<div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
+
+															<button class="btn btn-primary btn-sm" ng-click="updateConfiguration();">Add New Configuration</button>
+															<br/><br/>
+
+															<div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
+																<b>{{env}} Environment</b>&nbsp;&nbsp;
+																<a href="" ng-click="updateConfiguration(value);">
+																	<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit"/>
+																</a>
+															</div>
+														</div>
+													</tab>
+													<tab heading="External Keys" ng-click="listExtKeys(key.key, $index);">
+														<br/>
+														<button ng-click="addNewExtKey(row['_id'], application['appId'], key.key)" class="btn btn-primary btn-sm">Add New Application External Key</button>
+														<br/>
+
+														<div class="small-text" id="externalKeys{{$index}}">
+															<ul style="display:none;">
+																<li ng-repeat="extnlKey in key.extKeys">
+																	<span style="word-break: break-all;">{{extnlKey.extKey|trimmed100}}</span>
+																</li>
+															</ul>
+
+															<nglist></nglist>
+
+															<div class='grid' ng-show="key.extKeys.length>0">
+																<table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+																	<tbody>
+																		<tr>
+																			<th colspan="2"></th>
+																			<th> External Key</th>
+																			<th class="ng-scope"> Expiry Date </th>
+																		</tr>
+																		<tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:row.selected}" class="ng-scope odd first last">
+
+																			<td class="leftAction">
+																				<a ng-click="editExtKey(row['_id'], application['appId'], extnlKey, key.key)" href="">
+																					<img border="0" tooltip="Edit" ng-src="themes/second/img/edit.png" src="themes/second/img/edit.png"></a>
+																			</td>
+																			<td class="leftAction">
+																				<a ng-click="removeExtKey(row['_id'], application['appId'], extnlKey, key.key)" ng-confirm-click="Are you sure you want to remove this external key?" href=""><img border="0" tooltip="Remove" ng-src="themes/second/img/remove.png" src="themes/second/img/remove.png"></a>
+																			</td>
+
+																			<td> {{extnlKey.extKey}}</td>
+																			<td> {{extnlKey.expDate|date}}</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+
+
+														</div>
+													</tab>
+												</tabset>
+											</accordion-group>
+										</accordion>
+
+									</div>
+								</div>
+							</li>
+						</ul>
+
+					</tab>
+					<tab heading="oAuth Users" ng-click="listOauthUsers(row, $index)">
+						<div>
 						</div>
-						</div>
-						</li>
-					</ul>
-					
-                        </tab>
-                        <tab heading="oAuth Users" ng-click="listOauthUsers(row, $index)">
-                        <div>
-                        </div>
-                        <br/> 
-                        
-                        <a class="btn btn-sm btn-primary" ng-click="addOauthUser(row['_id'])">Add oAuth User</a>
-                        <div class="" id="oUsers{{$index}}">
-                            <label ng-show="row.oAuthUsers.length > 0">Tenant oAuth Users:</label>
-                             <ul class="blueListing listoUsers">
-						<li class="blueLi" ng-repeat="user in row.oAuthUsers" class="row-list"><b>{{user['userId']}}</b>  
-						 &nbsp;  
+						<br/>
+
+						<a class="btn btn-sm btn-primary" ng-click="addOauthUser(row['_id'])">Add oAuth User</a>
+
+						<div class="" id="oUsers{{$index}}">
+							<label ng-show="row.oAuthUsers.length > 0">Tenant oAuth Users:</label>
+							<ul class="blueListing listoUsers">
+								<li class="blueLi" ng-repeat="user in row.oAuthUsers" class="row-list"><b>{{user['userId']}}</b>
+									&nbsp;
 						  <span class="rightActions">
 						<a href="" ng-confirm-click="Are you sure you want to remove this user ?"
-							ng-click="removeTenantOauthUser(row['_id'], user);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
-								alt="Remove" /></a>&nbsp; 
+						   ng-click="removeTenantOauthUser(row['_id'], user);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
+						                                                            alt="Remove"/></a>&nbsp;
 								<a href="" ng-click="editTenantOauthUser(row['_id'], user)"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
-						</a></span>
-						
-								</li></ul>
-                        </div>
-                        
-                        </tab></tabset>
-                        
-					
-					
-					<div class="entryAction">
-						<a href="" ng-click="tenantsList.actions.editTenant.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
-							alt="Edit Tenant" /></a>&nbsp;
-						
-						<a tooltip="Edit oAuth" href="" ng-click="tenantsList.actions.editoAuth.command(row);">
+								</a></span>
+
+								</li>
+							</ul>
+						</div>
+
+					</tab>
+				</tabset>
+
+
+				<div class="entryAction">
+					<a href="" ng-click="tenantsList.actions.editTenant.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
+					                                                                        alt="Edit Tenant"/></a>&nbsp;
+
+					<a tooltip="Edit oAuth" href="" ng-click="tenantsList.actions.editoAuth.command(row);">
 						<img ng-src="themes/{{$parent.themeToUse}}/img/key.png" border="0"
-							alt="Edit oAuth" /></a>&nbsp;
-						<a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
-							ng-click="tenantsList.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
-							alt="Remove" /></a>
-					</div>
+						     alt="Edit oAuth"/></a>&nbsp;
+					<a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
+					   ng-click="tenantsList.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
+					                                                            alt="Remove"/></a>
 				</div>
 			</div>
-		
+		</div>
+
 	</div>
 </section>
