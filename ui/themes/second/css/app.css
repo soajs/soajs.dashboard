@@ -429,18 +429,25 @@ div.entryBox .blueListing li .keysAccordion a {
     margin-right: 5px;
     float:none;
 }
-#keysAccordion .panel-heading{
+.keysAccordion .panel-heading{
 	padding: 5px 15px;	
 }
-#keysAccordion .panel-title{
+.keysAccordion .panel-title{
 	font-size:12px;
 }
-#keysAccordion .panel-group{
+.keysAccordion .panel-group{
 	margin-bottom:5px;
+}
+.keysAccordion .keyAlerts{
+	padding:5px 0;	
 }
 .appKeys{
 	background-color:white;
 	padding:5px;
+	border-radius: 5px;
+}
+.externalKeysGrid{
+	margin-top:5px;
 }
 .modal-dialog {
     position: relative;
@@ -493,4 +500,13 @@ form .header h3 {
 
 .nav-tabs li a:focus {
     outline: 0;
+}
+div.entryBox .body .btn-ssm{
+	float:none;
+    position:relative;
+    top:0px;	
+    padding-top: 3px; 
+    padding-bottom: 2px;
+     margin-left: 10px;
+     margin-bottom :5px;
 }

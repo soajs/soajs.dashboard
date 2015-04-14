@@ -36,23 +36,26 @@
 						</a></span>
 
 								<div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
-									<div> Tenant Application Keys:
-										<a href="" ng-click="addNewKey(row['_id'],application['appId'])" tooltip="Add New Application Key">+ <img ng-src="themes/{{$parent.themeToUse}}/img/add.png"></a>
+									<div> <b>Tenant Application Keys:</b>
+										<a style="" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey(row['_id'],application['appId'])" tooltip="Add New Application Key">Add key
+										<img style="display:none" ng-src="themes/{{$parent.themeToUse}}/img/add.png"></a>
 
 									</div>
 									<div class="keysAccordion" id="keysAccordion">
-
+									<div class="keyAlerts" ng-show="alerts.length >0">
+									<alert ng-repeat="alert in alerts" type="{{alert.type}}" class="" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
 
 										<accordion close-others="true" ng-show="application.keys.length > 0">
 
 											<accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
 												<accordion-heading> Key >>> {{key.key}}
-													<a href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
+													<a style="display:none" href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
 														<img ng-src="themes/{{$parent.$parent.themeToUse}}/img/remove.png" border="0"
 														     alt="Remove"/></a>
 												</accordion-heading>
-												<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-
+												
+<div class="f-right"><a class="btn btn-danger btn-sm" ng-click="removeAppKey(row['_id'], application, key.key)" href="">Remove Application Key</a></div>
 												<tabset>
 													<tab heading="Key Configuration" ng-click="listConfiguration(row['_id'], application['appId'], key.key, $index);">
 														<br/>
@@ -64,13 +67,13 @@
 
 															<div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
 																<b>{{env}} Environment</b>&nbsp;&nbsp;
-																<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, value);">
+																<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, env, value);">
 																	<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit"/>
 																</a>
 															</div>
 														</div>
 													</tab>
-													<tab heading="External Keys" ng-click="listExtKeys(row['_id'], application['appId'],key.key, $index);">
+													<tab heading="External Keys" ng-click="">
 														<br/>
 														<button ng-click="addNewExtKey(row['_id'], application['appId'], key.key)" class="btn btn-primary btn-sm">Add New Application External Key</button>
 														<br/>
@@ -84,7 +87,7 @@
 
 															<nglist></nglist>
 
-															<div class='grid' ng-show="key.extKeys.length>0">
+															<div class='grid' class="externalKeysGrid" ng-show="key.extKeys.length>0">
 																<table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
 																	<tbody>
 																		<tr>
