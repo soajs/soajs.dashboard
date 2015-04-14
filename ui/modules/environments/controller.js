@@ -95,14 +95,17 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editEnvironment = function(data) {
-		data.ips = data.ips.join(",");
+	$scope.editEnvironment = function(data) {		
+		var formConfig = angular.copy(environmentConfig.form);
+		formConfig.entries[0].type = 'readonly';
+		var myData = angular.copy(data);
+		myData.ips = myData.ips.join(",");
 		var options = {
 			timeout: $timeout,
-			form: environmentConfig.form,
+			form: formConfig,
 			'name': 'editEnvironment',
 			'label': 'Edit Environment',
-			'data': data,
+			'data': myData,
 			'actions': [
 				{
 					'type': 'submit',
@@ -111,7 +114,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					'action': function(formData) {
 						formData.ips = formData.ips.replace(/ /g, '');
 						var postData = {
-							'code': formData.code,
 							'description': formData.description,
 							'ips': formData.ips.split(",")
 						};
