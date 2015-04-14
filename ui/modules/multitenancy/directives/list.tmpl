@@ -32,7 +32,8 @@
 
 						<a ng-click="browseApplication(row['_id'], application)" href="">
 							<img border="0" tooltip="Browse" ng-src="themes/{{$parent.themeToUse}}/img/view.png"></a>
-						<a ng-click="viewKeys(row['_id'], application)" href="">View Keys
+						<a ng-click="viewKeys(row['_id'], application)" href="">
+						<img tooltip="Manage Keys" ng-src="themes/{{$parent.themeToUse}}/img/key.png" border="0" alt="View Keys"/>
 						</a></span>
 
 								<div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
@@ -41,7 +42,7 @@
 										<img style="display:none" ng-src="themes/{{$parent.themeToUse}}/img/add.png"></a>
 
 									</div>
-									<div class="keysAccordion" id="keysAccordion">
+									<div class="keysAccordion">
 									<div class="keyAlerts" ng-show="alerts.length >0">
 									<alert ng-repeat="alert in alerts" type="{{alert.type}}" class="" close="closeAlert($index)">{{alert.msg}}</alert>
 </div>
@@ -55,7 +56,7 @@
 														     alt="Remove"/></a>
 												</accordion-heading>
 												
-<div class="f-right"><a class="btn btn-danger btn-sm" ng-click="removeAppKey(row['_id'], application, key.key)" href="">Remove Application Key</a></div>
+<div class="f-right"><a class="btn btn-danger btn-sm" ng-click="removeAppKey(row['_id'], application, key.key)" href="" ng-confirm-click="Are you sure you want to delete this key?">Delete Application Key</a></div>
 												<tabset>
 													<tab heading="Key Configuration" ng-click="listConfiguration(row['_id'], application['appId'], key.key, $index);">
 														<br/>
@@ -63,8 +64,8 @@
 														<div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
 
 															<button class="btn btn-primary btn-sm" ng-click="updateConfiguration(row['_id'], application['appId'], key.key);">Add New Configuration</button>
-															<br/><br/>
-
+															<br/> 
+							
 															<div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
 																<b>{{env}} Environment</b>&nbsp;&nbsp;
 																<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, env, value);">
@@ -87,7 +88,7 @@
 
 															<nglist></nglist>
 
-															<div class='grid' class="externalKeysGrid" ng-show="key.extKeys.length>0">
+															<div class="grid externalKeysGrid" ng-show="key.extKeys.length>0">
 																<table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
 																	<tbody>
 																		<tr>
@@ -95,14 +96,15 @@
 																			<th> External Key</th>
 																			<th class="ng-scope"> Expiry Date </th>
 																		</tr>
-																		<tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:row.selected}" class="ng-scope odd first last">
+																		<tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:row.selected}" class="odd first last">
 
 																			<td class="leftAction">
 																				<a ng-click="editExtKey(row['_id'], application['appId'], extnlKey, key.key)" href="">
-																					<img border="0" tooltip="Edit" ng-src="themes/second/img/edit.png" src="themes/second/img/edit.png"></a>
+																					<img border="0" tooltip="Edit" ng-src="themes/{{$parent.themeToUse}}/img/edit.png"></a>
 																			</td>
 																			<td class="leftAction">
-																				<a ng-click="removeExtKey(row['_id'], application['appId'], extnlKey, key.key)" ng-confirm-click="Are you sure you want to remove this external key?" href=""><img border="0" tooltip="Remove" ng-src="themes/second/img/remove.png" src="themes/second/img/remove.png"></a>
+																				<a ng-click="removeExtKey(row['_id'], application['appId'], extnlKey, key.key)" ng-confirm-click="Are you sure you want to remove this external key?" href="">
+																				<img border="0" tooltip="Remove" ng-src="themes/{{$parent.themeToUse}}/img/remove.png"></a>
 																			</td>
 
 																			<td> {{extnlKey.extKey}}</td>
@@ -157,8 +159,7 @@
 					                                                                        alt="Edit Tenant"/></a>&nbsp;
 
 					<a tooltip="Edit oAuth" href="" ng-click="tenantsList.actions.editoAuth.command(row);">
-						<img ng-src="themes/{{$parent.themeToUse}}/img/key.png" border="0"
-						     alt="Edit oAuth"/></a>&nbsp;
+						<img ng-src="themes/{{$parent.themeToUse}}/img/lock-14.png" border="0" alt="Edit oAuth"/></a>&nbsp;
 					<a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
 					   ng-click="tenantsList.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"
 					                                                            alt="Remove"/></a>

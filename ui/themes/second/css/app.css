@@ -333,7 +333,7 @@ div.entryBoxes {
 #page div.entryBoxesGrid div.entryBox {
     float: left;
     display: table;
-    width: 16%;
+    width: auto;
     margin: 5px;
     padding-left:5px;
 }
@@ -445,9 +445,14 @@ div.entryBox .blueListing li .keysAccordion a {
 	background-color:white;
 	padding:5px;
 	border-radius: 5px;
+	margin-top:10px;
 }
 .externalKeysGrid{
-	margin-top:5px;
+	margin-top:10px;
+	vertical-align:top;
+}
+.externalKeysGrid table td{
+	vertical-align:top;
 }
 .modal-dialog {
     position: relative;
@@ -509,4 +514,8 @@ div.entryBox .body .btn-ssm{
     padding-bottom: 2px;
      margin-left: 10px;
      margin-bottom :5px;
+}
+
+.tab-content > .active{
+	
 }
