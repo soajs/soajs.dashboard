@@ -706,7 +706,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				$scope.$parent.displayAlert('success', "Selected Application has been removed.");
-				//$scope.listTenants();
 				$scope.reloadApplications(Id);
 			}
 		});
@@ -723,12 +722,20 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Application Key Added Successfully.');
-				$scope.reloadApplications(tId);
+				$scope.listKeys(tId, appId);
 			}
 		});
 	};
 
-	$scope.updateConfiguration = function(tId, appId, key, data) {
+	$scope.updateConfiguration = function(tId, appId, key, env, value) {
+		var data = {};
+		if(value){
+			data.config =  JSON.stringify(value, null, "\t");			
+		}
+		if(env){
+			data.envCode= env;
+		}
+		console.log(data);
 		var options = {
 			timeout: $timeout,
 			form: tenantConfig.form.keyConfig,
@@ -737,7 +744,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			labels: {
 				submit: 'Update'
 			},
-			data: (data) ? {'config': JSON.stringify(data.config, null, "\t"), 'envCode': data.env} : {},
+			data: data,
 			sub: true,
 			actions: [
 				{
@@ -776,7 +783,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								//$scope.listConfiguration($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+								$scope.reloadConfiguration( tId, appId, key );
 							}
 						});
 					}
@@ -853,7 +860,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.$parent.displayAlert('success', 'External Key Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadApplications(tId);
+								$scope.listExtKeys(tId, appId, key);
 							}
 						});
 					}
@@ -877,9 +884,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		console.log('appId: ' + appId) ;
 		console.log('key: ' + key) ;
 
-		if(data.geo) { data.geo = JSON.stringify(data.geo, null, "\t"); }
-		if(data.device) { data.device = JSON.stringify(data.device, null, "\t"); }
-
+		var dataForm = angular.copy(data);
+		if(data.geo) { dataForm.geo = JSON.stringify(data.geo, null, "\t"); }
+		if(data.device) { dataForm.device = JSON.stringify(data.device, null, "\t"); }
+		
+		
 		var formConfig = angular.copy(tenantConfig.form.extKey);
 		formConfig.entries.unshift({
 			'name': 'extKey',
@@ -894,7 +903,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			name: 'editExtKey',
 			label: 'Edit External Key',
 			sub: true,
-			data: data,
+			data: dataForm,
 			actions: [
 				{
 					'type': 'submit',
@@ -946,7 +955,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.$parent.displayAlert('success', 'External Key Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadApplications(tId);
+								$scope.listExtKeys(tId, appId, key);
 							}
 						});
 
@@ -979,12 +988,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
 				$scope.modalInstance.close();
 				$scope.form.formData = {};
-				$scope.reloadApplications(tId);
+				$scope.listExtKeys(tId, appId, key);
 			}
 		});
 	};
 
 	$scope.listExtKeys = function(tId, appId, key, index) {
+		console.log(' listExtKeys: ');
+		console.log(' key: ' + key );
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/ext/list",
@@ -995,13 +1006,130 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				console.log(response);
+				
+				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
+					if($scope.tenantsList.rows[i]['_id'] === tId) 
+					{
+						console.log( $scope.tenantsList.rows[i] );
+						
+						var apps = $scope.tenantsList.rows[i].applications ;
+						for(var j = 0; j < apps.length ; j++)
+						{
+							
+							if ( apps[j].appId === appId )
+							{
+								var app = apps[j];
+								console.log( ' ******** app: ');
+								console.log(app);
+								var keys = app.keys;
+								for(var v = 0; v < keys.length ; v++){
+									
+									if( keys[v].key === key ){
+										console.log(' key: ');
+										console.log( keys[v] );
+										
+										console.log(' key.extKeys : ');
+										console.log( keys[v].extKeys );
+										delete response['soajsauth'];
+										console.log(' *************** response:');
+										console.log(response);
+										console.log(' $scope.tenantsList.rows[i].applications[j].keys[v].extKeys: ');
+										//$scope.tenantsList.rows[i].applications[j].keys[v]=
+										console.log( $scope.tenantsList.rows[i].applications[j].keys[v].extKeys ) ;
+										
+										$scope.tenantsList.rows[i].applications[j].keys[v].extKeys = response;
+									}
+								}
+								break;
+								
+							}
+							
+						}
+						
+					}
+				}
+				
 
 			}
 		});
 	};
+	
+	$scope.listKeys = function(tId, appId, index) {
+		
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/application/key/list",
+			"params": {"id": tId , "appId": appId }
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(' listKeys, response: '); console.log(response);
+				
+				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
+					if($scope.tenantsList.rows[i]['_id'] === tId) 
+					{
+						console.log( $scope.tenantsList.rows[i] );
+						delete response['soajsauth'];
+						var apps = $scope.tenantsList.rows[i].applications ;
+						for(var j = 0; j < apps.length ; j++)
+						{
+							
+							if ( apps[j].appId === appId )
+							{
+								var app = apps[j];
+								console.log( ' ******** app: ');
+								console.log(app);
+								var keys = app.keys;
+								
+								$scope.tenantsList.rows[i].applications[j].keys  = response;
+								
+								
+								break;
+								
+							}
+							
+						}
+						
+					}
+				}
+				
+
+			}
+		});
+	};
+	
 	$scope.listConfiguration = function(tId, appId, key, index) {
+		console.log('listConfiguration : tId: ' + tId) ;
+		console.log('appId: ' + appId) ;
+		console.log('key: ' + key) ;
+		
 		$scope.currentApplicationKey = key;
 		$scope.currentApplicationKeyIndex = index;
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/application/key/config/list",
+			"params": {"id": tId, "appId": appId, "key": key}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				if(JSON.stringify(response) !== '{}') {}
+				else {}
+			}
+		});
+	};
+	$scope.reloadConfiguration = function(tId, appId, key, index) {
+		console.log('reloadConfiguration : tId: ' + tId) ;
+		console.log('appId: ' + appId) ;
+		console.log('key: ' + key) ;
+		
+		$scope.currentApplicationKey = key;
+		$scope.currentApplicationKeyIndex = index;
+		
 		/*
 		for(var i = 0; i < $scope.keys.length; i++) {
 			if(i !== index) {
@@ -1020,27 +1148,44 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				if(JSON.stringify(response) !== '{}') {
-					//reshape response
-					$scope.boxes = [];
-					var envs = Object.keys(response);
-					envs.forEach(function(oneEnv) {
-						if(oneEnv !== 'soajsauth') {
-							$scope.boxes.push({
-								'env': oneEnv,
-								'config': response[oneEnv]
-							});
-						}
-					});
+				console.log('response'); console.log(response);
 
-					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
-					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div ng-repeat="box in boxes" class="entryBox blueBox"><b>{{box.env}} Environment</b>&nbsp;&nbsp;<a href="" ng-click="updateConfiguration(box);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>');
-					$compile(cfgElement.contents())($scope);
+				if(JSON.stringify(response) !== '{}') 
+				{
+					delete response['soajsauth'];
+									
+					for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
+						if($scope.tenantsList.rows[i]['_id'] === tId) 
+						{							
+							var apps = $scope.tenantsList.rows[i].applications ;
+							for(var j = 0; j < apps.length ; j++)
+							{								
+								if ( apps[j].appId === appId )
+								{
+									var app = apps[j];									
+									var keys = app.keys;
+									for(var v = 0; v < keys.length ; v++){										
+										if( keys[v].key === key ){
+											console.log( ' ******** key : ');
+											console.log(  keys[v] );
+											console.log( $scope.tenantsList.rows[i].applications[j].keys[v].config );
+											$scope.tenantsList.rows[i].applications[j].keys[v].config = response;
+											console.log( $scope.tenantsList.rows[i].applications[j].keys[v].config );
+										}
+									}
+									break;
+									
+								}
+								
+							}
+							
+						}
+					}
+					
+					
 				}
 				else {
-					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
-					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable"><span class="ng-scope ng-binding">No Configuration detected. Click to add new configuration.</span></div>');
-					$compile(cfgElement.contents())($scope);
+					
 				}
 			}
 		});
