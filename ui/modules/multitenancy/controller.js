@@ -728,6 +728,74 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 
+	$scope.updateConfiguration = function(tId, appId, key, data) {
+		var options = {
+			timeout: $timeout,
+			form: tenantConfig.form.keyConfig,
+			name: 'updatekeyConfig',
+			label: 'Update Key Configuration',
+			labels: {
+				submit: 'Update'
+			},
+			data: (data) ? {'config': JSON.stringify(data.config, null, "\t"), 'envCode': data.env} : {},
+			sub: true,
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						if(formData.config && (formData.config != "")) {
+							try {
+								var configObj = JSON.parse(formData.config);
+							}
+							catch(e) {
+								$scope.form.displayAlert('danger', 'Error: Invalid Config Json object ');
+								return;
+							}
+						}
+						else {
+							var configObj = {};
+						}
+
+						var postData = {
+							'envCode': formData.envCode,
+							'config': configObj
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/tenant/application/key/config/update",
+							"data": postData,
+							"params": {"id": tId, "appId": appId, "key": key}
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								//$scope.listConfiguration($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}]
+
+		};
+
+		buildFormWithModal($scope, $modal, options);
+	};
+
 	$scope.addNewExtKey = function(tId, appId, key) {
 		console.log( 'addNewExtKey for key: '+ key);
 		var options = {
@@ -916,6 +984,67 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 
+	$scope.listExtKeys = function(tId, appId, key, index) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/application/key/ext/list",
+			"params": {"id": tId , "appId": appId, "key": key}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(response);
+
+			}
+		});
+	};
+	$scope.listConfiguration = function(tId, appId, key, index) {
+		$scope.currentApplicationKey = key;
+		$scope.currentApplicationKeyIndex = index;
+		/*
+		for(var i = 0; i < $scope.keys.length; i++) {
+			if(i !== index) {
+				var cfgElement = angular.element(document.getElementById("keyConfig" + i));
+				cfgElement.html('');
+				$compile(cfgElement.contents())($scope);
+			}
+		}
+		*/
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/application/key/config/list",
+			"params": {"id": tId, "appId": appId, "key": key}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				if(JSON.stringify(response) !== '{}') {
+					//reshape response
+					$scope.boxes = [];
+					var envs = Object.keys(response);
+					envs.forEach(function(oneEnv) {
+						if(oneEnv !== 'soajsauth') {
+							$scope.boxes.push({
+								'env': oneEnv,
+								'config': response[oneEnv]
+							});
+						}
+					});
+
+					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
+					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div ng-repeat="box in boxes" class="entryBox blueBox"><b>{{box.env}} Environment</b>&nbsp;&nbsp;<a href="" ng-click="updateConfiguration(box);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>');
+					$compile(cfgElement.contents())($scope);
+				}
+				else {
+					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
+					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable"><span class="ng-scope ng-binding">No Configuration detected. Click to add new configuration.</span></div>');
+					$compile(cfgElement.contents())($scope);
+				}
+			}
+		});
+	};
 	//default operation
 	$scope.listTenants();
 }]);

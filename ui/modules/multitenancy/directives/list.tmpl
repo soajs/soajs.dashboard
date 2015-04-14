@@ -54,23 +54,23 @@
 												<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 
 												<tabset>
-													<tab heading="Key Configuration" ng-click="listConfiguration(key.key, $index);">
+													<tab heading="Key Configuration" ng-click="listConfiguration(row['_id'], application['appId'], key.key, $index);">
 														<br/>
 
 														<div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
 
-															<button class="btn btn-primary btn-sm" ng-click="updateConfiguration();">Add New Configuration</button>
+															<button class="btn btn-primary btn-sm" ng-click="updateConfiguration(row['_id'], application['appId'], key.key);">Add New Configuration</button>
 															<br/><br/>
 
 															<div ng-repeat="(env, value) in key.config" class="entryBox blueBox">
 																<b>{{env}} Environment</b>&nbsp;&nbsp;
-																<a href="" ng-click="updateConfiguration(value);">
+																<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, value);">
 																	<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit"/>
 																</a>
 															</div>
 														</div>
 													</tab>
-													<tab heading="External Keys" ng-click="listExtKeys(key.key, $index);">
+													<tab heading="External Keys" ng-click="listExtKeys(row['_id'], application['appId'],key.key, $index);">
 														<br/>
 														<button ng-click="addNewExtKey(row['_id'], application['appId'], key.key)" class="btn btn-primary btn-sm">Add New Application External Key</button>
 														<br/>
