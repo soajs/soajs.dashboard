@@ -507,13 +507,12 @@ form .header h3 {
     outline: 0;
 }
 div.entryBox .body .btn-ssm{
-	float:none;
     position:relative;
     top:0px;	
     padding-top: 3px; 
     padding-bottom: 2px;
-     margin-left: 10px;
-     margin-bottom :5px;
+    margin-left: 10px;
+    margin-bottom :5px;
 }
 
 .tab-content > .active{

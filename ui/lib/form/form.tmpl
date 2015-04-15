@@ -14,7 +14,13 @@
 
                     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
                 </td>
-
+				
+				<td ng-switch-when="html" class="typeHtml">
+                    <label>{{entry.label}}</label>
+                    <div class="staticValue" ng-bind-html="entry.value|toTrustedHtml"></div>
+                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                </td>
+                
                 <td ng-switch-when="radio">
                     <label>{{entry.label}}</label>
                     <ul>
@@ -30,7 +36,7 @@
                 <td ng-switch-when="select">
                     <label>{{entry.label}}</label>
                     <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]">
-                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.v}}</option>
+                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
                     </select>
 
                     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
@@ -67,7 +73,7 @@
                 <td ng-switch-when="date-picker">
                     <label>{{entry.label}}</label>
                     <p class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" min-date="'{{entry.min}}'"name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
+                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" min-date="'{{entry.min}}'" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>

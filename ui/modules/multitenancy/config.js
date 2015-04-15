@@ -84,6 +84,24 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this tenant',
 					'required': false
+				},
+				{
+					'name': 'secret',
+					'label': 'oAuth Secret',
+					'type': 'text',
+					'placeholder': 'SECRET...',
+					'value': '',
+					'tooltip': 'Enter Tenant oAuth Secret.',
+					'required': false
+				},
+				{
+					'name': 'redirectURI',
+					'label': 'oAuth Redirect URI',
+					'type': 'url',
+					'placeholder': 'redirectURI...',
+					'value': '',
+					'tooltip': 'Enter Tenant oAuth redirectURI.',
+					'required': false
 				}
 			]
 		},
@@ -175,11 +193,11 @@ var tenantConfig = {
 					'placeholder': 'Enter the product code from productization section...',
 					'value': '',
 					'tooltip': 'Enter Product Code; maximum 5 characters.',
-					'required': true
+					'required': false
 				},
 				{
 					'name': 'package',
-					'label': 'Package',
+					'label': 'Product Package',
 					'type': 'text',
 					'placeholder': 'Enter the package code from productization section...',
 					'value': '',
@@ -209,8 +227,10 @@ var tenantConfig = {
 				{
 					'name': '_TTL',
 					'label': 'TTL',
-					'type': 'radio',
-					'value': [{'v': 6}, {'v': 12}, {'v': 24}, {'v': 48}],
+					'type': 'select',
+					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'}, 
+					          {'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'}, 
+					          {'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
 					'tooltip': 'Pick a time to live value for this package.'
 				}
 			]
@@ -251,9 +271,9 @@ var tenantConfig = {
 					'label': 'Exipry Date',
 					'type': 'date-picker',
 					'value': '',
-					'tooltip': 'Pick the Expiry Date of the external key.',
+					'tooltip': 'Pick the Expiry Date of the external key. If empty, the key will not expire',
 					'min': new Date(),
-					'required': true
+					'required': false
 				},
 				{
 					'name': 'device',

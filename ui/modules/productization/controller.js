@@ -2,7 +2,19 @@
 var productizationApp = soajsApp.components;
 productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-
+	
+	var currentPack = null;
+	$scope.viewPackage = function(id, pack) {
+		pack.showDetails = true;	
+		pack.showClose = true;	
+		currentPack = pack;
+	};
+	$scope.closePackage = function(id, pack) {
+		pack.showDetails = false;	
+		pack.showClose = false;	
+		currentPack = pack;
+	};
+	
 	$scope.listProducts = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",

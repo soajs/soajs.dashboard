@@ -9,7 +9,7 @@ soajsApp.filter('TTL', function() {
 	return function(value) {
 		//check if value is in milliseconds
 		value = value / 3600;
-		if(value.toString().length > 2) {
+		if(value.toString().length > 3) { //why ??
 			value = value / 1000;
 		}
 		return value;
