@@ -627,7 +627,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				}
 			]
 		};
-
 		buildFormWithModal($scope, $modal, options);
 	};
 	$scope.addTenantApplication = function(tId) { 
@@ -837,7 +836,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});
 	};
-
+	
+	$scope.openSubContent = function(key, index) {
+		console.log('openSubContent ; index: '+ index);
+	};
+	
 	$scope.addNewKey = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",

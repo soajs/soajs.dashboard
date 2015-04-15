@@ -13,6 +13,7 @@ function validateId(mongo, req, cb) {
 
 module.exports = {
 	"add": function(config, mongo, req, res) {
+		req.soajs.inputmaskData.code= req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
 			"description": req.soajs.inputmaskData.description,

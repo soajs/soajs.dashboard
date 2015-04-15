@@ -639,7 +639,7 @@ module.exports = {
 				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
-
+					
 					checkIfEnvironmentExists(mongo, req.soajs.inputmaskData.envCode, function(error, exists) {
 						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
 
