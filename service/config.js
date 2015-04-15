@@ -105,7 +105,7 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "string",
-					"enum": ['6', '12', '24', '48']
+					"enum": ['6', '12', '24', '48', '72', '96', '120', '144', '168']
 				}
 			},
 			'appId': {
@@ -452,7 +452,7 @@ module.exports = {
 			"commonFields": ['id', 'appId', 'key'],
 			'expDate': {
 				"source": ['body.expDate'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"format": "date-time"
@@ -484,7 +484,7 @@ module.exports = {
 			},
 			'expDate': {
 				"source": ['body.expDate'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"format": "date-time"

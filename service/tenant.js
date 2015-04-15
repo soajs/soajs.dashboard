@@ -562,11 +562,13 @@ module.exports = {
 							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
 
 							var newExtKey = {
-								"expDate": new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL,
 								"extKey": extKeyValue,
 								"device": req.soajs.inputmaskData.device,
 								"geo": req.soajs.inputmaskData.geo
 							};
+							if(req.soajs.inputmaskData.expDate){
+								newExtKey.expDate= new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
+							}
 							//push new extKey
 							tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.push(newExtKey);
 							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 440, "tenant application ext key add successful");
@@ -591,6 +593,7 @@ module.exports = {
 
 					var x = getRequestedSubElementsPositions(tenantRecord, req);
 					if(x.found) {
+						if( req.soajs.inputmaskData.expDate )
 						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
 						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].device = req.soajs.inputmaskData.device;
 						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].geo = req.soajs.inputmaskData.geo;
