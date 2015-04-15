@@ -247,6 +247,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', funct
 
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
+				$scope.dashboard = [];
 				$scope.$parent.enableInterface = false;
 				$scope.$parent.go("/login");
 			});
