@@ -1,23 +1,28 @@
 <div id="userMenu">
-	<div ng-controller="welcomeCtrl">	
-		<div ng-show="enableInterface">
-			<ul>
-				<li>Welcome {{userFirstName}} {{userLastName}}</li>
-				<li ng-repeat="link in userMenu.links"><a href="{{link.url}}"
-					ng-class="{active: link.url === userMenu.selectedMenu}"
-					class="userMenu{{$index}}" id="userMenu-{{link.id}}">{{link.label}}</a>
-				</li>
-				<li><a href="" ng-click="logoutUser()" class="userMenu-logout"
-					id="userMenu-logout">Logout</a></li>
-			</ul>
-		</div>
-		<div ng-show="!enableInterface">
-			<ul>
-				<li ng-repeat="link in guestMenu.links"><a href="{{link.url}}"
-					ng-class="{active: link.url === guestMenu.selectedMenu}"
-					class="guestMenu{{$index}}" id="guestMenu-{{link.id}}">{{link.label}}</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div ng-controller="welcomeCtrl">
+        <div ng-show="enableInterface">
+            <ul>
+                <li>Welcome {{userFirstName}} {{userLastName}}</li>
+                <li ng-repeat="link in userMenu.links">
+                    <a href="{{link.url}}" ng-class="{active: link.url === userMenu.selectedMenu}" class="userMenu{{$index}}" id="userMenu-{{link.id}}">
+                        <span class="icon icon-{{link.icon}}"></span>{{link.label}}
+                    </a>
+                </li>
+                <li>
+                    <a href="" ng-click="logoutUser()" class="userMenu-logout" id="userMenu-logout">
+                        <span class="icon icon-switch"></span>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div ng-show="!enableInterface">
+            <ul>
+                <li ng-repeat="link in guestMenu.links">
+                    <a href="{{link.url}}" ng-class="{active: link.url === guestMenu.selectedMenu}" class="guestMenu{{$index}}" id="guestMenu-{{link.id}}">
+                        <span class="icon icon-{{link.icon}}"></span>{{link.label}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>

@@ -85,7 +85,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				//soajsauth
 				$scope.availableEnv =[];			
 				response.forEach(function(oneEnv) {
-					$scope.availableEnv.push(oneEnv.code);
+					$scope.availableEnv.push(oneEnv.code.toLowerCase());
 				});				
 			}
 		});

@@ -54,7 +54,10 @@
                     <input ng-model="row.selected" name="IDS[]" type="checkbox" value="{{row['ID']}}"/>
                 </td>
                 <td ng-repeat="action in grid.leftActions" class="leftAction">
-                    <a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command(row)"><img ng-src="themes/{{grid.themeToUse}}/img/{{action.icon}}.png" tooltip="{{action.label}}" border="0"/></a>
+                    <a href="" ng-confirm-click="{{action.commandMsg}}" ng-click="action.command(row)">
+                        <span class="icon icon-{{action.icon}}" tooltip="{{action.label}}"></span>
+                        <!--<img ng-src="themes/{{grid.themeToUse}}/img/{{action.icon}}.png" tooltip="{{action.label}}" border="0"/>-->
+                    </a>
                 </td>
                 <td ng-repeat="column in grid.columns">
                     <span ng-if="column.filter">{{row[column.field] | filterPicker: column.filter}}</span>

@@ -18,7 +18,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					defaultSortField: 'code',
 					left: [{
 						'label': 'Edit',
-						'icon': 'edit',
+						'icon': 'pencil2',
 						'handler': 'editEnvironment'
 					},
 						//{
@@ -28,7 +28,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						//},
 						{
 							'label': 'Remove',
-							'icon': 'remove',
+							'icon': 'cross',
 							'msg': "Are you sure you want to remove this environment?",
 							'handler': 'removeEnvironment'
 						}],

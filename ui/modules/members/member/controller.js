@@ -33,7 +33,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					defaultSortField: 'username',
 					left: [{
 						'label': 'Edit',
-						'icon': 'edit',
+						'icon': 'pencil2',
 						'handler': 'editMember'
 					}],
 					top: [{

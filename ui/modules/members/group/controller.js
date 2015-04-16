@@ -19,18 +19,18 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					defaultSortField: 'code',
 					left: [
 						{
-							'label': 'Assign Users',
-							'icon': 'view',
+							'label': 'Link Users to Group',
+							'icon': 'link',
 							'handler': 'assignUsers'
 						},
 						{
 							'label': 'Edit',
-							'icon': 'edit',
+							'icon': 'pencil2',
 							'handler': 'editGroup'
 						},
 						{
 							'label': 'Delete',
-							'icon': 'remove',
+							'icon': 'cross',
 							'msg': "Are you sure you want to delete this group?",
 							'handler': 'delete1Group'
 						}
