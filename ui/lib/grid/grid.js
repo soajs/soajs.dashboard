@@ -47,20 +47,20 @@ function buildGrid($scope, opts) {
 	
 	function constructGrid(context, configuration) {
 		context.grid = {};
+		/*
 		var gridId = null;
 		if(configuration.gridId){
 			gridId = configuration.gridId;
 		}
 		else{
 			gridId= getRandomString(12);
-			console.log(gridId);
 		}
 		context.grid[gridId] = {
 			myGridId: gridId
 		}
-		  
+		*/  
 		context.grid = {
-			thisGridId: gridId,	
+			//thisGridId: gridId,	
 			themeToUse: themeToUse,
 			columns: configuration.columns,
 			topActions: configuration.topActions,
@@ -139,7 +139,6 @@ function buildGrid($scope, opts) {
 			context.grid.maxPageSize = context.grid.rows.length / context.grid.filteredRows.length;
 			context.grid.maxPageSize = (context.grid.maxPageSize > context.grid.totalPages) ? context.grid.totalPages : 3;
 		}
-		//console.log(context.grid);
 	}
 }
 

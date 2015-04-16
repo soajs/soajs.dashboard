@@ -23,7 +23,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		app.showKeys = false;			
 	};
 	$scope.removeAppKey = function(id, app, key, event) {
-		console.log('key: ' +key);
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/delete",
@@ -43,8 +42,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				}			
 			}
 		});
-		if(event)
-			event.stopPropoagation();
+		if(event && event.stopPropagation){						
+			event.stopPropagation();			
+		}			
 	};
 	
 	$scope.getProds = function() {
