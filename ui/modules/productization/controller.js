@@ -188,9 +188,16 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addPackage = function(productId) {
+		var formConf = angular.copy(productizationConfig.form.package);
+		formConf.entries.forEach(function(oneEn) {
+			if(oneEn.type==='select'){
+				oneEn.value[0].selected=true;
+			}
+		});
+
 		var options = {
 			timeout: $timeout,
-			form: productizationConfig.form.package,
+			form: formConf,
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,

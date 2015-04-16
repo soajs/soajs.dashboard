@@ -342,6 +342,10 @@ div.entryBoxes {
     text-decoration: underline;
 }
 
+.greyBox{
+    background: #cccccc;
+}
+
 #page div.entryBoxes div.blueBox{
 /*#page div.entryBoxes div.entryBox:hover {*/
     background: #DEF1F7;
