@@ -48,7 +48,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});
 		if(event)
-			event.stopPropoagation();
+			event.stopPropagation();
 	};
 	
 	$scope.getProds = function() {
