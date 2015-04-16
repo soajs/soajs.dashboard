@@ -36,3 +36,7 @@ form .footer{
 form .header h3{
 	padding: 15px;
 }
+
+form .btn-sm{
+	margin-left:5px;	
+}

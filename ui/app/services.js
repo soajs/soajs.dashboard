@@ -13,8 +13,16 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieS
 			if(response.soajsauth && $cookieStore.get('soajs_auth')) {
 				$cookieStore.put("soajs_auth", response.soajsauth);
 			}
-			response.data.soajsauth = response.soajsauth;
-			return cb(null, response.data);
+			var resp = {};
+			for(var i in response){
+				resp[i] = response[i];
+			}
+
+			if(typeof(resp.data)!== 'object'){
+				resp.data = {};
+			}
+			resp.data.soajsauth = resp.soajsauth;
+			return cb(null, resp.data);
 		}
 		else {
 			var str = '';
