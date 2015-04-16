@@ -339,9 +339,8 @@ function findAndcestorProperties(tracker, ancestorName, params) {
 }
 
 (function() {
-	var link = document.createElement("link");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	link.href = "themes/" + themeToUse + "/css/app.css";
+	var link = document.createElement("script");
+	link.type = "text/javascript";
+	link.src = "themes/" + themeToUse + "/bootstrap.js";
 	document.getElementsByTagName("head")[0].appendChild(link);
 })();

@@ -2,7 +2,9 @@
     <h4>NAVIGATION</h4>
     <ul>
         <li ng-repeat="link in mainMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === mainMenu.selectedMenu}">
-            <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">{{link.label}}</a>
+            <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">
+                <span class="icon icon-{{link.icon}}"></span>{{link.label}}
+            </a>
         </li>
     </ul>
 </div>

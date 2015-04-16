@@ -10,15 +10,22 @@
                 <a class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
                 <ul class="blueListing">
                     <li class="blueLi" ng-repeat="package in row.packages">
-                    <a ng-click="viewPackage(row['_id'], package)" href="" ng-hide="package.showClose">+</a>
+                    <a ng-click="viewPackage(package)" href="" ng-hide="package.showClose">
+                        <span class="icon icon-plus" tooltip="Expand Packages"></span>
+                    </a>
                     
-                    <a ng-show="package.showClose" ng-click="closePackage(row['_id'], package)" href="">-</a>
+                    <a ng-click="closePackage(package)" href="" ng-show="package.showClose">
+                        <span class="icon icon-minus" tooltip="Collapse Packages"></span>
+                    </a>
                     <b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ]  ( {{package['_TTL'] | TTL}} hours )
                     <span class="rightActions">
-                        <a href="" ng-confirm-click="Are you sure you want to remove the selected package ?"
-                           ng-click="removeProductPackage(row['_id'], package['code']);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove Package"/></a>&nbsp;
+                        <a href="" ng-confirm-click="Are you sure you want to remove the selected package ?" ng-click="removeProductPackage(row['_id'], package['code']);">
+                            <span class="icon icon-cross" tooltip="Remove Package"></span>
+                        </a>&nbsp;
 
-                        <a href="" ng-click="editPackage(row['_id'], package)"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Package"/></a>
+                        <a href="" ng-click="editPackage(row['_id'], package)">
+                            <span class="icon icon-pencil2" tooltip="Edit Package"></span>
+                        </a>
                         </span>
                         
                     <div class="" id="" ng-show="package.showDetails"><em>{{package['description']}}</em></div>
@@ -27,8 +34,14 @@
                     </li>
                 </ul>
                 <div class="entryAction">
-                    <a href="" ng-click="grid.actions.edit.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Product"/></a>&nbsp;
-                    <a href="" ng-confirm-click="{{grid.actions.delete.commandMsg}}" ng-click="grid.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove Product"/></a>
+                    <a href="" ng-click="grid.actions.edit.command(row);">
+                        <span class="icon icon-pencil2" tooltip="Edit Product"></span>
+                        <!--<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Product"/>-->
+                    </a>&nbsp;
+                    <a href="" ng-confirm-click="{{grid.actions.delete.commandMsg}}" ng-click="grid.actions.delete.command(row);">
+                        <span class="icon icon-cross" tooltip="Remove Product"></span>
+                        <!--<img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0" alt="Remove Product"/>-->
+                    </a>
                 </div>
             </div>
         </div>

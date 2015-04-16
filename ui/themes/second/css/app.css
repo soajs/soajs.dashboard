@@ -267,7 +267,7 @@ body {
 **/
 #header #userMenu ul li a#guestMenu-register,
 #header #userMenu ul li a#userMenu-myAccount {
-    background: url("../img/icons.png") no-repeat 0 -372px;
+    /*background: url("../img/icons.png") no-repeat 0 -372px;*/
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
@@ -275,38 +275,38 @@ body {
 
 #header #userMenu ul li a#guestMenu-login,
 #header #userMenu ul li a#userMenu-logout {
-    background: url("../img/icons.png") no-repeat 0 -392px;
+    /*background: url("../img/icons.png") no-repeat 0 -392px;*/
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
 #mainMenu ul li a#mainMenu-home{
-    background: url("../img/icons.png") no-repeat 0 -3px;
+    /*background: url("../img/icons.png") no-repeat 0 -3px;*/
     padding-left: 25px;
     display: block;
 }
 
 #mainMenu ul li a#mainMenu-members {
-    background: url("../img/icons.png") no-repeat 0 -66px;
+    /*background: url("../img/icons.png") no-repeat 0 -66px;*/
     padding-left: 25px;
     display: block;
 }
 
 #mainMenu ul li a#mainMenu-environments {
-    background: url("../img/icons.png") no-repeat 0 -154px;
+    /*background: url("../img/icons.png") no-repeat 0 -154px;*/
     padding-left: 25px;
     display: block;
 }
 
 #mainMenu ul li a#mainMenu-productization {
-    background: url("../img/icons.png") no-repeat 0 -45px;
+    /*background: url("../img/icons.png") no-repeat 0 -45px;*/
     padding-left: 25px;
     display: block;
 }
 
 #mainMenu ul li a#mainMenu-multi-tenancy {
-    background: url("../img/icons.png") no-repeat 0 -220px;
+    /*background: url("../img/icons.png") no-repeat 0 -220px;*/
     padding-left: 25px;
     display: block;
 }

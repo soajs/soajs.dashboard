@@ -238,7 +238,7 @@ module.exports = {
 		});
 	},
 
-	"getOAuthUsers": function(config, mongo, req, res){
+	"getOAuthUsers": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 			mongo.find(oauthUsersColName, {"tId": req.soajs.inputmaskData.id}, function(err, tenantOauthUsers) {
@@ -248,12 +248,12 @@ module.exports = {
 		});
 	},
 
-	"deleteOAuthUsers": function(config, mongo, req, res){
+	"deleteOAuthUsers": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
-			try{
+			try {
 				req.soajs.inputmaskData.uId = mongo.ObjectId(req.soajs.inputmaskData.uId);
 			}
-			catch(e){
+			catch(e) {
 				return res.jsonp(req.soajs.buildResponse({"code": 439, "msg": config.errors[439]}));
 			}
 
@@ -265,61 +265,61 @@ module.exports = {
 		});
 	},
 
-	"addOAuthUsers": function(config, mongo, req, res){
+	"addOAuthUsers": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId }, function(err, tenantOauthUser) {
+			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId}, function(err, tenantOauthUser) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
-				if(tenantOauthUser){ return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
+				if(tenantOauthUser) { return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
 
 				var hasher = new Hasher(config.hasher);
 				var newPassword = hasher.hashSync(req.soajs.inputmaskData.password);
 				var oauthUserRecord = {
-					"userId" : req.soajs.inputmaskData.userId,
-					"password" : newPassword,
+					"userId": req.soajs.inputmaskData.userId,
+					"password": newPassword,
 					"tId": req.soajs.inputmaskData.id,
 					"keys": null
 				};
 
-				mongo.insert(oauthUsersColName, oauthUserRecord, function(error){
-					if(error){ return res.jsonp(req.soajs.buildResponse({"code": 449, "msg": config.errors[449]})); }
+				mongo.insert(oauthUsersColName, oauthUserRecord, function(error) {
+					if(error) { return res.jsonp(req.soajs.buildResponse({"code": 449, "msg": config.errors[449]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "tenant oauth user added successful"));
 				});
 			});
 		});
 	},
 
-	"updateOAuthUsers": function(config, mongo, req, res){
+	"updateOAuthUsers": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 
-			try{
+			try {
 				req.soajs.inputmaskData.uId = mongo.ObjectId(req.soajs.inputmaskData.uId);
 			}
-			catch(e){
+			catch(e) {
 				return res.jsonp(req.soajs.buildResponse({"code": 439, "msg": config.errors[439]}));
 			}
-			if(!req.soajs.inputmaskData.userId && ! req.soajs.inputmaskData.password){
+			if(!req.soajs.inputmaskData.userId && !req.soajs.inputmaskData.password) {
 				return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]}));
 			}
-			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId, "_id": {$ne: req.soajs.inputmaskData.uId} }, function(err, tenantOauthUser) {
+			mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "userId": req.soajs.inputmaskData.userId, "_id": {$ne: req.soajs.inputmaskData.uId}}, function(err, tenantOauthUser) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
-				if(tenantOauthUser){ return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
+				if(tenantOauthUser) { return res.jsonp(req.soajs.buildResponse({"code": 448, "msg": config.errors[448]})); }
 
-				mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "_id": req.soajs.inputmaskData.uId}, function(error, tenantOauthUser){
-					if(err || ! tenantOauthUser) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+				mongo.findOne(oauthUsersColName, {"tId": req.soajs.inputmaskData.id, "_id": req.soajs.inputmaskData.uId}, function(error, tenantOauthUser) {
+					if(err || !tenantOauthUser) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
 
-					if(req.soajs.inputmaskData.userId){
+					if(req.soajs.inputmaskData.userId) {
 						tenantOauthUser.userId = req.soajs.inputmaskData.userId;
 					}
-					if(req.soajs.inputmaskData.password){
+					if(req.soajs.inputmaskData.password) {
 						var hasher = new Hasher(config.hasher);
 						var newPassword = hasher.hashSync(req.soajs.inputmaskData.password);
 						tenantOauthUser.password = newPassword;
 					}
 
-					mongo.save(oauthUsersColName, tenantOauthUser, function(error){
-						if(error){ return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]})); }
+					mongo.save(oauthUsersColName, tenantOauthUser, function(error) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]})); }
 						return res.jsonp(req.soajs.buildResponse(null, "tenant oauth user updated successful"));
 					});
 				});
@@ -391,7 +391,7 @@ module.exports = {
 							"package": req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode,
 							"appId": new mongo.ObjectId(),
 							"description": req.soajs.inputmaskData.description,
-							"_TTL":    req.soajs.inputmaskData._TTL * 3600, // 24 hours
+							"_TTL": req.soajs.inputmaskData._TTL * 3600, // 24 hours
 							"keys": []
 						};
 						if(req.soajs.inputmaskData.acl) {
@@ -441,10 +441,10 @@ module.exports = {
 								}
 							}
 						}
-						if(!found){
+						if(!found) {
 							return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]}));
 						}
-						else{
+						else {
 							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 430, "tenant application update successful");
 						}
 					});
@@ -566,8 +566,8 @@ module.exports = {
 								"device": req.soajs.inputmaskData.device,
 								"geo": req.soajs.inputmaskData.geo
 							};
-							if(req.soajs.inputmaskData.expDate){
-								newExtKey.expDate= new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
+							if(req.soajs.inputmaskData.expDate) {
+								newExtKey.expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
 							}
 							//push new extKey
 							tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys.push(newExtKey);
@@ -593,8 +593,9 @@ module.exports = {
 
 					var x = getRequestedSubElementsPositions(tenantRecord, req);
 					if(x.found) {
-						if( req.soajs.inputmaskData.expDate )
-						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
+						if(req.soajs.inputmaskData.expDate) {
+							tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].expDate = new Date(req.soajs.inputmaskData.expDate).getTime() + config.expDateTTL;
+						}
 						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].device = req.soajs.inputmaskData.device;
 						tenantRecord.applications[x.position[0]].keys[x.position[1]].extKeys[x.position[2]].geo = req.soajs.inputmaskData.geo;
 
@@ -647,7 +648,7 @@ module.exports = {
 
 						var x = getRequestedSubElementsPositions(tenantRecord, req);
 						if(x.found) {
-							tenantRecord.applications[x.position[0]].keys[x.position[1]].config[req.soajs.inputmaskData.envCode] = req.soajs.inputmaskData.config;
+							tenantRecord.applications[x.position[0]].keys[x.position[1]].config[req.soajs.inputmaskData.envCode.toLowerCase()] = req.soajs.inputmaskData.config;
 							saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 445, "tenant application configuration update successful");
 						} else {
 							return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]}));
