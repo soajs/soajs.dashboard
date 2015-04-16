@@ -111,7 +111,7 @@
 																			<th> External Key</th>
 																			<th class="ng-scope"> Expiry Date </th>
 																		</tr>
-																		<tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:row.selected}" class="odd first last">
+																		<tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
 
 																			<td class="leftAction">
 																				<a ng-click="editExtKey(row['_id'], application['appId'], extnlKey, key.key)" href="">

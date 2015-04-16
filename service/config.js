@@ -535,6 +535,10 @@ module.exports = {
 					"type": "object"
 				}
 			}
+		},
+
+		"/services/list": {
+
 		}
 	}
 };

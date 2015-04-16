@@ -79,7 +79,7 @@ var productizationConfig = {
 					'name': 'description',
 					'label': 'Description',
 					'type': 'textarea',
-					'rows': 5,
+					'rows': 4,
 					'placeholder': 'Testing Package, used by developers and does not reach production server...',
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this package',
@@ -91,7 +91,17 @@ var productizationConfig = {
 					'type': 'textarea',
 					'rows': 10,
 					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
-					'value': '',
+					'value': '{"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}}',
+					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
+					'required': false
+				},
+				{
+					'name': 'aclForm',
+					'label': 'Access Level 2',
+					'type': 'html',
+					'rows': 10,
+					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
+					'value': '<ngaclform></ngaclform>',
 					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
 					'required': false
 				},

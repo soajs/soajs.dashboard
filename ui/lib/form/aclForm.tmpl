@@ -1,0 +1,41 @@
+<style>
+.listApis tr.odd{
+    background-color: #ddd;
+}
+.listApis tr td{
+    padding: 3px;;
+}
+</style>
+<div id="generate-ApiList">
+
+    <div ng-repeat="service in allServiceApis" style="clear: both" class="clearfix">
+        <div class="clearfix">
+            <div style="float: left; width: 200px;">
+                <input type="checkbox" ng-checked="aclFill.services[service.name]" ng-model="aclFill.services[service.name].include" value="{{service.name}}">
+                <b> <a href="">{{service.name}} </a></b>
+            </div>
+            <div ng-show="aclFill.services[service.name].include" style="float: left;">
+                <input value="public" type="radio" name="{{service.name}}_radio" ng-checked="!aclFill.services[service.name].access"> public
+                <span style="padding-left: 40px;"><input value="private" type="radio" name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].access"> private</span></div>
+
+        </div>
+
+
+        <div class="" style="padding-left: 20px;">
+            <table class="listApis" width="100%" ng-show="aclFill.services[service.name].include">
+            <tr ng-repeat="api in service.apis" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:api.selected}">
+                <td style="width: 25px;">
+                    <input ng-model="aclFill.services[service.name].apis[api].include" ng-checked="aclFill.services[service.name].apis[api].include" id="{{service.name}}{{$index}}" type="checkbox" ng-click="selectApi(this, service, api, $index)">
+
+            </td>
+            <td style="width: 450px;">{{api}} </td>
+            <td><div ng-show="aclFill.services[service.name].apis[api].include">
+                <span style="">
+                    <input ng-checked="aclFill.services[service.name].apis[api].accessType===public" ng-model="aclFill.services[service.name].apis[api].accessType" value="public" type="radio" name="{{service.name}}_{{$index}}_accessType"> public </span>
+                <span style="padding-left: 40px;">
+                    <input ng-checked="aclFill.services[service.name].apis[api].accessType===private" ng-model="aclFill.services[service.name].apis[api].accessType" value="private" type="radio" name="{{service.name}}_{{$index}}_accessType"> private</span>
+            </div>
+                 </td> </tr>
+        </table></div>
+    </div></div>
+

@@ -1,6 +1,6 @@
 "use strict";
 var productizationApp = soajsApp.components;
-productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
+productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	
 	$scope.viewPackage = function(pack) {
@@ -188,10 +188,21 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addPackage = function(productId) {
+		//$scope.aclFill.services= {};
+		console.log($scope.aclFill);
 		var formConf = angular.copy(productizationConfig.form.package);
 		formConf.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
 				oneEn.value[0].selected=true;
+			}
+			if(oneEn.name==='acl'){
+				//oneEn.value[0].selected=true;
+				/* var cfgElement = angular.element(document.getElementById("idacl"));
+				if(cfgElement){
+					cfgElement.html('<div ng-repeat="service in allServiceApis"><input type="checkbox">{{service.name}}</div>');
+					$compile(cfgElement.contents())($scope);
+				}*/
+
 			}
 		});
 
@@ -254,20 +265,49 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
+				},
+				{
+					'type': 'reset',
+					'label': 'FILL',
+					'btn': 'danger',
+					'action': function() {
+						$scope.aclFill.services={};
+						var cfgElement = angular.element(document.getElementById("idaclForm"));
+						if(cfgElement){
+							console.log(cfgElement);
+							console.log($scope.aclFill);
+							cfgElement.html('<ngaclform></ngaclform> ');
+							$compile(cfgElement.contents())($scope);
+						}
+
+					}
 				}
 			]
 		};
-
 		buildFormWithModal($scope, $modal, options);
 	};
 
 	$scope.editPackage = function(productId, data) {
-		console.log(data);
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
+		$scope.aclFill.services= angular.copy(recordData.acl);
+		for(var propt in $scope.aclFill.services){
+			var s = $scope.aclFill.services[propt];
+			s.include =true;
+			if(s.apis){
+				for(var ap in s.apis){
+					s.apis[ap].include=true;
+					if( s.apis[ap].access===true){
+						s.apis[ap].accessType = 'private';
+					}
+				}
+			}
+
+		}
 		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -286,7 +326,40 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						
+						var aclObj2 = {};
+						var aclObj = {};
+						for(var propt in $scope.aclFill.services){
+
+							var s = $scope.aclFill.services[propt];
+							if(s.include===true){
+								aclObj2[propt]={};
+								if(s.accessType==='private'){
+									aclObj2[propt].access=true;
+								}else{
+									//aclObj2[propt].access=false;
+								}
+								if(s.apis)
+								{
+									aclObj2[propt].apis={};
+									for(var ap in s.apis){
+										var api = s.apis[ap];
+										if(api.include===true)
+										{
+											aclObj2[propt].apis[ap]={};
+											if(api.access==='private'){
+												aclObj2[propt].apis[ap].access=true;
+											}else{
+												//aclObj2[propt].apis[ap].access=false;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						console.log('aclObj 2');
+						console.log(aclObj2);
+
 						if(formData.acl && (formData.acl != "")) {
 							try {
 								var aclObj = JSON.parse(formData.acl);
@@ -296,10 +369,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								return;
 							}
 						}
-						else {
-							var aclObj = {};
-						}	
-						postData.acl = aclObj;
+						console.log('aclObj');
+						console.log(aclObj);
+						postData.acl = aclObj2;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
@@ -326,6 +398,22 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
+				},
+				{
+					'type': 'reset',
+					'label': 'FILL',
+					'btn': 'danger',
+					'action': function() {
+						var cfgElement = angular.element(document.getElementById("idaclForm"));
+						if(cfgElement){
+							console.log(cfgElement);
+							cfgElement.html('<ngaclform></ngaclform> ');
+							$compile(cfgElement.contents())($scope);
+						}
+						else{
+							console.log('no elem');
+						}
+					}
 				}
 			]
 		};
@@ -350,6 +438,51 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/services/list",
+			"params": {}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(response);
+				$scope.allServiceApis = response;
+			}
+		});
+	};
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		if($scope.selectedServices[service.name]){
+			if($scope.selectedServices[service.name][api])
+			{
+				if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+					delete $scope.selectedServices[service.name][api];
+				}
+				else{
+					$scope.selectedServices[service.name][api].selectedApi=true;
+				}
+			}
+			else{
+				$scope.selectedServices[service.name][api]= {};
+				$scope.selectedServices[service.name][api].selectedApi=true;
+			}
+		}*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+
 	//default operation
+	$scope.getServices();
 	$scope.listProducts();
+
 }]);

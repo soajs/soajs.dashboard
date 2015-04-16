@@ -144,3 +144,10 @@ soajsApp.directive('ngform', function() {
 		templateUrl: 'lib/form/form.tmpl'
 	};
 });
+
+soajsApp.directive('ngaclform', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/aclForm.tmpl'
+	};
+});

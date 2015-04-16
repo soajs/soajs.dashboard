@@ -9,7 +9,7 @@
             <tr ng-repeat="entry in form.entries" class="form-group" ng-switch="entry.type">
                 <td ng-switch-when="textarea">
                     <label>{{entry.label}}</label>
-                        <textarea name="{{entry.name}}" rows="{{entry.rows}}" ng-model="form.formData[entry.name]" class="form-control" placeholder="{{entry.placeholder}}"
+                        <textarea id="id{{entry.name}}" name="{{entry.name}}" rows="{{entry.rows}}" ng-model="form.formData[entry.name]" class="form-control" placeholder="{{entry.placeholder}}"
                                   tooltip="{{entry.tooltip}}" ng-required="entry.required">{{entry.value}}</textarea>
 
                     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
@@ -17,7 +17,7 @@
 				
 				<td ng-switch-when="html" class="typeHtml">
                     <label>{{entry.label}}</label>
-                    <div class="staticValue" ng-bind-html="entry.value|toTrustedHtml"></div>
+                    <div id="id{{entry.name}}" class="staticValue" ng-bind-html="entry.value|toTrustedHtml"></div>
                     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
                 </td>
                 
