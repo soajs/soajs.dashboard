@@ -46,19 +46,6 @@ var groupsConfig = {
 				'value': '',
 				'tooltip': 'Enter the Description of the Group',
 				'required': true
-			},
-			{
-				'name': 'permissions',
-				'label': 'Permissions',
-				'type': 'checkbox',
-				'placeholder': ' members,environments',
-				'value': [{v:'members', lb:'members'}, {v:'environments', lb:'environments'},
-					{v:'productization', lb:'productization'}, {v:'productization_packages', lb:'productization_packages'}, {v:'multi-tenancy', lb:'multi-tenancy'},
-					{v:'multi-tenancy_applications', lb:'multi-tenancy_applications'}, {v:'multi-tenancy_keys', lb:'multi-tenancy_keys'}
-				],
-				'rows': 2,
-				'tooltip': 'Choose the Permissions of the Group.',
-				'required': false
 			}
 		]
 	},
