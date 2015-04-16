@@ -3,6 +3,7 @@ var multiTenantApp = soajsApp.components;
 multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$routeParams','$compile','ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile,ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	var currentApp = null;
+
 	$scope.viewKeys = function(id, app) {
 		if (currentApp && ( currentApp['appId']!= app['appId'] ))
 		{
@@ -14,14 +15,17 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			app.showKeys = true;	
 		currentApp = app;
 	};
+
 	$scope.openKeys = function(id, app) {
 		console.log('openKeys: ' + app['appId']);
 		app.showKeys = true;	
 	};
+
 	$scope.closeKeys = function(id, app) {
 		console.log('closeKeys: ' + app['appId']);
 		app.showKeys = false;			
 	};
+
 	$scope.removeAppKey = function(id, app, key, event) {
 		console.log('key: ' +key);
 		getSendDataFromServer(ngDataApi, {
@@ -73,6 +77,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});		
 	};
+
 	$scope.getEnvironments = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -291,6 +296,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 		buildFormWithModal($scope, $modal, options);
 	}
+
 	$scope.editOauth = function(data) {
 		var oAuth = data.oauth;
 		
@@ -545,6 +551,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 		buildFormWithModal($scope, $modal, options);
 	};
+
 	$scope.addOauthUser = function(tId) {
 		var options = {
 			timeout: $timeout,
@@ -593,7 +600,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-	$scope.addTenantApplication = function(tId) { 
+
+	$scope.addTenantApplication = function(tId) {
 		var formConfig = angular.copy(tenantConfig.form.application);
 		console.log(formConfig.entries[1]);
 		
@@ -800,9 +808,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.openSubContent = function(key, index) {
-		console.log('openSubContent ; index: '+ index);
-	};
+	//$scope.openSubContent = function(key, index) {
+	//	console.log('openSubContent ; index: '+ index);
+	//};
 	
 	$scope.addNewKey = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
@@ -1243,6 +1251,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});
 	};
+
 	$scope.reloadConfiguration = function(tId, appId, key, index) {
 		console.log('reloadConfiguration : tId: ' + tId) ;
 		console.log('appId: ' + appId) ;
@@ -1311,648 +1320,649 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});
 	};
+
 	//default operation
 	$scope.getProds();
 	$scope.getEnvironments();
 	$scope.listTenants();
 }]);
 
-multiTenantApp.controller('tenantOauthCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
-
-	$scope.$parent.$on('listOAuth', function(event, args) {
-		$scope.printOAuthForm(args.tenantRecord);
-	});
-
-	$scope.printOAuthForm = function(oAuth) {};
-}]);
-
-multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
-
-	$scope.$parent.$on('listApplications', function(event, args) {
-		$scope.listApplications(args.tenantRecord);
-	});
-
-	$scope.listApplications = function(applications) {
-		//print the grid of packages
-		var options = {
-			grid: tenantConfig.grid.applications,
-			data: applications,
-			defaultSortField: 'product',
-			left: [{
-				'label': 'Browse',
-				'icon': 'view',
-				'handler': 'browseApplication'
-			}, {
-				'label': 'Edit',
-				'icon': 'edit',
-				'handler': 'editApplication'
-			}, {
-				'label': 'Remove',
-				'icon': 'remove',
-				'msg': "Are you sure you want to remove this application?",
-				'handler': 'removeApplication'
-			}],
-			top: [{
-				'label': 'Remove',
-				'msg': "Are you sure you want to remove the selected application(s)?",
-				'handler': 'removeMultipleApplications'
-			}]
-		};
-		buildGrid($scope, options);
-	};
-
-	$scope.reloadApplications = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/list",
-			"params": {"id": $routeParams.id}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.listApplications(response);
-			}
-		});
-	};
-
-	$scope.addApplication = function() {
-		var options = {
-			timeout: $timeout,
-			form: tenantConfig.form.application,
-			name: 'addApplication',
-			label: 'Add New Application',
-			sub: true,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Add Application',
-					'btn': 'primary',
-					'action': function(formData) {
-						if(formData.acl && (formData.acl != "")) {
-							try {
-								var aclObj = JSON.parse(formData.acl);							
-							}
-							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
-								return;
-							}
-						}
-						else {
-							var aclObj = {};
-						}	
-						var postData = {
-							'productCode': formData.product,
-							'packageCode': formData.package,
-							'description': formData.description,
-							'acl':aclObj,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-						};
-						
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/tenant/application/add",
-							"data": postData,
-							"params": {"id": $routeParams.id}
-						}, function(error, response) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Application Added Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.reloadApplications();
-							}
-						});
-					
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.editApplication = function(data) {
-		var formConfig = angular.copy(tenantConfig.form.application);
-		var recordData = angular.copy(data);
-		recordData.package = recordData.package.split("_")[1];
-		recordData._TTL = recordData._TTL / 3600;
-		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editApplication',
-			label: 'Edit Application',
-			data: recordData,
-			actions: [
-			{
-				'type': 'submit',
-				'label': 'Submit',
-				'btn': 'primary',
-				'action': function(formData) {					
-					if(formData.acl && (formData.acl != "")) {
-						try {
-							var aclObj = JSON.parse(formData.acl);							
-						}
-						catch(e) {
-							$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
-							return;
-						}
-					}
-					else {
-						var aclObj = {};
-					}	
-					var postData = {
-						'productCode': formData.product,
-						'packageCode': formData.package,
-						'description': formData.description,
-						'acl' : aclObj,
-						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-					};
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/tenant/application/update",
-						"data": postData,
-						"params": {"id": $routeParams.id, "appId": data.appId}
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'Application Updated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.reloadApplications();
-						}
-					});				
-				}
-			},
-			{
-				'type': 'reset',
-				'label': 'Cancel',
-				'btn': 'danger',
-				'action': function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
-				}
-			}]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.removeApplication = function(data) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/delete",
-			"params": {"id": $routeParams.id, "appId": data.appId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', "Selected Application has been removed.");
-				$scope.reloadApplications();
-			}
-		});
-	};
-
-	$scope.removeMultipleApplications = function() {
-		var config = {
-			'routeName': "/dashboard/tenant/application/delete",
-			"params": {'id': $routeParams.id, 'appId': '%appId%'},
-			"override": {
-				"fieldName": "appId"
-			},
-			'msg': {
-				'error': 'one or more of the selected Application(s) status was not removed.',
-				'success': 'Selected Application(s) has been removed.'
-			}
-		};
-
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
-			$scope.reloadApplications();
-		});
-	};
-
-	$scope.browseApplication = function(data) {
-		$scope.$parent.go("/multi-tenancy/" + $routeParams.id + "/application/" + data.appId + "/keys");
-	};
-}]);
-
-multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
-
-	$scope.tenantId = $routeParams.id;
-
-	$scope.listKeys = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/list",
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.keys = response;
-			}
-		});
-	};
-
-	$scope.addNewKey = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/tenant/application/key/add",
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Application Key Added Successfully.');
-				$scope.listKeys();
-			}
-		});
-	};
-
-	$scope.removeKey = function(key) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/delete",
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.');
-				$scope.listKeys();
-			}
-		});
-	};
-
-	$scope.openSubContent = function(key, index) {
-		var element = angular.element(document.getElementById("keyConfig" + index));
-		if(element.html().toString() === '') { $scope.listConfiguration(key, index); }
-	};
-
-	$scope.listKeys();
-
-	/*
-	 key configuration
-	 */
-	$scope.listConfiguration = function(key, index) {
-		$scope.currentApplicationKey = key;
-		$scope.currentApplicationKeyIndex = index;
-
-		for(var i = 0; i < $scope.keys.length; i++) {
-			if(i !== index) {
-				var cfgElement = angular.element(document.getElementById("keyConfig" + i));
-				cfgElement.html('');
-				$compile(cfgElement.contents())($scope);
-			}
-		}
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/config/list",
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				if(JSON.stringify(response) !== '{}') {
-					//reshape response
-					$scope.boxes = [];
-					var envs = Object.keys(response);
-					envs.forEach(function(oneEnv) {
-						if(oneEnv !== 'soajsauth') {
-							$scope.boxes.push({
-								'env': oneEnv,
-								'config': response[oneEnv]
-							});
-						}
-					});
-
-					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
-					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div ng-repeat="box in boxes" class="entryBox blueBox"><b>{{box.env}} Environment</b>&nbsp;&nbsp;<a href="" ng-click="updateConfiguration(box);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>');
-					$compile(cfgElement.contents())($scope);
-				}
-				else {
-					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
-					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable"><span class="ng-scope ng-binding">No Configuration detected. Click to add new configuration.</span></div>');
-					$compile(cfgElement.contents())($scope);
-				}
-			}
-		});
-	};
-
-	$scope.updateConfiguration = function(data) {
-		var options = {
-			timeout: $timeout,
-			form: tenantConfig.form.keyConfig,
-			name: 'updatekeyConfig',
-			label: 'Update Key Configuration',
-			labels: {
-				submit: 'Update'
-			},
-			data: (data) ? {'config': JSON.stringify(data.config, null, "\t"), 'envCode': data.env} : {},
-			sub: true,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Submit',
-					'btn': 'primary',
-					'action': function(formData) {
-						if(formData.config && (formData.config != "")) {
-							try {
-								var configObj = JSON.parse(formData.config);
-							}
-							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid Config Json object ');
-								return;
-							}
-						}
-						else {
-							var configObj = {};
-						}
-						
-						var postData = {
-							'envCode': formData.envCode,
-							'config': configObj
-						};
-
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/tenant/application/key/config/update",
-							"data": postData,
-							"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
-						}, function(error, response) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listConfiguration($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
-							}
-						});					
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}]
-			
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	/*
-	 external keys
-	 */
-	$scope.listExtKeys = function(key, index) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/ext/list",
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				var options = {
-					grid: tenantConfig.grid.extKeys,
-					data: response,
-					defaultSortField: 'expDate',
-					left: [{
-						'label': 'Edit',
-						'icon': 'edit',
-						'handler': 'editExtKey'
-					}, {
-						'label': 'Remove',
-						'icon': 'remove',
-						'msg': "Are you sure you want to remove this external key?",
-						'handler': 'removeExtKey'
-					}]
-				};
-				buildGrid($scope, options);
-				console.log(options);
-				var extGrid = angular.element(document.getElementById('externalKeys' + index));
-				$compile(extGrid.contents())($scope);
-				$scope.currentApplicationKey = key;
-				$scope.currentApplicationKeyIndex = index;
-			}
-		});
-	};
-
-	$scope.addNewExtKey = function() {
-		console.log( 'addNewExtKey for key: '+ $scope.currentApplicationKey);
-		var options = {
-			timeout: $timeout,
-			form: tenantConfig.form.extKey,
-			name: 'addExtKey',
-			label: 'Add New External Key',
-			sub: true,
-			actions: [
-			{
-				'type': 'submit',
-				'label': 'Submit',
-				'btn': 'primary',
-				'action': function(formData) {
-					if(formData.device && (formData.device != "")) {
-						try {
-							var deviceObj = JSON.parse(formData.device);
-						}
-						catch(e) {
-							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
-							return;
-						}
-					}
-					else {
-						var deviceObj = {};
-					}
-					if(formData.geo && (formData.geo != "")) {
-						try {
-							var geoObj = JSON.parse(formData.geo);
-						}
-						catch(e) {
-							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
-							return;
-						}
-					}
-					else {
-						var geoObj = {};
-					}	
-					var postData = {
-						'expDate': formData.expDate,
-						'device': deviceObj,
-						'geo': geoObj
-					};
-
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/tenant/application/key/ext/add",
-						"data": postData,
-						"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'External Key Added Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
-						}
-					});				
-				}
-			},
-			{
-				'type': 'reset',
-				'label': 'Cancel',
-				'btn': 'danger',
-				'action': function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
-				}
-			}]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.editExtKey = function(data) {
-
-		console.log( 'currentApplicationKey: '+$scope.currentApplicationKey );
-		if(data.geo) { data.geo = JSON.stringify(data.geo, null, "\t"); }
-		if(data.device) { data.device = JSON.stringify(data.device, null, "\t"); }
-
-		var formConfig = angular.copy(tenantConfig.form.extKey);
-		formConfig.entries.unshift({
-			'name': 'extKey',
-			'label': 'External Key Value',
-			'type': 'textarea',
-			'rows': 3,
-			'required': false
-		});
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editExtKey',
-			label: 'Edit External Key',
-			sub: true,
-			data: data,
-			actions: [
-			{
-				'type': 'submit',
-				'label': 'Submit',
-				'btn': 'primary',
-				'action': function(formData) {
-					if(formData.device && (formData.device != "")) {
-						try {
-							var deviceObj = JSON.parse(formData.device);
-						}
-						catch(e) {
-							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
-							return;
-						}
-					}
-					else {
-						var deviceObj = {};
-					}
-					if(formData.geo && (formData.geo != "")) {
-						try {
-							var geoObj = JSON.parse(formData.geo);
-						}
-						catch(e) {
-							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
-							return;
-						}
-					}
-					else {
-						var geoObj = {};
-					}
-					
-					var postData = {
-						'expDate': new Date(formData.expDate).toISOString(),
-						'device': deviceObj,
-						'geo': geoObj,
-						'extKey': data.extKey
-					};
-
-					getSendDataFromServer(ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/tenant/application/key/ext/update",
-						"data": postData,
-						"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
-					}, function(error, response) {
-						if(error) {
-							$scope.form.displayAlert('danger', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', 'External Key Updated Successfully.');
-							$scope.modalInstance.close();
-							$scope.form.formData = {};
-							$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
-						}
-					});
-				
-				}
-			},
-			{
-				'type': 'reset',
-				'label': 'Cancel',
-				'btn': 'danger',
-				'action': function() {
-					$scope.modalInstance.dismiss('cancel');
-					$scope.form.formData = {};
-				}
-			}]
-		};
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.removeExtKey = function(data) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/tenant/application/key/ext/delete",
-			"data": {'extKey': data.extKey},
-			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
-		}, function(error, response) {
-			if(error) {
-				$scope.form.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
-				$scope.modalInstance.close();
-				$scope.form.formData = {};
-				$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
-			}
-		});
-	};
-
-
-}]);
+//multiTenantApp.controller('tenantOauthCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
+//	$scope.$parent.isUserLoggedIn();
+//
+//	$scope.$parent.$on('listOAuth', function(event, args) {
+//		$scope.printOAuthForm(args.tenantRecord);
+//	});
+//
+//	$scope.printOAuthForm = function(oAuth) {};
+//}]);
+//
+//multiTenantApp.controller('tenantApplicationsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
+//	$scope.$parent.isUserLoggedIn();
+//
+//	$scope.$parent.$on('listApplications', function(event, args) {
+//		$scope.listApplications(args.tenantRecord);
+//	});
+//
+//	$scope.listApplications = function(applications) {
+//		//print the grid of packages
+//		var options = {
+//			grid: tenantConfig.grid.applications,
+//			data: applications,
+//			defaultSortField: 'product',
+//			left: [{
+//				'label': 'Browse',
+//				'icon': 'view',
+//				'handler': 'browseApplication'
+//			}, {
+//				'label': 'Edit',
+//				'icon': 'edit',
+//				'handler': 'editApplication'
+//			}, {
+//				'label': 'Remove',
+//				'icon': 'remove',
+//				'msg': "Are you sure you want to remove this application?",
+//				'handler': 'removeApplication'
+//			}],
+//			top: [{
+//				'label': 'Remove',
+//				'msg': "Are you sure you want to remove the selected application(s)?",
+//				'handler': 'removeMultipleApplications'
+//			}]
+//		};
+//		buildGrid($scope, options);
+//	};
+//
+//	$scope.reloadApplications = function() {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/list",
+//			"params": {"id": $routeParams.id}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.listApplications(response);
+//			}
+//		});
+//	};
+//
+//	$scope.addApplication = function() {
+//		var options = {
+//			timeout: $timeout,
+//			form: tenantConfig.form.application,
+//			name: 'addApplication',
+//			label: 'Add New Application',
+//			sub: true,
+//			actions: [
+//				{
+//					'type': 'submit',
+//					'label': 'Add Application',
+//					'btn': 'primary',
+//					'action': function(formData) {
+//						if(formData.acl && (formData.acl != "")) {
+//							try {
+//								var aclObj = JSON.parse(formData.acl);
+//							}
+//							catch(e) {
+//								$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
+//								return;
+//							}
+//						}
+//						else {
+//							var aclObj = {};
+//						}
+//						var postData = {
+//							'productCode': formData.product,
+//							'packageCode': formData.package,
+//							'description': formData.description,
+//							'acl':aclObj,
+//							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+//						};
+//
+//						getSendDataFromServer(ngDataApi, {
+//							"method": "send",
+//							"routeName": "/dashboard/tenant/application/add",
+//							"data": postData,
+//							"params": {"id": $routeParams.id}
+//						}, function(error, response) {
+//							if(error) {
+//								$scope.form.displayAlert('danger', error.message);
+//							}
+//							else {
+//								$scope.$parent.displayAlert('success', 'Application Added Successfully.');
+//								$scope.modalInstance.close();
+//								$scope.form.formData = {};
+//								$scope.reloadApplications();
+//							}
+//						});
+//
+//					}
+//				},
+//				{
+//					'type': 'reset',
+//					'label': 'Cancel',
+//					'btn': 'danger',
+//					'action': function() {
+//						$scope.modalInstance.dismiss('cancel');
+//						$scope.form.formData = {};
+//					}
+//				}]
+//		};
+//
+//		buildFormWithModal($scope, $modal, options);
+//	};
+//
+//	$scope.editApplication = function(data) {
+//		var formConfig = angular.copy(tenantConfig.form.application);
+//		var recordData = angular.copy(data);
+//		recordData.package = recordData.package.split("_")[1];
+//		recordData._TTL = recordData._TTL / 3600;
+//		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
+//
+//		var options = {
+//			timeout: $timeout,
+//			form: formConfig,
+//			name: 'editApplication',
+//			label: 'Edit Application',
+//			data: recordData,
+//			actions: [
+//			{
+//				'type': 'submit',
+//				'label': 'Submit',
+//				'btn': 'primary',
+//				'action': function(formData) {
+//					if(formData.acl && (formData.acl != "")) {
+//						try {
+//							var aclObj = JSON.parse(formData.acl);
+//						}
+//						catch(e) {
+//							$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
+//							return;
+//						}
+//					}
+//					else {
+//						var aclObj = {};
+//					}
+//					var postData = {
+//						'productCode': formData.product,
+//						'packageCode': formData.package,
+//						'description': formData.description,
+//						'acl' : aclObj,
+//						'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+//					};
+//					getSendDataFromServer(ngDataApi, {
+//						"method": "send",
+//						"routeName": "/dashboard/tenant/application/update",
+//						"data": postData,
+//						"params": {"id": $routeParams.id, "appId": data.appId}
+//					}, function(error, response) {
+//						if(error) {
+//							$scope.form.displayAlert('danger', error.message);
+//						}
+//						else {
+//							$scope.$parent.displayAlert('success', 'Application Updated Successfully.');
+//							$scope.modalInstance.close();
+//							$scope.form.formData = {};
+//							$scope.reloadApplications();
+//						}
+//					});
+//				}
+//			},
+//			{
+//				'type': 'reset',
+//				'label': 'Cancel',
+//				'btn': 'danger',
+//				'action': function() {
+//					$scope.modalInstance.dismiss('cancel');
+//					$scope.form.formData = {};
+//				}
+//			}]
+//		};
+//
+//		buildFormWithModal($scope, $modal, options);
+//	};
+//
+//	$scope.removeApplication = function(data) {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/delete",
+//			"params": {"id": $routeParams.id, "appId": data.appId}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.$parent.displayAlert('success', "Selected Application has been removed.");
+//				$scope.reloadApplications();
+//			}
+//		});
+//	};
+//
+//	$scope.removeMultipleApplications = function() {
+//		var config = {
+//			'routeName': "/dashboard/tenant/application/delete",
+//			"params": {'id': $routeParams.id, 'appId': '%appId%'},
+//			"override": {
+//				"fieldName": "appId"
+//			},
+//			'msg': {
+//				'error': 'one or more of the selected Application(s) status was not removed.',
+//				'success': 'Selected Application(s) has been removed.'
+//			}
+//		};
+//
+//		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+//			$scope.reloadApplications();
+//		});
+//	};
+//
+//	$scope.browseApplication = function(data) {
+//		$scope.$parent.go("/multi-tenancy/" + $routeParams.id + "/application/" + data.appId + "/keys");
+//	};
+//}]);
+//
+//multiTenantApp.controller('tenantKeysCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi) {
+//	$scope.$parent.isUserLoggedIn();
+//
+//	$scope.tenantId = $routeParams.id;
+//
+//	$scope.listKeys = function() {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/key/list",
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.keys = response;
+//			}
+//		});
+//	};
+//
+//	$scope.addNewKey = function() {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "send",
+//			"routeName": "/dashboard/tenant/application/key/add",
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.$parent.displayAlert('success', 'Application Key Added Successfully.');
+//				$scope.listKeys();
+//			}
+//		});
+//	};
+//
+//	$scope.removeKey = function(key) {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/key/delete",
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.');
+//				$scope.listKeys();
+//			}
+//		});
+//	};
+//
+//	$scope.openSubContent = function(key, index) {
+//		var element = angular.element(document.getElementById("keyConfig" + index));
+//		if(element.html().toString() === '') { $scope.listConfiguration(key, index); }
+//	};
+//
+//	$scope.listKeys();
+//
+//	/*
+//	 key configuration
+//	 */
+//	$scope.listConfiguration = function(key, index) {
+//		$scope.currentApplicationKey = key;
+//		$scope.currentApplicationKeyIndex = index;
+//
+//		for(var i = 0; i < $scope.keys.length; i++) {
+//			if(i !== index) {
+//				var cfgElement = angular.element(document.getElementById("keyConfig" + i));
+//				cfgElement.html('');
+//				$compile(cfgElement.contents())($scope);
+//			}
+//		}
+//
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/key/config/list",
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				if(JSON.stringify(response) !== '{}') {
+//					//reshape response
+//					$scope.boxes = [];
+//					var envs = Object.keys(response);
+//					envs.forEach(function(oneEnv) {
+//						if(oneEnv !== 'soajsauth') {
+//							$scope.boxes.push({
+//								'env': oneEnv,
+//								'config': response[oneEnv]
+//							});
+//						}
+//					});
+//
+//					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
+//					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div ng-repeat="box in boxes" class="entryBox blueBox"><b>{{box.env}} Environment</b>&nbsp;&nbsp;<a href="" ng-click="updateConfiguration(box);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit" /></a>');
+//					$compile(cfgElement.contents())($scope);
+//				}
+//				else {
+//					var cfgElement = angular.element(document.getElementById("keyConfig" + $scope.currentApplicationKeyIndex));
+//					cfgElement.html('<button class="btn btn-primary" ng-click="updateConfiguration();">Add New Configuration</button><br /><br /><div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable"><span class="ng-scope ng-binding">No Configuration detected. Click to add new configuration.</span></div>');
+//					$compile(cfgElement.contents())($scope);
+//				}
+//			}
+//		});
+//	};
+//
+//	$scope.updateConfiguration = function(data) {
+//		var options = {
+//			timeout: $timeout,
+//			form: tenantConfig.form.keyConfig,
+//			name: 'updatekeyConfig',
+//			label: 'Update Key Configuration',
+//			labels: {
+//				submit: 'Update'
+//			},
+//			data: (data) ? {'config': JSON.stringify(data.config, null, "\t"), 'envCode': data.env} : {},
+//			sub: true,
+//			actions: [
+//				{
+//					'type': 'submit',
+//					'label': 'Submit',
+//					'btn': 'primary',
+//					'action': function(formData) {
+//						if(formData.config && (formData.config != "")) {
+//							try {
+//								var configObj = JSON.parse(formData.config);
+//							}
+//							catch(e) {
+//								$scope.form.displayAlert('danger', 'Error: Invalid Config Json object ');
+//								return;
+//							}
+//						}
+//						else {
+//							var configObj = {};
+//						}
+//
+//						var postData = {
+//							'envCode': formData.envCode,
+//							'config': configObj
+//						};
+//
+//						getSendDataFromServer(ngDataApi, {
+//							"method": "send",
+//							"routeName": "/dashboard/tenant/application/key/config/update",
+//							"data": postData,
+//							"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
+//						}, function(error, response) {
+//							if(error) {
+//								$scope.form.displayAlert('danger', error.message);
+//							}
+//							else {
+//								$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
+//								$scope.modalInstance.close();
+//								$scope.form.formData = {};
+//								$scope.listConfiguration($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+//							}
+//						});
+//					}
+//				},
+//				{
+//					'type': 'reset',
+//					'label': 'Cancel',
+//					'btn': 'danger',
+//					'action': function() {
+//						$scope.modalInstance.dismiss('cancel');
+//						$scope.form.formData = {};
+//					}
+//				}]
+//
+//		};
+//
+//		buildFormWithModal($scope, $modal, options);
+//	};
+//
+//	/*
+//	 external keys
+//	 */
+//	$scope.listExtKeys = function(key, index) {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "get",
+//			"routeName": "/dashboard/tenant/application/key/ext/list",
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": key}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.$parent.displayAlert('danger', error.message);
+//			}
+//			else {
+//				var options = {
+//					grid: tenantConfig.grid.extKeys,
+//					data: response,
+//					defaultSortField: 'expDate',
+//					left: [{
+//						'label': 'Edit',
+//						'icon': 'edit',
+//						'handler': 'editExtKey'
+//					}, {
+//						'label': 'Remove',
+//						'icon': 'remove',
+//						'msg': "Are you sure you want to remove this external key?",
+//						'handler': 'removeExtKey'
+//					}]
+//				};
+//				buildGrid($scope, options);
+//				console.log(options);
+//				var extGrid = angular.element(document.getElementById('externalKeys' + index));
+//				$compile(extGrid.contents())($scope);
+//				$scope.currentApplicationKey = key;
+//				$scope.currentApplicationKeyIndex = index;
+//			}
+//		});
+//	};
+//
+//	$scope.addNewExtKey = function() {
+//		console.log( 'addNewExtKey for key: '+ $scope.currentApplicationKey);
+//		var options = {
+//			timeout: $timeout,
+//			form: tenantConfig.form.extKey,
+//			name: 'addExtKey',
+//			label: 'Add New External Key',
+//			sub: true,
+//			actions: [
+//			{
+//				'type': 'submit',
+//				'label': 'Submit',
+//				'btn': 'primary',
+//				'action': function(formData) {
+//					if(formData.device && (formData.device != "")) {
+//						try {
+//							var deviceObj = JSON.parse(formData.device);
+//						}
+//						catch(e) {
+//							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+//							return;
+//						}
+//					}
+//					else {
+//						var deviceObj = {};
+//					}
+//					if(formData.geo && (formData.geo != "")) {
+//						try {
+//							var geoObj = JSON.parse(formData.geo);
+//						}
+//						catch(e) {
+//							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+//							return;
+//						}
+//					}
+//					else {
+//						var geoObj = {};
+//					}
+//					var postData = {
+//						'expDate': formData.expDate,
+//						'device': deviceObj,
+//						'geo': geoObj
+//					};
+//
+//					getSendDataFromServer(ngDataApi, {
+//						"method": "send",
+//						"routeName": "/dashboard/tenant/application/key/ext/add",
+//						"data": postData,
+//						"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
+//					}, function(error, response) {
+//						if(error) {
+//							$scope.form.displayAlert('danger', error.message);
+//						}
+//						else {
+//							$scope.$parent.displayAlert('success', 'External Key Added Successfully.');
+//							$scope.modalInstance.close();
+//							$scope.form.formData = {};
+//							$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+//						}
+//					});
+//				}
+//			},
+//			{
+//				'type': 'reset',
+//				'label': 'Cancel',
+//				'btn': 'danger',
+//				'action': function() {
+//					$scope.modalInstance.dismiss('cancel');
+//					$scope.form.formData = {};
+//				}
+//			}]
+//		};
+//
+//		buildFormWithModal($scope, $modal, options);
+//	};
+//
+//	$scope.editExtKey = function(data) {
+//
+//		console.log( 'currentApplicationKey: '+$scope.currentApplicationKey );
+//		if(data.geo) { data.geo = JSON.stringify(data.geo, null, "\t"); }
+//		if(data.device) { data.device = JSON.stringify(data.device, null, "\t"); }
+//
+//		var formConfig = angular.copy(tenantConfig.form.extKey);
+//		formConfig.entries.unshift({
+//			'name': 'extKey',
+//			'label': 'External Key Value',
+//			'type': 'textarea',
+//			'rows': 3,
+//			'required': false
+//		});
+//		var options = {
+//			timeout: $timeout,
+//			form: formConfig,
+//			name: 'editExtKey',
+//			label: 'Edit External Key',
+//			sub: true,
+//			data: data,
+//			actions: [
+//			{
+//				'type': 'submit',
+//				'label': 'Submit',
+//				'btn': 'primary',
+//				'action': function(formData) {
+//					if(formData.device && (formData.device != "")) {
+//						try {
+//							var deviceObj = JSON.parse(formData.device);
+//						}
+//						catch(e) {
+//							$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
+//							return;
+//						}
+//					}
+//					else {
+//						var deviceObj = {};
+//					}
+//					if(formData.geo && (formData.geo != "")) {
+//						try {
+//							var geoObj = JSON.parse(formData.geo);
+//						}
+//						catch(e) {
+//							$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+//							return;
+//						}
+//					}
+//					else {
+//						var geoObj = {};
+//					}
+//
+//					var postData = {
+//						'expDate': new Date(formData.expDate).toISOString(),
+//						'device': deviceObj,
+//						'geo': geoObj,
+//						'extKey': data.extKey
+//					};
+//
+//					getSendDataFromServer(ngDataApi, {
+//						"method": "send",
+//						"routeName": "/dashboard/tenant/application/key/ext/update",
+//						"data": postData,
+//						"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
+//					}, function(error, response) {
+//						if(error) {
+//							$scope.form.displayAlert('danger', error.message);
+//						}
+//						else {
+//							$scope.$parent.displayAlert('success', 'External Key Updated Successfully.');
+//							$scope.modalInstance.close();
+//							$scope.form.formData = {};
+//							$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+//						}
+//					});
+//
+//				}
+//			},
+//			{
+//				'type': 'reset',
+//				'label': 'Cancel',
+//				'btn': 'danger',
+//				'action': function() {
+//					$scope.modalInstance.dismiss('cancel');
+//					$scope.form.formData = {};
+//				}
+//			}]
+//		};
+//		buildFormWithModal($scope, $modal, options);
+//	};
+//
+//	$scope.removeExtKey = function(data) {
+//		getSendDataFromServer(ngDataApi, {
+//			"method": "send",
+//			"routeName": "/dashboard/tenant/application/key/ext/delete",
+//			"data": {'extKey': data.extKey},
+//			"params": {"id": $routeParams.id, "appId": $routeParams.appId, "key": $scope.currentApplicationKey}
+//		}, function(error, response) {
+//			if(error) {
+//				$scope.form.displayAlert('danger', error.message);
+//			}
+//			else {
+//				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
+//				$scope.modalInstance.close();
+//				$scope.form.formData = {};
+//				$scope.listExtKeys($scope.currentApplicationKey, $scope.currentApplicationKeyIndex);
+//			}
+//		});
+//	};
+//
+//
+//}]);
