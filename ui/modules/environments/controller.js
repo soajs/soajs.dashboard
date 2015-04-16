@@ -137,7 +137,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 				},
 				{
-					'type': 'cancel',
+					'type': 'reset',
 					'label': 'Cancel',
 					'btn': 'danger',
 					'action': function() {
