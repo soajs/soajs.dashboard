@@ -391,7 +391,7 @@ module.exports = {
 							"package": req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode,
 							"appId": new mongo.ObjectId(),
 							"description": req.soajs.inputmaskData.description,
-							"_TTL": req.soajs.inputmaskData._TTL * 3600, // 24 hours
+							"_TTL": req.soajs.inputmaskData._TTL * 3600 * 1000, // 24 hours
 							"keys": []
 						};
 						if(req.soajs.inputmaskData.acl) {
@@ -431,7 +431,7 @@ module.exports = {
 										tenantRecord.applications[i].product = req.soajs.inputmaskData.productCode;
 										tenantRecord.applications[i].package = req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode;
 										tenantRecord.applications[i].description = req.soajs.inputmaskData.description;
-										tenantRecord.applications[i]._TTL = req.soajs.inputmaskData._TTL * 3600;
+										tenantRecord.applications[i]._TTL = req.soajs.inputmaskData._TTL * 3600 * 1000;
 										if(req.soajs.inputmaskData.acl) {
 											tenantRecord.applications[i].acl = req.soajs.inputmaskData.acl;
 										}
