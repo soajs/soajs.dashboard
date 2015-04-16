@@ -4,6 +4,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.$parent.isUserLoggedIn();
 	var currentApp = null;
 
+	$scope.$parent.$on('reloadEnvironments', function(event, args) {
+		$scope.getEnvironments();
+	});
+	$scope.$parent.$on('reloadProducts', function(event, args) {
+		$scope.getProds();
+	});
+
 	$scope.mt = {};
 	$scope.mt.displayAlert = function(type, msg) {
 		$scope.mt.alerts = [];
@@ -96,7 +103,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				//soajsauth
 				$scope.availableEnv = [];
 				response.forEach(function(oneEnv) {
 					$scope.availableEnv.push(oneEnv.code.toLowerCase());
@@ -1183,16 +1189,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.reloadConfiguration = function(tId, appId, key, index) {
 		$scope.currentApplicationKey = key;
 		$scope.currentApplicationKeyIndex = index;
-		
-		/*
-		 for(var i = 0; i < $scope.keys.length; i++) {
-		 if(i !== index) {
-		 var cfgElement = angular.element(document.getElementById("keyConfig" + i));
-		 cfgElement.html('');
-		 $compile(cfgElement.contents())($scope);
-		 }
-		 }
-		 */
+
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/config/list",

@@ -75,6 +75,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.$parent.displayAlert('success', 'Environment Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
+								$scope.$parent.$emit('reloadEnvironments', {});
 								$scope.listEnvironments();
 							}
 						});

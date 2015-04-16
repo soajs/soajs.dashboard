@@ -240,6 +240,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.$parent.displayAlert('success', 'Package Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
+								$scope.$parent.$emit('reloadProducts', {});
 								$scope.reloadPackages(productId);
 							}
 						});
