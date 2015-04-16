@@ -1,6 +1,3 @@
-make ttl dropdown.
-make choose package code dropdown
-
 <section ng-controller="tenantCtrl">
 	<a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br/>
 	<br/>
@@ -40,9 +37,9 @@ make choose package code dropdown
 							<img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0" alt="Edit Application"/>
 						</a>
 
-						<a ng-click="browseApplication(row['_id'], application)" href="">
+						<a ng-click="browseApplication(row['_id'], application)" href="" style="display:none;">
 							<img border="0" tooltip="Browse" ng-src="themes/{{$parent.themeToUse}}/img/view.png"></a>
-						<a ng-click="viewKeys(row['_id'], application)" href="">
+						<a ng-click="viewKeys(row['_id'], application)" href="" style="display:none;">
 						<img tooltip="Manage Keys" ng-src="themes/{{$parent.themeToUse}}/img/key.png" border="0" alt="View Keys"/>
 						</a></span>
 
@@ -187,7 +184,7 @@ make choose package code dropdown
 					<a href="" ng-click="tenantsList.actions.editTenant.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/edit.png" border="0"
 					                                                                        alt="Edit Tenant"/></a>&nbsp;
 
-					<a tooltip="Edit oAuth" href="" ng-click="tenantsList.actions.editoAuth.command(row);">
+					<a tooltip="Edit oAuth" href="" ng-click="tenantsList.actions.editoAuth.command(row);" style="display:none">
 						<img ng-src="themes/{{$parent.themeToUse}}/img/lock-14.png" border="0" alt="Edit oAuth"/></a>&nbsp;
 					<a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}"
 					   ng-click="tenantsList.actions.delete.command(row);"><img ng-src="themes/{{$parent.themeToUse}}/img/remove.png" border="0"

@@ -52,15 +52,15 @@ var tenantConfig = {
 		}
 	},
 	'form': {
-		'tenant': {
-			'name': '',
-			'label': '',
+		'tenantEdit': {
+			'name': 'editTenant',
+			'label': 'Edit Basic Tenant Information',
 			'actions': {},
 			'entries': [
 				{
 					'name': 'code',
 					'label': 'Code',
-					'type': 'text',
+					'type': 'readonly',
 					'placeholder': 'TEST...',
 					'value': '',
 					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
@@ -103,6 +103,41 @@ var tenantConfig = {
 					'tooltip': 'Enter Tenant oAuth redirectURI.',
 					'required': false
 				}
+			]
+		},
+		'tenantAdd': {
+			'name': 'addTenant',
+			'label': 'Add Tenant',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'code',
+					'label': 'Code',
+					'type': 'text',
+					'placeholder': 'TEST...',
+					'value': '',
+					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
+					'required': true
+				},
+				{
+					'name': 'name',
+					'label': 'Name',
+					'type': 'text',
+					'placeholder': 'Test Tenant...',
+					'value': '',
+					'tooltip': 'Enter Tenant Name.',
+					'required': true
+				},
+				{
+					'name': 'description',
+					'label': 'Description',
+					'type': 'textarea',
+					'rows': 5,
+					'placeholder': 'Testing Tenant, used by developers and does not reach production server...',
+					'value': '',
+					'tooltip': 'Enter a description explaining the usage of this tenant',
+					'required': false
+				}				
 			]
 		},
 		'oauth': {
@@ -192,7 +227,7 @@ var tenantConfig = {
 					'type': 'text',
 					'placeholder': 'Enter the product code from productization section...',
 					'value': '',
-					'tooltip': 'Enter Product Code; maximum 5 characters.',
+					'tooltip': '',
 					'required': false
 				},
 				{
@@ -201,7 +236,7 @@ var tenantConfig = {
 					'type': 'text',
 					'placeholder': 'Enter the package code from productization section...',
 					'value': '',
-					'tooltip': 'Enter Package Code; maximum 5 characters.',
+					'tooltip': 'Choose Product Package Code.',
 					'required': true
 				},
 				{
