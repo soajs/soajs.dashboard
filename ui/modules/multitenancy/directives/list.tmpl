@@ -70,7 +70,7 @@
 														<div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
 															<br/>
 															<div ng-repeat="enCode in availableEnv">
-																<div class="entryBox blueGreyBox" ng-class="{ blueBox: key.config[enCode] }">
+																<div class="entryBox greyBox" ng-class="{ blueBox: key.config[enCode] }">
 																	<b>{{enCode}} Environment</b>&nbsp;&nbsp;
 																	<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, enCode, key.config[enCode]);">
 																		<span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
