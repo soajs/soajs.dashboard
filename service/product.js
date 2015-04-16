@@ -164,7 +164,7 @@ module.exports = {
 						"name": req.soajs.inputmaskData.name,
 						"description": req.soajs.inputmaskData.description,
 						"acl": req.soajs.inputmaskData.acl,
-						"_TTL": req.soajs.inputmaskData._TTL * 3600
+						"_TTL": req.soajs.inputmaskData._TTL * 3600 * 1000
 					};
 					productRecord.packages.push(newPackage);
 
@@ -196,7 +196,7 @@ module.exports = {
 						if(productRecord.packages[i].code === prefix + req.soajs.inputmaskData.code) {
 							productRecord.packages[i].name = req.soajs.inputmaskData.name;
 							productRecord.packages[i].description = req.soajs.inputmaskData.description;
-							productRecord.packages[i]._TTL = req.soajs.inputmaskData._TTL * 3600;
+							productRecord.packages[i]._TTL = req.soajs.inputmaskData._TTL * 3600 * 1000;
 							productRecord.packages[i].acl = req.soajs.inputmaskData.acl;
 							found = true;
 							break;
