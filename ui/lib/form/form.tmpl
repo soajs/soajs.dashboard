@@ -42,7 +42,7 @@
                     <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
                 </td>
 
-                <td ng-switch-when="checkbox">
+                <td ng-switch-when="checkbox" class="form-checkbox">
                     <label>{{entry.label}}</label>
                     <ul>
                         <li ng-repeat="dv in entry.value">

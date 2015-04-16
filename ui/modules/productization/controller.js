@@ -261,9 +261,10 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.editPackage = function(productId, data) {
+		console.log(data);
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
-		recordData._TTL = recordData._TTL / 3600;
+		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
 		var options = {

@@ -75,7 +75,7 @@
 																	<a href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, enCode, key.config[enCode]);">
 																		<span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
 																	</a>
-																	<a tooltip="Empty" ng-show="key.config[enCode]" href="" ng-click="emptyConfiguration(row['_id'], application['appId'], key.key, enCode );">
+																	<a ng-show="key.config[enCode]" href="" ng-click="emptyConfiguration(row['_id'], application['appId'], key.key, enCode );">
 																		<span class="icon icon-bin" tooltip="Empty Service Configuration"></span>
 																	</a>
 																</div>

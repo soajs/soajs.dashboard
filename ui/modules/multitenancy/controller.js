@@ -680,7 +680,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.editTenantApplication = function(tId, data) {
 		var formConfig = angular.copy(tenantConfig.form.application);
 		var recordData = angular.copy(data);
-		recordData._TTL = recordData._TTL / 3600;
+		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[1].type = "html";
 		formConfig.entries[0].type = "html";
