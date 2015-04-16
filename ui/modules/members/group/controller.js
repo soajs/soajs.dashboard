@@ -61,14 +61,16 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					'label': 'Add Group',
 					'btn': 'primary',
 					'action': function(formData) {
+						//console.log(formData);
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
 							'description': formData.description
 						};
 						if(formData.permissions){
-							formData.permissions = formData.permissions.replace(/ /g, '');
-							postData.permissions = formData.permissions.split(",");		
+							//formData.permissions = formData.permissions.replace(/ /g, '');
+							//postData.permissions = formData.permissions.split(",");
+							postData.permissions = formData.permissions ;
 						}
 						
 						getSendDataFromServer(ngDataApi, {
@@ -104,9 +106,19 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 	};
 
 	$scope.editGroup = function(data) {
-		console.log(data);
-		data.permissions = data.permissions.join(",");
+		//data.permissions = data.permissions.join(",");
 		var config = angular.copy(groupsConfig.form);
+		config.entries.forEach(function(oneEn) {
+			if(oneEn.name==='permissions'){
+				var p = oneEn.value;
+				p.forEach(function(one) {
+					if( data.permissions.indexOf(one.v)>-1){
+						one.selected = true;
+					}
+				});
+			}
+		});
+
 		config.entries[0].type = 'readonly';
 		var options = {
 			timeout: $timeout,
@@ -125,8 +137,9 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 							'description': formData.description
 						};
 						if(formData.permissions){
-							formData.permissions = formData.permissions.replace(/ /g, '');
-							postData.permissions = formData.permissions.split(",");		
+							//formData.permissions = formData.permissions.replace(/ /g, '');
+							//postData.permissions = formData.permissions.split(",");
+							postData.permissions = formData.permissions ;
 						}
 						
 						

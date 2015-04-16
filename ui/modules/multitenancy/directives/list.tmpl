@@ -51,7 +51,7 @@
 										<a style="" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey(row['_id'],application['appId'])" tooltip="Add New Application Key">Add key</a>
 									</div>
 									<div class="keysAccordion">
-										<div class="keyAlerts" ng-show="mt.alerts.length >0">
+										<div class="keyAlerts" ng-show="mt.alerts.length >0" id="">
 											<alert ng-repeat="alert in mt.alerts" type="{{alert.type}}" class="" close="mt.closeAlert($index)">{{alert.msg}}</alert>
 										</div>
 										<accordion close-others="true" ng-show="application.keys.length > 0">

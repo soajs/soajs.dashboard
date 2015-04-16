@@ -50,11 +50,14 @@ var groupsConfig = {
 			{
 				'name': 'permissions',
 				'label': 'Permissions',
-				'type': 'textarea',
+				'type': 'checkbox',
 				'placeholder': ' members,environments',
-				'value': '',
+				'value': [{v:'members', lb:'members'}, {v:'environments', lb:'environments'},
+					{v:'productization', lb:'productization'}, {v:'productization_packages', lb:'productization_packages'}, {v:'multi-tenancy', lb:'multi-tenancy'},
+					{v:'multi-tenancy_applications', lb:'multi-tenancy_applications'}, {v:'multi-tenancy_keys', lb:'multi-tenancy_keys'}
+				],
 				'rows': 2,
-				'tooltip': 'Enter the Permissions of the Group. Separate them using a comma.',
+				'tooltip': 'Choose the Permissions of the Group.',
 				'required': false
 			}
 		]
@@ -70,7 +73,7 @@ var groupsConfig = {
 				'label': 'Users',
 				'type': 'checkbox',
 				'placeholder': 'Add users',
-				'value': '',
+				'value': [],
 				'tooltip': 'Check to add user to group',
 				'required': true
 			}

@@ -278,6 +278,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'label': 'Edit Product',
 					'btn': 'primary',
 					'action': function(formData) {
+						console.log(formData);
 						var postData = {
 							'name': formData.name,
 							'description': formData.description,

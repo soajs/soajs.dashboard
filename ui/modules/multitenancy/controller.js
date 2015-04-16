@@ -55,7 +55,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				}
 			}
 		});
-		if(event) {
+		if(event && event.stopPropagation){
 			event.stopPropagation();
 		}
 	};
@@ -599,6 +599,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	$scope.addTenantApplication = function(tId) {
 		var formConfig = angular.copy(tenantConfig.form.application);
+		formConfig.entries.forEach(function(oneEn) {
+			if(oneEn.type==='select'){
+				oneEn.value[0].selected=true;
+			}
+		});
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
