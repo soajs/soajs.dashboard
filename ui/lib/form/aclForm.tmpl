@@ -6,8 +6,10 @@
     .listApis tr td {
         padding: 3px;;
     }
+    .service-container{
+    }
 </style>
-<div id="generate-ApiList">
+<div id="generate-ApiList" class="entryServiceBoxes">
     <!--
         <accordion close-others="false">
             <accordion-group ng-repeat="service in allServiceApis">
@@ -35,16 +37,16 @@
         </accordion>
     -->
 
-        <div ng-repeat="service in allServiceApis" style="clear: both" class="clearfix">
-            <div class="clearfix">
+        <div ng-repeat="service in allServiceApis" class="clearfix service-container">
+            <div class="clearfix serviceNameHead">
                 <div style="float: left; width: 200px;">
                     <input type="checkbox" ng-checked="aclFill.services[service.name]"
                            ng-model="aclFill.services[service.name].include" value="{{service.name}}">
                     <b> <a href="">{{service.name}} </a></b>
                 </div>
                 <div ng-show="aclFill.services[service.name].include" style="float: left;">
-                    <input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
-                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'">
+                    <span style="padding-left: 15px;"><input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
+                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"></span>
                     public
                     <span style="padding-left: 40px;">
                     <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
@@ -54,11 +56,11 @@
             </div>
 
 
-            <div class="" style="padding-left: 20px;">
+            <div class="body">
                 <table class="listApis" width="100%" ng-show="aclFill.services[service.name].include">
                     <tr ng-repeat="api in service.apis" ng-class-even="'even'" ng-class-odd="'odd'"
                         ng-class="{'first': $first, 'last': $last, selected:api.selected}">
-                        <td style="width: 25px;">
+                        <td style="width: 30px; padding-left: 8px">
                             <input ng-model="aclFill.services[service.name].apis[api].include"
                                    ng-checked="aclFill.services[service.name].apis[api].include"
                                    id="{{service.name}}{{$index}}" type="checkbox"
