@@ -28,6 +28,7 @@ function buildFormWithModal($scope, $modal, opts) {
 	}
 
 	var m = ($modal && $modal !== null) ? true : false;
+
 	buildForm($scope, m, formConfig, function(){
 		if(opts.postBuild && (typeof(opts.postBuild)=='function') ){
 			opts.postBuild();
@@ -140,8 +141,12 @@ function buildForm(context, modal, configuration, cb) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
+	if(cb && (typeof(cb)=='function')){
+		context.form.timeout(function() {
+			cb();
+		}, 1000);
+	}
 
-	cb();
 }
 
 soajsApp.directive('ngform', function() {

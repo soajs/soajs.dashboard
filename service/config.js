@@ -538,7 +538,14 @@ module.exports = {
 		},
 
 		"/services/list": {
-
+			'serviceNames':{
+				'source': ['body.serviceNames'],
+				'required': false,
+				"validation": {
+					"type": "array",
+					'items': {'type': 'string'}
+				}
+			}
 		}
 	}
 };

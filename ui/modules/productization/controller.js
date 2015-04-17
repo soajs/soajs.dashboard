@@ -11,7 +11,16 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		pack.showDetails = false;
 		pack.showClose = false;
 	};
-	
+
+	$scope.stopEventPropagation = function(event) {
+		alert('stopEventPropagation');
+
+		if(event && event.stopPropagation){
+			alert('stopEventPropagation 2');
+			event.stopPropagation();
+		}
+	};
+
 	$scope.listProducts = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -188,7 +197,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addPackage = function(productId) {
-		//$scope.aclFill.services= {};
+		$scope.aclFill.services= {};
 		console.log($scope.aclFill);
 		var formConf = angular.copy(productizationConfig.form.package);
 		formConf.entries.forEach(function(oneEn) {
@@ -212,6 +221,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -265,22 +283,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
-				},
-				{
-					'type': 'reset',
-					'label': 'FILL',
-					'btn': 'danger',
-					'action': function() {
-						$scope.aclFill.services={};
-						var cfgElement = angular.element(document.getElementById("idaclForm"));
-						if(cfgElement){
-							console.log(cfgElement);
-							console.log($scope.aclFill);
-							cfgElement.html('<ngaclform></ngaclform> ');
-							$compile(cfgElement.contents())($scope);
-						}
-
-					}
 				}
 			]
 		};
@@ -288,22 +290,36 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.editPackage = function(productId, data) {
+		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
+		console.log( 'recordData.acl: ' );
+		console.log( recordData.acl );
 		$scope.aclFill.services= angular.copy(recordData.acl);
-		for(var propt in $scope.aclFill.services){
+		for(var propt in $scope.aclFill.services)
+		{
 			var s = $scope.aclFill.services[propt];
 			s.include =true;
+			if( s.access===true){
+				s.accessType = 'private';
+			}else{
+				s.accessType = 'public';
+			}
 			if(s.apis){
 				for(var ap in s.apis){
 					s.apis[ap].include=true;
 					if( s.apis[ap].access===true){
 						s.apis[ap].accessType = 'private';
+					}else{
+
 					}
 				}
 			}
-
 		}
+		console.log(' ******* start ******** $scope.aclFill.services ');
+		console.log( $scope.aclFill.services );
+
+
 		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
@@ -314,6 +330,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'editPackage',
 			label: 'Edit Package',
 			data: recordData,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -328,6 +353,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						};
 						var aclObj2 = {};
 						var aclObj = {};
+						console.log('******** $scope.aclFill.services ');
+						console.log( $scope.aclFill.services );
+
 						for(var propt in $scope.aclFill.services){
 
 							var s = $scope.aclFill.services[propt];
@@ -335,7 +363,11 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								aclObj2[propt]={};
 								if(s.accessType==='private'){
 									aclObj2[propt].access=true;
-								}else{
+								}
+								else if(s.accessType==='public'){
+									aclObj2[propt].access=false;
+								}
+								else{
 									//aclObj2[propt].access=false;
 								}
 								if(s.apis)
@@ -346,9 +378,13 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 										if(api.include===true)
 										{
 											aclObj2[propt].apis[ap]={};
-											if(api.access==='private'){
+											if(api.accessType==='private'){
 												aclObj2[propt].apis[ap].access=true;
-											}else{
+											}
+											else if(api.accessType==='public'){
+												aclObj2[propt].apis[ap].access=false;
+											}
+											else{
 												//aclObj2[propt].apis[ap].access=false;
 											}
 										}
@@ -357,7 +393,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							}
 						}
 
-						console.log('aclObj 2');
+						console.log('******** aclObj 2');
 						console.log(aclObj2);
 
 						if(formData.acl && (formData.acl != "")) {
@@ -440,9 +476,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.getServices = function() {
 		getSendDataFromServer(ngDataApi, {
-			"method": "get",
+			"method": "send",
 			"routeName": "/dashboard/services/list",
-			"params": {}
+			"data": { "serviceNames":["urac", "dashboard"] }
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);

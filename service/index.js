@@ -193,15 +193,21 @@ service.get("/tenant/application/key/config/list", function(req, res) {
   tenant.listApplicationConfig(config, mongo, req, res);
 });
 
-service.get("/services/list", function(req, res) {
+service.post("/services/list", function(req, res) {
 	checkForMongo(req);
 	var servicesColName = 'services';
-	mongo.find(servicesColName, function(err, records) {
+	var serviceNames = req.soajs.inputmaskData.serviceNames;
+	var criteria={};
+	if(serviceNames){
+		criteria = {'name': {$in: serviceNames}};
+	}
+
+	mongo.find(servicesColName, criteria ,function(err, records) {
 		if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 		var myRec=[];
 		records.forEach(function(oneRecord) {
 			myRec.push({
-				name: oneRecord.name, apis: oneRecord.config.apis
+				name: oneRecord.name, apis: oneRecord.apis
 			});
 		});
 
