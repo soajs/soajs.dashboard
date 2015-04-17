@@ -28,7 +28,11 @@ function buildFormWithModal($scope, $modal, opts) {
 	}
 
 	var m = ($modal && $modal !== null) ? true : false;
-	buildForm($scope, m, formConfig);
+	buildForm($scope, m, formConfig, function(){
+		if(opts.postBuild && (typeof(opts.postBuild)=='function') ){
+			opts.postBuild();
+		}
+	});
 
 	//if ($modal && $modal==true)
 	if($modal && $modal !== null) {
@@ -49,7 +53,7 @@ function buildFormWithModal($scope, $modal, opts) {
 	}
 }
 
-function buildForm(context, modal, configuration) {
+function buildForm(context, modal, configuration, cb) {
 	context.form = {
 		alerts: [],
 		label: configuration.label,
@@ -136,6 +140,8 @@ function buildForm(context, modal, configuration) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
+
+	cb();
 }
 
 soajsApp.directive('ngform', function() {
