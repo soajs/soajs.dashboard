@@ -369,25 +369,25 @@ module.exports = {
 			},
 			"commonFields": ['id', 'name', 'description']
 		},
-
-		"/tenant/oauth/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant oAuth Configuration",
-				"group": "Tenant"
-			},
-			"commonFields": ['id']
-		},
 		"/tenant/oauth/list": {
 			_apiInfo: {
 				"l": "Get Tenant oAuth Configuration",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id']
 		},
+		"/tenant/oauth/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant oAuth Configuration",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['id']
+		},
+
 		"/tenant/oauth/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth Configuration",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id'],
 			"secret": {
@@ -409,7 +409,7 @@ module.exports = {
 		"/tenant/oauth/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth Configuration",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id'],
 			"secret": {
@@ -432,14 +432,14 @@ module.exports = {
 		"/tenant/oauth/users/list" :{
 			_apiInfo: {
 				"l": "List Tenant oAuth Users",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id']
 		},
 		"/tenant/oauth/users/delete" :{
 			_apiInfo: {
 				"l": "Delete Tenant oAuth User",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id'],
 			"uId":{
@@ -453,7 +453,7 @@ module.exports = {
 		"/tenant/oauth/users/add" :{
 			_apiInfo: {
 				"l": "Add Tenant oAuth User",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id'],
 			"userId":{
@@ -474,7 +474,7 @@ module.exports = {
 		"/tenant/oauth/users/update" :{
 			_apiInfo: {
 				"l": "Update Tenant oAuth User",
-				"group": "Tenant"
+				"group": "Tenant oAuth"
 			},
 			"commonFields": ['id'],
 			"uId":{
@@ -499,25 +499,25 @@ module.exports = {
 				}
 			}
 		},
-
-		"/tenant/application/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application",
-				"group": "Tenant"
-			},
-			"commonFields": ['id', 'appId']
-		},
 		"/tenant/application/list": {
 			_apiInfo: {
 				"l": "List Tenant Applications",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id']
 		},
+		"/tenant/application/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['id', 'appId']
+		},
+
 		"/tenant/application/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', '_TTL', 'description', 'acl'],
 			"productCode": {
@@ -542,7 +542,7 @@ module.exports = {
 		"/tenant/application/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl'],
 			"productCode": {
@@ -568,21 +568,21 @@ module.exports = {
 		"/tenant/application/key/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application Key",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId']
 		},
 		"/tenant/application/key/list": {
 			_apiInfo: {
 				"l": "List Tenant Application Keys",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId']
 		},
 		"/tenant/application/key/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application Key",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
@@ -590,14 +590,14 @@ module.exports = {
 		"/tenant/application/key/ext/list": {
 			_apiInfo: {
 				"l": "List Tenant Application External Keys",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
 		"/tenant/application/key/ext/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application External Key",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key'],
 			'expDate': {
@@ -626,7 +626,7 @@ module.exports = {
 		"/tenant/application/key/ext/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application External Key",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key'],
 			'extKey': {
@@ -662,7 +662,7 @@ module.exports = {
 		"/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key'],
 			'extKey': {
@@ -677,14 +677,14 @@ module.exports = {
 		"/tenant/application/key/config/list": {
 			_apiInfo: {
 				"l": "List Tenant Application Key Configuration",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
 		"/tenant/application/key/config/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application Key Configuration",
-				"group": "Tenant"
+				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', 'key'],
 			'envCode': {
