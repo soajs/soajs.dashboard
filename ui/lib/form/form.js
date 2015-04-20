@@ -133,8 +133,6 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 	context.form.call = function(action, id, data) {
-		//console.log('id: ');console.log(id);
-		//console.log('data: ');console.log(data);
 		if(action){
 			if( typeof(action) == 'function'){
 				action(id, data);

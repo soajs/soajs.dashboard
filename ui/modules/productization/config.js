@@ -91,7 +91,7 @@ var productizationConfig = {
 					'type': 'textarea',
 					'rows': 5,
 					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
-					'value': '{"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}}',
+					'value': '{"urac": {"access": false}}',
 					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
 					'required': false
 				},
