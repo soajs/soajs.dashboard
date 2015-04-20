@@ -144,6 +144,15 @@ var navigation = [
 		'ancestor': ['Home']
 	},
 	{
+		'id': 'product-acl',
+		'label': 'Edit ACL',
+		'url': '#/productization/:pid/editAcl/:code',
+		'tplPath': 'modules/productization/directives/editAcl.tmpl',
+		'tracker': true,
+		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
+		'ancestor': ['Home', 'Productization']
+	},
+	{
 		'id': 'multi-tenancy',
 		'label': 'Multi-Tenancy',
 		'url': '#/multi-tenancy',

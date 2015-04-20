@@ -1,6 +1,6 @@
 "use strict";
 var productizationApp = soajsApp.components;
-productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
+productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	
 	$scope.viewPackage = function(pack) {
@@ -11,7 +11,16 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		pack.showDetails = false;
 		pack.showClose = false;
 	};
-	
+
+	$scope.stopEventPropagation = function(event) {
+		alert('stopEventPropagation');
+
+		if(event && event.stopPropagation){
+			alert('stopEventPropagation 2');
+			event.stopPropagation();
+		}
+	};
+
 	$scope.listProducts = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -188,10 +197,21 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addPackage = function(productId) {
+		$scope.aclFill.services= {};
+		console.log($scope.aclFill);
 		var formConf = angular.copy(productizationConfig.form.package);
 		formConf.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
 				oneEn.value[0].selected=true;
+			}
+			if(oneEn.name==='acl'){
+				//oneEn.value[0].selected=true;
+				/* var cfgElement = angular.element(document.getElementById("idacl"));
+				if(cfgElement){
+					cfgElement.html('<div ng-repeat="service in allServiceApis"><input type="checkbox">{{service.name}}</div>');
+					$compile(cfgElement.contents())($scope);
+				}*/
+
 			}
 		});
 
@@ -201,6 +221,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -257,23 +286,65 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			]
 		};
-
 		buildFormWithModal($scope, $modal, options);
 	};
 
+	$scope.editPackAcl = function(productId, code) {
+
+		console.log( "/productization/"+productId+"/editAcl/" + code );
+		$scope.$parent.go("/productization/"+productId+"/editAcl/" + code );
+
+	};
 	$scope.editPackage = function(productId, data) {
-		console.log(data);
+		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
+		console.log( 'recordData.acl: ' );
+		console.log( recordData.acl );
+		$scope.aclFill.services= angular.copy(recordData.acl);
+		for(var propt in $scope.aclFill.services)
+		{
+			var s = $scope.aclFill.services[propt];
+			s.include =true;
+			if( s.access===true){
+				s.accessType = 'private';
+			}else{
+				s.accessType = 'public';
+			}
+			if(s.apis){
+				for(var ap in s.apis){
+					s.apis[ap].include=true;
+					if( s.apis[ap].access===true){
+						s.apis[ap].accessType = 'private';
+					}else{
+
+					}
+				}
+			}
+		}
+		console.log(' ******* start ******** $scope.aclFill.services ');
+		console.log( $scope.aclFill.services );
+
+
 		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editPackage',
 			label: 'Edit Package',
 			data: recordData,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -286,7 +357,51 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						
+						var aclObj2 = {};
+						var aclObj = {};
+						console.log('******** $scope.aclFill.services ');
+						console.log( $scope.aclFill.services );
+
+						for(var propt in $scope.aclFill.services){
+
+							var s = $scope.aclFill.services[propt];
+							if(s.include===true){
+								aclObj2[propt]={};
+								if(s.accessType==='private'){
+									aclObj2[propt].access=true;
+								}
+								else if(s.accessType==='public'){
+									aclObj2[propt].access=false;
+								}
+								else{
+									//aclObj2[propt].access=false;
+								}
+								if(s.apis)
+								{
+									aclObj2[propt].apis={};
+									for(var ap in s.apis){
+										var api = s.apis[ap];
+										if(api.include===true)
+										{
+											aclObj2[propt].apis[ap]={};
+											if(api.accessType==='private'){
+												aclObj2[propt].apis[ap].access=true;
+											}
+											else if(api.accessType==='public'){
+												aclObj2[propt].apis[ap].access=false;
+											}
+											else{
+												//aclObj2[propt].apis[ap].access=false;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						console.log('******** aclObj 2');
+						console.log(aclObj2);
+
 						if(formData.acl && (formData.acl != "")) {
 							try {
 								var aclObj = JSON.parse(formData.acl);
@@ -296,10 +411,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								return;
 							}
 						}
-						else {
-							var aclObj = {};
-						}	
-						postData.acl = aclObj;
+						console.log('aclObj');
+						console.log(aclObj);
+						postData.acl = aclObj2;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
@@ -350,6 +464,238 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["urac", "dashboard"] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(response);
+				$scope.allServiceApis = response;
+			}
+		});
+	};
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		if($scope.selectedServices[service.name]){
+			if($scope.selectedServices[service.name][api])
+			{
+				if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+					delete $scope.selectedServices[service.name][api];
+				}
+				else{
+					$scope.selectedServices[service.name][api].selectedApi=true;
+				}
+			}
+			else{
+				$scope.selectedServices[service.name][api]= {};
+				$scope.selectedServices[service.name][api].selectedApi=true;
+			}
+		}*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+
 	//default operation
+	$scope.getServices();
 	$scope.listProducts();
+
+}]);
+
+productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.minimize =function(service){
+		service.collapse=true;
+
+	};
+	$scope.expand =function(service){
+		service.collapse=false;
+	};
+
+	$scope.stopEventPropagation = function(event) {
+		if(event && event.stopPropagation){
+			alert('stopEventPropagation 2');
+			event.stopPropagation();
+		}
+	};
+
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["urac", "dashboard"] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(response);
+				$scope.allServiceApis = response;
+				$scope.openForm();
+			}
+		});
+	};
+
+	$scope.selectService = function( service, index) {
+		service.collapse=false;
+	};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		 if($scope.selectedServices[service.name]){
+		 if($scope.selectedServices[service.name][api])
+		 {
+		 if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+		 delete $scope.selectedServices[service.name][api];
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api]= {};
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+
+	$scope.openForm = function() {
+		var productId=  $routeParams.pid;
+		var pack = {};
+		var formConfig = {
+			'timeout': $timeout,
+			'name': 'editACL',
+			'label': 'Update ACL',
+			'entries': [],
+			'data': {},
+			form: {
+				'name': 'edit',
+				'label': 'Edit ',
+				'entries': []
+			},
+			'actions': [
+				{
+				'type': 'submit',
+				'label': 'Save ACL',
+				'btn': 'primary',
+				'action': function(formData) {
+					var postData =  {};
+					postData = pack ;
+					postData._TTL = (pack._TTL / 3600000).toString();
+					console.log( 'formData' );
+					console.log( formData );
+
+					console.log( 'postData' );
+					console.log(postData);
+
+
+					getSendDataFromServer( ngDataApi, {
+						"method": "send",
+						"routeName": "/dashboard/product/packages/update",
+						"data": postData,
+						"params": {"id": productId, "code": postData.code.split("_")[1]}
+					}, function(error, response) {
+						if(error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+
+						}
+					});
+
+				}
+			}]
+		};
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/product/get",
+			"params": { "id": $routeParams.pid }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var code = $routeParams.code;
+
+				console.log('product packages' );
+				console.log( response.packages );
+				var l = response.packages.length;
+				for (var x = 0; x<l; x++)
+				{
+					if(response.packages[x].code === code)
+					{
+						pack = 	response.packages[x];
+						break;
+					}
+				}
+				console.log( 'pack' );
+				console.log( pack );
+
+				formConfig.entries = [
+				{
+					'name': 'package',
+					'label': 'Package',
+					'type': 'html',
+					'required': false,
+					'value': pack.code
+				},
+				{
+					'name': 'acl',
+					'label': 'ACL',
+					'type': 'html',
+					'value': '',
+					'placeholder': 'JSON object representing your profile ...',
+					'tooltip': 'Fill in your additional profile information.',
+					'required': false,
+					'rows': 10
+				}
+				];
+				//formConfig.data = response;
+				console.log(' build ');
+				// buildFormWithModal($scope, null, formConfig);
+				buildForm($scope, null, formConfig, function(){
+					console.log('********** done');
+					console.log( $scope.allServiceApis );
+
+					var cfgElement = angular.element(document.getElementById("idacl"));
+					if(cfgElement){
+						cfgElement.html('<ngaclopenform></ngaclopenform> ');
+						$compile(cfgElement.contents())($scope);
+					}
+
+				});
+
+
+			}
+		});
+
+
+	};
+
+	//default operation
+	$scope.getServices();
+
+
 }]);

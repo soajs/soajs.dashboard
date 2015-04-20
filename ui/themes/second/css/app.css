@@ -317,7 +317,47 @@ a:hover{
     THEME ENDS HERE
     CUSTOM CSS STARTS HERE
 **/
+.entryServiceBoxes{
 
+}
+.entryServiceBoxes .service-container{
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.entryServiceBoxes .service-container label {
+    text-decoration: underline;
+}
+
+.entryServiceBoxes .service-container div.blueBox{
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom:solid 1px #cccccc;
+    padding:5px;
+    font-weight:bold;
+    background-color:#eeeeee;
+    border-radius: 8px;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead span{
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+.entryServiceBoxes .service-container .body{
+    padding:5px;
+}
+
+/*****/
 div.entryBoxes {
     width: 100%;
     display: table;

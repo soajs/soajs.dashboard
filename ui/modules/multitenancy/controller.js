@@ -3,6 +3,23 @@ var multiTenantApp = soajsApp.components;
 multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	var currentApp = null;
+	$scope.getAllServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["urac", "dashboard"] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.allServiceApis = response;
+			}
+		});
+	};
+
+	$scope.getAllServices();
+
 
 	$scope.$parent.$on('reloadEnvironments', function(event, args) {
 		$scope.getEnvironments();
@@ -86,9 +103,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					p = response[v];
 					var ll = p.packages.length;
 					for(i = 0; i < ll; i++) {
-						prods.push({'pckCode': p.packages[i].code, 'prodCode': p.code, 'v': p.packages[i].code, 'l': p.packages[i].code});
+						prods.push({'pckCode': p.packages[i].code, 'prodCode': p.code, 'v': p.packages[i].code, 'l': p.packages[i].code, 'acl': p.packages[i].acl});
 					}
 				}
+				//console.log(prods);
 				$scope.availablePackages = prods;
 			}
 		});
@@ -603,11 +621,74 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		buildFormWithModal($scope, $modal, options);
 	};
 
+	$scope.aclFill= {};
+	$scope.aclFill.services= {};
+
 	$scope.addTenantApplication = function(tId) {
+
 		var formConfig = angular.copy(tenantConfig.form.application);
 		formConfig.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
 				oneEn.value[0].selected=true;
+			}
+			if(oneEn.name==='package')
+			{
+				oneEn.onChange ={
+					'action':function(data){
+						console.log(' ** load new ACL  **');
+
+					}
+				};
+				oneEn.onAction = function(id, val)
+				{
+					console.log(' **   onAction ACL  **'); console.log(id);
+					console.log( $scope.availablePackages );
+
+					var l = $scope.availablePackages.length;
+					for (var x=0; x<l; x++){
+						if( $scope.availablePackages[x].v == val )
+						{
+							console.log( $scope.availablePackages[x] );
+							$scope.aclFill.services= $scope.availablePackages[x].acl;
+							for(var propt in $scope.aclFill.services)
+							{
+								var s = $scope.aclFill.services[propt];
+								s.include =true;
+								if( s.access===true){
+									s.accessType = 'private';
+								}else{
+									s.accessType = 'public';
+								}
+								if(s.apis){
+									for(var ap in s.apis){
+										s.apis[ap].include=true;
+										if( s.apis[ap].access===true){
+											s.apis[ap].accessType = 'private';
+										}else{
+
+										}
+									}
+								}
+							}
+
+							var cfgElement = angular.element(document.getElementById("idacl"));
+							console.log('elem');
+							console.log(cfgElement);
+							if(cfgElement){
+								cfgElement.html('<ngaclform></ngaclform> ');
+								$compile(cfgElement.contents())($scope);
+							}
+
+
+						}
+					}
+
+				};
+				oneEn.type="select";
+				oneEn.value = $scope.availablePackages;
+			}
+			if(oneEn.name==='product'){
+				oneEn.name='Prod';
 			}
 		});
 
@@ -677,9 +758,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		};
 		
 		//formConfig.entries[1].label="Product Package";
-		formConfig.entries[1].type = "select";
-		formConfig.entries[1].value = $scope.availablePackages;
-		formConfig = formConfig.entries.splice(0, 1);
+		var entries = formConfig.entries.splice(0, 1);
+		console.log(entries);
 		buildFormWithModal($scope, $modal, options);
 	};
 	
