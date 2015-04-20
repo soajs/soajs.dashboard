@@ -4,7 +4,7 @@ var request = require("request");
 var soajs = require('soajs');
 var helper = require("../helper.js");
 var shell = require('shelljs');
-var controller, dashboard;
+var dashboard;
 
 var config = helper.requireModule('./service/config');
 var errorCodes = config.errors;
@@ -29,7 +29,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 	function requester(apiName, method, params, cb) {
 		var options = {
-			uri: 'http://localhost:4000/dashboard/' + apiName,
+			uri: 'http://localhost:4003/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
 				key: extKey
@@ -83,7 +83,6 @@ describe("importing sample data", function() {
 
 	after(function(done) {
 		console.log('test data imported.');
-		controller = require("soajs.controller");
 		dashboard = helper.requireModule('./service/index');
 		console.log('starting tests ....');
 		setTimeout(function() {
