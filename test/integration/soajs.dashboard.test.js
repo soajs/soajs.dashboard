@@ -62,8 +62,8 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("importing sample data", function() {
 
-	before(function(done){
-		mongo.dropDatabase(function(error){
+	before(function(done) {
+		mongo.dropDatabase(function(error) {
 			assert.ifError(error);
 			done();
 		});
@@ -96,13 +96,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	var envId;
 	describe("environment tests", function() {
 		
-		before(function(done){
+		before(function(done) {
 			mongo.remove('environment', {}, function(error) {
 				assert.ifError(error);
 				done();
-			});	
+			});
 		});
-	
+
 		describe("add environment tests", function() {
 			it("success - will add environment", function(done) {
 				var params = {
@@ -158,8 +158,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						"description": "this is a dummy description",
 						"ips": ['127.0.0.1', '192.168.0.1']
 					});
-					done();				
-				});			
+					done();
+				});
 			});
 		});
 
@@ -176,7 +176,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ok(body.data);
 					done();
 				});
-			
+
 			});
 
 			it('fail - missing params', function(done) {
@@ -207,7 +207,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it('mongo test', function(done) {	
+			it('mongo test', function(done) {
 				mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
@@ -217,9 +217,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						"description": "this is a dummy updated description",
 						"ips": ['127.0.0.1', '192.168.0.1']
 					});
-					done();				
-				});	
-							
+					done();
+				});
+
 			});
 		});
 
@@ -305,8 +305,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		var productId;
 
 		describe("product", function() {
-			before(function(done){
-				mongo.remove('products', {}, function(error){
+			before(function(done) {
+				mongo.remove('products', {}, function(error) {
 					assert.ifError(error);
 					done();
 				});
@@ -368,13 +368,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"packages": []
 						});
 						done();
-					});				
+					});
 					
 				});
 			});
 
 			describe("update product tests", function() {
-				it("success - will update product", function(done) {					
+				it("success - will update product", function(done) {
 					var params = {
 						qs: {'id': productId},
 						form: {
@@ -565,7 +565,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 								"code": "TPROD_BASIC",
 								"name": "basic package",
 								"description": "this is a dummy description",
-								"_TTL": 12 * 3600,
+								"_TTL": 12 * 3600 * 1000,
 								"acl": {
 									"urac": {
 										'access': false,
@@ -578,7 +578,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 								}
 							});
 							done();
-						
+
 						});
 					});
 				});
@@ -668,7 +668,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 								"code": "TPROD_BASIC",
 								"name": "basic package 2",
 								"description": "this is a dummy updated description",
-								"_TTL": 24 * 3600,
+								"_TTL": 24 * 3600 * 1000,
 								"acl": {
 									"urac": {
 										'access': false,
@@ -681,10 +681,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 								}
 							});
 							done();
-						
+
 						});
 						
-					
+
 					});
 				});
 
@@ -835,7 +835,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"code": "TPROD_BASIC",
 							"name": "basic package",
 							"description": "this is a dummy description",
-							"_TTL": 12 * 3600,
+							"_TTL": 12 * 3600 * 1000,
 							"acl": {
 								"urac": {
 									'access': false,
@@ -915,12 +915,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"oauth": {}
 						});
 						done();
-					
+
 					});
 				});
 			});
 
-			describe("update tenant tests", function() {							
+			describe("update tenant tests", function() {
 				it("success - will update tenant", function(done) {
 					var params = {
 						qs: {"id": tenantId},
@@ -1016,7 +1016,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			describe("list tenant tests", function() {
 				it("success - will get empty list", function(done) {
 					executeMyRequest({}, 'tenant/list', 'get', function(body) {
-						assert.ok(body.data);						
+						assert.ok(body.data);
 						done();
 					});
 				});
@@ -1029,12 +1029,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function(body) {
-						assert.ok(body.data);						
+						assert.ok(body.data);
 						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
-							assert.ifError(error);						
-							tenantId = tenantRecord._id.toString() ;
+							assert.ifError(error);
+							tenantId = tenantRecord._id.toString();
 							console.log(JSON.stringify(tenantRecord));
-							done();				
+							done();
 						});
 					});
 				});
@@ -1058,18 +1058,18 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function(body) {
 						console.log(JSON.stringify(body));
 						assert.ok(body.data);
-						 
+
 						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
-							assert.ifError(error);						
+							assert.ifError(error);
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
 								"redirectURI": "http://www.myredirecturi.com/",
 								"grants": ["password", "refresh_token"]
 							});
 							done();
-				
+
 						});
-					
+
 					});
 				});
 
@@ -1102,13 +1102,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'tenant/oauth/update/', 'post', function(body) {
 						assert.ok(body.data);
 						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
-							assert.ifError(error);						
+							assert.ifError(error);
 							assert.deepEqual(tenantRecord.oauth, {
 								"secret": "my secret key",
 								"redirectURI": "http://www.myredirecturi2.com/",
 								"grants": ["password", "refresh_token"]
 							});
-							done();				
+							done();
 						});
 					});
 				});
@@ -1306,7 +1306,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
-				it('fail - userid already exist in another account', function(done){
+				it('fail - userid already exist in another account', function(done) {
 					var params = {
 						qs: {
 							'id': tenantId
@@ -1492,7 +1492,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"product": "TPROD",
 							"package": "TPROD_BASIC",
 							"description": "this is a dummy description",
-							"_TTL": 12 * 3600,
+							"_TTL": 12 * 3600 * 1000,
 							'keys': []
 							//"acl": {
 							//	"urac": {
@@ -1612,7 +1612,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"product": "TPROD",
 							"package": "TPROD_BASIC",
 							"description": "this is a dummy description updated",
-							"_TTL": 24 * 3600,
+							"_TTL": 24 * 3600 * 1000,
 							'keys': [],
 							"acl": {
 								"urac": {}
@@ -1708,7 +1708,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"acl": {
 								"urac": {}
 							},
-							"_TTL": 12 * 3600,
+							"_TTL": 12 * 3600 * 1000,
 							"keys": []
 						});
 						done();
@@ -1815,7 +1815,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-			
+
 			});
 
 			describe("list application keys", function() {
@@ -1937,7 +1937,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 				
 				it('mongo test', function(done) {
-					mongo.findOne('tenants',{"code": "TSTN"}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
 						
@@ -2158,7 +2158,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					///////////// check this . no error msg. just empty data
 					executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function(body) {
 						console.log(body);
-						console.log( ' ******************************** ');
+						console.log(' ******************************** ');
 						//assert.ok(body.errors);						
 						done();
 					});
@@ -2253,9 +2253,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function(body) {
 						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], 
-								{"code": 445, "message": "Unable to update the tenant application configuration"});
-						 
+						assert.deepEqual(body.errors.details[0],
+							{"code": 445, "message": "Unable to update the tenant application configuration"});
+
 						done();
 					});
 				});
@@ -2303,23 +2303,23 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 				it('mongo test', function(done) {
-					mongo.findOne('tenants', {"code":"TSTN"}, function(error, records) {
+					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
-						assert.ok(records);						
+						assert.ok(records);
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
 						assert.ok(records.applications[0].keys[0].key);
 						assert.ok(records.applications[0].keys[0].config);
-						assert.ok(records.applications[0].keys[0].config.DEV);
-						assert.ok(records.applications[0].keys[0].config.DEV.mail);
-						assert.ok(records.applications[0].keys[0].config.DEV.urac);
+						assert.ok(records.applications[0].keys[0].config.dev);
+						assert.ok(records.applications[0].keys[0].config.dev.mail);
+						assert.ok(records.applications[0].keys[0].config.dev.urac);
 
-						assert.deepEqual(records.applications[0].keys[0].config.DEV.mail, {
+						assert.deepEqual(records.applications[0].keys[0].config.dev.mail, {
 							'a': 'b'
 						});
 
-						assert.deepEqual(records.applications[0].keys[0].config.DEV.urac, {
+						assert.deepEqual(records.applications[0].keys[0].config.dev.urac, {
 							'x': 'y'
 						});
 						done();
@@ -2339,7 +2339,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'tenant/application/key/config/list', 'get', function(body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, {
-							DEV: {
+							dev: {
 								mail: {'a': 'b'},
 								urac: {'x': 'y'}
 							}
@@ -2386,7 +2386,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		it('asserting product record', function(done) {
 			mongo.findOne('products', {"code": "TPROD"}, function(error, record) {
 				assert.ifError(error);
-				assert.ok(record);				
+				assert.ok(record);
 				delete record._id;
 				assert.deepEqual(record, {
 					"code": "TPROD",
@@ -2415,7 +2415,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 									//]
 								}
 							},
-							"_TTL": 12 * 3600
+							"_TTL": 12 * 3600 * 1000
 						}
 					]
 				});
@@ -2425,7 +2425,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 		it('asserting tenant record', function(done) {
 			//TSTN
-			mongo.findOne('tenants', {"code":'TSTN'}, function(error, record) {
+			mongo.findOne('tenants', {"code": 'TSTN'}, function(error, record) {
 				assert.ifError(error);
 				assert.ok(record);
 				delete record._id;
@@ -2460,7 +2460,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						//		}
 						//	}
 						//},
-						"_TTL": 12 * 3600,
+						"_TTL": 12 * 3600 * 1000,
 						"acl": {
 							"urac": {}
 						},
@@ -2474,7 +2474,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 									}
 								],
 								"config": {
-									"DEV": {
+									"dev": {
 										"mail": {
 											"a": "b"
 										},
