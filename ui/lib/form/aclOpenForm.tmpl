@@ -52,7 +52,7 @@
 
         <div class="clearfix serviceNameHead">
             <div style="float: left; width: 200px;">
-                <input type="checkbox" ng-checked="aclFill.services[service.name]"
+                <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
                        ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
                 <b> <a href="">{{service.name}} </a></b>
             </div>
@@ -63,55 +63,49 @@
                     <span style="padding-left: 40px;">
                     <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
                            name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
-                    <span style="padding-left: 40px;"> admin</span>
+                    <span style="padding-left: 40px;"> <input> administrator</span>
 
             </div>
             <div style="float:right;" ng-show="aclFill.services[service.name].include">
-                <a href="" ng-click="minimize(service)" ng-show="service.collapse===false">
+                <a href="" ng-click="minimize(service)" ng-show="aclFill.services[service.name].collapse===false">
                     <span class="icon icon-minus" tooltip="Minimize"></span>
                 </a>
-                <a href="" ng-click="expand(service)" ng-show="service.collapse===true">
+                <a href="" ng-click="expand(service)" ng-show="aclFill.services[service.name].collapse===true">
                     <span class="icon icon-plus" tooltip="Expand"></span>
                 </a>
 
             </div>
-
-
         </div>
 
-
-        <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include && service.collapse!==true }">
+        <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include===true && aclFill.services[service.name].collapse===false }">
             <div>
-            <table width="100%">
-                <tr><td></td> <td> </td> <td> Restrict to Selected Apis</td> </tr>
-                <tr ng-repeat="api in service.apis" ng-class-even="'even'" ng-class-odd="'odd'"
-                    ng-class="{'first': $first, 'last': $last, selected:api.selected}">
-                    <td style="width: 30px; padding-left: 8px">
-                        <input ng-model="aclFill.services[service.name].apis[api].include"
-                               ng-checked="aclFill.services[service.name].apis[api].include"
-                               id="{{service.name}}{{$index}}" type="checkbox"
-                               ng-click="selectApi(this, service, api, $index)">
-
-                    </td>
-                    <td style="width: 450px;">{{api}}</td>
-                    <td style=""><input type="checkbox"></td>
-                    <td>
-                        <div ng---show="aclFill.services[service.name].apis[api].include">
-                    <span style="">
-                        <input ng-checked="aclFill.services[service.name].apis[api].accessType==='public'"
-                               ng-model="aclFill.services[service.name].apis[api].accessType" value="public" type="radio"
-                               name="{{service.name}}_{{$index}}_accessType"> public </span>
-                    <span style="padding-left: 40px;">
-                        <input ng-checked="aclFill.services[service.name].apis[api].accessType==='private'"
-                               ng-model="aclFill.services[service.name].apis[api].accessType" value="private" type="radio"
-                               name="{{service.name}}_{{$index}}_accessType">
-                        private</span> <span style="padding-left: 40px;"> admin</span>
-
-
+                <span>
+                <input type="checkbox" name="apisPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisPermission" value="restricted"> </span>
+                <span><b>Restrict to Selected Apis</b></span>
+                <fieldset ng-repeat="(grp, val) in service.fixList">
+                    <legend>{{grp}}</legend>
+                    <div class="clearfix apiListing-container">
+                        <div class="apiListing" ng-repeat="myApi in val.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                            ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="display: inline-block; height: 30px">
+                            <div class="apiLabel">
+                               <input type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisPermission"> {{myApi.l}}
+                            </div>
+                            <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
+                                <span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="public" type="radio"
+                                              name="{{service.name}}_{{grp}}{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType==='public'"> public </span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="private" type="radio"
+                                             name="{{service.name}}_{{grp}}{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType==='private'"> private</span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="admin" type="radio"
+                                             name="{{service.name}}_{{grp}}{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType==='admin'"> administrator</span>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </fieldset>
+
+
+            <table width="100%"> </table>
             </div>
         </div>
     </div>

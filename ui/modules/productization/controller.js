@@ -363,7 +363,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						console.log( $scope.aclFill.services );
 
 						for(var propt in $scope.aclFill.services){
-
 							var s = $scope.aclFill.services[propt];
 							if(s.include===true){
 								aclObj2[propt]={};
@@ -376,8 +375,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								else{
 									//aclObj2[propt].access=false;
 								}
-								if(s.apis)
-								{
+								if(s.apis){
 									aclObj2[propt].apis={};
 									for(var ap in s.apis){
 										var api = s.apis[ap];
@@ -468,17 +466,46 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":["urac", "dashboard"] }
+			"data": { "serviceNames":["urac", "dashboard", "oauth"] }
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				console.log(' getServices ');
 				console.log(response);
+
+
+				$scope.groupBy( response , 'group');
+
 				$scope.allServiceApis = response;
 			}
 		});
 	};
+	$scope.groupBy = function(arr, f) {
+		var result = {} ;
+		var l =arr.length;
+		var g = 'all' ;
+		for(var i=0; i>l; i++)
+		{
+			console.log( arr[i]);
+			if(arr[i][f]){
+				g = arr[i][f];
+			}
+
+			if(result[g]){
+
+			}else{
+				result[g]={
+
+				}
+			}
+		}
+
+		console.log(result);
+	};
+
+
 	$scope.selectedServices={};
 	$scope.aclFill={};
 	$scope.aclFill.services={};
@@ -517,10 +544,12 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.$parent.isUserLoggedIn();
 	$scope.minimize =function(service){
 		service.collapse=true;
-
+		console.log( $scope.aclFill.services[service.name] ) ;
+		$scope.aclFill.services[service.name].collapse = true;
 	};
 	$scope.expand =function(service){
 		service.collapse=false;
+		$scope.aclFill.services[service.name].collapse = false;
 	};
 
 	$scope.stopEventPropagation = function(event) {
@@ -535,25 +564,20 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.aclFill.services={};
 	$scope.aclFill.apis={};
 
-	$scope.getServices = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":["urac", "dashboard"] }
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				console.log(response);
-				$scope.allServiceApis = response;
-				$scope.openForm();
-			}
-		});
-	};
-
 	$scope.selectService = function( service, index) {
 		service.collapse=false;
+		console.log( ' selectService ');
+		console.log( $scope.aclFill.services[service.name] );
+
+		if( $scope.aclFill.services[service.name]['include'])
+		{
+			$scope.aclFill.services[service.name].collapse = false;
+		}
+		else{
+			$scope.aclFill.services[service.name].collapse = true;
+		}
+
+
 	};
 
 	$scope.selectApi = function(elem, service, api, index) {
@@ -596,18 +620,62 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 			'actions': [
 				{
 				'type': 'submit',
-				'label': 'Save ACL',
+				'label': 'Save ACL 1',
 				'btn': 'primary',
 				'action': function(formData) {
-					var postData =  {};
-					postData = pack ;
-					postData._TTL = (pack._TTL / 3600000).toString();
-					console.log( 'formData' );
-					console.log( formData );
 
-					console.log( 'postData' );
+					var postData = pack ;
+					postData._TTL = (pack._TTL / 3600000).toString();
+
+					console.log( ' ** postData' );
 					console.log(postData);
 
+					console.log( ' *** formData' );
+					console.log( formData );
+
+
+					console.log( ' ** scope.aclFill ' );
+					console.log( $scope.aclFill );
+					var aclObj2={};
+
+					for(var propt in $scope.aclFill.services){
+						var s = $scope.aclFill.services[propt];
+						if(s.include===true)
+						{
+							aclObj2[propt]={};
+							if(s.accessType==='private'){
+								aclObj2[propt].access=true;
+							}
+							else if(s.accessType==='public'){
+								aclObj2[propt].access=false;
+							}
+							else{
+								//aclObj2[propt].access=false;
+							}
+							if(s.apis){
+								aclObj2[propt].apis={};
+								for(var ap in s.apis){
+									var api = s.apis[ap];
+									//if(api.include===true)
+									{
+										aclObj2[propt].apis[ap]={};
+										if(api.accessType==='private'){
+											aclObj2[propt].apis[ap].access=true;
+										}
+										else if(api.accessType==='public'){
+											aclObj2[propt].apis[ap].access=false;
+										}
+										else if(api.accessType==='admin'){
+											aclObj2[propt].apis[ap].access=['administrator'];
+										}
+									}
+								}
+							}
+						}
+					}
+					console.log( ' ** aclObj2' );
+					console.log(aclObj2 );
+					postData.acl =aclObj2;
 
 					getSendDataFromServer( ngDataApi, {
 						"method": "send",
@@ -623,6 +691,8 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 
 						}
 					});
+
+
 
 				}
 			}]
@@ -672,6 +742,53 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 					'rows': 10
 				}
 				];
+
+				$scope.aclFill.services= angular.copy(pack.acl);
+				for(var propt in $scope.aclFill.services)
+				{
+					var s = $scope.aclFill.services[propt];
+
+					console.log(s);
+					s.include =true;
+					s.collapse = false;
+					if( s.access===true){
+						s.accessType = 'private';
+					}else{
+						s.accessType = 'public';
+					}
+					if(s.apis){
+						for(var ap in s.apis)
+						{
+							s.apis[ap].include=true;
+							if(s.apis[ap].access){
+								if( s.apis[ap].access===true)
+								{
+									s.apis[ap].accessType = 'private';
+								}
+								else if( s.apis[ap].access===false)
+								{
+									s.apis[ap].accessType = 'public';
+								}
+								else{
+									if( (typeof(s.apis[ap].access)=='object') &&( s.apis[ap].access.indexOf('administrator')>-1  ) ){
+										s.apis[ap].accessType = 'admin';
+									}
+
+									//console.log( typeof(s.apis[ap].access) );
+									console.log( typeof(s.apis[ap].access) );
+									console.log(s.apis[ap]);
+
+
+
+								}
+							}
+
+						}
+					}
+				}
+				console.log(' ******* start ******** $scope.aclFill.services ');
+				console.log( $scope.aclFill.services );
+
 				//formConfig.data = response;
 				console.log(' build ');
 				// buildFormWithModal($scope, null, formConfig);
@@ -695,7 +812,56 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	//default operation
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["oauth","urac", "dashboard" ] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(' getServices ');
+
+
+				response.forEach(function(serv) {
+					serv.fixList = $scope.groupBy( serv.apis , 'group');
+				});
+				console.log(response);
+				$scope.allServiceApis = response;
+				$scope.openForm();
+			}
+		});
+	};
+
+	$scope.groupBy = function(arr, f) {
+		var result = {} ;
+		var l = arr.length;
+		var g = 'all' ;
+		for(var i=0; i<l; i++)
+		{
+			if(arr[i][f])
+			{
+				g = arr[i][f];
+			}
+
+			if(result[g])
+			{
+				result[g].apis.push(arr[i]);
+			}
+			else{
+				result[g]={};
+				result[g].apis=[];
+				result[g].apis.push(arr[i]);
+			}
+		}
+		console.log('*******  result ' );
+		console.log(result);
+
+		return result;
+
+	};
+
 	$scope.getServices();
-
-
 }]);

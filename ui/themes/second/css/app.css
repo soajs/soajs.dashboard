@@ -564,3 +564,38 @@ div.entryBox .body .btn-ssm{
 .tab-content > .active{
 	
 }
+
+fieldset {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+fieldset legend {
+    margin-bottom: 0;
+    text-decoration: none;
+    width: auto;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.apiListing .apiLabel{
+    float: left;
+    width: 330px;
+    padding-right: 30px;
+}
+.apiListing .apiAccess{
+    float: left;
+    width: 250px;
+}
+.apiListing-container .odd{
+    margin-right: 45px;
+    width: 580px;
+}
+.apiListing-container .even{
+    width: 580px;
+}
+.apiLabel input{
+    margin-top: 0;
+}
