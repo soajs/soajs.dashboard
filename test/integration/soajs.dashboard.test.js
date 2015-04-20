@@ -3,7 +3,6 @@ var assert = require('assert');
 var request = require("request");
 var soajs = require('soajs');
 var helper = require("../helper.js");
-var shell = require('shelljs');
 var dashboard;
 
 var config = helper.requireModule('./service/config');
@@ -16,8 +15,6 @@ var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
 
-var sampleData = require("soajs.mongodb.data/modules/dashboard");
-
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
 function executeMyRequest(params, apiPath, method, cb) {
@@ -29,7 +26,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 	function requester(apiName, method, params, cb) {
 		var options = {
-			uri: 'http://localhost:4003/' + apiName,
+			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
 				'Content-Type': 'application/json',
 				key: extKey
@@ -59,37 +56,6 @@ function executeMyRequest(params, apiPath, method, cb) {
 		});
 	}
 }
-
-describe("importing sample data", function() {
-
-	before(function(done) {
-		mongo.dropDatabase(function(error) {
-			assert.ifError(error);
-			done();
-		});
-	});
-
-	it("do import", function(done) {
-		shell.pushd(sampleData.dir);
-		shell.exec("chmod +x " + sampleData.shell, function(code) {
-			assert.equal(code, 0);
-			shell.exec(sampleData.shell, function(code) {
-				assert.equal(code, 0);
-				shell.popd();
-				done();
-			});
-		});
-	});
-
-	after(function(done) {
-		console.log('test data imported.');
-		dashboard = helper.requireModule('./service/index');
-		console.log('starting tests ....');
-		setTimeout(function() {
-			done();
-		}, 1500);
-	});
-});
 
 describe("DASHBOARD UNIT TSTNS", function() {
 	var expDateValue = new Date().toISOString();
