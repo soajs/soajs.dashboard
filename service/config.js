@@ -80,7 +80,7 @@ module.exports = {
 		"501": "This record is locked. You cannot modify or delete it",
 		"600": "Database error"
 	},
-
+	"excludedServices":[],
 	"schema": {
 		"commonFields": {
 			"description": {
