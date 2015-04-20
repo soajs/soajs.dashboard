@@ -8,6 +8,10 @@ var accessSchema = {
 
 module.exports = {
 	"serviceName": "dashboard",
+	"servicePort": 4003,
+	"hashIterations": 1024,
+	"seedLength": 32,
+	"extKeyRequired": true,
 	"expDateTTL": 86400000,
 	"hasher":{
 		"hashIterations": 1024,
@@ -166,8 +170,18 @@ module.exports = {
 				}
 			}
 		},
-		"/environment/list": {},
+		"/environment/list": {
+			_apiInfo: {
+				"l": "List Environments",
+				"group": "Environment",
+				"groupMain": true
+			}
+		},
 		"/environment/add": {
+			_apiInfo: {
+				"l": "Add Environment",
+				"group": "Environment"
+			},
 			"commonFields": ['description'],
 			"code": {
 				"source": ['body.code'],
@@ -188,9 +202,17 @@ module.exports = {
 			}
 		},
 		"/environment/delete": {
+			_apiInfo: {
+				"l": "Delete Environment",
+				"group": "Environment"
+			},
 			"commonFields": ['id']
 		},
 		"/environment/update": {
+			_apiInfo: {
+				"l": "Update Environment",
+				"group": "Environment"
+			},
 			"commonFields": ['id', 'description'],
 			"ips": {
 				"source": ['body.ips'],
@@ -202,11 +224,25 @@ module.exports = {
 			}
 		},
 
-		"/product/list": {},
+		"/product/list": {
+			_apiInfo: {
+				"l": "List Products",
+				"group": "Product",
+				"groupMain": true
+			}
+		},
 		"/product/get": {
+			_apiInfo: {
+				"l": "Get Product",
+				"group": "Product"
+			},
 			"commonFields": ['id']
 		},
 		"/product/add": {
+			_apiInfo: {
+				"l": "Add Product",
+				"group": "Product"
+			},
 			"commonFields": ['description', 'name'],
 			"code": {
 				"source": ['body.code'],
@@ -219,13 +255,25 @@ module.exports = {
 			}
 		},
 		"/product/delete": {
+			_apiInfo: {
+				"l": "Delete Product",
+				"group": "Product"
+			},
 			"commonFields": ['id']
 		},
 		"/product/update": {
+			_apiInfo: {
+				"l": "Update Product",
+				"group": "Product"
+			},
 			"commonFields": ['id', 'name', 'description']
 		},
 
 		"/product/packages/delete": {
+			_apiInfo: {
+				"l": "Delete Product Package",
+				"group": "Product"
+			},
 			"commonFields": ['id'],
 			"code": {
 				"source": ['query.code'],
@@ -238,9 +286,17 @@ module.exports = {
 			}
 		},
 		"/product/packages/list": {
+			_apiInfo: {
+				"l": "List Product Packages",
+				"group": "Product"
+			},
 			"commonFields": ['id']
 		},
 		"/product/packages/add": {
+			_apiInfo: {
+				"l": "Add Product Package",
+				"group": "Product"
+			},
 			"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
 			"code": {
 				"source": ["body.code"],
@@ -253,6 +309,10 @@ module.exports = {
 			}
 		},
 		"/product/packages/update": {
+			_apiInfo: {
+				"l": "Update Product Package",
+				"group": "Product"
+			},
 			"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
 			"code": {
 				"source": ["query.code"],
@@ -265,11 +325,25 @@ module.exports = {
 			}
 		},
 
-		"/tenant/list": {},
+		"/tenant/list": {
+			_apiInfo: {
+				"l": "List Tenants",
+				"group": "Tenant",
+				"groupMain": true
+			}
+		},
 		"/tenant/get": {
+			_apiInfo: {
+				"l": "Get Tenant",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/add": {
+			_apiInfo: {
+				"l": "Add Tenant",
+				"group": "Tenant"
+			},
 			"commonFields": ['name', 'description'],
 			"code": {
 				"source": ['body.code'],
@@ -282,19 +356,39 @@ module.exports = {
 			}
 		},
 		"/tenant/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/update": {
+			_apiInfo: {
+				"l": "Update Tenant",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'name', 'description']
 		},
 
 		"/tenant/oauth/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant oAuth Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/oauth/list": {
+			_apiInfo: {
+				"l": "Get Tenant oAuth Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/oauth/add": {
+			_apiInfo: {
+				"l": "Add Tenant oAuth Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id'],
 			"secret": {
 				"source": ['body.secret'],
@@ -313,6 +407,10 @@ module.exports = {
 			}
 		},
 		"/tenant/oauth/update": {
+			_apiInfo: {
+				"l": "Update Tenant oAuth Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id'],
 			"secret": {
 				"source": ['body.secret'],
@@ -332,9 +430,17 @@ module.exports = {
 		},
 
 		"/tenant/oauth/users/list" :{
+			_apiInfo: {
+				"l": "List Tenant oAuth Users",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/oauth/users/delete" :{
+			_apiInfo: {
+				"l": "Delete Tenant oAuth User",
+				"group": "Tenant"
+			},
 			"commonFields": ['id'],
 			"uId":{
 				"source": ['query.uId'],
@@ -345,6 +451,10 @@ module.exports = {
 			}
 		},
 		"/tenant/oauth/users/add" :{
+			_apiInfo: {
+				"l": "Add Tenant oAuth User",
+				"group": "Tenant"
+			},
 			"commonFields": ['id'],
 			"userId":{
 				"source": ['body.userId'],
@@ -362,6 +472,10 @@ module.exports = {
 			}
 		},
 		"/tenant/oauth/users/update" :{
+			_apiInfo: {
+				"l": "Update Tenant oAuth User",
+				"group": "Tenant"
+			},
 			"commonFields": ['id'],
 			"uId":{
 				"source": ['query.uId'],
@@ -387,12 +501,24 @@ module.exports = {
 		},
 
 		"/tenant/application/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId']
 		},
 		"/tenant/application/list": {
+			_apiInfo: {
+				"l": "List Tenant Applications",
+				"group": "Tenant"
+			},
 			"commonFields": ['id']
 		},
 		"/tenant/application/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', '_TTL', 'description', 'acl'],
 			"productCode": {
 				"source": ['body.productCode'],
@@ -414,6 +540,10 @@ module.exports = {
 			}
 		},
 		"/tenant/application/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl'],
 			"productCode": {
 				"source": ['body.productCode'],
@@ -436,19 +566,39 @@ module.exports = {
 		},
 
 		"/tenant/application/key/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application Key",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId']
 		},
 		"/tenant/application/key/list": {
+			_apiInfo: {
+				"l": "List Tenant Application Keys",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId']
 		},
 		"/tenant/application/key/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application Key",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key']
 		},
 
 		"/tenant/application/key/ext/list": {
+			_apiInfo: {
+				"l": "List Tenant Application External Keys",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key']
 		},
 		"/tenant/application/key/ext/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application External Key",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key'],
 			'expDate': {
 				"source": ['body.expDate'],
@@ -474,6 +624,10 @@ module.exports = {
 			}
 		},
 		"/tenant/application/key/ext/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application External Key",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key'],
 			'extKey': {
 				"source": ['body.extKey'],
@@ -506,6 +660,10 @@ module.exports = {
 			}
 		},
 		"/tenant/application/key/ext/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application External Key",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key'],
 			'extKey': {
 				"source": ['body.extKey'],
@@ -517,9 +675,17 @@ module.exports = {
 		},
 
 		"/tenant/application/key/config/list": {
+			_apiInfo: {
+				"l": "List Tenant Application Key Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key']
 		},
 		"/tenant/application/key/config/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application Key Configuration",
+				"group": "Tenant"
+			},
 			"commonFields": ['id', 'appId', 'key'],
 			'envCode': {
 				'source': ['body.envCode'],
@@ -538,6 +704,10 @@ module.exports = {
 		},
 
 		"/services/list": {
+			_apiInfo: {
+				"l": "List Services",
+				"group": "Services"
+			},
 			'serviceNames':{
 				'source': ['body.serviceNames'],
 				'required': false,
