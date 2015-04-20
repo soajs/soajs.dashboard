@@ -8,6 +8,10 @@ var accessSchema = {
 
 module.exports = {
 	"serviceName": "dashboard",
+	"servicePort": 4003,
+	"hashIterations": 1024,
+	"seedLength": 32,
+	"extKeyRequired": true,
 	"expDateTTL": 86400000,
 	"hasher":{
 		"hashIterations": 1024,
@@ -166,7 +170,13 @@ module.exports = {
 				}
 			}
 		},
-		"/environment/list": {},
+		"/environment/list": {
+			_apiInfo: {
+				"l": "list environments",
+				"group": "environments",
+				"groupMain": true
+			}
+		},
 		"/environment/add": {
 			"commonFields": ['description'],
 			"code": {
