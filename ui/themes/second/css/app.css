@@ -345,6 +345,7 @@ a:hover{
     padding:5px;
     font-weight:bold;
     background-color:#eeeeee;
+    border-radius: 8px;
 }
 
 .entryServiceBoxes .service-container .serviceNameHead span{

@@ -289,6 +289,12 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, options);
 	};
 
+	$scope.editPackAcl = function(productId, code) {
+
+		console.log( "/productization/"+productId+"/editAcl/" + code );
+		$scope.$parent.go("/productization/"+productId+"/editAcl/" + code );
+
+	};
 	$scope.editPackage = function(productId, data) {
 		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
@@ -434,22 +440,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
-				},
-				{
-					'type': 'reset',
-					'label': 'FILL',
-					'btn': 'danger',
-					'action': function() {
-						var cfgElement = angular.element(document.getElementById("idaclForm"));
-						if(cfgElement){
-							console.log(cfgElement);
-							cfgElement.html('<ngaclform></ngaclform> ');
-							$compile(cfgElement.contents())($scope);
-						}
-						else{
-							console.log('no elem');
-						}
-					}
 				}
 			]
 		};
@@ -520,5 +510,192 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	//default operation
 	$scope.getServices();
 	$scope.listProducts();
+
+}]);
+
+productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.minimize =function(service){
+		service.collapse=true;
+
+	};
+	$scope.expand =function(service){
+		service.collapse=false;
+	};
+
+	$scope.stopEventPropagation = function(event) {
+		if(event && event.stopPropagation){
+			alert('stopEventPropagation 2');
+			event.stopPropagation();
+		}
+	};
+
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["urac", "dashboard"] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(response);
+				$scope.allServiceApis = response;
+				$scope.openForm();
+			}
+		});
+	};
+
+	$scope.selectService = function( service, index) {
+		service.collapse=false;
+	};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		 if($scope.selectedServices[service.name]){
+		 if($scope.selectedServices[service.name][api])
+		 {
+		 if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+		 delete $scope.selectedServices[service.name][api];
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api]= {};
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+
+	$scope.openForm = function() {
+		var productId=  $routeParams.pid;
+		var pack = {};
+		var formConfig = {
+			'timeout': $timeout,
+			'name': 'editACL',
+			'label': 'Update ACL',
+			'entries': [],
+			'data': {},
+			form: {
+				'name': 'edit',
+				'label': 'Edit ',
+				'entries': []
+			},
+			'actions': [
+				{
+				'type': 'submit',
+				'label': 'Save ACL',
+				'btn': 'primary',
+				'action': function(formData) {
+					var postData =  {};
+					postData = pack ;
+					postData._TTL = (pack._TTL / 3600000).toString();
+					console.log( 'formData' );
+					console.log( formData );
+
+					console.log( 'postData' );
+					console.log(postData);
+
+
+					getSendDataFromServer( ngDataApi, {
+						"method": "send",
+						"routeName": "/dashboard/product/packages/update",
+						"data": postData,
+						"params": {"id": productId, "code": postData.code.split("_")[1]}
+					}, function(error, response) {
+						if(error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+
+						}
+					});
+
+				}
+			}]
+		};
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/product/get",
+			"params": { "id": $routeParams.pid }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var code = $routeParams.code;
+
+				console.log('product packages' );
+				console.log( response.packages );
+				var l = response.packages.length;
+				for (var x = 0; x<l; x++)
+				{
+					if(response.packages[x].code === code)
+					{
+						pack = 	response.packages[x];
+						break;
+					}
+				}
+				console.log( 'pack' );
+				console.log( pack );
+
+				formConfig.entries = [
+				{
+					'name': 'package',
+					'label': 'Package',
+					'type': 'html',
+					'required': false,
+					'value': pack.code
+				},
+				{
+					'name': 'acl',
+					'label': 'ACL',
+					'type': 'html',
+					'value': '',
+					'placeholder': 'JSON object representing your profile ...',
+					'tooltip': 'Fill in your additional profile information.',
+					'required': false,
+					'rows': 10
+				}
+				];
+				//formConfig.data = response;
+				console.log(' build ');
+				// buildFormWithModal($scope, null, formConfig);
+				buildForm($scope, null, formConfig, function(){
+					console.log('********** done');
+					console.log( $scope.allServiceApis );
+
+					var cfgElement = angular.element(document.getElementById("idacl"));
+					if(cfgElement){
+						cfgElement.html('<ngaclopenform></ngaclopenform> ');
+						$compile(cfgElement.contents())($scope);
+					}
+
+				});
+
+
+			}
+		});
+
+
+	};
+
+	//default operation
+	$scope.getServices();
+
 
 }]);

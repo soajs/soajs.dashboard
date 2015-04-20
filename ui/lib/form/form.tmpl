@@ -35,7 +35,7 @@
 
                 <td ng-switch-when="select" class="form-select">
                     <label>{{entry.label}}</label>
-                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" id="fm{{entry.name}}">
+                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" id="fm{{entry.name}}" ng-change="form.call(entry.onAction, 'fm'+entry.name , form.formData[entry.name] )">
                         <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
                     </select>
 

@@ -102,6 +102,17 @@ function buildForm(context, modal, configuration, cb) {
 				context.form.entries[index].opened = true;
 			};
 		}
+
+		if(oneEntry.type === 'select') {
+			if(oneEntry.onChange && typeof(oneEntry.onChange.action)==='function')
+			{
+				oneEntry.action= oneEntry.onChange;
+			}
+			else{
+				oneEntry.action= {};
+			}
+		}
+
 	}
 
 	context.form.do = function(functionObj) {
@@ -114,7 +125,24 @@ function buildForm(context, modal, configuration, cb) {
 			functionObj.action();
 		}
 	};
+	context.form.callObj = function(functionObj) {
+		if(functionObj){
+			if(functionObj.action){
+				functionObj.action();
+			}
+		}
+	};
+	context.form.call = function(action, id, data) {
+		//console.log('id: ');console.log(id);
+		//console.log('data: ');console.log(data);
+		if(action){
+			if( typeof(action) == 'function'){
+				action(id, data);
+			}
+		}
+	};
 
+	// testAction
 	context.form.itemsAreValid = function() {
 		var entries = context.form.entries;
 		var data = context.form.formData;
@@ -160,5 +188,12 @@ soajsApp.directive('ngaclform', function() {
 	return {
 		restrict: 'E',
 		templateUrl: 'lib/form/aclForm.tmpl'
+	};
+});
+
+soajsApp.directive('ngaclopenform', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/aclOpenForm.tmpl'
 	};
 });

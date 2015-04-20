@@ -8,6 +8,16 @@
     }
     .service-container{
     }
+
+    .listApis{
+        display: none;
+    }
+
+    .openApis{
+        display: block;
+        transition: all 0.5s ease 0s;
+    }
+
 </style>
 <div id="generate-ApiList" class="entryServiceBoxes">
     <!--
@@ -35,41 +45,58 @@
 
             </accordion-group>
         </accordion>
-    -->
 
-        <div ng-repeat="service in allServiceApis" class="clearfix service-container">
-            <div class="clearfix serviceNameHead">
-                <div style="float: left; width: 200px;">
-                    <input type="checkbox" ng-checked="aclFill.services[service.name]"
-                           ng-model="aclFill.services[service.name].include" value="{{service.name}}">
-                    <b> <a href="">{{service.name}} </a></b>
-                </div>
-                <div ng-show="aclFill.services[service.name].include" style="float: left;">
+    -->
+    <div ng-repeat="service in allServiceApis" class="clearfix service-container">
+
+
+        <div class="clearfix serviceNameHead">
+            <div style="float: left; width: 200px;">
+                <input type="checkbox" ng-checked="aclFill.services[service.name]"
+                       ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
+                <b> <a href="">{{service.name}} </a></b>
+            </div>
+            <div ng-show="aclFill.services[service.name].include" style="float: left;">
                     <span style="padding-left: 15px;"><input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
-                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
+                                                             name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
 
                     <span style="padding-left: 40px;">
                     <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
                            name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
-                </div>
+                    <span style="padding-left: 40px;"> admin</span>
+
+            </div>
+            <div style="float:right;" ng-show="aclFill.services[service.name].include">
+                <a href="" ng-click="minimize(service)" ng-show="service.collapse===false">
+                    <span class="icon icon-minus" tooltip="Minimize"></span>
+                </a>
+                <a href="" ng-click="expand(service)" ng-show="service.collapse===true">
+                    <span class="icon icon-plus" tooltip="Expand"></span>
+                </a>
 
             </div>
 
 
-            <div class="body">
-                <table class="listApis" width="100%" ng-show="aclFill.services[service.name].include">
-                    <tr ng-repeat="api in service.apis" ng-class-even="'even'" ng-class-odd="'odd'"
-                        ng-class="{'first': $first, 'last': $last, selected:api.selected}">
-                        <td style="width: 30px; padding-left: 8px">
-                            <input ng-model="aclFill.services[service.name].apis[api].include"
-                                   ng-checked="aclFill.services[service.name].apis[api].include"
-                                   id="{{service.name}}{{$index}}" type="checkbox"
-                                   ng-click="selectApi(this, service, api, $index)">
+        </div>
 
-                        </td>
-                        <td style="width: 450px;">{{api}}</td>
-                        <td>
-                            <div ng-show="aclFill.services[service.name].apis[api].include">
+
+        <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include && service.collapse!==true }">
+            <div>
+            <table width="100%">
+                <tr><td></td> <td> </td> <td> Restrict to Selected Apis</td> </tr>
+                <tr ng-repeat="api in service.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                    ng-class="{'first': $first, 'last': $last, selected:api.selected}">
+                    <td style="width: 30px; padding-left: 8px">
+                        <input ng-model="aclFill.services[service.name].apis[api].include"
+                               ng-checked="aclFill.services[service.name].apis[api].include"
+                               id="{{service.name}}{{$index}}" type="checkbox"
+                               ng-click="selectApi(this, service, api, $index)">
+
+                    </td>
+                    <td style="width: 450px;">{{api}}</td>
+                    <td style=""><input type="checkbox"></td>
+                    <td>
+                        <div ng---show="aclFill.services[service.name].apis[api].include">
                     <span style="">
                         <input ng-checked="aclFill.services[service.name].apis[api].accessType==='public'"
                                ng-model="aclFill.services[service.name].apis[api].accessType" value="public" type="radio"
@@ -78,15 +105,16 @@
                         <input ng-checked="aclFill.services[service.name].apis[api].accessType==='private'"
                                ng-model="aclFill.services[service.name].apis[api].accessType" value="private" type="radio"
                                name="{{service.name}}_{{$index}}_accessType">
-                        private</span>
+                        private</span> <span style="padding-left: 40px;"> admin</span>
 
 
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
             </div>
         </div>
+    </div>
 
 
 </div>
