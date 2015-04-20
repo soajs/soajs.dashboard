@@ -2,6 +2,7 @@
 var assert = require('assert');
 var request = require("request");
 var soajs = require('soajs');
+var util = require('soajs/lib/utils');
 var helper = require("../helper.js");
 var dashboard;
 
@@ -61,7 +62,141 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	var expDateValue = new Date().toISOString();
 	var envId;
 	describe("environment tests", function() {
-		
+		var validEnvRecord = {
+			"code": "DEV",
+			"description": 'this is a dummy description',
+			"dbs": {
+				"clusters": {
+					"cluster1": {
+						"servers": [
+							{
+								"host": "127.0.0.1",
+								"port": 27017
+							}
+						],
+						"credentials": null,
+						"URLParam": {
+							"connectTimeoutMS": 0,
+							"socketTimeoutMS": 0,
+							"maxPoolSize": 5,
+							"wtimeoutMS": 0,
+							"slaveOk": true
+						},
+						"extraParam": {
+							"db": {
+								"native_parser": true
+							},
+							"server": {
+								"auto_reconnect": true
+							}
+						}
+					}
+				},
+				"config": {
+					"prefix": "",
+					"session": {
+						"cluster": "cluster1",
+						"name": "core_session",
+						"store": {},
+						"collection": "sessions",
+						"stringify": false,
+						"expireAfter": 1209600000
+					}
+				},
+				"databases": {
+					"urac": {
+						"cluster": "cluster1",
+						"tenantSpecific": true
+					}
+				}
+			},
+			"services": {
+				"controller": {
+					"maxPoolSize": 100,
+					"authorization": true,
+					"requestTimeout": 30,
+					"requestTimeoutRenewal": 0
+				},
+				"config": {
+					"awareness": {
+						"healthCheckInterval": 5000,
+						"autoRelaodRegistry": 300000
+					},
+					"agent": {
+						"topologyDir": "/opt/soajs/"
+					},
+					"key": {
+						"algorithm": "aes256",
+						"password": "soajs key lal massa"
+					},
+					"logger": {
+						"src": true,
+						"level": "debug"
+					},
+					"cors": {
+						"enabled": true,
+						"origin": "*",
+						"credentials": "true",
+						"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+						"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+						"maxage": 1728000
+					},
+					"oauth": {
+						"grants": [
+							"password",
+							"refresh_token"
+						],
+						"debug": false
+					},
+					"ports": {
+						"controller": 4000,
+						"maintenanceInc": 1000,
+						"randomInc": 100
+					},
+					"cookie": {
+						"secret": "this is a secret sentence"
+					},
+					"session": {
+						"name": "soajsID",
+						"secret": "this is antoine hage app server",
+						"cookie": {
+							"path": "/",
+							"httpOnly": true,
+							"secure": false,
+							"domain": "soajs.com",
+							"maxAge": null
+						},
+						"resave": false,
+						"saveUninitialized": false
+					}
+				}
+			}
+		};
+
+		var validCluster = {
+			"URLParam": {
+				"connectTimeoutMS": 0,
+				"socketTimeoutMS": 0,
+				"maxPoolSize": 5,
+				"wtimeoutMS": 0,
+				"slaveOk": true
+			},
+			"servers": [
+				{
+					"host": "127.0.0.1",
+					"port": 27017
+				}
+			],
+			"extraParam": {
+				"db": {
+					"native_parser": true
+				},
+				"server": {
+					"auto_reconnect": true
+				}
+			}
+		};
+
 		before(function(done) {
 			mongo.remove('environment', {}, function(error) {
 				assert.ifError(error);
@@ -72,11 +207,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		describe("add environment tests", function() {
 			it("success - will add environment", function(done) {
 				var params = {
-					form: {
-						"code": "DEV",
-						"description": 'this is a dummy description',
-						"ips": ['127.0.0.1', '192.168.0.1']
-					}
+					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
 					console.log(JSON.stringify(body));
@@ -88,12 +219,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			it('fail - missing params', function(done) {
 				var params = {
 					form: {
-						"description": 'this is a dummy description',
-						"ips": ['127.0.0.1', '192.168.0.1']
+						"code": "DEV",
+						"description": 'this is a dummy description'
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: code"});
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
 
 					done();
 				});
@@ -101,11 +232,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it('fail - environment exists', function(done) {
 				var params = {
-					form: {
-						"code": "DEV",
-						"description": 'this is a dummy description',
-						"ips": ['127.0.0.1', '192.168.0.1']
-					}
+					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
 					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
@@ -119,11 +246,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
-					assert.deepEqual(envRecord, {
-						"code": "DEV",
-						"description": "this is a dummy description",
-						"ips": ['127.0.0.1', '192.168.0.1']
-					});
+					var tester = util.cloneObj(validEnvRecord);
+					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					assert.deepEqual(envRecord, tester);
 					done();
 				});
 			});
@@ -135,7 +260,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					qs: {"id": envId},
 					form: {
 						"description": 'this is a dummy updated description',
-						"ips": ['127.0.0.1', '192.168.0.1']
+						"services": validEnvRecord.services
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'post', function(body) {
@@ -150,11 +275,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					qs: {"id": envId},
 					form: {
 						"description": 'this is a dummy description'
-						//"ips": ['127.0.0.1', '192.168.0.1']
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: ips"});
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
 					done();
 				});
 			});
@@ -164,7 +288,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					qs: {"id": "aaaabbbbccc"},
 					form: {
 						"description": 'this is a dummy description',
-						"ips": ['127.0.0.1', '192.168.0.1']
+						"services": validEnvRecord.services
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'post', function(body) {
@@ -178,11 +302,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
-					assert.deepEqual(envRecord, {
-						"code": "DEV",
-						"description": "this is a dummy updated description",
-						"ips": ['127.0.0.1', '192.168.0.1']
-					});
+					var tester = util.cloneObj(validEnvRecord);
+					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					tester.description = "this is a dummy updated description";
+					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
 
@@ -210,7 +333,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it("success - will update environment", function(done) {
+			it("success - will delete environment", function(done) {
 				var params = {
 					qs: {'id': envId}
 				};
@@ -240,11 +363,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 			it("success - will add environment", function(done) {
 				var params = {
-					form: {
-						"code": "DEV",
-						"description": 'this is a dummy description',
-						"ips": ['127.0.0.1', '192.168.0.1']
-					}
+					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
 					assert.ok(body.data);
@@ -256,12 +375,748 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 1);
 					delete body.data[0]._id;
-					assert.deepEqual(body.data[0], {
-						"code": "DEV",
-						"description": "this is a dummy description",
-						"ips": ['127.0.0.1', '192.168.0.1']
+					var tester = util.cloneObj(validEnvRecord);
+					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					assert.deepEqual(body.data[0], tester);
+					done();
+				});
+			});
+		});
+
+
+		describe("add environment clusters", function() {
+			it("success - will add new cluster", function(done) {
+				var params = {
+					qs: {
+						env: "dev",
+						"name": "cluster1"
+					},
+					form: {
+						'cluster': validCluster
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('fail - missing parameters', function(done) {
+				var params = {
+					qs: {
+						'env': 'dev',
+						'name': 'cluster1'
+					},
+					form: {
+						//"cluster": {}
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: cluster"});
+
+					done();
+				});
+			});
+
+			it('fail - cluster exists', function(done) {
+				var params = {
+					qs: {
+						env: "dev",
+						"name": "cluster1"
+					},
+					form: {
+						'cluster': validCluster
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 504, "message": "Environment cluster already exists"});
+					done();
+				});
+			});
+
+			it('mongo - testing db', function(done) {
+				mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord) {
+					assert.ifError(error);
+					assert.deepEqual(envRecord.dbs.clusters['cluster1'], validCluster);
+					done();
+				});
+			});
+		});
+
+		describe("update environment clusters", function() {
+			it("success - will update cluster", function(done) {
+				var params = {
+					qs: {
+						env: "dev",
+						"name": "cluster1"
+					},
+					form: {
+						'cluster': validCluster
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/update', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('fail - missing parameters', function(done) {
+				var params = {
+					qs: {
+						'env': 'dev',
+						'name': 'cluster1'
+					},
+					form: {
+						//"cluster": {}
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: cluster"});
+
+					done();
+				});
+			});
+
+			it('fail - cluster does not exists', function(done) {
+				var params = {
+					qs: {
+						env: "dev",
+						"name": "cluster2"
+					},
+					form: {
+						'cluster': validCluster
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 502, "message": "Invalid cluster name provided"});
+					done();
+				});
+			});
+
+			it('mongo - testing db', function(done) {
+				mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord) {
+					assert.ifError(error);
+					assert.deepEqual(envRecord.dbs.clusters['cluster1'], validCluster);
+					done();
+				});
+			});
+		});
+
+		describe("delete environment clusters", function() {
+			it('fail - missing params', function(done) {
+				var params = {
+					qs: {
+						'env': 'dev'
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/delete', 'get', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: name"});
+					done();
+				});
+			});
+
+			it('fail - invalid environment id provided', function(done) {
+				var params = {
+					qs: {
+						'env': 'dev',
+						'name': 'invalid'
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/delete', 'get', function(body) {
+					console.log(JSON.stringify(body));
+					assert.deepEqual(body.errors.details[0], {"code": 508, "message": errorCodes[508]});
+					done();
+				});
+			});
+
+			it("success - will delete environment", function(done) {
+				var params = {
+					qs: {
+						'env': 'dev',
+						'name': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/delete', 'get', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('mongo test', function(done) {
+				mongo.find('environment', {}, {}, function(error, records) {
+					assert.ifError(error);
+					assert.ok(records);
+					assert.equal(JSON.stringify(records[0].dbs.clusters), '{}');
+					done();
+				});
+			});
+		});
+
+		describe("list environment clusters", function() {
+			it('success - returns empty list', function(done) {
+				var params = {
+					qs: {'env': 'dev'}
+				};
+				executeMyRequest(params, 'environment/clusters/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(Object.keys(body.data).length, 0);
+					done();
+				});
+			});
+
+			it('success - adds new cluster', function(done) {
+				var params = {
+					qs: {
+						env: "dev",
+						"name": "cluster1"
+					},
+					form: {
+						'cluster': validCluster
+					}
+				};
+				executeMyRequest(params, 'environment/clusters/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - returns one entry in list', function(done) {
+				var params = {
+					qs: {'env': 'dev'}
+				};
+				executeMyRequest(params, 'environment/clusters/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(Object.keys(body.data).length, 1);
+					done();
+				});
+			});
+		});
+
+
+		describe("add environment db", function() {
+			it("success - will add a db", function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - will add session db', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1',
+						'sessionInfo': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
+						}
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('fail - missing params', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: name"});
+					done();
+				});
+			});
+
+			it('fail - invalid cluster provided', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'invalid'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 502, "message": "Invalid cluster name provided"});
+					done();
+				});
+			});
+
+			it('fail - invalid session params', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 507, "message": "Invalid db Information provided for session database"});
+					done();
+				});
+			});
+
+			it('fail - database already exist', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 509, "message": "environment database already exist"});
+					done();
+				});
+			});
+
+			it('fail - session already exist', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1',
+						'sessionInfo': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
+						}
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 510, "message": "environment session database already exist"});
+					done();
+				});
+			});
+
+			it('mongo - testing database content', function(done) {
+				mongo.find('environment', {}, {}, function(error, records) {
+					assert.ifError(error);
+					assert.ok(records);
+					assert.ok(records[0].dbs.databases.urac);
+					assert.ok(records[0].dbs.config.session);
+					done();
+				});
+			});
+		});
+
+		describe("update environment db", function() {
+			it("success - will update a db", function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - will update session db', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1',
+						'sessionInfo': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
+						}
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('fail - missing params', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: name"});
+					done();
+				});
+			});
+
+			it('fail - invalid cluster provided', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'invalid'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 502, "message": "Invalid cluster name provided"});
+					done();
+				});
+			});
+
+			it('fail - invalid session params', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 507, "message": "Invalid db Information provided for session database"});
+					done();
+				});
+			});
+
+			it('fail - database does not exist', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'invalid',
+						'tenantSpecific': true,
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 512, "message": "environment database does not exist"});
+					done();
+				});
+			});
+
+			it('fail - session does not exist', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1',
+						'sessionInfo': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
+						}
+					}
+				};
+				var tmp = {};
+				mongo.findOne('environment', {'code': 'DEV'}, function(error, record) {
+					assert.ifError(error);
+					tmp = util.cloneObj(record.dbs.config.session);
+					delete record.dbs.config.session;
+
+					mongo.save('environment', record, function(error) {
+						assert.ifError(error);
+						executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+							assert.deepEqual(body.errors.details[0], {"code": 511, "message": "environment session database does not exist"});
+
+							record.dbs.config.session = tmp;
+							mongo.save('environment', record, function(error) {
+								assert.ifError(error);
+								done();
+							});
+						});
+					});
+				});
+			});
+
+			it('mongo - testing database content', function(done) {
+				mongo.find('environment', {}, {}, function(error, records) {
+					assert.ifError(error);
+					assert.ok(records);
+					assert.ok(records[0].dbs.databases.urac);
+					assert.ok(records[0].dbs.config.session);
+					done();
+				});
+			});
+		});
+
+		describe("delete environment db", function() {
+			it('fail - missing params', function(done) {
+				var params = {
+					qs: {
+						env: "dev"
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/delete', 'get', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: name"});
+					done();
+				});
+			});
+
+			it('fail - invalid database name', function(done) {
+				var params = {
+					qs: {
+						"env": "dev",
+						"name": "invalid"
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/delete', 'get', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 512, "message": "environment database does not exist"});
+					done();
+				});
+			});
+
+			it('fail - session does not exist', function(done) {
+				var params = {
+					qs: {
+						"env": "dev",
+						"name": "session"
+					}
+				};
+				var tmp = {};
+				mongo.findOne('environment', {'code': 'DEV'}, function(error, record) {
+					assert.ifError(error);
+					tmp = util.cloneObj(record.dbs.config.session);
+					delete record.dbs.config.session;
+
+					mongo.save('environment', record, function(error) {
+						assert.ifError(error);
+
+						executeMyRequest(params, 'environment/dbs/delete', 'get', function(body) {
+							assert.deepEqual(body.errors.details[0], {"code": 511, "message": "environment session database does not exist"});
+
+							record.dbs.config.session = tmp;
+							mongo.save('environment', record, function(error) {
+								assert.ifError(error);
+								done();
+							});
+						});
+					});
+				});
+			});
+
+			it('success - delete database', function(done) {
+				var params = {
+					qs: {
+						"env": "dev",
+						"name": "urac"
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/delete', 'get', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - delete session', function(done) {
+				var params = {
+					qs: {
+						"env": "dev",
+						"name": "session"
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/delete', 'get', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('mongo - testing database', function(done) {
+				mongo.findOne('environment', {'code':"DEV"}, function(error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					assert.equal(JSON.stringify(record.dbs.databases), '{}');
+					assert.equal(JSON.stringify(record.dbs.config), '{}');
+					done();
+				});
+			});
+		});
+
+		describe("list environment dbs", function() {
+			it('success - no session and no databases', function(done){
+				var params = {
+					qs: {'env': 'dev'}
+				};
+				executeMyRequest(params, 'environment/dbs/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(JSON.stringify(body.data.databases), '{}');
+					assert.equal(JSON.stringify(body.data.config), '{}');
+					done();
+				});
+			});
+
+			it('success - add session db', function(done){
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'session',
+						'cluster': 'cluster1',
+						'sessionInfo': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14 // 2 weeks
+						}
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - add urac db', function(done){
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'name': 'urac',
+						'tenantSpecific': true,
+						'cluster': 'cluster1'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('success - yes session and yes databases', function(done){
+				var params = {
+					qs: {'env': 'dev'}
+				};
+				executeMyRequest(params, 'environment/dbs/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.deepEqual(body.data.databases, {
+						'urac': {
+							'cluster': 'cluster1',
+							'tenantSpecific': true
+						}
+					});
+					assert.deepEqual(body.data.config, {
+						'session': {
+							"cluster": "cluster1",
+							"name": "core_session",
+							'store': {},
+							"collection": "sessions",
+							'stringify': false,
+							'expireAfter': 1000 * 60 * 60 * 24 * 14
+						}
 					});
 					done();
+				});
+			});
+		});
+
+
+		describe("update environment db prefix", function() {
+			it("success - add db prefix", function(done){
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'prefix': 'soajs_'
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+
+					mongo.findOne('environment',{'code':'DEV'}, function(error, envRecord){
+						assert.ifError(error);
+						assert.equal(envRecord.dbs.config.prefix, 'soajs_');
+						done();
+					});
+				});
+			});
+
+			it("success - empty db prefix", function(done){
+				var params = {
+					qs: {
+						env: "dev"
+					},
+					form: {
+						'prefix': ''
+					}
+				};
+				executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+
+					mongo.findOne('environment',{'code':'DEV'}, function(error, envRecord){
+						assert.ifError(error);
+						assert.equal(envRecord.dbs.config.prefix, '');
+						done();
+					});
 				});
 			});
 		});
@@ -2342,8 +3197,112 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				delete record._id;
 				assert.deepEqual(record, {
 					"code": "DEV",
-					"description": 'this is a dummy description',
-					"ips": ['127.0.0.1', '192.168.0.1']
+					"description": "this is a dummy description",
+					"services": {
+						"controller": {
+							"maxPoolSize": 100,
+							"authorization": true,
+							"requestTimeout": 30,
+							"requestTimeoutRenewal": 0
+						},
+						"config": {
+							"awareness": {
+								"healthCheckInterval": 5000,
+								"autoRelaodRegistry": 300000
+							},
+							"agent": {
+								"topologyDir": "/opt/soajs/"
+							},
+							"key": {
+								"algorithm": "aes256",
+								"password": "soajs key lal massa"
+							},
+							"logger": {
+								"src": true,
+								"level": "debug"
+							},
+							"cors": {
+								"enabled": true,
+								"origin": "*",
+								"credentials": "true",
+								"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+								"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+								"maxage": 1728000
+							},
+							"oauth": {
+								"grants": [
+									"password",
+									"refresh_token"
+								],
+								"debug": false
+							},
+							"ports": {
+								"controller": 4000,
+								"maintenanceInc": 1000,
+								"randomInc": 100
+							},
+							"cookie": {
+								"secret": "this is a secret sentence"
+							},
+							"session": {
+								"name": "soajsID",
+								"secret": "this is antoine hage app server",
+								"cookie": {
+									"path": "/",
+									"httpOnly": true,
+									"secure": false,
+									"domain": "soajs.com",
+									"maxAge": null
+								},
+								"resave": false,
+								"saveUninitialized": false
+							}
+						}
+					},
+					"dbs": {
+						"clusters": {
+							"cluster1": {
+								"URLParam": {
+									"connectTimeoutMS": 0,
+									"socketTimeoutMS": 0,
+									"maxPoolSize": 5,
+									"wtimeoutMS": 0,
+									"slaveOk": true
+								},
+								"servers": [
+									{
+										"host": "127.0.0.1",
+										"port": 27017
+									}
+								],
+								"extraParam": {
+									"db": {
+										"native_parser": true
+									},
+									"server": {
+										"auto_reconnect": true
+									}
+								}
+							}
+						},
+						"config": {
+							"session": {
+								"cluster": "cluster1",
+								"name": "core_session",
+								"store": {},
+								"collection": "sessions",
+								"stringify": false,
+								"expireAfter": 1209600000
+							},
+							"prefix": ""
+						},
+						"databases": {
+							"urac": {
+								"cluster": "cluster1",
+								"tenantSpecific": true
+							}
+						}
+					}
 				});
 				done();
 			});

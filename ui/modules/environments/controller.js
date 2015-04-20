@@ -12,34 +12,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				var options = {
-					grid: environmentConfig.grid,
-					data: response,
-					defaultSortField: 'code',
-					left: [{
-						'label': 'Edit',
-						'icon': 'pencil2',
-						'handler': 'editEnvironment'
-					},
-						//{
-						//	'label': 'Analytics',
-						//	'icon': 'analytics',
-						//	'handler': 'openAnalyticsPage'
-						//},
-						{
-							'label': 'Remove',
-							'icon': 'cross',
-							'msg': "Are you sure you want to remove this environment?",
-							'handler': 'removeEnvironment'
-						}],
-					top: [{
-						'label': 'Remove',
-						'msg': "Are you sure you want to remove the selected environment(s)?",
-						'handler': 'removeMultipleEnvironments'
-					}]
+				$scope.grid = {
+					rows: response
 				};
-
-				buildGrid($scope, options);
 			}
 		});
 	};
@@ -150,57 +125,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	//$scope.openAnalyticsPage = function(data) {
-	//	data.ips = data.ips.join(",");
-	//
-	//	var ips = [];
-	//	data.ips = data.ips.split(",");
-	//	for(var x = 0; x < data.ips.length; x++) {
-	//		ips.push({'v': data.ips[x]});
-	//	}
-	//
-	//	var options = {
-	//		timeout: $timeout,
-	//		form: environmentConfig.analytics,
-	//		'name': 'analyticsEnvironment',
-	//		'label': 'Run Environment Analytics Operations',
-	//		'data': {
-	//			'code': data.code,
-	//			'ips': ips
-	//		},
-	//
-	//		'actions': [
-	//			{
-	//				'type': 'submit',
-	//				'label': 'Perform Maintenance',
-	//				'btn': 'primary',
-	//				'action': function(formData) {
-	//					console.log(formData);
-	//					if(!formData.ips || (Array.isArray(formData.ips) && formData.ips.length === 0) || formData.ips ===''){
-	//						$scope.form.displayAlert('danger', 'Please choose an IP address.');
-	//					}
-	//					else{
-	//
-	//					}
-	//					//
-	//					//$scope.modalInstance.close();
-	//					//$scope.form.formData = {};
-	//				}
-	//			},
-	//			{
-	//				'type': 'reset',
-	//				'label': 'Cancel',
-	//				'btn': 'danger',
-	//				'action': function() {
-	//					$scope.modalInstance.dismiss('cancel');
-	//					$scope.form.formData = {};
-	//				}
-	//			}
-	//		]
-	//	};
-	//	buildFormWithModal($scope, $modal, options);
-	//};
-
 	$scope.removeEnvironment = function(row) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -222,18 +146,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	$scope.removeMultipleEnvironments = function() {
-		var config = {
-			'routeName': "/dashboard/environment/delete",
-			"params": {'id': '%id%'},
-			'msg': {
-				'error': 'one or more of the selected Environment(s) status was not removed.',
-				'success': 'Selected Environment(s) has been removed.'
+	$scope.loadConfiguration = function(row) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/registry/list",
+			"params": {"env": row['code']}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
 			}
-		};
-
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
-			$scope.listEnvironments();
+			else {
+				console.log(response);
+			}
 		});
 	};
 

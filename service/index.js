@@ -42,6 +42,46 @@ service.init(function() {
 		environment.list(config, mongo, req, res);
 	});
 
+	service.get("/environment/dbs/list", function(req, res) {
+		checkForMongo(req);
+		environment.listDbs(config, mongo, req, res);
+	});
+	service.get("/environment/dbs/delete", function(req, res) {
+		checkForMongo(req);
+		environment.deleteDb(config, mongo, req, res);
+	});
+	service.post("/environment/dbs/add", function(req, res) {
+		checkForMongo(req);
+		environment.addDb(config, mongo, req, res);
+	});
+	service.post("/environment/dbs/update", function(req, res) {
+		checkForMongo(req);
+		environment.updateDb(config, mongo, req, res);
+	});
+
+	service.post("/environment/dbs/updatePrefix", function(req, res) {
+		checkForMongo(req);
+		environment.updateDbsPrefix(config, mongo, req, res);
+	});
+
+	service.post("/environment/clusters/add", function(req, res) {
+		checkForMongo(req);
+		environment.addCluster(config, mongo, req, res);
+	});
+	service.get("/environment/clusters/delete", function(req, res) {
+		checkForMongo(req);
+		environment.deleteCluster(config, mongo, req, res);
+	});
+	service.post("/environment/clusters/update", function(req, res) {
+		checkForMongo(req);
+		environment.updateCluster(config, mongo, req, res);
+	});
+	service.get("/environment/clusters/list", function(req, res) {
+		checkForMongo(req);
+		environment.listClusters(config, mongo, req, res);
+	});
+
+
 	service.post("/product/add", function(req, res) {
 		checkForMongo(req);
 		product.add(config, mongo, req, res);
