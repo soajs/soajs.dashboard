@@ -585,7 +585,7 @@ fieldset legend {
 }
 .apiListing .apiLabel{
     float: left;
-    width: 280px;
+    width: 290px;
     padding-right: 30px;
 }
 .apiListing .apiAccess{
@@ -596,8 +596,27 @@ fieldset legend {
     margin-right: 45px;
 }
 .apiListing-container .even, .apiListing-container .odd{
-    width: 530px;
+    width: 540px;
 }
 .apiListing-container input{
     margin-top: 0;
+}
+
+.listApis tr.odd {
+    background-color: #ddd;
+}
+
+.listApis tr td {
+    padding: 3px;;
+}
+.service-container{
+}
+
+.listApis{
+    display: none;
+}
+
+.openApis{
+    display: block;
+    transition: all 0.5s ease 0s;
 }

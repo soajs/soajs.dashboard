@@ -145,7 +145,7 @@ var navigation = [
 	},
 	{
 		'id': 'product-acl',
-		'label': 'Edit ACL',
+		'label': 'Edit Package ACL',
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,
@@ -162,6 +162,15 @@ var navigation = [
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home']
+	},
+	{
+		'id': 'tenant-app-acl',
+		'label': 'Edit Application ACL',
+		'url': '#/multi-tenancy/:tId/editAcl/:appId',
+		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
+		'tracker': true,
+		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
+		'ancestor': ['Home', 'Multi-Tenancy']
 	},
 	{
 		'id': 'multi-tenancy_applications',

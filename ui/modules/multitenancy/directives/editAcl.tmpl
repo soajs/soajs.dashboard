@@ -1,13 +1,13 @@
 <section>
-    <div class='form' ng-controller="aclCtrl as formCtrl">
+    <div class='form' ng-controller="applicationAclCtrl as formCtrl">
         <form novalidate="" class="css-form ng-pristine" name="">
-            <div class="header"><h3 class="">Update ACL</h3></div>
+            <div class="header"><h3>Update ACL</h3></div>
             <div class="body">
-                <label class="">Product Package</label>
-                <div class="staticValue" id="">{{currentPackage.code}}</div>
+                <label class="ng-binding">Product Package</label>
+                <div class="staticValue ng-binding" id="">{{currentPackage.code}}</div>
 
                 <br>
-                <label class="">ACL</label>
+                <label class="ng-binding">ACL</label>
 
                 <div id="generate-ApiList" class="entryServiceBoxes">
 
