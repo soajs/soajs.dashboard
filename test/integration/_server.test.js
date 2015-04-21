@@ -19,14 +19,17 @@ describe("importing sample data", function() {
 		});
 	});
 
-	after(function(done) {
+	after(function (done) {
 		console.log('test data imported.');
 		controller = require("soajs.controller");
-		dashboard = helper.requireModule('./service/index');
-
-		setTimeout(function() {
-			console.log('starting tests ....');
-			done();
-		}, 6000);
+		setTimeout(function () {
+			dashboard = helper.requireModule('./service/index');
+			setTimeout(function () {
+				require("./db.config.test.js");
+				require("./soajs.dashboard.test.js");
+				require("./soajs.dashboardd.locked.test.js");
+				done();
+			}, 1000);
+		}, 1000);
 	});
 });

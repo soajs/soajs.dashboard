@@ -69,7 +69,9 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 			shell.exec(sampleData.shell, function(code) {
 				assert.equal(code, 0);
 				shell.popd();
-				done();
+				setTimeout(function(){
+					done();
+				}, 500);
 			});
 		});
 	});
@@ -87,7 +89,7 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 		});
 
 		describe("delete environment tests", function() {
-			it("FAIL locked - cant delte environment", function(done) {
+			it("FAIL locked - cant delete environment", function(done) {
 				var params = {
 					qs: {'id': envId}
 				};

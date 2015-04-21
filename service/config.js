@@ -6,6 +6,91 @@ var accessSchema = {
 	]
 };
 
+var serviceConfig = {
+	"required": true,
+	"type": "object",
+	"properties": {
+		"awareness": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"healthCheckInterval": {"type": "integer", "required": true}, // 5 seconds
+				"autoRelaodRegistry": {"type": "integer", "required": true} // 5 minutes
+			}
+		},
+		"agent": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"topologyDir": {"type": "string", "required": true} // 5 seconds
+			}
+		},
+		"key": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"algorithm": {"type": "string", "required": true}, // 5 seconds
+				"password": {"type": "string", "required": true} // 5 seconds
+			}
+		},
+		"logger": { //ATTENTION: this is not all the properties for logger
+			"type": "object",
+			"required": true,
+			"additionalProperties": true
+		},
+		"cors": {
+			"type": "object",
+			"required": true,
+			"additionalProperties": true
+		},
+		"oauth": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"grants": {"type": "array", "items": {"type": "string", "required": true}, "required": true},
+				"debug": {"type": "boolean", "required": true}
+			}
+		},
+		"ports": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"controller": {"type": "integer", "required": true},
+				"maintenanceInc": {"type": "integer", "required": true},
+				"randomInc": {"type": "integer", "required": true}
+			}
+		},
+		"cookie": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"secret": {"type": "string", "required": true}
+			}
+		},
+		"session": {
+			"type": "object",
+			"required": true,
+			"properties": {
+				"name": {"type": "string", "required": true},
+				"secret": {"type": "string", "required": true},
+				"resave": {"type": "boolean", "required": true},
+				"saveUninitialized": {"type": "boolean", "required": true},
+				"cookie": {
+					"type": "object",
+					"required": true,
+					"properties": {
+						"path": {"type": "string", "required": true},
+						"httpOnly": {"type": "boolean", "required": true},
+						"secure": {"type": "boolean", "required": true},
+						"domain": {"type": "string", "required": true},
+						"maxAge": {"type": ["integer","null"], "required": false}
+					}
+				}
+			}
+		}
+	}
+};
+
 module.exports = {
 	"serviceName": "dashboard",
 	"servicePort": 4003,
@@ -13,7 +98,7 @@ module.exports = {
 	"seedLength": 32,
 	"extKeyRequired": true,
 	"expDateTTL": 86400000,
-	"hasher":{
+	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
@@ -78,7 +163,22 @@ module.exports = {
 
 		"500": "This record is locked. You cannot delete it",
 		"501": "This record is locked. You cannot modify or delete it",
+		"502": "Invalid cluster name provided",
+		"503": "Error adding new environment database",
+		"504": "Environment cluster already exists",
+		"505": "Error adding environment cluster",
+		"506": "Error updating environment cluster",
+		"507": "Invalid db Information provided for session database",
+		"508": "cluster not found",
+		"509": "environment database already exist",
+		"510": "environment session database already exist",
+		"511": "environment session database does not exist",
+		"512": "environment database does not exist",
+		"513": "Error updating environment database",
+		"514": "Error removing environment database",
+
 		"600": "Database error"
+
 	},
 
 	"schema": {
@@ -168,6 +268,18 @@ module.exports = {
 						"additionalProperties": false
 					}
 				}
+			},
+			"cluster": {
+				"required": true,
+				"source": ['body.cluster'],
+				"validation": {
+					"type": "object",
+					"properties": {
+						"URLParam": {"type": "object", "properties": {}},
+						"servers": {"type": "array", "items": {"type": "object", "required": true}},
+						"extraParam": {"type": "object", "properties": {}}
+					}
+				}
 			}
 		},
 		"/environment/list": {
@@ -192,12 +304,24 @@ module.exports = {
 					"maxLength": 4
 				}
 			},
-			"ips": {
-				"source": ['body.ips'],
+			"services": {
+				"source": ['body.services'],
 				"required": true,
 				"validation": {
-					"type": "array",
-					'items': {'type': 'string'}
+					"type": "object",
+					"properties": {
+						"controller": {
+							"required": true,
+							"type": "object",
+							"properties": {
+								"maxPoolSize": {"type": "integer", "required": true},
+								"authorization": {"type": "boolean", "required": true},
+								"requestTimeout": {"type": "ineteger", "required": true},
+								"requestTimeoutRenewal": {"type": "ineteger", "required": true}
+							}
+						},
+						"config": serviceConfig
+					}
 				}
 			}
 		},
@@ -214,14 +338,132 @@ module.exports = {
 				"group": "Environment"
 			},
 			"commonFields": ['id', 'description'],
-			"ips": {
-				"source": ['body.ips'],
+			"services": {
+				"source": ['body.services'],
 				"required": true,
 				"validation": {
-					"type": "array",
-					'items': {'type': 'string'}
+					"type": "object",
+					"properties": {
+						"controller": {
+							"required": true,
+							"type": "object",
+							"properties": {
+								"maxPoolSize": {"type": "integer", "required": true},
+								"authorization": {"type": "boolean", "required": true},
+								"requestTimeout": {"type": "ineteger", "required": true},
+								"requestTimeoutRenewal": {"type": "ineteger", "required": true}
+							}
+						},
+						"config": serviceConfig
+					}
 				}
 			}
+		},
+
+		"/environment/dbs/list": {
+			_apiInfo: {
+				"l": "List Environment Databases",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
+		},
+		"/environment/dbs/add": {
+			_apiInfo: {
+				"l": "Add Environment Database",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
+			"cluster": {"source": ['body.cluster'], "required": true, "validation": {"type": "string", "required": true}},
+			"tenantSpecific": {"source": ['body.tenantSpecific'], "required": false, "validation": {"type": "boolean", "required": true}},
+			"sessionInfo": {
+				"source": ['body.sessionInfo'],
+				"required": false,
+				"validation": {
+					"type": "object",
+					"required": true,
+					"properties": {
+						"store": {"type": "object", "required": true},
+						"expireAfter": {"type": "integer", "required": true},
+						"collection": {"type": "string", "required": true},
+						"stringify": {"type": "boolean", "required": true}
+					}
+				}
+			}
+		},
+		"/environment/dbs/update": {
+			_apiInfo: {
+				"l": "Update Environment Database",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
+			"cluster": {"source": ['body.cluster'], "required": true, "validation": {"type": "string", "required": true}},
+			"tenantSpecific": {"source": ['body.tenantSpecific'], "required": false, "validation": {"type": "boolean", "required": true}},
+			"sessionInfo": {
+				"source": ['body.sessionInfo'],
+				"required": false,
+				"validation": {
+					"type": "object",
+					"required": true,
+					"properties": {
+						"store": {"type": "object", "required": true},
+						"expireAfter": {"type": "integer", "required": true},
+						"collection": {"type": "string", "required": true},
+						"stringify": {"type": "boolean", "required": true}
+					}
+				}
+			}
+		},
+		"/environment/dbs/delete": {
+			_apiInfo: {
+				"l": "Delete Environment Database",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+		},
+		"/environment/dbs/updatePrefix": {
+			_apiInfo: {
+				"l": "Update Environment Databases Prefix",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"prefix": {"source": ['body.prefix'], "required": false, "validation": {"type": "string", "required": false}}
+		},
+
+		"/environment/clusters/list": {
+			_apiInfo: {
+				"l": "List Environment Database Clusters",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
+		},
+		"/environment/clusters/add": {
+			_apiInfo: {
+				"l": "Add Environment Database Cluster",
+				"group": "Environment"
+			},
+			"commonFields": ['cluster'],
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+		},
+		"/environment/clusters/update": {
+			_apiInfo: {
+				"l": "Update Environment Database Cluster",
+				"group": "Environment"
+			},
+			"commonFields": ['cluster'],
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+		},
+		"/environment/clusters/delete": {
+			_apiInfo: {
+				"l": "Delete Environment Database Cluster",
+				"group": "Environment"
+			},
+			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 		},
 
 		"/product/list": {
@@ -429,20 +671,20 @@ module.exports = {
 			}
 		},
 
-		"/tenant/oauth/users/list" :{
+		"/tenant/oauth/users/list": {
 			_apiInfo: {
 				"l": "List Tenant oAuth Users",
 				"group": "Tenant"
 			},
 			"commonFields": ['id']
 		},
-		"/tenant/oauth/users/delete" :{
+		"/tenant/oauth/users/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant oAuth User",
 				"group": "Tenant"
 			},
 			"commonFields": ['id'],
-			"uId":{
+			"uId": {
 				"source": ['query.uId'],
 				"required": true,
 				"validation": {
@@ -450,13 +692,13 @@ module.exports = {
 				}
 			}
 		},
-		"/tenant/oauth/users/add" :{
+		"/tenant/oauth/users/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth User",
 				"group": "Tenant"
 			},
 			"commonFields": ['id'],
-			"userId":{
+			"userId": {
 				"source": ['body.userId'],
 				"required": true,
 				"validation": {
@@ -471,20 +713,20 @@ module.exports = {
 				}
 			}
 		},
-		"/tenant/oauth/users/update" :{
+		"/tenant/oauth/users/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth User",
 				"group": "Tenant"
 			},
 			"commonFields": ['id'],
-			"uId":{
+			"uId": {
 				"source": ['query.uId'],
 				"required": true,
 				"validation": {
 					"type": "string"
 				}
 			},
-			"userId":{
+			"userId": {
 				"source": ['body.userId'],
 				"required": false,
 				"validation": {
