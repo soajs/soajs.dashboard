@@ -617,7 +617,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.aclFill.services= {};
 
 	$scope.addTenantApplication = function(tId) {
-
 		var formConfig = angular.copy(tenantConfig.form.application);
 		formConfig.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
@@ -625,7 +624,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			if(oneEn.name==='package')
 			{
-				/*
+
 				oneEn.onChange ={
 					'action':function(data){
 						console.log(' ** load new ACL  **');
@@ -633,9 +632,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				};
 				oneEn.on__Action = function(id, val)
 				{
-					console.log(' **   onAction ACL  **'); console.log(id);
-					console.log( $scope.availablePackages );
-
 					var l = $scope.availablePackages.length;
 					for (var x=0; x<l; x++){
 						if( $scope.availablePackages[x].v == val )
@@ -663,21 +659,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								}
 							}
 
-							var cfgElement = angular.element(document.getElementById("idacl"));
-							console.log('elem');
-							console.log(cfgElement);
-							if(cfgElement){
-								cfgElement.html('<ngaclform></ngaclform> ');
-								$compile(cfgElement.contents())($scope);
-							}
-
 
 						}
 					}
 
 				};
 
-				*/
+
 				oneEn.type="select";
 				oneEn.value = $scope.availablePackages;
 			}
@@ -1380,87 +1368,107 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 				if($scope.currentApplication.acl){
 					if( JSON.stringify($scope.currentApplication.acl)==="{}")
 					{
-						console.log(' stringify *********** ');
+						console.log(' ******** stringify *********** ');
+						getSendDataFromServer(ngDataApi, {
+							"method": "get",
+							"routeName": "/dashboard/product/packages/get",
+							"params": {"productCode": $scope.currentApplication.product , "packageCode": $scope.currentApplication.package}
+
+						}, function (error, response) {
+							if (error) {
+								$scope.$parent.displayAlert('danger', error.message);
+							}
+							else {
+								console.log(' ******** response *********** ');
+								console.log( response );
+								$scope.currentApplication.acl = response.acl;
+								$scope.fillFormServices();
+							}
+						});
+
+					}else{
+						$scope.fillFormServices();
 					}
 				}
 
-				$scope.aclFill.services= angular.copy($scope.currentApplication.acl);
-				for(var propt in $scope.aclFill.services)
+
+			}
+		});
+	};
+	$scope.fillFormServices = function() {
+		$scope.aclFill.services= angular.copy($scope.currentApplication.acl);
+		for(var propt in $scope.aclFill.services)
+		{
+			var s = $scope.aclFill.services[propt];
+			s.include =true;
+			s.collapse = false;
+
+			if(s.access){
+				if( s.access===true){
+					s.accessType = 'private';
+				}
+				else if( s.access===false){
+					s.accessType = 'public';
+				}
+				else if(Array.isArray(s.access)){
+					s.accessType = 'groups';
+					s.grpCodes={};
+					s.access.forEach(function( c ) {
+						s.grpCodes[c]=true;
+					});
+
+				}
+				else if( typeof(s.access)=='object' && (s.access.indexOf('administrator')>-1 )){
+					s.accessType = 'admin';
+				}
+
+			}
+			else{
+				s.accessType = 'public';
+			}
+
+			if(s.apisPermission==='restricted'){
+				s.apisRestrictPermission = true;
+			}
+			if(s.apis){
+				for(var ap in s.apis)
 				{
-					var s = $scope.aclFill.services[propt];
-					s.include =true;
-					s.collapse = false;
-
-					if(s.access){
-						if( s.access===true){
-							s.accessType = 'private';
-						}
-						else if( s.access===false){
-							s.accessType = 'public';
-						}
-						else if(Array.isArray(s.access)){
-							console.log(' ************** array ');
-							s.accessType = 'groups';
-							s.grpCodes={};
-							s.access.forEach(function( c ) {
-								s.grpCodes[c]=true;
-							});
-
-						}
-						else if( typeof(s.access)=='object' && (s.access.indexOf('administrator')>-1 )){
-							s.accessType = 'admin';
-						}
-
-					}
-					else{
-						s.accessType = 'public';
-					}
-
-					if(s.apisPermission==='restricted'){
-						s.apisRestrictPermission = true;
-					}
-					if(s.apis){
-						for(var ap in s.apis)
+					s.apis[ap].include=true;
+					s.apis[ap].accessType = 'public';
+					if(s.apis[ap].access)
+					{
+						if( s.apis[ap].access==true)
 						{
-							s.apis[ap].include=true;
+							s.apis[ap].accessType = 'private';
+						}
+						else if( s.apis[ap].access===false)
+						{
 							s.apis[ap].accessType = 'public';
-							if(s.apis[ap].access)
-							{
-								if( s.apis[ap].access==true)
-								{
-									s.apis[ap].accessType = 'private';
-								}
-								else if( s.apis[ap].access===false)
-								{
-									s.apis[ap].accessType = 'public';
-								}
-								else{
-									if(Array.isArray(s.apis[ap].access)){
-										console.log(' ************** array ');
-										s.apis[ap].accessType = 'groups';
-										s.apis[ap].grpCodes={};
-										s.apis[ap].access.forEach(function( c ) {
-											s.apis[ap].grpCodes[c]=true;
-										});
+						}
+						else{
+							if(Array.isArray(s.apis[ap].access)){
+								console.log(' ************** array ');
+								s.apis[ap].accessType = 'groups';
+								s.apis[ap].grpCodes={};
+								s.apis[ap].access.forEach(function( c ) {
+									s.apis[ap].grpCodes[c]=true;
+								});
 
-									}
-									if(  typeof(s.apis[ap].access)=='object' ){
+							}
+							if(  typeof(s.apis[ap].access)=='object' ){
 
 
-									}
-
-								}
 							}
 
 						}
 					}
-				}
-				console.log(' ******* start ******** $scope.aclFill.services ');
-				console.log( $scope.aclFill.services );
-			}
-		});
-	};
 
+				}
+			}
+		}
+		console.log(' ******* start ******** $scope.aclFill.services ');
+		console.log( $scope.aclFill.services );
+	};
 	//default operation
 	$scope.getServices = function() {
 		getSendDataFromServer(ngDataApi, {
@@ -1494,10 +1502,8 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 			}
 			else {
 				response.forEach(function( grpObj ) {
-					console.log(grpObj);
 					$scope.allGroups.push(grpObj.code);
 				});
-				console.log( $scope.allGroups );
 				$scope.openForm();
 			}
 		});

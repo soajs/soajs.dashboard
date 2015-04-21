@@ -161,6 +161,9 @@ module.exports = {
 		"450": "Unable to remove tenant oAuth User",
 		"451": "Unable to updated tenant oAuth User",
 
+		"460": "Unable to find product",
+		"461": "Unable to find package",
+
 		"500": "This record is locked. You cannot delete it",
 		"501": "This record is locked. You cannot modify or delete it",
 		"502": "Invalid cluster name provided",
@@ -533,6 +536,28 @@ module.exports = {
 				"group": "Product"
 			},
 			"commonFields": ['id']
+		},
+		"/product/packages/get": {
+			_apiInfo: {
+				"l": "Get Product Package",
+				"group": "Product"
+			},
+			"packageCode": {
+				"source": ["query.packageCode"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"productCode": {
+				"source": ["query.productCode"],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"format": "alphanumeric",
+					"maxLength": 5
+				}
+			}
 		},
 		"/product/packages/add": {
 			_apiInfo: {

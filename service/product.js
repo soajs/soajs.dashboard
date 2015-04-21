@@ -128,6 +128,28 @@ module.exports = {
 			});
 		});
 	},
+	"getPackage": function(config, mongo, req, res) {
+		mongo.findOne(colName, {"code": req.soajs.inputmaskData.productCode}, function(err, product) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 460, "msg": config.errors[460]})); }
+
+			var pck ={};
+			var found= false;
+			for(var i = 0; i < product.packages.length; i++)
+			{
+				if(product.packages[i].code === req.soajs.inputmaskData.packageCode) {
+					pck = product.packages[i];
+					found = true;
+					break;
+				}
+			}
+			if(found){
+				return res.jsonp(req.soajs.buildResponse(null, pck));
+			}else{
+				return res.jsonp(req.soajs.buildResponse({"code": 461, "msg": config.errors[461]}));
+			}
+
+		});
+	},
 
 	"listPackage": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {

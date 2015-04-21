@@ -103,6 +103,10 @@ service.init(function() {
 		product.get(config, mongo, req, res);
 	});
 
+	service.get("/product/packages/get", function(req, res) {
+		checkForMongo(req);
+		product.getPackage(config, mongo, req, res);
+	});
 	service.get("/product/packages/list", function(req, res) {
 		checkForMongo(req);
 		product.listPackage(config, mongo, req, res);

@@ -626,7 +626,8 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 				{
 					if(response.packages[x].code === code)
 					{
-						$scope.currentPackage = 	response.packages[x];
+						$scope.currentPackage = angular.copy(response.packages[x]);
+						$scope.currentPackage._TTL = ($scope.currentPackage._TTL / 3600000).toString();
 						break;
 					}
 				}
@@ -738,8 +739,6 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.saveACL=function(){
 		var productId=  $routeParams.pid;
 		var postData = $scope.currentPackage ;
-		postData._TTL = ($scope.currentPackage._TTL / 3600000).toString();
-
 		console.log( ' ** postData' );
 		console.log(postData);
 
@@ -831,32 +830,33 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.checkRestriction=function(service){
-		for(var grpLabel in service.fixList )
-		{
-			var defaultApi = service.fixList[grpLabel]['defaultApi'];
-
-			var apisList = service.fixList[grpLabel]['apis'];
-
-			if( $scope.aclFill.services[service.name].apis ) {
-				if (($scope.aclFill.services[service.name].apis[defaultApi]) && $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+		console.log(' check Restriction ');
+		console.log( $scope.aclFill.services[service.name] );
+		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
+			for(var grpLabel in service.fixList )
+			{
+				var defaultApi = service.fixList[grpLabel]['defaultApi'];
+				var apisList = service.fixList[grpLabel]['apis'];
+				if( $scope.aclFill.services[service.name].apis )
 				{
-					/*
-					 apisList.forEach(function( one ) {
-					 if($scope.aclFill.services[service.name].apis[one.v])
-					 {
-					 	$scope.aclFill.services[service.name].apis[one.v].include=false;
-					 }
+					if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+					{
+						apisList.forEach(function( one ) {
+							if($scope.aclFill.services[service.name].apis[one.v])
+							{
+								$scope.aclFill.services[service.name].apis[one.v].include=false;
+							}
 
-					 });
+						});
 
-					*/
+					}else{
 
-				}else{
-
+					}
 				}
 			}
+
 		}
 
-		// aclFill.services[serviceName].apis[data.defaultApi]
+
 	};
 }]);
