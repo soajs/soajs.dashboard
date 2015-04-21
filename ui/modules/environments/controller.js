@@ -267,11 +267,22 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.editDatabase = function(env, name, data) {
-		var formData = angular.copy(data);
-		formData.name = name;
+		if(name === 'session'){
+			var t = angular.copy(data);
+			delete t.cluster;
+			var formData = {
+				'name': name,
+				"cluster": data.cluster,
+				'sessionInfo': JSON.stringify(t, null, "\t")
+			};
+		}
+		else{
+			var formData = angular.copy(data);
+			formData.name = name;
+		}
 		var options = {
 			timeout: $timeout,
-			form: (name === 'session') ? angluar.copy(environmentConfig.form.session) : angular.copy(environmentConfig.form.database),
+			form: (name === 'session') ? angular.copy(environmentConfig.form.session) : angular.copy(environmentConfig.form.database),
 			name: 'updateDatabase',
 			label: 'Update Database',
 			'data': formData,

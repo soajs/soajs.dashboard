@@ -87,7 +87,6 @@ var environmentConfig = {
 					'type': 'textarea',
 					'rows': 10,
 					'placeholder': JSON.stringify({
-						"cluster": "cluster1",
 						"name": "core_session",
 						"store": {},
 						"collection": "sessions",
