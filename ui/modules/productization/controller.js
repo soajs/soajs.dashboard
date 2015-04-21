@@ -198,20 +198,10 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.addPackage = function(productId) {
 		$scope.aclFill.services= {};
-		console.log($scope.aclFill);
 		var formConf = angular.copy(productizationConfig.form.package);
 		formConf.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
 				oneEn.value[0].selected=true;
-			}
-			if(oneEn.name==='acl'){
-				//oneEn.value[0].selected=true;
-				/* var cfgElement = angular.element(document.getElementById("idacl"));
-				if(cfgElement){
-					cfgElement.html('<div ng-repeat="service in allServiceApis"><input type="checkbox">{{service.name}}</div>');
-					$compile(cfgElement.contents())($scope);
-				}*/
-
 			}
 		});
 
@@ -223,8 +213,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			sub: true,
 			postBuild:function(){
 				var cfgElement = angular.element(document.getElementById("idaclForm"));
-				console.log('elem');
-				console.log(cfgElement);
 				if(cfgElement){
 					cfgElement.html('<ngaclform></ngaclform> ');
 					$compile(cfgElement.contents())($scope);
@@ -242,19 +230,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						
-						if(formData.acl && (formData.acl != "")) {
-							try {
-								var aclObj = JSON.parse(formData.acl);
-							}
-							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid Json object ');
-								return;
-							}
-						}
-						else {
-							var aclObj = {};
-						}	
+
+						var aclObj = {};
 						postData.acl = aclObj;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
@@ -292,50 +269,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.editPackAcl = function(productId, code) {
 		$scope.$parent.go("/productization/"+productId+"/editAcl/" + code );
 	};
+
 	$scope.editPackage = function(productId, data) {
 		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
 		console.log( 'recordData.acl: ' );
 		console.log( recordData.acl );
-		$scope.aclFill.services= angular.copy(recordData.acl);
-		for(var propt in $scope.aclFill.services)
-		{
-			var s = $scope.aclFill.services[propt];
-			s.include =true;
-			if(s.access){
-				if( s.access===true){
-					s.accessType = 'private';
-				}
-				else if( s.access===false){
-					s.accessType = 'public';
-				}
-				else if( typeof(s.access)=='object'){
-					s.accessType = 'admin';
-				}
-
-			}
-			else{
-				s.accessType = 'public';
-			}
-
-			if(s.apis){
-				for(var ap in s.apis){
-					s.apis[ap].include=true;
-					if( s.apis[ap].access===true){
-						s.apis[ap].accessType = 'private';
-					}else{
-
-					}
-				}
-			}
-		}
-		console.log(' ******* start ******** $scope.aclFill.services ');
-		console.log( $scope.aclFill.services );
-
-
 		recordData._TTL = recordData._TTL / 3600000;
-		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
+		//recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
 
 		var options = {
@@ -345,81 +287,22 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			label: 'Edit Package',
 			data: recordData,
 			postBuild:function(){
-				var cfgElement = angular.element(document.getElementById("idaclForm"));
-				console.log('elem');
-				console.log(cfgElement);
-				if(cfgElement){
-					cfgElement.html('<ngaclform></ngaclform> ');
-					$compile(cfgElement.contents())($scope);
-				}
+
 			},
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Edit Product',
+					'label': 'Edit Package',
 					'btn': 'primary',
 					'action': function(formData) {
-						console.log(formData);
 						var postData = {
 							'name': formData.name,
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						var aclObj2 = {};
-						var aclObj = {};
-						console.log('******** $scope.aclFill.services ');
-						console.log( $scope.aclFill.services );
-
-						for(var propt in $scope.aclFill.services){
-							var s = $scope.aclFill.services[propt];
-							if(s.include===true){
-								aclObj2[propt]={};
-								if(s.accessType==='private'){
-									aclObj2[propt].access=true;
-								}
-								else if(s.accessType==='public'){
-									aclObj2[propt].access=false;
-								}
-								else if(s.accessType==='admin'){
-									aclObj2[propt].access= ['administrator'];
-								}
-								if(s.apis){
-									aclObj2[propt].apis={};
-									for(var ap in s.apis){
-										var api = s.apis[ap];
-										if(api.include===true)
-										{
-											aclObj2[propt].apis[ap]={};
-											if(api.accessType==='private'){
-												aclObj2[propt].apis[ap].access=true;
-											}
-											else if(api.accessType==='public'){
-												aclObj2[propt].apis[ap].access=false;
-											}
-											else{
-												//aclObj2[propt].apis[ap].access=false;
-											}
-										}
-									}
-								}
-							}
-						}
-
-						console.log('******** aclObj 2');
-						console.log(aclObj2);
-
-						if(formData.acl && (formData.acl != "")) {
-							try {
-								var aclObj = JSON.parse(formData.acl);
-							}
-							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid Json object ');
-								return;
-							}
-						}
-						console.log('aclObj');
-						console.log(aclObj);
-						postData.acl = aclObj2;
+						postData.acl = data.acl;
+						console.log('postData');
+						console.log(postData);
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
@@ -496,21 +379,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		var g = 'all' ;
 		for(var i=0; i>l; i++)
 		{
-			console.log( arr[i]);
 			if(arr[i][f]){
 				g = arr[i][f];
 			}
 
-			if(result[g]){
-
-			}else{
-				result[g]={
-
-				}
+			if(result[g]){}
+			else{
+				result[g]={}
 			}
 		}
-
-		console.log(result);
 	};
 
 
@@ -518,29 +395,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.aclFill={};
 	$scope.aclFill.services={};
 	$scope.aclFill.apis={};
-
-	$scope.selectApi = function(elem, service, api, index) {
-		console.log('elem');
-		console.log(elem);
-		/*
-		if($scope.selectedServices[service.name]){
-			if($scope.selectedServices[service.name][api])
-			{
-				if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
-					delete $scope.selectedServices[service.name][api];
-				}
-				else{
-					$scope.selectedServices[service.name][api].selectedApi=true;
-				}
-			}
-			else{
-				$scope.selectedServices[service.name][api]= {};
-				$scope.selectedServices[service.name][api].selectedApi=true;
-			}
-		}*/
-		//console.log( $scope.selectedServices[service.name] );
-		console.log($scope.aclFill);
-	};
 
 	//default operation
 	$scope.getServices();
@@ -583,29 +437,9 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 
 
 	};
-
+	/*
 	$scope.selectApi = function(elem, service, api, index) {
-		console.log('elem');
-		console.log(elem);
-		/*
-		 if($scope.selectedServices[service.name]){
-		 if($scope.selectedServices[service.name][api])
-		 {
-		 if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
-		 delete $scope.selectedServices[service.name][api];
-		 }
-		 else{
-		 $scope.selectedServices[service.name][api].selectedApi=true;
-		 }
-		 }
-		 else{
-		 $scope.selectedServices[service.name][api]= {};
-		 $scope.selectedServices[service.name][api].selectedApi=true;
-		 }
-		 }*/
-		//console.log( $scope.selectedServices[service.name] );
-		console.log($scope.aclFill);
-	};
+	};*/
 	$scope.currentPackage = {};
 	$scope.openForm = function() {
 		var productId=  $routeParams.pid;

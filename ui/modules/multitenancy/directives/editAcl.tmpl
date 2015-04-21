@@ -59,7 +59,7 @@
                                 <fieldset ng-repeat="(grp, val) in service.fixList">
                                     <legend>{{grp}}</legend>
                                     <div class="clearfix apiListing-container">
-                                        <div class="apiListing clearfix" ng-repeat="myApi in val.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                                        <div class="apiListing clearfix" ng-repeat="myApi in val.apis| orderBy:'groupMain' " ng-class-even="'even'" ng-class-odd="'odd'"
                                              ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
                                             <div class="apiLabel">
                                                 <input ng-click="checkDefault(service,grp,val,myApi)" ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
@@ -67,7 +67,7 @@
                                             </div>
                                             <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisRestrictPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
                                                 <div style="float:left">
-<span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"> clear </span>
+<span style="padding-right: 15px;"> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"> <em>inherit from service</em> </span>
 
 
                                                 <span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="public" type="radio"

@@ -654,12 +654,12 @@ ul.grpsListing{
     list-style: none;
     display: inline-block;
     padding-left: 5px;
-
 }
 .grpsListing li{
     float: left;
     margin-right: 10px;
     width: 200px;
+    font-weight: normal;
 }
 .grpsListing li input{
     margin-right: 3px;
@@ -668,12 +668,6 @@ ul.grpsListing{
 #application-ApiList .apiListing .apiAccess {
     width: auto;
     vertical-align: top;
-}
-
-}
-
-.tab-content > .active {
-
 }
 
 fieldset .grid table {

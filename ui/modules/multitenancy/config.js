@@ -250,16 +250,6 @@ var tenantConfig = {
 					'required': false
 				},
 				{
-					'name': 'acl',
-					'label': 'Access Level',
-					'type': 'html',
-					'rows': 10,
-					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
-					'value': '',
-					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
-					'required': false
-				},
-				{
 					'name': '_TTL',
 					'label': 'TTL',
 					'type': 'select',
