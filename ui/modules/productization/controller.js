@@ -211,13 +211,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,
-			postBuild:function(){
-				var cfgElement = angular.element(document.getElementById("idaclForm"));
-				if(cfgElement){
-					cfgElement.html('<ngaclform></ngaclform> ');
-					$compile(cfgElement.contents())($scope);
-				}
-			},
 			actions: [
 				{
 					'type': 'submit',
@@ -274,21 +267,17 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
-		console.log( 'recordData.acl: ' );
-		console.log( recordData.acl );
+
 		recordData._TTL = recordData._TTL / 3600000;
 		//recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
-
+		console.log(formConfig);
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editPackage',
 			label: 'Edit Package',
 			data: recordData,
-			postBuild:function(){
-
-			},
 			actions: [
 				{
 					'type': 'submit',
@@ -353,51 +342,12 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
-	$scope.getServices = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":["urac", "dashboard", "oauth"] }
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				console.log(' getServices ');
-				console.log(response);
-
-
-				$scope.groupBy( response , 'group');
-
-				$scope.allServiceApis = response;
-			}
-		});
-	};
-	$scope.groupBy = function(arr, f) {
-		var result = {} ;
-		var l =arr.length;
-		var g = 'all' ;
-		for(var i=0; i>l; i++)
-		{
-			if(arr[i][f]){
-				g = arr[i][f];
-			}
-
-			if(result[g]){}
-			else{
-				result[g]={}
-			}
-		}
-	};
-
-
 	$scope.selectedServices={};
 	$scope.aclFill={};
 	$scope.aclFill.services={};
 	$scope.aclFill.apis={};
 
 	//default operation
-	$scope.getServices();
 	$scope.listProducts();
 
 }]);
@@ -518,8 +468,8 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 						}
 					}
 				}
-				console.log(' ******* start ******** $scope.aclFill.services ');
-				console.log( $scope.aclFill.services );
+				//console.log('  $scope.acl Fill.services ');
+				//console.log( $scope.aclFill.services );
 			}
 		});
 	};

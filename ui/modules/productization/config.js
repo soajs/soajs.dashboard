@@ -86,26 +86,6 @@ var productizationConfig = {
 					'required': false
 				},
 				{
-					'name': 'acl',
-					'label': 'Access Level',
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
-					'value': '{"urac": {"access": false}}',
-					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
-					'required': false
-				},
-				{
-					'name': 'aclForm',
-					'label': 'Access Level 2',
-					'type': 'html',
-					'rows': 10,
-					'placeholder': {"urac": {"access": false, "apis": {"/account/changeEmail": {"access": true}}}},
-					'value': '<ngaclform></ngaclform>',
-					'tooltip': 'Enter the Access Level configuration in this box as a JSON format Object.',
-					'required': false
-				},
-				{
 					'name': '_TTL',
 					'label': 'TTL',
 					'type': 'select',
