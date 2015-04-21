@@ -256,12 +256,36 @@ a:hover {
     width: 80%;
 }
 
+.w30 {
+    width: 30%;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.w100 {
+    width: 100%;
+}
+
 .t-right {
     text-align: right;
 }
 
+.t-left {
+    text-align: left;
+}
+
 .f-right {
     float: right;
+}
+
+.f-left{
+    float: left;
+}
+
+.c-both{
+    clear:both;
 }
 
 /**

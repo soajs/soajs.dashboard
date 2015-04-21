@@ -58,9 +58,9 @@
                                     <tr>
                                         <td>
                                             <b>Prefix</b><br/>
-                                            <input type="text" name="prefix" ng-model="prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+                                            <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
                                         </td>
-                                        <td valign="bottom" align="left"><input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;"/></td>
+                                        <td valign="bottom" align="left"><input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/></td>
                                     </tr>
                                 </table>
                             </form>
@@ -74,11 +74,11 @@
                                 <div class="c-both w-100">
                                     <h4 class="f-left">{{row.dbs.config.session['name']}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], dbName);">
+                                        <a href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], 'session');">
                                             <span class="icon icon-cross" tooltip="Remove Database"></span>
                                         </a>&nbsp;
 
-                                        <a href="" ng-click="editPackage(row['code'], dbName, info)">
+                                        <a href="" ng-click="editDatabase(row['code'], 'session', info)">
                                             <span class="icon icon-pencil2" tooltip="Edit Database"></span>
                                         </a>
                                     </span>
@@ -87,48 +87,52 @@
                                     <b>Cluster:</b>&nbsp;{{row.dbs.config.session['cluster']}}<br/>
                                     <b>Collection:</b>&nbsp;{{row.dbs.config.session['collection']}}<br/>
                                     <b>Expires After:</b>&nbsp;{{row.dbs.config.session['expireAfter']|TTL}} (hours)<br/>
+                                    <b>stringify:</b>&nbsp;{{row.dbs.config.session['stringify']}}<br />
                                     <b>Store:</b>&nbsp;<span ng-bind-html="row.dbs.config.session['store']|object"></span>
                                 </div>
                             </li>
                         </ul>
+                        <a ng-if="!row.dbs.config.session" ng-click="addDatabase(row['code'],true)" class="btn btn-sm btn-primary">Add Session Database</a><br/><br/>
                         <hr/>
-                        <a href="" ng-click="addDatabase(row['code'])" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
+                        <a href="" ng-click="addDatabase(row['code'],false)" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
                         <h3>Database List:</h3>
                         <div class="entryBoxes entryBoxesGrid">
-                            <div ng-repeat="(dbName, info) in row.dbs.databases track by dbName" class="dbBox">
+                            <div ng-repeat="(dbName, dbInfo) in row.dbs.databases track by dbName" class="dbBox">
                                 <div class="head">
                                     <h4>{{dbName}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-click="editDatabase(row['code'], dbName, info);">
+                                        <a href="" ng-click="editDatabase(row['code'], dbName, dbInfo);">
                                             <span class="icon icon-pencil" tooltip="Edit Database"></span>
                                         </a>
-                                        <a href="" ng-click="removeDatabase(row['code'], dbName);">
+                                        <a href="" ng-confirm-click="Are you sure you want to remove this database?" ng-click="removeDatabase(row['code'], dbName);">
                                             <span class="icon icon-cross" tooltip="Remove Database"></span>
                                         </a>
                                     </span>
                                 </div>
                                 <div class="info2">
-                                    <b>Cluster:</b>&nbsp;{{info['cluster']}}<br/>
-                                    <b>Tenant Specific:</b>&nbsp;{{info['tenantSpecific']}}
+                                    <b>Cluster:</b>&nbsp;{{dbInfo['cluster']}}<br/>
+                                    <b>Tenant Specific:</b>&nbsp;{{dbInfo['tenantSpecific']}}
                                 </div>
                             </div>
                         </div>
                     </tab>
                     <tab heading="Mongo Cluster">
+                        <br/>
+                        <a href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
                         <div class="entryBoxes entryBoxesGrid">
-                            <div ng-repeat="(clusterName, info) in row.dbs.clusters track by clusterName" class="dbBox">
+                            <div ng-repeat="(clusterName, clusterInfo) in row.dbs.clusters track by clusterName" class="dbBox">
                                 <div class="head">
                                     <h4>{{clusterName}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-click="editCluster(row['code'], clusterName, info);">
-                                            <span class="icon icon-pencil" tooltip="Edit Database"></span>
+                                        <a href="" ng-click="editCluster(row['code'], clusterName, clusterInfo);">
+                                            <span class="icon icon-pencil" tooltip="Edit Cluster"></span>
                                         </a>
-                                        <a href="" ng-click="removeCluster(row['code'], clusterName);">
-                                            <span class="icon icon-cross" tooltip="Remove Database"></span>
+                                        <a href="" ng-confirm-click="Are you sure you want to remove this cluster?" ng-click="removeCluster(row['code'], clusterName);">
+                                            <span class="icon icon-cross" tooltip="Remove Cluster"></span>
                                         </a>
                                     </span>
                                 </div>
-                                <div class="info2" ng-bind-html="info|object"></div>
+                                <div class="info2" ng-bind-html="clusterInfo|object"></div>
                             </div>
                         </div>
                     </tab>
