@@ -983,7 +983,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it('mongo - testing database', function(done) {
-				mongo.findOne('environment', {'code':"DEV"}, function(error, record) {
+				mongo.findOne('environment', {'code': "DEV"}, function(error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					assert.equal(JSON.stringify(record.dbs.databases), '{}');
@@ -994,7 +994,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		});
 
 		describe("list environment dbs", function() {
-			it('success - no session and no databases', function(done){
+			it('success - no session and no databases', function(done) {
 				var params = {
 					qs: {'env': 'dev'}
 				};
@@ -1006,7 +1006,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it('success - add session db', function(done){
+			it('success - add session db', function(done) {
 				var params = {
 					qs: {
 						env: "dev"
@@ -1031,7 +1031,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it('success - add urac db', function(done){
+			it('success - add urac db', function(done) {
 				var params = {
 					qs: {
 						env: "dev"
@@ -1049,7 +1049,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it('success - yes session and yes databases', function(done){
+			it('success - yes session and yes databases', function(done) {
 				var params = {
 					qs: {'env': 'dev'}
 				};
@@ -1078,7 +1078,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 
 		describe("update environment db prefix", function() {
-			it("success - add db prefix", function(done){
+			it("success - add db prefix", function(done) {
 				var params = {
 					qs: {
 						env: "dev"
@@ -1091,7 +1091,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 
-					mongo.findOne('environment',{'code':'DEV'}, function(error, envRecord){
+					mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord) {
 						assert.ifError(error);
 						assert.equal(envRecord.dbs.config.prefix, 'soajs_');
 						done();
@@ -1099,7 +1099,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it("success - empty db prefix", function(done){
+			it("success - empty db prefix", function(done) {
 				var params = {
 					qs: {
 						env: "dev"
@@ -1112,7 +1112,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 
-					mongo.findOne('environment',{'code':'DEV'}, function(error, envRecord){
+					mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord) {
 						assert.ifError(error);
 						assert.equal(envRecord.dbs.config.prefix, '');
 						done();
@@ -3185,6 +3185,25 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 				
+			});
+		});
+	});
+
+	describe("hosts tests", function() {
+		it("success - will get hosts list", function(done) {
+			executeMyRequest({qs:{'env':'dev'}}, 'hosts/list', 'get', function(body) {
+				assert.ok(body.data);
+				done();
+			});
+		});
+	});
+
+
+	describe("services tests", function() {
+		it("success - will get services list", function(done) {
+			executeMyRequest({}, 'services/list', 'post', function(body) {
+				assert.ok(body.data);
+				done();
 			});
 		});
 	});

@@ -83,7 +83,7 @@ var serviceConfig = {
 						"httpOnly": {"type": "boolean", "required": true},
 						"secure": {"type": "boolean", "required": true},
 						"domain": {"type": "string", "required": true},
-						"maxAge": {"type": ["integer","null"], "required": false}
+						"maxAge": {"type": ["integer", "null"], "required": false}
 					}
 				}
 			}
@@ -183,7 +183,7 @@ module.exports = {
 		"600": "Database error"
 
 	},
-	"excludedServices":[],
+	"excludedServices": [],
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -975,12 +975,27 @@ module.exports = {
 				"l": "List Services",
 				"group": "Services"
 			},
-			'serviceNames':{
+			'serviceNames': {
 				'source': ['body.serviceNames'],
 				'required': false,
 				"validation": {
 					"type": "array",
 					'items': {'type': 'string'}
+				}
+			}
+		},
+
+		"/hosts/list": {
+			_apiInfo: {
+				"l": "List Hosts",
+				"group": "Hosts"
+			},
+			'env': {
+				'source': ['query.env'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
 				}
 			}
 		}

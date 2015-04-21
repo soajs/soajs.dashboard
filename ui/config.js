@@ -133,6 +133,18 @@ var navigation = [
 	},
 
 	{
+		'id': 'services',
+		'label': 'Services',
+		'url': '#/services',
+		'tplPath': 'modules/services/directives/list.tmpl',
+		'icon' : 'tree',
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/services/controller.js'],
+		'ancestor': ['Home']
+	},
+
+	{
 		'id': 'productization',
 		'label': 'Productization',
 		'url': '#/productization',

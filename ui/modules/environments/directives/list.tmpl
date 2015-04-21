@@ -1,5 +1,5 @@
 <section ng-controller="environmentCtrl" ng-show="grid.rows">
-    <a href="" ng-click="addProduct()" class="btn btn-primary">Add New Environment</a><br/><br/>
+    <a href="" ng-click="addEnvironment()" class="btn btn-primary">Add New Environment</a><br/><br/>
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
@@ -11,14 +11,136 @@
                     <tab heading="Service Configuration">
                         <br/>
 
+                        <div ng-if="row.services">
+                            <table width="99%" align="center">
+                                <tr>
+                                    <td width="50%" valign="top">
+                                        <fieldset>
+                                            <label><h3>Service Configuration</h3></label>
+
+                                            <div class="grid">
+                                                <table width="100%">
+                                                    <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.config track by key">
+                                                        <td width="15%"><b>{{key|label}}</b></td>
+                                                        <td ng-bind-html="prop|object"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </fieldset>
+                                    </td>
+                                    <td width="20%">&nbsp;</td>
+                                    <td width="30%" valign="top">
+                                        <fieldset>
+                                            <label><h3>Controller</h3></label>
+
+                                            <div class='grid'>
+                                                <table width="100%">
+                                                    <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.controller track by key">
+                                                        <td><b>{{key|label}}</b></td>
+                                                        <td align="right">{{prop}}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </tab>
                     <tab heading="Database Configuration">
                         <br/>
 
-                    </tab>
-                    <tab heading="Mongo Cluster">
+                        <div>
+                            <h3>Database Prefix:</h3>
+
+                            <form name="databasePrefixForm" class="css-form" novalidate>
+                                <table width="30%">
+                                    <tr>
+                                        <td>
+                                            <b>Prefix</b><br/>
+                                            <input type="text" name="prefix" ng-model="prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+                                        </td>
+                                        <td valign="bottom" align="left"><input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;"/></td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <hr/>
+                        </div>
                         <br/>
 
+                        <h3>Session Database:</h3>
+                        <ul class="blueListing" ng-if="row.dbs.config.session">
+                            <li class="blueLi">
+                                <div class="c-both w-100">
+                                    <h4 class="f-left">{{row.dbs.config.session['name']}}</h4>
+                                    <span class="rightActions">
+                                        <a href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], dbName);">
+                                            <span class="icon icon-cross" tooltip="Remove Database"></span>
+                                        </a>&nbsp;
+
+                                        <a href="" ng-click="editPackage(row['code'], dbName, info)">
+                                            <span class="icon icon-pencil2" tooltip="Edit Database"></span>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="c-both w-100">
+                                    <b>Cluster:</b>&nbsp;{{row.dbs.config.session['cluster']}}<br/>
+                                    <b>Collection:</b>&nbsp;{{row.dbs.config.session['collection']}}<br/>
+                                    <b>Expires After:</b>&nbsp;{{row.dbs.config.session['expireAfter']|TTL}} (hours)<br/>
+                                    <b>Store:</b>&nbsp;<span ng-bind-html="row.dbs.config.session['store']|object"></span>
+                                </div>
+                            </li>
+                        </ul>
+                        <hr/>
+                        <a href="" ng-click="addDatabase(row['code'])" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
+                        <h3>Database List:</h3>
+                        <div class="entryBoxes entryBoxesGrid">
+                            <div ng-repeat="(dbName, info) in row.dbs.databases track by dbName" class="dbBox">
+                                <div class="head">
+                                    <h4>{{dbName}}</h4>
+                                    <span class="rightActions">
+                                        <a href="" ng-click="editDatabase(row['code'], dbName, info);">
+                                            <span class="icon icon-pencil" tooltip="Edit Database"></span>
+                                        </a>
+                                        <a href="" ng-click="removeDatabase(row['code'], dbName);">
+                                            <span class="icon icon-cross" tooltip="Remove Database"></span>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="info2">
+                                    <b>Cluster:</b>&nbsp;{{info['cluster']}}<br/>
+                                    <b>Tenant Specific:</b>&nbsp;{{info['tenantSpecific']}}
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab heading="Mongo Cluster">
+                        <div class="entryBoxes entryBoxesGrid">
+                            <div ng-repeat="(clusterName, info) in row.dbs.clusters track by clusterName" class="dbBox">
+                                <div class="head">
+                                    <h4>{{clusterName}}</h4>
+                                    <span class="rightActions">
+                                        <a href="" ng-click="editCluster(row['code'], clusterName, info);">
+                                            <span class="icon icon-pencil" tooltip="Edit Database"></span>
+                                        </a>
+                                        <a href="" ng-click="removeCluster(row['code'], clusterName);">
+                                            <span class="icon icon-cross" tooltip="Remove Database"></span>
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="info2" ng-bind-html="info|object"></div>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab heading="Services Hosts">
+                        <div class="entryBoxes entryBoxesGrid" ng-init="listHosts(row['code'])">
+                            <div ng-repeat="host in row.hosts" class="dbBox">
+                                <div class="head">
+                                    <h4>{{host.name}}</h4>
+                                </div>
+                                <div class="info2"><b>IP Address</b>: {{host.ip}}</div>
+                            </div>
+                        </div>
                     </tab>
                 </tabset>
                 <div class="entryAction">
