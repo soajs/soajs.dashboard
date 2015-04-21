@@ -299,7 +299,7 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Pick the Expiry Date of the external key. If empty, the key will not expire',
 					'min': new Date(),
-					'required': false
+					'required': true
 				},
 				{
 					'name': 'device',
