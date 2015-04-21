@@ -6,10 +6,10 @@
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
             <div class="header">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
-            <div class="body">
+            <div class="body clearfix">
                 <div class="description">{{row['description']}}</div>
+                <a style="top:0" class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
                 <label ng-show="row.packages.length > 0">Packages:</label>
-                <a class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
                 <ul class="blueListing">
                     <li class="blueLi" ng-repeat="package in row.packages">
                     <a ng-click="viewPackage(package)" href="" ng-hide="package.showClose">

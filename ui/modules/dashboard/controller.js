@@ -49,9 +49,6 @@ var config = {
 var dahsboardApp = soajsApp.components;
 dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	console.log( ' dahsboardCtrl ');
-	
-	
 }]);
 
 dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
