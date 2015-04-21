@@ -1,0 +1,103 @@
+<section>
+    <div class='form' ng-controller="aclCtrl as formCtrl">
+        <form novalidate="" class="css-form ng-pristine" name="">
+            <div class="header"><h3 class="">Update ACL</h3></div>
+            <div class="body">
+                <label class="">Product Package</label>
+                <div class="staticValue" id="">{{currentPackage.code}}</div>
+
+                <br>
+                <label class="">ACL</label>
+
+                <div id="generate-ApiList" class="entryServiceBoxes">
+
+                    <div ng-repeat="service in allServiceApis" class="clearfix service-container">
+
+
+                        <div class="clearfix serviceNameHead">
+                            <div style="float: left; width: 200px;">
+                                <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
+                                       ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
+                                <b> <a href="">{{service.name}} </a></b>
+                            </div>
+                            <div ng-show="aclFill.services[service.name].include" style="float: left;">
+                    <span style="padding-left: 15px;"><input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
+                                                             name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
+
+                    <span style="padding-left: 40px;">
+                    <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
+                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
+                    <span style="padding-left: 40px;">
+                        <input type="radio" ng-checked="aclFill.services[service.name].accessType==='admin'" name="{{service.name}}_radio" ng-model="aclFill.services[service.name].accessType" value="admin"> administrator</span>
+
+                            </div>
+                            <div style="float:right;" ng-show="aclFill.services[service.name].include">
+                                <a href="" ng-click="minimize(service)" ng-show="aclFill.services[service.name].collapse===false">
+                                    <span class="icon icon-minus" tooltip="Minimize"></span>
+                                </a>
+                                <a href="" ng-click="expand(service)" ng-show="aclFill.services[service.name].collapse===true">
+                                    <span class="icon icon-plus" tooltip="Expand"></span>
+                                </a>
+
+                            </div>
+                        </div>
+
+                        <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include===true && aclFill.services[service.name].collapse===false }">
+                            <div>
+                <span>
+                <input ng-click="checkRestriction( service )" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisRestrictPermission" ng-checked="aclFill.services[service.name].apisRestrictPermission===true" value="restricted"> </span>
+                                <span><b>Restrict Access to Selected Apis</b></span>
+                                <fieldset ng-repeat="(grp, val) in service.fixList">
+                                    <legend>{{grp}}</legend>
+                                    <div class="clearfix apiListing-container">
+                                        <div class="apiListing" ng-repeat="myApi in val.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                                             ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
+                                            <div class="apiLabel">
+                                                <input ng-click="checkDefault(service,grp,val,myApi)" ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
+                                                {{myApi.l}}
+                                            </div>
+                                            <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisRestrictPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
+
+                                <span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="public" type="radio"
+                                              id="{{service.name}}_{{grp}}_{{$index}}_public" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='public'"> public </span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="private" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_privaye" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='private'"> private</span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="admin" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_admin" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='admin'"> administrator</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+            </div>
+            <div class="footer"><br>
+
+
+                <input type="submit" class="btn btn-sm btn-primary" ng-click="saveACL()" value="Save ACL">
+
+            </div>
+        </form>
+
+
+
+
+
+
+
+
+
+    </div>
+</section>

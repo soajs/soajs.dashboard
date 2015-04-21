@@ -133,6 +133,18 @@ var navigation = [
 	},
 
 	{
+		'id': 'services',
+		'label': 'Services',
+		'url': '#/services',
+		'tplPath': 'modules/services/directives/list.tmpl',
+		'icon' : 'tree',
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/services/controller.js'],
+		'ancestor': ['Home']
+	},
+
+	{
 		'id': 'productization',
 		'label': 'Productization',
 		'url': '#/productization',
@@ -144,6 +156,15 @@ var navigation = [
 		'ancestor': ['Home']
 	},
 	{
+		'id': 'product-acl',
+		'label': 'Edit Package ACL',
+		'url': '#/productization/:pid/editAcl/:code',
+		'tplPath': 'modules/productization/directives/editAcl.tmpl',
+		'tracker': true,
+		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
+		'ancestor': ['Home', 'Productization']
+	},
+	{
 		'id': 'multi-tenancy',
 		'label': 'Multi-Tenancy',
 		'url': '#/multi-tenancy',
@@ -153,6 +174,15 @@ var navigation = [
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home']
+	},
+	{
+		'id': 'tenant-app-acl',
+		'label': 'Edit Application ACL',
+		'url': '#/multi-tenancy/:tId/editAcl/:appId',
+		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
+		'tracker': true,
+		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
+		'ancestor': ['Home', 'Multi-Tenancy']
 	},
 	{
 		'id': 'multi-tenancy_applications',

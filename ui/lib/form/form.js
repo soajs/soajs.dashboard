@@ -28,7 +28,12 @@ function buildFormWithModal($scope, $modal, opts) {
 	}
 
 	var m = ($modal && $modal !== null) ? true : false;
-	buildForm($scope, m, formConfig);
+
+	buildForm($scope, m, formConfig, function(){
+		if(opts.postBuild && (typeof(opts.postBuild)=='function') ){
+			opts.postBuild();
+		}
+	});
 
 	//if ($modal && $modal==true)
 	if($modal && $modal !== null) {
@@ -49,7 +54,7 @@ function buildFormWithModal($scope, $modal, opts) {
 	}
 }
 
-function buildForm(context, modal, configuration) {
+function buildForm(context, modal, configuration, cb) {
 	context.form = {
 		alerts: [],
 		label: configuration.label,
@@ -97,6 +102,17 @@ function buildForm(context, modal, configuration) {
 				context.form.entries[index].opened = true;
 			};
 		}
+
+		if(oneEntry.type === 'select') {
+			if(oneEntry.onChange && typeof(oneEntry.onChange.action)==='function')
+			{
+				oneEntry.action= oneEntry.onChange;
+			}
+			else{
+				oneEntry.action= {};
+			}
+		}
+
 	}
 
 	context.form.do = function(functionObj) {
@@ -109,7 +125,22 @@ function buildForm(context, modal, configuration) {
 			functionObj.action();
 		}
 	};
+	context.form.callObj = function(functionObj) {
+		if(functionObj){
+			if(functionObj.action){
+				functionObj.action();
+			}
+		}
+	};
+	context.form.call = function(action, id, data) {
+		if(action){
+			if( typeof(action) == 'function'){
+				action(id, data);
+			}
+		}
+	};
 
+	// testAction
 	context.form.itemsAreValid = function() {
 		var entries = context.form.entries;
 		var data = context.form.formData;
@@ -136,11 +167,31 @@ function buildForm(context, modal, configuration) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
+	if(cb && (typeof(cb)=='function')){
+		context.form.timeout(function() {
+			cb();
+		}, 1000);
+	}
+
 }
 
 soajsApp.directive('ngform', function() {
 	return {
 		restrict: 'E',
 		templateUrl: 'lib/form/form.tmpl'
+	};
+});
+
+soajsApp.directive('ngaclform', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/aclForm.tmpl'
+	};
+});
+
+soajsApp.directive('ngaclopenform', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/form/aclOpenForm.tmpl'
 	};
 });

@@ -66,7 +66,7 @@ a:hover {
     top: -35px;
 }
 
-#noMainMenu {
+#noMainMenu{
     margin-top: 35px;
     float: left;
     width: 13%;
@@ -254,40 +254,16 @@ a:hover {
     width: 20%;
 }
 
-.w30 {
-    width: 30%;
-}
-
 .w80 {
     width: 80%;
-}
-
-.w100 {
-    width: 100%;
-}
-
-.w50 {
-    width: 50%;
-}
-
-.t-left {
-    text-align: left;
 }
 
 .t-right {
     text-align: right;
 }
 
-.f-left {
-    float: left !important;
-}
-
 .f-right {
-    float: right !important;
-}
-
-.c-both{
-    clear:both;
+    float: right;
 }
 
 /**
@@ -309,7 +285,7 @@ a:hover {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#mainMenu ul li a#mainMenu-home {
+#mainMenu ul li a#mainMenu-home{
     /*background: url("../img/icons.png") no-repeat 0 -3px;*/
     padding-left: 25px;
     display: block;
@@ -322,6 +298,12 @@ a:hover {
 }
 
 #mainMenu ul li a#mainMenu-environments {
+    /*background: url("../img/icons.png") no-repeat 0 -154px;*/
+    padding-left: 25px;
+    display: block;
+}
+
+#mainMenu ul li a#mainMenu-services {
     /*background: url("../img/icons.png") no-repeat 0 -154px;*/
     padding-left: 25px;
     display: block;
@@ -343,7 +325,47 @@ a:hover {
     THEME ENDS HERE
     CUSTOM CSS STARTS HERE
 **/
+.entryServiceBoxes{
 
+}
+.entryServiceBoxes .service-container{
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.entryServiceBoxes .service-container label {
+    text-decoration: underline;
+}
+
+.entryServiceBoxes .service-container div.blueBox{
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom:solid 1px #cccccc;
+    padding:5px;
+    font-weight:bold;
+    background-color:#eeeeee;
+    border-radius: 8px;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead span{
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+.entryServiceBoxes .service-container .body{
+    padding:5px;
+}
+
+/*****/
 div.entryBoxes {
     width: 100%;
     display: table;
@@ -435,7 +457,7 @@ div.entryBox .blueListing li.blueLi {
 }
 
 div.entryBox .listoUsers li.blueLi {
-    display: in-line;
+    display: inline;
     width: auto;
     float: left;
     margin-right: 10px;
@@ -559,6 +581,66 @@ div.entryBox .body .btn-ssm {
     margin-bottom: 5px;
 }
 
+.tab-content > .active{
+	
+}
+
+fieldset {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+fieldset legend {
+    margin-bottom: 0;
+    text-decoration: none;
+    width: auto;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.apiListing{
+    height: 30px;
+    display: inline-block;
+}
+.apiListing .apiLabel{
+    float: left;
+    width: 290px;
+    padding-right: 30px;
+}
+.apiListing .apiAccess{
+    float: left;
+    width: 250px;
+}
+.apiListing-container .odd{
+    margin-right: 45px;
+}
+.apiListing-container .even, .apiListing-container .odd{
+    width: 540px;
+}
+.apiListing-container input{
+    margin-top: 0;
+}
+
+.listApis tr.odd {
+    background-color: #ddd;
+}
+
+.listApis tr td {
+    padding: 3px;;
+}
+.service-container{
+}
+
+.listApis{
+    display: none;
+}
+
+.openApis {
+    display: block;
+    transition: all 0.5s ease 0s;
+}
+
 .tab-content > .active {
 
 }
@@ -604,4 +686,17 @@ fieldset .grid table {
     width:90%;
     margin:0 10px;
     border-top:none;
+    min-height:60px;
+}
+
+.apisList{
+    list-style-type:none;
+    margin:0;
+    padding:0
+}
+
+.apisList li{
+    border-bottom:solid 1px #ccc;
+    margin-bottom:5px;
+    padding-bottom:5px;
 }

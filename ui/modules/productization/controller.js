@@ -1,6 +1,6 @@
 "use strict";
 var productizationApp = soajsApp.components;
-productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
+productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	
 	$scope.viewPackage = function(pack) {
@@ -11,7 +11,16 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		pack.showDetails = false;
 		pack.showClose = false;
 	};
-	
+
+	$scope.stopEventPropagation = function(event) {
+		alert('stopEventPropagation');
+
+		if(event && event.stopPropagation){
+			alert('stopEventPropagation 2');
+			event.stopPropagation();
+		}
+	};
+
 	$scope.listProducts = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -188,10 +197,21 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.addPackage = function(productId) {
+		$scope.aclFill.services= {};
+		console.log($scope.aclFill);
 		var formConf = angular.copy(productizationConfig.form.package);
 		formConf.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
 				oneEn.value[0].selected=true;
+			}
+			if(oneEn.name==='acl'){
+				//oneEn.value[0].selected=true;
+				/* var cfgElement = angular.element(document.getElementById("idacl"));
+				if(cfgElement){
+					cfgElement.html('<div ng-repeat="service in allServiceApis"><input type="checkbox">{{service.name}}</div>');
+					$compile(cfgElement.contents())($scope);
+				}*/
+
 			}
 		});
 
@@ -201,6 +221,15 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			name: 'addPackage',
 			label: 'Add New Package',
 			sub: true,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -257,23 +286,73 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			]
 		};
-
 		buildFormWithModal($scope, $modal, options);
 	};
 
+	$scope.editPackAcl = function(productId, code) {
+		$scope.$parent.go("/productization/"+productId+"/editAcl/" + code );
+	};
 	$scope.editPackage = function(productId, data) {
-		console.log(data);
+		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
+		console.log( 'recordData.acl: ' );
+		console.log( recordData.acl );
+		$scope.aclFill.services= angular.copy(recordData.acl);
+		for(var propt in $scope.aclFill.services)
+		{
+			var s = $scope.aclFill.services[propt];
+			s.include =true;
+			if(s.access){
+				if( s.access===true){
+					s.accessType = 'private';
+				}
+				else if( s.access===false){
+					s.accessType = 'public';
+				}
+				else if( typeof(s.access)=='object'){
+					s.accessType = 'admin';
+				}
+
+			}
+			else{
+				s.accessType = 'public';
+			}
+
+			if(s.apis){
+				for(var ap in s.apis){
+					s.apis[ap].include=true;
+					if( s.apis[ap].access===true){
+						s.apis[ap].accessType = 'private';
+					}else{
+
+					}
+				}
+			}
+		}
+		console.log(' ******* start ******** $scope.aclFill.services ');
+		console.log( $scope.aclFill.services );
+
+
 		recordData._TTL = recordData._TTL / 3600000;
 		recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editPackage',
 			label: 'Edit Package',
 			data: recordData,
+			postBuild:function(){
+				var cfgElement = angular.element(document.getElementById("idaclForm"));
+				console.log('elem');
+				console.log(cfgElement);
+				if(cfgElement){
+					cfgElement.html('<ngaclform></ngaclform> ');
+					$compile(cfgElement.contents())($scope);
+				}
+			},
 			actions: [
 				{
 					'type': 'submit',
@@ -286,7 +365,49 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						
+						var aclObj2 = {};
+						var aclObj = {};
+						console.log('******** $scope.aclFill.services ');
+						console.log( $scope.aclFill.services );
+
+						for(var propt in $scope.aclFill.services){
+							var s = $scope.aclFill.services[propt];
+							if(s.include===true){
+								aclObj2[propt]={};
+								if(s.accessType==='private'){
+									aclObj2[propt].access=true;
+								}
+								else if(s.accessType==='public'){
+									aclObj2[propt].access=false;
+								}
+								else if(s.accessType==='admin'){
+									aclObj2[propt].access= ['administrator'];
+								}
+								if(s.apis){
+									aclObj2[propt].apis={};
+									for(var ap in s.apis){
+										var api = s.apis[ap];
+										if(api.include===true)
+										{
+											aclObj2[propt].apis[ap]={};
+											if(api.accessType==='private'){
+												aclObj2[propt].apis[ap].access=true;
+											}
+											else if(api.accessType==='public'){
+												aclObj2[propt].apis[ap].access=false;
+											}
+											else{
+												//aclObj2[propt].apis[ap].access=false;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						console.log('******** aclObj 2');
+						console.log(aclObj2);
+
 						if(formData.acl && (formData.acl != "")) {
 							try {
 								var aclObj = JSON.parse(formData.acl);
@@ -296,10 +417,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								return;
 							}
 						}
-						else {
-							var aclObj = {};
-						}	
-						postData.acl = aclObj;
+						console.log('aclObj');
+						console.log(aclObj);
+						postData.acl = aclObj2;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
@@ -350,6 +470,393 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["urac", "dashboard", "oauth"] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				console.log(' getServices ');
+				console.log(response);
+
+
+				$scope.groupBy( response , 'group');
+
+				$scope.allServiceApis = response;
+			}
+		});
+	};
+	$scope.groupBy = function(arr, f) {
+		var result = {} ;
+		var l =arr.length;
+		var g = 'all' ;
+		for(var i=0; i>l; i++)
+		{
+			console.log( arr[i]);
+			if(arr[i][f]){
+				g = arr[i][f];
+			}
+
+			if(result[g]){
+
+			}else{
+				result[g]={
+
+				}
+			}
+		}
+
+		console.log(result);
+	};
+
+
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		if($scope.selectedServices[service.name]){
+			if($scope.selectedServices[service.name][api])
+			{
+				if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+					delete $scope.selectedServices[service.name][api];
+				}
+				else{
+					$scope.selectedServices[service.name][api].selectedApi=true;
+				}
+			}
+			else{
+				$scope.selectedServices[service.name][api]= {};
+				$scope.selectedServices[service.name][api].selectedApi=true;
+			}
+		}*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+
 	//default operation
+	$scope.getServices();
 	$scope.listProducts();
+
+}]);
+
+productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.minimize =function(service){
+		service.collapse=true;
+		$scope.aclFill.services[service.name].collapse = true;
+	};
+	$scope.expand =function(service){
+		service.collapse=false;
+		$scope.aclFill.services[service.name].collapse = false;
+	};
+
+	$scope.stopEventPropagation = function(event) {
+		if(event && event.stopPropagation){
+			event.stopPropagation();
+		}
+	};
+
+	$scope.selectedServices={};
+	$scope.aclFill={};
+	$scope.aclFill.services={};
+	$scope.aclFill.apis={};
+
+	$scope.selectService = function( service, index) {
+		service.collapse=false;
+
+		if( $scope.aclFill.services[service.name]['include'])
+		{
+			$scope.aclFill.services[service.name].collapse = false;
+		}
+		else{
+			$scope.aclFill.services[service.name].collapse = true;
+		}
+
+
+	};
+
+	$scope.selectApi = function(elem, service, api, index) {
+		console.log('elem');
+		console.log(elem);
+		/*
+		 if($scope.selectedServices[service.name]){
+		 if($scope.selectedServices[service.name][api])
+		 {
+		 if( $scope.selectedServices[service.name][api].selectedApi && ($scope.selectedServices[service.name][api].selectedApi==true)){
+		 delete $scope.selectedServices[service.name][api];
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }
+		 else{
+		 $scope.selectedServices[service.name][api]= {};
+		 $scope.selectedServices[service.name][api].selectedApi=true;
+		 }
+		 }*/
+		//console.log( $scope.selectedServices[service.name] );
+		console.log($scope.aclFill);
+	};
+	$scope.currentPackage = {};
+	$scope.openForm = function() {
+		var productId=  $routeParams.pid;
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/product/get",
+			"params": { "id": $routeParams.pid }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var code = $routeParams.code;
+
+				var l = response.packages.length;
+				for (var x = 0; x<l; x++)
+				{
+					if(response.packages[x].code === code)
+					{
+						$scope.currentPackage = 	response.packages[x];
+						break;
+					}
+				}
+
+				$scope.aclFill.services= angular.copy($scope.currentPackage.acl);
+				for(var propt in $scope.aclFill.services)
+				{
+					var s = $scope.aclFill.services[propt];
+					s.include =true;
+					s.collapse = false;
+
+					if(s.access){
+						if( s.access===true){
+							s.accessType = 'private';
+						}
+						else if( s.access===false){
+							s.accessType = 'public';
+						}
+						else if( typeof(s.access)=='object' && (s.access.indexOf('administrator')>-1 )){
+							s.accessType = 'admin';
+						}
+
+					}
+					else{
+						s.accessType = 'public';
+					}
+
+					if(s.apisPermission==='restricted'){
+						s.apisRestrictPermission = true;
+					}
+					if(s.apis){
+						for(var ap in s.apis)
+						{
+							s.apis[ap].include=true;
+							s.apis[ap].accessType = 'public';
+							if(s.apis[ap].access)
+							{
+								if( s.apis[ap].access==true)
+								{
+									s.apis[ap].accessType = 'private';
+								}
+								else if( s.apis[ap].access===false)
+								{
+									s.apis[ap].accessType = 'public';
+								}
+								else{
+									if( (typeof(s.apis[ap].access)=='object') &&( s.apis[ap].access.indexOf('administrator')>-1  ) ){
+										s.apis[ap].accessType = 'admin';
+									}
+
+								}
+							}
+
+						}
+					}
+				}
+				console.log(' ******* start ******** $scope.aclFill.services ');
+				console.log( $scope.aclFill.services );
+			}
+		});
+	};
+
+	//default operation
+	$scope.getServices = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames":["oauth","urac", "dashboard" ] }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				response.forEach(function(serv) {
+					serv.fixList = $scope.groupBy( serv.apis , 'group');
+				});
+
+				$scope.allServiceApis = response;
+				$scope.openForm();
+			}
+		});
+	};
+
+	$scope.groupBy = function(arr, f) {
+		var result = {} ;
+		var l = arr.length;
+		var g = 'General' ;
+		for(var i=0; i<l; i++)
+		{
+			if(arr[i][f])
+			{
+				g = arr[i][f];
+			}
+			if(!result[g])
+			{
+				result[g]={};
+				result[g].apis=[];
+			}
+			if(arr[i].groupMain === true ){
+				result[g]['defaultApi'] =arr[i].v;
+			}
+			result[g].apis.push(arr[i]);
+		}
+		return result;
+	};
+
+	$scope.getServices();
+
+	$scope.saveACL=function(){
+		var productId=  $routeParams.pid;
+		var postData = $scope.currentPackage ;
+		postData._TTL = ($scope.currentPackage._TTL / 3600000).toString();
+
+		console.log( ' ** postData' );
+		console.log(postData);
+
+		var aclObj2={};
+
+		for(var propt in $scope.aclFill.services)
+		{
+			var s = angular.copy($scope.aclFill.services[propt]);
+
+			if(s.include===true)
+			{
+				aclObj2[propt]={};
+				aclObj2[propt].apis={};
+
+				if(s.accessType==='private'){
+					aclObj2[propt].access=true;
+				}
+				else if(s.accessType==='admin'){
+					aclObj2[propt].access= ['administrator'];
+				}
+				else{
+					aclObj2[propt].access=false;
+				}
+
+				if(s.apisRestrictPermission ===true ){
+					aclObj2[propt].apisPermission ='restricted';
+				}
+
+				if(s.apis)
+				{
+
+					for(var ap in s.apis){
+						var api = s.apis[ap];
+
+						if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
+						{
+							/// need to also check for the default api if restricted
+							aclObj2[propt].apis[ap]={};
+							if(api.accessType==='private'){
+								aclObj2[propt].apis[ap].access=true;
+							}
+							else if(api.accessType==='public'){
+								aclObj2[propt].apis[ap].access=false;
+							}
+							else if(api.accessType==='admin'){
+								aclObj2[propt].apis[ap].access=['administrator'];
+							}
+						}
+					}
+				}
+			}
+		}
+		console.log( ' ** aclObj2:' );
+		console.log(aclObj2 );
+		postData.acl =aclObj2;
+
+		getSendDataFromServer( ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/product/packages/update",
+			"data": postData,
+			"params": {"id": productId, "code": postData.code.split("_")[1]}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+			}
+		});
+
+	};
+
+	$scope.checkDefault=function(service,grp,val,myApi) {
+		var defaultApi = service.fixList[grp]['defaultApi'];
+		if(myApi.groupMain===true){
+			if( $scope.aclFill.services[service.name].apis ) {
+				if (($scope.aclFill.services[service.name].apis[defaultApi]) && $scope.aclFill.services[service.name].apis[defaultApi].include !== true) {
+					val.apis.forEach(function( one ) {
+						if($scope.aclFill.services[service.name].apis[one.v])
+						{
+							$scope.aclFill.services[service.name].apis[one.v].include=false;
+						}
+					});
+
+				}
+			}
+		}
+
+	};
+
+	$scope.checkRestriction=function(service){
+		for(var grpLabel in service.fixList )
+		{
+			var defaultApi = service.fixList[grpLabel]['defaultApi'];
+
+			var apisList = service.fixList[grpLabel]['apis'];
+
+			if( $scope.aclFill.services[service.name].apis ) {
+				if (($scope.aclFill.services[service.name].apis[defaultApi]) && $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+				{
+					/*
+					 apisList.forEach(function( one ) {
+					 if($scope.aclFill.services[service.name].apis[one.v])
+					 {
+					 	$scope.aclFill.services[service.name].apis[one.v].include=false;
+					 }
+
+					 });
+
+					*/
+
+				}else{
+
+				}
+			}
+		}
+
+		// aclFill.services[serviceName].apis[data.defaultApi]
+	};
 }]);

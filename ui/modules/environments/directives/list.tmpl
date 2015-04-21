@@ -133,7 +133,14 @@
                         </div>
                     </tab>
                     <tab heading="Services Hosts">
-
+                        <div class="entryBoxes entryBoxesGrid" ng-init="listHosts(row['code'])">
+                            <div ng-repeat="host in row.hosts" class="dbBox">
+                                <div class="head">
+                                    <h4>{{host.name}}</h4>
+                                </div>
+                                <div class="info2"><b>IP Address</b>: {{host.ip}}</div>
+                            </div>
+                        </div>
                     </tab>
                 </tabset>
                 <div class="entryAction">

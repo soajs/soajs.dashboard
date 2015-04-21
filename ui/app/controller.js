@@ -162,6 +162,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			for(var i = 0; i < navigation.length; i++) {
 				if(navigation[i].tracker && navigation[i].url === '#' + $route.current.originalPath) {
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
+						/* TODO: Check here */
+						console.log( $scope.dashboard );
 						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
 							$scope.go("/dashboard");

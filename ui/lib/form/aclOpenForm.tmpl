@@ -1,0 +1,118 @@
+<style>
+    .listApis tr.odd {
+        background-color: #ddd;
+    }
+
+    .listApis tr td {
+        padding: 3px;;
+    }
+    .service-container{
+    }
+
+    .listApis{
+        display: none;
+    }
+
+    .openApis{
+        display: block;
+        transition: all 0.5s ease 0s;
+    }
+
+</style>
+<div id="generate-ApiList" class="entryServiceBoxes">
+    <!--
+        <accordion close-others="false">
+            <accordion-group ng-repeat="service in allServiceApis">
+                <accordion-heading>
+                    <div class="clearfix">
+                        <div style="float: left; width: 200px;">
+                            <input type="checkbox" ng-checked="aclFill.services[service.name]"
+                                   ng-model="aclFill.services[service.name].include" value="{{service.name}}">
+                            <b ng-click="toggleOpen();">{{service.name}}</b>
+                        </div>
+                        <div ng-show="aclFill.services[service.name].include" style="float: left;">
+                            <input ng-click="stopEventPropagation($event)"
+                                   ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
+                                   name="{{service.name}}_radio"
+                                   ng-checked="aclFill.services[service.name].accessType==='public'"> public
+                    <span style="padding-left: 40px;">
+                    <input ng-click="stopEventPropagation($event)" ng-model="aclFill.services[service.name].accessType"
+                           value="private" type="radio" name="{{service.name}}_radio"
+                           ng-checked="aclFill.services[service.name].accessType==='private'"> private</span></div>
+                    </div>
+                </accordion-heading>
+                apis here
+
+            </accordion-group>
+        </accordion>
+
+    -->
+    <div ng-repeat="service in allServiceApis" class="clearfix service-container">
+
+
+        <div class="clearfix serviceNameHead">
+            <div style="float: left; width: 200px;">
+                <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
+                       ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
+                <b> <a href="">{{service.name}} </a></b>
+            </div>
+            <div ng-show="aclFill.services[service.name].include" style="float: left;">
+                    <span style="padding-left: 15px;"><input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
+                                                             name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
+
+                    <span style="padding-left: 40px;">
+                    <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
+                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
+                    <span style="padding-left: 40px;">
+                        <input type="radio" ng-checked="aclFill.services[service.name].accessType==='admin'" name="{{service.name}}_radio" ng-model="aclFill.services[service.name].accessType" value="admin"> administrator</span>
+
+            </div>
+            <div style="float:right;" ng-show="aclFill.services[service.name].include">
+                <a href="" ng-click="minimize(service)" ng-show="aclFill.services[service.name].collapse===false">
+                    <span class="icon icon-minus" tooltip="Minimize"></span>
+                </a>
+                <a href="" ng-click="expand(service)" ng-show="aclFill.services[service.name].collapse===true">
+                    <span class="icon icon-plus" tooltip="Expand"></span>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include===true && aclFill.services[service.name].collapse===false }">
+            <div>
+                <span>
+                <input type="checkbox" name="apisPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisPermission" value="restricted"> </span>
+                <span><b>Restrict to Selected Apis</b></span>
+                <fieldset ng-repeat="(grp, val) in service.fixList">
+                    <legend>{{grp}}</legend>
+                    <div class="clearfix apiListing-container">
+                        <div class="apiListing" ng-repeat="myApi in val.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                            ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
+                            <div class="apiLabel">
+                               <input ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisPermission"> {{myApi.l}}
+                                *{{aclFill.services[service.name].apis[myApi.v].accessType}}*
+                                <br>
+                                {{myApi.v}}
+                            </div>
+                            <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
+
+                                <span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="public" type="radio"
+                                              id="{{service.name}}_{{grp}}_{{$index}}_public" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='public'"> public </span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="private" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_privaye" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='private'"> private</span>
+                                <span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="admin" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_admin" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='admin'"> administrator</span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</div>

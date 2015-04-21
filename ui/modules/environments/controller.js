@@ -19,6 +19,25 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
+	$scope.listHosts = function(env) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/hosts/list",
+			"params": {"env": env}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				for(var i = 0; i < $scope.grid.rows.length; i++) {
+					if($scope.grid.rows[i]['code'] === env){
+						$scope.grid.rows[i].hosts = response;
+					}
+				}
+			}
+		});
+	};
+
 	$scope.addEnvironment = function() {
 		var options = {
 			timeout: $timeout,

@@ -1,4 +1,6 @@
 <section ng-controller="productCtrl" ng-show="grid.rows">
+
+
     <a href="" ng-click="addProduct()" class="btn btn-primary">Add New Product</a><br/><br/>
 
     <div class="entryBoxes">
@@ -19,6 +21,10 @@
                     </a>
                     <b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ]  ( {{package['_TTL'] | TTL}} hours )
                     <span class="rightActions">
+                        <a href="" ng-click="editPackAcl(row['_id'], package['code']);">
+                            <span class="icon icon-unlocked" tooltip="Edit Package ACL"></span>
+                        </a>&nbsp;
+
                         <a href="" ng-confirm-click="Are you sure you want to remove the selected package ?" ng-click="removeProductPackage(row['_id'], package['code']);">
                             <span class="icon icon-cross" tooltip="Remove Package"></span>
                         </a>&nbsp;

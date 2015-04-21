@@ -234,5 +234,28 @@ service.init(function() {
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
 
+	service.post("/services/list", function(req, res) {
+		checkForMongo(req);
+		var colName = 'services';
+		var criteria = (req.soajs.inputmaskData.serviceNames) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
+		mongo.find(colName, criteria, function(err, records) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			return res.jsonp(req.soajs.buildResponse(null, records));
+		});
+
+	});
+
+	service.get("/hosts/list", function(req, res) {
+		checkForMongo(req);
+		var colName = 'hosts';
+		mongo.find(colName, {env: req.soajs.inputmaskData.env.toLowerCase()}, function(err, records) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			return res.jsonp(req.soajs.buildResponse(null, records));
+		});
+
+	});
+
 	service.start();
 });
