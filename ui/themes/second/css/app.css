@@ -3,9 +3,11 @@ body {
     padding: 0;
     background: #E5EAEE;
 }
-a:hover{
-    text-decoration:none;
+
+a:hover {
+    text-decoration: none;
 }
+
 #header {
     height: 80px;
     background: #424951;
@@ -64,7 +66,7 @@ a:hover{
     top: -35px;
 }
 
-#noMainMenu{
+#noMainMenu {
     margin-top: 35px;
     float: left;
     width: 13%;
@@ -252,16 +254,40 @@ a:hover{
     width: 20%;
 }
 
+.w30 {
+    width: 30%;
+}
+
 .w80 {
     width: 80%;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.t-left {
+    text-align: left;
 }
 
 .t-right {
     text-align: right;
 }
 
+.f-left {
+    float: left !important;
+}
+
 .f-right {
-    float: right;
+    float: right !important;
+}
+
+.c-both{
+    clear:both;
 }
 
 /**
@@ -283,7 +309,7 @@ a:hover{
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#mainMenu ul li a#mainMenu-home{
+#mainMenu ul li a#mainMenu-home {
     /*background: url("../img/icons.png") no-repeat 0 -3px;*/
     padding-left: 25px;
     display: block;
@@ -337,51 +363,51 @@ div.entryBoxes {
     display: table;
     width: auto;
     margin: 5px;
-    padding-left:5px;
+    padding-left: 5px;
 }
 
 #page div.entryBoxes div.entryBox label {
     text-decoration: underline;
 }
 
-.greyBox{
+.greyBox {
     background: #cccccc;
 }
 
-#page div.entryBoxes div.blueBox{
-/*#page div.entryBoxes div.entryBox:hover {*/
+#page div.entryBoxes div.blueBox {
+    /*#page div.entryBoxes div.entryBox:hover {*/
     background: #DEF1F7;
     border: solid 1px #337ab7;
     color: black;
 }
 
-div.entryBox .header{
+div.entryBox .header {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    border-bottom:solid 1px #cccccc;
-    padding:5px;
-    font-weight:bold;
-    background-color:#eeeeee;
+    border-bottom: solid 1px #cccccc;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #eeeeee;
 }
 
-div.entryBox .header span{
+div.entryBox .header span {
     font-weight: normal;
     margin-left: 10px;
 }
 
-div.entryBox .body{
-    padding:5px;
+div.entryBox .body {
+    padding: 5px;
 }
 
-div.entryBox .body .description{
-    color:#666666;
-    font-style:italic;
+div.entryBox .body .description {
+    color: #666666;
+    font-style: italic;
 }
 
-div.entryBox .body .btn-primary{
-    float:right;
-    position:relative;
-    top:-10px;
+div.entryBox .body .btn-primary {
+    float: right;
+    position: relative;
+    top: -10px;
 }
 
 div.entryBox div.entryAction {
@@ -398,32 +424,35 @@ div.entryBox ul.blueListing {
 
 div.entryBox .blueListing li.blueLi {
     padding: 5px;
-    margin-bottom:5px;
+    margin-bottom: 5px;
     display: block;
     border: solid 1px #337ab7;
-    width:100%;
+    width: 100%;
     border-radius: 5px;
     background-color: #DEF1F7;
     text-align: left;
     position: relative;
 }
+
 div.entryBox .listoUsers li.blueLi {
-    display:in-line;
+    display: in-line;
     width: auto;
     float: left;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 /*#page div.entryBoxes div.entryBox:hover li {*/
-    /*background-color: white;*/
+/*background-color: white;*/
 /*}*/
 
 div.entryBox .blueListing li.blueLi a {
     margin-right: 5px;
 }
-.rightActions a{
-	    float:right;	
+
+.rightActions a {
+    float: right;
 }
+
 div.entryBox .blueListing li.row-list a {
     position: relative;
     top: 0;
@@ -433,33 +462,41 @@ div.entryBox .blueListing li.row-list a {
 
 div.entryBox .blueListing li .keysAccordion a {
     margin-right: 5px;
-    float:none;
+    float: none;
 }
-.keysAccordion .panel-heading{
-	padding: 5px 15px;	
+
+.keysAccordion .panel-heading {
+    padding: 5px 15px;
 }
-.keysAccordion .panel-title{
-	font-size:12px;
+
+.keysAccordion .panel-title {
+    font-size: 12px;
 }
-.keysAccordion .panel-group{
-	margin-bottom:5px;
+
+.keysAccordion .panel-group {
+    margin-bottom: 5px;
 }
-.keysAccordion .keyAlerts{
-	padding:5px 0;	
+
+.keysAccordion .keyAlerts {
+    padding: 5px 0;
 }
-.appKeys{
-	background-color:white;
-	padding:5px;
-	border-radius: 5px;
-	margin-top:10px;
+
+.appKeys {
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
 }
-.externalKeysGrid{
-	margin-top:10px;
-	vertical-align:top;
+
+.externalKeysGrid {
+    margin-top: 10px;
+    vertical-align: top;
 }
-.externalKeysGrid table td{
-	vertical-align:top;
+
+.externalKeysGrid table td {
+    vertical-align: top;
 }
+
 .modal-dialog {
     position: relative;
     top: 100px;
@@ -493,7 +530,7 @@ form .header h3 {
     border-radius: 5px !important;;
     width: 100% !important;;
     font-size: 12px !important;
-    color:white;
+    color: white;
 }
 
 .grid .header a {
@@ -504,23 +541,67 @@ form .header h3 {
     background-color: #99C9FF !important;
 }
 
-.nav-tabs > li.active > a, 
-.nav-tabs > li.active > a:hover, 
-.nav-tabs > li.active > a:focus{
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
 }
 
 .nav-tabs li a:focus {
     outline: 0;
 }
-div.entryBox .body .btn-ssm{
-    position:relative;
-    top:0px;	
-    padding-top: 3px; 
+
+div.entryBox .body .btn-ssm {
+    position: relative;
+    top: 0px;
+    padding-top: 3px;
     padding-bottom: 2px;
     margin-left: 10px;
-    margin-bottom :5px;
+    margin-bottom: 5px;
 }
 
-.tab-content > .active{
-	
+.tab-content > .active {
+
+}
+
+fieldset .grid table {
+    min-width: 100px;
+}
+
+.dbBox{
+    padding:5px;
+    float: left;
+    display: table;
+    width: auto;
+    margin: 5px;
+}
+
+.dbBox .head{
+    padding:5px 5px 5px 10px;
+    border:solid 1px #337ab7;
+    border-radius:5px;
+    position:relative;
+    background-color:#DEF1F7;
+}
+
+.dbBox .rightActions{
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+.dbBox .head h4{
+    margin-top:0;
+    margin-bottom:0;
+}
+
+.dbBox .info2{
+    display:table;
+    background-color:white;
+    padding:5px;
+    border:solid 1px #cccccc;
+    border-bottom-right-radius:10px;
+    border-bottom-left-radius:10px;
+    width:90%;
+    margin:0 10px;
+    border-top:none;
 }

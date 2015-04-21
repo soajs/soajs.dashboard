@@ -38,3 +38,53 @@ soajsApp.filter('trimmed100', function() {
 		return value;
 	};
 });
+
+soajsApp.filter('label', function() {
+	return function(value) {
+		return value.replace(/([A-Z])/g, ' $1').replace(/^./, function(str) { return str.toUpperCase(); });
+	};
+});
+
+soajsApp.filter('object', ['$sce', function($sce) {
+	function stringifyCamelNotation(value) {
+		return value.replace(/([A-Z])/g, ' $1').replace(/^./, function(str) { return str.toUpperCase(); });
+	}
+
+	function iterateAndPrintObj(obj) {
+		var string = '';
+		for(var i in obj) {
+			if(obj.hasOwnProperty(i)) {
+				if(Array.isArray(obj[i])) {
+					string += "<b>" + stringifyCamelNotation(i) + "</b>:&nbsp;";
+					var t = [];
+					for(var e = 0; e < obj[i].length; e++) {
+						if(typeof(obj[i][e]) === 'object') {
+							t.push(iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g,""));
+						}
+						else {
+							t.push(obj[i][e]);
+						}
+					}
+					string += t +"<br />";
+				}
+				else if(typeof(obj[i]) === 'object') {
+					string += iterateAndPrintObj(obj[i]);
+				}
+				else {
+					string += "<b>" + stringifyCamelNotation(i) + "</b>:&nbsp;" + obj[i] + "<br />";
+				}
+			}
+		}
+		return string;
+	}
+
+	return function(obj) {
+		if(typeof(obj) === 'object') {
+			var txt = iterateAndPrintObj(obj);
+			return $sce.trustAsHtml(txt);
+		}
+		else {
+			return obj;
+		}
+	};
+}]);
