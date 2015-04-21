@@ -267,11 +267,10 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		$scope.aclFill.services= {};
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
-
+		delete recordData.acl;
 		recordData._TTL = recordData._TTL / 3600000;
 		//recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
 		formConfig.entries[0].type = 'readonly';
-		console.log(formConfig);
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -290,8 +289,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
 						postData.acl = data.acl;
-						console.log('postData');
-						console.log(postData);
+						//console.log('postData');
+						//console.log(postData);
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
@@ -523,8 +522,8 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.saveACL=function(){
 		var productId=  $routeParams.pid;
 		var postData = $scope.currentPackage ;
-		console.log( ' ** postData' );
-		console.log(postData);
+		//console.log( ' ** postData' );
+		//console.log(postData);
 
 		var aclObj2={};
 
@@ -575,8 +574,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 				}
 			}
 		}
-		console.log( ' ** aclObj2:' );
-		console.log(aclObj2 );
+
 		postData.acl =aclObj2;
 
 		getSendDataFromServer( ngDataApi, {
@@ -614,8 +612,8 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.checkRestriction=function(service){
-		console.log(' check Restriction ');
-		console.log( $scope.aclFill.services[service.name] );
+		//console.log(' check Restriction ');
+		//console.log( $scope.aclFill.services[service.name] );
 		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
 			for(var grpLabel in service.fixList )
 			{

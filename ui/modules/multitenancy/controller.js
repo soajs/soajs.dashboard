@@ -727,7 +727,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						//postData.productCode = productCode;
 						postData.packageCode = packageCode;
 						postData.acl = recordData.acl;
-						console.log(postData);
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/update",

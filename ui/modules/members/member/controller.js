@@ -61,7 +61,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			"data": {}
 		}, function(error, response) {
 			if(error) {
-				console.log(' error ');
 				$scope.form.displayAlert('danger', error.message);
 			}
 			else {
@@ -131,7 +130,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	};
 
 	$scope.editMember = function(data) {
-		console.log(data);
 		var config = angular.copy(membersConfig.form);
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",

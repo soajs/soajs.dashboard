@@ -50,7 +50,7 @@
                                 <fieldset ng-repeat="(grp, val) in service.fixList">
                                     <legend>{{grp}}</legend>
                                     <div class="clearfix apiListing-container">
-                                        <div class="apiListing" ng-repeat="myApi in val.apis" ng-class-even="'even'" ng-class-odd="'odd'"
+                                        <div class="apiListing" ng-repeat="myApi in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
                                              ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
                                             <div class="apiLabel">
                                                 <input ng-click="checkDefault(service,grp,val,myApi)" ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
