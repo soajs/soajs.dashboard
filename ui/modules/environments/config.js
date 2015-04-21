@@ -1,16 +1,16 @@
 var environmentConfig = {
-	grid: {
-		recordsPerPageArray: [5, 10, 50, 100],
-		columns: [
-			{label: 'Code', field: 'code'},
-			{label: 'Description', field: 'description'},
-			{label: 'IPs', field: 'ips'}
-		],
-		leftActions: [],
-		topActions: [],
-		'defaultSortField': '',
-		'defaultLimit': 5
-	},
+	//grid: {
+	//	recordsPerPageArray: [5, 10, 50, 100],
+	//	columns: [
+	//		{label: 'Code', field: 'code'},
+	//		{label: 'Description', field: 'description'},
+	//		{label: 'IPs', field: 'ips'}
+	//	],
+	//	leftActions: [],
+	//	topActions: [],
+	//	'defaultSortField': '',
+	//	'defaultLimit': 5
+	//},
 	form: {
 		'name': '',
 		'label': '',
@@ -46,27 +46,27 @@ var environmentConfig = {
 				'required': true
 			}
 		]
-	},
-	analytics: {
-		'name': '',
-		'label': '',
-		'actions': {},
-		'entries': [
-			{
-				'name': 'code',
-				'label': 'Code',
-				'type': 'readonly',
-				'placeholder': 'DEV...',
-				'value': '',
-				'tooltip': 'Enter Environment Code; maximum 5 characters.',
-				'required': true
-			},
-			{
-				'name': 'ips',
-				'label': 'IP(s)',
-				'type': 'radio',
-				'value': null
-			}
-		]
 	}
+	//,analytics: {
+	//	'name': '',
+	//	'label': '',
+	//	'actions': {},
+	//	'entries': [
+	//		{
+	//			'name': 'code',
+	//			'label': 'Code',
+	//			'type': 'readonly',
+	//			'placeholder': 'DEV...',
+	//			'value': '',
+	//			'tooltip': 'Enter Environment Code; maximum 5 characters.',
+	//			'required': true
+	//		},
+	//		{
+	//			'name': 'ips',
+	//			'label': 'IP(s)',
+	//			'type': 'radio',
+	//			'value': null
+	//		}
+	//	]
+	//}
 };

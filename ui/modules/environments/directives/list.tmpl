@@ -1,4 +1,35 @@
-<section ng-controller="environmentCtrl as gridCtrl">
-    <a href="" ng-click="addEnvironment()" class="btn btn-primary">Add New Environment</a><br/><br/>
-    <nglist></nglist>
+<section ng-controller="environmentCtrl" ng-show="grid.rows">
+    <a href="" ng-click="addProduct()" class="btn btn-primary">Add New Environment</a><br/><br/>
+
+    <div class="entryBoxes">
+        <div ng-repeat="row in grid.rows" class="entryBox">
+            <div class="header">{{row['code']}}<span>{{row['ips']}}</span></div>
+            <div class="body">
+                <div class="description">{{row['description']}}</div>
+                <br/>
+                <tabset>
+                    <tab heading="Service Configuration">
+                        <br/>
+
+                    </tab>
+                    <tab heading="Database Configuration">
+                        <br/>
+
+                    </tab>
+                    <tab heading="Mongo Cluster">
+                        <br/>
+
+                    </tab>
+                </tabset>
+                <div class="entryAction">
+                    <a href="" ng-click="editEnvironment(row);">
+                        <span class="icon icon-pencil2" tooltip="Edit Environment"></span>
+                    </a>
+                    <a href="" ng-confirm-click="Are you sure you want to remove this environment?" ng-click="removeEnvironment(row);">
+                        <span class="icon icon-cross" tooltip="Remove Environment"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
