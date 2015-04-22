@@ -3190,9 +3190,52 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	});
 
 	describe("hosts tests", function() {
+		var hosts = [], hostsCount =0;
 		it("success - will get hosts list", function(done) {
-			executeMyRequest({qs:{'env':'dev'}}, 'hosts/list', 'get', function(body) {
+			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
 				assert.ok(body.data);
+				hostsCount = body.data.length;
+				done();
+			});
+		});
+
+		it("mongo - empty the hosts", function(done) {
+			mongo.find('hosts', {}, function(error, dbHosts) {
+				assert.ifError(error);
+				assert.ok(dbHosts);
+				hosts = dbHosts;
+				mongo.remove('hosts', {}, function(error) {
+					assert.ifError(error);
+					done();
+				});
+			});
+		});
+
+		it("success - will get an empty list", function(done) {
+			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+				console.log(body.data);
+				console.log("=========");
+				assert.ok(body.data);
+				assert.equal(body.data.length, 0);
+				done();
+			});
+		});
+
+		it("mongo - fill the hosts", function(done) {
+			mongo.remove('hosts', {}, function(error) {
+				assert.ifError(error);
+				mongo.insert('hosts', hosts, function(error) {
+					assert.ifError(error);
+					done();
+				});
+			});
+		});
+
+		it("success - will get hosts list", function(done) {
+			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+				assert.ok(body.data);
+				assert.ok(body.data.length > 0);
+				assert.equal(body.data.length, hostsCount);
 				done();
 			});
 		});
@@ -3203,6 +3246,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		it("success - will get services list", function(done) {
 			executeMyRequest({}, 'services/list', 'post', function(body) {
 				assert.ok(body.data);
+				assert.ok(body.data.length > 0);
 				done();
 			});
 		});
