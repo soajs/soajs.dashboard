@@ -3305,6 +3305,17 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				done();
 			});
 		});
+		it("success - will get services list specific services", function(done) {
+			var params= {
+				form:{
+					"serviceNames": ['urac']
+				}
+			};
+			executeMyRequest( params , 'services/list', 'post', function(body) {
+				assert.ok(body.data);
+				done();
+			});
+		});
 	});
 
 	describe('mongo check db', function() {
