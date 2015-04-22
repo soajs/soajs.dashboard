@@ -387,6 +387,7 @@ module.exports = {
 					"required": true,
 					"properties": {
 						"store": {"type": "object", "required": true},
+						"dbName": {"type": "string", "required": true},
 						"expireAfter": {"type": "integer", "required": true},
 						"collection": {"type": "string", "required": true},
 						"stringify": {"type": "boolean", "required": true}
@@ -411,6 +412,7 @@ module.exports = {
 					"required": true,
 					"properties": {
 						"store": {"type": "object", "required": true},
+						"dbName": {"type": "string", "required": true},
 						"expireAfter": {"type": "integer", "required": true},
 						"collection": {"type": "string", "required": true},
 						"stringify": {"type": "boolean", "required": true}

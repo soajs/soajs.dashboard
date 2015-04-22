@@ -1,21 +1,16 @@
 <section ng-controller="servicesCtrl" ng-show="grid.rows">
-    <div class="entryBoxes entryBoxesGrid">
-        <div ng-repeat="service in grid.rows" class="dbBox">
-            <div class="head">
-                <h4>{{service.name}}</h4>
-                <span class="rightActions">
-                    [&nbsp;{{service.port}}&nbsp;]
-                </span>
-            </div>
-            <div class="info2">
-                <b>External&nbsp;Key&nbsp;Required:</b>&nbsp;{{service.extKeyRequired}}<br /><br />
-                <ul class="apisList">
-                    <li ng-repeat="api in service.apis">
-                        <b>Label</b>:{{api.l}}<br />
-                        <b>Route</b>:{{api.v}}<br />
-                        <b>Group</b>:{{api.group}}<br />
-                        <span ng-if="api.groupMain"><b>Group Default</b>:{{api.groupMain}}<br /></span>
-                        <br/>
+
+    <div class="entryBoxes">
+        <div ng-repeat="service in grid.rows" class="entryBox">
+            <div class="header">{{service['name']}}<span>[ {{service['port']}} ]</span></div>
+            <div class="body">
+                <div class="description"><b>External&nbsp;Key&nbsp;Required</b>:&nbsp;{{service['extKeyRequired']}}</div>
+                <ul class="blueListing">
+                    <li class="blueLi blueLiBox" ng-repeat="api in service.apis">
+                        <b>Label</b>:&nbsp;{{api.l}}<br/>
+                        <b>Group</b>:&nbsp;{{api.group}}<br/>
+                        <span ng-if="api.groupMain"><b>Group Default</b>:&nbsp;{{api.groupMain}}<br/></span>
+                        <b>Route</b>:<br />{{api.v}}<br/>
                     </li>
                 </ul>
             </div>

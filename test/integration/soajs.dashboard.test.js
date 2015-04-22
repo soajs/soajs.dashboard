@@ -626,7 +626,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'cluster': 'cluster1',
 						'sessionInfo': {
 							"cluster": "cluster1",
-							"name": "core_session",
+							"dbName": "core_session",
 							'store': {},
 							"collection": "sessions",
 							'stringify': false,
@@ -716,7 +716,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'cluster': 'cluster1',
 						'sessionInfo': {
 							"cluster": "cluster1",
-							"name": "core_session",
+							"dbName": "core_session",
 							'store': {},
 							"collection": "sessions",
 							'stringify': false,
@@ -770,7 +770,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'cluster': 'cluster1',
 						'sessionInfo': {
 							"cluster": "cluster1",
-							"name": "core_session",
+							"dbName": "core_session",
 							'store': {},
 							"collection": "sessions",
 							'stringify': false,
@@ -860,7 +860,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'cluster': 'cluster1',
 						'sessionInfo': {
 							"cluster": "cluster1",
-							"name": "core_session",
+							"dbName": "core_session",
 							'store': {},
 							"collection": "sessions",
 							'stringify': false,
@@ -1017,7 +1017,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'cluster': 'cluster1',
 						'sessionInfo': {
 							"cluster": "cluster1",
-							"name": "core_session",
+							"dbName": "core_session",
 							'store': {},
 							"collection": "sessions",
 							'stringify': false,
