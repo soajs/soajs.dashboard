@@ -7,13 +7,13 @@
                 <div class="staticValue" id="">{{currentPackage.code}}</div>
 
                 <br>
-                <label class="">ACL:</label>
+                <label>ACL:</label>
 
                 <div id="generate-ApiList" class="entryServiceBoxes">
 
                     <div ng-repeat="service in allServiceApis" class="clearfix service-container">
                         <div class="clearfix serviceNameHead">
-                            <div style="float: left; width: 200px;">
+                            <div class="serviceName">
                                 <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
                                        ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
                                 <b> <a href="">{{service.name}} </a></b>

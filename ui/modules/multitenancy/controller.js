@@ -643,20 +643,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						};
 						postData.productCode = productCode;
 						postData.packageCode = packageCode;
-						
-						if(formData.acl && (formData.acl != "")) {
-							try {
-								var aclObj = JSON.parse(formData.acl);
-							}
-							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid ACL Json object ');
-								return;
-							}
-						}
-						else {
-							var aclObj = {};
-						}
-						postData.acl = aclObj;
+						//var aclObj = {};
+						//postData.acl = aclObj;
+
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/add",
@@ -699,7 +688,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		var formConfig = angular.copy(tenantConfig.form.application);
 		var recordData = angular.copy(data);
 		recordData._TTL = recordData._TTL / 3600000;
-		//recordData.acl = (recordData.acl) ? JSON.stringify(recordData.acl, null, "\t") : "{\n}";
+
 		formConfig.entries[1].type = "html";
 		formConfig.entries[0].type = "html";
 		var options = {
@@ -1228,12 +1217,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-
+	$scope.isInherited=false;
 	$scope.allServiceApis=[];
 	$scope.currentApplication = {};
 	$scope.allGroups=[];
 	$scope.aclFill={};
 	$scope.aclFill.services={};
+	$scope.parentPackage={};
 
 	$scope.minimize =function(service){
 		$scope.aclFill.services[service.name].collapse = true;
@@ -1274,24 +1264,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		return result;
 	};
 
-	$scope.getAllServicesList = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":["oauth","urac", "dashboard" ] }
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				response.forEach(function(serv) {
-					serv.fixList = $scope.arrGroupByField( serv.apis , 'group');
-				});
-				$scope.allServiceApis = response;
-				$scope.getAllGroups();
-			}
-		});
-	};
 	$scope.getAllGroups= function(){
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -1304,12 +1276,12 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 				response.forEach(function( grpObj ) {
 					$scope.allGroups.push(grpObj.code);
 				});
-				$scope.getApplicationAcl();
+				$scope.getApplicationInfo();
 			}
 		});
 	};
 
-	$scope.getApplicationAcl = function() {
+	$scope.getApplicationInfo = function() {
 		var tId=  $routeParams.tId;
 		var appId=  $routeParams.appId;
 		getSendDataFromServer(ngDataApi, {
@@ -1327,36 +1299,95 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 					if(response[x].appId === appId)
 					{
 						$scope.currentApplication = response[x];
-						$scope.currentApplication._TTL = ($scope.currentApplication._TTL / 3600000).toString();
+						console.log( 'currentApplication');
+						console.log ( $scope.currentApplication );
+						if( $scope.currentApplication._TTL.toString().length >3){
+							$scope.currentApplication._TTL = ($scope.currentApplication._TTL / 3600000).toString();
+						}
 						break;
 					}
 				}
-				if($scope.currentApplication.acl){
-					if( JSON.stringify($scope.currentApplication.acl)==="{}"){
-						getSendDataFromServer(ngDataApi, {
-							"method": "get",
-							"routeName": "/dashboard/product/packages/get",
-							"params": {"productCode": $scope.currentApplication.product , "packageCode": $scope.currentApplication.package}
+				// get product info
+				getSendDataFromServer(ngDataApi, {
+					"method": "get",
+					"routeName": "/dashboard/product/packages/get",
+					"params": {"productCode": $scope.currentApplication.product , "packageCode": $scope.currentApplication.package}
 
-						}, function (error, response) {
-							if (error) {
-								$scope.$parent.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.currentApplication.acl = response.acl;
-								$scope.fillFormServices();
-							}
-						});
-
-					}else{
-						$scope.fillFormServices();
+				}, function (error, response) {
+					if (error) {
+						$scope.$parent.displayAlert('danger', error.message);
 					}
+					else {
+						$scope.parentPackage=response;
+						$scope.currentApplication.parentPckgAcl = $scope.parentPackage.acl;
+						$scope.getAllServicesList();
+					}
+				});
+			}
+		});
+	};
+
+	$scope.getAllServicesList = function() {
+		var parentAcl = $scope.currentApplication.parentPckgAcl;
+		var serviceNames= [];
+		for (var serviceName in parentAcl){
+			serviceNames.push(serviceName);
+		}
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list",
+			"data": { "serviceNames": serviceNames }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.allServiceApis = response;
+				console.log( ' $scope.currentApplication.parentPckgAcl ' );
+				console.log( $scope.currentApplication.parentPckgAcl );
+
+				var l = $scope.allServiceApis.length;
+				for(var x=0; x<l; x++)
+				{
+					var serv = $scope.allServiceApis[x];
+					var name = serv.name;
+					var newList = [];
+					if( parentAcl[name].apisPermission === 'restricted')
+					{
+						var len = serv.apis.length;
+						for(var i=0; i<len; i++)
+						{
+							var v = serv.apis[i].v ;
+							if( parentAcl[name].apis[v])
+							{
+								newList.push(serv.apis[i]);
+							}
+						}
+						serv.fixList = $scope.arrGroupByField( newList , 'group');
+					}
+					else{
+						var newList = serv.apis ;
+						serv.fixList = $scope.arrGroupByField( serv.apis , 'group');
+					}
+					console.log( ' serv ' );
+					console.log( serv );
 				}
+
+				$scope.fillFormServices();
 			}
 		});
 	};
 	$scope.fillFormServices = function() {
-		$scope.aclFill.services= angular.copy($scope.currentApplication.acl);
+		if( (!$scope.currentApplication.acl))
+		{
+			$scope.isInherited = true;
+			console.log('isInherited');
+			$scope.aclFill.services= angular.copy($scope.currentApplication.parentPckgAcl);
+
+		}else{
+			$scope.aclFill.services= angular.copy($scope.currentApplication.acl);
+		}
 		for(var propt in $scope.aclFill.services)
 		{
 			var s = $scope.aclFill.services[propt];
@@ -1386,6 +1417,7 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 				s.apisRestrictPermission = true;
 			}
 			if(s.apis){
+
 				for(var ap in s.apis)
 				{
 					s.apis[ap].include=true;
@@ -1452,6 +1484,33 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 
 		}
 
+	};
+
+	$scope.clearAcl=function(){
+		var tId=  $routeParams.tId;
+		var appId=  $routeParams.appId;
+		var postData = $scope.currentApplication;
+
+		postData.productCode = $scope.currentApplication.product ;
+		postData.packageCode = $scope.currentApplication.package.split("_")[1];
+
+		//console.log( $scope.currentApplication );
+		// need support from service api
+
+		getSendDataFromServer( ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/tenant/application/emptyAcl",
+			"data": postData,
+			"params": {"id": tId, "appId" : appId}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+				alert(error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+			}
+		});
 	};
 
 	$scope.saveACL=function(){
@@ -1566,6 +1625,8 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 
 	};
 	//default operation
-	$scope.getAllServicesList();
+	//$scope.getAllServicesList();
+	$scope.getAllGroups();
+
 }]);
 

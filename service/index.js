@@ -194,11 +194,15 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.updateApplication(config, mongo, req, res);
 	});
+	service.post("/tenant/application/emptyAcl", function(req, res) {
+		checkForMongo(req);
+		tenant.clearApplicationAcl(config, mongo, req, res);
+	});
+
 	service.get("/tenant/application/delete", function(req, res) {
 		checkForMongo(req);
 		tenant.deleteApplication(config, mongo, req, res);
 	});
-
 
 	service.post("/tenant/application/acl/get", function(req, res) {
 		checkForMongo(req);
@@ -246,10 +250,16 @@ service.init(function() {
 	service.post("/services/list", function(req, res) {
 		checkForMongo(req);
 		var colName = 'services';
-		var criteria = (req.soajs.inputmaskData.serviceNames) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
+		/*
+		var criteria = {};
+		if( (req.soajs.inputmaskData.serviceNames) &&(req.soajs.inputmaskData.serviceNames.length>0) ){
+			criteria = {'name': {$in: req.soajs.inputmaskData.serviceNames}};
+		}
+		*/
+		var criteria = ((req.soajs.inputmaskData.serviceNames)&&(req.soajs.inputmaskData.serviceNames.length>0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
+		//console.log(criteria);
 		mongo.find(colName, criteria, function(err, records) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
 			return res.jsonp(req.soajs.buildResponse(null, records));
 		});
 

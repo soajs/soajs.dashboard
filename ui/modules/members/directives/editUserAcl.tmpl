@@ -4,17 +4,17 @@
             <div class="header"><h3 class="">Update ACL</h3></div>
             <div class="body">
                 <label class="">Username:</label>
-                <div class="staticValue" id="">{{user.username}}</div>
+                <div class="staticValue">{{user.username}}</div>
 
                 <br>
-                <label class="">ACL for package: {{pckName}}</label>
+                <label>ACL for package:</label> {{pckName}}
 
                 <div id="application-ApiList" class="entryServiceBoxes">
 
 
                     <div ng-repeat="service in allServiceApis" class="clearfix service-container">
                         <div class="clearfix serviceNameHead">
-                            <div style="float: left; width: 200px;">
+                            <div class="serviceName">
                                 <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
                                        ng-model="aclFill.services[service.name].include" value="{{service.name}}"
                                        ng-click="selectService(service)">
@@ -39,7 +39,7 @@
                                 <div class="grpsListingScroll"
                                      ng-show="aclFill.services[service.name].accessType=='groups' ">
                                     <ul class="grpsListing">
-                                        <li ng-repeat="code in allGroups">
+                                        <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
                                             <input type="checkbox" value="{{code}}"
                                                    ng-model="aclFill.services[service.name].grpCodes[code]"
                                                    ng-checked="aclFill.services[service.name]['access'].indexOf(code)>-1">
@@ -118,7 +118,7 @@
                                                 <div class="grpsListingScroll"
                                                      ng-show="aclFill.services[service.name].apis[myApi.v].accessType==='groups'">
                                                     <ul class="grpsListing">
-                                                        <li ng-repeat="code in allGroups">
+                                                        <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
 
                                                             <input ng-model="aclFill.services[service.name].apis[myApi.v].grpCodes[code]"
                                                                    ng-checked="aclFill.services[service.name].apis[myApi.v]['access'].indexOf(code)>-1"
@@ -142,7 +142,7 @@
                 </div>
             </div>
             <div class="footer"><br>
-                <input type="reset" class="btn btn-sm btn-danger" ng-click="clearUserAcl()" value="Empty ACL">
+                <input tooltip="" type="reset" class="btn btn-sm btn-danger" ng-click="clearUserAcl()" value="Empty ACL">
 
                 <input type="submit" class="btn btn-sm btn-primary" ng-click="saveUserAcl()" value="Save ACL">
 

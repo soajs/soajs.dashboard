@@ -352,6 +352,11 @@ a:hover {
     margin-left: 10px;
 }
 
+.serviceNameHead .serviceName{
+    float: left;
+    width: 200px;
+}
+
 .entryServiceBoxes .service-container .body{
     padding:5px;
 }
@@ -643,7 +648,7 @@ fieldset legend {
    width: 100%;
 }
 .grpsListingScroll{
-    width: 385px;
+    width: 375px;
     height: 70px;
     overflow-y: scroll;
     display: inline-block;
@@ -658,14 +663,19 @@ ul.grpsListing{
 }
 .grpsListing li{
     float: left;
-    margin-right: 10px;
     width: 170px;
     font-weight: normal;
     font-size: 12px;
 }
+.grpsListing li.oddLi{
+    margin-right: 10px;
+}
 .grpsListing li input{
     margin-right: 3px;
+    margin-top: 1px;
 }
+
+input[type="radio"], input[type="checkbox"]{}
 
 #application-ApiList .apiListing .apiAccess {
     width: auto;

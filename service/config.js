@@ -183,7 +183,7 @@ module.exports = {
 		"600": "Database error"
 
 	},
-	"excludedServices": [],
+	"excludedServices": ["oauth"],
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -833,7 +833,44 @@ module.exports = {
 				}
 			}
 		},
-
+		"/tenant/application/emptyAcl": {
+			_apiInfo: {
+				"l": "Empty Tenant Application ACL",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['id', 'appId'],
+			"productCode": {
+				"source": ['body.productCode'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"format": "alphanumeric",
+					"maxLength": 5
+				}
+			},
+			"packageCode": {
+				"source": ['body.packageCode'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"format": "alphanumeric",
+					"maxLength": 5
+				}
+			}
+		},
+		"/tenant/application/acl/get":{
+			_apiInfo: {
+				"l": "Get Tenant Application By External Key",
+				"group": "Tenant Application"
+			},
+			"extKey":{
+				"source": ['body.extKey'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
 		"/tenant/application/key/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application Key",
@@ -863,19 +900,7 @@ module.exports = {
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
-		"/tenant/application/acl/get":{
-			_apiInfo: {
-				"l": "Get Tenant Application By External Key",
-				"group": "Tenant Application"
-			},
-			"extKey":{
-				"source": ['body.extKey'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
+
 		"/tenant/application/key/ext/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application External Key",
