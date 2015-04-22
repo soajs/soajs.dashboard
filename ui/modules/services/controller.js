@@ -12,7 +12,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				console.log(response);
 				$scope.grid = {
 					rows: response
 				};

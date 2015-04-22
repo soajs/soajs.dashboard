@@ -3,6 +3,14 @@ var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
+	$scope.expand = function(row){
+		row.showOptions = true;
+	};
+
+	$scope.collapse = function(row){
+		row.showOptions = false;
+	};
+
 	$scope.listEnvironments = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -50,11 +58,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.ips = formData.ips.replace(/ /g, '');
 						var postData = {
 							'code': formData.code,
 							'description': formData.description,
-							'ips': formData.ips.split(",")
+							'services': {
+								"controller": JSON.parse(formData.controller),
+								"config": JSON.parse(formData.serviceConfig)
+							}
 						};
 
 						getSendDataFromServer(ngDataApi, {
@@ -93,23 +103,31 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.editEnvironment = function(data) {
 		var formConfig = angular.copy(environmentConfig.form.environment);
 		formConfig.entries[0].type = 'readonly';
-
+		formConfig.entries[0].required = false;
+		var envData = {
+			"code" : data.code,
+			"description": data.description,
+			"controller" : JSON.stringify(data.services.controller, null, "\t"),
+			"serviceConfig" : JSON.stringify(data.services.config, null, "\t")
+		};
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
 			'name': 'editEnvironment',
 			'label': 'Edit Environment',
-			'data': data,
+			'data': envData,
 			'actions': [
 				{
 					'type': 'submit',
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
-						formData.ips = formData.ips.replace(/ /g, '');
 						var postData = {
 							'description': formData.description,
-							'ips': formData.ips.split(",")
+							'services': {
+								"controller": JSON.parse(formData.controller),
+								"config": JSON.parse(formData.serviceConfig)
+							}
 						};
 
 						getSendDataFromServer(ngDataApi, {
@@ -163,7 +181,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
 
 	$scope.listDatabases = function(env) {
 		getSendDataFromServer(ngDataApi, {

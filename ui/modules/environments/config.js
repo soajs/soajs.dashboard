@@ -18,10 +18,87 @@ var environmentConfig = {
 					'name': 'description',
 					'label': 'Description',
 					'type': 'textarea',
-					'rows': 10,
+					'rows': 2,
 					'placeholder': 'Development Environment, used by developers and does not reach production server...',
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this environment',
+					'required': false
+				},
+				{
+					'name': 'controller',
+					'label': 'Controller Configuration',
+					'type': 'textarea',
+					'rows': 6,
+					'placeholder': JSON.stringify({
+						"maxPoolSize": 100,
+						"authorization": true,
+						"requestTimeout": 30,
+						"requestTimeoutRenewal": 0
+					}, null, "\t"),
+					'value': '',
+					'tooltip': 'Provide the controller service configuration',
+					'required': false
+				},
+				{
+					'name': 'serviceConfig',
+					'label': 'Services Configuration',
+					'type': 'textarea',
+					'rows': 26,
+					'placeholder': JSON.stringify({
+						"awareness": {
+							"healthCheckInterval": 5000,
+							"autoRelaodRegistry": 300000
+						},
+						"agent": {
+							"topologyDir": "/opt/soajs/"
+						},
+						"key": {
+							"algorithm": "aes256",
+							"password": "soajs key lal massa"
+						},
+						"logger": {
+							"src": true,
+							"level": "debug"
+						},
+						"cors": {
+							"enabled": true,
+							"origin": "*",
+							"credentials": "true",
+							"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+							"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+							"maxage": 1728000
+						},
+						"oauth": {
+							"grants": [
+								"password",
+								"refresh_token"
+							],
+							"debug": false
+						},
+						"ports": {
+							"controller": 4000,
+							"maintenanceInc": 1000,
+							"randomInc": 100
+						},
+						"cookie": {
+							"secret": "this is a secret sentence"
+						},
+						"session": {
+							"name": "soajsID",
+							"secret": "this is antoine hage app server",
+							"cookie": {
+								"path": "/",
+								"httpOnly": true,
+								"secure": false,
+								"domain": "soajs.com",
+								"maxAge": null
+							},
+							"resave": false,
+							"saveUninitialized": false
+						}
+					}, null, "\t"),
+					'value': '',
+					'tooltip': 'Provide the services configuration',
 					'required': false
 				}
 			]

@@ -3,11 +3,19 @@
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
-            <div class="header">{{row['code']}}<span>{{row['ips']}}</span></div>
+            <div class="header">{{row['code']}}</div>
             <div class="body">
-                <div class="description">{{row['description']}}</div>
+                <div class="description">
+                    <a ng-click="expand(row)" href="" ng-hide="row.showOptions===true">
+                        <span class="icon icon-plus" tooltip="Expand Environment"></span>
+                    </a>
+                    <a ng-click="collapse(row)" href="" ng-show="row.showOptions===true">
+                        <span class="icon icon-minus" tooltip="Collapse Environment"></span>
+                    </a>
+                    {{row['description']}}
+                </div>
                 <br/>
-                <tabset>
+                <tabset ng-show="row.showOptions===true">
                     <tab heading="Service Configuration">
                         <br/>
 
