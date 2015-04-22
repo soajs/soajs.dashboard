@@ -37,7 +37,7 @@ var environmentConfig = {
 					}, null, "\t"),
 					'value': '',
 					'tooltip': 'Provide the controller service configuration',
-					'required': false
+					'required': true
 				},
 				{
 					'name': 'serviceConfig',
@@ -99,7 +99,7 @@ var environmentConfig = {
 					}, null, "\t"),
 					'value': '',
 					'tooltip': 'Provide the services configuration',
-					'required': false
+					'required': true
 				}
 			]
 		},

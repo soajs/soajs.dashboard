@@ -23,6 +23,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.grid = {
 					rows: response
 				};
+
+				if($scope.grid.rows.length == 1){
+					$scope.grid.rows[0].showOptions = true;
+				}
 			}
 		});
 	};
