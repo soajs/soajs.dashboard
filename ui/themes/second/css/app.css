@@ -307,39 +307,8 @@ a:hover {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#mainMenu ul li a#mainMenu-home{
-    /*background: url("../img/icons.png") no-repeat 0 -3px;*/
-    padding-left: 25px;
-    display: block;
-}
-
-#mainMenu ul li a#mainMenu-members {
-    /*background: url("../img/icons.png") no-repeat 0 -66px;*/
-    padding-left: 25px;
-    display: block;
-}
-
-#mainMenu ul li a#mainMenu-environments {
-    /*background: url("../img/icons.png") no-repeat 0 -154px;*/
-    padding-left: 25px;
-    display: block;
-}
-
-#mainMenu ul li a#mainMenu-services {
-    /*background: url("../img/icons.png") no-repeat 0 -154px;*/
-    padding-left: 25px;
-    display: block;
-}
-
-#mainMenu ul li a#mainMenu-productization {
-    /*background: url("../img/icons.png") no-repeat 0 -45px;*/
-    padding-left: 25px;
-    display: block;
-}
-
-#mainMenu ul li a#mainMenu-multi-tenancy {
-    /*background: url("../img/icons.png") no-repeat 0 -220px;*/
-    padding-left: 25px;
+#mainMenu ul li a{
+    padding-left: 5px;
     display: block;
 }
 
