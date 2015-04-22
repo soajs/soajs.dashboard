@@ -485,6 +485,14 @@ div.entryBox .listoUsers li.blueLi {
     margin-right: 10px;
 }
 
+div.entryBox li.blueLi.blueLiBox{
+    width:23%;
+    margin:1%;
+    float:left;
+    height:120px;
+    word-wrap: break-word;
+}
+
 /*#page div.entryBoxes div.entryBox:hover li {*/
 /*background-color: white;*/
 /*}*/
