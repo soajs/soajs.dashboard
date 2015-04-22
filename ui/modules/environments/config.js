@@ -159,19 +159,38 @@ var environmentConfig = {
 					'required': true
 				},
 				{
-					'name': 'sessionInfo',
-					'label': 'Session Information',
-					'type': 'textarea',
-					'rows': 10,
-					'placeholder': JSON.stringify({
-						"name": "core_session",
-						"store": {},
-						"collection": "sessions",
-						"stringify": false,
-						"expireAfter": 1209600000
-					}, null, "\t"),
+					'name': 'collection',
+					'label': 'Session Database Collection',
+					'type': 'text',
+					'placeholder': "session...",
 					'value': '',
-					'tooltip': 'Provide the Session Database Information',
+					'tooltip': 'Provide the Session Database Collection Name',
+					'required': true
+				},
+				{
+					'name': 'stringify',
+					'label': 'Stringified',
+					'type': 'radio',
+					'value': [{'v': 'false', 'selected': true}, {'v': 'true'}],
+					'required': true
+				},
+				{
+					'name': 'expireAfter',
+					'label': 'Expires After',
+					'type': 'text',
+					'tooltip': 'Enter the number of hours before the session expires',
+					'value': '',
+					'placeholder': '300...',
+					'required': true
+				},
+				{
+					'name': 'store',
+					'label': 'Store',
+					'type': 'textarea',
+					'rows': 5,
+					'placeholder': '{}',
+					'value': '',
+					'tooltip': 'Provide the Session Database Store',
 					'required': true
 				}
 			]

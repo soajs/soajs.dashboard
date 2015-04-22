@@ -115,7 +115,7 @@ module.exports = {
 
 				envRecord.dbs.config.session = {
 					'cluster': req.soajs.inputmaskData.cluster,
-					'name': req.soajs.inputmaskData.sessionInfo.name,
+					'name': req.soajs.inputmaskData.sessionInfo.dbName,
 					'store': req.soajs.inputmaskData.sessionInfo.store,
 					'collection': req.soajs.inputmaskData.sessionInfo.collection,
 					'stringify': req.soajs.inputmaskData.sessionInfo.stringify,
@@ -165,7 +165,7 @@ module.exports = {
 
 				envRecord.dbs.config.session = {
 					'cluster': req.soajs.inputmaskData.cluster,
-					'name': req.soajs.inputmaskData.sessionInfo.name,
+					'name': req.soajs.inputmaskData.sessionInfo.dbName,
 					'store': req.soajs.inputmaskData.sessionInfo.store,
 					'collection': req.soajs.inputmaskData.sessionInfo.collection,
 					'stringify': req.soajs.inputmaskData.sessionInfo.stringify,

@@ -3,11 +3,11 @@ var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
-	$scope.expand = function(row){
+	$scope.expand = function(row) {
 		row.showOptions = true;
 	};
 
-	$scope.collapse = function(row){
+	$scope.collapse = function(row) {
 		row.showOptions = false;
 	};
 
@@ -105,10 +105,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		formConfig.entries[0].type = 'readonly';
 		formConfig.entries[0].required = false;
 		var envData = {
-			"code" : data.code,
+			"code": data.code,
 			"description": data.description,
-			"controller" : JSON.stringify(data.services.controller, null, "\t"),
-			"serviceConfig" : JSON.stringify(data.services.config, null, "\t")
+			"controller": JSON.stringify(data.services.controller, null, "\t"),
+			"serviceConfig": JSON.stringify(data.services.config, null, "\t")
 		};
 		var options = {
 			timeout: $timeout,
@@ -244,7 +244,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							'cluster': formData.cluster
 						};
 						if(session) {
-							postData['sessionInfo'] = JSON.parse(formData.sessionInfo);
+							postData['name'] = 'session';
+							postData['sessionInfo'] = {
+								'store': JSON.parse(formData.store),
+								'dbName': formData.name,
+								'expireAfter': formData.expireAfter * 3600 * 1000,
+								'collection': formData.collection,
+								'stringify': (formData.stringify === 'true') ? true : false
+							};
 						}
 						else {
 							postData['tenantSpecific'] = (formData.tenantSpecific === 'true') ? true : false;
@@ -284,16 +291,20 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.editDatabase = function(env, name, data) {
-		if(name === 'session'){
+		if(name === 'session') {
 			var t = angular.copy(data);
 			delete t.cluster;
 			var formData = {
-				'name': name,
 				"cluster": data.cluster,
-				'sessionInfo': JSON.stringify(t, null, "\t")
+				"name": data.name,
+				"collection": data.collection,
+				"stringify": data.stringify,
+				"expireAfter": data.expireAfter / (3600 * 1000),
+				"store": JSON.stringify(data.store, null, "\t")
+
 			};
 		}
-		else{
+		else {
 			var formData = angular.copy(data);
 			formData.name = name;
 		}
@@ -314,7 +325,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							'cluster': formData.cluster
 						};
 						if(name === 'session') {
-							postData['sessionInfo'] = JSON.parse(formData.sessionInfo);
+							postData['name'] = 'session';
+							postData['sessionInfo'] = {
+								'store': JSON.parse(formData.store),
+								'dbName': formData.name,
+								'expireAfter': formData.expireAfter * 3600 * 1000,
+								'collection': formData.collection,
+								'stringify': (formData.stringify ==='true')? true: false
+							};
 						}
 						else {
 							postData['tenantSpecific'] = (formData.tenantSpecific === 'true') ? true : false;
