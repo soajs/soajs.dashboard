@@ -3,17 +3,15 @@
         <form novalidate="" class="css-form ng-pristine" name="">
             <div class="header"><h3 class="">Update ACL</h3></div>
             <div class="body">
-                <label class="">Product Package</label>
+                <label class="">Product Package:</label>
                 <div class="staticValue" id="">{{currentPackage.code}}</div>
 
                 <br>
-                <label class="">ACL</label>
+                <label class="">ACL:</label>
 
                 <div id="generate-ApiList" class="entryServiceBoxes">
 
                     <div ng-repeat="service in allServiceApis" class="clearfix service-container">
-
-
                         <div class="clearfix serviceNameHead">
                             <div style="float: left; width: 200px;">
                                 <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
@@ -45,7 +43,7 @@
                         <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include===true && aclFill.services[service.name].collapse===false }">
                             <div>
                 <span>
-                <input ng-click="checkRestriction( service )" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisRestrictPermission" ng-checked="aclFill.services[service.name].apisRestrictPermission===true" value="restricted"> </span>
+                <input ng-click="applyRestriction(service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisRestrictPermission" ng-checked="aclFill.services[service.name].apisRestrictPermission===true" value="restricted"> </span>
                                 <span><b>Restrict Access to Selected Apis</b></span>
                                 <fieldset ng-repeat="(grp, val) in service.fixList">
                                     <legend>{{grp}}</legend>

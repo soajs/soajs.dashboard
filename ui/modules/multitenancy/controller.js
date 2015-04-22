@@ -1229,23 +1229,20 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
+	$scope.allServiceApis=[];
 	$scope.currentApplication = {};
 	$scope.allGroups=[];
 	$scope.aclFill={};
 	$scope.aclFill.services={};
-	$scope.aclFill.apis={};
 
 	$scope.minimize =function(service){
-		//service.collapse=true;
 		$scope.aclFill.services[service.name].collapse = true;
 	};
 	$scope.expand =function(service){
-		//service.collapse=false;
 		$scope.aclFill.services[service.name].collapse = false;
 	};
 
 	$scope.selectService = function( service, index) {
-		//service.collapse=false;
 		if( $scope.aclFill.services[service.name]['include'])
 		{
 			$scope.aclFill.services[service.name].collapse = false;
@@ -1276,7 +1273,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		}
 		return result;
 	};
-
 
 	$scope.getAllServicesList = function() {
 		getSendDataFromServer(ngDataApi, {
@@ -1381,9 +1377,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 						s.grpCodes[c]=true;
 					});
 				}
-				else if( typeof(s.access)=='object' && (s.access.indexOf('administrator')>-1 )){
-					s.accessType = 'admin';
-				}
 			}
 			else{
 				s.accessType = 'public';
@@ -1438,8 +1431,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 	};
 
 	$scope.applyRestriction=function(service){
-		console.log('applyRestriction');
-		console.log($scope.aclFill.services[service.name]);
 		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
 			for(var grpLabel in service.fixList )
 			{
@@ -1472,6 +1463,7 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 
 		var aclObj={};
+		var valid = true;
 
 		for(var propt in $scope.aclFill.services)
 		{
@@ -1488,16 +1480,24 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 				else if(s.accessType==='public'){
 					aclObj[propt].access=false;
 				}
-				else if(s.accessType==='groups'){
+				else if(s.accessType==='groups')
+				{
 					aclObj[propt].access=[];
 					var grpCodes = $scope.aclFill.services[propt].grpCodes;
-					var code = null;
-
-					for(code in grpCodes)
+					if(grpCodes)
 					{
-						if(grpCodes[code]){
-							aclObj[propt].access.push(code);
+						var code = null;
+						for(code in grpCodes)
+						{
+							if(grpCodes[code]){
+								aclObj[propt].access.push(code);
+							}
 						}
+					}
+					if(aclObj[propt].access.length==0)
+					{
+						$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+						valid=false;
 					}
 				}
 
@@ -1523,13 +1523,21 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 							else if(api.accessType==='groups'){
 								aclObj[propt].apis[ap].access=[];
 								var grpCodes = $scope.aclFill.services[propt].apis[ap].grpCodes;
-								var code = null;
 
-								for(code in grpCodes)
+								if(grpCodes)
 								{
-									if(grpCodes[code]){
-										aclObj[propt].apis[ap].access.push(code);
+									var code = null;
+									for(code in grpCodes)
+									{
+										if(grpCodes[code]){
+											aclObj[propt].apis[ap].access.push(code);
+										}
 									}
+								}
+								if(aclObj[propt].apis[ap].access.length==0)
+								{
+									$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+									valid=false;
 								}
 							}
 						}
@@ -1538,22 +1546,23 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 			}
 		}
 
-		postData.acl =aclObj;
-
-		getSendDataFromServer( ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/tenant/application/update",
-			"data": postData,
-			"params": {"id": tId, "appId" : appId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-				alert(error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
-			}
-		});
+		if(valid){
+			postData.acl =aclObj;
+			getSendDataFromServer( ngDataApi, {
+				"method": "send",
+				"routeName": "/dashboard/tenant/application/update",
+				"data": postData,
+				"params": {"id": tId, "appId" : appId}
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert('danger', error.message);
+					alert(error.message);
+				}
+				else {
+					$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+				}
+			});
+		}
 
 	};
 	//default operation

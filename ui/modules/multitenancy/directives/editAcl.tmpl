@@ -3,18 +3,16 @@
         <form novalidate="" class="css-form ng-pristine" name="">
             <div class="header"><h3>Update ACL</h3></div>
             <div class="body">
-                <label class="ng-binding">Product Package</label>
+                <label class="ng-binding">Product Package:</label>
 
                 <div class="staticValue ng-binding" id="">{{currentApplication.package}}</div>
 
                 <br>
-                <label class="ng-binding">ACL</label>
+                <label class="ng-binding">ACL:</label>
 
                 <div id="application-ApiList" class="entryServiceBoxes">
 
                     <div ng-repeat="service in allServiceApis" class="clearfix service-container">
-
-
                         <div class="clearfix serviceNameHead">
                             <div style="float: left; width: 200px;">
                                 <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
@@ -147,8 +145,6 @@
 
             </div>
             <div class="footer"><br>
-
-
                 <input type="submit" class="btn btn-sm btn-primary" ng-click="saveACL()" value="Save ACL">
 
             </div>

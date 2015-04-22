@@ -454,6 +454,7 @@ module.exports = {
 	},
 
 	"getTenantApplAclByExtKey": function(config, mongo, req, res) {
+		//console.log(req.soajs.tenant);
 		var criteria= {
 			'applications.keys.extKeys.extKey' : req.soajs.inputmaskData.extKey
 		};
@@ -466,6 +467,7 @@ module.exports = {
 				}
 			};
 			var app = {};
+			var found = false;
 			tenantRecord.applications.forEach(function(oneApplication)
 			{
 				oneApplication.keys.forEach(function(oneKey)
@@ -473,10 +475,11 @@ module.exports = {
 					oneKey.extKeys.forEach(function(oneExtKeyObj)
 					{
 						if( oneExtKeyObj.extKey == req.soajs.inputmaskData.extKey){
-							app["product"] = oneApplication["product"];
-							app["package"] = oneApplication["package"];
-							app["app_acl"] = oneApplication["acl"];
-							app["key"] = oneKey["key"];
+							tenant.application["product"] = oneApplication["product"];
+							tenant.application["package"] = oneApplication["package"];
+							tenant.application["app_acl"] = oneApplication["acl"];
+							tenant.application["key"] = oneKey["key"];
+							found = true;
 						}
 					});
 				});

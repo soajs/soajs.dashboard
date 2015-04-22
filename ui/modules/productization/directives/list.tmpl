@@ -12,11 +12,11 @@
                 <label ng-show="row.packages.length > 0">Packages:</label>
                 <ul class="blueListing">
                     <li class="blueLi" ng-repeat="package in row.packages">
-                    <a ng-click="viewPackage(package)" href="" ng-hide="package.showClose">
+                    <a ng-click="viewPackage(package)" href="" ng-hide="package.showDetails">
                         <span class="icon icon-plus" tooltip="Expand Packages"></span>
                     </a>
                     
-                    <a ng-click="closePackage(package)" href="" ng-show="package.showClose">
+                    <a ng-click="closePackage(package)" href="" ng-show="package.showDetails">
                         <span class="icon icon-minus" tooltip="Collapse Packages"></span>
                     </a>
                     <b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ]  ( {{package['_TTL'] | TTL}} hours )
@@ -34,7 +34,7 @@
                         </a>
                         </span>
                         
-                    <div class="" id="" ng-show="package.showDetails"><em>{{package['description']}}</em></div>
+                    <div ng-show="package.showDetails"><em>{{package['description']}}</em></div>
                     
  						
                     </li>
