@@ -863,6 +863,19 @@ module.exports = {
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
+		"/tenant/application/acl/get":{
+			_apiInfo: {
+				"l": "Get Tenant Application By External Key",
+				"group": "Tenant Application"
+			},
+			"extKey":{
+				"source": ['body.extKey'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
 		"/tenant/application/key/ext/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application External Key",

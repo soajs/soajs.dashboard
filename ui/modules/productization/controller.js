@@ -422,17 +422,17 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 					s.include =true;
 					s.collapse = false;
 
-					if(s.access){
+					if(s.access)
+					{
 						if( s.access===true){
 							s.accessType = 'private';
 						}
 						else if( s.access===false){
 							s.accessType = 'public';
 						}
-						else if( typeof(s.access)=='object' && (s.access.indexOf('administrator')>-1 )){
+						else if( Array.isArray(s.access) && (s.access.indexOf('administrator')>-1 )){
 							s.accessType = 'admin';
 						}
-
 					}
 					else{
 						s.accessType = 'public';
@@ -445,25 +445,21 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 						for(var ap in s.apis)
 						{
 							s.apis[ap].include=true;
-							s.apis[ap].accessType = 'public';
-							if(s.apis[ap].access)
-							{
-								if( s.apis[ap].access==true)
-								{
-									s.apis[ap].accessType = 'private';
-								}
-								else if( s.apis[ap].access===false)
-								{
-									s.apis[ap].accessType = 'public';
-								}
-								else{
-									if( (typeof(s.apis[ap].access)=='object') &&( s.apis[ap].access.indexOf('administrator')>-1  ) ){
-										s.apis[ap].accessType = 'admin';
-									}
+							s.apis[ap].accessType = 'clear';
 
+							if( s.apis[ap].access==true)
+							{
+								s.apis[ap].accessType = 'private';
+							}
+							else if( s.apis[ap].access===false)
+							{
+								s.apis[ap].accessType = 'public';
+							}
+							else{
+								if(Array.isArray(s.apis[ap].access) && (s.apis[ap].access.indexOf('administrator')>-1) ){
+									s.apis[ap].accessType = 'admin';
 								}
 							}
-
 						}
 					}
 				}
@@ -593,7 +589,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	};
 
-	$scope.checkDefault=function(service,grp,val,myApi) {
+	$scope.checkForGroupDefault=function(service,grp,val,myApi) {
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if(myApi.groupMain===true){
 			if( $scope.aclFill.services[service.name].apis ) {

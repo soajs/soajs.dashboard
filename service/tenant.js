@@ -453,6 +453,38 @@ module.exports = {
 		});
 	},
 
+	"getTenantApplAclByExtKey": function(config, mongo, req, res) {
+		var criteria= {
+			'applications.keys.extKeys.extKey' : req.soajs.inputmaskData.extKey
+		};
+		mongo.findOne(colName, criteria, function(error, tenantRecord) {
+			if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]})); }
+			var tenant = {
+				"_id": tenantRecord["_id"],
+				"code": tenantRecord["code"],
+				"application":{
+				}
+			};
+			var app = {};
+			tenantRecord.applications.forEach(function(oneApplication)
+			{
+				oneApplication.keys.forEach(function(oneKey)
+				{
+					oneKey.extKeys.forEach(function(oneExtKeyObj)
+					{
+						if( oneExtKeyObj.extKey == req.soajs.inputmaskData.extKey){
+							app["product"] = oneApplication["product"];
+							app["package"] = oneApplication["package"];
+							app["app_acl"] = oneApplication["acl"];
+							app["key"] = oneKey["key"];
+						}
+					});
+				});
+			});
+			return res.jsonp(req.soajs.buildResponse(null, tenant));
+		});
+	},
+
 	"createApplicationKey": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }

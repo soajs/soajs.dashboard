@@ -4,6 +4,7 @@
             <div class="header"><h3>Update ACL</h3></div>
             <div class="body">
                 <label class="ng-binding">Product Package</label>
+
                 <div class="staticValue ng-binding" id="">{{currentApplication.package}}</div>
 
                 <br>
@@ -17,34 +18,46 @@
                         <div class="clearfix serviceNameHead">
                             <div style="float: left; width: 200px;">
                                 <input type="checkbox" ng-checked="aclFill.services[service.name].include===true"
-                                       ng-model="aclFill.services[service.name].include" value="{{service.name}}" ng-click="selectService(service)">
+                                       ng-model="aclFill.services[service.name].include" value="{{service.name}}"
+                                       ng-click="selectService(service)">
                                 <b> <a href="">{{service.name}} </a></b>
                             </div>
                             <div ng-show="aclFill.services[service.name].include" style="float: left;">
-                    <div style="float: left"><span style="padding-left: 15px;"><input ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
-                                                             name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
+                                <div style="float: left"><span style="padding-left: 15px;"><input
+                                        ng-model="aclFill.services[service.name].accessType" value="public" type="radio"
+                                        name="{{service.name}}_radio"
+                                        ng-checked="aclFill.services[service.name].accessType==='public'"> public</span>
 
                     <span style="padding-left: 40px;">
                     <input ng-model="aclFill.services[service.name].accessType" value="private" type="radio"
-                           name="{{service.name}}_radio" ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
+                           name="{{service.name}}_radio"
+                           ng-checked="aclFill.services[service.name].accessType==='private'"> private</span>
                     <span style="padding-left: 40px;">
-                        <input type="radio" ng-checked="aclFill.services[service.name].accessType==='groups'" name="{{service.name}}_radio" ng-model="aclFill.services[service.name].accessType" value="groups">
+                        <input type="radio" ng-checked="aclFill.services[service.name].accessType==='groups'"
+                               name="{{service.name}}_radio" ng-model="aclFill.services[service.name].accessType"
+                               value="groups">
                         Groups</span></div>
 
-         <div class="grpsListingScroll" ng-show="aclFill.services[service.name].accessType=='groups' ">
-             <ul class="grpsListing">
-                <li ng-repeat="code in allGroups">
-    <input type="checkbox" value="{{code}}" ng-model="aclFill.services[service.name].grpCodes[code]" ng-checked="aclFill.services[service.name]['access'].indexOf(code)>-1"> {{code}}
-</li>
-             </ul>
-             </div>
+                                <div class="grpsListingScroll"
+                                     ng-show="aclFill.services[service.name].accessType=='groups' ">
+                                    <ul class="grpsListing">
+                                        <li ng-repeat="code in allGroups">
+                                            <input type="checkbox" value="{{code}}"
+                                                   ng-model="aclFill.services[service.name].grpCodes[code]"
+                                                   ng-checked="aclFill.services[service.name]['access'].indexOf(code)>-1">
+                                            {{code}}
+                                        </li>
+                                    </ul>
+                                </div>
 
                             </div>
                             <div style="float:right;" ng-show="aclFill.services[service.name].include">
-                                <a href="" ng-click="minimize(service)" ng-show="aclFill.services[service.name].collapse===false">
+                                <a href="" ng-click="minimize(service)"
+                                   ng-show="aclFill.services[service.name].collapse===false">
                                     <span class="icon icon-minus" tooltip="Minimize"></span>
                                 </a>
-                                <a href="" ng-click="expand(service)" ng-show="aclFill.services[service.name].collapse===true">
+                                <a href="" ng-click="expand(service)"
+                                   ng-show="aclFill.services[service.name].collapse===true">
                                     <span class="icon icon-plus" tooltip="Expand"></span>
                                 </a>
 
@@ -54,43 +67,64 @@
                         <div class="body listApis" ng-class="{openApis: aclFill.services[service.name].include===true && aclFill.services[service.name].collapse===false }">
                             <div>
                 <span>
-                <input ng-click="checkRestriction( service )" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill.services[service.name].apisRestrictPermission" ng-checked="aclFill.services[service.name].apisRestrictPermission===true" value="restricted"> </span>
+                <input ng-click="applyRestriction(service)" type="checkbox"
+                       name="apisRestrictPermission_{{service.name}}"
+                       ng-model="aclFill.services[service.name].apisRestrictPermission"
+                       ng-checked="aclFill.services[service.name].apisRestrictPermission===true"
+                       value="restricted"> </span>
                                 <span><b>Restrict Access to Selected Apis</b></span>
                                 <fieldset ng-repeat="(grp, val) in service.fixList">
                                     <legend>{{grp}}</legend>
                                     <div class="clearfix apiListing-container">
-                                        <div class="apiListing clearfix" ng-repeat="myApi in val.apis| orderBy:'groupMain' " ng-class-even="'even'" ng-class-odd="'odd'"
-                                             ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
+                                        <div class="apiListing clearfix"
+                                             ng-repeat="myApi in val.apis| orderBy:'groupMain' " ng-class-even="'even'"
+                                             ng-class-odd="'odd'"
+                                             ng-class="{'first': $first, 'last': $last, selected:api.selected}"
+                                             style="">
                                             <div class="apiLabel">
-                                                <input ng-click="checkDefault(service,grp,val,myApi)" ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
+                                                <input ng-click="checkForGroupDefault(service,grp,val,myApi)"
+                                                       ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))"
+                                                       type="checkbox" value="true"
+                                                       ng-model="aclFill.services[service.name].apis[myApi.v].include"
+                                                       ng-show="aclFill.services[service.name].apisRestrictPermission">
                                                 {{myApi.l}}
                                             </div>
-                                            <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisRestrictPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
+                                            <div class="apiAccess"
+                                                 ng-hide="(aclFill.services[service.name].apisRestrictPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">
                                                 <div style="float:left">
-<span style="padding-right: 15px;"> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"> <em>inherit from service</em> </span>
+                                                    <span style="padding-right: 15px;"> <input
+                                                            ng-model="aclFill.services[service.name].apis[myApi.v].accessType"
+                                                            value="clear" type="radio"
+                                                            name="{{service.name}}_{{grp}}_{{$index}}_accessType"> <em>inherit
+                                                        from service</em> </span>
 
 
-                                                <span> <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="public" type="radio"
-                                              id="{{service.name}}_{{grp}}_{{$index}}_public" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='public'"> public </span>
+                                                <span> <input
+                                                        ng-model="aclFill.services[service.name].apis[myApi.v].accessType"
+                                                        value="public" type="radio"
+                                                        id="{{service.name}}_{{grp}}_{{$index}}_public"
+                                                        name="{{service.name}}_{{grp}}_{{$index}}_accessType"> public </span>
                                 <span>
-                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="private" type="radio"
-                                           id="{{service.name}}_{{grp}}_{{$index}}_privaye" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='private'"> private</span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType"
+                                           value="private" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_privaye"
+                                           name="{{service.name}}_{{grp}}_{{$index}}_accessType"> private</span>
                                 <span>
-                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType" value="groups" type="radio"
-                                           id="{{service.name}}_{{grp}}_{{$index}}_groups" name="{{service.name}}_{{grp}}_{{$index}}_accessType" ng-checked="aclFill.services[service.name].apis[myApi.v].accessType=='groups'"> Groups </span>
+                                    <input ng-model="aclFill.services[service.name].apis[myApi.v].accessType"
+                                           value="groups" type="radio"
+                                           id="{{service.name}}_{{grp}}_{{$index}}_groups"
+                                           name="{{service.name}}_{{grp}}_{{$index}}_accessType"
+                                           ng-checked="aclFill.services[service.name].apis[myApi.v].accessType==='groups'"> Groups </span>
                                                 </div>
-                                                <!--
-                                                <div class="grpsListing" ng-show="aclFill.services[service.name].apis[myApi.v].accessType=='groups'">
-                                                    <select multiple="multiple" ng-model="aclFill.services[service.name].apis[myApi.v].grpCodesSelect">
-                                                        <option ng-repeat="code in allGroups" ng-model="aclFill.services[service.name].apis[myApi.v].grpCodes[code]" ng-selected="aclFill.services[service.name].apis[myApi.v]['access'].indexOf(code)>-1" value="{{code}}">{{code}}</option>
-                                                    </select>
-                                                </div>
-                                                -->
-                                                <div class="grpsListingScroll" ng-show="aclFill.services[service.name].apis[myApi.v].accessType=='groups'">
+
+                                                <div class="grpsListingScroll"
+                                                     ng-show="aclFill.services[service.name].apis[myApi.v].accessType==='groups'">
                                                     <ul class="grpsListing">
                                                         <li ng-repeat="code in allGroups">
 
-                                                            <input ng-model="aclFill.services[service.name].apis[myApi.v].grpCodes[code]" ng-checked="aclFill.services[service.name].apis[myApi.v]['access'].indexOf(code)>-1" type="checkbox" value="{{code}}">{{code}}
+                                                            <input ng-model="aclFill.services[service.name].apis[myApi.v].grpCodes[code]"
+                                                                   ng-checked="aclFill.services[service.name].apis[myApi.v]['access'].indexOf(code)>-1"
+                                                                   type="checkbox" value="{{code}}"><span>{{code}}</span>
 
                                                         </li>
                                                     </ul>
@@ -111,8 +145,6 @@
                 </div>
 
 
-
-
             </div>
             <div class="footer"><br>
 
@@ -121,13 +153,6 @@
 
             </div>
         </form>
-
-
-
-
-
-
-
 
 
     </div>

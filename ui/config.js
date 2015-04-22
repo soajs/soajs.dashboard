@@ -121,6 +121,15 @@ var navigation = [
 		'ancestor': ['Home']
 	},
 	{
+		'id': 'user-acl',
+		'label': 'User ACL',
+		'url': '#/members/:uId/editUserAcl',
+		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
+		'tracker': true,
+		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js' ],
+		'ancestor': ['Home', 'Members']
+	},
+	{
 		'id': 'environments',
 		'label': 'Environments',
 		'url': '#/environments',

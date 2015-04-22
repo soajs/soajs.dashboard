@@ -608,13 +608,13 @@ fieldset legend {
 }
 .apiListing .apiAccess{
     float: left;
-    width: 250px;
+    width: 370px;
 }
 .apiListing-container .odd{
     margin-right: 45px;
 }
 .apiListing-container .even, .apiListing-container .odd{
-    width: 540px;
+    width: 660px;
 }
 .apiListing-container input{
     margin-top: 0;
@@ -643,7 +643,7 @@ fieldset legend {
    width: 100%;
 }
 .grpsListingScroll{
-    width: 450px;
+    width: 385px;
     height: 70px;
     overflow-y: scroll;
     display: inline-block;
@@ -659,8 +659,9 @@ ul.grpsListing{
 .grpsListing li{
     float: left;
     margin-right: 10px;
-    width: 200px;
+    width: 170px;
     font-weight: normal;
+    font-size: 12px;
 }
 .grpsListing li input{
     margin-right: 3px;
@@ -669,6 +670,9 @@ ul.grpsListing{
 #application-ApiList .apiListing .apiAccess {
     width: auto;
     vertical-align: top;
+}
+.apiAccess em{
+    font-size: 12px;
 }
 
 fieldset .grid table {

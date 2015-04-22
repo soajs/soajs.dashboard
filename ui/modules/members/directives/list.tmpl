@@ -1,14 +1,17 @@
-<tabset> <tab heading="Members">
-<section ng-controller="membersCtrl as gridCtrl">
-	<a href="" ng-click="addMember()" class="btn btn-primary">Add New
-		Member</a><br />
-	<br />
-	<nglist></nglist>
-</section>
+<tabset>
+    <tab heading="Members">
+        <section ng-controller="membersCtrl as gridCtrl">
+            <a href="" ng-click="addMember()" class="btn btn-primary">Add New
+                Member</a><br/>
+            <br/>
+            <nglist></nglist>
+        </section>
 
-</tab> <tab heading="Groups">
-<section ng-controller="groupsCtrl as gridCtrl">
-    <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>
-    <nglist></nglist>
-</section>
-</tab> </tabset>
+    </tab>
+    <tab heading="Groups">
+        <section ng-controller="groupsCtrl as gridCtrl">
+            <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>
+            <nglist></nglist>
+        </section>
+    </tab>
+</tabset>

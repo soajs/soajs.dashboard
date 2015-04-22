@@ -199,6 +199,11 @@ service.init(function() {
 		tenant.deleteApplication(config, mongo, req, res);
 	});
 
+
+	service.post("/tenant/application/acl/get", function(req, res) {
+		checkForMongo(req);
+		tenant.getTenantApplAclByExtKey(config, mongo, req, res);
+	});
 	service.post("/tenant/application/key/add", function(req, res) {
 		checkForMongo(req);
 		tenant.createApplicationKey(config, mongo, req, res);
