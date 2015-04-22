@@ -17,6 +17,7 @@ dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+var wrong_Id = '55375fc26aa74450771a1513';
 
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function(error, body) {
@@ -1429,6 +1430,23 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
+				it("fail - wrong product id", function(done) {
+					var params = {
+						qs: {'id': wrong_Id},
+						form: {
+							"name": "basic package",
+							"code": "BSIC",
+							"description": 'this is a dummy description',
+							"_TTL": '12',
+							"acl": { }
+						}
+					};
+					executeMyRequest(params, 'product/packages/add', 'post', function(body) {
+						assert.ok(body.errors);
+						console.log(body.errors);
+						done();
+					});
+				});
 
 				it('fail - package exists', function(done) {
 					var params = {
@@ -1458,6 +1476,50 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 
 			});
+			describe("get prod package tests", function() {
+				it('success - product/packages/get', function(done) {
+					var params = {
+						qs: {
+							"productCode": "TPROD",
+							"packageCode": "TPROD_BASIC"
+						}
+					};
+					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
+						//assert.deepEqual(body.errors.details[0], {"code": 413, "message": errorCodes[413]});
+						console.log(JSON.stringify(body) );
+						assert.ok(body.data);
+						assert.ok(body.data.code);
+						done();
+					});
+				});
+				it('fail - product/packages/get - wrong package Code', function(done) {
+					var params = {
+						qs: {
+							"productCode": "TPROD",
+							"packageCode": "TPROD_BASC"
+						}
+					};
+					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
+						console.log(JSON.stringify(body) );
+						assert.deepEqual(body.errors.details[0], {"code": 461, "message": errorCodes[461]});
+						done();
+					});
+				});
+				it('fail - product/packages/get - wrong product Code', function(done) {
+					var params = {
+						qs: {
+							"productCode": "TROD",
+							"packageCode": "TPROD_BASC"
+						}
+					};
+					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
+						console.log(JSON.stringify(body) );
+						assert.deepEqual(body.errors.details[0], {"code": 460, "message": errorCodes[460]});
+						done();
+					});
+				});
+			});
+
 
 			describe("update package tests", function() {
 				it("success - will update package", function(done) {
@@ -1531,6 +1593,22 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'product/packages/update', 'post', function(body) {
 						assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
 
+						done();
+					});
+				});
+				it("fail - wrong product id", function(done) {
+					var params = {
+						qs: {'id': wrong_Id, "code": "BASIC"},
+						form: {
+							"name": "basic package",
+							"description": 'this is a dummy description',
+							"_TTL": '12',
+							"acl": { }
+						}
+					};
+					executeMyRequest(params, 'product/packages/update', 'post', function(body) {
+						assert.ok(body.errors);
+						console.log(body.errors);
 						done();
 					});
 				});
@@ -2486,7 +2564,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
+				it("fail - wrong id", function(done) {
+					executeMyRequest({qs: {id: wrong_Id}}, 'tenant/application/list/', 'get', function(body) {
+						assert.ok(body.errors);
+						console.log(body.errors);
+						done();
+					});
+				});
 				it("success - will add application", function(done) {
 					var params = {
 						qs: {id: tenantId},
@@ -2505,7 +2589,22 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-
+				it("fail - cant add application - wrong id", function(done) {
+					var params = {
+						qs: {id: wrong_Id},
+						form: {
+							"productCode": "TPROD",
+							"packageCode": "BASIC",
+							"description": "this is a dummy description",
+							"_TTL": '12',
+							"acl": {}
+						}
+					};
+					executeMyRequest(params, 'tenant/application/add/', 'post', function(body) {
+						assert.ok(body.errors);
+						done();
+					});
+				});
 				it("success - will list applications", function(done) {
 					executeMyRequest({qs: {id: tenantId}}, 'tenant/application/list/', 'get', function(body) {
 						assert.ok(body.data);
