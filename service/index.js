@@ -194,11 +194,6 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.updateApplication(config, mongo, req, res);
 	});
-	service.post("/tenant/application/emptyAcl", function(req, res) {
-		checkForMongo(req);
-		tenant.clearApplicationAcl(config, mongo, req, res);
-	});
-
 	service.get("/tenant/application/delete", function(req, res) {
 		checkForMongo(req);
 		tenant.deleteApplication(config, mongo, req, res);

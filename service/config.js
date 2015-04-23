@@ -183,7 +183,7 @@ module.exports = {
 		"600": "Database error"
 
 	},
-	"excludedServices": ["oauth"],
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -814,31 +814,13 @@ module.exports = {
 				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl'],
-			"productCode": {
-				"source": ['body.productCode'],
-				"required": true,
+			"clearAcl":{
+				"source": ['body.clearAcl'],
+				"required": false,
 				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
+					"type": "boolean"
 				}
 			},
-			"packageCode": {
-				"source": ['body.packageCode'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
-				}
-			}
-		},
-		"/tenant/application/emptyAcl": {
-			_apiInfo: {
-				"l": "Empty Tenant Application ACL",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId'],
 			"productCode": {
 				"source": ['body.productCode'],
 				"required": true,

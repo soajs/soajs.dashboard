@@ -178,7 +178,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					'name': 'status',
 					'label': 'Status',
 					'type': 'radio',
-					'value': [{'v': 'approved'}, {'v': 'active'}, {'v': 'inactive'}],
+					'value': [{'v': 'pendingNew'}, {'v': 'active'}, {'v': 'inactive'}],
 					'tooltip': 'Select the status of the user'
 				});
 				
@@ -300,6 +300,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 
 	$scope.getTenantAppInfo = function() {
+
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/acl/get",
@@ -311,101 +312,116 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			else {
 				$scope.tenantApp = response;
 				$scope.pckName = response.application.package;
-				$scope.getUserInfo();
-			}
-		});
-	};
 
-	$scope.getUserInfo = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/urac/admin/getUser",
-			"params": {"uId": $routeParams.uId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.user = response;
-				$scope.getAllServices();
-			}
-		});
-	};
-
-	$scope.getAllServices = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":["oauth","urac", "dashboard" ] }
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				response.forEach(function(serv) {
-					serv.fixList = $scope.groupBy( serv.apis , 'group');
-				});
-				$scope.allServiceApis = response;
-				$scope.getAllGroups();
-			}
-		});
-	};
-
-	$scope.getAllGroups= function(){
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/urac/admin/group/list"
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert("danger", error.message);
-			}
-			else {
-				response.forEach(function( grpObj ) {
-					$scope.allGroups.push(grpObj.code);
-				});
-
-				var pckName = $scope.tenantApp.application.package;
-				if($scope.user.config && ($scope.user.config.packages))
+				var serviceNames =[];
+				var parentAcl={};
+				if( $scope.tenantApp.application.app_acl){
+					parentAcl = $scope.tenantApp.app_acl;
+				}
+				else if( $scope.tenantApp.application.parentPackageAcl)
 				{
-					if( ($scope.user.config.packages[pckName]) && ($scope.user.config.packages[pckName].acl))
-					{
-						$scope.aclFill.services= angular.copy( $scope.user.config.packages[pckName].acl );
-					}
+					parentAcl = $scope.tenantApp.application.parentPackageAcl;
 				}
 
-				if( JSON.stringify($scope.aclFill.services)== "{}")
-				{
-					if($scope.tenantApp.app_acl){
-						$scope.aclFill.services=$scope.tenantApp.app_acl;
-						$scope.fillFormServices();
-					}
-					else{
-						getSendDataFromServer(ngDataApi, {
-							"method": "get",
-							"routeName": "/dashboard/product/packages/get",
-							"params": {"productCode": $scope.tenantApp.application.product , "packageCode": $scope.tenantApp.application.package}
+				var serviceName;
+				for (serviceName in parentAcl){
+					serviceNames.push(serviceName);
+				}
 
+				getSendDataFromServer(ngDataApi, {
+					"method": "get",
+					"routeName": "/urac/admin/getUser",
+					"params": {"uId": $routeParams.uId}
+				}, function(error, response) {
+					if(error) {
+						$scope.$parent.displayAlert('danger', error.message);
+					}
+					else {
+						$scope.user = response;
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/services/list",
+							"data": { "serviceNames":serviceNames }
 						}, function (error, response) {
 							if (error) {
 								$scope.$parent.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.aclFill.services=response.acl;
-								$scope.fillFormServices();
+								var servicesList = response;
+
+								var l = servicesList.length;
+								for(var x=0; x<l; x++)
+								{
+									var service = servicesList[x];
+									var name = service.name;
+									var newList = [];
+
+									if( (parentAcl[name]) &&(parentAcl[name].apisPermission === 'restricted'))
+									{
+										service.forceRestricted=true;
+
+										var len = service.apis.length;
+										for(var i=0; i<len; i++)
+										{
+											var v = service.apis[i].v ;
+											if( parentAcl[name].apis){
+												if( parentAcl[name].apis[v])
+												{
+													newList.push(service.apis[i]);
+												}
+											}
+										}
+										service.fixList = $scope.arrGroupByField( newList , 'group');
+									}
+									else{
+										var newList = service.apis ;
+										service.fixList = $scope.arrGroupByField( service.apis , 'group');
+									}
+
+								}
+								$scope.allServiceApis = servicesList;
+								$scope.aclFill.services= parentAcl;
+
+								var pckName = $scope.tenantApp.application.package;
+								if($scope.user.config && ($scope.user.config.packages))
+								{
+									if( ($scope.user.config.packages[pckName]) && ($scope.user.config.packages[pckName].acl))
+									{
+										$scope.aclFill.services= angular.copy( $scope.user.config.packages[pckName].acl );
+									}
+								}
+
+
+								getSendDataFromServer(ngDataApi, {
+									"method": "get",
+									"routeName": "/urac/admin/group/list"
+								}, function(error, response) {
+									if(error) {
+										$scope.$parent.displayAlert("danger", error.message);
+									}
+									else {
+										response.forEach(function( grpObj ) {
+											$scope.allGroups.push(grpObj.code);
+										});
+
+										$scope.fillFormServices();
+
+									}
+								});
+
+
 							}
 						});
+
 					}
-				}
-				else{
-					$scope.fillFormServices();
-				}
+				});
 
 			}
 		});
 	};
 
 	$scope.fillFormServices = function() {
-		var pckName = $scope.tenantApp.application.package;
 
 		for(var propt in $scope.aclFill.services)
 		{
@@ -463,8 +479,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 		}
 	};
 
-
-	$scope.groupBy = function(arr, f) {
+	$scope.arrGroupByField = function(arr, f) {
 		var result = {} ;
 		var l = arr.length;
 		var g = 'General' ;
@@ -509,17 +524,19 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			for(var grpLabel in service.fixList )
 			{
 				var defaultApi = service.fixList[grpLabel]['defaultApi'];
-				if( $scope.aclFill.services[service.name].apis )
-				{
-					var apisList = service.fixList[grpLabel]['apis'];
-					if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+				if(defaultApi){
+					if( $scope.aclFill.services[service.name].apis )
 					{
-						apisList.forEach(function( oneApi ) {
-							if($scope.aclFill.services[service.name].apis[oneApi.v])
-							{
-								$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
-							}
-						});
+						var apisList = service.fixList[grpLabel]['apis'];
+						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+						{
+							apisList.forEach(function( oneApi ) {
+								if($scope.aclFill.services[service.name].apis[oneApi.v])
+								{
+									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
+								}
+							});
+						}
 					}
 				}
 			}
@@ -529,14 +546,16 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 
 	$scope.clearUserAcl = function() {
 		var postData = $scope.user;
-		if (!postData.config) {
+
+		if (typeof(postData.config) !=='object') {
 			postData.config = {};
 		}
+
 		if( typeof(postData.config.packages) !=='object'){
 			postData.config.packages={};
 		}
-		var pckName = $scope.tenantApp.application.package;
-		postData.config.packages[pckName]= {};
+		var pckgName = $scope.tenantApp.application.package;
+		postData.config.packages[pckgName]= {};
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
@@ -548,7 +567,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Success');
+				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
 			}
 		});
 	};
@@ -668,12 +687,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Success');
+					$scope.$parent.displayAlert('success', 'Acl Updated Successfully');
 				}
 			});
 		}
 	};
-
 	//call default method
 	$scope.getTenantAppInfo();
 }]);

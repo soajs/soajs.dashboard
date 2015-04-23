@@ -473,6 +473,10 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			result[g].apis.push(arr[i]);
 		}
+
+		if( !result[g]['defaultApi'] ){
+			result[g]['enableAll']=true;
+		}
 		return result;
 	};
 
@@ -558,11 +562,9 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 							$scope.aclFill.services[service.name].apis[one.v].include=false;
 						}
 					});
-
 				}
 			}
 		}
-
 	};
 
 	$scope.applyRestriction=function(service){
@@ -570,19 +572,22 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 			for(var grpLabel in service.fixList )
 			{
 				var defaultApi = service.fixList[grpLabel]['defaultApi'];
-				if( $scope.aclFill.services[service.name].apis )
-				{
-					var apisList = service.fixList[grpLabel]['apis'];
-					if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+				if(defaultApi){
+					if( $scope.aclFill.services[service.name].apis )
 					{
-						apisList.forEach(function( oneApi ) {
-							if($scope.aclFill.services[service.name].apis[oneApi.v])
-							{
-								$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
-							}
-						});
+						var apisList = service.fixList[grpLabel]['apis'];
+						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+						{
+							apisList.forEach(function( oneApi ) {
+								if($scope.aclFill.services[service.name].apis[oneApi.v])
+								{
+									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
+								}
+							});
+						}
 					}
 				}
+
 			}
 		}
 	};

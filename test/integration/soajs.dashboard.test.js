@@ -2447,7 +2447,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				
 
 				it('fail - missing params', function(done) {
 					var params = {
@@ -2503,7 +2502,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						
 						assert.ok(records.applications);
 						assert.ok(records.applications.length, 2);
 						delete records.applications[0].appId;
@@ -2527,6 +2525,24 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							//	}
 							//}
 						});
+						done();
+					});
+				});
+				it("success - will update application", function(done) {
+					var params = {
+						qs: {'id': tenantId, 'appId': applicationId},
+						form: {
+							"productCode": "TPROD",
+							"packageCode": "BASIC",
+							"description": "this is a dummy description updated",
+							"_TTL": '24',
+							"acl": {
+								"urac": {}
+							}
+						}
+					};
+					executeMyRequest(params, 'tenant/application/update', 'post', function(body) {
+						assert.ok(body.data);
 						done();
 					});
 				});

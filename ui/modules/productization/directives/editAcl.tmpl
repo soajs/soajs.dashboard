@@ -51,7 +51,7 @@
                                         <div class="apiListing" ng-repeat="myApi in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
                                              ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
                                             <div class="apiLabel">
-                                                <input ng-click="checkForGroupDefault(service,grp,val,myApi)" ng-disabled="(myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
+                                                <input ng-click="checkForGroupDefault(service,grp,val,myApi)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (aclFill.services[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill.services[service.name].apis[myApi.v].include" ng-show="aclFill.services[service.name].apisRestrictPermission">
                                                 {{myApi.l}}
                                             </div>
                                             <div class="apiAccess" ng-hide="(aclFill.services[service.name].apisRestrictPermission && (aclFill.services[service.name].apis[myApi.v].include!==true))">

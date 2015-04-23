@@ -405,42 +405,6 @@ module.exports = {
 		});
 	},
 
-	"clearApplicationAcl": function(config, mongo, req, res) {
-		validateId(mongo, req, function(err) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
-			
-			checkCanEdit(mongo, req, function(err) {
-				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
-
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
-
-				mongo.findOne(colName, criteria, function(error, tenantRecord) {
-					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 430, "msg": config.errors[430]})); }
-
-					var found = false;
-					/// do we need the code if we have the id ?
-					for(var i = 0; i < tenantRecord.applications.length; i++) {
-						if(tenantRecord.applications[i].product === req.soajs.inputmaskData.productCode) {
-							if(tenantRecord.applications[i].package === req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode) {
-								if(tenantRecord.applications[i].appId.toString() === req.soajs.inputmaskData.appId) {
-									delete tenantRecord.applications[i].acl;
-									found = true;
-									break;
-								}
-							}
-						}
-					}
-					if(!found) {
-						return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]}));
-					}
-					else {
-						saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, 430, "tenant application update successful");
-					}
-				});
-			});
-		});
-	},
-
 	"updateApplication": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
@@ -471,6 +435,9 @@ module.exports = {
 										if(req.soajs.inputmaskData.acl) {
 											tenantRecord.applications[i].acl = req.soajs.inputmaskData.acl;
 										}
+										if(req.soajs.inputmaskData.clearAcl && ( req.soajs.inputmaskData.clearAcl==true )) {
+											delete tenantRecord.applications[i].acl ;
+										}
 										found = true;
 										break;
 									}
@@ -498,28 +465,47 @@ module.exports = {
 			var tenant = {
 				"_id": tenantRecord["_id"],
 				"code": tenantRecord["code"],
-				"application":{
-				}
+				"application": getApp(tenantRecord)
 			};
-			var app = {};
-			var found = false;
-			tenantRecord.applications.forEach(function(oneApplication)
+			function getApp(tenantRecord)
 			{
-				oneApplication.keys.forEach(function(oneKey)
+				var app = {};
+				var found = false;
+				tenantRecord.applications.forEach(function(oneApplication)
 				{
-					oneKey.extKeys.forEach(function(oneExtKeyObj)
+					oneApplication.keys.forEach(function(oneKey)
 					{
-						if( oneExtKeyObj.extKey == req.soajs.inputmaskData.extKey){
-							tenant.application["product"] = oneApplication["product"];
-							tenant.application["package"] = oneApplication["package"];
-							tenant.application["app_acl"] = oneApplication["acl"];
-							tenant.application["key"] = oneKey["key"];
-							found = true;
-						}
+						oneKey.extKeys.forEach(function(oneExtKeyObj)
+						{
+							if( oneExtKeyObj.extKey == req.soajs.inputmaskData.extKey){
+								app["product"] = oneApplication["product"];
+								app["package"] = oneApplication["package"];
+								app["app_acl"] = oneApplication["acl"];
+								app["key"] = oneKey["key"];
+								found = true;
+							}
+						});
 					});
 				});
-			});
-			return res.jsonp(req.soajs.buildResponse(null, tenant));
+				return app;
+			}
+
+			if( tenant.application.acl && (typeof(tenant.application.acl)=='object') ){
+				return res.jsonp(req.soajs.buildResponse(null, tenant));
+			}
+			else
+			{
+				mongo.findOne(prodColName, {'code': tenant.application.product}, function(error, productRecord) {
+					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 412, "msg": config.errors[412]}));  }
+
+					for(var i = 0; i < productRecord.packages.length; i++) {
+						if(productRecord.packages[i].code === tenant.application.package) {
+							tenant.application.parentPackageAcl = productRecord.packages[i].acl;
+						}
+					}
+					return res.jsonp(req.soajs.buildResponse(null, tenant));
+				});
+			}
 		});
 	},
 
