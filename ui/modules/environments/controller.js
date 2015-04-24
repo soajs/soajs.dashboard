@@ -23,7 +23,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.grid = {
 					rows: response
 				};
-				console.log(response);
+
 				if($scope.grid.rows.length == 1){
 					$scope.grid.rows[0].showOptions = true;
 				}
@@ -581,28 +581,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	$scope.removeIP = function(host, ip){
-	};
-
-	$scope.heartBeat = function(host, ip){
-		var name = host.name;
-		var serviceNames = [name];
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":serviceNames }
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				var port = response[0].port;
-				var mport = 1000+Number(port);
-				var url = '';
-			}
-		});
-
-	};
 	//default operation
 	$scope.listEnvironments();
 
