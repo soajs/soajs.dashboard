@@ -195,7 +195,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				var len = response.length;
 				var value = [];
 				var sel = false;
-				//console.log( data.code );
 				for(var x = 0; x < len; x++) {
 					sel = false;
 					if((response[x].groups) && response[x].groups.indexOf(data.code) > -1) {

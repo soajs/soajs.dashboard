@@ -740,3 +740,20 @@ fieldset .grid table {
     margin-bottom:5px;
     padding-bottom:5px;
 }
+
+.form .grouped p{
+    font-weight: bold;
+}
+.form .grouped{
+    padding-left:20px;
+}
+.form .grouped label{
+    width: 200px;
+}
+form tr .grouped label{
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+form tr .grouped input[type="text"]{
+    height:30px;
+}
