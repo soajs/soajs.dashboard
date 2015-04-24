@@ -12,9 +12,7 @@
 							<td class="">
 								<label class="">Code</label>
 								<input type="text" ng-required="true" tooltip=""
-								       placeholder="..." value="" ng-model="formEnvironment.code"
-								       name="firstName"
-								       class="form-control">
+								       placeholder="..." value="" ng-model="formEnvironment.code"  class="form-control">
 
 
 							</td>
@@ -23,10 +21,8 @@
 						<tr class="form-group">
 							<td class="">
 								<label class="">Description</label>
-								<input type="text" ng-required="true" tooltip=""
-								       placeholder="..." value="" ng-model="formEnvironment.description"
-								       name="description"
-								       class="form-control">
+								<input type="text" tooltip=""
+								       placeholder="..." value="" ng-model="formEnvironment.description"  class="form-control">
 
 
 							</td>
@@ -41,27 +37,20 @@
 								<div class="grouped">
 									<label class="">maxPoolSize</label>
 									<input type="text" ng-required="true" tooltip=""
-									       placeholder="..." value="" ng-model="formEnvironment.services.controller.maxPoolSize"
-									       name="controller"
-									       class="form-control">
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.maxPoolSize"  class="form-control">
 									<br>
 									<label class="">authorization</label>
-									<input type="text" ng-required="true" tooltip=""
-									       placeholder="..." value="" ng-model="formEnvironment.services.controller.authorization"
-									       name="controller"
-									       class="form-control">
+
+									<input name="controller_authorization" type="radio" ng-model="formEnvironment.services.controller['authorization']" value="true"> true
+									<input name="controller_authorization" type="radio" ng-model="formEnvironment.services.controller['authorization']" value="false"> false
 									<br>
 									<label class="">requestTimeout</label>
-									<input type="text" ng-required="true" tooltip=""
-									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeout"
-									       name="controller"
-									       class="form-control">
+									<input type="text" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeout" class="form-control">
 									<br>
 									<label class="">requestTimeoutRenewal</label>
-									<input type="text" ng-required="true" tooltip=""
-									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeoutRenewal"
-									       name="controller"
-									       class="form-control">
+									<input type="text" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeoutRenewal"  class="form-control">
 								</div>
 
 
@@ -74,12 +63,198 @@
 
 							<td class="">
 								<label class="">Service Config</label>
-								<input type="text" ng-required="true" tooltip=""
-								       placeholder="..." value="" ng-model="formEnvironment.services.config"
-								       name="serviceConfig"
-								       class="form-control">
+
+								<div class="grouped">
+
+								<p class="">awareness </p>
+									<div class="grouped">
+
+									<label class="">healthCheckInterval </label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.config.awareness.healthCheckInterval" class="form-control">
+									<br>
+									<label class="">autoRelaodRegistry </label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.config.awareness.autoRelaodRegistry" class="form-control">
+
+									</div>
+
+									<p class="">agent </p>
+									<div class="grouped">
+
+										<label class="">topologyDir </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.agent.topologyDir"  class="form-control">
 
 
+									</div>
+
+									<p class="">key </p>
+									<div class="grouped">
+
+										<label class="">algorithm </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.key.algorithm" class="form-control"><br>
+										<label class="">password </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.key.password" class="form-control">
+
+
+									</div>
+
+
+
+
+									<p class="">logger </p>
+									<div class="grouped">
+
+										<label class="">src </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.logger.src" class="form-control"><br>
+										<label class="">level </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.logger.level" class="form-control">
+
+
+									</div>
+
+									<p class="">cors </p>
+									<div class="grouped">
+
+										<label class="">enabled </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.enabled"
+										       class="form-control"><br>
+										<label class="">origin </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.origin"
+										       class="form-control"><br>
+										<label class="">credentials </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.credentials"
+										       class="form-control">
+
+										<br>
+										<label class="">methods </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.methods"
+										       class="form-control">
+										<br>
+										<label class="">headers </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.headers"
+										       class="form-control">
+										<br>
+										<label class="">maxage </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cors.maxage"
+										       class="form-control">
+
+
+									</div>
+
+									<p class="">oauth </p>
+									<div class="grouped">
+										<label class="">grants </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.oauth.grants"
+										       class="form-control"><br>
+										<label class="">debug </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.oauth.debug"
+										       class="form-control">
+									</div>
+
+									<p class="">ports </p>
+									<div class="grouped">
+										<label class="">controller </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.ports.controller"
+										       class="form-control"><br>
+										<label class="">maintenanceInc </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.ports.maintenanceInc"
+										       class="form-control">
+										<br><label class="">randomInc </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.ports.randomInc"
+										       class="form-control">
+
+									</div>
+
+									<p class="">cookie </p>
+									<div class="grouped">
+										<label class="">secret </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.cookie.secret"
+										       class="form-control">
+
+
+									</div>
+
+									<p class="">session </p>
+									<div class="grouped">
+										<label class="">name </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.session.name"
+										       class="form-control">
+									<br>
+										<label class="">secret </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.session.secret"
+										       class="form-control"><br>
+
+										<p class="">cookie </p>
+										<div class="grouped">
+
+											<label class="">path </label>
+											<input type="text" ng-required="true" tooltip=""
+											       placeholder="..." value="" ng-model="formEnvironment.services.config.session.cookie.path"
+											       class="form-control"><br>
+
+											<label class="">httpOnly </label>
+											<input type="text" ng-required="true" tooltip=""
+											       placeholder="..." value="" ng-model="formEnvironment.services.config.session.cookie.httpOnly"
+											       class="form-control"><br>
+
+											<label class="">secure </label>
+											<input type="text" ng-required="true" tooltip=""
+											       placeholder="..." value="" ng-model="formEnvironment.services.config.session.cookie.secure"
+											       class="form-control"><br>
+
+											<label class="">domain </label>
+											<input type="text" ng-required="true" tooltip=""
+											       placeholder="..." value="" ng-model="formEnvironment.services.config.session.cookie.domain"
+											       class="form-control"><br>
+
+
+											<label class="">maxAge </label>
+											<input type="text" tooltip=""
+											       placeholder="..." value="" ng-model="formEnvironment.services.config.session.cookie.maxAge"
+											       class="form-control"><br>
+
+
+
+										</div>
+
+										<label class="">resave </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.session.resave"
+										       class="form-control">
+
+
+										<br>
+										<label class="">saveUninitialized </label>
+										<input type="text" ng-required="true" tooltip=""
+										       placeholder="..." value="" ng-model="formEnvironment.services.config.session.saveUninitialized"
+										       class="form-control">
+
+
+									</div>
+
+
+
+								</div>
 							</td>
 
 						</tr>

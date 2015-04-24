@@ -614,7 +614,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$ro
 				var l = response.length;
 				$scope.envId = $routeParams.id;
 				for(var x=0; x< l ; x++){
-					if( response[x]._id == id){
+					if( response[x]._id == $scope.envId){
 						$scope.formEnvironment = response[x];
 						break;
 					}
@@ -624,26 +624,12 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$ro
 		});
 	};
 
-	$scope.addEnvironment = function() {
-		var postData ={};
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/environment/add",
-			"data": postData
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Environment Added Successfully.');
-			}
-		});
-
-	};
-
-	$scope.editEnvironment = function() {
-		var postData ={};
+	$scope.save = function() {
+		var postData = $scope.formEnvironment;
+		delete postData.dbs;
+		if( typeof( $scope.formEnvironment.services.controller['authorization'] )=='string'){
+			postData.services.controller.authorization = Boolean($scope.formEnvironment.services.controller['authorization']);
+		}
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
@@ -659,28 +645,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$ro
 			}
 		});
 
-	};
 
-
-	$scope.removeDatabase = function(env, name) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/dbs/delete",
-			"params": {"env": env, 'name': name}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				if(response) {
-					$scope.$parent.displayAlert('success', "Selected Environment Database has been removed.");
-					$scope.listDatabases(env);
-				}
-				else {
-					$scope.$parent.displayAlert('danger', "Unable to remove selected Environment Database.");
-				}
-			}
-		});
 	};
 
 
