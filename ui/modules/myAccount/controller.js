@@ -350,7 +350,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 			var postData = {
 				'username': formData.username, 'password': formData.password
 			};
-			
 			getSendDataFromServer(ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/login",

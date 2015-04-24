@@ -432,8 +432,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	//default operation
 	$scope.getAllServicesList = function() {
-		var serviceNames = ["oauth","urac", "dashboard"];
-		serviceNames = [];
+		var serviceNames = [];
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/services/list",

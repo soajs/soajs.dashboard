@@ -53,12 +53,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				$scope.mt.displayAlert('success', 'Application Key Removed Successfully.');
-				for(var i = 0; i < app.keys.length; i++) {
-					if(app.keys[i]['key'] === key) {
-						app.keys.splice(i, 1);
-						break;
-					}
-				}
+				$scope.listKeys(id, app.appId);
 			}
 		});
 		if(event && event.stopPropagation){
@@ -1046,25 +1041,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						}
 					}
 				}
-			}
-		});
-	};
-	
-	$scope.listConfiguration = function(tId, appId, key, index) {
-		$scope.currentApplicationKey = key;
-		$scope.currentApplicationKeyIndex = index;
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/config/list",
-			"params": {"id": tId, "appId": appId, "key": key}
-		}, function(error, response) {
-			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
-			}
-			else {
-				if(JSON.stringify(response) !== '{}') {}
-				else {}
 			}
 		});
 	};
