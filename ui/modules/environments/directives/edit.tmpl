@@ -1,0 +1,99 @@
+<section ng-controller="envirEditCtrl">
+	<div class="form">
+		<form novalidate="" class="css-form ng-pristine ng-valid ng-valid-required" name="">
+			<div class="header"><h3 class="ng-binding">Edit Environment</h3></div>
+			<div class="body">
+
+				<div class="header-msg"></div>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tbody>
+						<tr class="form-group">
+
+							<td class="">
+								<label class="">Code</label>
+								<input type="text" ng-required="true" tooltip=""
+								       placeholder="..." value="" ng-model="formEnvironment.code"
+								       name="firstName"
+								       class="form-control">
+
+
+							</td>
+
+						</tr>
+						<tr class="form-group">
+							<td class="">
+								<label class="">Description</label>
+								<input type="text" ng-required="true" tooltip=""
+								       placeholder="..." value="" ng-model="formEnvironment.description"
+								       name="description"
+								       class="form-control">
+
+
+							</td>
+
+						</tr>
+						<tr class="form-group">
+
+							<td class="">
+								<label class="">Controller</label>
+
+
+								<div class="grouped">
+									<label class="">maxPoolSize</label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.maxPoolSize"
+									       name="controller"
+									       class="form-control">
+									<br>
+									<label class="">authorization</label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.authorization"
+									       name="controller"
+									       class="form-control">
+									<br>
+									<label class="">requestTimeout</label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeout"
+									       name="controller"
+									       class="form-control">
+									<br>
+									<label class="">requestTimeoutRenewal</label>
+									<input type="text" ng-required="true" tooltip=""
+									       placeholder="..." value="" ng-model="formEnvironment.services.controller.requestTimeoutRenewal"
+									       name="controller"
+									       class="form-control">
+								</div>
+
+
+							</td>
+
+						</tr>
+
+						<tr class="form-group">
+
+
+							<td class="">
+								<label class="">Service Config</label>
+								<input type="text" ng-required="true" tooltip=""
+								       placeholder="..." value="" ng-model="formEnvironment.services.config"
+								       name="serviceConfig"
+								       class="form-control">
+
+
+							</td>
+
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+			<div class="footer"><br>
+
+
+				<input type="submit" class="btn btn-sm btn-primary" ng-click="save()" value="Edit">
+			</div>
+		</form>
+
+	</div>
+
+</section>

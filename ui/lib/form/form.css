@@ -40,3 +40,8 @@ form .header h3{
 form .btn-sm{
 	margin-left:5px;	
 }
+
+.grouped .form-control{
+    width: 50%;
+    display: inline;
+}
