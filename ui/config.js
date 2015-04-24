@@ -6,7 +6,7 @@ var navigation = [
 		'id': 'login',
 		'label': 'Login',
 		'url': '#/login',
-		'guestMenu': true, 
+		'guestMenu': true,
 		'tplPath': 'modules/myAccount/directives/login.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js']
 	},
@@ -117,7 +117,7 @@ var navigation = [
 		'icon': 'users',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js' ],
+		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js'],
 		'ancestor': ['Home']
 	},
 	{
@@ -126,7 +126,7 @@ var navigation = [
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,
-		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js' ],
+		'scripts': ['modules/members/member/config.js', 'modules/members/member/controller.js', 'modules/members/group/config.js', 'modules/members/group/controller.js'],
 		'ancestor': ['Home', 'Members']
 	},
 	{
@@ -134,25 +134,32 @@ var navigation = [
 		'label': 'Environments',
 		'url': '#/environments',
 		'tplPath': 'modules/environments/directives/list.tmpl',
-		'icon' : 'earth',
+		'icon': 'earth',
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js'],
 		'ancestor': ['Home']
 	},
-
+	{
+		'id': 'oneEnvironment',
+		'label': 'Environments',
+		'url': '#/environments/environment/:id',
+		'tplPath': 'modules/environments/directives/edit.tmpl',
+		'tracker': true,
+		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js'],
+		'ancestor': ['Home', 'Environments']
+	},
 	{
 		'id': 'services',
 		'label': 'Services',
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',
-		'icon' : 'tree',
+		'icon': 'tree',
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/services/controller.js'],
 		'ancestor': ['Home']
 	},
-
 	{
 		'id': 'productization',
 		'label': 'Productization',

@@ -202,7 +202,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
 
-				$scope.dashboard = ["members", "user-acl", "environments", "services", "productization",  "product-acl", "multi-tenancy", "tenant-app-acl" ];
+				$scope.dashboard = ["members", "user-acl", "environments", "oneEnvironment", "services", "productization", "product-acl", "multi-tenancy", "tenant-app-acl"];
 
 				var user = $cookieStore.get('soajs_user');
 

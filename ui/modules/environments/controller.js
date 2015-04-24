@@ -104,6 +104,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		buildFormWithModal($scope, $modal, options);
 	};
 
+	$scope.updateEnvironment = function(data) {
+		$scope.$parent.go('/environments/environment/'+data._id);
+	};
 	$scope.editEnvironment = function(data) {
 		var formConfig = angular.copy(environmentConfig.form.environment);
 		formConfig.entries[0].type = 'readonly';
@@ -585,3 +588,105 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.listEnvironments();
 
 }]);
+
+
+environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$routeParams' ,'ngDataApi', function($scope, $timeout, $modal, $routeParams ,ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.envId='';
+	$scope.formEnvironment={};
+	$scope.expand = function(row) {
+		row.showOptions = true;
+	};
+
+	$scope.collapse = function(row) {
+		row.showOptions = false;
+	};
+
+	$scope.listEnvironments = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list"
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var l = response.length;
+				$scope.envId = $routeParams.id;
+				for(var x=0; x< l ; x++){
+					if( response[x]._id == id){
+						$scope.formEnvironment = response[x];
+						break;
+					}
+				}
+
+			}
+		});
+	};
+
+	$scope.addEnvironment = function() {
+		var postData ={};
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/add",
+			"data": postData
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'Environment Added Successfully.');
+			}
+		});
+
+	};
+
+	$scope.editEnvironment = function() {
+		var postData ={};
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/update",
+			"params": {"id": 	$scope.envId},
+			"data": postData
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
+			}
+		});
+
+	};
+
+
+	$scope.removeDatabase = function(env, name) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/dbs/delete",
+			"params": {"env": env, 'name': name}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				if(response) {
+					$scope.$parent.displayAlert('success', "Selected Environment Database has been removed.");
+					$scope.listDatabases(env);
+				}
+				else {
+					$scope.$parent.displayAlert('danger', "Unable to remove selected Environment Database.");
+				}
+			}
+		});
+	};
+
+
+
+	//default operation
+	$scope.listEnvironments();
+
+}]);
+

@@ -53,12 +53,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				$scope.mt.displayAlert('success', 'Application Key Removed Successfully.');
-				for(var i = 0; i < app.keys.length; i++) {
-					if(app.keys[i]['key'] === key) {
-						app.keys.splice(i, 1);
-						break;
-					}
-				}
+				$scope.listKeys(id, app.appId);
 			}
 		});
 		if(event && event.stopPropagation){
@@ -1049,25 +1044,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 		});
 	};
-	
-	$scope.listConfiguration = function(tId, appId, key, index) {
-		$scope.currentApplicationKey = key;
-		$scope.currentApplicationKeyIndex = index;
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/config/list",
-			"params": {"id": tId, "appId": appId, "key": key}
-		}, function(error, response) {
-			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
-			}
-			else {
-				if(JSON.stringify(response) !== '{}') {}
-				else {}
-			}
-		});
-	};
 
 	$scope.reloadConfiguration = function(tId, appId, key, index) {
 		$scope.currentApplicationKey = key;
@@ -1187,8 +1163,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 					if(response[x].appId === appId)
 					{
 						$scope.currentApplication = response[x];
-						console.log( 'currentApplication');
-						console.log ( $scope.currentApplication );
 						if( $scope.currentApplication._TTL.toString().length >3){
 							$scope.currentApplication._TTL = ($scope.currentApplication._TTL / 3600000).toString();
 						}
@@ -1226,9 +1200,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 							else {
 								var servicesList = response;
 
-								//console.log( ' $scope.currentApplication.parentPckgAcl ' );
-								//console.log( $scope.currentApplication.parentPckgAcl );
-
 								var l = servicesList.length;
 								for(var x=0; x<l; x++)
 								{
@@ -1256,8 +1227,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 										var newList = service.apis ;
 										service.fixList = $scope.arrGroupByField( service.apis , 'group');
 									}
-									//console.log( ' service ' );
-									//console.log( service );
 								}
 								$scope.allServiceApis = servicesList;
 
@@ -1296,12 +1265,8 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		else
 		{
 			$scope.isInherited = true;
-			console.log('isInherited');
 			$scope.aclFill.services= angular.copy($scope.currentApplication.parentPckgAcl);
 		}
-
-		console.log('start with  scope.aclFill.services ');
-		console.log( $scope.aclFill.services );
 
 		for(var propt in $scope.aclFill.services)
 		{
@@ -1358,9 +1323,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 			}
 		}
 
-		console.log('end  acl ');
-		console.log( $scope.aclFill.services );
-
 	};
 
 	$scope.checkForGroupDefault=function(service,grp,val,myApi) {
@@ -1414,7 +1376,6 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		postData.productCode = $scope.currentApplication.product ;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		postData.clearAcl = true;
-		console.log( postData );
 
 		getSendDataFromServer( ngDataApi, {
 			"method": "send",
