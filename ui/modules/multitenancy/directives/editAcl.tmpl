@@ -147,7 +147,7 @@
 
             </div>
             <div class="footer"><br>
-                <input tooltip="" type="reset" class="btn btn-sm btn-danger" ng-click="clearAcl()" value="Empty ACL">
+                <input ng-confirm-click="Are you sure you want to clear the ACL?" type="reset" class="btn btn-sm btn-danger" ng-click="clearAcl()" value="Empty ACL">
                 <input type="submit" class="btn btn-sm btn-primary" ng-click="saveACL()" value="Save ACL">
 
             </div>

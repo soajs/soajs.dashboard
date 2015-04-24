@@ -2528,7 +2528,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				it("success - will update application", function(done) {
+
+				it("success - will clear application acl", function(done) {
 					var params = {
 						qs: {'id': tenantId, 'appId': applicationId},
 						form: {
@@ -2536,14 +2537,32 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"packageCode": "BASIC",
 							"description": "this is a dummy description updated",
 							"_TTL": '24',
+							"clearAcl": true,
 							"acl": {
-								"urac": {}
 							}
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'post', function(body) {
+						assert.ok(body);
 						assert.ok(body.data);
-						done();
+						mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
+							assert.ifError(error);
+							console.log(JSON.stringify(records));
+							assert.ok(records.applications);
+							assert.equal(records.applications.length, 1);
+							applicationId = records.applications[0].appId.toString();
+							delete records.applications[0].appId;
+							delete records.oauth;
+							assert.deepEqual(records.applications[0], {
+								"product": "TPROD",
+								"package": "TPROD_BASIC",
+								"description": "this is a dummy description updated",
+								"_TTL": 24 * 3600 * 1000,
+								'keys': []
+							});
+							done();
+						});
+
 					});
 				});
 			});
