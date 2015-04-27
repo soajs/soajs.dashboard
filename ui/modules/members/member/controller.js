@@ -9,6 +9,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	});
 
 	$scope.listMembers = function() {
+		$scope.buildPermittedOperation();
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers"

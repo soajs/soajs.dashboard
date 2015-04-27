@@ -1,4 +1,8 @@
 "use strict";
+
+function checkApiHasAccess($scope, serviceName, routePath){
+
+}
 /*
 common function calls ngDataAPI angular service to connect and send/get data to api
  */

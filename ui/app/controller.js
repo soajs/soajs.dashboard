@@ -216,6 +216,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.$on("loadUserInterface", function(event, args) {
 			$scope.isUserLoggedIn();
 		});
+
+		$scope.buildPermittedOperation = function($scope, serviceName, routePath) {
+			checkApiHasAccess();
+		};
 	}]);
 
 soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', function($scope, ngDataApi, $cookieStore) {

@@ -1,18 +1,32 @@
 <section ng-controller="servicesCtrl" ng-show="grid.rows">
-
     <div class="entryBoxes">
         <div ng-repeat="service in grid.rows" class="entryBox">
             <div class="header">{{service['name']}}<span>[ {{service['port']}} ]</span></div>
-            <div class="body">
+            <div class="body grid">
                 <div class="description"><b>External&nbsp;Key&nbsp;Required</b>:&nbsp;{{service['extKeyRequired']}}</div>
-                <ul class="blueListing">
-                    <li class="blueLi blueLiBox" ng-repeat="api in service.apis">
-                        <b>Label</b>:&nbsp;{{api.l}}<br/>
-                        <b>Group</b>:&nbsp;{{api.group}}<br/>
-                        <span ng-if="api.groupMain"><b>Group Default</b>:&nbsp;{{api.groupMain}}<br/></span>
-                        <b>Route</b>:<br />{{api.v}}<br/>
-                    </li>
-                </ul>
+
+                <fieldset ng-repeat="(grp, val) in service.fixList" class="" ng-class-even="'evenFs'" ng-class-odd="'oddFs'">
+                    <legend>{{grp}}</legend>
+                    <label>Default Route:</label> {{val.defaultApi}}<br>
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+                    <tbody>
+                        <tr>
+                            <th>Label</th>
+                            <th>Route </th>
+                            <th style="display:none">Group Main</th>
+                        </tr>
+                        <tr ng-repeat="myApi in val.apis| orderBy:'groupMain' ">
+                            <td>{{myApi.l}}
+                            </td>
+
+                            <td>{{myApi.v}}
+                            </td>
+                            <td style="display:none"><span ng-if="myApi.groupMain">True</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table></fieldset>
+
             </div>
         </div>
     </div>
