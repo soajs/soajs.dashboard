@@ -180,7 +180,8 @@ module.exports = {
 		"513": "Error updating environment database",
 		"514": "Error removing environment database",
 
-		"600": "Database error"
+		"600": "Database error",
+		"601": "No Logged in User found."
 
 	},
 
@@ -1019,6 +1020,13 @@ module.exports = {
 					"type": "string",
 					"required": true
 				}
+			}
+		},
+
+		"/tenant/permissions/get": {
+			_apiInfo: {
+				"l": "Get Tenant Security Permissions",
+				"group": "Tenant"
 			}
 		}
 	}
