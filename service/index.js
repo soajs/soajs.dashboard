@@ -246,12 +246,12 @@ service.init(function() {
 		checkForMongo(req);
 		var colName = 'services';
 		/*
-		var criteria = {};
-		if( (req.soajs.inputmaskData.serviceNames) &&(req.soajs.inputmaskData.serviceNames.length>0) ){
-			criteria = {'name': {$in: req.soajs.inputmaskData.serviceNames}};
-		}
-		*/
-		var criteria = ((req.soajs.inputmaskData.serviceNames)&&(req.soajs.inputmaskData.serviceNames.length>0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
+		 var criteria = {};
+		 if( (req.soajs.inputmaskData.serviceNames) &&(req.soajs.inputmaskData.serviceNames.length>0) ){
+		 criteria = {'name': {$in: req.soajs.inputmaskData.serviceNames}};
+		 }
+		 */
+		var criteria = ((req.soajs.inputmaskData.serviceNames) && (req.soajs.inputmaskData.serviceNames.length > 0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
 		//console.log(criteria);
 		mongo.find(colName, criteria, function(err, records) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
@@ -269,6 +269,30 @@ service.init(function() {
 			return res.jsonp(req.soajs.buildResponse(null, records));
 		});
 
+	});
+
+	service.get("/tenant/permissions/get", function(req, res) {
+		if(!req.soajs.session || !req.soajs.session.getUrac()) {
+			res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+		}
+		else {
+			var ACL = null, response = null;
+			if(req.soajs.session) {
+				ACL = req.soajs.session.getAcl();
+			}
+
+			if(!ACL) {
+				if(req.soajs.tenant.application.acl && JSON.stringify(req.soajs.tenant.application.acl) !== '{}') {
+					ACL = req.soajs.tenant.application.acl;
+				}
+				else {
+					ACL = req.soajs.tenant.application.package_acl;
+				}
+			}
+
+			response = (!ACL) ? req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}) : req.soajs.buildResponse(null, ACL);
+			res.jsonp(response);
+		}
 	});
 
 	service.start();

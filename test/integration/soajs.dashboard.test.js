@@ -39,7 +39,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if(params.headers) {
 			for(var h in params.headers) {
 				if(params.headers.hasOwnProperty(h)) {
-					options.headers[h] = params.headers.h;
+					options.headers[h] = params.headers[h];
 				}
 			}
 		}
@@ -51,6 +51,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if(params.qs) {
 			options.qs = params.qs;
 		}
+
 		request[method](options, function(error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -1438,7 +1439,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"code": "BSIC",
 							"description": 'this is a dummy description',
 							"_TTL": '12',
-							"acl": { }
+							"acl": {}
 						}
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function(body) {
@@ -1486,7 +1487,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
 						//assert.deepEqual(body.errors.details[0], {"code": 413, "message": errorCodes[413]});
-						console.log(JSON.stringify(body) );
+						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						assert.ok(body.data.code);
 						done();
@@ -1500,7 +1501,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
-						console.log(JSON.stringify(body) );
+						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {"code": 461, "message": errorCodes[461]});
 						done();
 					});
@@ -1513,7 +1514,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function(body) {
-						console.log(JSON.stringify(body) );
+						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {"code": 460, "message": errorCodes[460]});
 						done();
 					});
@@ -1603,7 +1604,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"name": "basic package",
 							"description": 'this is a dummy description',
 							"_TTL": '12',
-							"acl": { }
+							"acl": {}
 						}
 					};
 					executeMyRequest(params, 'product/packages/update', 'post', function(body) {
@@ -2538,8 +2539,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"description": "this is a dummy description updated",
 							"_TTL": '24',
 							"clearAcl": true,
-							"acl": {
-							}
+							"acl": {}
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'post', function(body) {
@@ -3338,7 +3338,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	});
 
 	describe("hosts tests", function() {
-		var hosts = [], hostsCount =0;
+		var hosts = [], hostsCount = 0;
 		it("success - will get hosts list", function(done) {
 			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
 				assert.ok(body.data);
@@ -3389,7 +3389,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		});
 	});
 
-
 	describe("services tests", function() {
 		it("success - will get services list", function(done) {
 			executeMyRequest({}, 'services/list', 'post', function(body) {
@@ -3399,14 +3398,61 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 		it("success - will get services list specific services", function(done) {
-			var params= {
-				form:{
+			var params = {
+				form: {
 					"serviceNames": ['urac']
 				}
 			};
-			executeMyRequest( params , 'services/list', 'post', function(body) {
+			executeMyRequest(params, 'services/list', 'post', function(body) {
 				assert.ok(body.data);
 				done();
+			});
+		});
+	});
+
+	describe("testing get tenant permissions for logged in users", function() {
+		var soajsauth;
+		before(function(done) {
+			helper.startUrac(soajs, Mongo, util, function() {
+				setTimeout(function() {
+					done();
+				}, 1000);
+			});
+		});
+
+		it("fail - should not work for non-logged in users", function(done) {
+			executeMyRequest({}, 'tenant/permissions/get', 'get', function(body) {
+				console.log(body);
+				assert.deepEqual(body.errors.details[0],
+					{"code": 601, "message": "No Logged in User found."});
+				done();
+			});
+		});
+
+		it("success - should work for logged in users", function(done) {
+			var options = {
+				uri: 'http://localhost:4001/login',
+				headers: {
+					'Content-Type': 'application/json',
+					key: extKey
+				},
+				body: {
+					"username": "user1",
+					"password": "123456"
+				},
+				json: true
+			};
+			request.post(options, function(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				soajsauth = body.soajsauth;
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'tenant/permissions/get', 'get', function(body) {
+					console.log(body);
+					assert.equal(body.result, true);
+					assert.ok(body.data);
+					assert.ok(JSON.stringify(body.data) !== '{}');
+					done();
+				});
 			});
 		});
 	});
