@@ -143,7 +143,7 @@ var navigation = [
 	{
 		'id': 'oneEnvironment',
 		'label': 'Environments',
-		'url': '#/environments/environment/:id',
+		'url': '#/environments/environment/:id?',
 		'tplPath': 'modules/environments/directives/edit.tmpl',
 		'tracker': true,
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js'],
@@ -196,26 +196,6 @@ var navigation = [
 		'label': 'Edit Application ACL',
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
-		'tracker': true,
-		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
-		'ancestor': ['Home', 'Multi-Tenancy']
-	},
-	{
-		'id': 'multi-tenancy_applications',
-		'label': 'Edit Tenant',
-		'url': '#/multi-tenancy/edit/:id',
-		'tplPath': 'modules/multitenancy/directives/edit.tmpl',
-		'mainMenu': false,
-		'tracker': true,
-		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
-		'ancestor': ['Home', 'Multi-Tenancy']
-	},
-	{
-		'id': 'multi-tenancy_keys',
-		'label': 'Edit Tenant Application',
-		'url': '#/multi-tenancy/:id/application/:appId/keys',
-		'tplPath': 'modules/multitenancy/directives/edit-application.tmpl',
-		'mainMenu': false,
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home', 'Multi-Tenancy']

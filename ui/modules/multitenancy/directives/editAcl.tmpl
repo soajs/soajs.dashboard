@@ -36,8 +36,8 @@
                                value="groups">
                         Groups</span></div>
 
-                                <div class="grpsListingScroll"
-                                     ng-show="aclFill.services[service.name].accessType=='groups' ">
+                                <div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}"
+                                     ng-show="aclFill.services[service.name].accessType=='groups' " ng-class="">
                                     <ul class="grpsListing">
                                         <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
                                             <input type="checkbox" value="{{code}}"
@@ -113,7 +113,7 @@
                                            ng-checked="aclFill.services[service.name].apis[myApi.v].accessType==='groups'"> Groups </span>
                                                 </div>
 
-                                                <div class="grpsListingScroll"
+                                                <div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}"
                                                      ng-show="aclFill.services[service.name].apis[myApi.v].accessType==='groups'">
                                                     <ul class="grpsListing">
                                                         <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
