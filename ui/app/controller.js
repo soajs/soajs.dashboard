@@ -210,6 +210,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.userFirstName = user.firstName;
 				$scope.userLastName = user.lastName;
 				$scope.rebuildMenus();
+
+
 			}
 		};
 
@@ -217,8 +219,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.isUserLoggedIn();
 		});
 
-		$scope.buildPermittedOperation = function($scope, serviceName, routePath) {
-			checkApiHasAccess();
+		$scope.buildPermittedOperation = function( serviceName, routePath) {
+			var user = $cookieStore.get('soajs_user');
+
+			var access = false;
+			var acl = $cookieStore.get('acl_access');
+			if(acl[serviceName]){
+				access = checkApiHasAccess($scope, acl, serviceName, routePath, user);
+			}
+			return access;
 		};
 	}]);
 
@@ -250,6 +259,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', funct
 
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
+				$cookieStore.remove('acl_access');
 				$scope.dashboard = [];
 				$scope.$parent.enableInterface = false;
 				$scope.$parent.go("/login");

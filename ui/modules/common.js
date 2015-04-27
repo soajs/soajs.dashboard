@@ -1,6 +1,112 @@
 "use strict";
 
-function checkApiHasAccess($scope, serviceName, routePath){
+function api_checkAccess(apiAccess, user){
+	if (!apiAccess){
+		return true;
+	}
+
+	if (!user){
+		return false;
+	}
+
+	if (apiAccess instanceof Array)
+	{
+		var userGroups = user.groups;
+		if (!userGroups){
+			return false;
+		}
+		var found = false;
+		for (var ii = 0; ii < userGroups.length; ii++)
+		{
+			if (apiAccess.indexOf(userGroups[ii]) !== -1)
+			{
+				found= true;
+				break;
+			}
+		}
+		return found;
+	}
+	else{
+		return true;
+	}
+}
+
+function api_checkPermission(system, user, api){
+	if ('restricted' === system.apisPermission) {
+		if (!api){
+			return false;
+		}
+		return api_checkAccess(api.access, user);
+	}
+	if (!api){
+		return true;
+	}
+
+	var c= api_checkAccess(api.access, user);
+	return c;
+}
+
+function checkApiHasAccess($scope, aclObject, serviceName, routePath, user){
+	/// get acl of the service name
+	var system = aclObject[serviceName] ;
+
+	var api = (system && system.apis ? system.apis[routePath] : null);
+
+	if(!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+		for(var jj = 0; jj < system.apisRegExp.length; jj++) {
+			if(system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
+				api = system.apisRegExp[jj];
+			}
+		}
+	}
+
+	//return true;
+	var apiRes = null;
+	if(system && system.access) {
+		if( user )
+		{
+			if(system.access instanceof Array) {
+				var checkAPI = false;
+				var userGroups = user.groups;
+				if(userGroups)
+				{
+					for(var ii = 0; ii < userGroups.length; ii++)
+					{
+						if(system.access.indexOf(userGroups[ii]) !== -1){
+							checkAPI = true;
+						}
+
+					}
+				}
+				if(!checkAPI){
+					return false;
+				}
+
+			}
+		}
+		else {
+			if(!api || api.access){
+				return false;
+			}
+		}
+		apiRes = api_checkPermission(system, user, api);
+		return apiRes;
+	}
+
+	if(api || (system && ('restricted' === system.apisPermission))) {
+		apiRes = api_checkPermission(system,user, api);
+		if(apiRes){
+			return true;
+		}
+		else{
+			return false;
+		}
+
+	}
+	else{
+		return true;
+	}
+
 
 }
 /*

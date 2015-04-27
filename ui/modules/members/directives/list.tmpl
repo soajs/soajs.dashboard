@@ -9,8 +9,10 @@
 
     </tab>
     <tab heading="Groups">
-        <section ng-controller="groupsCtrl as gridCtrl">
-            <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>
+        <section ng-controller="groupsCtrl as gridCtrl"><span ng-if="buildPermittedOperation('urac', '/admin/group/add')">
+            <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a></span>
+
+            <br/><br/>
             <nglist></nglist>
         </section>
     </tab>

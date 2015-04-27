@@ -17,30 +17,47 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					grid: groupsConfig.grid,
 					data: response,
 					defaultSortField: 'code',
-					left: [
-						{
-							'label': 'Link Users to Group',
-							'icon': 'link',
-							'handler': 'assignUsers'
-						},
-						{
-							'label': 'Edit',
-							'icon': 'pencil2',
-							'handler': 'editGroup'
-						},
-						{
-							'label': 'Delete',
-							'icon': 'cross',
-							'msg': "Are you sure you want to delete this group?",
-							'handler': 'delete1Group'
-						}
-					],
-					top: [{
+					left: [],
+					top: []
+				};
+				var assignAccess = $scope.buildPermittedOperation('urac', '/admin/group/addUsers');
+				if(assignAccess)
+				{
+					options.left.push({
+						'label': 'Link Users to Group',
+						'icon': 'link',
+						'handler': 'assignUsers'
+					});
+
+				}
+
+				var editAccess = $scope.buildPermittedOperation('urac', '/admin/group/edit');
+				if(editAccess)
+				{
+					options.left.push({
+						'label': 'Edit',
+						'icon': 'pencil2',
+						'handler': 'editGroup'
+					});
+
+				}
+
+				var deleteAccess = $scope.buildPermittedOperation('urac', '/admin/group/delete');
+				if(deleteAccess)
+				{
+					options.top.push({
 						'label': 'Delete',
 						'msg': "Are you sure you want to delete the selected group(s)?",
 						'handler': 'deleteGroups'
-					}]
-				};
+					});
+
+					options.left.push({
+						'label': 'Delete',
+						'icon': 'cross',
+						'msg': "Are you sure you want to delete this group?",
+						'handler': 'delete1Group'
+					});
+				}
 
 				buildGrid($scope, options);
 			}

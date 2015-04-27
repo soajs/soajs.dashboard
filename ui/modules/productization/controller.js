@@ -2,7 +2,17 @@
 var productizationApp = soajsApp.components;
 productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams,$compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	
+
+	$scope.access={
+		addProduct : $scope.buildPermittedOperation('dashboard', '/product/add'),
+		deleteProduct : $scope.buildPermittedOperation('dashboard', '/product/delete'),
+		editProduct: $scope.buildPermittedOperation('dashboard', '/product/update'),
+		listPck : $scope.buildPermittedOperation('dashboard', '/product/packages/list'),
+		addPck : $scope.buildPermittedOperation('dashboard', '/product/packages/add'),
+		deletePck : $scope.buildPermittedOperation('dashboard', '/product/packages/delete'),
+		updatePck : $scope.buildPermittedOperation('dashboard', '/product/packages/update')
+	};
+
 	$scope.viewPackage = function(pack) {
 		pack.showDetails = true;
 	};
