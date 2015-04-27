@@ -608,7 +608,7 @@ fieldset legend {
 }
 .apiListing .apiLabel{
     float: left;
-    width: 290px;
+    width: 300px;
     padding-right: 30px;
 }
 .apiListing .apiAccess{
@@ -619,7 +619,7 @@ fieldset legend {
     margin-right: 45px;
 }
 .apiListing-container .even, .apiListing-container .odd{
-    width: 660px;
+    width: 670px;
 }
 .apiListing-container input{
     margin-top: 0;

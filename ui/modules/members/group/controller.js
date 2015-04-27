@@ -3,6 +3,16 @@ var groupsApp = soajsApp.components;
 groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
+	$scope.access=
+	{
+		adminGroup:{
+			add : $scope.buildPermittedOperation('urac', '/admin/group/add'),
+			edit : $scope.buildPermittedOperation('urac', '/admin/group/edit'),
+			delete : $scope.buildPermittedOperation('urac', '/admin/group/delete'),
+			addUsers : $scope.buildPermittedOperation('urac', '/admin/group/addUsers')
+		}
+	};
+
 	$scope.listGroups = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -12,7 +22,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				$scope.$parent.displayAlert("danger", error.message);
 			}
 			else {
-				
 				var options = {
 					grid: groupsConfig.grid,
 					data: response,
@@ -20,30 +29,24 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 					left: [],
 					top: []
 				};
-				var assignAccess = $scope.buildPermittedOperation('urac', '/admin/group/addUsers');
-				if(assignAccess)
+				if($scope.access.adminGroup.addUsers)
 				{
 					options.left.push({
 						'label': 'Link Users to Group',
 						'icon': 'link',
 						'handler': 'assignUsers'
 					});
-
 				}
 
-				var editAccess = $scope.buildPermittedOperation('urac', '/admin/group/edit');
-				if(editAccess)
+				if($scope.access.adminGroup.edit)
 				{
 					options.left.push({
 						'label': 'Edit',
 						'icon': 'pencil2',
 						'handler': 'editGroup'
 					});
-
 				}
-
-				var deleteAccess = $scope.buildPermittedOperation('urac', '/admin/group/delete');
-				if(deleteAccess)
+				if($scope.access.adminGroup.delete)
 				{
 					options.top.push({
 						'label': 'Delete',

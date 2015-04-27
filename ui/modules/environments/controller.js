@@ -3,6 +3,26 @@ var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
+	$scope.access=
+  {
+	 addEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/add'),
+	 deleteEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/delete'),
+	 editEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/update'),
+	 listHosts : $scope.buildPermittedOperation('dashboard', '/hosts/list'),
+	 dbs:{
+		 list: $scope.buildPermittedOperation('dashboard', '/environment/dbs/list'),
+		 delete: $scope.buildPermittedOperation('dashboard', '/environment/dbs/delete'),
+		 add: $scope.buildPermittedOperation('dashboard', '/environment/dbs/add'),
+		 update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update')
+	 }
+	};
+  $scope.access.clusters={
+	 list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
+	 delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
+	 clusters: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
+	 update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
+  };
+
 	$scope.expand = function(row) {
 		row.showOptions = true;
 	};
@@ -24,9 +44,12 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					rows: response
 				};
 
-				if($scope.grid.rows.length == 1){
-					$scope.grid.rows[0].showOptions = true;
+				if($scope.grid.rows){
+					if($scope.grid.rows.length == 1){
+						$scope.grid.rows[0].showOptions = true;
+					}
 				}
+
 			}
 		});
 	};
@@ -549,7 +572,6 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$ro
 
 
 
-
 	};
 	$scope.saveCreate = function() {
 		if($scope.envirForm.$valid) {
@@ -574,10 +596,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal','$ro
 		}
 	};
 
-
-
 	//default operation
 	$scope.getEnvironment();
 
 }]);
-

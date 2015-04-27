@@ -1,6 +1,7 @@
 <section ng-controller="tenantCtrl">
-    <a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br/>
-    <br/>
+    <span ng-if="access.tenant.add"><a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a><br/>
+    </span><br/>
+
 
     <div class="entryBoxes">
 
@@ -12,9 +13,9 @@
                 <div class="description">{{row['description']}}</div>
                 <br/>
                 <tabset>
-                    <tab heading="Manage Applications" ng-click="">
+                    <tab heading="Manage Applications">
                         <br/>
-                        <a class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">Add New Application</a>
+                        <a ng-if="access.tenant.application.add" class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">Add New Application</a>
 
                         <label ng-show="row.applications.length > 0">Available Applications:</label>
                         <ul class="blueListing">
@@ -28,15 +29,15 @@
 
                                 [{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
 								<span class="rightActions">
-									<a href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication(row['_id'], application['appId']);">
+									<a ng-if="access.tenant.application.delete" href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication(row['_id'], application['appId']);">
                                         <span class="icon icon-cross" tooltip="Remove Application"></span>
                                     </a>
 
-									<a href="" ng-click="editTenantApplication(row['_id'], application)">
+									<a ng-if="access.tenant.application.update" href="" ng-click="editTenantApplication(row['_id'], application)">
                                         <span class="icon icon-pencil2" tooltip="Edit Application"></span>
                                     </a>
 
-                                    <a href="" ng-click="editAppAcl(row['_id'], application['appId'])">
+                                    <a ng-if="access.tenant.application.update" href="" ng-click="editAppAcl(row['_id'], application['appId'])">
                                         <span class="icon icon-unlocked" tooltip="Edit Application ACL"></span>
                                     </a>
 
@@ -152,11 +153,11 @@
                     </tab>
                 </tabset>
                 <div class="entryAction">
-                    <a href="" ng-click="tenantsList.actions.editTenant.command(row);">
+                    <a ng-if="access.tenant.update" href="" ng-click="tenantsList.actions.editTenant.command(row);">
                         <span class="icon icon-pencil2" tooltip="Edit Tenant"></span>
                     </a>&nbsp;
 
-                    <a href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}" ng-click="tenantsList.actions.delete.command(row);">
+                    <a ng-if="access.tenant.delete" href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}" ng-click="tenantsList.actions.delete.command(row);">
                         <span class="icon icon-cross" tooltip="Remove Tenant"></span>
                     </a>
                 </div>

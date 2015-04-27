@@ -4,6 +4,25 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.$parent.isUserLoggedIn();
 	var currentApp = null;
 
+	$scope.access=
+	{
+		tenant:{
+			add : $scope.buildPermittedOperation('dashboard', '/tenant/add'),
+			delete : $scope.buildPermittedOperation('dashboard', '/tenant/delete'),
+			update : $scope.buildPermittedOperation('dashboard', '/tenant/update'),
+			list : $scope.buildPermittedOperation('dashboard', '/tenant/list'),
+
+			application:{
+				add : $scope.buildPermittedOperation('dashboard', '/tenant/application/add'),
+				delete : $scope.buildPermittedOperation('dashboard', '/tenant/application/delete'),
+				update : $scope.buildPermittedOperation('dashboard', '/tenant/application/update'),
+				list : $scope.buildPermittedOperation('dashboard', '/tenant/application/list')
+			}
+		}
+
+	};
+
+
 	$scope.$parent.$on('reloadEnvironments', function(event, args) {
 		$scope.getEnvironments();
 	});

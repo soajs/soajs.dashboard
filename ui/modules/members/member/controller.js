@@ -8,6 +8,15 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 		$scope.listMembers();
 	});
 
+	$scope.access=
+	{
+		admin:{
+			changeStatusAccess : $scope.buildPermittedOperation('urac', '/admin/changeStatusAccess'),
+			editUser : $scope.buildPermittedOperation('urac', '/admin/editUser'),
+			addUser : $scope.buildPermittedOperation('urac', '/admin/addUser')
+		}
+	};
+
 	$scope.listMembers = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -36,10 +45,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					top: []
 				};
 
-				var editAccess = $scope.buildPermittedOperation('urac', '/admin/editUser');
-				var changeStatusAccess = $scope.buildPermittedOperation('urac', '/admin/changeUserStatus');
-
-				if(editAccess)
+				if($scope.access.admin.editUser)
 				{
 					options.left.push( {
 						'label': 'Edit',
@@ -52,7 +58,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 						'handler': 'editAcl'
 					});
 				}
-				if(changeStatusAccess)
+				if($scope.access.admin.changeStatusAccess)
 				{
 					options.top=	[
 						{

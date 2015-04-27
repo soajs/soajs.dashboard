@@ -211,7 +211,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.userLastName = user.lastName;
 				$scope.rebuildMenus();
 
-
 			}
 		};
 
@@ -221,11 +220,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.buildPermittedOperation = function( serviceName, routePath) {
 			var user = $cookieStore.get('soajs_user');
-
+			var userGroups = user.groups;
 			var access = false;
 			var acl = $cookieStore.get('acl_access');
 			if(acl[serviceName]){
-				access = checkApiHasAccess($scope, acl, serviceName, routePath, user);
+				access = checkApiHasAccess($scope, acl, serviceName, routePath, userGroups);
 			}
 			return access;
 		};

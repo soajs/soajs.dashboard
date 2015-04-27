@@ -1,20 +1,16 @@
 "use strict";
 
-function api_checkAccess(apiAccess, user){
+function api_checkAccess(apiAccess, userGroups){
 	if (!apiAccess){
 		return true;
 	}
 
-	if (!user){
-		return false;
-	}
-
 	if (apiAccess instanceof Array)
 	{
-		var userGroups = user.groups;
 		if (!userGroups){
 			return false;
 		}
+
 		var found = false;
 		for (var ii = 0; ii < userGroups.length; ii++)
 		{
@@ -31,22 +27,22 @@ function api_checkAccess(apiAccess, user){
 	}
 }
 
-function api_checkPermission(system, user, api){
+function api_checkPermission(system, userGroups, api){
 	if ('restricted' === system.apisPermission) {
 		if (!api){
 			return false;
 		}
-		return api_checkAccess(api.access, user);
+		return api_checkAccess(api.access, userGroups);
 	}
 	if (!api){
 		return true;
 	}
 
-	var c= api_checkAccess(api.access, user);
+	var c= api_checkAccess(api.access, userGroups);
 	return c;
 }
 
-function checkApiHasAccess($scope, aclObject, serviceName, routePath, user){
+function checkApiHasAccess($scope, aclObject, serviceName, routePath, userGroups){
 	/// get acl of the service name
 	var system = aclObject[serviceName] ;
 
@@ -63,38 +59,30 @@ function checkApiHasAccess($scope, aclObject, serviceName, routePath, user){
 	//return true;
 	var apiRes = null;
 	if(system && system.access) {
-		if( user )
-		{
-			if(system.access instanceof Array) {
-				var checkAPI = false;
-				var userGroups = user.groups;
-				if(userGroups)
+		if(system.access instanceof Array) {
+			var checkAPI = false;
+			if(userGroups)
+			{
+				for(var ii = 0; ii < userGroups.length; ii++)
 				{
-					for(var ii = 0; ii < userGroups.length; ii++)
-					{
-						if(system.access.indexOf(userGroups[ii]) !== -1){
-							checkAPI = true;
-						}
-
+					if(system.access.indexOf(userGroups[ii]) !== -1){
+						checkAPI = true;
 					}
-				}
-				if(!checkAPI){
-					return false;
-				}
 
+				}
 			}
-		}
-		else {
-			if(!api || api.access){
+			if(!checkAPI){
 				return false;
 			}
+
 		}
-		apiRes = api_checkPermission(system, user, api);
+
+		apiRes = api_checkPermission(system, userGroups, api);
 		return apiRes;
 	}
 
 	if(api || (system && ('restricted' === system.apisPermission))) {
-		apiRes = api_checkPermission(system,user, api);
+		apiRes = api_checkPermission(system, userGroups, api);
 		if(apiRes){
 			return true;
 		}
