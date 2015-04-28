@@ -58,12 +58,12 @@
                     <tab heading="Database Configuration">
                         <br/>
 
-                        <div>
+                        <div ng-if="access.dbs.updatePrefix">
                             <h3>Database Prefix:</h3>
 
                             <form name="databasePrefixForm" class="css-form" novalidate>
                                 <table width="30%">
-                                    <tr ng-if="access.dbs.updatePrefix">
+                                    <tr>
                                         <td>
                                             <b>Prefix</b><br/>
                                             <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
@@ -71,12 +71,6 @@
                                         <td valign="bottom" align="left">
                                             <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/></td>
                                     </tr>
-	                                <tr ng-if="!access.dbs.updatePrefix">
-		                                <td>
-			                                <b>Prefix</b>: <br/>
-			                                <input disabled="true" type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
-		                                </td>
-	                                </tr>
                                 </table>
                             </form>
                             <hr/>
@@ -151,7 +145,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab heading="Services Hosts" ng-click="listHosts(row['code'])">
+                    <tab heading="Services Hosts" ng-click="listHosts(row['code'])" ng-if="access.listHosts">
                         <script type="text/ng-template" id="serviceInfoBox.html">
                             <div class="modal-header">
                                 <h3 class="modal-title">{{title}}</h3>
@@ -161,9 +155,14 @@
                                 <button class="btn btn-primary" ng-click="ok()">OK</button>
                             </div>
                         </script>
-                        <div class="entryBoxes entryBoxesGrid" ng-init="">
+
+                        <div style="padding: 10px 0px 25px 5px;" ng-show="waitMessage">
+                            <alert type="{{waitMessage.type}}">{{waitMessage.message}}</alert>
+                        </div>
+
+                        <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
                             <div ng-repeat="(serviceName, serviceInfo) in row.hosts track by serviceName">
-                                <div ng-if="serviceName ==='controller'" style="width: 100%; display:table;">
+                                <div ng-if="serviceName === 'controller' class="controllerEnvelop">
                                     <div style="width: 100%;" class="{{serviceInfo.color}}"><span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
                                     </div>
                                     <div ng-repeat="oneIp in serviceInfo.ips" style="float:left;">
@@ -187,6 +186,7 @@
                                             </tr>
                                         </table>
                                     </div>
+                                    <br/>
                                 </div>
                                 <div ng-if="serviceName !== 'controller'">
                                     <div style="width: 100%;" class="{{serviceInfo.color}}"><span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
@@ -198,8 +198,8 @@
                                                     <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
                                                         <thead>
                                                             <tr>
-                                                                <th>Actions</th>
-                                                                <th>Host IP</th>
+                                                                <th class="actions">Actions</th>
+                                                                <th class="host-ip">Host IP</th>
                                                             </tr>
                                                         </thead>
                                                         <tr>
@@ -224,8 +224,8 @@
                                                                 <th width="15%">Controller</th>
                                                                 <th width="15%">Status</th>
                                                                 <th width="15%">Last Check</th>
-                                                                <th width="40%">Down Since</th>
-                                                                <th width="15%">Down Count</th>
+                                                                <th class="downSince">Down Since</th>
+                                                                <th class="downCount">Down Count</th>
                                                             </tr>
                                                         </thead>
                                                         <tr ng-repeat="oneController in oneIp.controllers" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'">

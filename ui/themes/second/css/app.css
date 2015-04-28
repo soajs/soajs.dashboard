@@ -841,10 +841,24 @@ form tr .grouped input[type="text"]{
     padding-left: 4px;
 }
 
+tr.sApisEven{
+    background-color: #F8F8F8;
+}
+
+.controllerEnvelop{
+    width: 100%;
+    display:table;
+    padding-bottom: 30px;
+}
+.actions{
+    min-width: 95px;
+}
+.host-ip{
+    min-width: 154px;
+}
 .downSince{
     min-width: 180px;
 }
-
-tr.sApisEven{
-    background-color: #F8F8F8;
+.downCount{
+    min-width: 110px;
 }

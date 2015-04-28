@@ -2,6 +2,12 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', 'ngDataApi', function($scope, $timeout, $modal, $http, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
+	//$scope.waitMessage=true;
+	$scope.waitMessage={
+		type:"info",
+		message:"Services Detected. Awareness check in progress. Please wait..."
+
+	};
 
 	$scope.access =
 	{
@@ -103,7 +109,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
 								if(serviceName === 'controller') {
 									var oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
-									$scope.executeHeartbeatTest(env, oneHost);
+									$timeout(function(){
+										$scope.executeHeartbeatTest(env, oneHost);
+										}, 2000);
 								}
 								else {
 									var oneHost = {
@@ -151,9 +159,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				});
 			}
 			updateServiceStatus(true);
+			$scope.waitMessage={
+				type:"success",
+				message: "Service "+oneHost.name+" on address: "+oneHost.ip+":"+oneHost.port+" is healthy @ "+new Date().toISOString()
+			};
 		}).error(function() {
 			console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
 			updateServiceStatus(false);
+			$scope.waitMessage.type='danger';
+			$scope.waitMessage.message= "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip +" @ "+new Date().toISOString();
 		});
 
 		function updateServiceStatus(healthyCheck) {
@@ -198,12 +212,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 					oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
 					oneEnvironmentRow.hosts[oneHost.name].color = color;
-					if(oneEnvironmentRow.hosts[oneHost.name].healthy) {
+					if(oneHost.name==='controller' && oneEnvironmentRow.hosts[oneHost.name].healthy) {
 						setTimeout(function() {
 							$scope.executeAwarenessTest(env, oneHost);
-						}, 1000);
+						}, 5000);
 					}
-					console.log(oneEnvironmentRow.hosts[oneHost.name]);
 				}
 			});
 		}
@@ -218,6 +231,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			timeout: 20000,
 			json: true
 		}).success(function(awarenessResponse) {
+
 			for(var oneService in awarenessResponse) {
 				if(awarenessResponse.hasOwnProperty(oneService)) {
 					if(oneService === 'controller') {
@@ -232,8 +246,17 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 				}
 			}
+			$scope.waitMessage={
+				type:"success",
+				message: "Awareness test for controller on ip: " + oneHost.ip +" was successful @ "+new Date().toISOString()
+			};
+
 		}).error(function() {
 			console.log("error executing awareness test for controller on ip: " + oneHost.ip);
+			$scope.waitMessage={
+				type:"danger",
+				message: "error executing awareness test for controller on ip: " + oneHost.ip+" @ "+new Date().toISOString()
+			};
 		});
 
 		function updateService(response, oneService, serviceIp) {

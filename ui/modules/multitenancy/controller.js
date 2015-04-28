@@ -130,15 +130,16 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.getEnvironments = function() {
+		$scope.availableEnv = [];
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list"
 		}, function(error, response) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				console.log('Error: '+error.message);
+				//$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.availableEnv = [];
 				response.forEach(function(oneEnv) {
 					$scope.availableEnv.push(oneEnv.code.toLowerCase());
 				});
