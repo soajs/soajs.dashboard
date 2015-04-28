@@ -58,6 +58,7 @@ a:hover {
 
 #page {
     width: 100%;
+    min-width: 1135px;
     display: table;
     clear: both;
     position: relative;
@@ -817,15 +818,15 @@ form tr .grouped input[type="text"]{
 }
 
 .hostsGrid th {
-    background-color: #99C9FF !important;
-    border: 1px solid #2694E8;
+    background-color: #dedede !important;
+    border: 1px solid #bbb;
     font-weight: bold;
     padding-left: 4px;
 }
 
 .hostsGrid td {
     padding:4px;
-    border: 1px solid #2694E8;
+    border: 1px solid #bbb;
 }
 
 .OneIpTable{
@@ -861,4 +862,26 @@ tr.sApisEven{
 }
 .downCount{
     min-width: 110px;
+}
+.lastCheck{
+    min-width: 110px;
+}
+.serviceBox .head {
+    background-color: #DEF1F7;
+    border: 1px solid #337AB7;
+    border-radius: 5px;
+    padding: 5px 5px 5px 10px;
+    position: relative;
+}
+
+.serviceBox .service-ips{
+    display:block;
+    background-color:white;
+    padding:5px;
+    border:solid 1px #cccccc;
+    border-bottom-right-radius:10px;
+    border-bottom-left-radius:10px;
+    margin:0 10px;
+    border-top:none;
+    min-height:60px;
 }

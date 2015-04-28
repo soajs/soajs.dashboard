@@ -753,7 +753,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								'extraParam': (formData.extraParam) ? JSON.parse(formData.extraParam) : {}
 							}
 						};
-
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/clusters/update",
@@ -783,7 +782,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 			]
 		};
-
 		buildFormWithModal($scope, $modal, options);
 	};
 
@@ -807,12 +805,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
 	//default operation
 	$scope.listEnvironments();
 
 }]);
-
 
 environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
@@ -842,7 +838,6 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				else {
 					var l = response.length;
 					$scope.isEdit = true;
-
 					$scope.envId = $routeParams.id;
 					for(var x = 0; x < l; x++) {
 						if(response[x]._id == $scope.envId) {
@@ -861,15 +856,14 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.saveEdit = function() {
 		var postData = $scope.formEnvironment;
 		delete postData.dbs;
-
 		if( $scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants){
 			if(typeof($scope.formEnvironment.services.config.oauth.grants)=='string')
 			{
-				var arr = $scope.formEnvironment.services.config.oauth.grants.split(",");
-				$scope.formEnvironment.services.config.oauth.grants = arr;
+				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
+				var arr = postData.services.config.oauth.grants.split(",");
+				postData.services.config.oauth.grants = arr;
 			}
 		}
-
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/update",
@@ -883,15 +877,19 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
 			}
 		});
-
-
 	};
 	$scope.saveCreate = function() {
 		if($scope.envirForm.$valid) {
 			var postData = $scope.formEnvironment;
-
 			delete postData.dbs;
-
+			if( $scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants){
+				if(typeof($scope.formEnvironment.services.config.oauth.grants)=='string')
+				{
+					postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
+					var arr = postData.services.config.oauth.grants.split(",");
+					postData.services.config.oauth.grants = arr;
+				}
+			}
 			getSendDataFromServer(ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/environment/add",
