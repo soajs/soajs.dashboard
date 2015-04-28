@@ -161,8 +161,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			updateServiceStatus(true);
 			$scope.waitMessage = {
 				type: "success",
-				message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString() + ", checking services..."
+				message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString()
 			};
+			if(oneHost.name ==='controller'){
+				$scope.waitMessage.message += ", checking services please wait...";
+			}
 		}).error(function() {
 			console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
 			updateServiceStatus(false);
