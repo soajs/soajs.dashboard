@@ -87,7 +87,6 @@ var navigation = [
 		'tplPath': 'modules/dashboard/directives/privacy.tmpl',
 		'footerMenu': true
 	},
-
 	{
 		'id': 'home',
 		'label': 'Home',
@@ -112,6 +111,10 @@ var navigation = [
 	{
 		'id': 'members',
 		'label': 'Members',
+		'checkPermission':{
+			'service':'urac',
+			'route':'/admin/listUsers'
+		},
 		'url': '#/members',
 		'tplPath': 'modules/members/directives/list.tmpl',
 		'icon': 'users',
@@ -131,6 +134,10 @@ var navigation = [
 	},
 	{
 		'id': 'environments',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/environment/list'
+		},
 		'label': 'Environments',
 		'url': '#/environments',
 		'tplPath': 'modules/environments/directives/list.tmpl',
@@ -152,6 +159,10 @@ var navigation = [
 	{
 		'id': 'services',
 		'label': 'Services',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/services/list'
+		},
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',
 		'icon': 'tree',
@@ -163,6 +174,10 @@ var navigation = [
 	{
 		'id': 'productization',
 		'label': 'Productization',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/product/list'
+		},
 		'url': '#/productization',
 		'tplPath': 'modules/productization/directives/list.tmpl',
 		'icon': 'list',
@@ -183,6 +198,10 @@ var navigation = [
 	{
 		'id': 'multi-tenancy',
 		'label': 'Multi-Tenancy',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/tenant/list'
+		},
 		'url': '#/multi-tenancy',
 		'tplPath': 'modules/multitenancy/directives/list.tmpl',
 		'icon': 'tree',

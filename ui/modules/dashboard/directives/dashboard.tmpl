@@ -1,28 +1,33 @@
 <section ng-controller="dahsboardCtrl">
-    <h3>Environments</h3>
+    <div ng-if="access.environment">
+        <h3>Environments</h3>
 
-	<div ng-controller="environmentsCtrl">
-        <nglist></nglist>
+        <div ng-controller="environmentsCtrl">
+            <nglist></nglist>
+        </div>
+
+        <hr/>
     </div>
-    
-    <hr/>
-    <h3>Productization</h3>
 
-	
-	<div ng-controller="productsCtrl" >
-        <nglist></nglist>
+    <div ng-if="access.product">
+        <h3>Productization</h3>
+
+        <div ng-controller="productsCtrl">
+            <nglist></nglist>
+        </div>
+        <hr/>
     </div>
-    
 
-    <hr/>
+    <div ng-if="access.tenant">
     <h3>Multy-Tenancy</h3>
 
-    <div ng-controller="tenantsCtrl" >
+    <div ng-controller="tenantsCtrl">
         
         <nglist></nglist>
     </div>
     
     <hr/>
+    </div>
 </section>
 	
     

@@ -15,7 +15,7 @@
                             <th style="">Label</th>
                             <th>Route </th>
                         </tr>
-                        <tr ng-repeat="myApi in val.apis1">
+                        <tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
                             <td class="labelApi">{{myApi.l}}
                             </td>
 
@@ -30,7 +30,7 @@
                                 <th style="">Label</th>
                                 <th>Route </th>
                             </tr>
-                            <tr ng-repeat="myApi in val.apis2">
+                            <tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
                                 <td class="labelApi">{{myApi.l}}
                                 </td>
 

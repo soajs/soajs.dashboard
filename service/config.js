@@ -1026,7 +1026,7 @@ module.exports = {
 
 		"/hosts/delete": {
 			_apiInfo: {
-				"l": "Delte Hosts",
+				"l": "Delete Hosts",
 				"group": "Hosts"
 			},
 			'env': {

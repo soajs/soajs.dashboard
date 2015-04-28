@@ -49,19 +49,13 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
 		var label;
 		for(label in result ){
-
 			if(result[label].apis)
 			{
 				var v =	result[label].apis.length/2;
-				console.log( v + ' to '+ Math.ceil(v));
 				var c= Math.ceil(v);
-				var f = Math.floor(v);
-				var apis1 = result[label].apis.slice(0,c);
-
 				result[label].apis1 = result[label].apis.slice(0,c);
 				result[label].apis2 = result[label].apis.slice(c,l);
 			}
-			console.log(result[label]);
 		}
 		return result;
 	};

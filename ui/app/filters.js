@@ -59,7 +59,7 @@ soajsApp.filter('object', ['$sce', function($sce) {
 					var t = [];
 					for(var e = 0; e < obj[i].length; e++) {
 						if(typeof(obj[i][e]) === 'object') {
-							t.push(iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g,""));
+							t.push('<span class="noWrap">'+ iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g," ") + '</span>');
 						}
 						else {
 							t.push(obj[i][e]);

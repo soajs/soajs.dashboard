@@ -136,8 +136,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.guestMenu = {};
 			$scope.guestMenu.links = [];
 
-			for(var i = 0; i < navigation.length; i++) {
-				if(navigation[i].hasOwnProperty('private') || $scope.dashboard.indexOf(navigation[i].id) !== -1) {
+			var a = true;
+			var p ={};
+			for(var i = 0; i < navigation.length; i++)
+			{
+				a = true;
+				if(navigation[i].hasOwnProperty('checkPermission'))
+				{
+					p = navigation[i].checkPermission;
+					if(p.service && p.route){
+						a = $scope.buildPermittedOperation(navigation[i].checkPermission.service , navigation[i].checkPermission.route);
+					}
+				}
+
+				if(navigation[i].hasOwnProperty('private') || (a))
+				{
 					if(navigation[i].mainMenu) {
 						$scope.mainMenu.links.push(navigation[i]);
 					}

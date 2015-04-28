@@ -147,7 +147,7 @@
                                         </a>
                                     </span>
                                 </div>
-                                <div class="info2" ng-bind-html="clusterInfo|object"></div>
+                                <div id="x" class="info2" ng-bind-html="clusterInfo|object"></div>
                             </div>
                         </div>
                     </tab>
@@ -167,7 +167,7 @@
                                     <div style="width: 100%;" class="{{serviceInfo.color}}"><span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
                                     </div>
                                     <div ng-repeat="oneIp in serviceInfo.ips" style="float:left;">
-                                        <table border="1" cellpadding="2" cellspacing="1">
+                                        <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable">
                                             <tr>
                                                 <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
                                                 <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
@@ -195,7 +195,7 @@
                                         <table border="0" width="100%" cellpadding="2" cellspacing="1">
                                             <tr>
                                                 <td width="25%" valign="top">
-                                                    <table width="100%" border="1" cellpadding="2" cellspacing="1">
+                                                    <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
                                                         <thead>
                                                             <tr>
                                                                 <th>Actions</th>
@@ -218,7 +218,7 @@
                                                     </table>
                                                 </td>
                                                 <td width="75%">
-                                                    <table width="100%" border="1" cellpadding="2" cellspacing="1">
+                                                    <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
                                                         <thead>
                                                             <tr>
                                                                 <th width="15%">Controller</th>

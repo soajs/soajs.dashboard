@@ -49,6 +49,12 @@ var config = {
 var dahsboardApp = soajsApp.components;
 dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
+	$scope.access=
+	{
+		environment: $scope.buildPermittedOperation('dashboard', '/environment/list'),
+		tenant: $scope.buildPermittedOperation('dashboard', '/tenant/list'),
+		product: $scope.buildPermittedOperation('dashboard', '/product/list')
+	}
 }]);
 
 dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -72,9 +78,8 @@ dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 			}
 		});
 	};
-	
+
 	$scope.listTenants();
-	
 }]);
 
 dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -95,9 +100,9 @@ dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngData
 			}
 		});
 	};
-	
+
 	$scope.list();
-	
+
 }]);
 
 dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {

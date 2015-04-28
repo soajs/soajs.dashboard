@@ -775,14 +775,16 @@ form tr .grouped input[type="text"]{
     padding-left: 10px;
 }
 
-.serviceApis{
+.grid table.serviceApis{
+    min-width:472px;
     width:472px;
-    display: inline;
+    display: block;
+    float: left;
 }
-.routeApi{
+.serviceApis .routeApi{
     width: 225px;
 }
-.labelApi{
+.serviceApis .labelApi{
     width: 245px;
 }
 
@@ -796,4 +798,53 @@ form tr .grouped input[type="text"]{
 
 .yellow{
     color: gold;
+}
+.noWrap{
+    white-space: nowrap;
+}
+
+.hostsGrid .header {
+    background-color: #70808d !important;
+    border: solid 1px #424951 !important;
+    border-radius: 5px !important;;
+    width: 100% !important;;
+    font-size: 12px !important;
+    color: white;
+}
+
+.hostsGrid .header a {
+    color: #424951 !important;
+}
+
+.hostsGrid th {
+    background-color: #99C9FF !important;
+    border: 1px solid #2694E8;
+    font-weight: bold;
+    padding-left: 4px;
+}
+
+.hostsGrid td {
+    padding:4px;
+    border: 1px solid #2694E8;
+}
+
+.OneIpTable{
+
+}
+
+.OneIpTable td{
+    padding:4px;
+    border: 1px solid #2694E8;
+}
+
+.OneIpTable th{
+    padding-left: 4px;
+}
+
+.downSince{
+    min-width: 180px;
+}
+
+tr.sApisEven{
+    background-color: #F8F8F8;
 }
