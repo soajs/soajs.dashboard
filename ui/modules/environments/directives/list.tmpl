@@ -176,13 +176,13 @@
                                                 <td colspan="2">
                                                     <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation"><span class="icon icon-heart"></span>&nbsp;</a>
 
-                                                    <a href="" ng-if="oneIp.heartbeat === true" ng-click="executeAwarenessTest(row['code'], oneIp)" title="Execute Awareness Operation"><span class="icon icon-connection"></span>&nbsp;
+                                                    <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(row['code'], oneIp)" title="Execute Awareness Operation"><span class="icon icon-connection"></span>&nbsp;
                                                     </a>
 
-                                                    <a href="" ng-if="oneIp.heartbeat === true" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation"><span class="icon icon-undo"></span>&nbsp;
+                                                    <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation"><span class="icon icon-undo"></span>&nbsp;
                                                     </a>
 
-                                                    <a href="" ng-if="!oneIp.heartbeat || oneIp.heartbeat === false" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], oneIp)"><span class="icon icon-cross" title="Remove Host IP"></span></a>
+                                                    <a href="" ng-show="!oneIp.heartbeat" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], oneIp)"><span class="icon icon-cross" title="Remove Host IP"></span></a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -205,13 +205,13 @@
                                                         <tr>
                                                             <td valign="top">
                                                                 <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation"><span class="icon icon-heart"></span>&nbsp;</a>
-                                                                <a href="" ng-if="oneIp.healthy === true" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation"><span class="icon icon-undo"></span>&nbsp;
+                                                                <a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation"><span class="icon icon-undo"></span>&nbsp;
                                                                 </a>
 
-                                                                <a href="" ng-if="oneIp.healthy === true" ng-click="loadProvisioning(row['code'], oneIp)" title="Load Provisioning Operation"><span class="icon icon-download3"></span>&nbsp;
+                                                                <a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(row['code'], oneIp)" title="Load Provisioning Operation"><span class="icon icon-download3"></span>&nbsp;
                                                                 </a>
 
-                                                                <a href="" ng-if="!oneIp.healthy || oneIp.healthy === false" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], oneIp)"><span class="icon icon-cross" title="Remove Host IP"></span></a>
+                                                                <a href="" ng-show="!oneIp.healthy" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], oneIp)"><span class="icon icon-cross" title="Remove Host IP"></span></a>
                                                             </td>
                                                             <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
                                                         </tr>
