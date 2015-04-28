@@ -3,26 +3,26 @@ var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', 'ngDataApi', function($scope, $timeout, $modal, $http, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
-	$scope.access=
-  {
-	 addEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/add'),
-	 deleteEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/delete'),
-	 editEnvironment : $scope.buildPermittedOperation('dashboard', '/environment/update'),
-	 listHosts : $scope.buildPermittedOperation('dashboard', '/hosts/list'),
-	 dbs:{
-		 list: $scope.buildPermittedOperation('dashboard', '/environment/dbs/list'),
-		 delete: $scope.buildPermittedOperation('dashboard', '/environment/dbs/delete'),
-		 add: $scope.buildPermittedOperation('dashboard', '/environment/dbs/add'),
-		 update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update'),
-		 updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
-	 }
+	$scope.access =
+	{
+		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
+		deleteEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/delete'),
+		editEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/update'),
+		listHosts: $scope.buildPermittedOperation('dashboard', '/hosts/list'),
+		dbs: {
+			list: $scope.buildPermittedOperation('dashboard', '/environment/dbs/list'),
+			delete: $scope.buildPermittedOperation('dashboard', '/environment/dbs/delete'),
+			add: $scope.buildPermittedOperation('dashboard', '/environment/dbs/add'),
+			update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update'),
+			updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
+		}
 	};
-  $scope.access.clusters={
-	  add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
-	  list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
-	  delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
-	  update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
-  };
+	$scope.access.clusters = {
+		add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
+		list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
+		delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
+		update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
+	};
 
 	$scope.expand = function(row) {
 		row.showOptions = true;
@@ -45,8 +45,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					rows: response
 				};
 
-				if($scope.grid.rows){
-					if($scope.grid.rows.length == 1){
+				if($scope.grid.rows) {
+					if($scope.grid.rows.length == 1) {
 						$scope.grid.rows[0].showOptions = true;
 					}
 				}
@@ -156,20 +156,34 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			updateServiceStatus(false);
 		});
 
-		function updateServiceStatus(flag) {
+		function updateServiceStatus(healthyCheck) {
 			$scope.grid.rows.forEach(function(oneEnvironmentRow) {
 				if(oneEnvironmentRow.code === env) {
 					var count = 0;
+					var healthy = false, color = 'red';
+					oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
+					oneEnvironmentRow.hosts[oneHost.name].color = color;
 
-					oneEnvironmentRow.hosts[oneHost.name].ips.forEach(function(oneIP) {
-						if(oneHost.name === 'controller' && oneIP.heartbeat && flag) {
-							count++;
+					for(var i=0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++){
+						if(healthyCheck) {
+							if(oneHost.name === 'controller') {
+								count++;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+							}
+							else{
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+								count++;
+							}
 						}
-						else if(oneIP.healthy) {
-							count++;
+						else {
+							oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
+							oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = false;
+							oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'red';
 						}
-					});
-					var healthy, color;
+					}
+
 					if(count === oneEnvironmentRow.hosts[oneHost.name].ips.length) {
 						color = 'green';
 						healthy = true;
@@ -184,11 +198,12 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 					oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
 					oneEnvironmentRow.hosts[oneHost.name].color = color;
-					if(oneEnvironmentRow.hosts[oneHost.name].healthy){
-						setTimeout(function(){
+					if(oneEnvironmentRow.hosts[oneHost.name].healthy) {
+						setTimeout(function() {
 							$scope.executeAwarenessTest(env, oneHost);
-						},1000);
+						}, 1000);
 					}
+					console.log(oneEnvironmentRow.hosts[oneHost.name]);
 				}
 			});
 		}
@@ -775,9 +790,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	$scope.envId='';
-	$scope.formEnvironment={};
-	$scope.formEnvironment.services={};
+	$scope.envId = '';
+	$scope.formEnvironment = {};
+	$scope.formEnvironment.services = {};
 
 	$scope.expand = function(row) {
 		row.showOptions = true;
@@ -790,7 +805,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.getEnvironment = function() {
-		if( $routeParams.id ){
+		if($routeParams.id) {
 
 			getSendDataFromServer(ngDataApi, {
 				"method": "get",
@@ -804,8 +819,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 					$scope.isEdit = true;
 
 					$scope.envId = $routeParams.id;
-					for(var x=0; x< l ; x++){
-						if( response[x]._id == $scope.envId){
+					for(var x = 0; x < l; x++) {
+						if(response[x]._id == $scope.envId) {
 							$scope.formEnvironment = response[x];
 							break;
 						}
@@ -817,7 +832,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 
 
 		}
-		else{
+		else {
 			$scope.isAdd = true;
 		}
 
@@ -826,14 +841,14 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.save = function() {
 		var postData = $scope.formEnvironment;
 		delete postData.dbs;
-		if( typeof( $scope.formEnvironment.services.controller['authorization'] )=='string'){
+		if(typeof( $scope.formEnvironment.services.controller['authorization'] ) == 'string') {
 			postData.services.controller.authorization = Boolean($scope.formEnvironment.services.controller['authorization']);
 		}
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/update",
-			"params": {"id": 	$scope.envId},
+			"params": {"id": $scope.envId},
 			"data": postData
 		}, function(error, response) {
 			if(error) {
