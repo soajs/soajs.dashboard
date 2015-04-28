@@ -8,8 +8,16 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 		$scope.listMembers();
 	});
 
+	$scope.access=
+	{
+		admin:{
+			changeStatusAccess : $scope.buildPermittedOperation('urac', '/admin/changeStatusAccess'),
+			editUser : $scope.buildPermittedOperation('urac', '/admin/editUser'),
+			addUser : $scope.buildPermittedOperation('urac', '/admin/addUser')
+		}
+	};
+
 	$scope.listMembers = function() {
-		$scope.buildPermittedOperation();
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers"
@@ -33,18 +41,26 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					grid: membersConfig.grid,
 					data: response,
 					defaultSortField: 'username',
-					left: [
-						{
-							'label': 'Edit',
-							'icon': 'pencil2',
-							'handler': 'editMember'
-						},
-						{
-							'label': 'Edit ACL',
-							'icon': 'unlocked',
-							'handler': 'editAcl'
-						}],
-					top: [
+					left: [],
+					top: []
+				};
+
+				if($scope.access.admin.editUser)
+				{
+					options.left.push( {
+						'label': 'Edit',
+						'icon': 'pencil2',
+						'handler': 'editMember'
+					});
+					options.left.push( {
+						'label': 'Edit ACL',
+						'icon': 'unlocked',
+						'handler': 'editAcl'
+					});
+				}
+				if($scope.access.admin.changeStatusAccess)
+				{
+					options.top=	[
 						{
 							'label': 'Activate',
 							'msg': "Are you sure you want to activate the selected member(s)?",
@@ -55,8 +71,10 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 							'msg': "Are you sure you want to deactivate the selected member(s)?",
 							'handler': 'deactivateMembers'
 						}
-					]
-				};
+					];
+
+				}
+
 
 				buildGrid($scope, options);
 			}

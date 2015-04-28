@@ -361,9 +361,24 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				else {
 					$cookieStore.put('soajs_user', response);
 					$cookieStore.put("soajs_auth", response.soajsauth);
-					$scope.$parent.$emit("loadUserInterface", {});
-					$scope.$parent.$emit('refreshWelcome', {});
-					$scope.$parent.go("/dashboard");
+
+					getSendDataFromServer(ngDataApi, {
+						"method": "get",
+						"routeName": "/dashboard/tenant/permissions/get"
+					}, function(error, response) {
+						if(error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$cookieStore.put('acl_access', response);
+							$scope.$parent.$emit("loadUserInterface", {});
+							$scope.$parent.$emit('refreshWelcome', {});
+							$scope.$parent.go("/dashboard");
+
+						}
+					});
+
+
 				}
 			});
 		}

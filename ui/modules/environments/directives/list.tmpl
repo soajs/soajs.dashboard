@@ -1,5 +1,5 @@
 <section ng-controller="environmentCtrl" ng-show="grid.rows">
-    <a href="" ng-click="addEnvironment()" class="btn btn-primary">Add New Environment</a><br/><br/>
+    <span ng-if="access.addEnvironment"><a href="#/environments/environment" class="btn btn-primary">Add New Environment</a><br/><br/></span>
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
@@ -63,15 +63,20 @@
 
                             <form name="databasePrefixForm" class="css-form" novalidate>
                                 <table width="30%">
-                                    <tr>
+                                    <tr ng-if="access.dbs.updatePrefix">
                                         <td>
                                             <b>Prefix</b><br/>
                                             <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
                                         </td>
                                         <td valign="bottom" align="left">
-                                            <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/>
-                                        </td>
+                                            <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/></td>
                                     </tr>
+	                                <tr ng-if="!access.dbs.updatePrefix">
+		                                <td>
+			                                <b>Prefix</b>: <br/>
+			                                <input disabled="true" type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+		                                </td>
+	                                </tr>
                                 </table>
                             </form>
                             <hr/>
@@ -84,11 +89,11 @@
                                 <div class="c-both w-100">
                                     <h4 class="f-left">{{row.dbs.config.session['name']}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], 'session');">
+                                        <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], 'session');">
                                             <span class="icon icon-cross" tooltip="Remove Database"></span>
                                         </a>&nbsp;
 
-                                        <a href="" ng-click="editDatabase(row['code'], 'session', row.dbs.config.session)">
+                                        <a ng-if="access.dbs.update" href="" ng-click="editDatabase(row['code'], 'session', row.dbs.config.session)">
                                             <span class="icon icon-pencil2" tooltip="Edit Database"></span>
                                         </a>
                                     </span>
@@ -102,21 +107,19 @@
                                 </div>
                             </li>
                         </ul>
-                        <a ng-if="!row.dbs.config.session" ng-click="addDatabase(row['code'],true)" class="btn btn-sm btn-primary">Add Session Database</a><br/><br/>
+                        <a ng-if="!row.dbs.config.session && access.dbs.add" ng-click="addDatabase(row['code'],true)" class="btn btn-sm btn-primary">Add Session Database</a><br/><br/>
                         <hr/>
-                        <a href="" ng-click="addDatabase(row['code'],false)" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
-
+                        <a ng-if="access.dbs.add" href="" ng-click="addDatabase(row['code'],false)" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
                         <h3>Database List:</h3>
-
                         <div class="entryBoxes entryBoxesGrid">
                             <div ng-repeat="(dbName, dbInfo) in row.dbs.databases track by dbName" class="dbBox">
                                 <div class="head">
                                     <h4>{{dbName}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-click="editDatabase(row['code'], dbName, dbInfo);">
+                                        <a ng-if="access.dbs.update" href="" ng-click="editDatabase(row['code'], dbName, dbInfo);">
                                             <span class="icon icon-pencil" tooltip="Edit Database"></span>
                                         </a>
-                                        <a href="" ng-confirm-click="Are you sure you want to remove this database?" ng-click="removeDatabase(row['code'], dbName);">
+                                        <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove this database?" ng-click="removeDatabase(row['code'], dbName);">
                                             <span class="icon icon-cross" tooltip="Remove Database"></span>
                                         </a>
                                     </span>
@@ -130,17 +133,16 @@
                     </tab>
                     <tab heading="Mongo Cluster">
                         <br/>
-                        <a href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
-
+                        <a ng-if="access.clusters.add" href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
                         <div class="entryBoxes entryBoxesGrid">
                             <div ng-repeat="(clusterName, clusterInfo) in row.dbs.clusters track by clusterName" class="dbBox">
                                 <div class="head">
                                     <h4>{{clusterName}}</h4>
                                     <span class="rightActions">
-                                        <a href="" ng-click="editCluster(row['code'], clusterName, clusterInfo);">
+                                        <a ng-if="access.clusters.update" href="" ng-click="editCluster(row['code'], clusterName, clusterInfo);">
                                             <span class="icon icon-pencil" tooltip="Edit Cluster"></span>
                                         </a>
-                                        <a href="" ng-confirm-click="Are you sure you want to remove this cluster?" ng-click="removeCluster(row['code'], clusterName);">
+                                        <a ng-if="access.clusters.delete" href="" ng-confirm-click="Are you sure you want to remove this cluster?" ng-click="removeCluster(row['code'], clusterName);">
                                             <span class="icon icon-cross" tooltip="Remove Cluster"></span>
                                         </a>
                                     </span>
@@ -247,13 +249,11 @@
                 </tabset>
                 <div class="entryAction">
 
-                    <a href="" ng-click="updateEnvironment(row);">
-                        <span class="icon icon-pencil2" tooltip="Update Environment"></span>
-                    </a>
-                    <a href="" ng-click="editEnvironment(row);">
+                    <a ng-if="access.editEnvironment" href="" ng-click="updateEnvironment(row);">
                         <span class="icon icon-pencil2" tooltip="Edit Environment"></span>
                     </a>
-                    <a href="" ng-confirm-click="Are you sure you want to remove this environment?" ng-click="removeEnvironment(row);">
+
+                    <a  ng-if="access.deleteEnvironment" href="" ng-confirm-click="Are you sure you want to remove this environment?" ng-click="removeEnvironment(row);">
                         <span class="icon icon-cross" tooltip="Remove Environment"></span>
                     </a>
                 </div>
