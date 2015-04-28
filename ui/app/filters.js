@@ -88,3 +88,11 @@ soajsApp.filter('object', ['$sce', function($sce) {
 		}
 	};
 }]);
+
+function highlightMyCode(){
+	hljs.configure({"tabReplace": "    "});
+	jQuery('pre code').each(function(i, block) {
+		var parentId = jQuery(block).parent().attr('id');
+		hljs.highlightBlock(block);
+	});
+}

@@ -1011,10 +1011,42 @@ module.exports = {
 		"/hosts/list": {
 			_apiInfo: {
 				"l": "List Hosts",
+				"group": "Hosts",
+				"groupMain": true
+			},
+			'env': {
+				'source': ['query.env'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			}
+		},
+
+		"/hosts/delete": {
+			_apiInfo: {
+				"l": "Delte Hosts",
 				"group": "Hosts"
 			},
 			'env': {
 				'source': ['query.env'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			'name': {
+				'source': ['query.name'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			'ip': {
+				'source': ['query.ip'],
 				'required': true,
 				"validation": {
 					"type": "string",

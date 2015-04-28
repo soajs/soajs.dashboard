@@ -757,3 +757,15 @@ form tr .grouped label{
 form tr .grouped input[type="text"]{
     height:30px;
 }
+
+.red{
+    color:red;
+}
+
+.green{
+    color:green;
+}
+
+.yellow{
+    color: gold;
+}
