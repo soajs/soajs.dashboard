@@ -271,6 +271,17 @@ service.init(function() {
 
 	});
 
+	service.get("/hosts/delete", function(req, res) {
+		checkForMongo(req);
+		var colName = 'hosts';
+		mongo.remove(colName, {env: req.soajs.inputmaskData.env.toLowerCase(), name: req.soajs.inputmaskData.name, ip: req.soajs.inputmaskData.ip}, function(err, records) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			return res.jsonp(req.soajs.buildResponse(null, "host delete successfull."));
+		});
+
+	});
+
 	service.get("/tenant/permissions/get", function(req, res) {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));

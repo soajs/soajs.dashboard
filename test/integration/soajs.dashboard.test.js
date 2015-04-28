@@ -3387,6 +3387,13 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				done();
 			});
 		});
+
+		it('success - will remove host', function(done){
+			executeMyRequest({qs: {'env': 'dev', 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
+				assert.ok(body.data);
+				done();
+			});
+		});
 	});
 
 	describe("services tests", function() {

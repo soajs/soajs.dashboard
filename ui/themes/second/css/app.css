@@ -785,3 +785,15 @@ form tr .grouped input[type="text"]{
 .labelApi{
     width: 245px;
 }
+
+.red{
+    color:red;
+}
+
+.green{
+    color:green;
+}
+
+.yellow{
+    color: gold;
+}
