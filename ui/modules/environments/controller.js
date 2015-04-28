@@ -829,7 +829,6 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.getEnvironment = function() {
 		if($routeParams.id) {
-
 			getSendDataFromServer(ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/list"
@@ -848,24 +847,24 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 							break;
 						}
 					}
-
-
 				}
 			});
-
-
 		}
 		else {
 			$scope.isAdd = true;
 		}
-
 	};
 
-	$scope.save = function() {
+	$scope.saveEdit = function() {
 		var postData = $scope.formEnvironment;
 		delete postData.dbs;
-		if(typeof( $scope.formEnvironment.services.controller['authorization'] ) == 'string') {
-			postData.services.controller.authorization = Boolean($scope.formEnvironment.services.controller['authorization']);
+
+		if( $scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants){
+			if(typeof($scope.formEnvironment.services.config.oauth.grants)=='string')
+			{
+				var arr = $scope.formEnvironment.services.config.oauth.grants.split(",");
+				$scope.formEnvironment.services.config.oauth.grants = arr;
+			}
 		}
 
 		getSendDataFromServer(ngDataApi, {
