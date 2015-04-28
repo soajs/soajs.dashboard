@@ -63,7 +63,7 @@
 
                             <form name="databasePrefixForm" class="css-form" novalidate>
                                 <table width="30%">
-                                    <tr>
+                                    <tr ng-if="access.dbs.updatePrefix">
                                         <td>
                                             <b>Prefix</b><br/>
                                             <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
@@ -71,6 +71,12 @@
                                         <td valign="bottom" align="left">
                                             <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/></td>
                                     </tr>
+	                                <tr ng-if="!access.dbs.updatePrefix">
+		                                <td>
+			                                <b>Prefix</b>: <br/>
+			                                <input disabled="true" type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+		                                </td>
+	                                </tr>
                                 </table>
                             </form>
                             <hr/>
@@ -127,7 +133,7 @@
                     </tab>
                     <tab heading="Mongo Cluster">
                         <br/>
-                        <a href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
+                        <a ng-if="access.clusters.add" href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
                         <div class="entryBoxes entryBoxesGrid">
                             <div ng-repeat="(clusterName, clusterInfo) in row.dbs.clusters track by clusterName" class="dbBox">
                                 <div class="head">

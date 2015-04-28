@@ -13,14 +13,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		 list: $scope.buildPermittedOperation('dashboard', '/environment/dbs/list'),
 		 delete: $scope.buildPermittedOperation('dashboard', '/environment/dbs/delete'),
 		 add: $scope.buildPermittedOperation('dashboard', '/environment/dbs/add'),
-		 update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update')
+		 update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update'),
+		 updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
 	 }
 	};
   $scope.access.clusters={
-	 list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
-	 delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
-	 clusters: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
-	 update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
+	  add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
+	  list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
+	  delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
+	  update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
   };
 
 	$scope.expand = function(row) {
