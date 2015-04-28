@@ -154,7 +154,7 @@ var navigation = [
 		'tplPath': 'modules/environments/directives/edit.tmpl',
 		'tracker': true,
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js'],
-		'ancestor': ['Home', 'Environments']
+		'ancestor': ['Home']
 	},
 	{
 		'id': 'services',
