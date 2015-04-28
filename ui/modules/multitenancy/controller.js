@@ -12,7 +12,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			update : $scope.buildPermittedOperation('dashboard', '/tenant/update'),
 			list : $scope.buildPermittedOperation('dashboard', '/tenant/list'),
 			oauth:{
-
+				update : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/update'),
+				delete : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/delete'),
+				users:{
+					list : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/list'),
+					add : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/add'),
+					update : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/update'),
+					delete : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/delete')
+				}
 			},
 			application:{
 				add : $scope.buildPermittedOperation('dashboard', '/tenant/application/add'),

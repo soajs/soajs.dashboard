@@ -6,6 +6,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 	$scope.access=
 	{
 		adminGroup:{
+			list : $scope.buildPermittedOperation('urac', '/admin/group/list'),
 			add : $scope.buildPermittedOperation('urac', '/admin/group/add'),
 			edit : $scope.buildPermittedOperation('urac', '/admin/group/edit'),
 			delete : $scope.buildPermittedOperation('urac', '/admin/group/delete'),
@@ -14,57 +15,61 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 	};
 
 	$scope.listGroups = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/urac/admin/group/list"
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert("danger", error.message);
-			}
-			else {
-				var options = {
-					grid: groupsConfig.grid,
-					data: response,
-					defaultSortField: 'code',
-					left: [],
-					top: []
-				};
-				if($scope.access.adminGroup.addUsers)
-				{
-					options.left.push({
-						'label': 'Link Users to Group',
-						'icon': 'link',
-						'handler': 'assignUsers'
-					});
+		if($scope.access.adminGroup.list)
+		{
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/urac/admin/group/list"
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert("danger", error.message);
 				}
+				else {
+					var options = {
+						grid: groupsConfig.grid,
+						data: response,
+						defaultSortField: 'code',
+						left: [],
+						top: []
+					};
+					if($scope.access.adminGroup.addUsers)
+					{
+						options.left.push({
+							'label': 'Link Users to Group',
+							'icon': 'link',
+							'handler': 'assignUsers'
+						});
+					}
 
-				if($scope.access.adminGroup.edit)
-				{
-					options.left.push({
-						'label': 'Edit',
-						'icon': 'pencil2',
-						'handler': 'editGroup'
-					});
+					if($scope.access.adminGroup.edit)
+					{
+						options.left.push({
+							'label': 'Edit',
+							'icon': 'pencil2',
+							'handler': 'editGroup'
+						});
+					}
+					if($scope.access.adminGroup.delete)
+					{
+						options.top.push({
+							'label': 'Delete',
+							'msg': "Are you sure you want to delete the selected group(s)?",
+							'handler': 'deleteGroups'
+						});
+
+						options.left.push({
+							'label': 'Delete',
+							'icon': 'cross',
+							'msg': "Are you sure you want to delete this group?",
+							'handler': 'delete1Group'
+						});
+					}
+
+					buildGrid($scope, options);
 				}
-				if($scope.access.adminGroup.delete)
-				{
-					options.top.push({
-						'label': 'Delete',
-						'msg': "Are you sure you want to delete the selected group(s)?",
-						'handler': 'deleteGroups'
-					});
+			});
+		}
 
-					options.left.push({
-						'label': 'Delete',
-						'icon': 'cross',
-						'msg': "Are you sure you want to delete this group?",
-						'handler': 'delete1Group'
-					});
-				}
-
-				buildGrid($scope, options);
-			}
-		});
 	};
 
 	$scope.addGroup = function() {

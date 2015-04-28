@@ -774,3 +774,14 @@ form tr .grouped input[type="text"]{
 .grouped .icon-arrow-right{
     padding-left: 10px;
 }
+
+.serviceApis{
+    width:472px;
+    display: inline;
+}
+.routeApi{
+    width: 225px;
+}
+.labelApi{
+    width: 245px;
+}

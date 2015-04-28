@@ -14,6 +14,9 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			changeStatusAccess : $scope.buildPermittedOperation('urac', '/admin/changeStatusAccess'),
 			editUser : $scope.buildPermittedOperation('urac', '/admin/editUser'),
 			addUser : $scope.buildPermittedOperation('urac', '/admin/addUser')
+		},
+		adminGroup:{
+			list : $scope.buildPermittedOperation('urac', '/admin/group/list')
 		}
 	};
 
