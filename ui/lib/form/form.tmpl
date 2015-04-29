@@ -1,5 +1,6 @@
 <form name="{{form.name}}" class="css-form" novalidate>
-    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3></div>
+    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
+    <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span></div>
     <div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
         <div ng-show="form.modal">
             <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>

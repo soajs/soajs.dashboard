@@ -51,6 +51,11 @@ function buildFormWithModal($scope, $modal, opts) {
 			});
 		};
 		$scope.form.openForm();
+
+		$scope.form.closeModal = function() {
+			$scope.modalInstance.close();
+		};
+
 	}
 }
 
@@ -179,19 +184,5 @@ soajsApp.directive('ngform', function() {
 	return {
 		restrict: 'E',
 		templateUrl: 'lib/form/form.tmpl'
-	};
-});
-
-soajsApp.directive('ngaclform', function() {
-	return {
-		restrict: 'E',
-		templateUrl: 'lib/form/aclForm.tmpl'
-	};
-});
-
-soajsApp.directive('ngaclopenform', function() {
-	return {
-		restrict: 'E',
-		templateUrl: 'lib/form/aclOpenForm.tmpl'
 	};
 });
