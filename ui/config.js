@@ -70,6 +70,7 @@ var navigation = [
 		'id': 'help',
 		'label': 'Help',
 		'url': '#/help',
+		'scripts': ['modules/dashboard/controller.js'],
 		'tplPath': 'modules/dashboard/directives/help.tmpl',
 		'footerMenu': true
 	},

@@ -199,14 +199,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			}
 		});
 
-		$scope.isUserLoggedIn = function() {
+		$scope.isUserLoggedIn = function(stopRedirect) {
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$scope.enableInterface = false;
-
-				$scope.displayFixedAlert('danger', "Session expired. Please login.");
-				$scope.go("/login");
+				if(!stopRedirect){
+					$scope.displayFixedAlert('danger', "Session expired. Please login.");
+					$scope.go("/login");
+				}
 			}
 			else {
 				$scope.footerMenu.links.forEach(function(oneMenuEntry) {
@@ -217,8 +218,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if($scope.footerMenu.selectedMenu === '#/login') {
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
-
-				//$scope.dashboard = [];
 
 				var user = $cookieStore.get('soajs_user');
 

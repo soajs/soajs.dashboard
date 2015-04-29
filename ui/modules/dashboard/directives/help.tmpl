@@ -1,15 +1,20 @@
-<section class="helpPage">
+<section class="helpPage" ng-controller="helpPageCtrl">
     <h3>Help Section</h3>
     <hr />
     <p>
-        This interface is designed to give you an easy way to use all the dashboard service apis.
-
+        This interface is designed to give you an easy way to use all the Dashboard service apis. It contains 5 sections as described below.
     </p>
+    <br>
     <tabset>
         <tab heading="Members">
             <p>
                 The <b>Members</b> section is linked to the URAC service. In this section you can manage your members and groups.
+            </p>
+            <p>
                 You can see the list of registered members, add a new member and edit an existing member.
+                We have also provided an interface for you to easily update the ACL configuration for a user.
+            </p>
+            <p>
                 You can also see the list of existing groups, edit a group or create a new one, and assign members to these groups.
             </p>
         </tab>
@@ -19,14 +24,14 @@
                 For each environment you can view:
             <ul>
                 <li>
-                    The service configuration
+                    The service and controller configurations.
                 </li>
-                <li>The database configuration</li>
+                <li>The database configuration. </li>
                 <li>
-                    The mongo clusters
+                    The mongo clusters. Add a new cluster or edit existing clusters.
                 </li>
                 <li>
-                    The services hosts. You can monitor all your hosts Ip and perform heartbeat and awareness checks to check the health of your services.
+                    The services hosts. You can monitor all your hosts IPs and perform heartbeat and awareness checks to check the health of your services.
                 </li>
             </ul>
             </p>
@@ -53,8 +58,10 @@
                 For each tenant, you can:
             <ul>
                 <li>View and manage its applications:
-                    You can created new applications, assign keys to each application and add external keys to each application key.</li>
-                <li>Manage its oAuth users: Add new users and edit existing ones</li>
+                    You can create new applications, and edit existing ones.
+                    You can choose to override the product ACL for an application.<br>
+                    You can assign keys to each application and add external keys to each application key.</li>
+                <li>Manage its oAuth users: Add new users and edit existing ones.</li>
             </ul>
 
             </p>
