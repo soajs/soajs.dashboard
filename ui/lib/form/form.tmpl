@@ -74,7 +74,7 @@
                 <td ng-switch-when="date-picker">
                     <label>{{entry.label}}</label>
                     <p class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" min-date="'{{entry.min}}'" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
+                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>

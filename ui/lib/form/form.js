@@ -100,7 +100,10 @@ function buildForm(context, modal, configuration, cb) {
 		}
 
 		if(oneEntry.type === 'date-picker') {
-			oneEntry.min = oneEntry.min.getTime();
+			if(typeof(oneEntry.min)==='object'){
+				oneEntry.min = oneEntry.min.getTime();
+			}
+
 			oneEntry.openDate = function($event, index) {
 				$event.preventDefault();
 				$event.stopPropagation();
@@ -149,7 +152,8 @@ function buildForm(context, modal, configuration, cb) {
 	context.form.itemsAreValid = function() {
 		var entries = context.form.entries;
 		var data = context.form.formData;
-		if(JSON.stringify(data) === '{}') { return false; }
+		// for external keys, the form might be empty
+		//if(JSON.stringify(data) === '{}') { return false; }
 		for(var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
 			if(oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {

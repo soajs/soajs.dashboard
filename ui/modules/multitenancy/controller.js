@@ -566,18 +566,19 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Add Application',
 					'btn': 'primary',
 					'action': function(formData) {
-						var productCode = formData.package.split("_")[0];
-						var packageCode = formData.package.split("_")[1];
-						
+
 						var postData = {
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						postData.productCode = productCode;
-						postData.packageCode = packageCode;
-						//var aclObj = {};
-						//postData.acl = aclObj;
+						if(formData.package && (typeof(formData.package)=='string')){
+							var productCode = formData.package.split("_")[0];
+							var packageCode = formData.package.split("_")[1];
+							postData.productCode = productCode;
+							postData.packageCode = packageCode;
+						}else{
 
+						}
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/add",

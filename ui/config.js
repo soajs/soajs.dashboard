@@ -67,14 +67,6 @@ var navigation = [
 		'footerMenu': true
 	},
 	{
-		'id': 'help',
-		'label': 'Help',
-		'url': '#/help',
-		'scripts': ['modules/dashboard/controller.js'],
-		'tplPath': 'modules/dashboard/directives/help.tmpl',
-		'footerMenu': true
-	},
-	{
 		'id': 'home',
 		'label': 'Home',
 		'url': '#/dashboard',
@@ -221,6 +213,18 @@ var navigation = [
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
 		'ancestor': ['Home', 'Multi-Tenancy']
+	},
+	{
+		'id': 'help',
+		'label': 'Help',
+		'url': '#/help',
+		'guestMenu': true,
+		'userMenu': true,
+		'private': true,
+		'icon': 'question',
+		'scripts': ['modules/dashboard/controller.js'],
+		'tplPath': 'modules/dashboard/directives/help.tmpl',
+		'footerMenu': true
 	}
 ];
 
