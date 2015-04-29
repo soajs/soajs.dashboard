@@ -142,7 +142,7 @@ var navigation = [
 		'label': 'Environments',
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/environment/list'
+			'route':'/environment/update'
 		},
 		'url': '#/environments/environment/:id?',
 		'tplPath': 'modules/environments/directives/edit.tmpl',

@@ -906,6 +906,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			});
 
+		}else{
+			$scope.$parent.displayAlert('danger', 'Your form is not complete yet. Required fields are missing.');
 		}
 	};
 

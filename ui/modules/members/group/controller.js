@@ -1,10 +1,9 @@
 "use strict";
 var groupsApp = soajsApp.components;
 groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
+	//$scope.$parent.isUserLoggedIn();
 
-	$scope.access=
-	{
+	$scope.access={
 		adminGroup:{
 			list : $scope.buildPermittedOperation('urac', '/admin/group/list'),
 			add : $scope.buildPermittedOperation('urac', '/admin/group/add'),

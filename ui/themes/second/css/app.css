@@ -9,6 +9,7 @@ a:hover {
 #header {
     height: 80px;
     background: #424951;
+    min-width: 1285px;
 }
 
 #header #logo {
@@ -58,7 +59,7 @@ a:hover {
 
 #page {
     width: 100%;
-    min-width: 1135px;
+    min-width: 1285px;
     display: table;
     clear: both;
     position: relative;
@@ -773,20 +774,22 @@ form tr .grouped input[type="text"]{
 }
 
 .grouped .icon-arrow-right{
-    padding-left: 10px;
+    padding-left: 20px;
 }
-
+.grouped .icon-arrow-right2{
+    padding-left: 5px;
+}
 .grid table.serviceApis{
-    min-width:472px;
-    width:472px;
+    min-width:480px;
+    width:480px;
     display: block;
     float: left;
 }
 .serviceApis .routeApi{
-    width: 225px;
+    width: 230px;
 }
 .serviceApis .labelApi{
-    width: 245px;
+    width: 250px;
 }
 
 .red{
