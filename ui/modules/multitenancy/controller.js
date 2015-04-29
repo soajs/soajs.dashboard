@@ -6,6 +6,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	$scope.access=
 	{
+		product:{
+			list : $scope.buildPermittedOperation('dashboard', '/product/list')
+		},
+		environment:{
+			list: $scope.buildPermittedOperation('dashboard', '/environment/list')
+		},
 		tenant:{
 			add : $scope.buildPermittedOperation('dashboard', '/tenant/add'),
 			delete : $scope.buildPermittedOperation('dashboard', '/tenant/delete'),
@@ -41,9 +47,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				update : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/ext/update')
 			}
 		}
-
 	};
-
 
 	$scope.$parent.$on('reloadEnvironments', function(event, args) {
 		$scope.getEnvironments();
@@ -112,7 +116,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				// options.form = formConfig;
 				var prods = [];
 				var len = response.length;
 				var v, i;
@@ -398,10 +401,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	//$scope.browseApplication = function(tId, data) {
-	//	$scope.$parent.go("/multi-tenancy/" + tId + "/application/" + data.appId + "/keys");
-	//};
-	
 	$scope.reloadOauthUsers = function(tId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -538,9 +537,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
-	$scope.aclFill= {};
-	$scope.aclFill.services= {};
 
 	$scope.addTenantApplication = function(tId) {
 		var formConfig = angular.copy(tenantConfig.form.application);
@@ -1126,9 +1122,16 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	//default operation
-	$scope.getProds();
-	$scope.getEnvironments();
-	$scope.listTenants();
+	if($scope.access.tenant.list){
+		if($scope.access.product.list){
+			$scope.getProds();
+		}
+		if($scope.access.environment.list){
+			$scope.getEnvironments();
+		}
+		$scope.listTenants();
+	}
+
 }]);
 
 

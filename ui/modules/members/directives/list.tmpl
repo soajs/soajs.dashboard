@@ -1,19 +1,21 @@
-<tabset>
-    <tab heading="Members">
-        <section ng-controller="membersCtrl as gridCtrl">
-            <span ng-if="access.admin.addUser">
-                <a href="" ng-click="addMember()" class="btn btn-primary">Add New Member</a><br/><br/>
-            </span>
-            <nglist></nglist>
-        </section>
+<div ng-controller="mainMembersCtrl as mainCtrl">
+    <tabset id="membersSection">
+        <tab heading="Members">
+            <section ng-controller="membersCtrl as gridCtrl" class="membersCtrl">
+                <span ng-if="access.admin.addUser">
+                    <a href="" ng-click="addMember()" class="btn btn-primary">Add New Member</a><br/><br/>
+                </span>
+                <nglist></nglist>
+            </section>
+        </tab>
 
-    </tab>
-    <tab heading="Groups">
-        <section ng-controller="groupsCtrl as groupGridCtrl">
-            <span ng-if="access.adminGroup.add">
-                <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>
-            </span>
-            <nglist></nglist>
-        </section>
-    </tab>
-</tabset>
+        <tab ng-show="accessMain.adminGroup.list" heading="Groups">
+            <section ng-controller="groupsCtrl as groupGridCtrl">
+                <span ng-if="access.adminGroup.add">
+                    <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>
+                </span>
+                <nglist></nglist>
+            </section>
+        </tab>
+    </tabset>
+</div>

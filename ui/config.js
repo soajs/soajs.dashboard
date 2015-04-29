@@ -74,20 +74,6 @@ var navigation = [
 		'footerMenu': true
 	},
 	{
-		'id': 'support',
-		'label': 'Support',
-		'url': '#/support',
-		'tplPath': 'modules/dashboard/directives/support.tmpl',
-		'footerMenu': true
-	},
-	{
-		'id': 'privacy',
-		'label': 'Privacy',
-		'url': '#/privacy',
-		'tplPath': 'modules/dashboard/directives/privacy.tmpl',
-		'footerMenu': true
-	},
-	{
 		'id': 'home',
 		'label': 'Home',
 		'url': '#/dashboard',
@@ -126,6 +112,10 @@ var navigation = [
 	{
 		'id': 'user-acl',
 		'label': 'User ACL',
+		'checkPermission':{
+			'service':'urac',
+			'route':'/admin/editUser'
+		},
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,
@@ -150,6 +140,10 @@ var navigation = [
 	{
 		'id': 'oneEnvironment',
 		'label': 'Environments',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/environment/list'
+		},
 		'url': '#/environments/environment/:id?',
 		'tplPath': 'modules/environments/directives/edit.tmpl',
 		'tracker': true,
@@ -189,6 +183,10 @@ var navigation = [
 	{
 		'id': 'product-acl',
 		'label': 'Edit Package ACL',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/product/update'
+		},
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,
@@ -213,6 +211,10 @@ var navigation = [
 	{
 		'id': 'tenant-app-acl',
 		'label': 'Edit Application ACL',
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/tenant/update'
+		},
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,

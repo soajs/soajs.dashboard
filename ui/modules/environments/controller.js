@@ -2,15 +2,15 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', 'ngDataApi', function($scope, $timeout, $modal, $http, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	//$scope.waitMessage=true;
+
 	$scope.waitMessage = {
 		type: "info",
 		message: "Services Detected. Awareness check in progress. Please wait..."
 
 	};
 
-	$scope.access =
-	{
+	$scope.access={
+		list: $scope.buildPermittedOperation('dashboard', '/environment/list'),
 		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
 		deleteEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/delete'),
 		editEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/update'),
@@ -806,7 +806,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 	//default operation
-	$scope.listEnvironments();
+	if($scope.access.list){
+		$scope.listEnvironments();
+	}
 
 }]);
 

@@ -885,3 +885,14 @@ tr.sApisEven{
     border-top:none;
     min-height:60px;
 }
+#membersSection .nav-tabs{
+    border-bottom-width: 0px;
+}
+
+#page section.membersCtrl{
+    border-top-left-radius: 0;
+}
+
+.helpPage .tab-pane{
+    padding: 10px;
+}

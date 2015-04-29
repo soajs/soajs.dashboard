@@ -4,6 +4,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access={
+		listProduct : $scope.buildPermittedOperation('dashboard', '/product/list'),
 		addProduct : $scope.buildPermittedOperation('dashboard', '/product/add'),
 		deleteProduct : $scope.buildPermittedOperation('dashboard', '/product/delete'),
 		editProduct: $scope.buildPermittedOperation('dashboard', '/product/update'),
@@ -336,7 +337,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	//default operation
-	$scope.listProducts();
+	if($scope.access.listProduct){
+		$scope.listProducts();
+	}
 
 }]);
 
