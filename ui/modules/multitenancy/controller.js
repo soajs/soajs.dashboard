@@ -57,18 +57,19 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	});
 
 	$scope.mt = {};
-	$scope.mt.displayAlert = function(type, msg) {
-		$scope.mt.alerts = [];
-		$scope.mt.alerts.push({'type': type, 'msg': msg});
-		$scope.mt.closeAllAlerts();
+	$scope.mt.displayAlert = function(type, msg, id) {
+		$scope.mt[id]={};
+		$scope.mt[id].alerts = [];
+		$scope.mt[id].alerts.push({'type': type, 'msg': msg});
+		$scope.mt.closeAllAlerts(id);
 	};
 
-	$scope.mt.closeAlert = function(index) {
-		$scope.mt.alerts.splice(index, 1);
+	$scope.mt.closeAlert = function(index, id) {
+		$scope.mt[id].alerts.splice(index, 1);
 	};
 
-	$scope.mt.closeAllAlerts = function() {
-		$timeout(function() { $scope.mt.alerts = []; }, 7000);
+	$scope.mt.closeAllAlerts = function(id) {
+		$timeout(function() { $scope.mt[id].alerts = []; }, 7000);
 	};
 
 	$scope.viewKeys = function(id, app) {
@@ -94,10 +95,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": id, "appId": app.appId, "key": key}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, id);
 			}
 			else {
-				$scope.mt.displayAlert('success', 'Application Key Removed Successfully.');
+				$scope.mt.displayAlert('success', 'Application Key Removed Successfully.', id);
 				$scope.listKeys(id, app.appId);
 			}
 		});
@@ -196,7 +197,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				"params": {"id": tId}
 			}, function(error, response) {
 				if(error) {
-					$scope.mt.displayAlert('danger', error.message);
+					$scope.mt.displayAlert('danger', error.message, tId);
 				}
 				else {
 					row.alreadyGotAuthUsers = true;
@@ -408,7 +409,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
 				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -428,10 +429,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, 'uId': user['_id']}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', 'User Deleted Successfully.');
+				$scope.mt.displayAlert('success', 'User Deleted Successfully.', tId);
 				$scope.reloadOauthUsers(tId);
 			}
 		});
@@ -466,7 +467,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.mt.displayAlert('success', 'User Added Successfully.');
+								$scope.mt.displayAlert('success', 'User Updated Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadOauthUsers(tId);
@@ -516,7 +517,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.mt.displayAlert('success', 'User Added Successfully.');
+								$scope.mt.displayAlert('success', 'User Added Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadOauthUsers(tId);
@@ -576,25 +577,26 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							var packageCode = formData.package.split("_")[1];
 							postData.productCode = productCode;
 							postData.packageCode = packageCode;
-						}else{
-
+							getSendDataFromServer(ngDataApi, {
+								"method": "send",
+								"routeName": "/dashboard/tenant/application/add",
+								"data": postData,
+								"params": {"id": tId}
+							}, function(error, response) {
+								if(error) {
+									$scope.form.displayAlert('danger', error.message);
+								}
+								else {
+									$scope.mt.displayAlert('success', 'Application Added Successfully.', tId);
+									$scope.modalInstance.close();
+									$scope.form.formData = {};
+									$scope.reloadApplications(tId);
+								}
+							});
 						}
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/tenant/application/add",
-							"data": postData,
-							"params": {"id": tId}
-						}, function(error, response) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.mt.displayAlert('success', 'Application Added Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.reloadApplications(tId);
-							}
-						});
+						else{
+							$scope.form.displayAlert('danger', "Choose a package.");
+						}
 					}
 				},
 				{
@@ -690,7 +692,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
 				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -703,18 +705,18 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.removeTenantApplication = function(Id, appId) {
+	$scope.removeTenantApplication = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/delete",
-			"params": {"id": Id, "appId": appId}
+			"params": {"id": tId, "appId": appId}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', "Selected Application has been removed.");
-				$scope.reloadApplications(Id);
+				$scope.mt.displayAlert('success', "Selected Application has been removed.", tId);
+				$scope.reloadApplications(tId);
 			}
 		});
 	};
@@ -726,10 +728,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', 'Application Key Added Successfully.');
+				$scope.mt.displayAlert('success', 'Application Key Added Successfully.',tId);
 				$scope.listKeys(tId, appId);
 			}
 		});
@@ -749,10 +751,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', 'Key Configuration Updated Successfully.');
+				$scope.mt.displayAlert('success', 'Key Configuration Updated Successfully.', tId);
 				$scope.reloadConfiguration(tId, appId, key);
 			}
 		});
@@ -811,7 +813,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.mt.displayAlert('success', 'Key Configuration Updated Successfully.');
+								$scope.mt.displayAlert('success', 'Key Configuration Updated Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadConfiguration(tId, appId, key);
@@ -864,7 +866,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								var geoObj = JSON.parse(formData.geo);
 							}
 							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
+								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ', tId);
 								return;
 							}
 						}
@@ -886,10 +888,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function(error, response) {
 							if(error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.message, tId);
 							}
 							else {
-								$scope.mt.displayAlert('success', 'External Key Added Successfully.');
+								$scope.mt.displayAlert('success', 'External Key Added Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listExtKeys(tId, appId, key);
@@ -981,7 +983,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.mt.displayAlert('success', 'External Key Updated Successfully.');
+								$scope.mt.displayAlert('success', 'External Key Updated Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listExtKeys(tId, appId, key);
@@ -1011,10 +1013,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', 'External Key Removed Successfully.');
+				$scope.mt.displayAlert('success', 'External Key Removed Successfully.', tId);
 				$scope.modalInstance.close();
 				$scope.form.formData = {};
 				$scope.listExtKeys(tId, appId, key);
@@ -1029,7 +1031,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
 				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -1064,7 +1066,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message, tId);
 			}
 			else {
 				for(var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -1094,7 +1096,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
-				$scope.mt.displayAlert('danger', error.message);
+				$scope.mt.displayAlert('danger', error.message,tId);
 			}
 			else {
 				if(JSON.stringify(response) !== '{}') {
