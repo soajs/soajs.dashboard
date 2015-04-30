@@ -661,7 +661,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Application Updated Successfully.');
+								$scope.mt.displayAlert('success', 'Application Updated Successfully.', tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadApplications(tId);
