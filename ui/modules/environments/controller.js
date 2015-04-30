@@ -2,15 +2,17 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', 'ngDataApi', function($scope, $timeout, $modal, $http, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	//$scope.waitMessage=true;
+
 	$scope.waitMessage = {
 		type: "info",
-		message: "Services Detected. Awareness check in progress. Please wait..."
-
+		message: "Services Detected. Awareness check in progress. Please wait...",
+		close: function() {
+			$scope.waitMessage.message = '';
+			$scope.waitMessage.type = '';
+		}
 	};
 
-	$scope.access =
-	{
+	$scope.access = {
 		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
 		deleteEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/delete'),
 		editEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/update'),
@@ -23,6 +25,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
 		}
 	};
+
 	$scope.access.clusters = {
 		add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
 		list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
@@ -159,12 +162,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				});
 			}
 			updateServiceStatus(true);
-			$scope.waitMessage = {
-				type: "success",
-				message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString()
-			};
-			if(oneHost.name ==='controller'){
-				$scope.waitMessage.message += ", checking services please wait...";
+			if(oneHost.name === 'controller') {
+				$scope.waitMessage.type = 'success';
+				$scope.waitMessage.message = "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString() + ", checking services please wait...";
 			}
 		}).error(function() {
 			console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
@@ -177,27 +177,43 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			$scope.grid.rows.forEach(function(oneEnvironmentRow) {
 				if(oneEnvironmentRow.code === env) {
 					var count = 0;
-					var healthy = false, color = 'red';
-					oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
-					oneEnvironmentRow.hosts[oneHost.name].color = color;
+					var healthy = oneEnvironmentRow.hosts[oneHost.name].healthy;
+					var color = oneEnvironmentRow.hosts[oneHost.name].color;
+					var waitMessage = {};
 
 					for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
-						if(healthyCheck) {
-							if(oneHost.name === 'controller') {
-								count++;
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+						if(oneHost.ip === oneEnvironmentRow.hosts[oneHost.name].ips[i].ip) {
+							if(healthyCheck) {
+								if(oneHost.name === 'controller') {
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+									setTimeout(function() {
+										$scope.executeAwarenessTest(env, oneHost);
+									}, 5000);
+								}
+								else {
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+									waitMessage = {
+										type: "success",
+										message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
+										close: function(entry){
+											entry.waitMessage.type = '';
+											entry.waitMessage.message = '';
+										}
+									};
+								}
 							}
 							else {
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
-								count++;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = false;
+								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'red';
 							}
 						}
-						else {
-							oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
-							oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = false;
-							oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'red';
+					}
+					for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
+						if(oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat || oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy) {
+							count++;
 						}
 					}
 
@@ -215,10 +231,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 					oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
 					oneEnvironmentRow.hosts[oneHost.name].color = color;
-					if(oneHost.name === 'controller' && oneEnvironmentRow.hosts[oneHost.name].healthy) {
-						setTimeout(function() {
-							$scope.executeAwarenessTest(env, oneHost);
-						}, 5000);
+					if(oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
+						oneEnvironmentRow.hosts[oneHost.name].waitMessage = waitMessage;
 					}
 				}
 			});
@@ -249,23 +263,19 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 				}
 			}
-			$scope.waitMessage = {
-				type: "success",
-				message: "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString()
-			};
+			$scope.waitMessage.type = 'success';
+			$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
 
 		}).error(function() {
 			console.log("error executing awareness test for controller on ip: " + oneHost.ip);
-			$scope.waitMessage = {
-				type: "danger",
-				message: "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString()
-			};
+			$scope.waitMessage.type = 'danger';
+			$scope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
 		});
 
 		function updateService(response, oneService, serviceIp) {
 
 			$scope.grid.rows.forEach(function(oneEnvironmentRow) {
-				if(oneEnvironmentRow.code === env) {
+				if(oneEnvironmentRow.code === env && oneEnvironmentRow.hosts[oneService]) {
 					for(var i = 0; i < oneEnvironmentRow.hosts[oneService].ips.length; i++) {
 						if(oneEnvironmentRow.hosts[oneService].ips[i].ip === serviceIp) {
 							if(response[oneService].awarenessStats[serviceIp].healthy) {
@@ -383,6 +393,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				$scope.$parent.displayAlert('success', "Selected Environment host has been removed.");
 				$scope.listHosts(env);
 			}
 		});
@@ -856,9 +867,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 	$scope.saveEdit = function() {
 		var postData = $scope.formEnvironment;
 		delete postData.dbs;
-		if( $scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants){
-			if(typeof($scope.formEnvironment.services.config.oauth.grants)=='string')
-			{
+		if($scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants) {
+			if(typeof($scope.formEnvironment.services.config.oauth.grants) == 'string') {
 				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
 				var arr = postData.services.config.oauth.grants.split(",");
 				postData.services.config.oauth.grants = arr;
@@ -882,9 +892,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 		if($scope.envirForm.$valid) {
 			var postData = $scope.formEnvironment;
 			delete postData.dbs;
-			if( $scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants){
-				if(typeof($scope.formEnvironment.services.config.oauth.grants)=='string')
-				{
+			if($scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants) {
+				if(typeof($scope.formEnvironment.services.config.oauth.grants) == 'string') {
 					postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
 					var arr = postData.services.config.oauth.grants.split(",");
 					postData.services.config.oauth.grants = arr;

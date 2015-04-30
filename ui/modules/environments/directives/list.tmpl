@@ -156,10 +156,10 @@
                             </div>
                         </script>
 
-                        <div style="padding: 10px 0px 25px 5px;" ng-show="waitMessage">
-                            <alert type="{{waitMessage.type}}">{{waitMessage.message}}</alert>
+                        <div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
+                            <alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
                         </div>
-
+                        <br/>
                         <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
                             <div ng-repeat="(serviceName, serviceInfo) in row.hosts track by serviceName">
                                 <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
@@ -192,6 +192,9 @@
                                     </div>
                                 </div>
                                 <div ng-if="serviceName !== 'controller'" class="serviceBox">
+                                    <div style="padding: 10px 0px 25px 5px;" ng-show="(serviceInfo.waitMessage && serviceInfo.waitMessage.message!=='')">
+                                        <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
+                                    </div>
                                     <div style="width: 100%;" class="head {{serviceInfo.color}}">
                                         <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
                                     </div>
