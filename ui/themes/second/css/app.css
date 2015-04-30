@@ -208,6 +208,7 @@ a:hover {
     min-height: 80px;
     background: #404449;
     color: #e5eaee;
+    min-width: 1285px;
 }
 
 #footer .separator {
@@ -647,7 +648,7 @@ fieldset legend {
    width: 100%;
 }
 .grpsListingScroll{
-    width: 375px;
+    width: 378px;
     height: 70px;
     overflow-y: scroll;
     display: inline-block;
