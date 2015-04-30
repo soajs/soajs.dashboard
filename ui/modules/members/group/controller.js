@@ -1,10 +1,9 @@
 "use strict";
 var groupsApp = soajsApp.components;
 groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
+	//$scope.$parent.isUserLoggedIn();
 
-	$scope.access=
-	{
+	$scope.access={
 		adminGroup:{
 			list : $scope.buildPermittedOperation('urac', '/admin/group/list'),
 			add : $scope.buildPermittedOperation('urac', '/admin/group/add'),
@@ -15,8 +14,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 	};
 
 	$scope.listGroups = function() {
-		if($scope.access.adminGroup.list)
-		{
+		if($scope.access.adminGroup.list){
 			getSendDataFromServer(ngDataApi, {
 				"method": "get",
 				"routeName": "/urac/admin/group/list"
@@ -69,7 +67,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 				}
 			});
 		}
-
 	};
 
 	$scope.addGroup = function() {
@@ -192,6 +189,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 			$scope.listGroups();
 		});
 	};
+
 	$scope.delete1Group = function(data) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -207,6 +205,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 			}
 		});
 	};
+
 	$scope.assignUsers = function(data) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -285,7 +284,6 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 			}
 		});
 	};
-	
-	//call default method
+
 	$scope.listGroups();
 }]);

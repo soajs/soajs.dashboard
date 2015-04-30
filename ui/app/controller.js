@@ -136,6 +136,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.guestMenu = {};
 			$scope.guestMenu.links = [];
 
+			$scope.dashboard=[];
+
 			var a = true;
 			var p ={};
 			for(var i = 0; i < navigation.length; i++)
@@ -151,6 +153,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 				if(navigation[i].hasOwnProperty('private') || (a))
 				{
+					$scope.dashboard.push( navigation[i].id );
 					if(navigation[i].mainMenu) {
 						$scope.mainMenu.links.push(navigation[i]);
 					}
@@ -175,8 +178,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			for(var i = 0; i < navigation.length; i++) {
 				if(navigation[i].tracker && navigation[i].url === '#' + $route.current.originalPath) {
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
-						/* TODO: Check here */
-						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
+						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1)
+						{
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
 							$scope.go("/dashboard");
 						}
@@ -196,14 +199,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			}
 		});
 
-		$scope.isUserLoggedIn = function() {
+		$scope.isUserLoggedIn = function(stopRedirect) {
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$scope.enableInterface = false;
-
-				$scope.displayFixedAlert('danger', "Session expired. Please login.");
-				$scope.go("/login");
+				if(!stopRedirect){
+					$scope.displayFixedAlert('danger', "Session expired. Please login.");
+					$scope.go("/login");
+				}
 			}
 			else {
 				$scope.footerMenu.links.forEach(function(oneMenuEntry) {
@@ -214,8 +218,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if($scope.footerMenu.selectedMenu === '#/login') {
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
-
-				$scope.dashboard = ["members", "user-acl", "environments", "oneEnvironment", "services", "productization", "product-acl", "multi-tenancy", "tenant-app-acl"];
 
 				var user = $cookieStore.get('soajs_user');
 

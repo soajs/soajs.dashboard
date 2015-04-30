@@ -19,16 +19,17 @@
 							</a>
 							<b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ]  ( {{package['_TTL'] | TTL}} hours )
                     <span class="rightActions">
-                        <a ng-if="access.updatePck" href="" ng-click="editPackAcl(row['_id'], package['code']);">
+						<a ng-if="access.deletePck" href="" ng-confirm-click="Are you sure you want to remove the selected package ?" ng-click="removeProductPackage(row['_id'], package['code']);">
+							<span class="icon icon-cross" tooltip="Remove Package"></span>
+						</a>
+	                    <a ng-if="access.updatePck" href="" ng-click="editPackAcl(row['_id'], package['code']);">
 	                        <span class="icon icon-unlocked" tooltip="Edit Package ACL"></span>
                         </a>&nbsp;
 
                         <a ng-if="access.updatePck" href="" ng-click="editPackage(row['_id'], package)">
 	                        <span class="icon icon-pencil2" tooltip="Edit Package"></span>
                         </a>
-	                    <a ng-if="access.deletePck" href="" ng-confirm-click="Are you sure you want to remove the selected package ?" ng-click="removeProductPackage(row['_id'], package['code']);">
-		                    <span class="icon icon-cross" tooltip="Remove Package"></span>
-	                    </a>&nbsp;
+
                         </span>
 
 							<div ng-show="package.showDetails"><em>{{package['description']}}</em></div>

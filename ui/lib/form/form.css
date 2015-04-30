@@ -20,7 +20,17 @@ form .header h3,
 form .modal-header h3 {
     margin: 0;
 }
-
+form .modal-header {
+    position: relative;
+}
+.modal-header .closeButton{
+    position: absolute;
+    right: 15px;
+    top:18px;
+}
+.modal-header .closeButton a{
+    color: white;
+}
 form .ng-dirty.ng-invalid{
     border-color:red;
 }

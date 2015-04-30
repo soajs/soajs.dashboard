@@ -2,6 +2,9 @@
 var servicesApp = soajsApp.components;
 servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
+	$scope.access={
+		listServices : $scope.buildPermittedOperation('dashboard', '/services/list')
+	};
 
 	$scope.listServices = function() {
 		getSendDataFromServer(ngDataApi, {
@@ -59,6 +62,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 		}
 		return result;
 	};
+	if($scope.access.listServices){
+		$scope.listServices();
+	}
 
-	$scope.listServices();
 }]);

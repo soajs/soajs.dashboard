@@ -1,5 +1,6 @@
 <form name="{{form.name}}" class="css-form" novalidate>
-    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3></div>
+    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
+    <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span></div>
     <div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
         <div ng-show="form.modal">
             <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
@@ -73,7 +74,7 @@
                 <td ng-switch-when="date-picker">
                     <label>{{entry.label}}</label>
                     <p class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" min-date="'{{entry.min}}'" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
+                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
                       <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
                       </span>

@@ -9,33 +9,29 @@
                     <legend>{{grp}}</legend>
                     <span ng-if="val.defaultApi"><label>Default Route:</label> {{val.defaultApi}}<br></span>
 
-                <table cellspacing="0" cellpadding="0" border="0" class="serviceApis">
+                <table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:25px ">
                     <tbody>
                         <tr>
-                            <th style="">Label</th>
-                            <th>Route </th>
+                            <th class="labelApi">Label</th>
+                            <th class="routeApi">Route </th>
                         </tr>
                         <tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-                            <td class="labelApi">{{myApi.l}}
+                            <td>{{myApi.l}}
                             </td>
-
-                            <td class="routeApi"><span>{{myApi.v}}</span>
+                            <td><span>{{myApi.v}}</span>
                             </td>
                         </tr>
                         </tbody>
                 </table>
-                    <table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-left:25px ">
+                    <table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
                         <tbody>
                             <tr>
-                                <th style="">Label</th>
-                                <th>Route </th>
+                                <th class="labelApi">Label</th>
+                                <th class="routeApi">Route </th>
                             </tr>
                             <tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-                                <td class="labelApi">{{myApi.l}}
-                                </td>
-
-                                <td class="routeApi"><span>{{myApi.v}}</span>
-                                </td>
+                                <td>{{myApi.l}}</td>
+                                <td class=""><span>{{myApi.v}}</span></td>
                             </tr>
                         </tbody>
                     </table>

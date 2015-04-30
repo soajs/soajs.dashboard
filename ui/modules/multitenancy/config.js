@@ -253,7 +253,6 @@ var tenantConfig = {
 					'name': '_TTL',
 					'label': 'TTL',
 					'type': 'select',
-
 					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
 					          {'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'}, 
 					          {'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
@@ -298,8 +297,7 @@ var tenantConfig = {
 					'type': 'date-picker',
 					'value': '',
 					'tooltip': 'Pick the Expiry Date of the external key. If empty, the key will not expire',
-					'min': new Date(),
-					'required': true
+					'required': false
 				},
 				{
 					'name': 'device',

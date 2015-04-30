@@ -1,8 +1,23 @@
 "use strict";
 var membersApp = soajsApp.components;
+
+membersApp.controller('mainMembersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+
+	$scope.accessMain=
+	{
+		adminUser:{
+			list : $scope.buildPermittedOperation('urac', '/admin/listUsers')
+		},
+		adminGroup:{
+			list : $scope.buildPermittedOperation('urac', '/admin/group/list')
+		}
+	};
+}]);
+
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.key = apiConfiguration.key;
-	$scope.$parent.isUserLoggedIn();
+	// $scope.$parent.isUserLoggedIn();
 
 	$scope.$parent.$on('reloadMembers', function(event, args) {
 		$scope.listMembers();
@@ -11,6 +26,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	$scope.access=
 	{
 		admin:{
+			listUsers : $scope.buildPermittedOperation('urac', '/admin/listUsers'),
 			changeStatusAccess : $scope.buildPermittedOperation('urac', '/admin/changeStatusAccess'),
 			editUser : $scope.buildPermittedOperation('urac', '/admin/editUser'),
 			addUser : $scope.buildPermittedOperation('urac', '/admin/addUser')
@@ -290,7 +306,10 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	};
 
 	//call default method
-	$scope.listMembers();
+	if($scope.access.admin.listUsers){
+		$scope.listMembers();
+	}
+
 }]);
 
 

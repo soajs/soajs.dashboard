@@ -1,21 +1,116 @@
-<section>
+<style>
+    .helpPage .tab-content{
+        line-height: 1.9em;
+    }
+    .helpPage .tab-content p{
+        margin-top: 10px;
+    }
+</style>
+<section class="helpPage" ng-controller="helpPageCtrl">
     <h3>Help Section</h3>
     <hr />
     <p>
-        Integer pharetra blandit nunc at elementum. Ut orci ligula, semper et odio ac, sagittis porttitor justo. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus
-        et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
-        leo sed ullamcorper mollis, augue sem tincidunt lacus, eget bibendum nibh nunc vitae risus. Suspendisse mattis faucibus nisl sit amet lacinia. Nam non nunc et elit egestas posuere.
+        This interface is designed to give you an easy way to use all the Dashboard service apis. It contains 5 sections as described below.
     </p>
-    <br />
-    <p>
-        Integer pharetra blandit nunc at elementum. Ut orci ligula, semper et odio ac, sagittis porttitor justo. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus
-        et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
-        leo sed ullamcorper mollis, augue sem tincidunt lacus, eget bibendum nibh nunc vitae risus. Suspendisse mattis faucibus nisl sit amet lacinia. Nam non nunc et elit egestas posuere.
-    </p>
-    <br />
-    <p>
-        Integer pharetra blandit nunc at elementum. Ut orci ligula, semper et odio ac, sagittis porttitor justo. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus
-        et ultrices posuere cubilia Curae; Vestibulum feugiat interdum libero, eget rhoncus est efficitur non. Cras viverra augue id lorem tincidunt suscipit. Praesent ac ipsum urna! Vivamus laoreet,
-        leo sed ullamcorper mollis, augue sem tincidunt lacus, eget bibendum nibh nunc vitae risus. Suspendisse mattis faucibus nisl sit amet lacinia. Nam non nunc et elit egestas posuere.
-    </p>
+    <br>
+    <tabset>
+        <tab heading="Members">
+            <p>
+                The <b>Members</b> section consists of two tabs and is linked to the URAC service. In this section, a dashboard administrator can manage users accounts and groups.
+            </p>
+            <p>
+                You can see the list of registered members, add a new member and edit an existing member.<br>
+                We have also provided an interface for you to easily update the ACL configuration for a user.
+                Click on the <span class="icon icon-unlocked"></span> icon to edit the user's ACL.
+            </p>
+            <img src="images/usersList.png">
+            <p>
+                You can also see the list of existing groups, edit a group or create a new one, and assign members to these groups.
+            </p>
+            <img src="images/groupList.png">
+            <p>
+                Click on the <span class="icon icon-link"></span> icon to open a form that allows you to add multiple users to a group.
+            </p>
+            <img src="images/assignUsers.png">
+
+        </tab>
+        <tab heading="Environments">
+            <p>
+                In the <b>Environments</b> section, you can view the list of all your available environments, manage them and create new environments.
+                Additionally, for each environment you can:
+            <ul>
+                <li>Create and Manage the databases of your application. </li>
+                <li>
+                    Create and Manage the clusters used by the databases of your application.
+                </li>
+                <li>
+                    Manage hosts services.
+                    You can monitor all your services on multiple hosts IPs.
+                    You can use the interface to easily execute heartbeat and awareness checks to review the health of your services, or perform other maintenance operations.
+                </li>
+            </ul><img src="images/envHosts.png">
+            </p>
+        </tab>
+        <tab heading="Services">
+            <p>
+                The <b>Services</b> section provides a list of all the registered services with their respective apis.
+            </p>
+            <img src="images/servicesList.png">
+
+        </tab>
+        <tab heading="Productization">
+            <p>
+                The <b>Productization</b> section gives you the ability to manage the products and packages that will be used by the tenants.
+                In the main page you can view the list of all the existing products with their packages and you can create new products and packages.
+                Also, for each package, you can assign its access level over services.
+            </p>
+            <img src="images/listProds.png">
+            <p>
+                Click on the <span class="icon icon-unlocked"></span> icon for each package to view and edit its ACL.
+            </p>
+        </tab>
+        <tab heading="Multi-Tenancy">
+            <p>
+                The <b>Multi-Tenancy</b> section is where you can view the list of all your tenants and manage them.
+                You can create a new tenant, or edit an existing tenant's description and oAuth details.
+            </p>
+            <img src="images/listTenants.png">
+            <p>
+                For each tenant, you can:
+            <ul>
+            <li>Manage the oAuth users accounts that have access to this tenant: Add new users and edit existing ones.</li>
+
+            <li>View and manage applications<br>
+
+            You can create new applications from the available products packages, and edit existing applications.<br>
+
+            You can choose to override the product ACL for an application.<br>
+
+
+            Click on the <span class="icon icon-plus"></span> icon to expand each application and view its keys.<br>
+            You can create and manage keys for each application.<br>
+
+                For each key you can:<ul>
+                    <li>
+                        Modify the tenant's services configuration per environment.
+                    </li>
+                    <img src="images/tenantDetails1.png">
+                    <li>
+                        Add and manage external keys and their security information.
+                    </li>
+                    <img src="images/tenantDetails2.png">
+                </ul>
+
+
+
+
+            </li>
+
+            </ul>
+
+            </p>
+        </tab>
+
+
+    </tabset>
 </section>

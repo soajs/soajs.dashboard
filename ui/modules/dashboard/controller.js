@@ -128,3 +128,7 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 	
 }]);
 
+
+dahsboardApp.controller('helpPageCtrl', ['$scope', 'ngDataApi', function($scope, ngDataApi) {
+	$scope.$parent.isUserLoggedIn(true);
+}]);

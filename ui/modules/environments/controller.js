@@ -25,7 +25,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
 		}
 	};
-
 	$scope.access.clusters = {
 		add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
 		list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
@@ -817,7 +816,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 	//default operation
-	$scope.listEnvironments();
+	if($scope.access.list){
+		$scope.listEnvironments();
+	}
 
 }]);
 
@@ -913,6 +914,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			});
 
+		}else{
+			$scope.$parent.displayAlert('danger', 'Your form is not complete yet. Required fields are missing.');
 		}
 	};
 

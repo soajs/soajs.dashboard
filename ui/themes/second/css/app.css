@@ -9,6 +9,7 @@ a:hover {
 #header {
     height: 80px;
     background: #424951;
+    min-width: 1285px;
 }
 
 #header #logo {
@@ -58,7 +59,7 @@ a:hover {
 
 #page {
     width: 100%;
-    min-width: 1135px;
+    min-width: 1285px;
     display: table;
     clear: both;
     position: relative;
@@ -292,9 +293,7 @@ a:hover {
 /**
     THEME SPECIFIC
 **/
-#header #userMenu ul li a#guestMenu-register,
-#header #userMenu ul li a#userMenu-myAccount {
-    /*background: url("../img/icons.png") no-repeat 0 -372px;*/
+#header #userMenu ul li a{
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
@@ -302,7 +301,6 @@ a:hover {
 
 #header #userMenu ul li a#guestMenu-login,
 #header #userMenu ul li a#userMenu-logout {
-    /*background: url("../img/icons.png") no-repeat 0 -392px;*/
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
@@ -773,20 +771,22 @@ form tr .grouped input[type="text"]{
 }
 
 .grouped .icon-arrow-right{
-    padding-left: 10px;
+    padding-left: 20px;
 }
-
+.grouped .icon-arrow-right2{
+    padding-left: 5px;
+}
 .grid table.serviceApis{
-    min-width:472px;
-    width:472px;
+    min-width:480px;
+    width:480px;
     display: block;
     float: left;
 }
 .serviceApis .routeApi{
-    width: 225px;
+    width: 230px;
 }
 .serviceApis .labelApi{
-    width: 245px;
+    width: 250px;
 }
 
 .red{
@@ -884,4 +884,15 @@ tr.sApisEven{
     margin:0 10px;
     border-top:none;
     min-height:60px;
+}
+#membersSection .nav-tabs{
+    border-bottom-width: 0px;
+}
+
+#page section.membersCtrl{
+    border-top-left-radius: 0;
+}
+
+.helpPage .tab-pane{
+    padding: 10px;
 }
