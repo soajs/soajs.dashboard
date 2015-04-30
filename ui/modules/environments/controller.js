@@ -13,6 +13,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.access = {
+		listEnvironments: $scope.buildPermittedOperation('dashboard', '/environment/list'),
 		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
 		deleteEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/delete'),
 		editEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/update'),
@@ -816,10 +817,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 	//default operation
-	if($scope.access.list){
+	if($scope.access.listEnvironments){
 		$scope.listEnvironments();
 	}
-
 }]);
 
 environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
