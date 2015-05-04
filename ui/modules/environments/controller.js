@@ -114,13 +114,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}, function(error, response) {
 				if(error || !response || !response.result || !response.data) {
 					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
-					console.log(error.message);
 				}
 				else {
-					response.data.controller.hosts.forEach(function(oneCtrl) {
-						controllers.push({'ip': oneCtrl, 'color': 'red'});
-					});
-					propulateServices(response.data);
+					if(response.data.controller.hosts){
+						response.data.controller.hosts.forEach(function(oneCtrl) {
+							controllers.push({'ip': oneCtrl, 'color': 'red'});
+						});
+						propulateServices(response.data);
+					}
 				}
 			});
 		}
