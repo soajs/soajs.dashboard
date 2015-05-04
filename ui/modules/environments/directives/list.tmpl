@@ -145,7 +145,8 @@
                             </div>
                         </div>
                     </tab>
-                    <tab heading="Services Hosts" ng-click="listHosts(row['code'])" ng-if="access.listHosts">
+                    <tab heading="Services Hosts" ng-if="access.listHosts">
+                        <div ng-init="listHosts(row['code'])" ></div>
                         <script type="text/ng-template" id="serviceInfoBox.html">
                             <div class="modal-header">
                                 <h3 class="modal-title">{{title}}</h3>

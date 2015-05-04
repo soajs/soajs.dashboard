@@ -12,6 +12,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 	};
 
+	$scope.closeWaitMessage = function(context) {
+		if(!context){
+			context = $scope;
+		}
+		$timeout(function() {
+			context.waitMessage.message = '';
+			context.waitMessage.type = '';
+		}, 7000);
+	};
+
 	$scope.access = {
 		listEnvironments: $scope.buildPermittedOperation('dashboard', '/environment/list'),
 		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
@@ -164,6 +174,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				updateServiceStatus(false);
 				$scope.waitMessage.type = 'danger';
 				$scope.waitMessage.message = "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString();
+				$scope.closeWaitMessage();
 			}
 			else {
 				if(heartbeatResponse.result) {
@@ -181,7 +192,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				updateServiceStatus(true);
 				if(oneHost.name === 'controller') {
 					$scope.waitMessage.type = 'success';
-					$scope.waitMessage.message = "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString() + ", checking services please wait...";
+					$scope.waitMessage.message = "Service " +
+					                             oneHost.name +
+					                             " on address: " +
+					                             oneHost.ip +
+					                             ":" +
+					                             oneHost.port +
+					                             " is healthy @ " +
+					                             new Date().toISOString() +
+					                             ", checking services please wait...";
 				}
 			}
 		});
@@ -246,6 +265,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					oneEnvironmentRow.hosts[oneHost.name].color = color;
 					if(oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
 						oneEnvironmentRow.hosts[oneHost.name].waitMessage = waitMessage;
+						$scope.closeWaitMessage(oneEnvironmentRow.hosts[oneHost.name]);
 					}
 				}
 			});
@@ -268,6 +288,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				console.log("error executing awareness test for controller on ip: " + oneHost.ip);
 				$scope.waitMessage.type = 'danger';
 				$scope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+				$scope.closeWaitMessage();
 			}
 			else {
 				for(var oneService in awarenessResponse) {
@@ -286,6 +307,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 				$scope.waitMessage.type = 'success';
 				$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
+				$scope.closeWaitMessage();
 			}
 		});
 
@@ -360,6 +382,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				console.log("error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip);
 				$scope.waitMessage.type = 'danger';
 				$scope.waitMessage.message = "error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+				$scope.closeWaitMessage();
 			}
 			else {
 				$modal.open({
@@ -396,6 +419,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				console.log("error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip);
 				$scope.waitMessage.type = 'danger';
 				$scope.waitMessage.message = "error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+				$scope.closeWaitMessage();
 			}
 			else {
 				$modal.open({
