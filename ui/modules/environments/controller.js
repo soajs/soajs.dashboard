@@ -13,7 +13,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.closeWaitMessage = function(context) {
-		if(!context){
+		if(!context) {
 			context = $scope;
 		}
 		$timeout(function() {
@@ -81,26 +81,22 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": "controller",
-				"operation": "reloadRegistry",
+				"operation": "awarenessStat",
 				"serviceHost": "api.soajs.org",
 				"servicePort": 4000,
 				"env": env
 			}
 		}, function(error, response) {
-			if(error) {
+			console.log(response);
+			if(error || !response) {
 				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 				console.log(error.message);
 			}
 			else {
-				if(response && response.services) {
-					response.services.controller.hosts.forEach(function(oneCtrl) {
-						controllers.push({'ip': oneCtrl, 'color': 'red'});
-					});
-					propulateServices(response.services);
-				}
-				else {
-					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
-				}
+				response.controller.hosts.forEach(function(oneCtrl) {
+					controllers.push({'ip': oneCtrl, 'color': 'red'});
+				});
+				propulateServices(response);
 			}
 		});
 
