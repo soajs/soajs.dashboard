@@ -91,7 +91,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			else {
 				for(var i = 0; i < response.length; i++) {
 					if(response[i].name === 'controller'){
-						invokeHostsAwareness(response[i].ip);
+						$timeout(function(){
+							invokeHostsAwareness(response[i].ip);
+						}, 500);
 						break;
 					}
 				}
