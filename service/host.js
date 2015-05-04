@@ -3,15 +3,6 @@
 var colName = "hosts";
 var request = require("request");
 
-function validateId(mongo, req, cb) {
-	try {
-		req.soajs.inputmaskData.id = mongo.ObjectId(req.soajs.inputmaskData.id);
-		return cb(null);
-	} catch(e) {
-		return cb(e);
-	}
-}
-
 module.exports = {
 	"list": function(config, mongo, req, res) {
 		mongo.find(colName, {env: req.soajs.inputmaskData.env.toLowerCase()}, function(err, records) {
@@ -69,10 +60,8 @@ module.exports = {
 			req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
 			var maintenanceURL = "http://" + req.soajs.inputmaskData.serviceHost + ":" + req.soajs.inputmaskData.servicePort;
 			maintenanceURL += "/" + req.soajs.inputmaskData.operation;
-			console.log(maintenanceURL);
 			request.get(maintenanceURL, function(error, response, body) {
 				if(error) {
-					req.soajs.log.error(error);
 					return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
 				}
 				else {
