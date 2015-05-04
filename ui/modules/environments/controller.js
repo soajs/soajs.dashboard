@@ -72,7 +72,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"data": {
 				"serviceName": "controller",
 				"operation": "reloadRegistry",
-				"serviceHost": "dashboard-api.soajs.org",
+				"serviceHost": "api.soajs.org",
 				"servicePort": 4000,
 				"env": env
 			}
@@ -202,7 +202,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
 									setTimeout(function() {
 										$scope.executeAwarenessTest(env, oneHost);
-									}, 1000);
+									}, 4000);
 								}
 								else {
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
