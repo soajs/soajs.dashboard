@@ -761,8 +761,19 @@ fieldset .grid table {
     padding-left:0px;
     width: 1100px;
 }
+
+.form h4{
+    background-color:#E5EAEE;
+    padding:5px;
+    border-radius:5px;
+    margin-top:20px;
+}
+
 .form .grouped label{
     width: 280px;
+    /*background-color:#E5EAEE;*/
+    /*padding:8px 0;*/
+    /*border-radius:5px;*/
 }
 form tr .grouped label{
     margin-top: 5px;
