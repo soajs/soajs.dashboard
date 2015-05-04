@@ -971,6 +971,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
 				return;
 			}
+			delete $scope.formEnvironment.services.config.loggerObj;
 		}
 
 		getSendDataFromServer(ngDataApi, {
@@ -1007,6 +1008,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 					$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
 					return;
 				}
+				delete $scope.formEnvironment.services.config.loggerObj;
 			}
 
 			getSendDataFromServer(ngDataApi, {
