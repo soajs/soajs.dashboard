@@ -324,9 +324,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						}
 					}
 				}
-				$scope.waitMessage.type = 'success';
-				$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
-				$scope.closeWaitMessage();
 			}
 		});
 
@@ -339,6 +336,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							if(response[oneService].awarenessStats[serviceIp].healthy) {
 								oneEnvironmentRow.hosts[oneService].ips[i].healthy = true;
 								oneEnvironmentRow.hosts[oneService].ips[i].color = 'green';
+							}
+							else{
+								oneEnvironmentRow.hosts[oneService].ips[i].healthy = false;
+								oneEnvironmentRow.hosts[oneService].ips[i].color = 'red';
 							}
 
 							var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
@@ -380,6 +381,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 					oneEnvironmentRow.hosts[oneService].healthy = healthy;
 					oneEnvironmentRow.hosts[oneService].color = color;
+
+					$scope.waitMessage.type = 'success';
+					$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
+					$scope.closeWaitMessage();
 				}
 			});
 		}
