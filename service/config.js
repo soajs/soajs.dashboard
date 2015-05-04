@@ -17,7 +17,7 @@ var serviceConfig = {
 				"healthCheckInterval": {"type": "integer", "required": true}, // 5 seconds
 				"autoRelaodRegistry": {"type": "integer", "required": true}, // 5 minutes
 				"maxLogCount": {"type": "integer", "required": true}, // 5
-				"autoRegister": {"type": "boolean", "required": true}
+				"autoRegisterService": {"type": "boolean", "required": true}
 			}
 		},
 		"agent": {
