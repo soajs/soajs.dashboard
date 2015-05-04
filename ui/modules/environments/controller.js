@@ -76,29 +76,52 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listHosts = function(env) {
 		var controllers = [];
+
 		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/hosts/maintenanceOperation",
-			"data": {
-				"serviceName": "controller",
-				"operation": "awarenessStat",
-				"serviceHost": "api.soajs.org",
-				"servicePort": 4000,
+			"method": "get",
+			"routeName": "/dashboard/hosts/list",
+			"params": {
 				"env": env
 			}
 		}, function(error, response) {
-			console.log(response);
 			if(error || !response) {
 				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 				console.log(error.message);
 			}
 			else {
-				response.controller.hosts.forEach(function(oneCtrl) {
-					controllers.push({'ip': oneCtrl, 'color': 'red'});
-				});
-				propulateServices(response);
+				for(var i = 0; i < response.length; i++) {
+					if(response[i].name === 'controller'){
+						invokeHostsAwareness(response[i].ip);
+						break;
+					}
+				}
 			}
 		});
+
+		function invokeHostsAwareness(defaultControllerHost) {
+			getSendDataFromServer(ngDataApi, {
+				"method": "send",
+				"routeName": "/dashboard/hosts/maintenanceOperation",
+				"data": {
+					"serviceName": "controller",
+					"operation": "awarenessStat",
+					"serviceHost": defaultControllerHost,
+					"servicePort": 4000,
+					"env": env
+				}
+			}, function(error, response) {
+				if(error || !response) {
+					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+					console.log(error.message);
+				}
+				else {
+					response.controller.hosts.forEach(function(oneCtrl) {
+						controllers.push({'ip': oneCtrl, 'color': 'red'});
+					});
+					propulateServices(response);
+				}
+			});
+		}
 
 		function propulateServices(regServices) {
 			for(var i = 0; i < $scope.grid.rows.length; i++) {
