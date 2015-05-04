@@ -90,8 +90,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 			else {
 				for(var i = 0; i < response.length; i++) {
-					if(response[i].name === 'controller'){
-						$timeout(function(){
+					if(response[i].name === 'controller') {
+						$timeout(function() {
 							invokeHostsAwareness(response[i].ip);
 						}, 500);
 						break;
@@ -112,15 +112,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					"env": env
 				}
 			}, function(error, response) {
-				if(error || !response) {
+				if(error || !response || !response.result || !response.data) {
 					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 					console.log(error.message);
 				}
 				else {
-					response.controller.hosts.forEach(function(oneCtrl) {
+					response.data.controller.hosts.forEach(function(oneCtrl) {
 						controllers.push({'ip': oneCtrl, 'color': 'red'});
 					});
-					propulateServices(response);
+					propulateServices(response.data);
 				}
 			});
 		}
@@ -305,13 +305,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				"env": env
 			}
 		}, function(error, awarenessResponse) {
-			if(error) {
+			if(error || !awarenessResponse.result || !awarenessResponse.data) {
 				console.log("error executing awareness test for controller on ip: " + oneHost.ip);
 				$scope.waitMessage.type = 'danger';
 				$scope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
 				$scope.closeWaitMessage();
 			}
 			else {
+				awarenessResponse = awarenessResponse.data;
 				for(var oneService in awarenessResponse) {
 					if(awarenessResponse.hasOwnProperty(oneService)) {
 						if(oneService === 'controller') {
@@ -339,7 +340,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								oneEnvironmentRow.hosts[oneService].ips[i].healthy = true;
 								oneEnvironmentRow.hosts[oneService].ips[i].color = 'green';
 							}
-							else{
+							else {
 								oneEnvironmentRow.hosts[oneService].ips[i].healthy = false;
 								oneEnvironmentRow.hosts[oneService].ips[i].color = 'red';
 							}
@@ -938,7 +939,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 						if(response[x]._id == $scope.envId) {
 							$scope.formEnvironment = response[x];
 							// formEnvironment.services.config.loggerObj
-							if(response[x].services && response[x].services.config){
+							if(response[x].services && response[x].services.config) {
 								if(response[x].services.config.logger) {
 									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
 								}
