@@ -25,7 +25,7 @@
                         </tr>
                         <tr class="form-group">
                             <td class="">
-                                <label>Controller</label>
+                                <h3>Controller</h3>
 
                                 <div class="grouped">
                                     <label><span class="icon icon-arrow-right2"></span> maxPoolSize</label>
@@ -49,11 +49,11 @@
                             </td>
                         </tr>
                         <tr class="form-group">
-                            <td class="">
-                                <label>Service Config</label>
+                            <td class=""><br/>
+                                <h3>Service Config</h3>
 
                                 <div class="grouped">
-                                    <p>awareness</p>
+                                    <h4>awareness</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> healthCheckInterval </label>
                                         <input type="number" ng-required="true" tooltip=""
@@ -72,13 +72,13 @@
                                         <input ng-required="true" name="autoRegisterService" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegisterService" data-ng-value="false"/> False
 
                                     </div>
-                                    <p>agent</p>
+                                    <h4>agent</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> topologyDir </label>
                                         <input type="text" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.agent.topologyDir" class="form-control"/>
                                     </div>
-                                    <p>key</p>
+                                    <h4>key</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> algorithm </label>
                                         <input type="text" ng-required="true" tooltip=""
@@ -88,11 +88,12 @@
                                                placeholder="" ng-model="formEnvironment.services.config.key.password" class="form-control"/>
                                     </div>
 
+                                    <h4>logger</h4>
                                     <div class="grouped clearfix" style="vertical-align: top">
-                                        <label style="float: left; margin-right: 4px;">logger</label>
+                                        <label><span class="icon icon-arrow-right2"></span> Configuration</label>
                                         <textarea ng-required="true" placeholder="{'src': true, 'level': 'debug'}" rows="4" ng-model="config_loggerObj" class="form-control"></textarea><br/>
                                     </div>
-                                    <p>cors</p>
+                                    <h4>cors</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> enabled </label>
                                         <input ng-required="true" name="cors.enabled" type="radio" ng-model="formEnvironment.services.config.cors.enabled" data-ng-value="true"/> True
@@ -122,7 +123,7 @@
                                                placeholder="" ng-model="formEnvironment.services.config.cors.maxage"
                                                class="form-control"/>
                                     </div>
-                                    <p>oauth</p>
+                                    <h4>oauth</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> grants </label>
                                         <input type="text" ng-required="true" tooltip="Enter comma separated values" placeholder="password,refresh_grants"
@@ -133,7 +134,7 @@
                                         <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="true"/> True
                                         <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="false"/> False
                                     </div>
-                                    <p>ports</p>
+                                    <h4>ports</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> controller </label>
                                         <input type="number" ng-required="true" tooltip=""
@@ -150,14 +151,14 @@
                                                placeholder="" ng-model="formEnvironment.services.config.ports.randomInc"
                                                class="form-control"/>
                                     </div>
-                                    <p>cookie</p>
+                                    <h4>cookie</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> secret </label>
                                         <input type="text" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.cookie.secret"
                                                class="form-control"/>
                                     </div>
-                                    <p>session</p>
+                                    <h4>session</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> name </label>
                                         <input type="text" ng-required="true" tooltip=""
