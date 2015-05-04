@@ -59,6 +59,15 @@
                                         <label><span class="icon icon-arrow-right2"></span> autoRelaodRegistry </label>
                                         <input type="number" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.awareness.autoRelaodRegistry" class="form-control">
+                                        <br>
+                                        <label><span class="icon icon-arrow-right2"></span> maxLogCount </label>
+                                        <input type="number" ng-required="true" tooltip=""
+                                               placeholder="" ng-model="formEnvironment.services.config.awareness.maxLogCount" class="form-control">
+                                        <br>
+                                        <label><span class="icon icon-arrow-right2"></span> autoRegister </label>
+                                        <input name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="true"> True
+                                        <input name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="false"> False
+
                                     </div>
                                     <p>agent</p>
                                     <div class="grouped">
