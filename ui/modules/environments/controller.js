@@ -87,7 +87,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				"env": env
 			}
 		}, function(error, response) {
-			console.log(response);
 			if(error || !response) {
 				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 				console.log(error.message);
@@ -907,6 +906,12 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 					for(var x = 0; x < l; x++) {
 						if(response[x]._id == $scope.envId) {
 							$scope.formEnvironment = response[x];
+							// formEnvironment.services.config.loggerObj
+							if(response[x].services && response[x].services.config){
+								if(response[x].services.config.logger) {
+									$scope.formEnvironment.services.config.loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
+								}
+							}
 							break;
 						}
 					}
@@ -928,6 +933,17 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				postData.services.config.oauth.grants = arr;
 			}
 		}
+
+		if($scope.formEnvironment.services.config && ($scope.formEnvironment.services.config.loggerObj != "")) {
+			try {
+				$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.services.config.loggerObj);
+			}
+			catch(e) {
+				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
+				return;
+			}
+		}
+
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/update",
@@ -953,6 +969,17 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 					postData.services.config.oauth.grants = arr;
 				}
 			}
+
+			if($scope.formEnvironment.services.config && ($scope.formEnvironment.services.config.loggerObj != "")) {
+				try {
+					$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.services.config.loggerObj);
+				}
+				catch(e) {
+					$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
+					return;
+				}
+			}
+
 			getSendDataFromServer(ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/environment/add",
@@ -963,7 +990,8 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
+					$scope.$parent.displayAlert('success', 'Environment Created Successfully.');
+					$scope.$parent.go('/environments/');
 				}
 			});
 

@@ -65,8 +65,8 @@
                                                placeholder="" ng-model="formEnvironment.services.config.awareness.maxLogCount" class="form-control">
                                         <br>
                                         <label><span class="icon icon-arrow-right2"></span> autoRegister </label>
-                                        <input name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="true"> True
-                                        <input name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="false"> False
+                                        <input ng-required="true" name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="true"> True
+                                        <input ng-required="true" name="autoRegister" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegister" data-ng-value="false"> False
 
                                     </div>
                                     <p>agent</p>
@@ -84,13 +84,10 @@
                                         <input type="text" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.key.password" class="form-control">
                                     </div>
-                                    <p>logger</p>
-                                    <div class="grouped"><label><span class="icon icon-arrow-right2"></span> src </label>
-                                        <input name="logger_src" type="radio" ng-model="formEnvironment.services.config.logger.src" data-ng-value="true"> True
-                                        <input name="logger_src" type="radio" ng-model="formEnvironment.services.config.logger.src" data-ng-value="false"> False
-                                        <br> <label><span class="icon icon-arrow-right2"></span> level </label>
-                                        <input type="text" ng-required="true" tooltip=""
-                                               placeholder="" ng-model="formEnvironment.services.config.logger.level" class="form-control">
+
+                                    <div class="grouped clearfix" style="vertical-align: top">
+                                        <label style="float: left; margin-right: 4px;">logger</label>
+                                        <textarea ng-required="true" placeholder="{'src': true, 'level': 'debug'}" rows="4" ng-model="formEnvironment.services.config.loggerObj" class="form-control"></textarea><br>
                                     </div>
                                     <p>cors</p>
                                     <div class="grouped">

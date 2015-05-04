@@ -759,6 +759,7 @@ fieldset .grid table {
 }
 .form .grouped{
     padding-left:0px;
+    width: 1100px;
 }
 .form .grouped label{
     width: 280px;

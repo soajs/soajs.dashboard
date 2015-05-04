@@ -122,7 +122,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				"config": {
 					"awareness": {
 						"healthCheckInterval": 5000,
-						"autoRelaodRegistry": 300000
+						"autoRelaodRegistry": 300000,
+						"maxLogCount":5,
+						"autoRegister":true
 					},
 					"agent": {
 						"topologyDir": "/opt/soajs/"
@@ -3628,7 +3630,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						"config": {
 							"awareness": {
 								"healthCheckInterval": 5000,
-								"autoRelaodRegistry": 300000
+								"autoRelaodRegistry": 300000,
+								"maxLogCount":5,
+								"autoRegister":true
 							},
 							"agent": {
 								"topologyDir": "/opt/soajs/"
