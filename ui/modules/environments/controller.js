@@ -938,7 +938,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 							// formEnvironment.services.config.loggerObj
 							if(response[x].services && response[x].services.config){
 								if(response[x].services.config.logger) {
-									$scope.formEnvironment.services.config.loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
+									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
 								}
 							}
 							break;
@@ -963,15 +963,14 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 			}
 		}
 
-		if($scope.formEnvironment.services.config && ($scope.formEnvironment.services.config.loggerObj != "")) {
+		if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
 			try {
-				$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.services.config.loggerObj);
+				$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
 			}
 			catch(e) {
 				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
 				return;
 			}
-			delete $scope.formEnvironment.services.config.loggerObj;
 		}
 
 		getSendDataFromServer(ngDataApi, {
@@ -1000,15 +999,14 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			}
 
-			if($scope.formEnvironment.services.config && ($scope.formEnvironment.services.config.loggerObj != "")) {
+			if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
 				try {
-					$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.services.config.loggerObj);
+					$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
 				}
 				catch(e) {
 					$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
 					return;
 				}
-				delete $scope.formEnvironment.services.config.loggerObj;
 			}
 
 			getSendDataFromServer(ngDataApi, {
