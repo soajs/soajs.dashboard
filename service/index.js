@@ -7,6 +7,7 @@ var config = require('./config.js');
 var environment = require('./environment.js');
 var product = require('./product.js');
 var tenant = require('./tenant.js');
+var host = require("./host.js");
 
 var mongo = null;
 
@@ -242,44 +243,27 @@ service.init(function() {
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
 
+	service.get("/hosts/list", function(req, res) {
+		checkForMongo(req);
+		host.list(config, mongo, req, res);
+	});
+	service.get("/hosts/delete", function(req, res) {
+		checkForMongo(req);
+		host.delete(config, mongo, req, res);
+	});
+	service.post("/hosts/maintenanceOperation", function(req, res) {
+		checkForMongo(req);
+		host.maintenanceOperation(config, mongo, req, res);
+	});
+
 	service.post("/services/list", function(req, res) {
 		checkForMongo(req);
 		var colName = 'services';
-		/*
-		 var criteria = {};
-		 if( (req.soajs.inputmaskData.serviceNames) &&(req.soajs.inputmaskData.serviceNames.length>0) ){
-		 criteria = {'name': {$in: req.soajs.inputmaskData.serviceNames}};
-		 }
-		 */
 		var criteria = ((req.soajs.inputmaskData.serviceNames) && (req.soajs.inputmaskData.serviceNames.length > 0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
-		//console.log(criteria);
 		mongo.find(colName, criteria, function(err, records) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 			return res.jsonp(req.soajs.buildResponse(null, records));
 		});
-
-	});
-
-	service.get("/hosts/list", function(req, res) {
-		checkForMongo(req);
-		var colName = 'hosts';
-		mongo.find(colName, {env: req.soajs.inputmaskData.env.toLowerCase()}, function(err, records) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-			return res.jsonp(req.soajs.buildResponse(null, records));
-		});
-
-	});
-
-	service.get("/hosts/delete", function(req, res) {
-		checkForMongo(req);
-		var colName = 'hosts';
-		mongo.remove(colName, {env: req.soajs.inputmaskData.env.toLowerCase(), name: req.soajs.inputmaskData.name, ip: req.soajs.inputmaskData.ip}, function(err, records) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-			return res.jsonp(req.soajs.buildResponse(null, "host delete successfull."));
-		});
-
 	});
 
 	service.get("/tenant/permissions/get", function(req, res) {

@@ -66,25 +66,32 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listHosts = function(env) {
 		var controllers = [];
-		$http({
-			url: apiConfiguration.domain + ":5000/reloadRegistry",
-			method: 'get',
-			responseType: 'json',
-			cache: false,
-			timeout: 20000,
-			json: true
-		}).success(function(response) {
-			if(response && response.services) {
-				response.services.controller.hosts.forEach(function(oneCtrl) {
-					controllers.push({'ip': oneCtrl, 'color': 'red'});
-				});
-				propulateServices(response.services);
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceName": "controller",
+				"operation": "reloadRegistry",
+				"serviceHost": "dashboard-api.soajs.org",
+				"servicePort": 4000,
+				"env": env
+			}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+				console.log(error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+				if(response && response.services) {
+					response.services.controller.hosts.forEach(function(oneCtrl) {
+						controllers.push({'ip': oneCtrl, 'color': 'red'});
+					});
+					propulateServices(response.services);
+				}
+				else {
+					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+				}
 			}
-		}).error(function() {
-			$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 		});
 
 		function propulateServices(regServices) {
@@ -141,36 +148,42 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.executeHeartbeatTest = function(env, oneHost) {
-		$http({
-			url: "http://" + oneHost.ip + ":" + (oneHost.port + 1000) + "/heartbeat",
-			method: 'get',
-			responseType: 'json',
-			cache: false,
-			timeout: 20000,
-			json: true
-		}).success(function(heartbeatResponse) {
-			if(heartbeatResponse.result) {
-				$scope.grid.rows.forEach(function(oneEnvironmentRow) {
-					if(oneEnvironmentRow.code === env) {
-						for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
-							if(oneEnvironmentRow.hosts[oneHost.name].ips[i].ip === oneHost.ip) {
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
-								oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceName": oneHost.name,
+				"operation": "heartbeat",
+				"serviceHost": oneHost.ip,
+				"servicePort": oneHost.port,
+				"env": env
+			}
+		}, function(error, heartbeatResponse) {
+			if(error) {
+				console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
+				updateServiceStatus(false);
+				$scope.waitMessage.type = 'danger';
+				$scope.waitMessage.message = "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString();
+			}
+			else {
+				if(heartbeatResponse.result) {
+					$scope.grid.rows.forEach(function(oneEnvironmentRow) {
+						if(oneEnvironmentRow.code === env) {
+							for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
+								if(oneEnvironmentRow.hosts[oneHost.name].ips[i].ip === oneHost.ip) {
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
+									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
+								}
 							}
 						}
-					}
-				});
+					});
+				}
+				updateServiceStatus(true);
+				if(oneHost.name === 'controller') {
+					$scope.waitMessage.type = 'success';
+					$scope.waitMessage.message = "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString() + ", checking services please wait...";
+				}
 			}
-			updateServiceStatus(true);
-			if(oneHost.name === 'controller') {
-				$scope.waitMessage.type = 'success';
-				$scope.waitMessage.message = "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString() + ", checking services please wait...";
-			}
-		}).error(function() {
-			console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
-			updateServiceStatus(false);
-			$scope.waitMessage.type = 'danger';
-			$scope.waitMessage.message = "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString();
 		});
 
 		function updateServiceStatus(healthyCheck) {
@@ -189,7 +202,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
 									setTimeout(function() {
 										$scope.executeAwarenessTest(env, oneHost);
-									}, 5000);
+									}, 1000);
 								}
 								else {
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
@@ -197,7 +210,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 									waitMessage = {
 										type: "success",
 										message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
-										close: function(entry){
+										close: function(entry) {
 											entry.waitMessage.type = '';
 											entry.waitMessage.message = '';
 										}
@@ -240,36 +253,40 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.executeAwarenessTest = function(env, oneHost) {
-		$http({
-			url: "http://" + oneHost.ip + ":5000/awarenessStat",
-			method: 'get',
-			responseType: 'json',
-			cache: false,
-			timeout: 20000,
-			json: true
-		}).success(function(awarenessResponse) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceName": oneHost.name,
+				"operation": "awarenessStat",
+				"serviceHost": oneHost.ip,
+				"servicePort": oneHost.port,
+				"env": env
+			}
+		}, function(error, awarenessResponse) {
+			if(error) {
+				console.log("error executing awareness test for controller on ip: " + oneHost.ip);
+				$scope.waitMessage.type = 'danger';
+				$scope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+			}
+			else {
+				for(var oneService in awarenessResponse) {
+					if(awarenessResponse.hasOwnProperty(oneService)) {
+						if(oneService === 'controller') {
+							continue;
+						}
 
-			for(var oneService in awarenessResponse) {
-				if(awarenessResponse.hasOwnProperty(oneService)) {
-					if(oneService === 'controller') {
-						continue;
-					}
-
-					if(awarenessResponse[oneService].awarenessStats) {
-						var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
-						ips.forEach(function(serviceIp) {
-							updateService(awarenessResponse, oneService, serviceIp);
-						});
+						if(awarenessResponse[oneService].awarenessStats) {
+							var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
+							ips.forEach(function(serviceIp) {
+								updateService(awarenessResponse, oneService, serviceIp);
+							});
+						}
 					}
 				}
+				$scope.waitMessage.type = 'success';
+				$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
 			}
-			$scope.waitMessage.type = 'success';
-			$scope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
-
-		}).error(function() {
-			console.log("error executing awareness test for controller on ip: " + oneHost.ip);
-			$scope.waitMessage.type = 'danger';
-			$scope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
 		});
 
 		function updateService(response, oneService, serviceIp) {
@@ -328,13 +345,23 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.reloadRegistry = function(env, oneHost) {
-		$http({
-			url: "http://" + oneHost.ip + ":" + (oneHost.port + 1000) + "/reloadRegistry",
-			method: 'get',
-			responseType: 'json',
-			json: true
-		}).success(function(response) {
-			if(response) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceName": oneHost.name,
+				"operation": "reloadRegistry",
+				"serviceHost": oneHost.ip,
+				"servicePort": oneHost.port,
+				"env": env
+			}
+		}, function(error, response) {
+			if(error) {
+				console.log("error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip);
+				$scope.waitMessage.type = 'danger';
+				$scope.waitMessage.message = "error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+			}
+			else {
 				$modal.open({
 					templateUrl: "serviceInfoBox.html",
 					size: 'lg',
@@ -350,19 +377,27 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 				});
 			}
-		}).error(function() {
-			console.log("error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip);
 		});
 	};
 
 	$scope.loadProvisioning = function(env, oneHost) {
-		$http({
-			url: "http://" + oneHost.ip + ":" + (oneHost.port + 1000) + "/loadProvision",
-			method: 'get',
-			responseType: 'json',
-			json: true
-		}).success(function(response) {
-			if(response) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceName": oneHost.name,
+				"operation": "loadProvision",
+				"serviceHost": oneHost.ip,
+				"servicePort": oneHost.port,
+				"env": env
+			}
+		}, function(error, response) {
+			if(error) {
+				console.log("error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip);
+				$scope.waitMessage.type = 'danger';
+				$scope.waitMessage.message = "error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
+			}
+			else {
 				$modal.open({
 					templateUrl: "serviceInfoBox.html",
 					size: 'lg',
@@ -378,8 +413,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					}
 				});
 			}
-		}).error(function() {
-			console.log("error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip);
 		});
 	};
 
@@ -817,7 +850,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 	//default operation
-	if($scope.access.listEnvironments){
+	if($scope.access.listEnvironments) {
 		$scope.listEnvironments();
 	}
 }]);
@@ -914,7 +947,7 @@ environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$r
 				}
 			});
 
-		}else{
+		} else {
 			$scope.$parent.displayAlert('danger', 'Your form is not complete yet. Required fields are missing.');
 		}
 	};

@@ -3339,60 +3339,205 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 	describe("hosts tests", function() {
 		var hosts = [], hostsCount = 0;
-		it("success - will get hosts list", function(done) {
-			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-				assert.ok(body.data);
-				hostsCount = body.data.length;
-				done();
-			});
-		});
+		describe("list Hosts", function() {
 
-		it("mongo - empty the hosts", function(done) {
-			mongo.find('hosts', {}, function(error, dbHosts) {
-				assert.ifError(error);
-				assert.ok(dbHosts);
-				hosts = dbHosts;
+			it("success - will get hosts list", function(done) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+					assert.ok(body.data);
+					hostsCount = body.data.length;
+					done();
+				});
+			});
+
+			it("mongo - empty the hosts", function(done) {
+				mongo.find('hosts', {}, function(error, dbHosts) {
+					assert.ifError(error);
+					assert.ok(dbHosts);
+					hosts = dbHosts;
+					mongo.remove('hosts', {}, function(error) {
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
+
+			it("success - will get an empty list", function(done) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+					console.log(body.data);
+					console.log("=========");
+					assert.ok(body.data);
+					assert.equal(body.data.length, 0);
+					done();
+				});
+			});
+
+			it("mongo - fill the hosts", function(done) {
 				mongo.remove('hosts', {}, function(error) {
 					assert.ifError(error);
+					mongo.insert('hosts', hosts, function(error) {
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
+
+			it("success - will get hosts list", function(done) {
+				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.ok(body.data.length > 0);
+					assert.equal(body.data.length, hostsCount);
 					done();
 				});
 			});
 		});
 
-		it("success - will get an empty list", function(done) {
-			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-				console.log(body.data);
-				console.log("=========");
-				assert.ok(body.data);
-				assert.equal(body.data.length, 0);
-				done();
-			});
-		});
-
-		it("mongo - fill the hosts", function(done) {
-			mongo.remove('hosts', {}, function(error) {
-				assert.ifError(error);
-				mongo.insert('hosts', hosts, function(error) {
-					assert.ifError(error);
+		describe("remove Hosts", function() {
+			it('success - will remove host', function(done) {
+				executeMyRequest({qs: {'env': 'dev', 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
+					assert.ok(body.data);
 					done();
 				});
 			});
 		});
 
-		it("success - will get hosts list", function(done) {
-			executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-				assert.ok(body.data);
-				assert.ok(body.data.length > 0);
-				assert.equal(body.data.length, hostsCount);
-				done();
-			});
-		});
+		describe("maintenance operation Hosts", function() {
+			//afterEach(function(done){
+			//	setTimeout(function(){ done(); }, 1000);
+			//});
 
-		it('success - will remove host', function(done){
-			executeMyRequest({qs: {'env': 'dev', 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
-				assert.ok(body.data);
-				done();
+			it("fail - missing params", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4000,
+						'operation': 'heartbeat'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceHost"});
+					done();
+				});
 			});
+
+			it("fail - error calling awareness on service", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'dashboard',
+						'servicePort': 4003,
+						'operation': 'awarenessStat',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
+					done();
+				});
+			});
+
+			it("fail - error calling load provision on controller", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4003,
+						'operation': 'loadProvision',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
+					done();
+				});
+			});
+
+			it("fail - host not found", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'dashboard',
+						'servicePort': 4003,
+						'operation': 'heartbeat',
+						'serviceHost': '128.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+					done();
+				});
+			});
+
+			it("fail - service not found", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'invalidService',
+						'servicePort': 4000,
+						'operation': 'heartbeat',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 604, "message": "Service not found."});
+					done();
+				});
+			});
+
+			it("success - heartbeat controller and service", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4000,
+						'operation': 'heartbeat',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.ok(body.data);
+
+					params.form.serviceName = 'dashboard';
+					params.form.servicePort = 4003;
+					executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+			});
+
+			it("success - awareness on controller", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4000,
+						'operation': 'awarenessStat',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - load provision service", function(done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'dashboard',
+						'servicePort': 4003,
+						'operation': 'loadProvision',
+						'serviceHost': '127.0.0.1'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
 		});
 	});
 

@@ -181,8 +181,11 @@ module.exports = {
 		"514": "Error removing environment database",
 
 		"600": "Database error",
-		"601": "No Logged in User found."
-
+		"601": "No Logged in User found.",
+		"602": "Invalid maintenance operation requested.",
+		"603": "Error executing maintenance operation.",
+		"604": "Service not found.",
+		"605": "Service Host not found."
 	},
 
 	"schema": {
@@ -815,7 +818,7 @@ module.exports = {
 				"group": "Tenant Application"
 			},
 			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl'],
-			"clearAcl":{
+			"clearAcl": {
 				"source": ['body.clearAcl'],
 				"required": false,
 				"validation": {
@@ -841,12 +844,12 @@ module.exports = {
 				}
 			}
 		},
-		"/tenant/application/acl/get":{
+		"/tenant/application/acl/get": {
 			_apiInfo: {
 				"l": "Get Tenant Application By External Key",
 				"group": "Tenant Application"
 			},
-			"extKey":{
+			"extKey": {
 				"source": ['body.extKey'],
 				"required": true,
 				"validation": {
@@ -1051,6 +1054,50 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"required": true
+				}
+			}
+		},
+
+		"/hosts/maintenanceOperation": {
+			"_apiInfo": {
+				"l": "Perform Maintenance Operation",
+				"group": "Hosts"
+			},
+			"operation": {
+				"required": true,
+				"source": ['body.operation'],
+				"validation": {
+					"type": "string",
+					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat"]
+				}
+			},
+			"serviceName": {
+				"source": ['body.serviceName'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"serviceHost": {
+				"source": ['body.serviceHost'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"servicePort": {
+				"source": ['body.servicePort'],
+				"required": true,
+				"validation": {
+					"type": "integer",
+					"min": 4000
+				}
+			},
+			"env": {
+				"source": ['body.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
