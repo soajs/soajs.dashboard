@@ -16,7 +16,7 @@ var serviceConfig = {
 			"properties": {
 				"healthCheckInterval": {"type": "integer", "required": true, "min": 5000},
 				"autoRelaodRegistry": {"type": "integer", "required": true, "min": 60000},
-				"maxLogCount": {"type": "integer", "required": true, "max": 20},
+				"maxLogCount": {"type": "integer", "required": true, "min": 5},
 				"autoRegisterService": {"type": "boolean", "required": true}
 			}
 		},
@@ -59,7 +59,7 @@ var serviceConfig = {
 			"properties": {
 				"controller": {"type": "integer", "required": true},
 				"maintenanceInc": {"type": "integer", "required": true, "min": 1000},
-				"randomInc": {"type": "integer", "required": true, "min": 100, "max": 990}
+				"randomInc": {"type": "integer", "required": true, "min": 100}
 			}
 		},
 		"cookie": {
@@ -300,10 +300,10 @@ module.exports = {
 							"required": true,
 							"type": "object",
 							"properties": {
-								"maxPoolSize": {"type": "integer", "required": true, "min": 0, "max": 100},
+								"maxPoolSize": {"type": "integer", "required": true},
 								"authorization": {"type": "boolean", "required": true},
-								"requestTimeout": {"type": "integer", "required": true, "min": 30, "max": 90},
-								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0, "max": 10}
+								"requestTimeout": {"type": "integer", "required": true, "min": 20, "max": 60},
+								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0}
 							}
 						},
 						"config": serviceConfig

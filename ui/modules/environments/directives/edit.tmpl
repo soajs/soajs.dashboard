@@ -31,7 +31,7 @@
                                     <label><span class="icon icon-arrow-right2"></span> Max Pool Size</label>
                                     <input type="number" ng-required="true" tooltip=""
                                            placeholder="" ng-model="formEnvironment.services.controller.maxPoolSize" class="form-control"/>
-                                    <em>Specify the controller's maximum pool size, maximum value allowed is 100.</em>
+                                    <em>Specify the controller's maximum pool size, 0 is unlimited.</em>
                                     <br/>
                                     <label><span class="icon icon-arrow-right2"></span> Authorization</label>
 
@@ -43,7 +43,7 @@
                                     <label><span class="icon icon-arrow-right2"></span> Request Timeout</label>
                                     <input type="number" ng-required="true"
                                            placeholder="" ng-model="formEnvironment.services.controller.requestTimeout" class="form-control"/>
-                                    <em>Specify the controller maximum timeout limit in seconds, between 30 and 90 seconds</em>
+                                    <em>Specify the controller maximum timeout limit in seconds, between 20 and 60 seconds</em>
                                     <br/>
                                     <label><span class="icon icon-arrow-right2"></span> Request Timeout Renewal</label>
                                     <input type="number" tooltip="" ng-required="true"
@@ -72,7 +72,7 @@
                                         <label><span class="icon icon-arrow-right2"></span> Max Log Count </label>
                                         <input type="number" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.awareness.maxLogCount" class="form-control"/>
-                                        <em>Specify the maximum number to display awareness warning logs for each service before stopping, maximum 20.</em>
+                                        <em>Specify the maximum number to display awareness warning logs for each service before stopping, minimum 5.</em>
                                         <br/>
                                         <label><span class="icon icon-arrow-right2"></span> Auto Register Service </label>
                                         <input ng-required="true" name="autoRegisterService" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegisterService" data-ng-value="true"/> True
@@ -161,7 +161,7 @@
                                         <input type="number" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.ports.randomInc"
                                                class="form-control"/>
-                                        <em>When new services with no port are registered, random port number is assigned. Provide limit: minimum 100, maximum 990.</em>
+                                        <em>When new services with no port are registered, random port number is assigned. Provide limit: minimum 100.</em>
                                     </div>
                                     <h4>Cookie</h4>
                                     <div class="grouped">
