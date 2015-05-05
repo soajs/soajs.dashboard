@@ -14,9 +14,9 @@ var serviceConfig = {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"healthCheckInterval": {"type": "integer", "required": true}, // 5 seconds
-				"autoRelaodRegistry": {"type": "integer", "required": true}, // 5 minutes
-				"maxLogCount": {"type": "integer", "required": true}, // 5
+				"healthCheckInterval": {"type": "integer", "required": true, "min": 5000},
+				"autoRelaodRegistry": {"type": "integer", "required": true, "min": 60000},
+				"maxLogCount": {"type": "integer", "required": true, "max": 20},
 				"autoRegisterService": {"type": "boolean", "required": true}
 			}
 		},
@@ -24,15 +24,15 @@ var serviceConfig = {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"topologyDir": {"type": "string", "required": true} // 5 seconds
+				"topologyDir": {"type": "string", "required": true}
 			}
 		},
 		"key": {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"algorithm": {"type": "string", "required": true}, // 5 seconds
-				"password": {"type": "string", "required": true} // 5 seconds
+				"algorithm": {"type": "string", "required": true},
+				"password": {"type": "string", "required": true, "minLength": 5}
 			}
 		},
 		"logger": { //ATTENTION: this is not all the properties for logger
@@ -58,23 +58,23 @@ var serviceConfig = {
 			"required": true,
 			"properties": {
 				"controller": {"type": "integer", "required": true},
-				"maintenanceInc": {"type": "integer", "required": true},
-				"randomInc": {"type": "integer", "required": true}
+				"maintenanceInc": {"type": "integer", "required": true, "min": 1000},
+				"randomInc": {"type": "integer", "required": true, "min": 100, "max": 990}
 			}
 		},
 		"cookie": {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"secret": {"type": "string", "required": true}
+				"secret": {"type": "string", "required": true, "minLength": 5}
 			}
 		},
 		"session": {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"name": {"type": "string", "required": true},
-				"secret": {"type": "string", "required": true},
+				"name": {"type": "string", "required": true, "minLength": 5},
+				"secret": {"type": "string", "required": true, "minLength": 5},
 				"resave": {"type": "boolean", "required": true},
 				"saveUninitialized": {"type": "boolean", "required": true},
 				"cookie": {
@@ -289,6 +289,26 @@ module.exports = {
 						"extraParam": {"type": "object", "properties": {}}
 					}
 				}
+			},
+			"services": {
+				"source": ['body.services'],
+				"required": true,
+				"validation": {
+					"type": "object",
+					"properties": {
+						"controller": {
+							"required": true,
+							"type": "object",
+							"properties": {
+								"maxPoolSize": {"type": "integer", "required": true, "min": 0, "max": 100},
+								"authorization": {"type": "boolean", "required": true},
+								"requestTimeout": {"type": "integer", "required": true, "min": 30, "max": 90},
+								"requestTimeoutRenewal": {"type": "integer", "required": true, "min": 0, "max": 10}
+							}
+						},
+						"config": serviceConfig
+					}
+				}
 			}
 		},
 		"/environment/list": {
@@ -303,7 +323,7 @@ module.exports = {
 				"l": "Add Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['description'],
+			"commonFields": ['description', 'services'],
 			"code": {
 				"source": ['body.code'],
 				"required": true,
@@ -311,26 +331,6 @@ module.exports = {
 					"type": "string",
 					"format": "alphanumeric",
 					"maxLength": 4
-				}
-			},
-			"services": {
-				"source": ['body.services'],
-				"required": true,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"controller": {
-							"required": true,
-							"type": "object",
-							"properties": {
-								"maxPoolSize": {"type": "integer", "required": true},
-								"authorization": {"type": "boolean", "required": true},
-								"requestTimeout": {"type": "ineteger", "required": true},
-								"requestTimeoutRenewal": {"type": "ineteger", "required": true}
-							}
-						},
-						"config": serviceConfig
-					}
 				}
 			}
 		},
@@ -346,27 +346,7 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description'],
-			"services": {
-				"source": ['body.services'],
-				"required": true,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"controller": {
-							"required": true,
-							"type": "object",
-							"properties": {
-								"maxPoolSize": {"type": "integer", "required": true},
-								"authorization": {"type": "boolean", "required": true},
-								"requestTimeout": {"type": "ineteger", "required": true},
-								"requestTimeoutRenewal": {"type": "ineteger", "required": true}
-							}
-						},
-						"config": serviceConfig
-					}
-				}
-			}
+			"commonFields": ['id', 'description', 'services']
 		},
 
 		"/environment/dbs/list": {

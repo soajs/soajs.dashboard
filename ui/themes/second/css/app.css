@@ -775,6 +775,11 @@ fieldset .grid table {
     /*padding:8px 0;*/
     /*border-radius:5px;*/
 }
+form tr .grouped em {
+    margin-left: 285px;
+    color: #ccc;
+}
+
 form tr .grouped label{
     margin-top: 5px;
     margin-bottom: 10px;

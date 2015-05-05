@@ -91,12 +91,12 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			else {
 				for(var i = 0; i < response.length; i++) {
 					if(response[i].name === 'controller') {
-						$timeout(function() {
-							invokeHostsAwareness(response[i].ip);
-						}, 500);
-						break;
+						controllers.push({'name': 'controller', 'ip': response[i].ip, 'color': 'red', 'port': 4000});
 					}
 				}
+				controllers.forEach(function(oneController) {
+					invokeHostsAwareness(oneController.ip);
+				});
 			}
 		});
 
@@ -114,14 +114,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}, function(error, response) {
 				if(error || !response || !response.result || !response.data) {
 					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+					console.log(error.message);
 				}
 				else {
-					if(response.data.controller.hosts){
-						response.data.controller.hosts.forEach(function(oneCtrl) {
-							controllers.push({'ip': oneCtrl, 'color': 'red'});
-						});
-						propulateServices(response.data);
-					}
+					//response.data.controller.hosts.forEach(function(oneCtrl) {
+					//	controllers.push({'ip': oneCtrl, 'color': 'red'});
+					//});
+					propulateServices(response.data);
 				}
 			});
 		}
@@ -129,7 +128,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		function propulateServices(regServices) {
 			for(var i = 0; i < $scope.grid.rows.length; i++) {
 				if($scope.grid.rows[i]['code'] === env) {
-
+					$scope.grid.rows[i].controllers = controllers;
 					var renderedHosts = {};
 					var services = Object.keys(regServices);
 					services.forEach(function(serviceName) {
@@ -394,7 +393,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 	};
 
-	$scope.reloadRegistry = function(env, oneHost) {
+	$scope.reloadRegistry = function(env, oneHost, cb) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
@@ -413,20 +412,25 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.closeWaitMessage();
 			}
 			else {
-				$modal.open({
-					templateUrl: "serviceInfoBox.html",
-					size: 'lg',
-					backdrop: false,
-					keyboard: false,
-					controller: function($scope, $modalInstance) {
-						$scope.title = "Reloaded Registry of " + oneHost.name;
-						$scope.data = JSON.stringify(response, null, 2);
-						setTimeout(function() {highlightMyCode()}, 500);
-						$scope.ok = function() {
-							$modalInstance.dismiss('ok');
-						};
-					}
-				});
+				if(cb) {
+					cb();
+				}
+				else {
+					$modal.open({
+						templateUrl: "serviceInfoBox.html",
+						size: 'lg',
+						backdrop: false,
+						keyboard: false,
+						controller: function($scope, $modalInstance) {
+							$scope.title = "Reloaded Registry of " + oneHost.name;
+							$scope.data = JSON.stringify(response, null, 2);
+							setTimeout(function() {highlightMyCode()}, 500);
+							$scope.ok = function() {
+								$modalInstance.dismiss('ok');
+							};
+						}
+					});
+				}
 			}
 		});
 	};
@@ -468,7 +472,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	$scope.removeHost = function(env, oneHost) {
+	$scope.removeHost = function(env, serviceName, oneHost) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/hosts/delete",
@@ -478,8 +482,45 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				for(var e = 0; e < $scope.grid.rows.length; e++) {
+					if($scope.grid.rows[e].code === env) {
+						for(var i = 0; i < $scope.grid.rows[e].hosts[serviceName].ips.length; i++) {
+							if($scope.grid.rows[e].hosts[serviceName].ips[i].ip === oneHost.ip) {
+								$scope.grid.rows[e].hosts[serviceName].ips.splice(i, 1);
+							}
+						}
+
+						if(serviceName === 'controller') {
+							for(var s in $scope.grid.rows[e].hosts) {
+								if($scope.grid.rows[e].hosts.hasOwnProperty(s) && s !== 'controller') {
+									for(var i = 0; i < $scope.grid.rows[e].hosts[s].ips.length; i++) {
+										for(var k = 0; k < $scope.grid.rows[e].hosts[s].ips[i].controllers.length; k++) {
+											if($scope.grid.rows[e].hosts[s].ips[i].controllers[k].ip === oneHost.ip) {
+												$scope.grid.rows[e].hosts[s].ips[i].controllers.splice(k, 1);
+											}
+										}
+									}
+								}
+							}
+						}
+
+						if(serviceName === 'controller') {
+							for(var c = 0; c < $scope.grid.rows[e].controllers.length; c++) {
+								if($scope.grid.rows[e].controllers[c].ip === oneHost.ip) {
+									$scope.grid.rows[e].controllers[c].splice(c, 1);
+								}
+							}
+						}
+						$scope.grid.rows[e].controllers.forEach(function(oneController) {
+							if(oneController.color === 'green') {
+								$scope.reloadRegistry(env, oneController, function() {
+									$scope.executeAwarenessTest(env, oneController);
+								});
+							}
+						});
+					}
+				}
 				$scope.$parent.displayAlert('success', "Selected Environment host has been removed.");
-				$scope.listHosts(env);
 			}
 		});
 	};
