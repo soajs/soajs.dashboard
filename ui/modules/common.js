@@ -1,50 +1,11 @@
 "use strict";
 
-function api_checkAccess(apiAccess, userGroups){
-	if (!apiAccess){
-		return true;
-	}
-
-	if (apiAccess instanceof Array)
-	{
-		if (!userGroups){
-			return false;
-		}
-
-		var found = false;
-		for (var ii = 0; ii < userGroups.length; ii++)
-		{
-			if (apiAccess.indexOf(userGroups[ii]) !== -1)
-			{
-				found= true;
-				break;
-			}
-		}
-		return found;
-	}
-	else{
-		return true;
-	}
-}
-
-function api_checkPermission(system, userGroups, api){
-	if ('restricted' === system.apisPermission) {
-		if (!api){
-			return false;
-		}
-		return api_checkAccess(api.access, userGroups);
-	}
-	if (!api){
-		return true;
-	}
-
-	var c= api_checkAccess(api.access, userGroups);
-	return c;
-}
-
-function checkApiHasAccess($scope, aclObject, serviceName, routePath, userGroups){
+/*
+ * check if user has access to the requested route
+ */
+function checkApiHasAccess(aclObject, serviceName, routePath, userGroups) {
 	/// get acl of the service name
-	var system = aclObject[serviceName] ;
+	var system = aclObject[serviceName];
 
 	var api = (system && system.apis ? system.apis[routePath] : null);
 
@@ -61,44 +22,77 @@ function checkApiHasAccess($scope, aclObject, serviceName, routePath, userGroups
 	if(system && system.access) {
 		if(system.access instanceof Array) {
 			var checkAPI = false;
-			if(userGroups)
-			{
-				for(var ii = 0; ii < userGroups.length; ii++)
-				{
-					if(system.access.indexOf(userGroups[ii]) !== -1){
+			if(userGroups) {
+				for(var ii = 0; ii < userGroups.length; ii++) {
+					if(system.access.indexOf(userGroups[ii]) !== -1) {
 						checkAPI = true;
 					}
-
 				}
 			}
-			if(!checkAPI){
+			if(!checkAPI) {
 				return false;
 			}
-
 		}
 
 		apiRes = api_checkPermission(system, userGroups, api);
-		return apiRes;
+		return (apiRes) ? true : false;
 	}
 
 	if(api || (system && ('restricted' === system.apisPermission))) {
 		apiRes = api_checkPermission(system, userGroups, api);
-		if(apiRes){
-			return true;
-		}
-		else{
-			return false;
-		}
-
+		return (apiRes) ? true : false;
 	}
-	else{
+	else {
 		return true;
 	}
 
+	function api_checkPermission(system, userGroups, api) {
+		if('restricted' === system.apisPermission) {
+			if(!api) { return false; }
+			return api_checkAccess(api.access, userGroups);
+		}
+		if(!api) { return true; }
 
+		return api_checkAccess(api.access, userGroups);
+
+		function api_checkAccess(apiAccess, userGroups) {
+			if(!apiAccess) { return true; }
+
+			if(apiAccess instanceof Array) {
+				if(!userGroups) { return false; }
+
+				var found = false;
+				for(var ii = 0; ii < userGroups.length; ii++) {
+					if(apiAccess.indexOf(userGroups[ii]) !== -1) {
+						found = true;
+						break;
+					}
+				}
+				return found;
+			}
+			else {
+				return true;
+			}
+		}
+	}
+}
+
+/**
+ * build the access permissions of a module fron permissionsObj
+ */
+function constructModulePermissions(scope, access, permissionsObj) {
+	for(var permission in permissionsObj) {
+		if(Array.isArray(permissionsObj[permission])) {
+			access[permission] = scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1]);
+		}
+		else if(typeof(permissionsObj[permission]) === 'object') {
+			access[permission] = {};
+			constructModulePermissions(scope, access[permission], permissionsObj[permission]);
+		}
+	}
 }
 /*
-common function calls ngDataAPI angular service to connect and send/get data to api
+ common function calls ngDataAPI angular service to connect and send/get data to api
  */
 function getSendDataFromServer(ngDataApi, options, callback) {
 	var apiOptions = {
@@ -138,7 +132,7 @@ function getSendDataFromServer(ngDataApi, options, callback) {
 }
 
 /*
-common function mostyly used by grids. loops over all selected records and calls getSendDataFromServer to send/get data to api
+ common function mostyly used by grids. loops over all selected records and calls getSendDataFromServer to send/get data to api
  */
 function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	var err = 0, valid = [];
@@ -220,23 +214,23 @@ function getTimeAgo(date) {
 
 	var interval = Math.floor(seconds / 31536000);
 
-	if (interval > 1) {
+	if(interval > 1) {
 		return interval + " years";
 	}
 	interval = Math.floor(seconds / 2592000);
-	if (interval > 1) {
+	if(interval > 1) {
 		return interval + " months";
 	}
 	interval = Math.floor(seconds / 86400);
-	if (interval > 1) {
+	if(interval > 1) {
 		return interval + " days";
 	}
 	interval = Math.floor(seconds / 3600);
-	if (interval > 1) {
+	if(interval > 1) {
 		return interval + " hours";
 	}
 	interval = Math.floor(seconds / 60);
-	if (interval > 1) {
+	if(interval > 1) {
 		return interval + " minutes";
 	}
 	return Math.floor(seconds) + " seconds";

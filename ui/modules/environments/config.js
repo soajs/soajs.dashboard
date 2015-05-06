@@ -1,13 +1,6 @@
-var environmentConfig = {
+"use strict";
+var environmentsConfig = {
 	form: {
-		'environment': {
-			'name': '',
-			'label': '',
-			'actions': {},
-			'entries': [
-
-			]
-		},
 		database: {
 			'name': '',
 			'label': '',
@@ -171,6 +164,26 @@ var environmentConfig = {
 					'required': true
 				}
 			]
+		}
+	},
+	permissions: {
+		"listEnvironments": ['dashboard', '/environment/list'],
+		"addEnvironment": ['dashboard', '/environment/add'],
+		"deleteEnvironment": ['dashboard', '/environment/delete'],
+		"editEnvironment": ['dashboard', '/environment/update'],
+		"listHosts": ['dashboard', '/hosts/list'],
+		"dbs": {
+			"list": ['dashboard', '/environment/dbs/list'],
+			"add": ['dashboard', '/environment/dbs/add'],
+			"delete": ['dashboard', '/environment/dbs/delete'],
+			"update": ['dashboard', '/environment/dbs/update'],
+			"updatePrefix": ['dashboard', '/environment/dbs/updatePrefix']
+		},
+		"clusters": {
+			"list": ['dashboard', '/environment/clusters/list'],
+			"add": ['dashboard', '/environment/clusters/add'],
+			"delete": ['dashboard', '/environment/clusters/delete'],
+			"update": ['dashboard', '/environment/clusters/update']
 		}
 	}
 };

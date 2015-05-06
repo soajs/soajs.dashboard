@@ -10,36 +10,59 @@ soajsApp.config([
 	'$provide',
 	'$sceDelegateProvider',
 	function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $sceDelegateProvider) {
-
 		soajsApp.compileProvider = $compileProvider;
 		var whitelisted = ['self'];
 		whitelisted = whitelisted.concat(whitelistedDomain);
 		$sceDelegateProvider.resourceUrlWhitelist(whitelisted);
 
+		var link = document.createElement("script");
+		link.type = "text/javascript";
+		link.src = "themes/" + themeToUse + "/bootstrap.js";
+		document.getElementsByTagName("head")[0].appendChild(link);
 
-		navigation.forEach(function(navigationEntry) {
-			if(navigationEntry.scripts && navigationEntry.scripts.length > 0) {
-				$routeProvider.when(navigationEntry.url.replace('#', ''), {
-					templateUrl: navigationEntry.tplPath,
-					resolve: {
-						load: ['$q', '$rootScope', function($q, $rootScope) {
-							var deferred = $q.defer();
-							require(navigationEntry.scripts, function() {
-								$rootScope.$apply(function() {
-									deferred.resolve();
-								});
-							});
-							return deferred.promise;
-						}]
-					}
-				});
-			}
-			else {
-				$routeProvider.when(navigationEntry.url.replace('#', ''), {
-					templateUrl: navigationEntry.tplPath
-				});
-			}
+		var index = 0;
+		modules.forEach(function(oneModule) {
+			var url = "modules/" + oneModule + "/install.js";
+			require([url], function() {
+				var moduleNavigation = eval(oneModule + "Nav");
+				if(moduleNavigation && Array.isArray(moduleNavigation) && moduleNavigation.length > 0){
+					moduleNavigation.forEach(function(entry){
+						navigation.push(entry);
+					});
+				}
+				index++;
+				if(index === modules.length) {
+					initialize();
+				}
+			});
 		});
+
+		function initialize() {
+			console.log("initializing dashboard navigation....");
+			navigation.forEach(function(navigationEntry) {
+				if(navigationEntry.scripts && navigationEntry.scripts.length > 0) {
+					$routeProvider.when(navigationEntry.url.replace('#', ''), {
+						templateUrl: navigationEntry.tplPath,
+						resolve: {
+							load: ['$q', '$rootScope', function($q, $rootScope) {
+								var deferred = $q.defer();
+								require(navigationEntry.scripts, function() {
+									$rootScope.$apply(function() {
+										deferred.resolve();
+									});
+								});
+								return deferred.promise;
+							}]
+						}
+					});
+				}
+				else {
+					$routeProvider.when(navigationEntry.url.replace('#', ''), {
+						templateUrl: navigationEntry.tplPath
+					});
+				}
+			});
+		}
 
 		$routeProvider.otherwise({
 			redirectTo: navigation[0].url.replace('#', '')
@@ -136,24 +159,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.guestMenu = {};
 			$scope.guestMenu.links = [];
 
-			$scope.dashboard=[];
+			$scope.dashboard = [];
 
 			var a = true;
-			var p ={};
-			for(var i = 0; i < navigation.length; i++)
-			{
+			var p = {};
+			for(var i = 0; i < navigation.length; i++) {
 				a = true;
-				if(navigation[i].hasOwnProperty('checkPermission'))
-				{
+				if(navigation[i].hasOwnProperty('checkPermission')) {
 					p = navigation[i].checkPermission;
-					if(p.service && p.route){
-						a = $scope.buildPermittedOperation(navigation[i].checkPermission.service , navigation[i].checkPermission.route);
+					if(p.service && p.route) {
+						a = $scope.buildPermittedOperation(navigation[i].checkPermission.service, navigation[i].checkPermission.route);
 					}
 				}
 
-				if(navigation[i].hasOwnProperty('private') || (a))
-				{
-					$scope.dashboard.push( navigation[i].id );
+				if(navigation[i].hasOwnProperty('private') || (a)) {
+					$scope.dashboard.push(navigation[i].id);
 					if(navigation[i].mainMenu) {
 						$scope.mainMenu.links.push(navigation[i]);
 					}
@@ -178,8 +198,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			for(var i = 0; i < navigation.length; i++) {
 				if(navigation[i].tracker && navigation[i].url === '#' + $route.current.originalPath) {
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
-						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1)
-						{
+						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
 							$scope.go("/dashboard");
 						}
@@ -204,7 +223,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$scope.enableInterface = false;
-				if(!stopRedirect){
+				if(!stopRedirect) {
 					$scope.displayFixedAlert('danger', "Session expired. Please login.");
 					$scope.go("/login");
 				}
@@ -233,13 +252,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.isUserLoggedIn();
 		});
 
-		$scope.buildPermittedOperation = function( serviceName, routePath) {
+		$scope.buildPermittedOperation = function(serviceName, routePath) {
 			var user = $cookieStore.get('soajs_user');
 			var userGroups = user.groups;
 			var access = false;
 			var acl = $cookieStore.get('acl_access');
-			if(acl[serviceName]){
-				access = checkApiHasAccess($scope, acl, serviceName, routePath, userGroups);
+			if(acl[serviceName]) {
+				access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
 			}
 			return access;
 		};
@@ -364,10 +383,3 @@ function findAndcestorProperties(tracker, ancestorName, params) {
 		}
 	}
 }
-
-(function() {
-	var link = document.createElement("script");
-	link.type = "text/javascript";
-	link.src = "themes/" + themeToUse + "/bootstrap.js";
-	document.getElementsByTagName("head")[0].appendChild(link);
-})();

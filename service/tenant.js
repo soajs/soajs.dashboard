@@ -435,7 +435,7 @@ module.exports = {
 										if(req.soajs.inputmaskData.acl) {
 											tenantRecord.applications[i].acl = req.soajs.inputmaskData.acl;
 										}
-										if(req.soajs.inputmaskData.clearAcl && ( req.soajs.inputmaskData.clearAcl==true )) {
+										if(req.soajs.inputmaskData.clearAcl && ( req.soajs.inputmaskData.clearAcl===true )) {
 											delete tenantRecord.applications[i].acl ;
 										}
 										found = true;
@@ -477,7 +477,7 @@ module.exports = {
 					{
 						oneKey.extKeys.forEach(function(oneExtKeyObj)
 						{
-							if( oneExtKeyObj.extKey == req.soajs.inputmaskData.extKey){
+							if( oneExtKeyObj.extKey === req.soajs.inputmaskData.extKey){
 								app["product"] = oneApplication["product"];
 								app["package"] = oneApplication["package"];
 								app["app_acl"] = oneApplication["acl"];
@@ -490,7 +490,7 @@ module.exports = {
 				return app;
 			}
 
-			if( tenant.application.acl && (typeof(tenant.application.acl)=='object') ){
+			if( tenant.application.acl && (typeof(tenant.application.acl)==='object') ){
 				return res.jsonp(req.soajs.buildResponse(null, tenant));
 			}
 			else

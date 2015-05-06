@@ -55,7 +55,7 @@
                             </table>
                         </div>
                     </tab>
-                    <tab heading="Database Configuration">
+                    <tab heading="Database Configuration" ng-if="access.dbs.list">
                         <br/>
 
                         <div ng-if="access.dbs.updatePrefix">
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab heading="Mongo Cluster">
+                    <tab heading="Mongo Cluster" ng-if="access.clusters.list">
                         <br/>
                         <a ng-if="access.clusters.add" href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
                         <div class="entryBoxes entryBoxesGrid">

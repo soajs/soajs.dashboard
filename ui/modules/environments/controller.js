@@ -1,7 +1,13 @@
 "use strict";
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', 'ngDataApi', function($scope, $timeout, $modal, $http, ngDataApi) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $http, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
+	$scope.newEntry = true;
+	$scope.envId = null;
+	$scope.formEnvironment = {services: {}};
+
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
 	$scope.waitMessage = {
 		type: "info",
@@ -11,7 +17,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			$scope.waitMessage.type = '';
 		}
 	};
-
 	$scope.closeWaitMessage = function(context) {
 		if(!context) {
 			context = $scope;
@@ -22,27 +27,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}, 7000);
 	};
 
-	$scope.access = {
-		listEnvironments: $scope.buildPermittedOperation('dashboard', '/environment/list'),
-		addEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/add'),
-		deleteEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/delete'),
-		editEnvironment: $scope.buildPermittedOperation('dashboard', '/environment/update'),
-		listHosts: $scope.buildPermittedOperation('dashboard', '/hosts/list'),
-		dbs: {
-			list: $scope.buildPermittedOperation('dashboard', '/environment/dbs/list'),
-			delete: $scope.buildPermittedOperation('dashboard', '/environment/dbs/delete'),
-			add: $scope.buildPermittedOperation('dashboard', '/environment/dbs/add'),
-			update: $scope.buildPermittedOperation('dashboard', '/environment/dbs/update'),
-			updatePrefix: $scope.buildPermittedOperation('dashboard', '/environment/dbs/updatePrefix')
-		}
-	};
-	$scope.access.clusters = {
-		add: $scope.buildPermittedOperation('dashboard', '/environment/clusters/add'),
-		list: $scope.buildPermittedOperation('dashboard', '/environment/clusters/list'),
-		delete: $scope.buildPermittedOperation('dashboard', '/environment/clusters/delete'),
-		update: $scope.buildPermittedOperation('dashboard', '/environment/clusters/update')
-	};
-
 	$scope.expand = function(row) {
 		row.showOptions = true;
 	};
@@ -51,7 +35,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		row.showOptions = false;
 	};
 
-	$scope.listEnvironments = function() {
+	$scope.listEnvironments = function(environmentId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list"
@@ -60,16 +44,66 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.grid = {
-					rows: response
-				};
-
-				if($scope.grid.rows) {
-					if($scope.grid.rows.length == 1) {
-						$scope.grid.rows[0].showOptions = true;
+				if(environmentId) {
+					$scope.envId = environmentId;
+					for(var x = 0; x < response.length; x++) {
+						if(response[x]._id === $scope.envId) {
+							$scope.newEntry = false;
+							$scope.formEnvironment = response[x];
+							if(response[x].services && response[x].services.config) {
+								if(response[x].services.config.logger) {
+									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
+								}
+							}
+							break;
+						}
 					}
 				}
+				else {
+					$scope.grid = {rows: response};
+					if($scope.grid.rows) {
+						if($scope.grid.rows.length == 1) {
+							$scope.grid.rows[0].showOptions = true;
+						}
+					}
+				}
+			}
+		});
+	};
 
+	$scope.updateEnvironment = function(data) {
+		$scope.$parent.go('/environments/environment/' + data._id);
+	};
+
+	$scope.save = function() {
+		var postData = $scope.formEnvironment;
+		delete postData.dbs;
+		if(postData.services.config && postData.services.config.oauth && postData.services.config.oauth.grants) {
+			if(typeof(postData.services.config.oauth.grants) == 'string') {
+				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '').split(",");
+			}
+		}
+
+		if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
+			try {
+				$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
+			}
+			catch(e) {
+				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
+				return;
+			}
+		}
+		getSendDataFromServer(ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
+			"params": {"id": $scope.envId},
+			"data": postData
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
 			}
 		});
 	};
@@ -117,9 +151,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					console.log(error.message);
 				}
 				else {
-					//response.data.controller.hosts.forEach(function(oneCtrl) {
-					//	controllers.push({'ip': oneCtrl, 'color': 'red'});
-					//});
 					propulateServices(response.data);
 				}
 			});
@@ -525,10 +556,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	$scope.updateEnvironment = function(data) {
-		$scope.$parent.go('/environments/environment/' + data._id);
-	};
-
 	$scope.removeEnvironment = function(row) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -598,7 +625,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.addDatabase = function(env, session) {
 		var options = {
 			timeout: $timeout,
-			form: (session) ? environmentConfig.form.session : environmentConfig.form.database,
+			form: (session) ? environmentsConfig.form.session : environmentsConfig.form.database,
 			name: 'addDatabase',
 			label: 'Add New Database',
 			actions: [
@@ -678,7 +705,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 		var options = {
 			timeout: $timeout,
-			form: (name === 'session') ? angular.copy(environmentConfig.form.session) : angular.copy(environmentConfig.form.database),
+			form: (name === 'session') ? angular.copy(environmentsConfig.form.session) : angular.copy(environmentsConfig.form.database),
 			name: 'updateDatabase',
 			label: 'Update Database',
 			'data': formData,
@@ -789,7 +816,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.addCluster = function(env) {
 		var options = {
 			timeout: $timeout,
-			form: environmentConfig.form.cluster,
+			form: environmentsConfig.form.cluster,
 			name: 'addCluster',
 			label: 'Add New Cluster',
 			actions: [
@@ -849,7 +876,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.editCluster = function(env, name, data) {
-		var formConfig = angular.copy(environmentConfig.form.cluster);
+		var formConfig = angular.copy(environmentsConfig.form.cluster);
 		formConfig.entries[0].type = 'readonly';
 
 		var servers = "";
@@ -942,139 +969,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
+
 	//default operation
-	if($scope.access.listEnvironments) {
-		$scope.listEnvironments();
+	if($routeParams.id) {
+		if($scope.access.editEnvironment) {
+			$scope.listEnvironments($routeParams.id);
+		}
 	}
-}]);
-
-environmentsApp.controller('envirEditCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, ngDataApi) {
-	$scope.$parent.isUserLoggedIn();
-	$scope.envId = '';
-	$scope.formEnvironment = {};
-	$scope.formEnvironment.services = {};
-
-	$scope.expand = function(row) {
-		row.showOptions = true;
-	};
-	$scope.isAdd = false;
-	$scope.isEdit = false;
-
-	$scope.collapse = function(row) {
-		row.showOptions = false;
-	};
-
-	$scope.getEnvironment = function() {
-		if($routeParams.id) {
-			getSendDataFromServer(ngDataApi, {
-				"method": "get",
-				"routeName": "/dashboard/environment/list"
-			}, function(error, response) {
-				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
-				}
-				else {
-					var l = response.length;
-					$scope.isEdit = true;
-					$scope.envId = $routeParams.id;
-					for(var x = 0; x < l; x++) {
-						if(response[x]._id == $scope.envId) {
-							$scope.formEnvironment = response[x];
-							// formEnvironment.services.config.loggerObj
-							if(response[x].services && response[x].services.config) {
-								if(response[x].services.config.logger) {
-									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
-								}
-							}
-							break;
-						}
-					}
-				}
-			});
+	else {
+		if($scope.access.listEnvironments) {
+			$scope.listEnvironments(null);
 		}
-		else {
-			$scope.isAdd = true;
-		}
-	};
-
-	$scope.saveEdit = function() {
-		var postData = $scope.formEnvironment;
-		delete postData.dbs;
-		if($scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants) {
-			if(typeof($scope.formEnvironment.services.config.oauth.grants) == 'string') {
-				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
-				var arr = postData.services.config.oauth.grants.split(",");
-				postData.services.config.oauth.grants = arr;
-			}
-		}
-
-		if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
-			try {
-				$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
-			}
-			catch(e) {
-				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
-				return;
-			}
-		}
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/environment/update",
-			"params": {"id": $scope.envId},
-			"data": postData
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Environment Updated Successfully.');
-			}
-		});
-	};
-	$scope.saveCreate = function() {
-		if($scope.envirForm.$valid) {
-			var postData = $scope.formEnvironment;
-			delete postData.dbs;
-			if($scope.formEnvironment.services.config && $scope.formEnvironment.services.config.oauth && $scope.formEnvironment.services.config.oauth.grants) {
-				if(typeof($scope.formEnvironment.services.config.oauth.grants) == 'string') {
-					postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '');
-					var arr = postData.services.config.oauth.grants.split(",");
-					postData.services.config.oauth.grants = arr;
-				}
-			}
-
-			if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
-				try {
-					$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
-				}
-				catch(e) {
-					$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
-					return;
-				}
-			}
-
-			getSendDataFromServer(ngDataApi, {
-				"method": "send",
-				"routeName": "/dashboard/environment/add",
-				"params": {"id": $scope.envId},
-				"data": postData
-			}, function(error, response) {
-				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
-				}
-				else {
-					$scope.$parent.displayAlert('success', 'Environment Created Successfully.');
-					$scope.$parent.go('/environments/');
-				}
-			});
-
-		} else {
-			$scope.$parent.displayAlert('danger', 'Your form is not complete yet. Required fields are missing.');
-		}
-	};
-
-	//default operation
-	$scope.getEnvironment();
-
+	}
 }]);

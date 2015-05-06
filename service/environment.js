@@ -95,7 +95,7 @@ module.exports = {
 
 	"addDb": function(config, mongo, req, res) {
 
-		if(req.soajs.inputmaskData.name == 'session') {
+		if(req.soajs.inputmaskData.name === 'session') {
 			if(!req.soajs.inputmaskData.sessionInfo || JSON.stringify(req.soajs.inputmaskData.sessionInfo) === '{}') {
 				return res.jsonp(req.soajs.buildResponse({"code": 507, "msg": config.errors[507]}));
 			}
@@ -145,7 +145,7 @@ module.exports = {
 
 	"updateDb": function(config, mongo, req, res) {
 
-		if(req.soajs.inputmaskData.name == 'session') {
+		if(req.soajs.inputmaskData.name === 'session') {
 			if(!req.soajs.inputmaskData.sessionInfo || JSON.stringify(req.soajs.inputmaskData.sessionInfo) === '{}') {
 				return res.jsonp(req.soajs.buildResponse({"code": 507, "msg": config.errors[507]}));
 			}

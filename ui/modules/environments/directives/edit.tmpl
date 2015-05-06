@@ -1,7 +1,7 @@
-<section ng-controller="envirEditCtrl">
+<section ng-controller="environmentCtrl">
     <div class="form">
-        <form novalidate="" class="css-form ng-pristine ng-valid ng-valid-required" name="envirForm">
-            <div class="header"><h3 class="ng-binding"><span ng-if="isEdit">Edit</span><span ng-if="isAdd">Create</span> Environment</h3></div>
+        <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" name="envirForm" ng-submit="envirForm.$valid && save()">
+            <div class="header"><h3 class="ng-binding">{{newEntry? "Create" : "Edit"}} Environment</h3></div>
             <div class="body">
                 <a href="#/environments" class="w100 f-right t-right">Go Back to Environments</a>
 
@@ -12,7 +12,7 @@
                             <td class="">
                                 <label>Code</label>
                                 <input type="text" ng-required="true" tooltip="Enter Environment Code; maximum 5 characters."
-                                       placeholder="DEV..." ng-model="formEnvironment.code" class="form-control" ng-disabled="isEdit"/>
+                                       placeholder="DEV..." ng-model="formEnvironment.code" class="form-control" ng-disabled="!newEntry"/>
                             </td>
                         </tr>
                         <tr class="form-group">
@@ -31,7 +31,7 @@
                                     <label><span class="icon icon-arrow-right2"></span> Max Pool Size</label>
                                     <input type="number" ng-required="true" tooltip=""
                                            placeholder="" ng-model="formEnvironment.services.controller.maxPoolSize" class="form-control"/>
-                                    <em>Specify the controller's maximum pool size, 0 is unlimited. More info on <a href="https://github.com/request/request" target="_blank">Express</a></em>
+                                    <em>Specify the controller's maximum pool size, 0 is unlimited. More info on <a href="https://github.com/request/request" target="_blank">Request</a></em>
                                     <br/>
                                     <label><span class="icon icon-arrow-right2"></span> Authorization</label>
 
@@ -39,7 +39,7 @@
                                     True
                                     <input name="controller_authorization" type="radio" ng-model="formEnvironment.services.controller.authorization" data-ng-value="false"/> False
                                     <br/>
-                                    <em>Specify if the controller requires authorization</em><br />
+                                    <em>Specify if the controller should persist the session of the user for browsers that doesn't support cookies.</em><br />
                                     <label><span class="icon icon-arrow-right2"></span> Request Timeout</label>
                                     <input type="number" ng-required="true"
                                            placeholder="" ng-model="formEnvironment.services.controller.requestTimeout" class="form-control"/>
@@ -82,10 +82,10 @@
                                     <h4>Key</h4>
                                     <div class="grouped">
                                         <label><span class="icon icon-arrow-right2"></span> Algorithm </label>
-                                        <input ng-disabled="isEdit" type="text" ng-required="true" tooltip=""
+                                        <input ng-disabled="!newEntry" type="text" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.key.algorithm" class="form-control"/><br/>
                                         <label><span class="icon icon-arrow-right2"></span> Password </label>
-                                        <input ng-disabled="isEdit" type="text" ng-required="true" tooltip=""
+                                        <input ng-disabled="!newEntry" type="text" ng-required="true" tooltip=""
                                                placeholder="" ng-model="formEnvironment.services.config.key.password" class="form-control"/>
                                         <em>Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on <a href="https://github.com/Gozala/crypto" target="_blank">Crypto</a></em>
                                     </div>
@@ -236,8 +236,7 @@
                 </table>
             </div>
             <div class="footer"><br/>
-                <input ng-if="isAdd" type="submit" class="btn btn-sm btn-primary" ng-click="saveCreate()" value="Add Environment"/>
-                <input ng-if="isEdit" type="submit" class="btn btn-sm btn-primary" ng-click="saveEdit()" value="Edit Environment"/>
+                <input type="submit" class="btn btn-sm btn-primary" value="{{(newEntry) ? 'Add' : 'Edit'}} Environment"/>
             </div>
         </form>
     </div>
