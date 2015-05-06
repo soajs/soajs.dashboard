@@ -49,10 +49,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		}
 	};
 
-	$scope.$parent.$on('reloadEnvironments', function(event, args) {
+	$scope.$parent.$on('reloadEnvironments', function() {
 		$scope.getEnvironments();
 	});
-	$scope.$parent.$on('reloadProducts', function(event, args) {
+	$scope.$parent.$on('reloadProducts', function() {
 		$scope.getProds();
 	});
 
@@ -93,7 +93,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/delete",
 			"params": {"id": id, "appId": app.appId, "key": key}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, id);
 			}
@@ -170,12 +170,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							$scope.edit_Tenant(row);
 						}
 					},
-					'editoAuth': {
-						'label': 'Edit Oauth',
-						'command': function(row) {
-							$scope.editOauth(row);
-						}
-					},
 					'delete': {
 						'label': 'Remove',
 						'commandMsg': "Are you sure you want to remove this tenant ?",
@@ -188,7 +182,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.listOauthUsers = function(row, index) {
+	$scope.listOauthUsers = function(row) {
 		var tId = row['_id'];
 		if(!row.alreadyGotAuthUsers) {
 			getSendDataFromServer(ngDataApi, {
@@ -259,7 +253,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/update",
 							"data": postData,
 							"params": {"id": data['_id']}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -274,7 +268,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 										"routeName": "/dashboard/tenant/oauth/update",
 										"data": oAuthData,
 										"params": {"id": data['_id']}
-									}, function(error, response) {
+									}, function(error) {
 										if(error) {
 											$scope.form.displayAlert('danger', error.message);
 										}
@@ -301,12 +295,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'type': 'submit',
 					'label': 'Delete oAuth Info',
 					'btn': 'danger',
-					'action': function(formData) {
+					'action': function() {
 						getSendDataFromServer(ngDataApi, {
 							"method": "get",
 							"routeName": "/dashboard/tenant/oauth/delete",
 							"params": {"id": data['_id']}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -332,7 +326,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		};
 
 		buildFormWithModal($scope, $modal, options);
-	}
+	};
 
 	
 	$scope.removeTenant = function(row) {
@@ -340,7 +334,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"method": "get",
 			"routeName": "/dashboard/tenant/delete",
 			"params": {"id": row._id}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -373,7 +367,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"method": "send",
 							"routeName": "/dashboard/tenant/add",
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -427,7 +421,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"method": "get",
 			"routeName": "/dashboard/tenant/oauth/users/delete",
 			"params": {"id": tId, 'uId': user['_id']}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, tId);
 			}
@@ -462,7 +456,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/oauth/users/update",
 							"data": postData,
 							"params": {"id": tId, 'uId': user['_id']}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -512,7 +506,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/oauth/users/add",
 							"data": postData,
 							"params": {"id": tId}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -582,7 +576,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								"routeName": "/dashboard/tenant/application/add",
 								"data": postData,
 								"params": {"id": tId}
-							}, function(error, response) {
+							}, function(error) {
 								if(error) {
 									$scope.form.displayAlert('danger', error.message);
 								}
@@ -610,8 +604,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				}
 			]
 		};
-		
-		//formConfig.entries[1].label="Product Package";
+
 		var entries = formConfig.entries.splice(0, 1);
 
 		buildFormWithModal($scope, $modal, options);
@@ -638,9 +631,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Edit Application',
 					'btn': 'primary',
 					'action': function(formData) {
-						// formData.acl
-
-						var productCode = formData.package.split("_")[0];
 						var packageCode = formData.package.split("_")[1];
 						var postData = {
 							'productCode': formData.product,
@@ -648,7 +638,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
-						//postData.productCode = productCode;
+
 						postData.packageCode = packageCode;
 						postData.acl = recordData.acl;
 						getSendDataFromServer(ngDataApi, {
@@ -656,7 +646,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/application/update",
 							"data": postData,
 							"params": {"id": tId, "appId": data.appId}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -710,7 +700,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/delete",
 			"params": {"id": tId, "appId": appId}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, tId);
 			}
@@ -726,7 +716,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/add",
 			"params": {"id": tId, "appId": appId}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, tId);
 			}
@@ -749,7 +739,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"routeName": "/dashboard/tenant/application/key/config/update",
 			"data": postData,
 			"params": {"id": tId, "appId": appId, "key": key}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, tId);
 			}
@@ -785,9 +775,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
+						var configObj;
 						if(formData.config && (formData.config != "")) {
 							try {
-								var configObj = JSON.parse(formData.config);
+								configObj = JSON.parse(formData.config);
 							}
 							catch(e) {
 								$scope.form.displayAlert('danger', 'Error: Invalid Config Json object ');
@@ -795,7 +786,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						}
 						else {
-							var configObj = {};
+							configObj = {};
 						}
 
 						var postData = {
@@ -808,7 +799,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/application/key/config/update",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -849,9 +840,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
+						var deviceObj, geoObj;
 						if(formData.device && (formData.device != "")) {
 							try {
-								var deviceObj = JSON.parse(formData.device);
+								deviceObj = JSON.parse(formData.device);
 							}
 							catch(e) {
 								$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
@@ -859,11 +851,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						}
 						else {
-							var deviceObj = {};
+							deviceObj = {};
 						}
 						if(formData.geo && (formData.geo != "")) {
 							try {
-								var geoObj = JSON.parse(formData.geo);
+								geoObj = JSON.parse(formData.geo);
 							}
 							catch(e) {
 								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ', tId);
@@ -871,7 +863,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						}
 						else {
-							var geoObj = {};
+							geoObj = {};
 						}
 						
 						var postData = {
@@ -886,7 +878,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/application/key/ext/add",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message, tId);
 							}
@@ -939,9 +931,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
+						var geoObj, deviceObj;
 						if(formData.device && (formData.device != "")) {
 							try {
-								var deviceObj = JSON.parse(formData.device);
+								deviceObj = JSON.parse(formData.device);
 							}
 							catch(e) {
 								$scope.form.displayAlert('danger', 'Error: Invalid device Json object ');
@@ -949,11 +942,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						}
 						else {
-							var deviceObj = {};
+							deviceObj = {};
 						}
 						if(formData.geo && (formData.geo != "")) {
 							try {
-								var geoObj = JSON.parse(formData.geo);
+								geoObj = JSON.parse(formData.geo);
 							}
 							catch(e) {
 								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
@@ -961,7 +954,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						}
 						else {
-							var geoObj = {};
+							geoObj = {};
 						}
 
 						var postData = {
@@ -978,7 +971,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							"routeName": "/dashboard/tenant/application/key/ext/update",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -1011,7 +1004,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			"routeName": "/dashboard/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey},
 			"params": {"id": tId, "appId": appId, "key": key}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.mt.displayAlert('danger', error.message, tId);
 			}
@@ -1024,7 +1017,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 
-	$scope.listExtKeys = function(tId, appId, key, index) {
+	$scope.listExtKeys = function(tId, appId, key) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/ext/list",
@@ -1059,7 +1052,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		});
 	};
 	
-	$scope.listKeys = function(tId, appId, index) {
+	$scope.listKeys = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/list",
@@ -1155,7 +1148,7 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 		$scope.aclFill.services[service.name].collapse = false;
 	};
 
-	$scope.selectService = function( service, index) {
+	$scope.selectService = function( service) {
 		if( $scope.aclFill.services[ service.name].include){
 			if( service.forceRestricted ){
 				$scope.aclFill.services[ service.name].apisRestrictPermission = true;
@@ -1234,7 +1227,9 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 						var parentAcl = $scope.currentApplication.parentPckgAcl;
 						var serviceNames= [];
 						for (var serviceName in parentAcl){
-							serviceNames.push(serviceName);
+							if(parentAcl.hasOwnProperty(serviceName)){
+								serviceNames.push(serviceName);
+							}
 						}
 
 						getSendDataFromServer(ngDataApi, {
@@ -1253,11 +1248,11 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 								{
 									var service = servicesList[x];
 									var name = service.name;
-									var newList = [];
+									var newList;
 									if( parentAcl[name].apisPermission === 'restricted')
 									{
+										newList = [];
 										service.forceRestricted=true;
-
 										var len = service.apis.length;
 										for(var i=0; i<len; i++)
 										{
@@ -1272,7 +1267,7 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 										service.fixList = $scope.arrGroupByField( newList , 'group');
 									}
 									else{
-										var newList = service.apis ;
+										newList = service.apis ;
 										service.fixList = $scope.arrGroupByField( service.apis , 'group');
 									}
 								}
@@ -1316,58 +1311,60 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 			$scope.aclFill.services= angular.copy($scope.currentApplication.parentPckgAcl);
 		}
 
-		for(var propt in $scope.aclFill.services)
+		var s, propt;
+		for(propt in $scope.aclFill.services)
 		{
-			var s = $scope.aclFill.services[propt];
-			s.include =true;
-			s.collapse = false;
-
-			if(s.access){
-				if( s.access===true){
-					s.accessType = 'private';
+			if( $scope.aclFill.services.hasOwnProperty( propt )){
+				s = $scope.aclFill.services[propt];
+				s.include =true;
+				s.collapse = false;
+				if(s.access){
+					if( s.access===true){
+						s.accessType = 'private';
+					}
+					else if( s.access===false){
+						s.accessType = 'public';
+					}
+					else if(Array.isArray(s.access)){
+						s.accessType = 'groups';
+						s.grpCodes={};
+						s.access.forEach(function( c ) {
+							s.grpCodes[c]=true;
+						});
+					}
 				}
-				else if( s.access===false){
+				else{
 					s.accessType = 'public';
 				}
-				else if(Array.isArray(s.access)){
-					s.accessType = 'groups';
-					s.grpCodes={};
-					s.access.forEach(function( c ) {
-						s.grpCodes[c]=true;
-					});
+				if(s.apisPermission==='restricted'){
+					s.apisRestrictPermission = true;
 				}
-			}
-			else{
-				s.accessType = 'public';
-			}
-
-			if(s.apisPermission==='restricted'){
-				s.apisRestrictPermission = true;
-			}
-			if(s.apis){
-				for(var ap in s.apis)
-				{
-					s.apis[ap].include=true;
-					s.apis[ap].accessType = 'clear';
-					if( s.apis[ap].access==true)
+				var ap;
+				if(s.apis){
+					for(ap in s.apis)
 					{
-						s.apis[ap].accessType = 'private';
-					}
-					else if( s.apis[ap].access===false)
-					{
-						s.apis[ap].accessType = 'public';
-					}
-					else{
-						if(Array.isArray(s.apis[ap].access)){
-							s.apis[ap].accessType = 'groups';
-							s.apis[ap].grpCodes={};
-							s.apis[ap].access.forEach(function( c ) {
-								s.apis[ap].grpCodes[c]=true;
-							});
+						if( s.apis.hasOwnProperty( ap )) {
+							s.apis[ap].include = true;
+							s.apis[ap].accessType = 'clear';
+							if(s.apis[ap].access == true) {
+								s.apis[ap].accessType = 'private';
+							}
+							else if(s.apis[ap].access === false) {
+								s.apis[ap].accessType = 'public';
+							}
+							else {
+								if(Array.isArray(s.apis[ap].access)) {
+									s.apis[ap].accessType = 'groups';
+									s.apis[ap].grpCodes = {};
+									s.apis[ap].access.forEach(function(c) {
+										s.apis[ap].grpCodes[c] = true;
+									});
+								}
+							}
 						}
 					}
-
 				}
+
 			}
 		}
 
@@ -1392,28 +1389,26 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 
 	$scope.applyRestriction=function(service){
 		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
-			for(var grpLabel in service.fixList )
+			var grpLabel;
+			for(grpLabel in service.fixList )
 			{
-				var defaultApi = service.fixList[grpLabel]['defaultApi'];
-				if(defaultApi){
-					if( $scope.aclFill.services[service.name].apis )
-					{
-						var apisList = service.fixList[grpLabel]['apis'];
-						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
-						{
-							apisList.forEach(function( oneApi ) {
-								if($scope.aclFill.services[service.name].apis[oneApi.v])
-								{
-									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
-								}
-							});
+				if( service.fixList.hasOwnProperty( grpLabel )) {
+					var defaultApi = service.fixList[grpLabel]['defaultApi'];
+					if(defaultApi) {
+						if($scope.aclFill.services[service.name].apis) {
+							var apisList = service.fixList[grpLabel]['apis'];
+							if((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true) {
+								apisList.forEach(function(oneApi) {
+									if($scope.aclFill.services[service.name].apis[oneApi.v]) {
+										$scope.aclFill.services[service.name].apis[oneApi.v].include = false;
+									}
+								});
+							}
 						}
 					}
 				}
 			}
-
 		}
-
 	};
 
 	$scope.clearAcl=function(){
@@ -1430,7 +1425,7 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 			"routeName": "/dashboard/tenant/application/update",
 			"data": postData,
 			"params": {"id": tId, "appId" : appId}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 				alert(error.message);
@@ -1451,86 +1446,94 @@ multiTenantApp.controller('applicationAclCtrl', ['$scope', '$timeout', '$modal',
 
 		var aclObj={};
 		var valid = true;
-
-		for(var propt in $scope.aclFill.services)
+		var propt, grpCodes, ap;
+		var code;
+		for(propt in $scope.aclFill.services)
 		{
-			var s = angular.copy($scope.aclFill.services[propt]);
-
-			if(s.include===true)
+			if(  $scope.aclFill.services.hasOwnProperty( propt ))
 			{
-				aclObj[propt]={};
-				aclObj[propt].apis={};
+				var s = angular.copy($scope.aclFill.services[propt]);
 
-				if(s.accessType==='private'){
-					aclObj[propt].access=true;
-				}
-				else if(s.accessType==='public'){
-					aclObj[propt].access=false;
-				}
-				else if(s.accessType==='groups')
+				if(s.include===true)
 				{
-					aclObj[propt].access=[];
-					var grpCodes = $scope.aclFill.services[propt].grpCodes;
-					if(grpCodes)
+					aclObj[propt]={};
+					aclObj[propt].apis={};
+
+					if(s.accessType==='private'){
+						aclObj[propt].access=true;
+					}
+					else if(s.accessType==='public'){
+						aclObj[propt].access=false;
+					}
+					else if(s.accessType==='groups')
 					{
-						var code = null;
-						for(code in grpCodes)
+						aclObj[propt].access=[];
+						grpCodes = $scope.aclFill.services[propt].grpCodes;
+						if(grpCodes)
 						{
-							if(grpCodes[code]){
-								aclObj[propt].access.push(code);
+							for(code in grpCodes)
+							{
+								if(grpCodes.hasOwnProperty(code))
+								{
+									aclObj[propt].access.push(code);
+								}
 							}
 						}
-					}
-					if(aclObj[propt].access.length==0)
-					{
-						$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
-						valid=false;
-					}
-				}
-
-				if(s.apisRestrictPermission ===true ){
-					aclObj[propt].apisPermission ='restricted';
-				}
-
-				if(s.apis)
-				{
-					for(var ap in s.apis){
-						var api = s.apis[ap];
-
-						if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
+						if(aclObj[propt].access.length==0)
 						{
-							/// need to also check for the default api if restricted
-							aclObj[propt].apis[ap]={};
-							if(api.accessType==='private'){
-								aclObj[propt].apis[ap].access=true;
-							}
-							else if(api.accessType==='public'){
-								aclObj[propt].apis[ap].access=false;
-							}
-							else if(api.accessType==='groups'){
-								aclObj[propt].apis[ap].access=[];
-								var grpCodes = $scope.aclFill.services[propt].apis[ap].grpCodes;
+							$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+							valid=false;
+						}
+					}
 
-								if(grpCodes)
+					if(s.apisRestrictPermission ===true ){
+						aclObj[propt].apisPermission ='restricted';
+					}
+
+					if(s.apis)
+					{
+						for(ap in s.apis){
+							if( s.apis.hasOwnProperty(ap)){
+								var api = s.apis[ap];
+								if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
 								{
-									var code = null;
-									for(code in grpCodes)
-									{
-										if(grpCodes[code]){
-											aclObj[propt].apis[ap].access.push(code);
+									/// need to also check for the default api if restricted
+									aclObj[propt].apis[ap]={};
+									if(api.accessType==='private'){
+										aclObj[propt].apis[ap].access=true;
+									}
+									else if(api.accessType==='public'){
+										aclObj[propt].apis[ap].access=false;
+									}
+									else if(api.accessType==='groups'){
+										aclObj[propt].apis[ap].access=[];
+										grpCodes = $scope.aclFill.services[propt].apis[ap].grpCodes;
+
+										if(grpCodes)
+										{
+											for(code in grpCodes)
+											{
+												if(grpCodes[code]){
+													aclObj[propt].apis[ap].access.push(code);
+												}
+											}
+										}
+										if(aclObj[propt].apis[ap].access.length==0)
+										{
+											$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+											valid=false;
 										}
 									}
 								}
-								if(aclObj[propt].apis[ap].access.length==0)
-								{
-									$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
-									valid=false;
-								}
 							}
+
+
+
 						}
 					}
 				}
 			}
+
 		}
 
 		if(valid){
