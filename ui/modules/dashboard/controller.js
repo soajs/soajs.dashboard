@@ -1,5 +1,5 @@
 "use strict";
-var config = {
+var configDashbrd = {
 		'grid': {
 			'tenants': {
 				search: false,
@@ -43,18 +43,20 @@ var config = {
 			
 			}
 		},
-		'form': {}
+		'form': {},
+		'permissions':{
+			'environment': ['dashboard', '/environment/list'],
+			'tenant': ['dashboard', '/tenant/list'],
+			'product': ['dashboard', '/product/list']
+		}
 	};
 
 var dahsboardApp = soajsApp.components;
 dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	$scope.access=
-	{
-		environment: $scope.buildPermittedOperation('dashboard', '/environment/list'),
-		tenant: $scope.buildPermittedOperation('dashboard', '/tenant/list'),
-		product: $scope.buildPermittedOperation('dashboard', '/product/list')
-	}
+
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, configDashbrd.permissions);
 }]);
 
 dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -68,7 +70,7 @@ dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 			}
 			else {
 				var options = {
-					grid: config.grid.tenants,
+					grid: configDashbrd.grid.tenants,
 					data: response,
 					//defaultSortField: 'product',
 					left: [],
@@ -93,7 +95,7 @@ dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngData
 			}
 			else {
 				var options = {
-					grid: config.grid.products,
+					grid: configDashbrd.grid.products,
 					data: response
 				};
 				buildGrid($scope, options);
@@ -116,7 +118,7 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 			}
 			else {
 				var options = {
-					grid: config.grid.environments,
+					grid: configDashbrd.grid.environments,
 					data: response
 				};
 				buildGrid($scope, options);

@@ -59,5 +59,21 @@ var membersConfig = {
 				'required': true
 			}
 		]
+	},
+
+	permissions:{
+		'adminUser':{
+			'list' : ['urac', '/admin/listUsers'],
+			'changeStatusAccess' : ['urac', '/admin/changeStatusAccess'],
+			'editUser' : ['urac', '/admin/editUser'],
+			'addUser' : ['urac', '/admin/addUser']
+		},
+		'adminGroup':{
+			'list' : ['urac', '/admin/group/list'],
+			'add' : ['urac', '/admin/group/add'],
+			'edit' : ['urac', '/admin/group/edit'],
+			'delete' : ['urac', '/admin/group/delete'],
+			'addUsers' : ['urac', '/admin/group/addUsers']
+		}
 	}
 };

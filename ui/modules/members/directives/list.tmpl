@@ -2,14 +2,14 @@
     <tabset id="membersSection">
         <tab heading="Members">
             <section ng-controller="membersCtrl as gridCtrl" class="membersCtrl">
-                <span ng-if="access.admin.addUser">
+                <span ng-if="access.adminUser.addUser">
                     <a href="" ng-click="addMember()" class="btn btn-primary">Add New Member</a><br/><br/>
                 </span>
                 <nglist></nglist>
             </section>
         </tab>
 
-        <tab ng-show="accessMain.adminGroup.list" heading="Groups">
+        <tab ng-show="access.adminGroup.list" heading="Groups">
             <section ng-controller="groupsCtrl as groupGridCtrl">
                 <span ng-if="access.adminGroup.add">
                     <a href="" ng-click="addGroup()" class="btn btn-primary">Add New Group</a><br/><br/>

@@ -63,11 +63,11 @@ soajsApp.config([
 				}
 			});
 		}
-
+		/*
 		$routeProvider.otherwise({
 			redirectTo: navigation[0].url.replace('#', '')
 		});
-
+		*/
 		soajsApp.components = {
 			controller: $controllerProvider.register,
 			service: $provide.service

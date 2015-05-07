@@ -4,15 +4,9 @@ var membersApp = soajsApp.components;
 membersApp.controller('mainMembersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
-	$scope.accessMain=
-	{
-		adminUser:{
-			list : $scope.buildPermittedOperation('urac', '/admin/listUsers')
-		},
-		adminGroup:{
-			list : $scope.buildPermittedOperation('urac', '/admin/group/list')
-		}
-	};
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
+
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -23,18 +17,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 		$scope.listMembers();
 	});
 
-	$scope.access=
-	{
-		admin:{
-			listUsers : $scope.buildPermittedOperation('urac', '/admin/listUsers'),
-			changeStatusAccess : $scope.buildPermittedOperation('urac', '/admin/changeStatusAccess'),
-			editUser : $scope.buildPermittedOperation('urac', '/admin/editUser'),
-			addUser : $scope.buildPermittedOperation('urac', '/admin/addUser')
-		},
-		adminGroup:{
-			list : $scope.buildPermittedOperation('urac', '/admin/group/list')
-		}
-	};
+	$scope.access=$scope.$parent.access;
 
 	$scope.listMembers = function() {
 		getSendDataFromServer(ngDataApi, {
@@ -64,7 +47,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					top: []
 				};
 
-				if($scope.access.admin.editUser)
+				if($scope.access.adminUser.editUser)
 				{
 					options.left.push( {
 						'label': 'Edit',
@@ -77,7 +60,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 						'handler': 'editAcl'
 					});
 				}
-				if($scope.access.admin.changeStatusAccess)
+				if($scope.access.adminUser.changeStatusAccess)
 				{
 					options.top=	[
 						{
@@ -306,7 +289,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	};
 
 	//call default method
-	if($scope.access.admin.listUsers){
+	if($scope.access.adminUser.list){
 		$scope.listMembers();
 	}
 

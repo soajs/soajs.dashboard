@@ -3,15 +3,8 @@ var groupsApp = soajsApp.components;
 groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	//$scope.$parent.isUserLoggedIn();
 
-	$scope.access={
-		adminGroup:{
-			list : $scope.buildPermittedOperation('urac', '/admin/group/list'),
-			add : $scope.buildPermittedOperation('urac', '/admin/group/add'),
-			edit : $scope.buildPermittedOperation('urac', '/admin/group/edit'),
-			delete : $scope.buildPermittedOperation('urac', '/admin/group/delete'),
-			addUsers : $scope.buildPermittedOperation('urac', '/admin/group/addUsers')
-		}
-	};
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, groupsConfig.permissions);
 
 	$scope.listGroups = function() {
 		if($scope.access.adminGroup.list){

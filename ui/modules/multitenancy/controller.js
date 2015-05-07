@@ -4,50 +4,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.$parent.isUserLoggedIn();
 	var currentApp = null;
 
-	$scope.access=
-	{
-		product:{
-			list : $scope.buildPermittedOperation('dashboard', '/product/list')
-		},
-		environment:{
-			list: $scope.buildPermittedOperation('dashboard', '/environment/list')
-		},
-		tenant:{
-			add : $scope.buildPermittedOperation('dashboard', '/tenant/add'),
-			delete : $scope.buildPermittedOperation('dashboard', '/tenant/delete'),
-			update : $scope.buildPermittedOperation('dashboard', '/tenant/update'),
-			list : $scope.buildPermittedOperation('dashboard', '/tenant/list'),
-			oauth:{
-				update : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/update'),
-				delete : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/delete'),
-				users:{
-					list : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/list'),
-					add : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/add'),
-					update : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/update'),
-					delete : $scope.buildPermittedOperation('dashboard', '/tenant/oauth/users/delete')
-				}
-			},
-			application:{
-				add : $scope.buildPermittedOperation('dashboard', '/tenant/application/add'),
-				delete : $scope.buildPermittedOperation('dashboard', '/tenant/application/delete'),
-				update : $scope.buildPermittedOperation('dashboard', '/tenant/application/update'),
-				list : $scope.buildPermittedOperation('dashboard', '/tenant/application/list')
-			},
-			appKeys:{
-				list : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/list'),
-				add : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/add'),
-				delete : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/delete'),
-				listConfig : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/config/list'),
-				updateConfig : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/config/update')
-			},
-			externalKeys:{
-        add : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/ext/add'),
-				list : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/ext/list'),
-				delete : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/ext/delete'),
-				update : $scope.buildPermittedOperation('dashboard', '/tenant/application/key/ext/update')
-			}
-		}
-	};
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
 
 	$scope.$parent.$on('reloadEnvironments', function() {
 		$scope.getEnvironments();

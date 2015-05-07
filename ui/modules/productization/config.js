@@ -96,5 +96,15 @@ var productizationConfig = {
 				}
 			]
 		}
+	},
+	'permissions':{
+		'listProduct' :['dashboard', '/product/list'],
+		'addProduct' : ['dashboard', '/product/add'],
+		'deleteProduct' :['dashboard', '/product/delete'],
+		'editProduct':['dashboard', '/product/update'],
+		'listPck' : ['dashboard', '/product/packages/list'],
+		'addPck' : ['dashboard', '/product/packages/add'],
+		'deletePck' : ['dashboard', '/product/packages/delete'],
+		'updatePck' : ['dashboard', '/product/packages/update']
 	}
 };

@@ -321,5 +321,49 @@ var tenantConfig = {
 				}
 			]
 		}
+	},
+	'permissions':{
+		'product':{
+			'list' : ['dashboard', '/product/list']
+		},
+		'environment':{
+			'list': ['dashboard', '/environment/list']
+		},
+		'tenant':{
+			'add' : ['dashboard', '/tenant/add'],
+			'delete' : ['dashboard', '/tenant/delete'],
+			'update' : ['dashboard', '/tenant/update'],
+			'list' : ['dashboard', '/tenant/list'],
+			'oauth':{
+				'update' : ['dashboard', '/tenant/oauth/update'],
+				'delete' : ['dashboard', '/tenant/oauth/delete'],
+				'users':{
+					'list' : ['dashboard', '/tenant/oauth/users/list'],
+					'add' : ['dashboard', '/tenant/oauth/users/add'],
+					'update' : ['dashboard', '/tenant/oauth/users/update'],
+					'delete' : ['dashboard', '/tenant/oauth/users/delete']
+				}
+			},
+			'application':{
+				'add' : ['dashboard', '/tenant/application/add'],
+				'delete' : ['dashboard', '/tenant/application/delete'],
+				'update' : ['dashboard', '/tenant/application/update'],
+				'list' : ['dashboard', '/tenant/application/list']
+			},
+			'appKeys':{
+				'list' : ['dashboard', '/tenant/application/key/list'],
+				'add' : ['dashboard', '/tenant/application/key/add'],
+				'delete' : ['dashboard', '/tenant/application/key/delete'],
+				'listConfig' : ['dashboard', '/tenant/application/key/config/list'],
+				'updateConfig' : ['dashboard', '/tenant/application/key/config/update']
+			},
+			'externalKeys':{
+				'add' : ['dashboard', '/tenant/application/key/ext/add'],
+				'list' : ['dashboard', '/tenant/application/key/ext/list'],
+				'delete' : ['dashboard', '/tenant/application/key/ext/delete'],
+				'update' : ['dashboard', '/tenant/application/key/ext/update']
+			}
+		}
 	}
+
 };
