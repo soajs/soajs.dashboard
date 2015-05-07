@@ -129,7 +129,7 @@ module.exports = {
 			//generate oauth authorization if needed.
 			records.forEach(function(oneTenant) {
 				if(oneTenant.oauth.secret && oneTenant.oauth.secret !== '') {
-					oneTenant.oauth.authorization = new Buffer(oneTenant._id.toString() + oneTenant.oauth.secret).toString('base64');
+					oneTenant.oauth.authorization = "Basic " + new Buffer(oneTenant._id.toString() + oneTenant.oauth.secret).toString('base64');
 				}
 			});
 			return res.jsonp(req.soajs.buildResponse(null, records));
@@ -188,7 +188,7 @@ module.exports = {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 				//generate oauth authorization if needed.
 				if(data.oauth.secret && data.oauth.secret !== '') {
-					data.oauth.authorization = new Buffer(data._id.toString() + data.oauth.secret).toString('base64');
+					data.oauth.authorization = "Basic " + new Buffer(data._id.toString() + data.oauth.secret).toString('base64');
 				}
 				return res.jsonp(req.soajs.buildResponse(null, data));
 			});
