@@ -8,8 +8,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
 
 	$scope.editService = function(service){
-		console.log(service);
-
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
 
 		var options = {
@@ -25,10 +23,14 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
-							'extKeyRequired': formData.extKeyRequired,
 							'requestTimeout': formData.requestTimeout,
-							'requestTimeoutRenewal': formData.requestTimeout
+							'requestTimeoutRenewal': formData.requestTimeoutRenewal
 						};
+						if( formData.extKeyRequired ==='true'){
+							postData.extKeyRequired = true;
+						}else if( formData.extKeyRequired ==='false'){
+							postData.extKeyRequired = false;
+						}
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
@@ -40,9 +42,10 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Service Updated Successfully.');
+								$scope.$parent.displayAlert('success', 'Service Data Updated Successfully.');
 								$scope.modalInstance.close();
-								$scope.form.formData = {}
+								$scope.form.formData = {};
+								$scope.listServices();
 							}
 						});
 					}
@@ -63,6 +66,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
 
 	};
+
 	$scope.listServices = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
@@ -119,6 +123,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 		}
 		return result;
 	};
+
 	if($scope.access.listServices){
 		$scope.listServices();
 	}

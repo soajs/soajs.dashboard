@@ -8,7 +8,7 @@ var servicesConfig = {
 					'type': 'number',
 					'placeholder': '30',
 					'value': '',
-					'tooltip': '',
+					'tooltip': 'Maximum timeout value for a request to this service',
 					'required': true
 				},
 				{
@@ -17,7 +17,7 @@ var servicesConfig = {
 					'type': 'number',
 					'placeholder': '5',
 					'value': '',
-					'tooltip': '',
+					'tooltip': 'In case of a timeout, set the number of trial attempts',
 					'required': true
 				},
 				{
@@ -25,7 +25,7 @@ var servicesConfig = {
 					'label': 'External Key Required',
 					'type': 'radio',
 					'value': [{'v': false}, {'v': true}],
-					'tooltip': '',
+					'tooltip': 'If this service requires an external key; ie if it is multi-tenant',
 					'required': true
 				}
 			]
