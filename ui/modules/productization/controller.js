@@ -50,7 +50,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"method": "get",
 			"routeName": "/dashboard/product/delete",
 			"params": {"id": row._id}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -83,7 +83,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"method": "send",
 							"routeName": "/dashboard/product/add",
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -143,7 +143,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						"routeName": "/dashboard/product/update",
 						"data": postData,
 						"params": {"id": row['_id']}
-					}, function(error, response) {
+					}, function(error) {
 						if(error) {
 							$scope.$parent.displayAlert('danger', error.message);
 						}
@@ -221,7 +221,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"routeName": "/dashboard/product/packages/add",
 							"data": postData,
 							"params": {"id": productId}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -283,7 +283,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"routeName": "/dashboard/product/packages/update",
 							"data": postData,
 							"params": {"id": productId, "code": data.code.split("_")[1]}
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -317,7 +317,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"method": "get",
 			"routeName": "/dashboard/product/packages/delete",
 			"params": {"id": productId, "code": packageCode}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -348,7 +348,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.aclFill.services={};
 	$scope.currentPackage = {};
 
-	$scope.selectService = function( service, index) {
+	$scope.selectService = function( service) {
 		if( $scope.aclFill.services[service.name]['include'])
 		{
 			$scope.aclFill.services[service.name].collapse = false;
@@ -359,7 +359,6 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.getPackageAcl = function() {
-		var productId=  $routeParams.pid;
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -386,46 +385,48 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.aclFill.services= angular.copy($scope.currentPackage.acl);
 				for(var propt in $scope.aclFill.services)
 				{
-					var s = $scope.aclFill.services[propt];
-					s.include =true;
-					s.collapse = false;
+					if($scope.aclFill.services.hasOwnProperty(propt)){
+						var s = $scope.aclFill.services[propt];
+						s.include =true;
+						s.collapse = false;
 
-					if(s.access)
-					{
-						if( s.access===true){
-							s.accessType = 'private';
+						if(s.access)
+						{
+							if( s.access===true){
+								s.accessType = 'private';
+							}
+							else if( s.access===false){
+								s.accessType = 'public';
+							}
+							else if( Array.isArray(s.access) && (s.access.indexOf('administrator')>-1 )){
+								s.accessType = 'admin';
+							}
 						}
-						else if( s.access===false){
+						else{
 							s.accessType = 'public';
 						}
-						else if( Array.isArray(s.access) && (s.access.indexOf('administrator')>-1 )){
-							s.accessType = 'admin';
+
+						if(s.apisPermission==='restricted'){
+							s.apisRestrictPermission = true;
 						}
-					}
-					else{
-						s.accessType = 'public';
-					}
-
-					if(s.apisPermission==='restricted'){
-						s.apisRestrictPermission = true;
-					}
-					if(s.apis){
-						for(var ap in s.apis)
-						{
-							s.apis[ap].include=true;
-							s.apis[ap].accessType = 'clear';
-
-							if( s.apis[ap].access==true)
+						if(s.apis){
+							for(var ap in s.apis)
 							{
-								s.apis[ap].accessType = 'private';
-							}
-							else if( s.apis[ap].access===false)
-							{
-								s.apis[ap].accessType = 'public';
-							}
-							else{
-								if(Array.isArray(s.apis[ap].access) && (s.apis[ap].access.indexOf('administrator')>-1) ){
-									s.apis[ap].accessType = 'admin';
+								if(s.apis.hasOwnProperty(ap)) {
+									s.apis[ap].include = true;
+									s.apis[ap].accessType = 'clear';
+
+									if(s.apis[ap].access == true) {
+										s.apis[ap].accessType = 'private';
+									}
+									else if(s.apis[ap].access === false) {
+										s.apis[ap].accessType = 'public';
+									}
+									else {
+										if(Array.isArray(s.apis[ap].access) && (s.apis[ap].access.indexOf('administrator') > -1)) {
+											s.apis[ap].accessType = 'admin';
+										}
+									}
 								}
 							}
 						}
@@ -491,45 +492,48 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 
 		for(var propt in $scope.aclFill.services)
 		{
-			var s = angular.copy($scope.aclFill.services[propt]);
+			if($scope.aclFill.services.hasOwnProperty(propt)){
+				var s = angular.copy($scope.aclFill.services[propt]);
 
-			if(s.include===true)
-			{
-				aclObj[propt]={};
-				aclObj[propt].apis={};
-
-				if(s.accessType==='private'){
-					aclObj[propt].access=true;
-				}
-				else if(s.accessType==='admin'){
-					aclObj[propt].access= ['administrator'];
-				}
-				else{
-					aclObj[propt].access=false;
-				}
-
-				if(s.apisRestrictPermission ===true ){
-					aclObj[propt].apisPermission ='restricted';
-				}
-
-				if(s.apis)
+				if(s.include===true)
 				{
+					aclObj[propt]={};
+					aclObj[propt].apis={};
 
-					for(var ap in s.apis){
-						var api = s.apis[ap];
+					if(s.accessType==='private'){
+						aclObj[propt].access=true;
+					}
+					else if(s.accessType==='admin'){
+						aclObj[propt].access= ['administrator'];
+					}
+					else{
+						aclObj[propt].access=false;
+					}
 
-						if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
-						{
-							/// need to also check for the default api if restricted
-							aclObj[propt].apis[ap]={};
-							if(api.accessType==='private'){
-								aclObj[propt].apis[ap].access=true;
-							}
-							else if(api.accessType==='public'){
-								aclObj[propt].apis[ap].access=false;
-							}
-							else if(api.accessType==='admin'){
-								aclObj[propt].apis[ap].access=['administrator'];
+					if(s.apisRestrictPermission ===true ){
+						aclObj[propt].apisPermission ='restricted';
+					}
+
+					if(s.apis)
+					{
+						for(var ap in s.apis){
+							if(s.apis.hasOwnProperty(ap)){
+								var api = s.apis[ap];
+
+								if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
+								{
+									/// need to also check for the default api if restricted
+									aclObj[propt].apis[ap]={};
+									if(api.accessType==='private'){
+										aclObj[propt].apis[ap].access=true;
+									}
+									else if(api.accessType==='public'){
+										aclObj[propt].apis[ap].access=false;
+									}
+									else if(api.accessType==='admin'){
+										aclObj[propt].apis[ap].access=['administrator'];
+									}
+								}
 							}
 						}
 					}
@@ -544,7 +548,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 			"routeName": "/dashboard/product/packages/update",
 			"data": postData,
 			"params": {"id": productId, "code": postData.code.split("_")[1]}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}

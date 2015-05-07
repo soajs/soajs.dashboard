@@ -96,6 +96,8 @@ var serviceConfig = {
 module.exports = {
 	"serviceName": "dashboard",
 	"servicePort": 4003,
+	"requestTimeout": 30,
+	"requestTimeoutRenewal": 5,
 	"hashIterations": 1024,
 	"seedLength": 32,
 	"extKeyRequired": true,

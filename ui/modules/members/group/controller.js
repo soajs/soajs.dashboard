@@ -3,8 +3,7 @@ var groupsApp = soajsApp.components;
 groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	//$scope.$parent.isUserLoggedIn();
 
-	$scope.access = {};
-	constructModulePermissions($scope, $scope.access, groupsConfig.permissions);
+	$scope.access=$scope.$parent.access;
 
 	$scope.listGroups = function() {
 		if($scope.access.adminGroup.list){

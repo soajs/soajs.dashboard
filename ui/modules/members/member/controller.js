@@ -129,7 +129,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 									"method": "send",
 									"routeName": "/urac/admin/addUser",
 									"data": postData
-								}, function(error, response) {
+								}, function(error) {
 									if(error) {
 										$scope.form.displayAlert('danger', error.message);
 									}
@@ -175,10 +175,9 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			else {
 				var len = response.length;
 				var grps = [];
+				var datagroups =[];
 				if(data.groups) {
-					var datagroups = data.groups;
-				} else {
-					var datagroups = [];
+					datagroups = data.groups;
 				}
 				var sel = false;
 				for(var x = 0; x < len; x++) {
@@ -229,7 +228,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
 									"data": postData
-								}, function(error, response) {
+								}, function(error) {
 									if(error) {
 										$scope.form.displayAlert('danger', error.message);
 									}
@@ -313,7 +312,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 		$scope.aclFill.services[service.name].collapse = false;
 	};
 
-	$scope.selectService = function( service, index) {
+	$scope.selectService = function( service) {
 		if( $scope.aclFill.services[service.name]['include'])
 		{
 			$scope.aclFill.services[service.name].collapse = false;

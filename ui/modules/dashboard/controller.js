@@ -43,16 +43,15 @@ var configDashbrd = {
 			
 			}
 		},
-		'form': {},
 		'permissions':{
 			'environment': ['dashboard', '/environment/list'],
 			'tenant': ['dashboard', '/tenant/list'],
 			'product': ['dashboard', '/product/list']
 		}
-	};
+};
 
 var dahsboardApp = soajsApp.components;
-dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+dahsboardApp.controller('dahsboardCtrl', ['$scope', function($scope) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -72,7 +71,6 @@ dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 				var options = {
 					grid: configDashbrd.grid.tenants,
 					data: response,
-					//defaultSortField: 'product',
 					left: [],
 					top: []
 				};
@@ -131,6 +129,6 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 }]);
 
 
-dahsboardApp.controller('helpPageCtrl', ['$scope', 'ngDataApi', function($scope, ngDataApi) {
+dahsboardApp.controller('helpPageCtrl', ['$scope', function($scope) {
 	$scope.$parent.isUserLoggedIn(true);
 }]);

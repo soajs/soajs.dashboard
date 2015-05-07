@@ -1,10 +1,16 @@
 "use strict";
+var servicesConfig = {
+	permissions:{
+		'listServices': ['dashboard', '/services/list']
+	}
+};
+
 var servicesApp = soajsApp.components;
 servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	$scope.access={
-		listServices : $scope.buildPermittedOperation('dashboard', '/services/list')
-	};
+
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
 
 	$scope.listServices = function() {
 		getSendDataFromServer(ngDataApi, {

@@ -65,14 +65,5 @@ var groupsConfig = {
 				'required': true
 			}
 		]
-	},
-	permissions:{
-		'adminGroup':{
-			'list' : ['urac', '/admin/group/list'],
-			'add' : ['urac', '/admin/group/add'],
-			'edit' : ['urac', '/admin/group/edit'],
-			'delete' : ['urac', '/admin/group/delete'],
-			'addUsers' : ['urac', '/admin/group/addUsers']
-		}
 	}
 };
