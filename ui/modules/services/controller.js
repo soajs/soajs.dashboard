@@ -1,9 +1,4 @@
 "use strict";
-var servicesConfig = {
-	permissions:{
-		'listServices': ['dashboard', '/services/list']
-	}
-};
 
 var servicesApp = soajsApp.components;
 servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -12,6 +7,62 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
 
+	$scope.editService = function(service){
+		console.log(service);
+
+		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
+
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'editService',
+			label: 'Update Service',
+			'data': service,
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'extKeyRequired': formData.extKeyRequired,
+							'requestTimeout': formData.requestTimeout,
+							'requestTimeoutRenewal': formData.requestTimeout
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/services/update",
+							"params": {"name": service.name},
+							"data": postData
+						}, function(error) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Service Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {}
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
+
+
+	};
 	$scope.listServices = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",

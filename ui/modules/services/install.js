@@ -12,7 +12,7 @@ var servicesNav =[
 		'icon': 'tree',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/services/controller.js'],
+		'scripts': ['modules/services/config.js', 'modules/services/controller.js'],
 		'ancestor': ['Home']
 	}
 ];

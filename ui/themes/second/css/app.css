@@ -412,6 +412,9 @@ div.entryBox .header span{
     font-weight: normal;
     margin-left: 10px;
 }
+div.entryBox .header b{
+    margin-left: 50px;
+}
 
 div.entryBox .body {
     padding: 5px;
