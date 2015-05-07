@@ -9,7 +9,7 @@ var settingsNav =[
 		},
 		'url': '#/settings',
 		'tplPath': 'modules/settings/directives/list.tmpl',
-		'icon': 'tree',
+		'icon': 'cogs',
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/settings/config.js', 'modules/settings/controller.js'],
