@@ -98,7 +98,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
 			"params": {"id": $scope.envId},
 			"data": postData
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -179,14 +179,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							}
 
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
+								var oneHost;
 								if(serviceName === 'controller') {
-									var oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
+									oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
 									$timeout(function() {
 										$scope.executeHeartbeatTest(env, oneHost);
 									}, 2000);
 								}
 								else {
-									var oneHost = {
+									oneHost = {
 										'controllers': controllers,
 										'ip': oneHostIP,
 										'name': serviceName,
@@ -295,8 +296,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							}
 						}
 					}
-					for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
-						if(oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat || oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy) {
+					for(var j = 0; j < oneEnvironmentRow.hosts[oneHost.name].ips.length; j++) {
+						if(oneEnvironmentRow.hosts[oneHost.name].ips[j].heartbeat || oneEnvironmentRow.hosts[oneHost.name].ips[j].healthy) {
 							count++;
 						}
 					}
@@ -508,7 +509,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"method": "get",
 			"routeName": "/dashboard/hosts/delete",
 			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -524,10 +525,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						if(serviceName === 'controller') {
 							for(var s in $scope.grid.rows[e].hosts) {
 								if($scope.grid.rows[e].hosts.hasOwnProperty(s) && s !== 'controller') {
-									for(var i = 0; i < $scope.grid.rows[e].hosts[s].ips.length; i++) {
-										for(var k = 0; k < $scope.grid.rows[e].hosts[s].ips[i].controllers.length; k++) {
-											if($scope.grid.rows[e].hosts[s].ips[i].controllers[k].ip === oneHost.ip) {
-												$scope.grid.rows[e].hosts[s].ips[i].controllers.splice(k, 1);
+									for(var j = 0; j < $scope.grid.rows[e].hosts[s].ips.length; j++) {
+										for(var k = 0; k < $scope.grid.rows[e].hosts[s].ips[j].controllers.length; k++) {
+											if($scope.grid.rows[e].hosts[s].ips[j].controllers[k].ip === oneHost.ip) {
+												$scope.grid.rows[e].hosts[s].ips[j].controllers.splice(k, 1);
 											}
 										}
 									}
@@ -645,11 +646,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
-								'stringify': (formData.stringify === 'true') ? true : false
+								'stringify': (formData.stringify === 'true')
 							};
 						}
 						else {
-							postData['tenantSpecific'] = (formData.tenantSpecific === 'true') ? true : false;
+							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
 						}
 
 						getSendDataFromServer(ngDataApi, {
@@ -657,7 +658,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/dashboard/environment/dbs/add",
 							"params": {"env": env},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -686,10 +687,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.editDatabase = function(env, name, data) {
+		var formData;
 		if(name === 'session') {
 			var t = angular.copy(data);
 			delete t.cluster;
-			var formData = {
+			formData = {
 				"cluster": data.cluster,
 				"name": data.name,
 				"collection": data.collection,
@@ -700,7 +702,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			};
 		}
 		else {
-			var formData = angular.copy(data);
+			formData = angular.copy(data);
 			formData.name = name;
 		}
 		var options = {
@@ -726,11 +728,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
-								'stringify': (formData.stringify === 'true') ? true : false
+								'stringify': (formData.stringify === 'true')
 							};
 						}
 						else {
-							postData['tenantSpecific'] = (formData.tenantSpecific === 'true') ? true : false;
+							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
 						}
 
 						getSendDataFromServer(ngDataApi, {
@@ -738,7 +740,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/dashboard/environment/dbs/update",
 							"params": {"env": env},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -847,7 +849,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/dashboard/environment/clusters/add",
 							"params": {"env": env, "name": formData.name},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -922,7 +924,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/dashboard/environment/clusters/update",
 							"params": {"env": env, "name": name},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
