@@ -125,6 +125,13 @@ module.exports = {
 	"list": function(config, mongo, req, res) {
 		mongo.find(colName, function(err, records) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 422, "msg": config.errors[422]})); }
+
+			//generate oauth authorization if needed.
+			records.forEach(function(oneTenant) {
+				if(oneTenant.oauth.secret && oneTenant.oauth.secret !== '') {
+					oneTenant.oauth.authorization = new Buffer(oneTenant._id.toString() + oneTenant.oauth.secret).toString('base64');
+				}
+			});
 			return res.jsonp(req.soajs.buildResponse(null, records));
 		});
 	},
@@ -179,6 +186,10 @@ module.exports = {
 
 			mongo.findOne(colName, {"_id": req.soajs.inputmaskData.id}, function(err, data) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+				//generate oauth authorization if needed.
+				if(data.oauth.secret && data.oauth.secret !== '') {
+					data.oauth.authorization = new Buffer(data._id.toString() + data.oauth.secret).toString('base64');
+				}
 				return res.jsonp(req.soajs.buildResponse(null, data));
 			});
 		});
@@ -243,6 +254,7 @@ module.exports = {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 			mongo.find(oauthUsersColName, {"tId": req.soajs.inputmaskData.id}, function(err, tenantOauthUsers) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 447, "msg": config.errors[447]})); }
+
 				return res.jsonp(req.soajs.buildResponse(null, tenantOauthUsers));
 			});
 		});
@@ -435,8 +447,8 @@ module.exports = {
 										if(req.soajs.inputmaskData.acl) {
 											tenantRecord.applications[i].acl = req.soajs.inputmaskData.acl;
 										}
-										if(req.soajs.inputmaskData.clearAcl && ( req.soajs.inputmaskData.clearAcl===true )) {
-											delete tenantRecord.applications[i].acl ;
+										if(req.soajs.inputmaskData.clearAcl && ( req.soajs.inputmaskData.clearAcl === true )) {
+											delete tenantRecord.applications[i].acl;
 										}
 										found = true;
 										break;
@@ -457,8 +469,8 @@ module.exports = {
 	},
 	"getTenantApplAclByExtKey": function(config, mongo, req, res) {
 		//console.log(req.soajs.tenant);
-		var criteria= {
-			'applications.keys.extKeys.extKey' : req.soajs.inputmaskData.extKey
+		var criteria = {
+			'applications.keys.extKeys.extKey': req.soajs.inputmaskData.extKey
 		};
 		mongo.findOne(colName, criteria, function(error, tenantRecord) {
 			if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]})); }
@@ -467,17 +479,14 @@ module.exports = {
 				"code": tenantRecord["code"],
 				"application": getApp(tenantRecord)
 			};
-			function getApp(tenantRecord)
-			{
+
+			function getApp(tenantRecord) {
 				var app = {};
 				var found = false;
-				tenantRecord.applications.forEach(function(oneApplication)
-				{
-					oneApplication.keys.forEach(function(oneKey)
-					{
-						oneKey.extKeys.forEach(function(oneExtKeyObj)
-						{
-							if( oneExtKeyObj.extKey === req.soajs.inputmaskData.extKey){
+				tenantRecord.applications.forEach(function(oneApplication) {
+					oneApplication.keys.forEach(function(oneKey) {
+						oneKey.extKeys.forEach(function(oneExtKeyObj) {
+							if(oneExtKeyObj.extKey === req.soajs.inputmaskData.extKey) {
 								app["product"] = oneApplication["product"];
 								app["package"] = oneApplication["package"];
 								app["app_acl"] = oneApplication["acl"];
@@ -490,13 +499,12 @@ module.exports = {
 				return app;
 			}
 
-			if( tenant.application.acl && (typeof(tenant.application.acl)==='object') ){
+			if(tenant.application.acl && (typeof(tenant.application.acl) === 'object')) {
 				return res.jsonp(req.soajs.buildResponse(null, tenant));
 			}
-			else
-			{
+			else {
 				mongo.findOne(prodColName, {'code': tenant.application.product}, function(error, productRecord) {
-					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 412, "msg": config.errors[412]}));  }
+					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 412, "msg": config.errors[412]})); }
 
 					for(var i = 0; i < productRecord.packages.length; i++) {
 						if(productRecord.packages[i].code === tenant.application.package) {
