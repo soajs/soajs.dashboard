@@ -93,7 +93,8 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Enter Tenant oAuth Secret.',
 					'required': false
-				},
+				}
+				/*,
 				{
 					'name': 'redirectURI',
 					'label': 'oAuth Redirect URI',
@@ -103,6 +104,7 @@ var tenantConfig = {
 					'tooltip': 'Enter Tenant oAuth redirectURI.',
 					'required': false
 				}
+				*/
 			]
 		},
 		'tenantAdd': {
@@ -140,32 +142,6 @@ var tenantConfig = {
 				}				
 			]
 		},
-		'oauth': {
-			'name': '',
-			'label': '',
-			'actions': {},
-			'entries': [
-				{
-					'name': 'secret',
-					'label': 'Secret',
-					'type': 'text',
-					'placeholder': 'SECRET...',
-					'value': '',
-					'tooltip': 'Enter Tenant oAuth Secret.',
-					'required': true
-				},
-				{
-					'name': 'redirectURI',
-					'label': 'Redirect URI',
-					'type': 'url',
-					'placeholder': 'redirectURI...',
-					'value': '',
-					'tooltip': 'Enter Tenant oAuth redirectURI.',
-					'required': true
-				}
-			]
-		},
-		
 		'oauthUserUpdate': {
 			'name': '',
 			'label': '',
@@ -198,7 +174,7 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'userId',
-					'label': 'user Id',
+					'label': 'User Id',
 					'type': 'text',
 					'placeholder': 'oauthUser ..',
 					'value': '',
@@ -207,11 +183,20 @@ var tenantConfig = {
 				},
 				{
 					'name': 'password',
-					'label': 'password',
-					'type': 'text',
+					'label': 'Password',
+					'type': 'password',
 					'placeholder': 'password...',
 					'value': '',
 					'tooltip': 'Enter oAuth user password.',
+					'required': true
+				},
+				{
+					'name': 'confirmPassword',
+					'label': 'Confirm Password',
+					'type': 'password',
+					'placeholder': 'password...',
+					'value': '',
+					'tooltip': 'Confirm oAuth user password.',
 					'required': true
 				}
 			]

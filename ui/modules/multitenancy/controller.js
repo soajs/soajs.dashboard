@@ -176,10 +176,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		if(oAuth.secret) {
 			data.secret = oAuth.secret;
 		}
+		/*
 		if(oAuth.redirectURI) {
 			data.redirectURI = oAuth.redirectURI;
 		}
-		
+		*/
 		var keys = Object.keys(data);
 
 		for(var i = 0; i < formConfig.entries.length; i++) {
@@ -219,7 +220,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								if(formData.secret) {
 									var oAuthData = {
 										'secret': formData.secret,
-										'redirectURI': formData.redirectURI
+										//'redirectURI': formData.redirectURI
 									};
 									getSendDataFromServer(ngDataApi, {
 										"method": "send",
