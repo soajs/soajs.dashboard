@@ -7,7 +7,7 @@ var navigation = [
 		'label': 'Home',
 		'url': '#/dashboard',
 		'tplPath': 'modules/dashboard/directives/dashboard.tmpl',
-		'scripts': ['modules/dashboard/controller.js'],
+		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
 		'icon': 'home',
 		'mainMenu': true,
 		'private': true,
@@ -35,4 +35,4 @@ var navigation = [
 	}
 ];
 
-var modules = ['members','environments', 'services','productization','multitenancy'];
+var modules = ['members', 'environments', 'services', 'productization', 'multitenancy'];

@@ -1,57 +1,6 @@
 "use strict";
-var configDashbrd = {
-		'grid': {
-			'tenants': {
-				search: false,
-				recordsPerPageArray: [5, 10, 50, 100],
-				'columns': [
-					{'label': 'Code', 'field': 'code'},
-					{'label': 'Name', 'field': 'name'},
-					{'label': 'Description', 'field': 'description'}
-				],
-				'leftActions': [],
-				'topActions': [],
-				'defaultSortField': 'code',
-				'defaultLimit': 5
-			},
-			'environments': {
-				search: false,
-				recordsPerPageArray: [5, 10, 50, 100],
-				columns: [
-					{label: 'Code', field: 'code'},
-					{label: 'Description', field: 'description'},
-					{label: 'IPs', field: 'ips'}
-				],
-				leftActions: [],
-				topActions: [],
-				'defaultSortField': '',
-				'defaultLimit': 5
-			
-			},
-			'products': {
-				search: false,
-				recordsPerPageArray: [5, 10, 50, 100],
-				'columns': [
-					{'label': 'Code', 'field': 'code'},
-					{'label': 'Name', 'field': 'name'},
-					{'label': 'Description', 'field': 'description'} 
-				],
-				'leftActions': [],
-				'topActions': [],
-				'defaultSortField': 'code',
-				'defaultLimit': 5
-			
-			}
-		},
-		'permissions':{
-			'environment': ['dashboard', '/environment/list'],
-			'tenant': ['dashboard', '/tenant/list'],
-			'product': ['dashboard', '/product/list']
-		}
-};
-
 var dahsboardApp = soajsApp.components;
-dahsboardApp.controller('dahsboardCtrl', ['$scope', function($scope) {
+dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -71,6 +20,7 @@ dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 				var options = {
 					grid: configDashbrd.grid.tenants,
 					data: response,
+					//defaultSortField: 'product',
 					left: [],
 					top: []
 				};
@@ -129,6 +79,6 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 }]);
 
 
-dahsboardApp.controller('helpPageCtrl', ['$scope', function($scope) {
+dahsboardApp.controller('helpPageCtrl', ['$scope', 'ngDataApi', function($scope, ngDataApi) {
 	$scope.$parent.isUserLoggedIn(true);
 }]);
