@@ -110,6 +110,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				console.log(response);
 				$scope.tenantsList = {
 					rows: response
 				};
@@ -399,9 +400,16 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
-							'userId': formData.userId,
-							'password': formData.password
+							'userId': formData.userId
 						};
+						if(formData.password && formData.password!= '' ){
+							if(formData.password !== formData.confirmPassword){
+								$scope.form.displayAlert('danger', 'Password and Confirm Password fields do not match.');
+								return;
+							}else{
+								postData.password	= formData.password;
+							}
+						}
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/oauth/users/update",
@@ -453,8 +461,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'action': function(formData) {
 						var postData = {
 							'userId': formData.userId,
-							'password': formData.password
+							'password': formData.user_password
 						};
+						if(formData.user_password !== formData.confirmPassword){
+							$scope.form.displayAlert('danger', 'Password and Confirm Password fields do not match.');
+							return;
+						}
+
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/oauth/users/add",
