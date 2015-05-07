@@ -1,21 +1,21 @@
 'use strict';
-(function(){
+var index = 0;
+(function() {
 	var link = document.createElement("script");
 	link.type = "text/javascript";
 	link.src = "themes/" + themeToUse + "/bootstrap.js";
 	document.getElementsByTagName("head")[0].appendChild(link);
 
-	modules.forEach(function(oneModule) {
-		var url = "modules/" + oneModule + "/install.js";
-		require([url], function() {
-			var moduleNavigation = eval(oneModule + "Nav");
-			if(moduleNavigation && Array.isArray(moduleNavigation) && moduleNavigation.length > 0) {
-				moduleNavigation.forEach(function(entry) {
-					navigation.push(entry);
-				});
-			}
-		});
-	});
+	//modules.forEach(function(oneModule) {
+	//	loadNewModuleSet(oneModule);
+	//});
+	//
+	//function loadNewModuleSet(oneModule) {
+	//	var link = document.createElement("script");
+	//	link.type = "text/javascript";
+	//	link.src = "modules/" + oneModule + "/install.js";
+	//	document.getElementsByTagName("head")[0].appendChild(link);
+	//}
 })();
 
 /* App Module */
@@ -32,6 +32,16 @@ soajsApp.config([
 		var whitelisted = ['self'];
 		whitelisted = whitelisted.concat(whitelistedDomain);
 		$sceDelegateProvider.resourceUrlWhitelist(whitelisted);
+
+
+		modules.forEach(function(oneModule) {
+			var moduleNavigation = eval(oneModule + "Nav");
+			if(moduleNavigation && Array.isArray(moduleNavigation) && moduleNavigation.length > 0) {
+				moduleNavigation.forEach(function(entry) {
+					navigation.push(entry);
+				});
+			}
+		});
 
 		navigation.forEach(function(navigationEntry) {
 			if(navigationEntry.scripts && navigationEntry.scripts.length > 0) {
