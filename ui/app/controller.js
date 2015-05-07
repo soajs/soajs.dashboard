@@ -1,4 +1,22 @@
 'use strict';
+(function(){
+	var link = document.createElement("script");
+	link.type = "text/javascript";
+	link.src = "themes/" + themeToUse + "/bootstrap.js";
+	document.getElementsByTagName("head")[0].appendChild(link);
+
+	modules.forEach(function(oneModule) {
+		var url = "modules/" + oneModule + "/install.js";
+		require([url], function() {
+			var moduleNavigation = eval(oneModule + "Nav");
+			if(moduleNavigation && Array.isArray(moduleNavigation) && moduleNavigation.length > 0) {
+				moduleNavigation.forEach(function(entry) {
+					navigation.push(entry);
+				});
+			}
+		});
+	});
+})();
 
 /* App Module */
 var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies']);
@@ -15,59 +33,34 @@ soajsApp.config([
 		whitelisted = whitelisted.concat(whitelistedDomain);
 		$sceDelegateProvider.resourceUrlWhitelist(whitelisted);
 
-		var link = document.createElement("script");
-		link.type = "text/javascript";
-		link.src = "themes/" + themeToUse + "/bootstrap.js";
-		document.getElementsByTagName("head")[0].appendChild(link);
-
-		var index = 0;
-		modules.forEach(function(oneModule) {
-			var url = "modules/" + oneModule + "/install.js";
-			require([url], function() {
-				var moduleNavigation = eval(oneModule + "Nav");
-				if(moduleNavigation && Array.isArray(moduleNavigation) && moduleNavigation.length > 0){
-					moduleNavigation.forEach(function(entry){
-						navigation.push(entry);
-					});
-				}
-				index++;
-				if(index === modules.length) {
-					initialize();
-				}
-			});
+		navigation.forEach(function(navigationEntry) {
+			if(navigationEntry.scripts && navigationEntry.scripts.length > 0) {
+				$routeProvider.when(navigationEntry.url.replace('#', ''), {
+					templateUrl: navigationEntry.tplPath,
+					resolve: {
+						load: ['$q', '$rootScope', function($q, $rootScope) {
+							var deferred = $q.defer();
+							require(navigationEntry.scripts, function() {
+								$rootScope.$apply(function() {
+									deferred.resolve();
+								});
+							});
+							return deferred.promise;
+						}]
+					}
+				});
+			}
+			else {
+				$routeProvider.when(navigationEntry.url.replace('#', ''), {
+					templateUrl: navigationEntry.tplPath
+				});
+			}
 		});
 
-		function initialize() {
-			console.log("initializing dashboard navigation....");
-			navigation.forEach(function(navigationEntry) {
-				if(navigationEntry.scripts && navigationEntry.scripts.length > 0) {
-					$routeProvider.when(navigationEntry.url.replace('#', ''), {
-						templateUrl: navigationEntry.tplPath,
-						resolve: {
-							load: ['$q', '$rootScope', function($q, $rootScope) {
-								var deferred = $q.defer();
-								require(navigationEntry.scripts, function() {
-									$rootScope.$apply(function() {
-										deferred.resolve();
-									});
-								});
-								return deferred.promise;
-							}]
-						}
-					});
-				}
-				else {
-					$routeProvider.when(navigationEntry.url.replace('#', ''), {
-						templateUrl: navigationEntry.tplPath
-					});
-				}
-			});
-		}
-		/*
 		$routeProvider.otherwise({
 			redirectTo: navigation[0].url.replace('#', '')
 		});
-		*/
+
 		soajsApp.components = {
 			controller: $controllerProvider.register,
 			service: $provide.service
@@ -78,7 +71,6 @@ soajsApp.config([
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi',
 	function($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi) {
 		$scope.enableInterface = false;
-
 		$scope.go = function(path) {
 			$location.path(path);
 		};
