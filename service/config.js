@@ -102,6 +102,7 @@ module.exports = {
 	"seedLength": 32,
 	"extKeyRequired": true,
 	"expDateTTL": 86400000,
+	"uracdomain": "dashboard-api.soajs.org:4000",
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
@@ -189,7 +190,10 @@ module.exports = {
 		"602": "Invalid maintenance operation requested.",
 		"603": "Error executing maintenance operation.",
 		"604": "Service not found.",
-		"605": "Service Host not found."
+		"605": "Service Host not found.",
+
+		"606": "Error adding an administrator user for tenant",
+		"607": "Error adding an administrator group for tenant"
 	},
 
 	"schema": {
