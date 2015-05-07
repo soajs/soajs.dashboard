@@ -30,14 +30,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		$timeout(function() { $scope.mt[id].alerts = []; }, 7000);
 	};
 
-	$scope.viewKeys = function(id, app) {
-		if(currentApp && ( currentApp['appId'] != app['appId'] )) {
-			currentApp.showKeys = false;
-		}
-		app.showKeys = (app.showKeys) ? false : true;
-		currentApp = app;
-	};
-
 	$scope.openKeys = function(id, app) {
 		app.showKeys = true;
 	};
@@ -219,7 +211,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							else {
 								if(formData.secret) {
 									var oAuthData = {
-										'secret': formData.secret,
+										'secret': formData.secret
 										//'redirectURI': formData.redirectURI
 									};
 									getSendDataFromServer(ngDataApi, {
@@ -241,7 +233,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 								}
 								else {
-									$scope.$parent.displayAlert('success', 'Tenant Upated Successfully.');
+									$scope.$parent.displayAlert('success', 'Tenant Updated Successfully.');
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
 									$scope.listTenants();
@@ -393,12 +385,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	
 	$scope.editTenantOauthUser = function(tId, user) {
 		user.password = null;
+		user.confirmPassword = null;
 		var options = {
 			timeout: $timeout,
 			form: tenantConfig.form.oauthUserUpdate,
 			name: 'updateUser',
 			label: 'Update User',
-			sub: true,
 			data: user,
 			actions: [
 				{
@@ -449,7 +441,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			form: tenantConfig.form.oauthUser,
 			name: 'addUser',
 			label: 'Add New oAuth User',
-			sub: true,
+			data: {
+				'userId':null,
+				'user_password': null
+			},
 			actions: [
 				{
 					'type': 'submit',

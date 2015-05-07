@@ -1,56 +1,4 @@
-var tenantConfig = {
-	'grid': {
-		'tenant': {
-			recordsPerPageArray: [5, 10, 50, 100],
-			'columns': [
-				{'label': 'Code', 'field': 'code'},
-				{'label': 'Name', 'field': 'name'},
-				{'label': 'Description', 'field': 'description'}
-			],
-			'leftActions': [],
-			'topActions': [],
-			'defaultSortField': 'code',
-			'defaultLimit': 5
-		},
-		'applications': {
-			recordsPerPageArray: [5, 10, 50, 100],
-			'columns': [
-				{'label': 'Product', 'field': 'product'},
-				{'label': 'Package', 'field': 'package'},
-				{'label': 'Description', 'field': 'description'},
-				{'label': 'TTL ( hours )', 'field': '_TTL', filter: "TTL"}
-			],
-			'leftActions': [],
-			'topActions': [],
-			'defaultSortField': 'product',
-			'defaultLimit': 5
-		},
-		'extKeys': {
-			search: false,
-			recordsPerPageArray: [5, 10, 50, 100],
-			'columns': [
-				{'label': 'External Key', 'field': 'extKey', filter: 'trimmed'},
-				{'label': 'Expiry Date', 'field': 'expDate', filter: 'date'}
-				//{'label': 'Geo', 'field': 'geo', filter: 'json'},
-				//{'label': 'Device', 'field': 'device', filter: 'json'}
-			],
-			'leftActions': [],
-			'topActions': [],
-			'defaultSortField': 'expDate',
-			'defaultLimit': 5
-		},
-		'usersOauth': {
-			search: false,
-			recordsPerPageArray: [5, 10, 50, 100],
-			'columns': [
-				{'label': 'User Id', 'field': 'userId' }
-			],
-			'leftActions': [],
-			'topActions': [],
-			'defaultSortField': '',
-			'defaultLimit': 5
-		}
-	},
+var settingsConfig = {
 	'form': {
 		'tenantEdit': {
 			'name': 'editTenant',
@@ -95,16 +43,16 @@ var tenantConfig = {
 					'required': false
 				}
 				/*,
-				{
-					'name': 'redirectURI',
-					'label': 'oAuth Redirect URI',
-					'type': 'url',
-					'placeholder': 'redirectURI...',
-					'value': '',
-					'tooltip': 'Enter Tenant oAuth redirectURI.',
-					'required': false
-				}
-				*/
+				 {
+				 'name': 'redirectURI',
+				 'label': 'oAuth Redirect URI',
+				 'type': 'url',
+				 'placeholder': 'redirectURI...',
+				 'value': '',
+				 'tooltip': 'Enter Tenant oAuth redirectURI.',
+				 'required': false
+				 }
+				 */
 			]
 		},
 		'tenantAdd': {
@@ -139,7 +87,7 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this tenant',
 					'required': false
-				}				
+				}
 			]
 		},
 		'oauthUserUpdate': {
@@ -248,8 +196,8 @@ var tenantConfig = {
 					'label': 'TTL',
 					'type': 'select',
 					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
-					          {'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'}, 
-					          {'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
+						{'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'},
+						{'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
 					'tooltip': 'Pick a time to live value for this package.'
 				}
 			]
@@ -359,5 +307,4 @@ var tenantConfig = {
 			}
 		}
 	}
-
 };
