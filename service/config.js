@@ -656,7 +656,7 @@ module.exports = {
 			},
 			"redirectURI": {
 				"source": ['body.redirectURI'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"format": "uri"
@@ -678,7 +678,7 @@ module.exports = {
 			},
 			"redirectURI": {
 				"source": ['body.redirectURI'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"format": "uri"
