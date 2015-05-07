@@ -3544,24 +3544,105 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	});
 
 	describe("services tests", function() {
-		it("success - will get services list", function(done) {
-			executeMyRequest({}, 'services/list', 'post', function(body) {
-				assert.ok(body.data);
-				assert.ok(body.data.length > 0);
-				done();
+
+		describe("list services test", function(){
+			it("success - will get services list", function(done) {
+				executeMyRequest({}, 'services/list', 'post', function(body) {
+					assert.ok(body.data);
+					assert.ok(body.data.length > 0);
+					done();
+				});
+			});
+			it("success - will get services list specific services", function(done) {
+				var params = {
+					form: {
+						"serviceNames": ['urac']
+					}
+				};
+				executeMyRequest(params, 'services/list', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
 			});
 		});
-		it("success - will get services list specific services", function(done) {
-			var params = {
-				form: {
-					"serviceNames": ['urac']
-				}
-			};
-			executeMyRequest(params, 'services/list', 'post', function(body) {
-				assert.ok(body.data);
-				done();
+
+		describe("update servce test", function() {
+			it("success - will update service", function(done) {
+				var params = {
+					qs: {"name": "dashboard"},
+					form: {
+						"extKeyRequired": true,
+						"requestTimeout": 40,
+						"requestTimeoutRenewal": 8
+					}
+				};
+				executeMyRequest(params, 'services/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it('fail - missing params', function(done) {
+				var params = {
+					qs: {"name": "dashboard"},
+					form: {
+						"requestTimeout": 40,
+						"requestTimeoutRenewal": 8
+					}
+				};
+				executeMyRequest(params, 'services/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: extKeyRequired"});
+					done();
+				});
+			});
+
+			it('fail - invalid service name provided', function(done) {
+				var params = {
+					qs: {"name": "undefined"},
+					form: {
+						"extKeyRequired": true,
+						"requestTimeout": 40,
+						"requestTimeoutRenewal": 8
+					}
+				};
+				executeMyRequest(params, 'services/update', 'post', function(body) {
+					assert.deepEqual(body.errors.details[0], {"code": 604, "message": errorCodes[604]});
+					done();
+				});
+			});
+
+			it('mongo test', function(done) {
+				mongo.findOne('services', {'name': 'dashboard'}, function(error, serviceRecord) {
+					assert.ifError(error);
+					delete serviceRecord._id;
+					delete serviceRecord.apis;
+					assert.deepEqual(serviceRecord, {
+						'name': 'dashboard',
+						'extKeyRequired': true,
+						'port': 4003,
+						'requestTimeout': 40,
+						'requestTimeoutRenewal': 8
+					});
+					done();
+				});
+			});
+
+			it("success - will update service", function(done) {
+				var params = {
+					qs: {"name": "dashboard"},
+					form: {
+						"extKeyRequired": true,
+						"requestTimeout": 30,
+						"requestTimeoutRenewal": 5
+					}
+				};
+				executeMyRequest(params, 'services/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
 			});
 		});
+
 	});
 
 	describe("testing get tenant permissions for logged in users", function() {

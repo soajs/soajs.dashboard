@@ -266,6 +266,22 @@ service.init(function() {
 		});
 	});
 
+	service.post("/services/update", function(req, res) {
+		checkForMongo(req);
+		var set = {
+			'$set':{
+				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
+				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
+				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null
+			}
+		};
+		mongo.update('services', { 'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+			if(data === 0){ return res.jsonp(req.soajs.buildResponse({"code": 604, "msg": config.errors[604]})); }
+			return res.jsonp(req.soajs.buildResponse(null, "service updated successfully."));
+		});
+	});
+
 	service.get("/tenant/permissions/get", function(req, res) {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
