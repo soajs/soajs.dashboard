@@ -980,6 +980,13 @@ module.exports = {
 			}
 		},
 
+		"/tenant/my/get": {
+			_apiInfo: {
+				"l": "Get My Tenant",
+				"group": "Tenant"
+			}
+		},
+
 		"/services/list": {
 			_apiInfo: {
 				"l": "List Services",
@@ -994,7 +1001,6 @@ module.exports = {
 				}
 			}
 		},
-
 		"/services/update": {
 			_apiInfo: {
 				"l": "Update Service",
@@ -1039,7 +1045,6 @@ module.exports = {
 				}
 			}
 		},
-
 		"/hosts/delete": {
 			_apiInfo: {
 				"l": "Delete Hosts",
@@ -1070,7 +1075,6 @@ module.exports = {
 				}
 			}
 		},
-
 		"/hosts/maintenanceOperation": {
 			"_apiInfo": {
 				"l": "Perform Maintenance Operation",
