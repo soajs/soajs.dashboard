@@ -995,6 +995,35 @@ module.exports = {
 			}
 		},
 
+		"/services/update": {
+			_apiInfo: {
+				"l": "Update Service",
+				"group": "Services"
+			},
+			'name': {
+				'source': ['query.name'],
+				'required': true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"extKeyRequired": {
+				"source": ['body.extKeyRequired'],
+				"required": true,
+				"validation": {"type": "boolean"}
+			},
+			"requestTimeout": {
+				"source": ['body.requestTimeout'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"requestTimeoutRenewal": {
+				"source": ['body.requestTimeoutRenewal'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			}
+		},
+
 		"/hosts/list": {
 			_apiInfo: {
 				"l": "List Hosts",
