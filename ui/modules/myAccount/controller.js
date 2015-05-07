@@ -118,7 +118,8 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		'label': 'Edit Profile',
 		'entries': [],
 		'data': {},
-		'actions': [{
+		'actions': [
+			{
 			'type': 'submit',
 			'label': 'Edit Profile',
 			'btn': 'primary',
@@ -144,7 +145,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				getSendDataFromServer(ngDataApi, {
 					"method": "send",
 					"routeName": "/urac/account/editProfile",
-					"params": {"uId": $scope.userId},
+					"params": {"uId": $scope.uId},
 					"data": postData
 				}, function(error, response) {
 					if(error) {
@@ -162,7 +163,8 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					}
 				});
 			}
-		}],
+			}
+		],
 		form: profileConfig.formConf
 	};
 
@@ -176,7 +178,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				$scope.$parent.displayAlert("danger", error.message);
 			}
 			else {
-				$scope.userId = response._id;
+				$scope.uId = response._id;
 				var p = JSON.stringify(response.profile, null, "\t");
 				formConfig.entries = [{
 					'name': 'firstName',
@@ -227,7 +229,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				];
 				formConfig.data = response;
 				formConfig.data.profile = p;
-				// buildFormWithModal($scope, null, formConfig);
+				//buildFormWithModal($scope, null, formConfig);
 				buildForm($scope, null, formConfig);
 				
 				$scope.$parent.$emit('xferData', {'memberData': response});

@@ -110,7 +110,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				console.log(response);
 				$scope.tenantsList = {
 					rows: response
 				};

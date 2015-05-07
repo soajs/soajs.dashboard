@@ -367,7 +367,7 @@ div.entryBoxes {
     display: table;
 }
 
-#page div.entryBoxes div.entryBox {
+#page div.entryBoxes div.entryBox, .entryOneBox {
     border: solid 1px #cccccc;
     position: relative;
     border-radius: 8px;
@@ -430,6 +430,10 @@ div.entryBox .body .btn-primary {
     position: relative;
     top: -10px;
 }
+div.entryBox .body form .btn-primary{
+    float: none;
+    top: 0px;
+}
 
 div.entryBox div.entryAction {
     position: absolute;
@@ -469,10 +473,6 @@ div.entryBox li.blueLi.blueLiBox{
     height:120px;
     word-wrap: break-word;
 }
-
-/*#page div.entryBoxes div.entryBox:hover li {*/
-/*background-color: white;*/
-/*}*/
 
 div.entryBox .blueListing li.blueLi a {
     margin-right: 5px;
@@ -916,4 +916,12 @@ tr.sApisEven{
 
 .helpPage .tab-pane{
     padding: 10px;
+}
+
+#tenantInfo form .header{
+    display: none;
+}
+
+.grid.oAuthUsers td.leftAction{
+    width: 30px;
 }
