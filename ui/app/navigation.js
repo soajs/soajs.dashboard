@@ -35,4 +35,4 @@ var navigation = [
 	}
 ];
 
-var modules = ['members', 'environments', 'services', 'productization', 'multitenancy', 'settings'];
+var modules = ['members', 'environments', 'services', 'productization', 'multitenancy', 'myAccount'];
