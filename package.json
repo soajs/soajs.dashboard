@@ -20,6 +20,7 @@
   "devDependencies": {
     "soajs.mongodb.data": "0.1.*",
     "soajs.controller": "0.1.*",
+    "soajs.urac": "0.1.*",
     "grunt": "0.4.5",
     "grunt-contrib-jshint": "0.10.0",
     "grunt-jsdoc": "*",
@@ -31,11 +32,11 @@
     "jshint": "*",
     "lodash": "*",
     "mocha": "*",
-    "request": "*",
     "shelljs": "*"
   },
   "dependencies": {
     "soajs": "0.1.*",
-    "bcrypt": "*"
+    "bcrypt": "*",
+    "request" :"*"
   }
 }

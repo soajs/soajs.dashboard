@@ -3,7 +3,7 @@ var assert = require('assert');
 var shell = require('shelljs');
 var helper = require("../helper.js");
 var sampleData = require("soajs.mongodb.data/modules/dashboard");
-var dashboard, controller;
+var dashboard, controller, urac;
 
 describe("importing sample data", function () {
 
@@ -23,6 +23,7 @@ describe("importing sample data", function () {
         console.log('test data imported.');
         controller = require("soajs.controller");
         setTimeout(function () {
+            urac = require("soajs.urac");
             dashboard = helper.requireModule('./service/index');
             setTimeout(function () {
                 require("./soajs.dashboard.test.js");
