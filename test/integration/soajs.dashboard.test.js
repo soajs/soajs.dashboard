@@ -16,6 +16,10 @@ var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
 
+var uracConfig = dbConfig();
+uracConfig.name = 'test_urac';
+var uracMongo = new Mongo(uracConfig);
+
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 var wrong_Id = '55375fc26aa74450771a1513';
 // /tenant/application/acl/get
@@ -123,8 +127,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					"awareness": {
 						"healthCheckInterval": 5000,
 						"autoRelaodRegistry": 300000,
-						"maxLogCount":5,
-						"autoRegisterService":true
+						"maxLogCount": 5,
+						"autoRegisterService": true
 					},
 					"agent": {
 						"topologyDir": "/opt/soajs/"
@@ -1523,7 +1527,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-
 			describe("update package tests", function() {
 				it("success - will update package", function(done) {
 					var params = {
@@ -1760,7 +1763,18 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		var tenantId, applicationId, key;
 
 		describe("tenant", function() {
+			before(function(done) {
+				uracMongo.remove('users', {'tenant.code': 'TSTN'}, function(error, data) {
+					assert.ifError(error);
+					uracMongo.remove('groups', {'tenant.code': 'TSTN'}, function(error, data) {
+						assert.ifError(error);
+						done();
+					});
+				});
+			});
+
 			describe("add tenant tests", function() {
+
 				it("success - will add tenant", function(done) {
 					var params = {
 						form: {
@@ -1770,6 +1784,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function(body) {
+						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1816,8 +1831,16 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"applications": [],
 							"oauth": {}
 						});
-						done();
 
+						uracMongo.find('users', {'tenant.code': 'TSTN'}, function(error, data) {
+							assert.ifError(error);
+							assert.ok(data);
+							uracMongo.find('groups', {'tenant.code': 'TSTN'}, function(error, data) {
+								assert.ifError(error);
+								assert.ok(data);
+								done();
+							});
+						});
 					});
 				});
 			});
@@ -1930,17 +1953,25 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"name": "test tenant"
 						}
 					};
-					executeMyRequest(params, 'tenant/add', 'post', function(body) {
-						assert.ok(body.data);
-						mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
+
+					uracMongo.remove('users', {'tenant.code': 'TSTN'}, function(error) {
+						assert.ifError(error);
+						uracMongo.remove('groups', {'tenant.code': 'TSTN'}, function(error) {
 							assert.ifError(error);
-							tenantId = tenantRecord._id.toString();
-							console.log(JSON.stringify(tenantRecord));
-							done();
+
+							executeMyRequest(params, 'tenant/add', 'post', function(body) {
+								assert.ok(body.data);
+								mongo.findOne('tenants', {'code': 'TSTN'}, function(error, tenantRecord) {
+									assert.ifError(error);
+									tenantId = tenantRecord._id.toString();
+									console.log(JSON.stringify(tenantRecord));
+									done();
+								});
+							});
+
 						});
 					});
 				});
-				
 			});
 		});
 
@@ -1990,6 +2021,20 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
+				it("success - will get tenant containing oauth", function(done) {
+					var params = {
+						qs: {
+							'id': tenantId
+						}
+					};
+
+					executeMyRequest(params, 'tenant/get', 'get', function(body) {
+						console.log(JSON.stringify(body));
+						assert.ok(body.data);
+						assert.ok(body.data.oauth.authorization);
+						done();
+					});
+				});
 			});
 
 			describe("update oauth tests", function() {
@@ -2046,7 +2091,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				
 			});
 
 			describe("list oauth tests", function() {
@@ -2155,6 +2199,21 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
+				it("fail - will update oauth users without password", function(done) {
+					var params = {
+						qs: {
+							id: tenantId,
+							uId: oauthUserId
+						},
+						form: {}
+					};
+					executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function(body) {
+						console.log(JSON.stringify(body));
+						assert.deepEqual(body.errors.details[0], {"code": 451, "message": "Unable to updated tenant oAuth User"});
+						done();
+					});
+				});
+
 				it('fail - missing params', function(done) {
 					var params = {
 						qs: {
@@ -2252,6 +2311,14 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
+				it('fail - invalid id provided', function(done) {
+					executeMyRequest({qs: {id: tenantId, uId: 'abcde'}}, 'tenant/oauth/users/delete', 'get', function(body) {
+						assert.deepEqual(body.errors.details[0], {"code": 439, "message": "Invalid tenant oauth user Id provided"});
+
+						done();
+					});
+				});
+
 				it("success - will delete oauth user", function(done) {
 					executeMyRequest({qs: {id: tenantId, 'uId': oauthUserId}}, 'tenant/oauth/users/delete/', 'get', function(body) {
 						assert.ok(body.data);
@@ -2330,23 +2397,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
-				//it('fail - application exists', function(done) {
-				//	var params = {
-				//		qs: {'id': tenantId},
-				//		form: {
-				//			"productCode": "TPROD",
-				//			"packageCode": "BASIC",
-				//			"description": "this is a dummy description",
-				//			"_TTL": '12'
-				//		}
-				//	};
-				//	executeMyRequest(params, 'tenant/application/add/', 'post', function(body) {
-				//		assert.deepEqual(body.errors.details[0], {"code": 433, "message": errorCodes[433]});
-				//
-				//		done();
-				//	});
-				//});
-
 				it('fail - invalid product code given', function(done) {
 					var params = {
 						qs: {'id': tenantId},
@@ -2396,16 +2446,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"description": "this is a dummy description",
 							"_TTL": 12 * 3600 * 1000,
 							'keys': []
-							//"acl": {
-							//	"urac": {
-							//		'access': false,
-							//		'apis': {
-							//			'/account/changeEmail': {
-							//				'access': true
-							//			}
-							//		}
-							//	}
-							//}
 						});
 						done();
 					});
@@ -2922,17 +2962,48 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				it("success - will get app by ext key", function(done) {
 					var params = {
 						form: {
-							'extKey': extKey
+							'extKey': "aa39b5490c4a4ed0e56d7ec1232a428f1c5b5dcabc0788ce563402e233386738fc3eb18234a486ce1667cf70bd0e8b08890a86126cf1aa8d38f84606d8a6346359a61678428343e01319e0b784bc7e2ca267bbaafccffcb6174206e8c83f2a25"
 						}
 					};
+					var ex3pckg = {
+						"code": "TPROD_EXAMPLE03",
+						"name": "example03 package",
+						"description": "this is a description for test product example03 package",
+						"acl": {
+							"urac": {},
+							"example03": {}
+						},
+						"_TTL": 86400000
+					};
+
+					mongo.findOne('products', {'code': 'TPROD'}, function(error, productRecord) {
+						assert.ifError(error);
+						productRecord.packages.push(ex3pckg);
+						mongo.save('products', productRecord, function(error) {
+							assert.ifError(error);
+							executeMyRequest(params, 'tenant/application/acl/get/', 'post', function(body) {
+								console.log(JSON.stringify(body));
+								assert.ok(body.data);
+								done();
+							});
+						});
+					});
+				});
+
+				it("success - will get app by ext key where app acl overrides package", function(done) {
+					var textKey = "aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c";
+					var params = {
+						form: {
+							'extKey': textKey
+						}
+					};
+
 					executeMyRequest(params, 'tenant/application/acl/get/', 'post', function(body) {
 						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
 				});
-
-
 			});
 
 			describe("update application ext keys", function() {
@@ -2983,7 +3054,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				
+
 				it('fail - missing params', function(done) {
 					var params = {
 						qs: {
@@ -3012,7 +3083,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						
+
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -3090,7 +3161,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.findOne('tenants', {"code": "TSTN"}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						
+
 						assert.ok(records.applications);
 						assert.equal(records.applications.length, 1);
 						assert.equal(records.applications[0].keys.length, 1);
@@ -3130,11 +3201,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function(body) {
 						console.log(body);
 						console.log(' ******************************** ');
-						//assert.ok(body.errors);						
+						//assert.ok(body.errors);
 						done();
 					});
 				});
-				
+
 				it("success - will add ext key", function(done) {
 					var params = {
 						qs: {
@@ -3230,7 +3301,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				
+
 				it('fail - missing params', function(done) {
 					var params = {
 						qs: {
@@ -3334,7 +3405,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						done();
 					});
 				});
-				
+
 			});
 		});
 	});
@@ -3545,7 +3616,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 	describe("services tests", function() {
 
-		describe("list services test", function(){
+		describe("list services test", function() {
 			it("success - will get services list", function(done) {
 				executeMyRequest({}, 'services/list', 'post', function(body) {
 					assert.ok(body.data);
@@ -3647,13 +3718,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 	describe("testing get tenant permissions for logged in users", function() {
 		var soajsauth;
-		before(function(done) {
-			helper.startUrac(soajs, Mongo, util, function() {
-				setTimeout(function() {
-					done();
-				}, 1000);
-			});
-		});
 
 		it("fail - should not work for non-logged in users", function(done) {
 			executeMyRequest({}, 'tenant/permissions/get', 'get', function(body) {
@@ -3682,11 +3746,23 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				assert.ok(body);
 				soajsauth = body.soajsauth;
 				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'tenant/permissions/get', 'get', function(body) {
-					console.log(body);
+					console.log(JSON.stringify(body));
 					assert.equal(body.result, true);
 					assert.ok(body.data);
 					assert.ok(JSON.stringify(body.data) !== '{}');
 					done();
+				});
+			});
+		});
+
+		describe("my tenant tests", function() {
+			describe("get tenant tests", function() {
+				it("success - will get tenant", function(done) {
+					var params = {'headers': {'soajsauth': soajsauth}};
+					executeMyRequest(params, 'tenant/my/get', 'get', function(body) {
+						console.log(JSON.stringify(body));
+						done();
+					});
 				});
 			});
 		});
@@ -3712,8 +3788,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"awareness": {
 								"healthCheckInterval": 5000,
 								"autoRelaodRegistry": 300000,
-								"maxLogCount":5,
-								"autoRegisterService":true
+								"maxLogCount": 5,
+								"autoRegisterService": true
 							},
 							"agent": {
 								"topologyDir": "/opt/soajs/"
@@ -3846,6 +3922,16 @@ describe("DASHBOARD UNIT TSTNS", function() {
 								}
 							},
 							"_TTL": 12 * 3600 * 1000
+						},
+						{
+							"code": "TPROD_EXAMPLE03",
+							"name": "example03 package",
+							"description": "this is a description for test product example03 package",
+							"acl": {
+								"urac": {},
+								"example03": {}
+							},
+							"_TTL": 86400000
 						}
 					]
 				});
@@ -3927,4 +4013,5 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 	});
-});
+})
+;

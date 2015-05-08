@@ -84,6 +84,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		}
 
+		postData.services.config.agent ={
+				"topologyDir": "/opt/soajs/"
+		};
+
 		if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
 			try {
 				$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
@@ -96,7 +100,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
-			"params": {"id": $scope.envId},
+			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
 			"data": postData
 		}, function(error) {
 			if(error) {

@@ -273,6 +273,7 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 					done();
 				});
 			});
+
 			it("FAIL - locked. cant update oauth", function(done) {
 				var params = {
 					qs: {id: tenantId},

@@ -5,6 +5,7 @@ var prodColName = "products";
 var envColName = "environment";
 
 var Hasher = require("./hasher.js");
+var request = require("request");
 
 function validateId(mongo, req, cb) {
 	try {
@@ -151,11 +152,66 @@ module.exports = {
 
 			if(count > 0) { return res.jsonp(req.soajs.buildResponse({"code": 423, "msg": config.errors[423]})); }
 
-			mongo.insert(colName, record, function(err) {
-				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 420, "msg": config.errors[420]})); }
-				return res.jsonp(req.soajs.buildResponse(null, "tenant add successful"));
+			mongo.insert(colName, record, function(err, data) {
+				if(err || !data) { return res.jsonp(req.soajs.buildResponse({"code": 420, "msg": config.errors[420]})); }
+
+				createAdminUser(record, data, function(error, response, body) {
+					if(error || !body.result) { return res.jsonp(req.soajs.buildResponse({"code": 606, "msg": config.errors[606]})); }
+
+					createAdminGroup(record, data, function(error, response, body) {
+						if(error || !body.result) { return res.jsonp(req.soajs.buildResponse({"code": 607, "msg": config.errors[607]})); }
+
+						return res.jsonp(req.soajs.buildResponse(null, "tenant add successful"));
+					});
+				});
 			});
 		});
+
+		function createAdminUser(record, data, cb) {
+			//call urac, insert an admin user
+			var adminUserRequest = {
+				'uri': 'http://' + config.uracdomain + '/urac/admin/addUser',
+				'json': true,
+				'headers': {
+					'Content-Type': 'application/json',
+					'accept': 'application/json',
+					'connection': 'keep-alive',
+					'key': req.headers.key
+				},
+				'body': {
+					'username': 'admin',
+					'firstName': 'Administrator',
+					'lastName': record.name,
+					'tId': data[0]._id.toString(),
+					'tCode': record.code,
+					'email': 'admin@' + record.code.toLowerCase() + '.com',
+					'groups': ['administrator']
+				}
+			};
+			request.post(adminUserRequest, cb);
+		}
+
+		function createAdminGroup(record, data, cb) {
+			//call urac, insert an admin group
+			var adminUserRequest = {
+				'uri': 'http://' + config.uracdomain + '/urac/admin/group/add',
+				'json': true,
+				'headers': {
+					'Content-Type': 'application/json',
+					'accept': 'application/json',
+					'connection': 'keep-alive',
+					'key': req.headers.key
+				},
+				'body': {
+					'code': 'administrator',
+					'name': 'Administrator',
+					'description': "Administrator Group for tenant " + record.name,
+					'tId': data[0]._id.toString(),
+					'tCode': record.code
+				}
+			};
+			request.post(adminUserRequest, cb);
+		}
 	},
 
 	"update": function(config, mongo, req, res) {
@@ -311,6 +367,7 @@ module.exports = {
 			catch(e) {
 				return res.jsonp(req.soajs.buildResponse({"code": 439, "msg": config.errors[439]}));
 			}
+
 			if(!req.soajs.inputmaskData.userId && !req.soajs.inputmaskData.password) {
 				return res.jsonp(req.soajs.buildResponse({"code": 451, "msg": config.errors[451]}));
 			}
@@ -468,7 +525,6 @@ module.exports = {
 		});
 	},
 	"getTenantApplAclByExtKey": function(config, mongo, req, res) {
-		//console.log(req.soajs.tenant);
 		var criteria = {
 			'applications.keys.extKeys.extKey': req.soajs.inputmaskData.extKey
 		};
@@ -499,7 +555,7 @@ module.exports = {
 				return app;
 			}
 
-			if(tenant.application.acl && (typeof(tenant.application.acl) === 'object')) {
+			if(tenant.application.app_acl && (typeof(tenant.application.app_acl) === 'object')) {
 				return res.jsonp(req.soajs.buildResponse(null, tenant));
 			}
 			else {
