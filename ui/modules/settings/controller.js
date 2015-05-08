@@ -9,7 +9,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.getTenant = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/list"
+			"routeName": "/dashboard/settings/tenant/list"
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -33,7 +33,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.clearOauth = function(){
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/oauth/delete",
+			"routeName": "/dashboard/settings/tenant/oauth/delete",
 			"params": {"id": $scope.tenant['_id']}
 		}, function(error) {
 			if(error) {
@@ -53,7 +53,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		};
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
-			"routeName": "/dashboard/tenant/update",
+			"routeName": "/dashboard/settings/tenant/update",
 			"data": postData,
 			"params": {"id": $scope.tenant['_id']}
 		}, function(error) {
@@ -67,9 +67,9 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					};
 					getSendDataFromServer(ngDataApi, {
 						"method": "send",
-						"routeName": "/dashboard/tenant/oauth/update",
+						"routeName": "/dashboard/settings/tenant/oauth/update",
 						"data": oAuthData,
-						"params": {"id": $scope.tenant['_id']}
+						"params": { }
 					}, function(error) {
 						if(error) {
 							$scope.form.displayAlert('danger', error.message);
@@ -117,7 +117,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/oauth/users/update",
+							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
 							"params": {"id": tId, 'uId': user['_id']}
 						}, function(error) {
@@ -175,7 +175,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/oauth/users/add",
+							"routeName": "/dashboard/settings/tenant/oauth/users/add",
 							"data": postData,
 							"params": {"id": tId}
 						}, function(error) {
@@ -209,7 +209,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		var tId = row['_id'];
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/oauth/users/list",
+			"routeName": "/dashboard/settings/tenant/oauth/users/list",
 			"params": {"id": tId}
 		}, function(error, response) {
 			if(error) {
@@ -237,7 +237,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.removeAppKey = function(id, app, key, event) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/delete",
+			"routeName": "/dashboard/settings/tenant/application/key/delete",
 			"params": {"id": id, "appId": app.appId, "key": key}
 		}, function(error) {
 			if(error) {
@@ -299,7 +299,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.reloadOauthUsers = function(tId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/oauth/users/list",
+			"routeName": "/dashboard/settings/tenant/oauth/users/list",
 			"params": {"id": tId}
 		}, function(error, response) {
 			if(error) {
@@ -314,7 +314,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.removeTenantOauthUser = function(tId, user) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/oauth/users/delete",
+			"routeName": "/dashboard/settings/tenant/oauth/users/delete",
 			"params": {"id": tId, 'uId': user['_id']}
 		}, function(error) {
 			if(error) {
@@ -348,7 +348,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/oauth/users/update",
+							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
 							"params": {"id": tId, 'uId': user['_id']}
 						}, function(error) {
@@ -401,7 +401,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/oauth/users/add",
+							"routeName": "/dashboard/settings/tenant/oauth/users/add",
 							"data": postData,
 							"params": {"id": tId}
 						}, function(error) {
@@ -471,7 +471,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							postData.packageCode = packageCode;
 							getSendDataFromServer(ngDataApi, {
 								"method": "send",
-								"routeName": "/dashboard/tenant/application/add",
+								"routeName": "/dashboard/settings/tenant/application/add",
 								"data": postData,
 								"params": {"id": tId}
 							}, function(error) {
@@ -541,7 +541,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						postData.acl = recordData.acl;
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/application/update",
+							"routeName": "/dashboard/settings/tenant/application/update",
 							"data": postData,
 							"params": {"id": tId, "appId": data.appId}
 						}, function(error) {
@@ -576,7 +576,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.reloadApplications = function(tId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/list",
+			"routeName": "/dashboard/settings/tenant/application/list",
 			"params": {"id": tId}
 		}, function(error, response) {
 			if(error) {
@@ -591,7 +591,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.removeTenantApplication = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/delete",
+			"routeName": "/dashboard/settings/tenant/application/delete",
 			"params": {"id": tId, "appId": appId}
 		}, function(error) {
 			if(error) {
@@ -607,7 +607,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.addNewKey = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
-			"routeName": "/dashboard/tenant/application/key/add",
+			"routeName": "/dashboard/settings/tenant/application/key/add",
 			"params": {"id": tId, "appId": appId}
 		}, function(error) {
 			if(error) {
@@ -629,7 +629,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
-			"routeName": "/dashboard/tenant/application/key/config/update",
+			"routeName": "/dashboard/settings/tenant/application/key/config/update",
 			"data": postData,
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error) {
@@ -689,7 +689,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/application/key/config/update",
+							"routeName": "/dashboard/settings/tenant/application/key/config/update",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function(error) {
@@ -768,7 +768,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/application/key/ext/add",
+							"routeName": "/dashboard/settings/tenant/application/key/ext/add",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function(error) {
@@ -861,7 +861,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
-							"routeName": "/dashboard/tenant/application/key/ext/update",
+							"routeName": "/dashboard/settings/tenant/application/key/ext/update",
 							"data": postData,
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function(error) {
@@ -894,7 +894,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.removeExtKey = function(tId, appId, data, key) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
-			"routeName": "/dashboard/tenant/application/key/ext/delete",
+			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey},
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error) {
@@ -913,7 +913,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.listExtKeys = function(tId, appId, key) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/ext/list",
+			"routeName": "/dashboard/settings/tenant/application/key/ext/list",
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
@@ -945,7 +945,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.listKeys = function(tId, appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/list",
+			"routeName": "/dashboard/settings/tenant/application/key/list",
 			"params": {"id": tId, "appId": appId}
 		}, function(error, response) {
 			if(error) {
@@ -972,7 +972,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/tenant/application/key/config/list",
+			"routeName": "/dashboard/settings/tenant/application/key/config/list",
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {

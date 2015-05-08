@@ -26,7 +26,8 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	$scope.listMembers = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/urac/admin/listUsers"
+			"routeName": "/urac/admin/listUsers",
+			"params":{'tId': userCookie.tenant.id}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert("danger", error.message);
@@ -90,7 +91,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"data": {}
+			"params":{'tId': userCookie.tenant.id}
 		}, function(error, response) {
 			if(error) {
 				$scope.form.displayAlert('danger', error.message);
@@ -171,7 +172,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"data": {}
+			"params":{'tId': userCookie.tenant.id}
 		}, function(error, response) {
 			if(error) {
 				$scope.form.displayAlert('danger', error.message);

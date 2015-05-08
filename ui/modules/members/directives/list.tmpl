@@ -34,14 +34,17 @@
                         <tab heading="Members">
 
                             <ul>
-                                <li ng-repeat="user in users.list[row['_id']]">
-                                    {{user.username}}
+                                <li ng-repeat="user in users[row['_id']].list">
+                                    {{user.username}}  <a>Edit</a>
                                 </li>
                             </ul>
 
                         </tab>
                         <tab heading="Groups">
-                            <br/><br/><br/><br/><br/>
+
+                            <manage-groups myGroups="groups[row['_id']].list">
+
+                            </manage-groups>
                         </tab>
 
                     </tabset>

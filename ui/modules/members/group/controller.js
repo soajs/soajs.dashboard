@@ -206,7 +206,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers",
-			"params": {}
+			"params":{'tId': userCookie.tenant.id}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -249,6 +249,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 								getSendDataFromServer(ngDataApi, {
 									"method": "send",
 									"routeName": "/urac/admin/group/addUsers",
+									"params":{'tId': userCookie.tenant.id},
 									"data": postData
 								}, function(error, response) {
 									if(error) {

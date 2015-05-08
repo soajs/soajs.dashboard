@@ -1,7 +1,9 @@
+
+
 soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ngDataApi, $routeParams) {
 	return {
 		restrict: 'E',
-		templateUrl: 'lib/acl/tenAppAcl.tmpl',
+		templateUrl: 'lib/helpers/tenAppAcl.tmpl',
 		controllerAs : 'myACL',
 		controller: function($scope){
 
@@ -292,6 +294,129 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 
 			//default operation
 			$scope.getApplicationInfo();
+
+
+		}
+	};
+}
+]);
+
+
+soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$modal', function(ngDataApi, $routeParams ,$timeout, $modal) {
+	return {
+		restrict: 'E',
+		templateUrl: 'lib/helpers/manageGroups.tmpl',
+		controllerAs : 'myGroup',
+		scope: true,
+		controller: function($scope){
+			var tenant = $scope.row;
+
+			$scope.myGroups =[];
+
+			$timeout(function() {
+				if( $scope.groups && $scope.groups[$scope.row['_id']]  ){
+					$scope.myGroups = $scope.groups[$scope.row['_id']].list;
+
+					var options = {
+						grid: groupsConfig.grid,
+						data: $scope.myGroups,
+						defaultSortField: 'code',
+						left: [],
+						top: []
+					};
+
+					if($scope.access.adminGroup.addUsers)
+					{
+						options.left.push({
+							'label': 'Link Users to Group',
+							'icon': 'link',
+							'handler': 'assignUsers'
+						});
+					}
+
+					if($scope.access.adminGroup.edit)
+					{
+						options.left.push({
+							'label': 'Edit',
+							'icon': 'pencil2',
+							'handler': 'editGroup'
+						});
+					}
+					if($scope.access.adminGroup.delete)
+					{
+						options.top.push({
+							'label': 'Delete',
+							'msg': "Are you sure you want to delete the selected group(s)?",
+							'handler': 'deleteGroups'
+						});
+
+						options.left.push({
+							'label': 'Delete',
+							'icon': 'cross',
+							'msg': "Are you sure you want to delete this group?",
+							'handler': 'delete1Group'
+						});
+					}
+
+					buildGrid($scope, options);
+
+				}
+			}, 1000);
+
+			$scope.editGroup = function(data) {
+				var config = angular.copy(groupsConfig.form);
+
+				config.entries[0].type = 'readonly';
+				var options = {
+					timeout: $timeout,
+					form: config,
+					'name': 'editGroup',
+					'label': 'Edit Group',
+					'data': data,
+					'actions': [
+						{
+							'type': 'submit',
+							'label': 'Edit Group',
+							'btn': 'primary',
+							'action': function(formData) {
+								var postData = {
+									'name': formData.name,
+									'description': formData.description
+								};
+
+								getSendDataFromServer(ngDataApi, {
+									"method": "send",
+									"routeName": "/urac/admin/group/edit",
+									"params": {"gId": data['_id']},
+									"data": postData
+								}, function(error, response) {
+									if(error) {
+										$scope.form.displayAlert('danger', error.message);
+									}
+									else {
+										$scope.$parent.displayAlert('success', 'Group Updated Successfully.');
+										$scope.modalInstance.close();
+										$scope.form.formData = {};
+										$scope.listGroups();
+									}
+								});
+							}
+						},
+						{
+							'type': 'reset',
+							'label': 'Cancel',
+							'btn': 'danger',
+							'action': function() {
+								$scope.modalInstance.dismiss('cancel');
+								$scope.form.formData = {};
+							}
+						}
+					]
+				};
+				buildFormWithModal($scope, $modal, options);
+
+			};
+
 
 
 		}
