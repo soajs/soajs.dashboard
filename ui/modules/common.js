@@ -333,12 +333,12 @@ function prepareAclObjToSave($scope, aclPriviledges){
 
 function prepareViewAclObj($scope, aclPriviledges){
 	var s, propt;
-	console.log( aclPriviledges );
+
 	for(propt in aclPriviledges.services)
 	{
 		if( aclPriviledges.services.hasOwnProperty( propt )){
 			s = aclPriviledges.services[propt];
-			console.log(s);
+
 			s.include =true;
 			s.collapse = false;
 			if(s.access){

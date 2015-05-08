@@ -925,3 +925,10 @@ tr.sApisEven{
 .grid.oAuthUsers td.leftAction{
     width: 30px;
 }
+div.entryBox .body .btn-primary.noFloat{
+    float: none; top:0
+}
+
+#tenantsMembers .nav-tabs {
+    border-bottom-width: 1px;
+}

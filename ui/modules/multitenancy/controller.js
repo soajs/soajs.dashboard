@@ -7,13 +7,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
 
-	$scope.$parent.$on('reloadEnvironments', function() {
-		$scope.getEnvironments();
-	});
-	$scope.$parent.$on('reloadProducts', function() {
-		$scope.getProds();
-	});
-
 	$scope.mt = {};
 	$scope.mt.displayAlert = function(type, msg, id) {
 		$scope.mt[id]={};

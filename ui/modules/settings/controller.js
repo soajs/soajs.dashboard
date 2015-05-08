@@ -6,24 +6,20 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, settingsConfig.permissions);
 
-	$scope.getTenant = function() {
+	$scope.oAuthUsers=[];
+
+	$scope.getTenant = function(first) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/settings/tenant/list"
+			"routeName": "/dashboard/settings/tenant/get"
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				var l = response.length;
-				for (var x=0; x<l; x++){
-					if(response[x].code =='TN1' )
-					//if(response[x].locked === true )
-					{
-						$scope.tenant =  response[x];
-						$scope.listOauthUsers($scope.tenant);
-						break;
-					}
+				$scope.tenant =  response;
+				if(first && first==true){
+					$scope.listOauthUsers();
 				}
 
 			}
@@ -34,7 +30,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/oauth/delete",
-			"params": {"id": $scope.tenant['_id']}
+			"params": { }
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -88,7 +84,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	$scope.editMyOauthUser = function(tId, user) {
+	$scope.editMyOauthUser = function(user) {
 		user.password = null;
 		user.confirmPassword = null;
 		var options = {
@@ -119,16 +115,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
-							"params": {"id": tId, 'uId': user['_id']}
+							"params": {'uId': user['_id']}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'User Updated Successfully.', tId);
+								$scope.$parent.displayAlert('success', 'User Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadOauthUsers(tId);
+								$scope.listOauthUsers();
 							}
 						});
 					}
@@ -148,7 +144,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addThisOauthUser = function(tId) {
+	$scope.addThisOauthUser = function() {
 		var options = {
 			timeout: $timeout,
 			form: settingsConfig.form.oauthUser,
@@ -176,17 +172,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						getSendDataFromServer(ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/add",
-							"data": postData,
-							"params": {"id": tId}
+							"data": postData
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'User Added Successfully.', tId);
+								$scope.$parent.displayAlert('success', 'User Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadOauthUsers(tId);
+								$scope.listOauthUsers();
 							}
 						});
 					}
@@ -205,36 +200,33 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.listOauthUsers = function(row) {
-		var tId = row['_id'];
+	$scope.listOauthUsers = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/oauth/users/list",
-			"params": {"id": tId}
+			"params": { }
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				if(response.length > 0) {
-					$scope.tenant.oAuthUsers = response;
-
+					$scope.oAuthUsers = response;
 				}
 			}
 		});
 
 	};
 
-
-	$scope.openKeys = function(id, app) {
+	$scope.openKeys = function( app) {
 		app.showKeys = true;
 	};
 
-	$scope.closeKeys = function(id, app) {
+	$scope.closeKeys = function( app) {
 		app.showKeys = false;
 	};
 
-	$scope.removeAppKey = function(id, app, key, event) {
+	$scope.removeAppKey = function(app, key, event) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/delete",
@@ -245,7 +237,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.', id);
-				$scope.listKeys(id, app.appId);
+				$scope.listKeys( app.appId);
 			}
 		});
 		if(event && event.stopPropagation){
@@ -278,7 +270,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 		});
 	};
-
+	
 	$scope.getEnvironments = function() {
 		$scope.availableEnv = [];
 		getSendDataFromServer(ngDataApi, {
@@ -296,38 +288,23 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	$scope.reloadOauthUsers = function(tId) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/settings/tenant/oauth/users/list",
-			"params": {"id": tId}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, tId);
-			}
-			else {
-				$scope.tenant.oAuthUsers = response;
-			}
-		});
-	};
-
-	$scope.removeTenantOauthUser = function(tId, user) {
+	$scope.removeTenantOauthUser = function(user) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/oauth/users/delete",
-			"params": {"id": tId, 'uId': user['_id']}
+			"params": { 'uId': user['_id']}
 		}, function(error) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, tId);
+				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'User Deleted Successfully.', tId);
-				$scope.reloadOauthUsers(tId);
+				$scope.$parent.displayAlert('success', 'User Deleted Successfully.');
+				$scope.listOauthUsers();
 			}
 		});
 	};
 
-	$scope.editTenantOauthUser = function(tId, user) {
+	$scope.editTenantOauthUser = function(user) {
 		user.password = null;
 		user.confirmPassword = null;
 		var options = {
@@ -350,16 +327,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
-							"params": {"id": tId, 'uId': user['_id']}
+							"params": { 'uId': user['_id']}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'User Updated Successfully.', tId);
+								$scope.$parent.displayAlert('success', 'User Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadOauthUsers(tId);
+								$scope.listOauthUsers();
 							}
 						});
 					}
@@ -379,7 +356,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addOauthUser = function(tId) {
+	$scope.addOauthUser = function() {
 		var options = {
 			timeout: $timeout,
 			form: settingsConfig.form.oauthUser,
@@ -403,16 +380,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/add",
 							"data": postData,
-							"params": {"id": tId}
+							"params": {}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'User Added Successfully.', tId);
+								$scope.$parent.displayAlert('success', 'User Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadOauthUsers(tId);
+								$scope.listOauthUsers();
 							}
 						});
 					}
@@ -431,7 +408,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addTenantApplication = function(tId) {
+	$scope.addTenantApplication = function() {
 		var formConfig = angular.copy(settingsConfig.form.application);
 		formConfig.entries.forEach(function(oneEn) {
 			if(oneEn.type==='select'){
@@ -472,17 +449,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							getSendDataFromServer(ngDataApi, {
 								"method": "send",
 								"routeName": "/dashboard/settings/tenant/application/add",
-								"data": postData,
-								"params": {"id": tId}
+								"data": postData
 							}, function(error) {
 								if(error) {
 									$scope.form.displayAlert('danger', error.message);
 								}
 								else {
-									$scope.$parent.displayAlert('success', 'Application Added Successfully.', tId);
+									$scope.$parent.displayAlert('success', 'Application Added Successfully.');
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
-									$scope.reloadApplications(tId);
+									$scope.reloadApplications();
 								}
 							});
 						}
@@ -507,10 +483,11 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 		buildFormWithModal($scope, $modal, options);
 	};
-	$scope.editAppAcl = function(tId, appId) {
-		$scope.$parent.go("/settings/"+tId+"/editAcl/" + appId );
+	$scope.editAppAcl = function(appId) {
+		var tenId = $scope.tenant['_id'];
+		$scope.$parent.go("/settings/"+tenId+"/editAcl/" + appId );
 	};
-	$scope.editTenantApplication = function(tId, data) {
+	$scope.editTenantApplication = function( data) {
 		var formConfig = angular.copy(settingsConfig.form.application);
 		var recordData = angular.copy(data);
 		recordData._TTL = recordData._TTL / 3600000;
@@ -543,16 +520,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/update",
 							"data": postData,
-							"params": {"id": tId, "appId": data.appId}
+							"params": {"appId": data.appId}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Application Updated Successfully.', tId);
+								$scope.$parent.displayAlert('success', 'Application Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadApplications(tId);
+								$scope.reloadApplications();
 							}
 						});
 
@@ -573,14 +550,13 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.reloadApplications = function(tId) {
+	$scope.reloadApplications = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
-			"routeName": "/dashboard/settings/tenant/application/list",
-			"params": {"id": tId}
+			"routeName": "/dashboard/settings/tenant/application/list"
 		}, function(error, response) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, tId);
+				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.tenant.applications = response;
@@ -588,39 +564,39 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	$scope.removeTenantApplication = function(tId, appId) {
+	$scope.removeTenantApplication = function( appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/delete",
-			"params": {"id": tId, "appId": appId}
+			"params": {"appId": appId}
 		}, function(error) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, tId);
+				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', "Selected Application has been removed.", tId);
-				$scope.reloadApplications(tId);
+				$scope.$parent.displayAlert('success', "Selected Application has been removed.");
+				$scope.reloadApplications();
 			}
 		});
 	};
 
-	$scope.addNewKey = function(tId, appId) {
+	$scope.addNewKey = function( appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/add",
-			"params": {"id": tId, "appId": appId}
+			"params": {"appId": appId}
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Application Key Added Successfully.');
-				$scope.listKeys(tId, appId);
+				$scope.listKeys( appId);
 			}
 		});
 	};
 
-	$scope.emptyConfiguration = function(tId, appId, key, env) {
+	$scope.emptyConfiguration = function( appId, key, env) {
 		var configObj = {};
 		var postData = {
 			'envCode': env,
@@ -631,20 +607,20 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/config/update",
 			"data": postData,
-			"params": {"id": tId, "appId": appId, "key": key}
+			"params": { "appId": appId, "key": key}
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
-				$scope.reloadConfiguration(tId, appId, key);
+				$scope.reloadConfiguration(appId, key);
 			}
 		});
 
 	};
 
-	$scope.updateConfiguration = function(tId, appId, key, env, value) {
+	$scope.updateConfiguration = function( appId, key, env, value) {
 		var data = {};
 		if(value) {
 			data.config = JSON.stringify(value, null, "\t");
@@ -691,7 +667,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/config/update",
 							"data": postData,
-							"params": {"id": tId, "appId": appId, "key": key}
+							"params": {"appId": appId, "key": key}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
@@ -700,7 +676,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								$scope.$parent.displayAlert('success', 'Key Configuration Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.reloadConfiguration(tId, appId, key);
+								$scope.reloadConfiguration( appId, key);
 							}
 						});
 					}
@@ -720,7 +696,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addNewExtKey = function(tId, appId, key) {
+	$scope.addNewExtKey = function( appId, key) {
 		var options = {
 			timeout: $timeout,
 			form: settingsConfig.form.extKey,
@@ -751,7 +727,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								geoObj = JSON.parse(formData.geo);
 							}
 							catch(e) {
-								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ', tId);
+								$scope.form.displayAlert('danger', 'Error: Invalid geo Json object ');
 								return;
 							}
 						}
@@ -770,16 +746,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/add",
 							"data": postData,
-							"params": {"id": tId, "appId": appId, "key": key}
+							"params": { "appId": appId, "key": key}
 						}, function(error) {
 							if(error) {
-								$scope.form.displayAlert('danger', error.message, tId);
+								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
 								$scope.$parent.displayAlert('success', 'External Key Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.listExtKeys(tId, appId, key);
+								$scope.listExtKeys( appId, key);
 							}
 						});
 					}
@@ -798,7 +774,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editExtKey = function(tId, appId, data, key) {
+	$scope.editExtKey = function( appId, data, key) {
 		var dataForm = angular.copy(data);
 		if(data.geo) { dataForm.geo = JSON.stringify(data.geo, null, "\t"); }
 		if(data.device) { dataForm.device = JSON.stringify(data.device, null, "\t"); }
@@ -863,7 +839,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/update",
 							"data": postData,
-							"params": {"id": tId, "appId": appId, "key": key}
+							"params": {"appId": appId, "key": key}
 						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
@@ -872,7 +848,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								$scope.$parent.displayAlert('success', 'External Key Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.listExtKeys(tId, appId, key);
+								$scope.listExtKeys( appId, key);
 							}
 						});
 
@@ -891,12 +867,12 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.removeExtKey = function(tId, appId, data, key) {
+	$scope.removeExtKey = function( appId, data, key) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey},
-			"params": {"id": tId, "appId": appId, "key": key}
+			"params": { "appId": appId, "key": key}
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -905,16 +881,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
 				$scope.modalInstance.close();
 				$scope.form.formData = {};
-				$scope.listExtKeys(tId, appId, key);
+				$scope.listExtKeys( appId, key);
 			}
 		});
 	};
 
-	$scope.listExtKeys = function(tId, appId, key) {
+	$scope.listExtKeys = function( appId, key) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/list",
-			"params": {"id": tId, "appId": appId, "key": key}
+			"params": { "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -942,11 +918,11 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	$scope.listKeys = function(tId, appId) {
+	$scope.listKeys = function(appId) {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/list",
-			"params": {"id": tId, "appId": appId}
+			"params": { "appId": appId}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -966,14 +942,13 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	$scope.reloadConfiguration = function(tId, appId, key, index) {
+	$scope.reloadConfiguration = function(appId, key) {
 		$scope.currentApplicationKey = key;
-		$scope.currentApplicationKeyIndex = index;
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/config/list",
-			"params": {"id": tId, "appId": appId, "key": key}
+			"params": { "appId": appId, "key": key}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -1007,6 +982,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	if($scope.access.environment.list){
 		$scope.getEnvironments();
 	}
-	$scope.getTenant();
+	$scope.getTenant( true );
 
 }]);

@@ -8,7 +8,6 @@ membersApp.controller('mainMembersCtrl', ['$scope','$timeout','$modal','ngDataAp
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
 	$scope.userCookie = $cookieStore.get('soajs_user');
-	console.log( $scope.userCookie );
 
 }]);
 
@@ -17,7 +16,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 
 	var userCookie = $scope.$parent.userCookie;
 
-	$scope.$parent.$on('reloadMembers', function() {
+	$scope.$parent.$on('reloadMembers', function(event, args) {
 		$scope.listMembers();
 	});
 
@@ -167,6 +166,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	$scope.editAcl = function(data) {
 		$scope.$parent.go('/members/'+data._id+'/editUserAcl');
 	};
+
 	$scope.editMember = function(data) {
 		var config = angular.copy(membersConfig.form);
 		getSendDataFromServer(ngDataApi, {
@@ -300,7 +300,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
+membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi','$cookies', '$cookieStore', function($scope, $timeout, $routeParams, ngDataApi, $cookies, $cookieStore) {
 	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
 	$scope.aclFill={};
@@ -309,6 +309,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	$scope.tenantApp={};
 	$scope.allGroups =[];
 	$scope.pckName = '';
+
+	$scope.userCookie = $cookieStore.get('soajs_user');
 
 	$scope.minimize =function(service){
 		$scope.aclFill.services[service.name].collapse = true;
@@ -339,6 +341,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			}
 			else {
 				$scope.tenantApp = response;
+				console.log($scope.tenantApp );
 				$scope.pckName = response.application.package;
 
 				var serviceNames =[];
@@ -383,12 +386,13 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 								{
 									var service = servicesList[x];
 									var name = service.name;
-									var newList = [];
+									var newList;
 
 									if( (parentAcl[name]) &&(parentAcl[name].apisPermission === 'restricted'))
 									{
+										newList = [];
 										service.forceRestricted=true;
-										service.apisRestrictPermission = true;
+
 										var len = service.apis.length;
 										for(var i=0; i<len; i++)
 										{
@@ -403,7 +407,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 										service.fixList = $scope.arrGroupByField( newList , 'group');
 									}
 									else{
-										var newList = service.apis ;
+										newList = service.apis ;
 										service.fixList = $scope.arrGroupByField( service.apis , 'group');
 									}
 
@@ -423,7 +427,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 
 								getSendDataFromServer(ngDataApi, {
 									"method": "get",
-									"routeName": "/urac/admin/group/list"
+									"routeName": "/urac/admin/group/list",
+									"params":{'tId': $scope.userCookie.tenant.id}
 								}, function(error, response) {
 									if(error) {
 										$scope.$parent.displayAlert("danger", error.message);
@@ -563,90 +568,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			postData.config.packages[pckName].acl= {};
 		}
 
-		/*
-		for(var propt in $scope.aclFill.services)
-		{
-			var s = angular.copy($scope.aclFill.services[propt]);
-			if(s.include===true)
-			{
-				aclObj[propt]={};
-				aclObj[propt].apis={};
-
-				if(s.accessType==='private'){
-					aclObj[propt].access=true;
-				}
-				else if(s.accessType==='public'){
-					aclObj[propt].access=false;
-				}
-				else if(s.accessType==='groups')
-				{
-					aclObj[propt].access=[];
-					var grpCodes = $scope.aclFill.services[propt].grpCodes;
-					if( grpCodes )
-					{
-						var code = null;
-						for(code in grpCodes)
-						{
-							if(grpCodes[code]){
-								aclObj[propt].access.push(code);
-							}
-						}
-					}
-
-					if(aclObj[propt].access.length==0)
-					{
-						$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the service access type is set to Groups');
-						console.log('error for service: '+propt);
-						valid=false;
-					}
-				}
-
-				if(s.apisRestrictPermission ===true ){
-					aclObj[propt].apisPermission ='restricted';
-				}
-
-				if(s.apis)
-				{
-					for(var ap in s.apis){
-						var api = s.apis[ap];
-
-						if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
-						{
-							/// need to also check for the default api if restricted
-							aclObj[propt].apis[ap]={};
-							if(api.accessType==='private'){
-								aclObj[propt].apis[ap].access=true;
-							}
-							else if(api.accessType==='public'){
-								aclObj[propt].apis[ap].access=false;
-							}
-							else if(api.accessType==='groups'){
-								aclObj[propt].apis[ap].access=[];
-								var grpCodes = $scope.aclFill.services[propt].apis[ap].grpCodes;
-
-								if( grpCodes )
-								{
-									var code = null;
-									for(code in grpCodes)
-									{
-										if(grpCodes[code]){
-											aclObj[propt].apis[ap].access.push(code);
-										}
-									}
-								}
-								if(aclObj[propt].apis[ap].access.length==0)
-								{
-									$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
-									valid=false;
-									console.log('error for api: '+ap);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		*/
 		var result = prepareAclObjToSave($scope, $scope.aclFill);
 
 		if(result.valid){
@@ -671,13 +592,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	$scope.getTenantAppInfo();
 }]);
 
-
 membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
 	$scope.users ;
 	$scope.groups ;
 
-	$scope.getAllUsersGroups=function()
-	{
+	$scope.getAllUsersGroups=function(){
 		function arrGroupByTenant(arr) {
 			var result = {} ;
 			var l = arr.length;
@@ -713,8 +632,6 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 			else {
 				$scope.users = arrGroupByTenant(response.users);
 				$scope.groups = arrGroupByTenant(response.groups);
-				//console.log(users);
-				//console.log(groups);
 
 			}
 		});
@@ -731,7 +648,6 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 			}
 			else {
 				$scope.tenantsList =  response ;
-				//console.log(response);
 
 				$scope.getAllUsersGroups ();
 			}
@@ -742,4 +658,290 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 
 	$scope.listTenants();
 
+}]);
+
+membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+	//$scope.$parent.isUserLoggedIn();
+
+	$scope.access=$scope.$parent.access;
+
+	var userCookie = $scope.$parent.userCookie;
+
+	$scope.listGroups = function() {
+		if($scope.access.adminGroup.list){
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/urac/admin/group/list",
+				"params":{'tId': userCookie.tenant.id}
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert("danger", error.message);
+				}
+				else {
+					var options = {
+						grid: groupsConfig.grid,
+						data: response,
+						defaultSortField: 'code',
+						left: [],
+						top: []
+					};
+					if($scope.access.adminGroup.addUsers)
+					{
+						options.left.push({
+							'label': 'Link Users to Group',
+							'icon': 'link',
+							'handler': 'assignUsers'
+						});
+					}
+
+					if($scope.access.adminGroup.edit)
+					{
+						options.left.push({
+							'label': 'Edit',
+							'icon': 'pencil2',
+							'handler': 'editGroup'
+						});
+					}
+					if($scope.access.adminGroup.delete)
+					{
+						options.top.push({
+							'label': 'Delete',
+							'msg': "Are you sure you want to delete the selected group(s)?",
+							'handler': 'deleteGroups'
+						});
+
+						options.left.push({
+							'label': 'Delete',
+							'icon': 'cross',
+							'msg': "Are you sure you want to delete this group?",
+							'handler': 'delete1Group'
+						});
+					}
+
+					buildGrid($scope, options);
+				}
+			});
+		}
+	};
+
+	$scope.addGroup = function() {
+		var config = angular.copy(groupsConfig.form);
+
+		var options = {
+			timeout: $timeout,
+			form: config,
+			name: 'addGroup',
+			label: 'Add New Group',
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Add Group',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'name': formData.name,
+							'code': formData.code,
+							'description': formData.description,
+							'tId': userCookie.tenant.id ,
+							'tCode': userCookie.tenant.code
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/urac/admin/group/add",
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Group Added Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listGroups();
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+		buildFormWithModal($scope, $modal, options);
+
+	};
+
+	$scope.editGroup = function(data) {
+		var config = angular.copy(groupsConfig.form);
+
+		config.entries[0].type = 'readonly';
+		var options = {
+			timeout: $timeout,
+			form: config,
+			'name': 'editGroup',
+			'label': 'Edit Group',
+			'data': data,
+			'actions': [
+				{
+					'type': 'submit',
+					'label': 'Edit Group',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'name': formData.name,
+							'description': formData.description
+						};
+
+						getSendDataFromServer(ngDataApi, {
+							"method": "send",
+							"routeName": "/urac/admin/group/edit",
+							"params": {"gId": data['_id']},
+							"data": postData
+						}, function(error, response) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Group Updated Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listGroups();
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+		buildFormWithModal($scope, $modal, options);
+
+	};
+
+	$scope.deleteGroups = function() {
+		var config = {
+			'routeName': "/urac/admin/group/delete",
+			"params": {'gId': '%id%'},
+			'msg': {
+				'error': 'one or more of the selected Groups(s) status was not deleted.',
+				'success': 'Selected Groups(s) has been deleted.'
+			}
+		};
+
+		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+			$scope.listGroups();
+		});
+	};
+
+	$scope.delete1Group = function(data) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/urac/admin/group/delete",
+			"params": {"gId": data._id, 'tId': userCookie.tenant.id }
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', "Selected group has been removed.");
+				$scope.listGroups();
+			}
+		});
+	};
+
+	$scope.assignUsers = function(data) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/urac/admin/listUsers",
+			"params":{'tId': userCookie.tenant.id}
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var len = response.length;
+				var value = [];
+				var sel = false;
+				for(var x = 0; x < len; x++) {
+					sel = false;
+					if((response[x].groups) && response[x].groups.indexOf(data.code) > -1) {
+						sel = true;
+					}
+					value.push({
+						'v': response[x].username,
+						'lb': response[x].username + '(' + response[x].firstName + ' ' + response[x].lastName + ')',
+						'selected': sel
+					});
+				}
+
+				var config = angular.copy(groupsConfig.users);
+				config.entries[0].value = value;
+
+				var options = {
+					timeout: $timeout,
+					form: config,
+					name: 'addGroup',
+					label: 'Add Users to Group: ' + data.name,
+					'msgs': {},
+					actions: [
+						{
+							'type': 'submit',
+							'label': 'Assing Users',
+							'btn': 'primary',
+							'action': function(formData) {
+								var postData = {
+									'groupCode': data.code,
+									'users': formData.users
+								};
+								getSendDataFromServer(ngDataApi, {
+									"method": "send",
+									"routeName": "/urac/admin/group/addUsers",
+									"params":{'tId': userCookie.tenant.id},
+									"data": postData
+								}, function(error, response) {
+									if(error) {
+										$scope.form.displayAlert('danger', error.message);
+									}
+									else {
+										$scope.$parent.displayAlert('success', 'User(s) Added Successfully.');
+										$scope.modalInstance.close();
+										$scope.form.formData = {};
+										$scope.listGroups();
+										$scope.$parent.$emit('reloadMembers', {});
+									}
+								});
+
+							}
+						},
+						{
+							'type': 'reset',
+							'label': 'Cancel',
+							'btn': 'danger',
+							'action': function() {
+								$scope.modalInstance.dismiss('cancel');
+								$scope.form.formData = {};
+							}
+						}
+					]
+				};
+				buildFormWithModal($scope, $modal, options);
+			}
+		});
+	};
+
+	$scope.listGroups();
 }]);
