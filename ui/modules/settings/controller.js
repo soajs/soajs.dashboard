@@ -17,8 +17,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			else {
 				var l = response.length;
 				for (var x=0; x<l; x++){
-					//if(response[x].code =='TN1' )
-					if(response[x].locked === true )
+					if(response[x].code =='TN1' )
+					//if(response[x].locked === true )
 					{
 						$scope.tenant =  response[x];
 						$scope.listOauthUsers($scope.tenant);
@@ -41,7 +41,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Tenant OAuth Deleted Successfully.');
-				$scope.tenant.oauth.secret='';
+				$scope.getTenant();
 			}
 		});
 	};
@@ -76,6 +76,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						}
 						else {
 							$scope.$parent.displayAlert('success', 'Tenant Info Updated Successfully.');
+							$scope.getTenant();
 						}
 					});
 				}
@@ -507,7 +508,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 	$scope.editAppAcl = function(tId, appId) {
-		$scope.$parent.go("/multi-tenancy/"+tId+"/editAcl/" + appId );
+		$scope.$parent.go("/settings/"+tId+"/editAcl/" + appId );
 	};
 	$scope.editTenantApplication = function(tId, data) {
 		var formConfig = angular.copy(settingsConfig.form.application);

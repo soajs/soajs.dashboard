@@ -1,19 +1,23 @@
 "use strict";
 var membersApp = soajsApp.components;
 
-membersApp.controller('mainMembersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+membersApp.controller('mainMembersCtrl', ['$scope','$timeout','$modal','ngDataApi', '$cookies', '$cookieStore', function($scope, $timeout, $modal, ngDataApi, $cookies, $cookieStore) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
+	$scope.userCookie = $cookieStore.get('soajs_user');
+	console.log( $scope.userCookie );
+
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.key = apiConfiguration.key;
-	// $scope.$parent.isUserLoggedIn();
 
-	$scope.$parent.$on('reloadMembers', function(event, args) {
+	var userCookie = $scope.$parent.userCookie;
+
+	$scope.$parent.$on('reloadMembers', function() {
 		$scope.listMembers();
 	});
 
@@ -29,7 +33,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			}
 			else {
 				var len = response.length;
-				var usersRecords = [];
+				//var usersRecords = [];
 				for(var x = 0; x < len; x++) {
 					if(response[x].groups) {
 						response[x].grpsArr = response[x].groups.join(', ');
@@ -76,8 +80,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 					];
 
 				}
-
-
 				buildGrid($scope, options);
 			}
 		});
@@ -122,7 +124,9 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 									'firstName': formData.firstName,
 									'lastName': formData.lastName,
 									'email': formData.email,
-									'groups': formData.groups
+									'groups': formData.groups,
+									'tId': userCookie.tenant.id ,
+									'tCode': userCookie.tenant.code
 								};
 
 								getSendDataFromServer(ngDataApi, {
@@ -220,6 +224,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 									'lastName': formData.lastName,
 									'email': formData.email,
 									'groups': formData.groups,
+									'tId': userCookie.tenant.id,
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
 
@@ -293,7 +298,6 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 	}
 
 }]);
-
 
 membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
 	$scope.key = apiConfiguration.key;
@@ -383,7 +387,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 									if( (parentAcl[name]) &&(parentAcl[name].apisPermission === 'restricted'))
 									{
 										service.forceRestricted=true;
-
+										service.apisRestrictPermission = true;
 										var len = service.apis.length;
 										for(var i=0; i<len; i++)
 										{
@@ -445,61 +449,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 
 	$scope.fillFormServices = function() {
-
-		for(var propt in $scope.aclFill.services)
-		{
-			var s = $scope.aclFill.services[propt];
-			s.include =true;
-			s.collapse = false;
-
-			if(s.access){
-				if( s.access===true){
-					s.accessType = 'private';
-				}
-				else if( s.access===false){
-					s.accessType = 'public';
-				}
-				else if(Array.isArray(s.access)){
-					s.accessType = 'groups';
-					s.grpCodes={};
-					s.access.forEach(function( c ) {
-						s.grpCodes[c]=true;
-					});
-				}
-			}
-			else{
-				s.accessType = 'public';
-			}
-
-			if(s.apisPermission==='restricted'){
-				s.apisRestrictPermission = true;
-			}
-			if(s.apis){
-				for(var ap in s.apis)
-				{
-					s.apis[ap].include=true;
-					s.apis[ap].accessType = 'clear';
-					if( s.apis[ap].access==true)
-					{
-						s.apis[ap].accessType = 'private';
-					}
-					else if( s.apis[ap].access===false)
-					{
-						s.apis[ap].accessType = 'public';
-					}
-					else{
-						if(Array.isArray(s.apis[ap].access)){
-							s.apis[ap].accessType = 'groups';
-							s.apis[ap].grpCodes={};
-							s.apis[ap].access.forEach(function( c ) {
-								s.apis[ap].grpCodes[c]=true;
-							});
-						}
-					}
-
-				}
-			}
-		}
+		prepareViewAclObj($scope, $scope.aclFill);
 	};
 
 	$scope.arrGroupByField = function(arr, f) {
@@ -585,7 +535,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			"routeName": "/urac/admin/editUser",
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -612,9 +562,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			postData.config.packages[pckName].acl= {};
 		}
 
-		var aclObj={};
-		var valid = true;
-
+		/*
 		for(var propt in $scope.aclFill.services)
 		{
 			var s = angular.copy($scope.aclFill.services[propt]);
@@ -697,15 +645,18 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 				}
 			}
 		}
+		*/
+		var result = prepareAclObjToSave($scope, $scope.aclFill);
 
-		postData.config.packages[pckName].acl = aclObj;
-		if(valid){
+		if(result.valid){
+			postData.config.packages[pckName].acl = result.data;
+
 			getSendDataFromServer(ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/admin/editUser",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
-			}, function(error, response) {
+			}, function(error) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
@@ -717,4 +668,77 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 	//call default method
 	$scope.getTenantAppInfo();
+}]);
+
+
+membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
+	$scope.users ;
+	$scope.groups ;
+
+	$scope.getAllUsersGroups=function()
+	{
+		function arrGroupByTenant(arr) {
+			var result = {} ;
+			var l = arr.length;
+
+			for(var i=0; i<l; i++)
+			{
+				var g;
+				if(arr[i].tenant.id)
+				{
+					g = arr[i].tenant.id;
+				}
+				if(g)
+				{
+					if(!result[g])
+					{
+						result[g]={};
+						result[g].list=[];
+					}
+					result[g].list.push(arr[i]);
+				}
+
+			}
+			return result;
+		};
+
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/urac/admin/all"
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.users = arrGroupByTenant(response.users);
+				$scope.groups = arrGroupByTenant(response.groups);
+				//console.log(users);
+				//console.log(groups);
+
+			}
+		});
+
+	};
+
+	$scope.listTenants = function() {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/tenant/list"
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.tenantsList =  response ;
+				//console.log(response);
+
+				$scope.getAllUsersGroups ();
+			}
+		});
+	};
+
+
+
+	$scope.listTenants();
+
 }]);

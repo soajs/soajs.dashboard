@@ -111,7 +111,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', '$cookieStore', function($scope, $timeout, $modal, ngDataApi, $cookies, $cookieStore) {
 	$scope.$parent.isUserLoggedIn();
 	var userCookie = $cookieStore.get('soajs_user');
-	
+
 	var formConfig = {
 		'timeout': $timeout,
 		'name': 'editProfile',

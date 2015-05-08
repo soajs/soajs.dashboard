@@ -1,3 +1,8 @@
+<style>
+    #tenantsMembers .nav-tabs{
+        border-bottom-width: 1px;
+    }
+</style>
 <div ng-controller="mainMembersCtrl as mainCtrl">
     <tabset id="membersSection">
         <tab heading="Members">
@@ -16,6 +21,36 @@
                 </span>
                 <nglist></nglist>
             </section>
+        </tab>
+        <tab heading="Tenants">
+            <section ng-controller="tenantsUracCtrl">
+                <div class="entryBoxes">
+                <div ng-repeat="row in tenantsList" class="entryBox" ng-if="row.locked!==true">
+                <div class="header">
+                    {{row['name']}}<span>[ {{row['code']}} ]</span>
+                </div>
+                <div class="body">
+                    <tabset id="tenantsMembers">
+                        <tab heading="Members">
+
+                            <ul>
+                                <li ng-repeat="user in users.list[row['_id']]">
+                                    {{user.username}}
+                                </li>
+                            </ul>
+
+                        </tab>
+                        <tab heading="Groups">
+                            <br/><br/><br/><br/><br/>
+                        </tab>
+
+                    </tabset>
+
+                </div>
+                </div>
+                </div>
+            </section>
+
         </tab>
     </tabset>
 </div>

@@ -236,3 +236,161 @@ function getTimeAgo(date) {
 	return Math.floor(seconds) + " seconds";
 }
 
+/**
+ * Fixes the values of the ACL object
+ */
+function prepareAclObjToSave($scope, aclPriviledges){
+	var aclObj={};
+	var valid = true;
+	var propt, grpCodes, ap, code;
+	for(propt in aclPriviledges.services)
+	{
+		if( aclPriviledges.services.hasOwnProperty( propt ))
+		{
+			var s = angular.copy(aclPriviledges.services[propt]);
+
+			if(s.include===true)
+			{
+				aclObj[propt]={};
+				aclObj[propt].apis={};
+
+				if(s.accessType==='private'){
+					aclObj[propt].access=true;
+				}
+				else if(s.accessType==='public'){
+					aclObj[propt].access=false;
+				}
+				else if(s.accessType==='groups')
+				{
+					aclObj[propt].access=[];
+					grpCodes = aclPriviledges.services[propt].grpCodes;
+					if(grpCodes)
+					{
+						for(code in grpCodes)
+						{
+							if(grpCodes.hasOwnProperty(code))
+							{
+								aclObj[propt].access.push(code);
+							}
+						}
+					}
+					if(aclObj[propt].access.length==0)
+					{
+						$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+						return {'valid': false } ;
+					}
+				}
+
+				if(s.apisRestrictPermission ===true ){
+					aclObj[propt].apisPermission ='restricted';
+				}
+
+				if(s.apis)
+				{
+					for(ap in s.apis){
+						if( s.apis.hasOwnProperty(ap)){
+							var api = s.apis[ap];
+							if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) )
+							{
+								/// need to also check for the default api if restricted
+								aclObj[propt].apis[ap]={};
+								if(api.accessType==='private'){
+									aclObj[propt].apis[ap].access=true;
+								}
+								else if(api.accessType==='public'){
+									aclObj[propt].apis[ap].access=false;
+								}
+								else if(api.accessType==='groups'){
+									aclObj[propt].apis[ap].access=[];
+									grpCodes = aclPriviledges.services[propt].apis[ap].grpCodes;
+
+									if(grpCodes)
+									{
+										for(code in grpCodes)
+										{
+											if(grpCodes.hasOwnProperty(code)){
+												aclObj[propt].apis[ap].access.push(code);
+											}
+										}
+									}
+									if(aclObj[propt].apis[ap].access.length==0)
+									{
+										$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+										return {'valid': false } ;
+									}
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+	}
+	return {'valid': valid, 'data':aclObj } ;
+}
+
+function prepareViewAclObj($scope, aclPriviledges){
+	var s, propt;
+	console.log( aclPriviledges );
+	for(propt in aclPriviledges.services)
+	{
+		if( aclPriviledges.services.hasOwnProperty( propt )){
+			s = aclPriviledges.services[propt];
+			console.log(s);
+			s.include =true;
+			s.collapse = false;
+			if(s.access){
+				if( s.access===true){
+					s.accessType = 'private';
+				}
+				else if( s.access===false){
+					s.accessType = 'public';
+				}
+				else if(Array.isArray(s.access)){
+					s.accessType = 'groups';
+					s.grpCodes={};
+					s.access.forEach(function( c ) {
+						s.grpCodes[c]=true;
+					});
+				}
+			}
+			else{
+				s.accessType = 'public';
+			}
+			if(s.apisPermission==='restricted'){
+				s.apisRestrictPermission = true;
+			}
+			var ap;
+			if(s.apis){
+				for(ap in s.apis)
+				{
+					if( s.apis.hasOwnProperty( ap )) {
+						s.apis[ap].include = true;
+						s.apis[ap].accessType = 'clear';
+						if(s.apis[ap].access == true) {
+							s.apis[ap].accessType = 'private';
+						}
+						else if(s.apis[ap].access === false) {
+							s.apis[ap].accessType = 'public';
+						}
+						else {
+							if(Array.isArray(s.apis[ap].access)) {
+								s.apis[ap].accessType = 'groups';
+								s.apis[ap].grpCodes = {};
+								s.apis[ap].access.forEach(function(c) {
+									s.apis[ap].grpCodes[c] = true;
+								});
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+
+
+}

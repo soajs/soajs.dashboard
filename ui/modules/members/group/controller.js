@@ -5,6 +5,8 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 
 	$scope.access=$scope.$parent.access;
 
+	var userCookie = $scope.$parent.userCookie;
+
 	$scope.listGroups = function() {
 		if($scope.access.adminGroup.list){
 			getSendDataFromServer(ngDataApi, {
@@ -78,7 +80,9 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
-							'description': formData.description
+							'description': formData.description,
+							'tId': userCookie.tenant.id ,
+							'tCode': userCookie.tenant.code
 						};
 
 						getSendDataFromServer(ngDataApi, {
@@ -186,7 +190,7 @@ groupsApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi',
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
-			"params": {"gId": data._id}
+			"params": {"gId": data._id, 'tId': userCookie.tenant.id }
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
