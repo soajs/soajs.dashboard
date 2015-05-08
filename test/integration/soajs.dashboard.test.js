@@ -2771,7 +2771,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			describe("delete application keys", function() {
-				it("success - will add key", function(done) {
+				it("success - will delete key", function(done) {
 					var params = {
 						qs: {
 							'id': tenantId,
@@ -3755,16 +3755,384 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 
-		describe("my tenant tests", function() {
-			describe("get tenant tests", function() {
-				it("success - will get tenant", function(done) {
-					var params = {'headers': {'soajsauth': soajsauth}};
-					executeMyRequest(params, 'tenant/my/get', 'get', function(body) {
-						console.log(JSON.stringify(body));
+		describe("settings tests", function(){
+			var tenantId, applicationId, key, extKey, oauthUserId;
+			it("success - will get tenant", function(done) {
+				executeMyRequest({}, 'settings/tenant/get', 'get', function(body) {
+					assert.ok(body.result);
+					assert.ok(body.data);
+					tenantId = body.data._id.toString();
+					done();
+				});
+			});
+
+			it("success - will update tenant", function(done) {
+				var params = {
+					form: {
+						"description": 'this is a dummy updated description',
+						"name": "test tenant updated"
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/update', 'post', function(body) {
+					assert.ok(body.result);
+					assert.ok(body.data);
+					done();
+				});
+
+			});
+
+			it("success - will add oauth", function(done) {
+				var params = {
+					form: {
+						"secret": "my secret key",
+						"redirectURI": "http://www.myredirecturi.com/"
+					}
+				};
+
+				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+
+					mongo.findOne('tenants', {'code': 'test'}, function(error, tenantRecord) {
+						assert.ifError(error);
+						assert.deepEqual(tenantRecord.oauth, {
+							"secret": "my secret key",
+							"redirectURI": "http://www.myredirecturi.com/",
+							"grants": ["password", "refresh_token"]
+						});
+						done();
+
+					});
+
+				});
+			});
+
+			it("success - will update oauth", function(done) {
+				var params = {
+					form: {
+						"secret": "my secret key2",
+						"redirectURI": "http://www.myredirecturi.com/"
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/oauth/update/', 'post', function(body) {
+					assert.ok(body.data);
+					mongo.findOne('tenants', {'code': 'test'}, function(error, tenantRecord) {
+						assert.ifError(error);
+						assert.deepEqual(tenantRecord.oauth, {
+							"secret": "my secret key2",
+							"redirectURI": "http://www.myredirecturi.com/",
+							"grants": ["password", "refresh_token"]
+						});
 						done();
 					});
 				});
 			});
+
+			it("success - will get oauth object", function(done) {
+				executeMyRequest({}, 'settings/tenant/oauth/list/', 'get', function(body) {
+					assert.ok(body.data);
+					assert.deepEqual(body.data, {
+						"secret": "my secret key2",
+						"redirectURI": "http://www.myredirecturi.com/",
+						"grants": ["password", "refresh_token"]
+					});
+					done();
+				});
+			});
+
+			it("success - will delete oauth", function(done) {
+				executeMyRequest({}, 'settings/tenant/oauth/delete/', 'get', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will add oauth user", function(done) {
+				var params = {
+					form: {
+						"userId": "oauth_user",
+						"password": "password1"
+					}
+				};
+
+				executeMyRequest(params, 'settings/tenant/oauth/users/add/', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+
+					mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function(error, tenantRecord) {
+						assert.ifError(error);
+						assert.ok(tenantRecord);
+						assert.equal(tenantRecord.userId, "oauth_user");
+						assert.equal(tenantRecord.tId.toString(), tenantId);
+						oauthUserId = tenantRecord._id.toString();
+						done();
+					});
+				});
+			});
+
+			it("success - will update oauth users", function(done) {
+				var params = {
+					qs: {
+						uId: oauthUserId
+					},
+					form: {
+						"userId": "oauth_user_up",
+						"password": "password2"
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/oauth/users/update/', 'post', function(body) {
+					assert.ok(body.data);
+					mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function(error, tenantRecord) {
+						assert.ifError(error);
+						assert.ok(tenantRecord);
+						assert.equal(tenantRecord.userId, 'oauth_user_up');
+						assert.equal(tenantRecord.tId.toString(), tenantId);
+						done();
+					});
+				});
+			});
+
+			it("success - will delete oauth user", function(done) {
+				executeMyRequest({qs: {'uId': oauthUserId}}, 'settings/tenant/oauth/users/delete/', 'get', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will get oauth users", function(done) {
+				executeMyRequest({}, 'settings/tenant/oauth/users/list/', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(body.data.length, 0);
+					done();
+				});
+			});
+
+			it("success - will add application", function(done) {
+				var params = {
+					form: {
+						"productCode": "TPROD",
+						"packageCode": "BASIC",
+						"description": "this is a dummy description",
+						"_TTL": '12'
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/add', 'post', function(body) {
+					assert.ok(body.data);
+
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
+						assert.ifError(error);
+						assert.ok(tenantRecord);
+						applicationId = tenantRecord.applications[tenantRecord.applications.length-1].appId.toString();
+						done();
+					});
+				});
+			});
+
+			it("success - will update application", function(done) {
+				var params = {
+					qs: {'appId': applicationId},
+					form: {
+						"productCode": "TPROD",
+						"packageCode": "BASIC",
+						"description": "this is a dummy description updated",
+						"_TTL": '24',
+						"acl": {
+							"urac": {}
+						}
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will get empty object", function(done) {
+				executeMyRequest({}, 'settings/tenant/application/list/', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(body.data.length, 4);
+					done();
+				});
+			});
+
+			it("success - will add key", function(done) {
+				var params = {
+					qs: {
+						'appId': applicationId
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/add', 'post', function(body) {
+					assert.ok(body.data);
+
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
+						assert.ifError(error);
+						assert.ok(tenantRecord);
+						key = tenantRecord.applications[tenantRecord.applications.length-1].keys[0].key.toString();
+						done();
+					});
+				});
+			});
+
+			it("success - will list key", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/list/', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(body.data.length, 1);
+					key = body.data[0].key.toString();
+					done();
+				});
+			});
+
+			it("success - will add ext key", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					},
+					form: {
+						'expDate': expDateValue,
+						'device': {
+							'a': 'b'
+						},
+						'geo': {
+							'x': 'y'
+						}
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
+						assert.ifError(error);
+						assert.ok(tenantRecord);
+						extKey = tenantRecord.applications[tenantRecord.applications.length-1].keys[0].extKeys[0].extKey;
+						done();
+					});
+				});
+			});
+
+			it("success - will update ext key", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					},
+					form: {
+						'extKey': extKey,
+						'expDate': expDateValue,
+						'device': {
+							'a': 'b'
+						},
+						'geo': {
+							'x': 'y'
+						}
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/ext/update/', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will delete ext key", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					},
+					form: {
+						'extKey': extKey
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will list ext key", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/ext/list/', 'get', function(body) {
+					assert.ok(body.data);
+					assert.equal(body.data.length, 0);
+
+					done();
+				});
+			});
+
+			it("success - will update configuration", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					},
+					form: {
+						'envCode': 'DEV',
+						'config': {
+							'mail': {
+								'a': 'b'
+							},
+							'urac': {
+								'x': 'y'
+							}
+						}
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/config/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will list configuration", function(done) {
+				var params = {
+					qs: {
+						appId: applicationId,
+						key: key
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/config/list', 'get', function(body) {
+					assert.ok(body.data);
+					assert.deepEqual(body.data, {
+						dev: {
+							mail: {'a': 'b'},
+							urac: {'x': 'y'}
+						}
+					});
+
+					done();
+				});
+			});
+
+			it("success - will delete key", function(done) {
+				var params = {
+					qs: {
+						'appId': applicationId,
+						'key': key.toString()
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/application/key/delete', 'get', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will delete application", function(done) {
+				executeMyRequest({qs: {'appId': applicationId}}, 'settings/tenant/application/delete/', 'get', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
 		});
 	});
 
@@ -4013,5 +4381,4 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 	});
-})
-;
+});

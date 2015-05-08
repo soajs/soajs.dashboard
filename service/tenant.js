@@ -176,7 +176,8 @@ module.exports = {
 					'Content-Type': 'application/json',
 					'accept': 'application/json',
 					'connection': 'keep-alive',
-					'key': req.headers.key
+					'key': req.headers.key,
+					'soajsauth': req.headers.soajsauth
 				},
 				'body': {
 					'username': 'admin',
@@ -200,7 +201,8 @@ module.exports = {
 					'Content-Type': 'application/json',
 					'accept': 'application/json',
 					'connection': 'keep-alive',
-					'key': req.headers.key
+					'key': req.headers.key,
+					'soajsauth': req.headers.soajsauth
 				},
 				'body': {
 					'code': 'administrator',
@@ -241,9 +243,9 @@ module.exports = {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 
 			mongo.findOne(colName, {"_id": req.soajs.inputmaskData.id}, function(err, data) {
-				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+				if(err || !data) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 				//generate oauth authorization if needed.
-				if(data.oauth.secret && data.oauth.secret !== '') {
+				if(data.oauth && data.oauth.secret && data.oauth.secret !== '') {
 					data.oauth.authorization = "Basic " + new Buffer(data._id.toString() + data.oauth.secret).toString('base64');
 				}
 				return res.jsonp(req.soajs.buildResponse(null, data));
@@ -446,14 +448,6 @@ module.exports = {
 
 					mongo.findOne(colName, criteria, function(error, tenantRecord) {
 						if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 429, "msg": config.errors[429]})); }
-
-						//for(var i = 0; i < tenantRecord.applications.length; i++) {
-						//	if(tenantRecord.applications[i].product === req.soajs.inputmaskData.productCode) {
-						//		if(tenantRecord.applications[i].package === req.soajs.inputmaskData.productCode + '_' + req.soajs.inputmaskData.packageCode) {
-						//			return res.jsonp(req.soajs.buildResponse({"code": 433, "msg": config.errors[433]}));
-						//		}
-						//	}
-						//}
 
 						var newApplication = {
 							"product": req.soajs.inputmaskData.productCode,
