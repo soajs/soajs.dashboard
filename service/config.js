@@ -191,9 +191,9 @@ module.exports = {
 		"603": "Error executing maintenance operation.",
 		"604": "Service not found.",
 		"605": "Service Host not found.",
-
 		"606": "Error adding an administrator user for tenant",
-		"607": "Error adding an administrator group for tenant"
+		"607": "Error adding an administrator group for tenant",
+		"608": "Permissions denied to access this section"
 	},
 
 	"schema": {
@@ -314,6 +314,110 @@ module.exports = {
 						},
 						"config": serviceConfig
 					}
+				}
+			},
+			"secret": {
+				"source": ['body.secret'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"redirectURI": {
+				"source": ['body.redirectURI'],
+				"required": false,
+				"validation": {
+					"type": "string",
+					"format": "uri"
+				}
+			},
+			"uId": {
+				"source": ['query.uId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"userId": {
+				"source": ['body.userId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"password": {
+				"source": ['body.password'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"productCode": {
+				"source": ['body.productCode'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"format": "alphanumeric",
+					"maxLength": 5
+				}
+			},
+			"packageCode": {
+				"source": ['body.packageCode'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"format": "alphanumeric",
+					"maxLength": 5
+				}
+			},
+			"clearAcl": {
+				"source": ['body.clearAcl'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"extKey": {
+				"source": ['body.extKey'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			'expDate': {
+				"source": ['body.expDate'],
+				"required": false,
+				"validation": {
+					"type": "string",
+					"format": "date-time"
+				}
+			},
+			'device': {
+				"source": ['body.device'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			'geo': {
+				"source": ['body.geo'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			'envCode': {
+				'source': ['body.envCode'],
+				'required': true,
+				'validation': {
+					'type': 'string'
+				}
+			},
+			'config': {
+				"source": ['body.config'],
+				"required": true,
+				"validation": {
+					"type": "object"
 				}
 			}
 		},
@@ -586,19 +690,18 @@ module.exports = {
 			}
 		},
 
+		"/tenant/permissions/get": {
+			_apiInfo: {
+				"l": "Get Tenant Security Permissions",
+				"group": "Tenant"
+			}
+		},
 		"/tenant/list": {
 			_apiInfo: {
 				"l": "List Tenants",
 				"group": "Tenant",
 				"groupMain": true
 			}
-		},
-		"/tenant/get": {
-			_apiInfo: {
-				"l": "Get Tenant",
-				"group": "Tenant"
-			},
-			"commonFields": ['id']
 		},
 		"/tenant/add": {
 			_apiInfo: {
@@ -623,6 +726,13 @@ module.exports = {
 			},
 			"commonFields": ['id']
 		},
+		"/tenant/get": {
+			_apiInfo: {
+				"l": "Get Tenant",
+				"group": "Tenant"
+			},
+			"commonFields": ['id']
+		},
 		"/tenant/update": {
 			_apiInfo: {
 				"l": "Update Tenant",
@@ -630,6 +740,7 @@ module.exports = {
 			},
 			"commonFields": ['id', 'name', 'description']
 		},
+
 		"/tenant/oauth/list": {
 			_apiInfo: {
 				"l": "Get Tenant oAuth Configuration",
@@ -644,50 +755,19 @@ module.exports = {
 			},
 			"commonFields": ['id']
 		},
-
 		"/tenant/oauth/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id'],
-			"secret": {
-				"source": ['body.secret'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"redirectURI": {
-				"source": ['body.redirectURI'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"format": "uri"
-				}
-			}
+			"commonFields": ['id', 'secret','redirectURI']
 		},
 		"/tenant/oauth/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id'],
-			"secret": {
-				"source": ['body.secret'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"redirectURI": {
-				"source": ['body.redirectURI'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"format": "uri"
-				}
-			}
+			"commonFields": ['id', 'secret','redirectURI']
 		},
 
 		"/tenant/oauth/users/list": {
@@ -702,49 +782,21 @@ module.exports = {
 				"l": "Delete Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id'],
-			"uId": {
-				"source": ['query.uId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
+			"commonFields": ['id','uId']
 		},
 		"/tenant/oauth/users/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id'],
-			"userId": {
-				"source": ['body.userId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['body.password'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
+			"commonFields": ['id','userId','password']
 		},
 		"/tenant/oauth/users/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id'],
-			"uId": {
-				"source": ['query.uId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
+			"commonFields": ['id','uId'],
 			"userId": {
 				"source": ['body.userId'],
 				"required": false,
@@ -760,6 +812,7 @@ module.exports = {
 				}
 			}
 		},
+
 		"/tenant/application/list": {
 			_apiInfo: {
 				"l": "List Tenant Applications",
@@ -774,77 +827,28 @@ module.exports = {
 			},
 			"commonFields": ['id', 'appId']
 		},
-
 		"/tenant/application/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', '_TTL', 'description', 'acl'],
-			"productCode": {
-				"source": ['body.productCode'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
-				}
-			},
-			"packageCode": {
-				"source": ['body.packageCode'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
-				}
-			}
+			"commonFields": ['id', '_TTL', 'description', 'acl','productCode','packageCode']
 		},
 		"/tenant/application/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl'],
-			"clearAcl": {
-				"source": ['body.clearAcl'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"productCode": {
-				"source": ['body.productCode'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
-				}
-			},
-			"packageCode": {
-				"source": ['body.packageCode'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 5
-				}
-			}
+			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl','productCode','packageCode', 'clearAcl']
 		},
 		"/tenant/application/acl/get": {
 			_apiInfo: {
 				"l": "Get Tenant Application By External Key",
 				"group": "Tenant Application"
 			},
-			"extKey": {
-				"source": ['body.extKey'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
+			"commonFields": ['extKey']
 		},
+
 		"/tenant/application/key/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application Key",
@@ -874,85 +878,26 @@ module.exports = {
 			},
 			"commonFields": ['id', 'appId', 'key']
 		},
-
 		"/tenant/application/key/ext/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key'],
-			'expDate': {
-				"source": ['body.expDate'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"format": "date-time"
-				}
-			},
-			'device': {
-				"source": ['body.device'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			'geo': {
-				"source": ['body.geo'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			}
+			"commonFields": ['id', 'appId', 'key','expDate','device','geo']
 		},
 		"/tenant/application/key/ext/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key'],
-			'extKey': {
-				"source": ['body.extKey'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			'expDate': {
-				"source": ['body.expDate'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"format": "date-time"
-				}
-			},
-			'device': {
-				"source": ['body.device'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			'geo': {
-				"source": ['body.geo'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			}
+			"commonFields": ['id', 'appId', 'key','extKey','expDate','device','geo']
 		},
 		"/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key'],
-			'extKey': {
-				"source": ['body.extKey'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
+			"commonFields": ['id', 'appId', 'key','extKey']
 		},
 
 		"/tenant/application/key/config/list": {
@@ -967,28 +912,184 @@ module.exports = {
 				"l": "Update Tenant Application Key Configuration",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key'],
-			'envCode': {
-				'source': ['body.envCode'],
-				'required': true,
-				'validation': {
-					'type': 'string'
+			"commonFields": ['id', 'appId', 'key', 'envCode','config']
+		},
+
+		"/settings/tenant/get": {
+			_apiInfo: {
+				"l": "Get Tenant",
+				"group": "Tenant"
+			}
+		},
+		"/settings/tenant/update": {
+			_apiInfo: {
+				"l": "Update Tenant",
+				"group": "Tenant"
+			},
+			"commonFields": ['name', 'description']
+		},
+
+		"/settings/tenant/oauth/list": {
+			_apiInfo: {
+				"l": "Get Tenant oAuth Configuration",
+				"group": "Tenant oAuth"
+			}
+		},
+		"/settings/tenant/oauth/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant oAuth Configuration",
+				"group": "Tenant oAuth"
+			}
+		},
+		"/settings/tenant/oauth/add": {
+			_apiInfo: {
+				"l": "Add Tenant oAuth Configuration",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['secret','redirectURI']
+		},
+		"/settings/tenant/oauth/update": {
+			_apiInfo: {
+				"l": "Update Tenant oAuth Configuration",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['secret','redirectURI']
+		},
+
+		"/settings/tenant/oauth/users/list": {
+			_apiInfo: {
+				"l": "List Tenant oAuth Users",
+				"group": "Tenant oAuth"
+			}
+		},
+		"/settings/tenant/oauth/users/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant oAuth User",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['uId']
+		},
+		"/settings/tenant/oauth/users/add": {
+			_apiInfo: {
+				"l": "Add Tenant oAuth User",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['userId','password']
+		},
+		"/settings/tenant/oauth/users/update": {
+			_apiInfo: {
+				"l": "Update Tenant oAuth User",
+				"group": "Tenant oAuth"
+			},
+			"commonFields": ['uId'],
+			"userId": {
+				"source": ['body.userId'],
+				"required": false,
+				"validation": {
+					"type": "string"
 				}
 			},
-			'config': {
-				"source": ['body.config'],
-				"required": true,
+			"password": {
+				"source": ['body.password'],
+				"required": false,
 				"validation": {
-					"type": "object"
+					"type": "string"
 				}
 			}
 		},
 
-		"/tenant/my/get": {
+		"/settings/tenant/application/list": {
 			_apiInfo: {
-				"l": "Get My Tenant",
-				"group": "Tenant"
+				"l": "List Tenant Applications",
+				"group": "Tenant Application"
 			}
+		},
+		"/settings/tenant/application/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId']
+		},
+		"/settings/tenant/application/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['_TTL', 'description', 'acl','productCode','packageCode']
+		},
+		"/settings/tenant/application/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', '_TTL', 'description', 'acl','productCode','packageCode', 'clearAcl']
+		},
+
+		"/settings/tenant/application/key/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application Key",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId']
+		},
+		"/settings/tenant/application/key/list": {
+			_apiInfo: {
+				"l": "List Tenant Application Keys",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId']
+		},
+		"/settings/tenant/application/key/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application Key",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key']
+		},
+
+		"/settings/tenant/application/key/ext/list": {
+			_apiInfo: {
+				"l": "List Tenant Application External Keys",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key']
+		},
+		"/settings/tenant/application/key/ext/add": {
+			_apiInfo: {
+				"l": "Add Tenant Application External Key",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key','expDate','device','geo']
+		},
+		"/settings/tenant/application/key/ext/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application External Key",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key','extKey','expDate','device','geo']
+		},
+		"/settings/tenant/application/key/ext/delete": {
+			_apiInfo: {
+				"l": "Delete Tenant Application External Key",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key','extKey']
+		},
+
+		"/settings/tenant/application/key/config/list": {
+			_apiInfo: {
+				"l": "List Tenant Application Key Configuration",
+				"group": "Tenant Application"
+			},
+			"commonFields": [ 'appId', 'key']
+		},
+		"/settings/tenant/application/key/config/update": {
+			_apiInfo: {
+				"l": "Update Tenant Application Key Configuration",
+				"group": "Tenant Application"
+			},
+			"commonFields": ['appId', 'key', 'envCode','config']
 		},
 
 		"/services/list": {
@@ -1120,13 +1221,6 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
-			}
-		},
-
-		"/tenant/permissions/get": {
-			_apiInfo: {
-				"l": "Get Tenant Security Permissions",
-				"group": "Tenant"
 			}
 		}
 	}

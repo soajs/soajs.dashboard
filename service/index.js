@@ -1,9 +1,10 @@
 'use strict';
 var soajs = require('soajs');
+var request = require('request');
+
 var Mongo = soajs.mongo;
 
 var config = require('./config.js');
-
 var environment = require('./environment.js');
 var product = require('./product.js');
 var tenant = require('./tenant.js');
@@ -25,6 +26,17 @@ function checkForMongo(req) {
 		mongo = new Mongo(req.soajs.registry.coreDB.provision);
 	}
 }
+
+function checkMyAccess(req, res, cb) {
+	if(!req.soajs.tenant || !req.soajs.tenant.id) {
+		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
+	}
+	else {
+		req.soajs.inputmaskData.id = req.soajs.tenant.id.toString();
+		return cb();
+	}
+}
+
 service.init(function() {
 	service.post("/environment/add", function(req, res) {
 		checkForMongo(req);
@@ -133,13 +145,13 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.delete(config, mongo, req, res);
 	});
-	service.post("/tenant/update", function(req, res) {
-		checkForMongo(req);
-		tenant.update(config, mongo, req, res);
-	});
 	service.get("/tenant/list", function(req, res) {
 		checkForMongo(req);
 		tenant.list(config, mongo, req, res);
+	});
+	service.post("/tenant/update", function(req, res) {
+		checkForMongo(req);
+		tenant.update(config, mongo, req, res);
 	});
 	service.get("/tenant/get", function(req, res) {
 		checkForMongo(req);
@@ -167,17 +179,14 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.getOAuthUsers(config, mongo, req, res);
 	});
-
 	service.get("/tenant/oauth/users/delete", function(req, res) {
 		checkForMongo(req);
 		tenant.deleteOAuthUsers(config, mongo, req, res);
 	});
-
 	service.post("/tenant/oauth/users/add", function(req, res) {
 		checkForMongo(req);
 		tenant.addOAuthUsers(config, mongo, req, res);
 	});
-
 	service.post("/tenant/oauth/users/update", function(req, res) {
 		checkForMongo(req);
 		tenant.updateOAuthUsers(config, mongo, req, res);
@@ -242,46 +251,6 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
-
-	service.get("/hosts/list", function(req, res) {
-		checkForMongo(req);
-		host.list(config, mongo, req, res);
-	});
-	service.get("/hosts/delete", function(req, res) {
-		checkForMongo(req);
-		host.delete(config, mongo, req, res);
-	});
-	service.post("/hosts/maintenanceOperation", function(req, res) {
-		checkForMongo(req);
-		host.maintenanceOperation(config, mongo, req, res);
-	});
-
-	service.post("/services/list", function(req, res) {
-		checkForMongo(req);
-		var colName = 'services';
-		var criteria = ((req.soajs.inputmaskData.serviceNames) && (req.soajs.inputmaskData.serviceNames.length > 0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
-		mongo.find(colName, criteria, function(err, records) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-			return res.jsonp(req.soajs.buildResponse(null, records));
-		});
-	});
-
-	service.post("/services/update", function(req, res) {
-		checkForMongo(req);
-		var set = {
-			'$set':{
-				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
-				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
-				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null
-			}
-		};
-		mongo.update('services', { 'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-			if(data === 0){ return res.jsonp(req.soajs.buildResponse({"code": 604, "msg": config.errors[604]})); }
-			return res.jsonp(req.soajs.buildResponse(null, "service updated successfully."));
-		});
-	});
-
 	service.get("/tenant/permissions/get", function(req, res) {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
@@ -304,6 +273,189 @@ service.init(function() {
 			response = (!ACL) ? req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}) : req.soajs.buildResponse(null, ACL);
 			res.jsonp(response);
 		}
+	});
+	
+	service.get("/hosts/list", function(req, res) {
+		checkForMongo(req);
+		host.list(config, mongo, req, res);
+	});
+	service.get("/hosts/delete", function(req, res) {
+		checkForMongo(req);
+		host.delete(config, mongo, req, res);
+	});
+	service.post("/hosts/maintenanceOperation", function(req, res) {
+		checkForMongo(req);
+		host.maintenanceOperation(config, mongo, req, res);
+	});
+
+	service.post("/services/list", function(req, res) {
+		checkForMongo(req);
+		var colName = 'services';
+		var criteria = ((req.soajs.inputmaskData.serviceNames) && (req.soajs.inputmaskData.serviceNames.length > 0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
+		mongo.find(colName, criteria, function(err, records) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+			return res.jsonp(req.soajs.buildResponse(null, records));
+		});
+	});
+	service.post("/services/update", function(req, res) {
+		checkForMongo(req);
+		var set = {
+			'$set': {
+				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
+				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
+				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null
+			}
+		};
+		mongo.update('services', {'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+			if(data === 0) { return res.jsonp(req.soajs.buildResponse({"code": 604, "msg": config.errors[604]})); }
+			return res.jsonp(req.soajs.buildResponse(null, "service updated successfully."));
+		});
+	});
+	
+	service.post("/settings/tenant/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.update(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/get", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.get(config, mongo, req, res);
+		});
+	});
+
+	service.get("/settings/tenant/oauth/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.getOAuth(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/oauth/add", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.saveOAuth(config, 425, 'tenant OAuth add successful', mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/oauth/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.saveOAuth(config, 426, 'tenant OAuth update successful', mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/oauth/delete", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.deleteOAuth(config, mongo, req, res);
+		});
+	});
+
+	service.get("/settings/tenant/oauth/users/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.getOAuthUsers(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/oauth/users/delete", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.deleteOAuthUsers(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/oauth/users/add", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.addOAuthUsers(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/oauth/users/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.updateOAuthUsers(config, mongo, req, res);
+		});
+	});
+
+	service.get("/settings/tenant/application/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.listApplication(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/application/add", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.addApplication(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/application/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.updateApplication(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/application/delete", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.deleteApplication(config, mongo, req, res);
+		});
+	});
+
+	service.post("/settings/tenant/application/key/add", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.createApplicationKey(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/application/key/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.getApplicationKeys(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/application/key/delete", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.deleteApplicationKey(config, mongo, req, res);
+		});
+	});
+
+	service.get("/settings/tenant/application/key/ext/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.listApplicationExtKeys(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/application/key/ext/add", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.addApplicationExtKeys(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/application/key/ext/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.updateApplicationExtKeys(config, mongo, req, res);
+		});
+	});
+	service.post("/settings/tenant/application/key/ext/delete", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.deleteApplicationExtKeys(config, mongo, req, res);
+		});
+	});
+
+	service.post("/settings/tenant/application/key/config/update", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.updateApplicationConfig(config, mongo, req, res);
+		});
+	});
+	service.get("/settings/tenant/application/key/config/list", function(req, res) {
+		checkForMongo(req);
+		checkMyAccess(req, res, function() {
+			tenant.listApplicationConfig(config, mongo, req, res);
+		});
 	});
 
 	service.start();
