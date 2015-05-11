@@ -120,29 +120,30 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listHosts = function(env) {
 		var controllers = [];
-
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/hosts/list",
-			"params": {
-				"env": env
-			}
-		}, function(error, response) {
-			if(error || !response) {
-				$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
-				console.log(error.message);
-			}
-			else {
-				for(var i = 0; i < response.length; i++) {
-					if(response[i].name === 'controller') {
-						controllers.push({'name': 'controller', 'ip': response[i].ip, 'color': 'red', 'port': 4000});
-					}
+		if($scope.access.listHosts){
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/hosts/list",
+				"params": {
+					"env": env
 				}
-				controllers.forEach(function(oneController) {
-					invokeHostsAwareness(oneController.ip);
-				});
-			}
-		});
+			}, function(error, response) {
+				if(error || !response) {
+					$scope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+					console.log(error.message);
+				}
+				else {
+					for(var i = 0; i < response.length; i++) {
+						if(response[i].name === 'controller') {
+							controllers.push({'name': 'controller', 'ip': response[i].ip, 'color': 'red', 'port': 4000});
+						}
+					}
+					controllers.forEach(function(oneController) {
+						invokeHostsAwareness(oneController.ip);
+					});
+				}
+			});
+		}
 
 		function invokeHostsAwareness(defaultControllerHost) {
 			getSendDataFromServer(ngDataApi, {
@@ -589,27 +590,29 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.listDatabases = function(env) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/dbs/list",
-			"params": {"env": env}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				if(response) {
-					for(var i = 0; i < $scope.grid.rows.length; i++) {
-						if($scope.grid.rows[i]['code'] === env) {
-							$scope.grid.rows[i].dbs = response;
-						}
-					}
+		if(access.dbs.list){
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/environment/dbs/list",
+				"params": {"env": env}
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('danger', "Unable to fetch Environment Database.");
+					if(response) {
+						for(var i = 0; i < $scope.grid.rows.length; i++) {
+							if($scope.grid.rows[i]['code'] === env) {
+								$scope.grid.rows[i].dbs = response;
+							}
+						}
+					}
+					else {
+						$scope.$parent.displayAlert('danger', "Unable to fetch Environment Database.");
+					}
 				}
-			}
-		});
+			});
+		}
 	};
 
 	$scope.removeDatabase = function(env, name) {
@@ -800,29 +803,31 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.listClusters = function(env) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/clusters/list",
-			"params": {"env": env}
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				if(response) {
-					for(var i = 0; i < $scope.grid.rows.length; i++) {
-						if($scope.grid.rows[i]['code'] === env) {
-							delete response.soajsauth;
-							$scope.grid.rows[i].dbs.clusters = response;
-							break;
-						}
-					}
+		if(access.clusters.list){
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/environment/clusters/list",
+				"params": {"env": env}
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('danger', "Unable to fetch Environment Cluster.");
+					if(response) {
+						for(var i = 0; i < $scope.grid.rows.length; i++) {
+							if($scope.grid.rows[i]['code'] === env) {
+								delete response.soajsauth;
+								$scope.grid.rows[i].dbs.clusters = response;
+								break;
+							}
+						}
+					}
+					else {
+						$scope.$parent.displayAlert('danger', "Unable to fetch Environment Cluster.");
+					}
 				}
-			}
-		});
+			});
+		}
 	};
 
 	$scope.addCluster = function(env) {

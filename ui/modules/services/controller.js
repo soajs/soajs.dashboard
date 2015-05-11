@@ -26,9 +26,17 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal
 						};
-						if( formData.extKeyRequired ==='true'){
+						var extKeyRequired;
+						if (Array.isArray(formData.extKeyRequired)){
+							extKeyRequired=formData.extKeyRequired[0];
+							postData.extKeyRequired=extKeyRequired;
+						}
+						else{
+							extKeyRequired=formData.extKeyRequired;
+						}
+						if( extKeyRequired ==='true'){
 							postData.extKeyRequired = true;
-						}else if( formData.extKeyRequired ==='false'){
+						}else if( extKeyRequired ==='false'){
 							postData.extKeyRequired = false;
 						}
 
