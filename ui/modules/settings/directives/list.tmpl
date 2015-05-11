@@ -35,7 +35,7 @@
 
                         <input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="Update Tenant">
 
-                        <input ng-if="access.tenant.oauth.update" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info">
+                        <input ng-if="access.tenant.oauth.delete" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info">
 
                     </div>
                 </form>
@@ -51,14 +51,14 @@
                 <br/>
 
                 <div class="grid oAuthUsers">
-                    <table ng-if="oAuthUsers.length > 0" cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+                    <table ng-if="oAuthUsers.list.length > 0" cellspacing="0" cellpadding="0" border="0" width="100%" class="">
                         <tbody>
                             <tr>
                                 <th colspan="2"></th>
                                 <th>User Id</th>
                                 <th>Authorization</th>
                             </tr>
-                            <tr ng-repeat="user in oAuthUsers" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
+                            <tr ng-repeat="user in oAuthUsers.list" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
 
                                 <td class="leftAction">
                                     <a ng-if="access.tenant.oauth.users.update" href="" ng-click="editMyOauthUser(user)">
@@ -79,11 +79,13 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    <div ng-if="oAuthUsers.list.length == 0">
+                        <alert type="info">No oauth users have been added.</alert>
+                    </div>
                 </div>
             </div>
 
-            <div ng-if="access.tenant.application.list">
+            <div ng-if="access.tenant.application.list"><br/><br/>
                 <div>
                     <label>Tenant Applications</label>
 
@@ -119,7 +121,7 @@
                                 <em>{{application['description']}}</em>
 
                                 <div ng-if="access.tenant.appKeys.list">
-                                    <div style="clear:both; height:30px; padding-bottom:5px;"><b>Tenant Application Keys:</b>
+                                    <div style="clear:both; height:30px; padding-bottom:5px;"><b>Tenant Application Keys</b>
                                         <a ng-if="access.tenant.appKeys.add" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey( application['appId'])" tooltip="Add New Application Key">Add
                                             key</a>
                                     </div>
@@ -204,6 +206,9 @@
                             </div>
                         </li>
                     </ul>
+                    <div ng-if="tenant.applications == 0">
+                        <alert type="info">No applications have been added.</alert>
+                    </div>
 
                 </div>
                 <hr/>

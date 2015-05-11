@@ -296,7 +296,6 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 }
 ]);
 
-
 soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$modal', function(ngDataApi, $routeParams ,$timeout, $modal) {
 	return {
 		restrict: 'E',

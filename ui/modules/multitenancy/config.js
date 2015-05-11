@@ -329,6 +329,7 @@ var tenantConfig = {
 			'update' : ['dashboard', '/tenant/update'],
 			'list' : ['dashboard', '/tenant/list'],
 			'oauth':{
+				'list' : ['dashboard', '/tenant/oauth/list'],
 				'update' : ['dashboard', '/tenant/oauth/update'],
 				'delete' : ['dashboard', '/tenant/oauth/delete'],
 				'users':{

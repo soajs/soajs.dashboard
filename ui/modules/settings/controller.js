@@ -6,7 +6,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, settingsConfig.permissions);
 
-	$scope.oAuthUsers=[];
+	$scope.oAuthUsers={};
+	$scope.oAuthUsers.list=[];
 
 	$scope.getTenant = function(first) {
 		getSendDataFromServer(ngDataApi, {
@@ -57,7 +58,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				if($scope.tenant.oauth.secret) {
+				if($scope.tenant.oauth.secret && $scope.access.tenant.oauth.update) {
 					var oAuthData = {
 						'secret': $scope.tenant.oauth.secret
 					};
@@ -80,6 +81,76 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					$scope.$parent.displayAlert('success', 'Tenant Updated Successfully.');
 					//$scope.getTenant();
 				}
+			}
+		});
+	};
+
+	$scope.openKeys = function( app) {
+		app.showKeys = true;
+	};
+
+	$scope.closeKeys = function( app) {
+		app.showKeys = false;
+	};
+
+	$scope.removeAppKey = function(app, key, event) {
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/settings/tenant/application/key/delete",
+			"params": {"id": id, "appId": app.appId, "key": key}
+		}, function(error) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message, id);
+			}
+			else {
+				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.', id);
+				$scope.listKeys( app.appId);
+			}
+		});
+		if(event && event.stopPropagation){
+			event.stopPropagation();
+		}
+	};
+
+	$scope.getProds = function() {
+		$scope.availablePackages = [];
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/product/list"
+		}, function(error, response) {
+			if(error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				var prods = [];
+				var len = response.length;
+				var v, i;
+				var p = {};
+				for(v = 0; v < len; v++) {
+					p = response[v];
+					var ll = p.packages.length;
+					for(i = 0; i < ll; i++) {
+						prods.push({'pckCode': p.packages[i].code, 'prodCode': p.code, 'v': p.packages[i].code, 'l': p.packages[i].code, 'acl': p.packages[i].acl});
+					}
+				}
+				$scope.availablePackages = prods;
+			}
+		});
+	};
+	
+	$scope.getEnvironments = function() {
+		$scope.availableEnv = [];
+		getSendDataFromServer(ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list"
+		}, function(error, response) {
+			if(error) {
+				console.log('Error: '+error.message);
+			}
+			else {
+				response.forEach(function(oneEnv) {
+					$scope.availableEnv.push(oneEnv.code.toLowerCase());
+				});
 			}
 		});
 	};
@@ -201,91 +272,20 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.listOauthUsers = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/settings/tenant/oauth/users/list",
-			"params": { }
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				if(response.length > 0) {
-					$scope.oAuthUsers = response;
+		if($scope.access.tenant.oauth.users.list){
+			getSendDataFromServer(ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/settings/tenant/oauth/users/list",
+				"params": { }
+			}, function(error, response) {
+				if(error) {
+					$scope.$parent.displayAlert('danger', error.message);
 				}
-			}
-		});
-
-	};
-
-	$scope.openKeys = function( app) {
-		app.showKeys = true;
-	};
-
-	$scope.closeKeys = function( app) {
-		app.showKeys = false;
-	};
-
-	$scope.removeAppKey = function(app, key, event) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/settings/tenant/application/key/delete",
-			"params": {"id": id, "appId": app.appId, "key": key}
-		}, function(error) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, id);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.', id);
-				$scope.listKeys( app.appId);
-			}
-		});
-		if(event && event.stopPropagation){
-			event.stopPropagation();
+				else {
+					$scope.oAuthUsers.list = response;
+				}
+			});
 		}
-	};
-
-	$scope.getProds = function() {
-		$scope.availablePackages = [];
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/product/list"
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				var prods = [];
-				var len = response.length;
-				var v, i;
-				var p = {};
-				for(v = 0; v < len; v++) {
-					p = response[v];
-					var ll = p.packages.length;
-					for(i = 0; i < ll; i++) {
-						prods.push({'pckCode': p.packages[i].code, 'prodCode': p.code, 'v': p.packages[i].code, 'l': p.packages[i].code, 'acl': p.packages[i].acl});
-					}
-				}
-				$scope.availablePackages = prods;
-			}
-		});
-	};
-	
-	$scope.getEnvironments = function() {
-		$scope.availableEnv = [];
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/list"
-		}, function(error, response) {
-			if(error) {
-				console.log('Error: '+error.message);
-			}
-			else {
-				response.forEach(function(oneEnv) {
-					$scope.availableEnv.push(oneEnv.code.toLowerCase());
-				});
-			}
-		});
 	};
 
 	$scope.removeTenantOauthUser = function(user) {
@@ -353,58 +353,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			]
 		};
 
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.addOauthUser = function() {
-		var options = {
-			timeout: $timeout,
-			form: settingsConfig.form.oauthUser,
-			name: 'addUser',
-			label: 'Add New oAuth User',
-			data: {
-				'userId':null,
-				'user_password': null
-			},
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Add oAuth User',
-					'btn': 'primary',
-					'action': function(formData) {
-						var postData = {
-							'userId': formData.userId,
-							'password': formData.password
-						};
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/settings/tenant/oauth/users/add",
-							"data": postData,
-							"params": {}
-						}, function(error) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'User Added Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listOauthUsers();
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
 		buildFormWithModal($scope, $modal, options);
 	};
 
@@ -483,10 +431,12 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 		buildFormWithModal($scope, $modal, options);
 	};
+
 	$scope.editAppAcl = function(appId) {
 		var tenId = $scope.tenant['_id'];
 		$scope.$parent.go("/settings/"+tenId+"/editAcl/" + appId );
 	};
+
 	$scope.editTenantApplication = function( data) {
 		var formConfig = angular.copy(settingsConfig.form.application);
 		var recordData = angular.copy(data);

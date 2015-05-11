@@ -184,6 +184,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			data: {},
 			actions: [
 				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				},
+				{
 					'type': 'submit',
 					'label': 'Update Tenant',
 					'btn': 'primary',
@@ -202,11 +211,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								if(formData.secret) {
+								if(formData.secret && $scope.access.tenant.oauth.update) {
 									var oAuthData = {
 										'secret': formData.secret
 										//'redirectURI': formData.redirectURI
 									};
+
 									getSendDataFromServer(ngDataApi, {
 										"method": "send",
 										"routeName": "/dashboard/tenant/oauth/update",
@@ -223,7 +233,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 											$scope.listTenants();
 										}
 									});
-
 								}
 								else {
 									$scope.$parent.displayAlert('success', 'Tenant Updated Successfully.');
@@ -234,7 +243,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						});
 					}
-				},
+				}
+			]
+		};
+
+		if($scope.access.tenant.oauth.delete){
+			options.actions.push(
 				{
 					'type': 'submit',
 					'label': 'Delete oAuth Info',
@@ -256,19 +270,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							}
 						});
 					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
 				}
-			]
-		};
-
+			);
+		}
 		buildFormWithModal($scope, $modal, options);
 	};
 

@@ -275,6 +275,7 @@ var settingsConfig = {
 			'update' : ['dashboard', '/settings/tenant/update'],
 			'list' : ['dashboard', '/settings/tenant/list'],
 			'oauth':{
+				'list': ['dashboard', '/settings/tenant/oauth/list'],
 				'update' : ['dashboard', '/settings/tenant/oauth/update'],
 				'delete' : ['dashboard', '/settings/tenant/oauth/delete'],
 				'users':{

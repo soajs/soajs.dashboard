@@ -141,7 +141,7 @@
                             </div>
 
                         </tab>
-                        <tab heading="oAuth Users" ng-click="listOauthUsers(row, $index)" ng-if="access.tenant.oauth.users.list">
+                        <tab heading="oAuth Users" ng-click="listOauthUsers(row)" ng-if="access.tenant.oauth.users.list">
                             <br/>
                             <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addOauthUser(row['_id'])">Add oAuth User</a>
 
