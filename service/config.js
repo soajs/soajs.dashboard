@@ -77,6 +77,9 @@ var serviceConfig = {
 				"secret": {"type": "string", "required": true, "minLength": 5},
 				"resave": {"type": "boolean", "required": true},
 				"saveUninitialized": {"type": "boolean", "required": true},
+				"proxy": {"type": 'string', "required": true, "enum": ['true', 'false', 'undefined']},
+				"rolling": {"type": "boolean", "required": true},
+				"unset": {"type": "string", "required": true, "enum": ['keep', 'destroy']},
 				"cookie": {
 					"type": "object",
 					"required": true,
@@ -760,14 +763,14 @@ module.exports = {
 				"l": "Add Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id', 'secret','redirectURI']
+			"commonFields": ['id', 'secret', 'redirectURI']
 		},
 		"/tenant/oauth/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id', 'secret','redirectURI']
+			"commonFields": ['id', 'secret', 'redirectURI']
 		},
 
 		"/tenant/oauth/users/list": {
@@ -782,21 +785,21 @@ module.exports = {
 				"l": "Delete Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id','uId']
+			"commonFields": ['id', 'uId']
 		},
 		"/tenant/oauth/users/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id','userId','password']
+			"commonFields": ['id', 'userId', 'password']
 		},
 		"/tenant/oauth/users/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['id','uId'],
+			"commonFields": ['id', 'uId'],
 			"userId": {
 				"source": ['body.userId'],
 				"required": false,
@@ -832,14 +835,14 @@ module.exports = {
 				"l": "Add Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', '_TTL', 'description', 'acl','productCode','packageCode']
+			"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode']
 		},
 		"/tenant/application/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl','productCode','packageCode', 'clearAcl']
+			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 		},
 		"/tenant/application/acl/get": {
 			_apiInfo: {
@@ -883,21 +886,21 @@ module.exports = {
 				"l": "Add Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key','expDate','device','geo']
+			"commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo']
 		},
 		"/tenant/application/key/ext/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key','extKey','expDate','device','geo']
+			"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo']
 		},
 		"/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key','extKey']
+			"commonFields": ['id', 'appId', 'key', 'extKey']
 		},
 
 		"/tenant/application/key/config/list": {
@@ -912,7 +915,7 @@ module.exports = {
 				"l": "Update Tenant Application Key Configuration",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key', 'envCode','config']
+			"commonFields": ['id', 'appId', 'key', 'envCode', 'config']
 		},
 
 		"/settings/tenant/get": {
@@ -946,14 +949,14 @@ module.exports = {
 				"l": "Add Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['secret','redirectURI']
+			"commonFields": ['secret', 'redirectURI']
 		},
 		"/settings/tenant/oauth/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth Configuration",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['secret','redirectURI']
+			"commonFields": ['secret', 'redirectURI']
 		},
 
 		"/settings/tenant/oauth/users/list": {
@@ -974,7 +977,7 @@ module.exports = {
 				"l": "Add Tenant oAuth User",
 				"group": "Tenant oAuth"
 			},
-			"commonFields": ['userId','password']
+			"commonFields": ['userId', 'password']
 		},
 		"/settings/tenant/oauth/users/update": {
 			_apiInfo: {
@@ -1016,14 +1019,14 @@ module.exports = {
 				"l": "Add Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['_TTL', 'description', 'acl','productCode','packageCode']
+			"commonFields": ['_TTL', 'description', 'acl', 'productCode', 'packageCode']
 		},
 		"/settings/tenant/application/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['appId', '_TTL', 'description', 'acl','productCode','packageCode', 'clearAcl']
+			"commonFields": ['appId', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 		},
 
 		"/settings/tenant/application/key/add": {
@@ -1060,21 +1063,21 @@ module.exports = {
 				"l": "Add Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['appId', 'key','expDate','device','geo']
+			"commonFields": ['appId', 'key', 'expDate', 'device', 'geo']
 		},
 		"/settings/tenant/application/key/ext/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['appId', 'key','extKey','expDate','device','geo']
+			"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo']
 		},
 		"/settings/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['appId', 'key','extKey']
+			"commonFields": ['appId', 'key', 'extKey']
 		},
 
 		"/settings/tenant/application/key/config/list": {
@@ -1082,14 +1085,14 @@ module.exports = {
 				"l": "List Tenant Application Key Configuration",
 				"group": "Tenant Application"
 			},
-			"commonFields": [ 'appId', 'key']
+			"commonFields": ['appId', 'key']
 		},
 		"/settings/tenant/application/key/config/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application Key Configuration",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['appId', 'key', 'envCode','config']
+			"commonFields": ['appId', 'key', 'envCode', 'config']
 		},
 
 		"/services/list": {

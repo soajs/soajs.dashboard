@@ -13,6 +13,17 @@ function validateId(mongo, req, cb) {
 
 module.exports = {
 	"add": function(config, mongo, req, res) {
+		switch(req.soajs.inputmaskData.services.config.session.proxy){
+			case "true":
+				req.soajs.inputmaskData.services.config.session.proxy = true;
+				break;
+			case "false":
+				req.soajs.inputmaskData.services.config.session.proxy = false;
+				break;
+			case "undefined":
+				delete req.soajs.inputmaskData.services.config.session.proxy;
+				break;
+		}
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
@@ -65,6 +76,17 @@ module.exports = {
 
 	"update": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
+			switch(req.soajs.inputmaskData.services.config.session.proxy){
+				case "true":
+					req.soajs.inputmaskData.services.config.session.proxy = true;
+					break;
+				case "false":
+					req.soajs.inputmaskData.services.config.session.proxy = false;
+					break;
+				case "undefined":
+					delete req.soajs.inputmaskData.services.config.session.proxy;
+					break;
+			}
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
 			var s = {
 				'$set': {

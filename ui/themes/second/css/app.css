@@ -763,6 +763,7 @@ fieldset .grid table {
 .form .grouped{
     padding-left:0px;
     width: 1100px;
+    margin-top:20px;
 }
 
 .form h4{
