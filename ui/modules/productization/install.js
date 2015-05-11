@@ -18,10 +18,6 @@ var productizationNav =[
 	{
 		'id': 'product-acl',
 		'label': 'Edit Package ACL',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/product/update'
-		},
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,

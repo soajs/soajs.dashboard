@@ -5,7 +5,7 @@ var settingsNav =[
 		'label': 'Settings',
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/tenant/list'
+			'route':'/settings/tenant/get'
 		},
 		'url': '#/settings',
 		'tplPath': 'modules/settings/directives/list.tmpl',
