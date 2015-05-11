@@ -18,10 +18,6 @@ var multitenancyNav =[
 	{
 		'id': 'tenant-app-acl',
 		'label': 'Edit Application ACL',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/tenant/update'
-		},
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,

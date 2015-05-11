@@ -16,7 +16,6 @@ function checkApiHasAccess(aclObject, serviceName, routePath, userGroups) {
 			}
 		}
 	}
-
 	//return true;
 	var apiRes = null;
 	if(system && system.access) {
@@ -38,7 +37,7 @@ function checkApiHasAccess(aclObject, serviceName, routePath, userGroups) {
 		return (apiRes) ? true : false;
 	}
 
-	if(api || (system && ('restricted' === system.apisPermission))) {
+	if(api || (system && (system.apisPermission === 'restricted'))) {
 		apiRes = api_checkPermission(system, userGroups, api);
 		return (apiRes) ? true : false;
 	}
@@ -48,7 +47,9 @@ function checkApiHasAccess(aclObject, serviceName, routePath, userGroups) {
 
 	function api_checkPermission(system, userGroups, api) {
 		if('restricted' === system.apisPermission) {
-			if(!api) { return false; }
+			if(!api) {
+				return false;
+			}
 			return api_checkAccess(api.access, userGroups);
 		}
 		if(!api) { return true; }

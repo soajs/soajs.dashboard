@@ -18,10 +18,6 @@ var membersNav= [
 	{
 		'id': 'user-acl',
 		'label': 'User ACL',
-		'checkPermission':{
-			'service':'urac',
-			'route':'/admin/editUser'
-		},
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,

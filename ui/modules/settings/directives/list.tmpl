@@ -22,7 +22,7 @@
                                         </textarea>
                                     </td>
                                 </tr>
-                                <tr class="form-group ng-scope">
+                                <tr class="form-group ng-scope" ng-if="access.tenant.oauth.list">
                                     <td class="ng-scope">
                                         <label class="ng-binding">oAuth Secret</label>
                                         <input type="text" tooltip="Enter Tenant oAuth Secret." placeholder="SECRET..." value="My secret phrase" ng-model="tenant.oauth.secret" name="secret" class="form-control">
@@ -33,9 +33,9 @@
                     </div>
                     <div class="footer"><br>
 
-                        <input type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="Update Tenant">
+                        <input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="Update Tenant">
 
-                        <input type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info">
+                        <input ng-if="access.tenant.oauth.update" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info">
 
                     </div>
                 </form>
@@ -82,10 +82,8 @@
 
                 </div>
             </div>
-            <hr/>
+
             <div ng-if="access.tenant.application.list">
-
-
                 <div>
                     <label>Tenant Applications</label>
 
@@ -208,7 +206,7 @@
                     </ul>
 
                 </div>
-
+                <hr/>
             </div>
 
 
