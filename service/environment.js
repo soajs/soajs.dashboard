@@ -24,6 +24,7 @@ module.exports = {
 				delete req.soajs.inputmaskData.services.config.session.proxy;
 				break;
 		}
+
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
