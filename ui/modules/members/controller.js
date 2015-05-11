@@ -8,7 +8,6 @@ membersApp.controller('mainMembersCtrl', ['$scope','$timeout','$modal','ngDataAp
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
 	$scope.userCookie = $cookieStore.get('soajs_user');
-
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -341,7 +340,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 			}
 			else {
 				$scope.tenantApp = response;
-				console.log($scope.tenantApp );
 				$scope.pckName = response.application.package;
 
 				var serviceNames =[];

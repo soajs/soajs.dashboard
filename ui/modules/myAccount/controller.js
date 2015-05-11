@@ -363,7 +363,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				else {
 					$cookieStore.put('soajs_user', response);
 					$cookieStore.put("soajs_auth", response.soajsauth);
-					console.log(response);
+
 					getSendDataFromServer(ngDataApi, {
 						"method": "get",
 						"routeName": "/dashboard/tenant/permissions/get"
@@ -379,7 +379,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 
 						}
 					});
-
 
 				}
 			});
