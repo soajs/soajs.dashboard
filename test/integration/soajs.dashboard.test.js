@@ -3757,8 +3757,17 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 		describe("settings tests", function(){
 			var tenantId, applicationId, key, extKey, oauthUserId;
-			it("success - will get tenant", function(done) {
+			it("fail - user not logged in", function(done) {
 				executeMyRequest({}, 'settings/tenant/get', 'get', function(body) {
+					console.log(body);
+					assert.deepEqual(body.errors.details[0],
+						{"code": 601, "message": "No Logged in User found."});
+					done();
+				});
+			});
+
+			it("success - will get tenant", function(done) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/get', 'get', function(body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
 					tenantId = body.data._id.toString();
@@ -3768,6 +3777,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update tenant", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					form: {
 						"description": 'this is a dummy updated description',
 						"name": "test tenant updated"
@@ -3783,6 +3793,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will add oauth", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					form: {
 						"secret": "my secret key",
 						"redirectURI": "http://www.myredirecturi.com/"
@@ -3809,6 +3820,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update oauth", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					form: {
 						"secret": "my secret key2",
 						"redirectURI": "http://www.myredirecturi.com/"
@@ -3829,7 +3841,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will get oauth object", function(done) {
-				executeMyRequest({}, 'settings/tenant/oauth/list/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/list/', 'get', function(body) {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
 						"secret": "my secret key2",
@@ -3841,7 +3853,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will delete oauth", function(done) {
-				executeMyRequest({}, 'settings/tenant/oauth/delete/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/delete/', 'get', function(body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -3849,6 +3861,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will add oauth user", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					form: {
 						"userId": "oauth_user",
 						"password": "password1"
@@ -3856,9 +3869,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				};
 
 				executeMyRequest(params, 'settings/tenant/oauth/users/add/', 'post', function(body) {
-					console.log(JSON.stringify(body));
-					assert.ok(body.data);
-
 					mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function(error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
@@ -3872,6 +3882,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update oauth users", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						uId: oauthUserId
 					},
@@ -3893,14 +3904,14 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will delete oauth user", function(done) {
-				executeMyRequest({qs: {'uId': oauthUserId}}, 'settings/tenant/oauth/users/delete/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth},qs: {'uId': oauthUserId}}, 'settings/tenant/oauth/users/delete/', 'get', function(body) {
 					assert.ok(body.data);
 					done();
 				});
 			});
 
 			it("success - will get oauth users", function(done) {
-				executeMyRequest({}, 'settings/tenant/oauth/users/list/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/users/list/', 'get', function(body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 0);
 					done();
@@ -3909,6 +3920,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will add application", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					form: {
 						"productCode": "TPROD",
 						"packageCode": "BASIC",
@@ -3930,6 +3942,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update application", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {'appId': applicationId},
 					form: {
 						"productCode": "TPROD",
@@ -3948,7 +3961,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will get empty object", function(done) {
-				executeMyRequest({}, 'settings/tenant/application/list/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/application/list/', 'get', function(body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 4);
 					done();
@@ -3957,6 +3970,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will add key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						'appId': applicationId
 					}
@@ -3975,6 +3989,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will list key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId
 					}
@@ -3989,6 +4004,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will add ext key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4017,6 +4033,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update ext key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4040,6 +4057,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will delete ext key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4056,6 +4074,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will list ext key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4071,6 +4090,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will update configuration", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4095,6 +4115,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will list configuration", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
 						key: key
@@ -4115,6 +4136,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 			it("success - will delete key", function(done) {
 				var params = {
+					'headers': {'soajsauth': soajsauth},
 					qs: {
 						'appId': applicationId,
 						'key': key.toString()
@@ -4127,7 +4149,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will delete application", function(done) {
-				executeMyRequest({qs: {'appId': applicationId}}, 'settings/tenant/application/delete/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}, qs: {'appId': applicationId}}, 'settings/tenant/application/delete/', 'get', function(body) {
 					assert.ok(body.data);
 					done();
 				});

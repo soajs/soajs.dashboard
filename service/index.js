@@ -28,11 +28,15 @@ function checkForMongo(req) {
 }
 
 function checkMyAccess(req, res, cb) {
-	if(!req.soajs.tenant || !req.soajs.tenant.id) {
+	if(!req.soajs.session || !req.soajs.session.getUrac()) {
+		res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+	}
+	var myTenant = req.soajs.session.getUrac().tenant;
+	if(!myTenant || !myTenant.id) {
 		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
 	}
 	else {
-		req.soajs.inputmaskData.id = req.soajs.tenant.id.toString();
+		req.soajs.inputmaskData.id = myTenant.id.toString();
 		return cb();
 	}
 }
