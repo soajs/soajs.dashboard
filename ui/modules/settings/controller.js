@@ -112,32 +112,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		}
 	};
 
-	$scope.getProds = function() {
-		$scope.availablePackages = [];
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/product/list"
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				var prods = [];
-				var len = response.length;
-				var v, i;
-				var p = {};
-				for(v = 0; v < len; v++) {
-					p = response[v];
-					var ll = p.packages.length;
-					for(i = 0; i < ll; i++) {
-						prods.push({'pckCode': p.packages[i].code, 'prodCode': p.code, 'v': p.packages[i].code, 'l': p.packages[i].code, 'acl': p.packages[i].acl});
-					}
-				}
-				$scope.availablePackages = prods;
-			}
-		});
-	};
-	
 	$scope.getEnvironments = function() {
 		$scope.availableEnv = [];
 		getSendDataFromServer(ngDataApi, {
@@ -356,150 +330,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addTenantApplication = function() {
-		var formConfig = angular.copy(settingsConfig.form.application);
-		formConfig.entries.forEach(function(oneEn) {
-			if(oneEn.type==='select'){
-				oneEn.value[0].selected=true;
-			}
-			if(oneEn.name==='package')
-			{
-				oneEn.type="select";
-				oneEn.value = $scope.availablePackages;
-			}
-			if(oneEn.name==='product'){
-				oneEn.name='Prod';
-			}
-		});
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'addApplication',
-			label: 'Add New Application',
-			sub: true,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Add Application',
-					'btn': 'primary',
-					'action': function(formData) {
-
-						var postData = {
-							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-						};
-						if(formData.package && (typeof(formData.package)=='string')){
-							var productCode = formData.package.split("_")[0];
-							var packageCode = formData.package.split("_")[1];
-							postData.productCode = productCode;
-							postData.packageCode = packageCode;
-							getSendDataFromServer(ngDataApi, {
-								"method": "send",
-								"routeName": "/dashboard/settings/tenant/application/add",
-								"data": postData
-							}, function(error) {
-								if(error) {
-									$scope.form.displayAlert('danger', error.message);
-								}
-								else {
-									$scope.$parent.displayAlert('success', 'Application Added Successfully.');
-									$scope.modalInstance.close();
-									$scope.form.formData = {};
-									$scope.reloadApplications();
-								}
-							});
-						}
-						else{
-							$scope.form.displayAlert('danger', "Choose a package.");
-						}
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		var entries = formConfig.entries.splice(0, 1);
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.editAppAcl = function(appId) {
-		var tenId = $scope.tenant['_id'];
-		$scope.$parent.go("/settings/"+tenId+"/editAcl/" + appId );
-	};
-
-	$scope.editTenantApplication = function( data) {
-		var formConfig = angular.copy(settingsConfig.form.application);
-		var recordData = angular.copy(data);
-		recordData._TTL = recordData._TTL / 3600000;
-
-		formConfig.entries[1].type = "html";
-		formConfig.entries[0].type = "html";
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editApplication',
-			label: 'Edit Application',
-			data: recordData,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Edit Application',
-					'btn': 'primary',
-					'action': function(formData) {
-						var packageCode = formData.package.split("_")[1];
-						var postData = {
-							'productCode': formData.product,
-							'packageCode': formData.package,
-							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
-						};
-
-						postData.packageCode = packageCode;
-						postData.acl = recordData.acl;
-						getSendDataFromServer(ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/settings/tenant/application/update",
-							"data": postData,
-							"params": {"appId": data.appId}
-						}, function(error) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Application Updated Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.reloadApplications();
-							}
-						});
-
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
 	$scope.reloadApplications = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -510,22 +340,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 			else {
 				$scope.tenant.applications = response;
-			}
-		});
-	};
-
-	$scope.removeTenantApplication = function( appId) {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/settings/tenant/application/delete",
-			"params": {"appId": appId}
-		}, function(error) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', "Selected Application has been removed.");
-				$scope.reloadApplications();
 			}
 		});
 	};
@@ -926,9 +740,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	if($scope.access.product.list){
-		$scope.getProds();
-	}
 	if($scope.access.environment.list){
 		$scope.getEnvironments();
 	}

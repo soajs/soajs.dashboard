@@ -80,7 +80,7 @@
                         </tbody>
                     </table>
                     <div ng-if="oAuthUsers.list.length == 0">
-                        <alert type="info">No oauth users have been added.</alert>
+                        <alert type="warning">No oauth users have been added.</alert>
                     </div>
                 </div>
             </div>
@@ -88,8 +88,6 @@
             <div ng-if="access.tenant.application.list"><br/><br/>
                 <div>
                     <label>Tenant Applications</label>
-
-                    <a ng-if="access.tenant.application.add" class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication()">Add New Application</a>
                     <br/>
 
                     <ul class="blueListing">
@@ -102,20 +100,6 @@
                             </a>
 
                             [{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
-								<span class="rightActions">
-									<a ng-if="access.tenant.application.delete" href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication( application['appId']);">
-                                        <span class="icon icon-cross" tooltip="Remove Application"></span>
-                                    </a>
-
-									<a ng-if="access.tenant.application.update" href="" ng-click="editTenantApplication(application)">
-                                        <span class="icon icon-pencil2" tooltip="Edit Application"></span>
-                                    </a>
-
-                                    <a ng-if="access.tenant.application.update" href="" ng-click="editAppAcl( application['appId'])">
-                                        <span class="icon icon-unlocked" tooltip="Edit Application ACL"></span>
-                                    </a>
-
-								</span>
 
                             <div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
                                 <em>{{application['description']}}</em>
@@ -207,7 +191,7 @@
                         </li>
                     </ul>
                     <div ng-if="tenant.applications == 0">
-                        <alert type="info">No applications have been added.</alert>
+                        <alert type="warning">No applications have been added.</alert>
                     </div>
 
                 </div>
