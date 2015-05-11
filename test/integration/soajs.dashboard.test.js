@@ -167,6 +167,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					"session": {
 						"name": "soajsID",
 						"secret": "this is antoine hage app server",
+						"proxy": 'undefined',
+						"rolling": false,
+						"unset": 'keep',
 						"cookie": {
 							"path": "/",
 							"httpOnly": true,
@@ -256,6 +259,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					delete envRecord._id;
 					var tester = util.cloneObj(validEnvRecord);
 					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					delete tester.services.config.session.proxy;
 					assert.deepEqual(envRecord, tester);
 					done();
 				});
@@ -313,6 +317,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					var tester = util.cloneObj(validEnvRecord);
 					tester.dbs = {clusters: {}, config: {}, databases: {}};
 					tester.description = "this is a dummy updated description";
+					delete tester.services.config.session.proxy;
 					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
@@ -385,6 +390,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					delete body.data[0]._id;
 					var tester = util.cloneObj(validEnvRecord);
 					tester.dbs = {clusters: {}, config: {}, databases: {}};
+					delete tester.services.config.session.proxy;
 					assert.deepEqual(body.data[0], tester);
 					done();
 				});
@@ -4218,6 +4224,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 							"session": {
 								"name": "soajsID",
 								"secret": "this is antoine hage app server",
+								"rolling": false,
+								"unset": "keep",
 								"cookie": {
 									"path": "/",
 									"httpOnly": true,

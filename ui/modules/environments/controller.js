@@ -50,6 +50,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						if(response[x]._id === $scope.envId) {
 							$scope.newEntry = false;
 							$scope.formEnvironment = response[x];
+							if(!$scope.formEnvironment.services.config.session.hasOwnProperty('proxy')){
+								$scope.formEnvironment.services.config.session.proxy = undefined;
+							}
 							if(response[x].services && response[x].services.config) {
 								if(response[x].services.config.logger) {
 									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
@@ -58,6 +61,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							break;
 						}
 					}
+					$scope.formEnvironment.services.config.session.unset = ($scope.formEnvironment.services.config.session.unset === 'keep') ? false : true;
 				}
 				else {
 					$scope.grid = {rows: response};
@@ -76,7 +80,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.save = function() {
-		var postData = $scope.formEnvironment;
+		var postData = angular.copy($scope.formEnvironment);
 		delete postData.dbs;
 		if(postData.services.config && postData.services.config.oauth && postData.services.config.oauth.grants) {
 			if(typeof(postData.services.config.oauth.grants) == 'string') {
@@ -97,6 +101,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				return;
 			}
 		}
+
+		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
