@@ -256,27 +256,8 @@ service.init(function() {
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
 	service.get("/tenant/permissions/get", function(req, res) {
-		if(!req.soajs.session || !req.soajs.session.getUrac()) {
-			res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
-		}
-		else {
-			var ACL = null, response = null;
-			if(req.soajs.session) {
-				ACL = req.soajs.session.getAcl();
-			}
-
-			if(!ACL) {
-				if(req.soajs.tenant.application.acl && JSON.stringify(req.soajs.tenant.application.acl) !== '{}') {
-					ACL = req.soajs.tenant.application.acl;
-				}
-				else {
-					ACL = req.soajs.tenant.application.package_acl;
-				}
-			}
-
-			response = (!ACL) ? req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}) : req.soajs.buildResponse(null, ACL);
-			res.jsonp(response);
-		}
+		checkForMongo(req);
+		tenant.injectTenantACL(config, mongo, req, res);
 	});
 	
 	service.get("/hosts/list", function(req, res) {
@@ -384,24 +365,6 @@ service.init(function() {
 		checkForMongo(req);
 		checkMyAccess(req, res, function() {
 			tenant.listApplication(config, mongo, req, res);
-		});
-	});
-	service.post("/settings/tenant/application/add", function(req, res) {
-		checkForMongo(req);
-		checkMyAccess(req, res, function() {
-			tenant.addApplication(config, mongo, req, res);
-		});
-	});
-	service.post("/settings/tenant/application/update", function(req, res) {
-		checkForMongo(req);
-		checkMyAccess(req, res, function() {
-			tenant.updateApplication(config, mongo, req, res);
-		});
-	});
-	service.get("/settings/tenant/application/delete", function(req, res) {
-		checkForMongo(req);
-		checkMyAccess(req, res, function() {
-			tenant.deleteApplication(config, mongo, req, res);
 		});
 	});
 

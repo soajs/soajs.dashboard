@@ -3761,7 +3761,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 
-		describe("settings tests", function(){
+		describe("settings tests", function() {
 			var tenantId, applicationId, key, extKey, oauthUserId;
 			it("fail - user not logged in", function(done) {
 				executeMyRequest({}, 'settings/tenant/get', 'get', function(body) {
@@ -3910,7 +3910,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will delete oauth user", function(done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth},qs: {'uId': oauthUserId}}, 'settings/tenant/oauth/users/delete/', 'get', function(body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}, qs: {'uId': oauthUserId}}, 'settings/tenant/oauth/users/delete/', 'get', function(body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -3925,43 +3925,20 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it("success - will add application", function(done) {
-				var params = {
-					'headers': {'soajsauth': soajsauth},
-					form: {
-						"productCode": "TPROD",
-						"packageCode": "BASIC",
-						"description": "this is a dummy description",
-						"_TTL": '12'
-					}
+				applicationId = "5550b473373137a130ebbb68";
+				var newApplication = {
+					"product": "TPROD",
+					"package": "TPROD_BASIC",
+					"appId": mongo.ObjectId(applicationId),
+					"description": "This is a dummy desc",
+					"_TTL": 604800000,
+					"keys": []
 				};
-				executeMyRequest(params, 'settings/tenant/application/add', 'post', function(body) {
-					assert.ok(body.data);
-
-					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
-						assert.ifError(error);
-						assert.ok(tenantRecord);
-						applicationId = tenantRecord.applications[tenantRecord.applications.length-1].appId.toString();
-						done();
-					});
-				});
-			});
-
-			it("success - will update application", function(done) {
-				var params = {
-					'headers': {'soajsauth': soajsauth},
-					qs: {'appId': applicationId},
-					form: {
-						"productCode": "TPROD",
-						"packageCode": "BASIC",
-						"description": "this is a dummy description updated",
-						"_TTL": '24',
-						"acl": {
-							"urac": {}
-						}
-					}
+				var push = {
+					'$push': {'applications': newApplication}
 				};
-				executeMyRequest(params, 'settings/tenant/application/update', 'post', function(body) {
-					assert.ok(body.data);
+				mongo.update('tenants', {'_id': mongo.ObjectId(tenantId)}, push, {'upsert': false, 'safe': true}, function(error) {
+					assert.ifError(error);
 					done();
 				});
 			});
@@ -3984,10 +3961,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				executeMyRequest(params, 'settings/tenant/application/key/add', 'post', function(body) {
 					assert.ok(body.data);
 
-					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
-						key = tenantRecord.applications[tenantRecord.applications.length-1].keys[0].key.toString();
+						key = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].key.toString();
 						done();
 					});
 				});
@@ -4028,10 +4005,10 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function(body) {
 					console.log(JSON.stringify(body));
 					assert.ok(body.data);
-					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord){
+					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
-						extKey = tenantRecord.applications[tenantRecord.applications.length-1].keys[0].extKeys[0].extKey;
+						extKey = tenantRecord.applications[tenantRecord.applications.length - 1].keys[0].extKeys[0].extKey;
 						done();
 					});
 				});
@@ -4149,13 +4126,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/delete', 'get', function(body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("success - will delete application", function(done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}, qs: {'appId': applicationId}}, 'settings/tenant/application/delete/', 'get', function(body) {
 					assert.ok(body.data);
 					done();
 				});

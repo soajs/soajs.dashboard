@@ -1007,27 +1007,6 @@ module.exports = {
 				"group": "Tenant Application"
 			}
 		},
-		"/settings/tenant/application/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['appId']
-		},
-		"/settings/tenant/application/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['_TTL', 'description', 'acl', 'productCode', 'packageCode']
-		},
-		"/settings/tenant/application/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['appId', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
-		},
 
 		"/settings/tenant/application/key/add": {
 			_apiInfo: {
