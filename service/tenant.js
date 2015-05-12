@@ -800,7 +800,7 @@ module.exports = {
 			if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
 
 			ACL = (!result) ? req.soajs.session.getAcl() : result;
-			if(result){
+			if(result) {
 				req.soajs.session.setURACPACKAGEACL(ACL);
 			}
 			return res.jsonp(req.soajs.buildResponse(null, ACL));
@@ -810,11 +810,12 @@ module.exports = {
 			mongo.findOne(colName, {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
 				if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
 				var PRODCODE = config.productCode;
-				tenantRecord.applications.forEach(function(oneApp) {
-					if(oneApp.product === PRODCODE) {
-						PCKGNAME = oneApp.package;
+				for(var i = 0; i < tenantRecord.applications.length; i++) {
+					if(tenantRecord.applications[i].product === PRODCODE) {
+						PCKGNAME = tenantRecord.applications[i].package;
+						break;
 					}
-				});
+				}
 
 				if(PCKGNAME && PCKGNAME !== '') {
 					mongo.findOne(prodColName, {"code": PRODCODE, "packages.code": PCKGNAME}, function(error, prodRecord) {
