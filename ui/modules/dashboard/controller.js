@@ -1,13 +1,13 @@
 "use strict";
 var dahsboardApp = soajsApp.components;
-dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', 'ngDataApi', function($scope, $timeout, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, configDashbrd.permissions);
 }]);
 
-dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', 'ngDataApi', function($scope, $timeout, ngDataApi) {
 	$scope.listTenants = function() {
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -50,9 +50,7 @@ dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngData
 			}
 		});
 	};
-
 	$scope.list();
-
 }]);
 
 dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
@@ -73,12 +71,10 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 			}
 		});
 	};
-	
 	$scope.list();
-	
 }]);
 
 
-dahsboardApp.controller('helpPageCtrl', ['$scope', 'ngDataApi', function($scope, ngDataApi) {
+dahsboardApp.controller('helpPageCtrl', ['$scope', function($scope) {
 	$scope.$parent.isUserLoggedIn(true);
 }]);

@@ -349,17 +349,10 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.currentPackage = {};
 
 	$scope.selectService = function( service) {
-		if( $scope.aclFill.services[service.name]['include'])
-		{
-			$scope.aclFill.services[service.name].collapse = false;
-		}
-		else{
-			$scope.aclFill.services[service.name].collapse = true;
-		}
+		( $scope.aclFill.services[service.name]['include'])? $scope.aclFill.services[service.name].collapse = false : $scope.aclFill.services[service.name].collapse = true;
 	};
 
 	$scope.getPackageAcl = function() {
-
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/get",
@@ -370,7 +363,6 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 			}
 			else {
 				var code = $routeParams.code;
-
 				var l = response.packages.length;
 				for (var x = 0; x<l; x++)
 				{
