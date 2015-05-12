@@ -8,7 +8,6 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 	});
 	$scope.changeEmail = function() {
 		var config = changeEmailConfig.formConf;
-
 		var options = {
 			form: config,
 			'timeout': $timeout,
@@ -28,7 +27,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -81,7 +80,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}

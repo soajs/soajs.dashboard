@@ -2,7 +2,6 @@
 var multiTenantApp = soajsApp.components;
 multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	var currentApp = null;
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
@@ -568,7 +567,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			]
 		};
 
-		var entries = formConfig.entries.splice(0, 1);
+		formConfig.entries.splice(0, 1);
 
 		buildFormWithModal($scope, $modal, options);
 	};

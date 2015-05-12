@@ -568,28 +568,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.applyRestriction=function(service){
-		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
-			for(var grpLabel in service.fixList )
-			{
-				var defaultApi = service.fixList[grpLabel]['defaultApi'];
-				if(defaultApi){
-					if( $scope.aclFill.services[service.name].apis )
-					{
-						var apisList = service.fixList[grpLabel]['apis'];
-						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
-						{
-							apisList.forEach(function( oneApi ) {
-								if($scope.aclFill.services[service.name].apis[oneApi.v])
-								{
-									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
-								}
-							});
-						}
-					}
-				}
-
-			}
-		}
+		applyPermissionRestriction($scope, service);
 	};
 
 	// default operation

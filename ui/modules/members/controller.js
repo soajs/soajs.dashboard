@@ -272,7 +272,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			}
 		};
 
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+		multiRecordUpdate(ngDataApi, $scope, config, function() {
 			$scope.listMembers();
 		});
 	};
@@ -287,7 +287,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 			}
 		};
 
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+		multiRecordUpdate(ngDataApi, $scope, config, function() {
 			$scope.listMembers();
 		});
 	};
@@ -319,7 +319,14 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 
 	$scope.selectService = function( service) {
-		( $scope.aclFill.services[service.name]['include'])? $scope.aclFill.services[service.name].collapse = false : $scope.aclFill.services[service.name].collapse = true;
+		if( $scope.aclPriviledges.services[service.name].include){
+			if( service.forceRestricted ){
+				$scope.aclPriviledges.services[service.name].apisRestrictPermission = true;
+			}
+			$scope.aclFill.services[service.name].collapse = false;
+		}else{
+			$scope.aclFill.services[service.name].collapse = true;
+		}
 	};
 
 	$scope.getTenantAppInfo = function() {
@@ -347,7 +354,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 
 				var serviceName;
 				for (serviceName in parentAcl){
-					serviceNames.push(serviceName);
+					if(parentAcl.hasOwnProperty(serviceName)){
+						serviceNames.push(serviceName);
+					}
 				}
 
 				getSendDataFromServer(ngDataApi, {
@@ -429,11 +438,10 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 											$scope.allGroups.push(grpObj.code);
 										});
 
-										$scope.fillFormServices();
+										prepareViewAclObj($scope.aclFill);
 
 									}
 								});
-
 
 							}
 						});
@@ -443,10 +451,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 
 			}
 		});
-	};
-
-	$scope.fillFormServices = function() {
-		prepareViewAclObj($scope, $scope.aclFill);
 	};
 
 	$scope.arrGroupByField = function(arr, f) {
@@ -490,27 +494,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 
 	$scope.applyRestriction=function(service){
-		if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
-			for(var grpLabel in service.fixList )
-			{
-				var defaultApi = service.fixList[grpLabel]['defaultApi'];
-				if(defaultApi){
-					if( $scope.aclFill.services[service.name].apis )
-					{
-						var apisList = service.fixList[grpLabel]['apis'];
-						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
-						{
-							apisList.forEach(function( oneApi ) {
-								if($scope.aclFill.services[service.name].apis[oneApi.v])
-								{
-									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
-								}
-							});
-						}
-					}
-				}
-			}
-		}
+		applyPermissionRestriction($scope, service);
 	};
 
 	$scope.clearUserAcl = function() {
@@ -606,7 +590,7 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 				}
 			}
 			return result;
-		};
+		}
 
 		getSendDataFromServer(ngDataApi, {
 			"method": "get",
@@ -821,7 +805,7 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 			}
 		};
 
-		multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+		multiRecordUpdate(ngDataApi, $scope, config, function() {
 			$scope.listGroups();
 		});
 	};

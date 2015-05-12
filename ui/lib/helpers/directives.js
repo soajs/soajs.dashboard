@@ -22,17 +22,13 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 			};
 
 			$scope.selectService = function( service) {
-				if( $scope.aclPriviledges.services[ service.name].include){
+				if( $scope.aclPriviledges.services[service.name].include){
 					if( service.forceRestricted ){
-						$scope.aclPriviledges.services[ service.name].apisRestrictPermission = true;
+						$scope.aclPriviledges.services[service.name].apisRestrictPermission = true;
 					}
-				}
-				if( $scope.aclPriviledges.services[service.name]['include'])
-				{
-					$scope.aclPriviledges.services[service.name].collapse = false;
-				}
-				else{
-					$scope.aclPriviledges.services[service.name].collapse = true;
+					$scope.aclFill.services[service.name].collapse = false;
+				}else{
+					$scope.aclFill.services[service.name].collapse = true;
 				}
 			};
 
@@ -187,7 +183,7 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 					$scope.aclPriviledges.services= angular.copy($scope.currentApplication.parentPckgAcl);
 				}
 
-				prepareViewAclObj($scope, $scope.aclPriviledges);
+				prepareViewAclObj($scope.aclPriviledges);
 
 			};
 
@@ -402,7 +398,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 									"routeName": "/urac/admin/group/edit",
 									"params": {"gId": data['_id']},
 									"data": postData
-								}, function(error, response) {
+								}, function(error) {
 									if(error) {
 										$scope.form.displayAlert('danger', error.message);
 									}
@@ -455,7 +451,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 									"method": "send",
 									"routeName": "/urac/admin/group/add",
 									"data": postData
-								}, function(error, response) {
+								}, function(error) {
 									if(error) {
 										$scope.form.displayAlert('danger', error.message);
 									}
@@ -493,7 +489,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 					}
 				};
 				
-				multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+				multiRecordUpdate(ngDataApi, $scope, config, function() {
 					$scope.reloadGroups();
 				});
 			};
@@ -503,7 +499,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 					"method": "get",
 					"routeName": "/urac/admin/group/delete",
 					"params": {"gId": data._id }
-				}, function(error, response) {
+				}, function(error) {
 					if(error) {
 						$scope.$parent.displayAlert('danger', error.message);
 					}
@@ -563,7 +559,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 											"routeName": "/urac/admin/group/addUsers",
 											"params":{'tId': $scope.tId },
 											"data": postData
-										}, function(error, response) {
+										}, function(error) {
 											if(error) {
 												$scope.form.displayAlert('danger', error.message);
 											}
@@ -878,7 +874,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 					}
 				};
 
-				multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+				multiRecordUpdate(ngDataApi, $scope, config, function() {
 					$scope.listMembers();
 				});
 			};
@@ -893,7 +889,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 					}
 				};
 
-				multiRecordUpdate(ngDataApi, $scope, config, function(valid) {
+				multiRecordUpdate(ngDataApi, $scope, config, function() {
 					$scope.listMembers();
 				});
 			};

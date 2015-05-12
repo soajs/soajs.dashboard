@@ -79,7 +79,7 @@ function checkApiHasAccess(aclObject, serviceName, routePath, userGroups) {
 }
 
 /**
- * build the access permissions of a module fron permissionsObj
+ * build the access permissions of a module from permissionsObj
  */
 function constructModulePermissions(scope, access, permissionsObj) {
 	for(var permission in permissionsObj) {
@@ -332,7 +332,7 @@ function prepareAclObjToSave($scope, aclPriviledges){
 	return {'valid': valid, 'data':aclObj } ;
 }
 
-function prepareViewAclObj($scope, aclPriviledges){
+function prepareViewAclObj( aclPriviledges){
 	var s, propt;
 
 	for(propt in aclPriviledges.services)
@@ -388,10 +388,33 @@ function prepareViewAclObj($scope, aclPriviledges){
 					}
 				}
 			}
-
 		}
 	}
 
+}
 
-
+function applyPermissionRestriction($scope,service){
+	if( $scope.aclFill.services[service.name].apisRestrictPermission===true ){
+		for(var grpLabel in service.fixList )
+		{
+			if(service.fixList.hasOwnProperty(grpLabel)){
+				var defaultApi = service.fixList[grpLabel]['defaultApi'];
+				if(defaultApi){
+					if( $scope.aclFill.services[service.name].apis )
+					{
+						var apisList = service.fixList[grpLabel]['apis'];
+						if ((!$scope.aclFill.services[service.name].apis[defaultApi]) || $scope.aclFill.services[service.name].apis[defaultApi].include !== true)
+						{
+							apisList.forEach(function( oneApi ) {
+								if($scope.aclFill.services[service.name].apis[oneApi.v])
+								{
+									$scope.aclFill.services[service.name].apis[oneApi.v].include=false;
+								}
+							});
+						}
+					}
+				}
+			}
+		}
+	}
 }
