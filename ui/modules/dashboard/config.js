@@ -19,8 +19,7 @@ var configDashbrd = {
 			recordsPerPageArray: [5, 10, 50, 100],
 			columns: [
 				{label: 'Code', field: 'code'},
-				{label: 'Description', field: 'description'},
-				{label: 'IPs', field: 'ips'}
+				{label: 'Description', field: 'description'}
 			],
 			leftActions: [],
 			topActions: [],
