@@ -3783,7 +3783,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/get', 'get', function(body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					tenantId = body.data._id.toString();
+					tenantId = body.data.tenant._id.toString();
 					done();
 				});
 			});
