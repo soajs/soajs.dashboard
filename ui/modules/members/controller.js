@@ -15,7 +15,7 @@ membersApp.controller('membersCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi
 
 	var userCookie = $scope.$parent.userCookie;
 
-	$scope.$parent.$on('reloadMembers', function(event, args) {
+	$scope.$parent.$on('reloadMembers', function(event) {
 		$scope.listMembers();
 	});
 
@@ -319,17 +319,10 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 	};
 
 	$scope.selectService = function( service) {
-		if( $scope.aclFill.services[service.name]['include'])
-		{
-			$scope.aclFill.services[service.name].collapse = false;
-		}
-		else{
-			$scope.aclFill.services[service.name].collapse = true;
-		}
+		( $scope.aclFill.services[service.name]['include'])? $scope.aclFill.services[service.name].collapse = false : $scope.aclFill.services[service.name].collapse = true;
 	};
 
 	$scope.getTenantAppInfo = function() {
-
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/acl/get",
@@ -520,7 +513,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 		}
 	};
 
-
 	$scope.clearUserAcl = function() {
 		var postData = $scope.user;
 
@@ -591,23 +583,20 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 }]);
 
 membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
-	$scope.users ;
-	$scope.groups ;
+	$scope.users={} ;
+	$scope.groups={};
 
 	$scope.getAllUsersGroups=function(){
 		function arrGroupByTenant(arr) {
 			var result = {} ;
 			var l = arr.length;
-
 			for(var i=0; i<l; i++)
 			{
 				var g;
-				if(arr[i].tenant.id)
-				{
+				if(arr[i].tenant.id){
 					g = arr[i].tenant.id;
 				}
-				if(g)
-				{
+				if(g){
 					if(!result[g])
 					{
 						result[g]={};
@@ -615,7 +604,6 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 					}
 					result[g].list.push(arr[i]);
 				}
-
 			}
 			return result;
 		};
@@ -630,10 +618,8 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 			else {
 				$scope.users = arrGroupByTenant(response.users);
 				$scope.groups = arrGroupByTenant(response.groups);
-
 			}
 		});
-
 	};
 
 	$scope.listTenants = function() {
@@ -646,13 +632,10 @@ membersApp.controller('tenantsUracCtrl', ['$scope', '$timeout', '$routeParams', 
 			}
 			else {
 				$scope.tenantsList =  response ;
-
 				$scope.getAllUsersGroups ();
 			}
 		});
 	};
-
-
 
 	$scope.listTenants();
 
@@ -724,7 +707,6 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 
 	$scope.addGroup = function() {
 		var config = angular.copy(groupsConfig.form);
-
 		var options = {
 			timeout: $timeout,
 			form: config,
@@ -748,7 +730,7 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 							"method": "send",
 							"routeName": "/urac/admin/group/add",
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -778,7 +760,6 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 
 	$scope.editGroup = function(data) {
 		var config = angular.copy(groupsConfig.form);
-
 		config.entries[0].type = 'readonly';
 		var options = {
 			timeout: $timeout,
@@ -802,7 +783,7 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 							"routeName": "/urac/admin/group/edit",
 							"params": {"gId": data['_id']},
 							"data": postData
-						}, function(error, response) {
+						}, function(error) {
 							if(error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
@@ -850,7 +831,7 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
 			"params": {"gId": data._id, 'tId': userCookie.tenant.id }
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -910,7 +891,7 @@ membersApp.controller('groupsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi'
 									"routeName": "/urac/admin/group/addUsers",
 									"params":{'tId': userCookie.tenant.id},
 									"data": postData
-								}, function(error, response) {
+								}, function(error) {
 									if(error) {
 										$scope.form.displayAlert('danger', error.message);
 									}

@@ -121,12 +121,14 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
 		var label;
 		for(label in result ){
-			if(result[label].apis)
-			{
-				var v =	result[label].apis.length/2;
-				var c= Math.ceil(v);
-				result[label].apis1 = result[label].apis.slice(0,c);
-				result[label].apis2 = result[label].apis.slice(c,l);
+			if(result.hasOwnProperty(label)){
+				if(result[label].apis)
+				{
+					var v =	result[label].apis.length/2;
+					var c= Math.ceil(v);
+					result[label].apis1 = result[label].apis.slice(0,c);
+					result[label].apis2 = result[label].apis.slice(c,l);
+				}
 			}
 		}
 		return result;

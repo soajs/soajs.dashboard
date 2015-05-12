@@ -124,17 +124,15 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			'label': 'Edit Profile',
 			'btn': 'primary',
 			'action': function(formData) {
+				var profileObj = {};
 				if(formData.profile && (formData.profile != "")) {
 					try {
-						var profileObj = JSON.parse(formData.profile);
+						profileObj = JSON.parse(formData.profile);
 					}
 					catch(e) {
 						$scope.$parent.displayAlert('danger', 'Error: Invalid Profile Json object ');
 						return;
 					}
-				}
-				else {
-					var profileObj = {};
 				}
 
 				var prof = JSON.stringify(profileObj);
@@ -147,7 +145,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					"routeName": "/urac/account/editProfile",
 					"params": {"uId": $scope.uId},
 					"data": postData
-				}, function(error, response) {
+				}, function(error) {
 					if(error) {
 						$scope.$parent.displayAlert('danger', error.message);
 					}
@@ -273,12 +271,12 @@ myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				"method": "send",
 				"routeName": "/urac/join",
 				"data": postData
-			}, function(error, response) {
+			}, function(error) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Profile Created Successfully. We will send a link to valiadte your email address. Please check your Email');
+					$scope.$parent.displayAlert('success', 'Profile Created Successfully. We will send a link to validate your email address. Please check your Email');
 					$scope.$parent.go("/login");
 				}
 			});
@@ -301,7 +299,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 			"method": "get",
 			"routeName": "/urac/join/validate",
 			"params": {"token": $route.current.params.token}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -317,7 +315,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 			"method": "get",
 			"routeName": "/urac/changeEmail/validate",
 			"params": {"token": $route.current.params.token}
-		}, function(error, response) {
+		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
@@ -410,7 +408,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				"method": "get",
 				"routeName": "/urac/forgotPassword",
 				"params": postData
-			}, function(error, response) {
+			}, function(error) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
@@ -432,8 +430,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 }]);
 
 myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
-	var formConfig = {};
-	formConfig = setPasswordConfig.formConf;
+	var formConfig = setPasswordConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Submit',
@@ -451,7 +448,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
 				"data": postData
-			}, function(error, response) {
+			}, function(error) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
@@ -473,8 +470,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 }]);
 
 myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
-	var formConfig = {};
-	formConfig = resetPwConfig.formConf;
+	var formConfig = resetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Submit',
@@ -492,7 +488,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
 				"data": postData
-			}, function(error, response) {
+			}, function(error) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
