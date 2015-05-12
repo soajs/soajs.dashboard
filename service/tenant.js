@@ -143,7 +143,7 @@ module.exports = {
 
 			//generate oauth authorization if needed.
 			records.forEach(function(oneTenant) {
-				if(oneTenant.oauth.secret && oneTenant.oauth.secret !== '') {
+				if(oneTenant.oauth && oneTenant.oauth.secret && oneTenant.oauth.secret !== '') {
 					oneTenant.oauth.authorization = "Basic " + new Buffer(oneTenant._id.toString() + oneTenant.oauth.secret).toString('base64');
 				}
 			});
