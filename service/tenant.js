@@ -813,12 +813,13 @@ module.exports = {
 		function getPackageACL(tenantId, cb) {
 			mongo.findOne(colName, {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
 				if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
-
+				var PRODCODE;
 				tenantRecord.applications.forEach(function(oneApp) {
 					PCKGNAME = oneApp.package;
+					PRODCODE = oneApp.package.split("_")[0];
 				});
 
-				mongo.findOne(prodColName, {"packages.code": PCKGNAME}, function(error, prodRecord) {
+				mongo.findOne(prodColName, {"code": PRODCODE, "packages.code": PCKGNAME}, function(error, prodRecord) {
 					if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
 
 					prodRecord.packages.forEach(function(onePackage) {
