@@ -215,7 +215,7 @@ service.init(function() {
 
 	service.post("/tenant/application/acl/get", function(req, res) {
 		checkForMongo(req);
-		tenant.getTenantApplAclByExtKey(config, mongo, req, res);
+		tenant.getTenantApplAcl(config, mongo, req, res);
 	});
 	service.post("/tenant/application/key/add", function(req, res) {
 		checkForMongo(req);

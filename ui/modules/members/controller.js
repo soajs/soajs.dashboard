@@ -333,7 +333,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 		getSendDataFromServer(ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/acl/get",
-			"data": {"extKey": $scope.key}
+			"data": {}
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -345,7 +345,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$timeout', '$routeParams', 'n
 				var serviceNames =[];
 				var parentAcl={};
 				if( $scope.tenantApp.application.app_acl){
-					parentAcl = $scope.tenantApp.app_acl;
+					parentAcl = $scope.tenantApp.application.app_acl;
 				}
 				else if( $scope.tenantApp.application.parentPackageAcl)
 				{

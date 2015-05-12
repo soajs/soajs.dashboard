@@ -2965,12 +2965,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					});
 				});
 
-				it("success - will get app by ext key", function(done) {
-					var params = {
-						form: {
-							'extKey': "aa39b5490c4a4ed0e56d7ec1232a428f1c5b5dcabc0788ce563402e233386738fc3eb18234a486ce1667cf70bd0e8b08890a86126cf1aa8d38f84606d8a6346359a61678428343e01319e0b784bc7e2ca267bbaafccffcb6174206e8c83f2a25"
-						}
-					};
+				it("success - will get nothing", function(done) {
 					var ex3pckg = {
 						"code": "TPROD_EXAMPLE03",
 						"name": "example03 package",
@@ -2987,27 +2982,39 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						productRecord.packages.push(ex3pckg);
 						mongo.save('products', productRecord, function(error) {
 							assert.ifError(error);
-							executeMyRequest(params, 'tenant/application/acl/get/', 'post', function(body) {
+							executeMyRequest({}, 'tenant/application/acl/get/', 'post', function(body) {
 								console.log(JSON.stringify(body));
-								assert.ok(body.data);
+								assert.ok(!body.data);
 								done();
 							});
 						});
 					});
 				});
 
-				it("success - will get app by ext key where app acl overrides package", function(done) {
-					var textKey = "aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c";
-					var params = {
-						form: {
-							'extKey': textKey
-						}
+				it("success - will get acl", function(done){
+					var options = {
+						uri: 'http://localhost:4001/login',
+						headers: {
+							'Content-Type': 'application/json',
+							key: "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974"
+						},
+						body: {
+							"username": "owner",
+							"password": "123456"
+						},
+						json: true
 					};
-
-					executeMyRequest(params, 'tenant/application/acl/get/', 'post', function(body) {
+					var otherextkey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
+					request.post(options, function(error, response, body) {
+						assert.ifError(error);
+						assert.ok(body);
 						console.log(JSON.stringify(body));
-						assert.ok(body.data);
-						done();
+						executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}}, 'tenant/application/acl/get', 'post', function(body) {
+							console.log(JSON.stringify(body));
+							assert.equal(body.result, true);
+							assert.ok(body.data);
+							done();
+						});
 					});
 				});
 			});

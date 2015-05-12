@@ -106,6 +106,20 @@ function saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, code, ms
 	});
 }
 
+function getPackageACLFromTenantConfig(req, tenantId) {
+	if(req.soajs.servicesConfig.dashboard && req.soajs.servicesConfig.dashboard.package) {
+		if(req.soajs.tenant.id === tenantId) {
+			return req.soajs.servicesConfig.dashboard.package.owner.acl;
+		}
+		else {
+			return req.soajs.servicesConfig.dashboard.package.consumer.acl;
+		}
+	}
+	else {
+		return null;
+	}
+}
+
 module.exports = {
 	"delete": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
@@ -230,7 +244,7 @@ module.exports = {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
 				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
-				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(err, data) {
+				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(err) {
 					if(err) { return res.jsonp(req.soajs.buildResponse({"code": 421, "msg": config.errors[421]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "tenant update successful"));
 				});
@@ -264,7 +278,7 @@ module.exports = {
 					'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}
 				};
 				var s = {'$set': {'oauth': {}}};
-				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(error, tenantRecord) {
+				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(error) {
 					if(error) { return res.jsonp(req.soajs.buildResponse({"code": 428, "msg": config.errors[428]})); }
 
 					return res.jsonp(req.soajs.buildResponse(null, "tenant OAuth delete successful"));
@@ -385,8 +399,7 @@ module.exports = {
 					}
 					if(req.soajs.inputmaskData.password) {
 						var hasher = new Hasher(config.hasher);
-						var newPassword = hasher.hashSync(req.soajs.inputmaskData.password);
-						tenantOauthUser.password = newPassword;
+						tenantOauthUser.password = hasher.hashSync(req.soajs.inputmaskData.password);
 					}
 
 					mongo.save(oauthUsersColName, tenantOauthUser, function(error) {
@@ -518,9 +531,15 @@ module.exports = {
 			});
 		});
 	},
-	"getTenantApplAclByExtKey": function(config, mongo, req, res) {
+
+	"getTenantApplAcl": function(config, mongo, req, res) {
+		var myUrac = req.soajs.session.getUrac();
+		if(!myUrac){
+			return res.jsonp(req.soajs.buildResponse(null, req.soajs.session.getAcl()));
+		}
+		var currentAcl = getPackageACLFromTenantConfig(req, myUrac.tenant.id);
 		var criteria = {
-			'applications.keys.extKeys.extKey': req.soajs.inputmaskData.extKey
+			'_id': mongo.ObjectId(myUrac.tenant.id)
 		};
 		mongo.findOne(colName, criteria, function(error, tenantRecord) {
 			if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]})); }
@@ -534,36 +553,14 @@ module.exports = {
 				var app = {};
 				var found = false;
 				tenantRecord.applications.forEach(function(oneApplication) {
-					oneApplication.keys.forEach(function(oneKey) {
-						oneKey.extKeys.forEach(function(oneExtKeyObj) {
-							if(oneExtKeyObj.extKey === req.soajs.inputmaskData.extKey) {
-								app["product"] = oneApplication["product"];
-								app["package"] = oneApplication["package"];
-								app["app_acl"] = oneApplication["acl"];
-								app["key"] = oneKey["key"];
-								found = true;
-							}
-						});
-					});
+					app["product"] = oneApplication["product"];
+					app["package"] = oneApplication["package"];
+					app["app_acl"] = currentAcl;
+					found = true;
 				});
 				return app;
 			}
-
-			if(tenant.application.app_acl && (typeof(tenant.application.app_acl) === 'object')) {
-				return res.jsonp(req.soajs.buildResponse(null, tenant));
-			}
-			else {
-				mongo.findOne(prodColName, {'code': tenant.application.product}, function(error, productRecord) {
-					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 412, "msg": config.errors[412]})); }
-
-					for(var i = 0; i < productRecord.packages.length; i++) {
-						if(productRecord.packages[i].code === tenant.application.package) {
-							tenant.application.parentPackageAcl = productRecord.packages[i].acl;
-						}
-					}
-					return res.jsonp(req.soajs.buildResponse(null, tenant));
-				});
-			}
+			return res.jsonp(req.soajs.buildResponse(null, tenant));
 		});
 	},
 
@@ -795,43 +792,14 @@ module.exports = {
 			return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 		}
 		var myURAC = req.soajs.session.getUrac();
-		var PCKGNAME, ACL;
-		getPackageACL(myURAC.tenant.id, function(error, result) {
-			if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
-
-			ACL = (!result) ? req.soajs.session.getAcl() : result;
-			if(result) {
-				req.soajs.session.setURACPACKAGEACL(ACL);
-			}
-			return res.jsonp(req.soajs.buildResponse(null, ACL));
-		});
-
-		function getPackageACL(tenantId, cb) {
-			mongo.findOne(colName, {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
-				if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
-				var PRODCODE = config.productCode;
-				for(var i = 0; i < tenantRecord.applications.length; i++) {
-					if(tenantRecord.applications[i].product === PRODCODE) {
-						PCKGNAME = tenantRecord.applications[i].package;
-						break;
-					}
-				}
-
-				if(PCKGNAME && PCKGNAME !== '') {
-					mongo.findOne(prodColName, {"code": PRODCODE, "packages.code": PCKGNAME}, function(error, prodRecord) {
-						if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
-
-						prodRecord.packages.forEach(function(onePackage) {
-							if(onePackage.code === PCKGNAME) {
-								return cb(null, onePackage.acl);
-							}
-						})
-					});
-				}
-				else {
-					return cb(null, null);
-				}
-			});
+		var ACL = getPackageACLFromTenantConfig(req, myURAC.tenant.id);
+		if(ACL) {
+			req.soajs.session.setURACPACKAGEACL(ACL);
 		}
+		else {
+			ACL = req.soajs.session.getAcl();
+		}
+
+		return res.jsonp(req.soajs.buildResponse(null, ACL));
 	}
 };
