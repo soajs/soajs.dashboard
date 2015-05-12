@@ -32,6 +32,7 @@ var servicesConfig = {
 		}
 	},
 	permissions:{
-		'listServices': ['dashboard', '/services/list']
+		'listServices': ['dashboard', '/services/list'],
+		'update': ['dashboard', '/services/update']
 	}
 };

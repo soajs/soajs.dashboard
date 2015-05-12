@@ -4,7 +4,7 @@ var environmentsNav= [
 		'id': 'environments',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/list'
+			'route': '/environment/update'
 		},
 		'label': 'Environments',
 		'url': '#/environments',
@@ -18,10 +18,6 @@ var environmentsNav= [
 	{
 		'id': 'oneEnvironment',
 		'label': 'Environments',
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/update'
-		},
 		'url': '#/environments/environment/:id?',
 		'tplPath': 'modules/environments/directives/edit.tmpl',
 		'tracker': true,

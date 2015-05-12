@@ -7,7 +7,7 @@
                 <b>Request Timeout Renewal</b>:<span>{{service['requestTimeoutRenewal']}}</span>
             </div>
             <div class="entryAction">
-                <a href="" ng-click="editService(service);">
+                <a href="" ng-click="editService(service);" ng-if="access.update">
                     <span class="icon icon-pencil2" tooltip="Edit Service"></span>
                 </a>
             </div>
