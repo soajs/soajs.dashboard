@@ -100,10 +100,10 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"id": id, "appId": app.appId, "key": key}
 		}, function(error) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message, id);
+				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.', id);
+				$scope.$parent.displayAlert('success', 'Application Key Removed Successfully.');
 				$scope.listKeys( app.appId);
 			}
 		});
@@ -328,20 +328,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		};
 
 		buildFormWithModal($scope, $modal, options);
-	};
-
-	$scope.reloadApplications = function() {
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/settings/tenant/application/list"
-		}, function(error, response) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.tenant.applications = response;
-			}
-		});
 	};
 
 	$scope.addNewKey = function( appId) {

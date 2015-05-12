@@ -14,19 +14,5 @@ var settingsNav =[
 		'tracker': true,
 		'scripts': ['modules/settings/config.js', 'modules/settings/controller.js'],
 		'ancestor': ['Home']
-	},
-	{
-		'id': 'aclSettings',
-		'label': 'ACL Settings',
-		'checkPermission':{
-
-		},
-		'url': '#/settings/:tId/editAcl/:appId',
-		'tplPath': 'modules/settings/directives/acl.tmpl',
-
-		'tracker': true,
-		'scripts': ['modules/settings/config.js', 'modules/settings/controller.js'],
-		'ancestor': ['Home']
 	}
-
 ];
