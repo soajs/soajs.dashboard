@@ -98,6 +98,7 @@ var serviceConfig = {
 
 module.exports = {
 	"serviceName": "dashboard",
+	"productCode": "DSBRD",
 	"servicePort": 4003,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,

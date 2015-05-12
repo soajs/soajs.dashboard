@@ -794,40 +794,42 @@ module.exports = {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 		}
-		var ACL = req.soajs.session.getAcl();
-		if(!ACL) {
-			var myURAC = req.soajs.session.getUrac();
-			var PCKGNAME;
-			getPackageACL(myURAC.tenant.id, function(error, result) {
-				if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+		var myURAC = req.soajs.session.getUrac();
+		var PCKGNAME, ACL;
+		getPackageACL(myURAC.tenant.id, function(error, result) {
+			if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
 
-				ACL = result;
+			ACL = (!result) ? req.soajs.session.getAcl() : result;
+			if(result){
 				req.soajs.session.setURACPACKAGEACL(ACL);
-				return res.jsonp(req.soajs.buildResponse(null, ACL));
-			});
-		}
-		else {
+			}
 			return res.jsonp(req.soajs.buildResponse(null, ACL));
-		}
+		});
 
 		function getPackageACL(tenantId, cb) {
 			mongo.findOne(colName, {'_id': mongo.ObjectId(tenantId)}, function(error, tenantRecord) {
 				if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
-				var PRODCODE;
+				var PRODCODE = config.productCode;
 				tenantRecord.applications.forEach(function(oneApp) {
-					PCKGNAME = oneApp.package;
-					PRODCODE = oneApp.package.split("_")[0];
+					if(oneApp.product === PRODCODE) {
+						PCKGNAME = oneApp.package;
+					}
 				});
 
-				mongo.findOne(prodColName, {"code": PRODCODE, "packages.code": PCKGNAME}, function(error, prodRecord) {
-					if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
+				if(PCKGNAME && PCKGNAME !== '') {
+					mongo.findOne(prodColName, {"code": PRODCODE, "packages.code": PCKGNAME}, function(error, prodRecord) {
+						if(error) { return cb({"code": 600, "msg": config.errors[600]}); }
 
-					prodRecord.packages.forEach(function(onePackage) {
-						if(onePackage.code === PCKGNAME) {
-							return cb(null, onePackage.acl);
-						}
-					})
-				});
+						prodRecord.packages.forEach(function(onePackage) {
+							if(onePackage.code === PCKGNAME) {
+								return cb(null, onePackage.acl);
+							}
+						})
+					});
+				}
+				else {
+					return cb(null, null);
+				}
 			});
 		}
 	}
