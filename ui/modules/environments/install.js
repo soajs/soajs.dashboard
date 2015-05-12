@@ -4,7 +4,7 @@ var environmentsNav= [
 		'id': 'environments',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/update'
+			'route': '/environment/list'
 		},
 		'label': 'Environments',
 		'url': '#/environments',

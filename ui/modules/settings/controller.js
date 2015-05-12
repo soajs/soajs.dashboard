@@ -8,6 +8,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.oAuthUsers={};
 	$scope.oAuthUsers.list=[];
+	$scope.availableEnv = [];
 
 	$scope.getTenant = function(first) {
 		getSendDataFromServer(ngDataApi, {
@@ -18,7 +19,10 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.tenant =  response;
+				$scope.tenant =  response.tenant;
+				response.environments.forEach(function(oneEnv) {
+					$scope.availableEnv.push(oneEnv.code.toLowerCase());
+				});
 				if(first && first==true){
 					$scope.listOauthUsers();
 				}
@@ -110,23 +114,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		if(event && event.stopPropagation){
 			event.stopPropagation();
 		}
-	};
-
-	$scope.getEnvironments = function() {
-		$scope.availableEnv = [];
-		getSendDataFromServer(ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/list"
-		}, function(error, response) {
-			if(error) {
-				console.log('Error: '+error.message);
-			}
-			else {
-				response.forEach(function(oneEnv) {
-					$scope.availableEnv.push(oneEnv.code.toLowerCase());
-				});
-			}
-		});
 	};
 
 	$scope.editMyOauthUser = function(user) {
@@ -726,9 +713,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		});
 	};
 
-	if($scope.access.environment.list){
-		$scope.getEnvironments();
-	}
 	$scope.getTenant( true );
 
 }]);

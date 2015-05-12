@@ -13,7 +13,7 @@ function validateId(mongo, req, cb) {
 
 module.exports = {
 	"add": function(config, mongo, req, res) {
-		switch(req.soajs.inputmaskData.services.config.session.proxy){
+		switch(req.soajs.inputmaskData.services.config.session.proxy) {
 			case "true":
 				req.soajs.inputmaskData.services.config.session.proxy = true;
 				break;
@@ -77,7 +77,7 @@ module.exports = {
 
 	"update": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
-			switch(req.soajs.inputmaskData.services.config.session.proxy){
+			switch(req.soajs.inputmaskData.services.config.session.proxy) {
 				case "true":
 					req.soajs.inputmaskData.services.config.session.proxy = true;
 					break;
@@ -102,10 +102,15 @@ module.exports = {
 		});
 	},
 
-	"list": function(config, mongo, req, res) {
+	"list": function(config, mongo, req, res, cb) {
 		mongo.find(colName, function(err, records) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 402, "msg": config.errors[402]})); }
-			return res.jsonp(req.soajs.buildResponse(null, records));
+			if(cb && typeof(cb) === 'function') {
+				return cb(records);
+			}
+			else {
+				return res.jsonp(req.soajs.buildResponse(null, records));
+			}
 		});
 	},
 

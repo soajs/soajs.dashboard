@@ -252,7 +252,7 @@ module.exports = {
 		});
 	},
 
-	"get": function(config, mongo, req, res) {
+	"get": function(config, mongo, req, res, cb) {
 		validateId(mongo, req, function(err) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
 
@@ -262,7 +262,12 @@ module.exports = {
 				if(data.oauth && data.oauth.secret && data.oauth.secret !== '') {
 					data.oauth.authorization = "Basic " + new Buffer(data._id.toString() + data.oauth.secret).toString('base64');
 				}
-				return res.jsonp(req.soajs.buildResponse(null, data));
+				if(cb && typeof(cb) === 'function'){
+					return cb(data);
+				}
+				else {
+					return res.jsonp(req.soajs.buildResponse(null, data));
+				}
 			});
 		});
 	},

@@ -307,7 +307,11 @@ service.init(function() {
 	service.get("/settings/tenant/get", function(req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function() {
-			tenant.get(config, mongo, req, res);
+			environment.list(config, mongo, req, res, function(environments){
+				tenant.get(config, mongo, req, res, function(tenant){
+					return res.jsonp(req.soajs.buildResponse(null, {'tenant': tenant, 'environments': environments}));
+				});
+			});
 		});
 	});
 
