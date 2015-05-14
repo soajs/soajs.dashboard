@@ -31,7 +31,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.removeAppKey = function(id, app, key, event) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/delete",
 			"params": {"id": id, "appId": app.appId, "key": key}
@@ -51,7 +51,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	
 	$scope.getProds = function() {
 		$scope.availablePackages = [];
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/list"
 		}, function(error, response) {
@@ -77,7 +77,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	$scope.getEnvironments = function() {
 		$scope.availableEnv = [];
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list"
 		}, function(error, response) {
@@ -94,7 +94,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.listTenants = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/list"
 		}, function(error, response) {
@@ -127,7 +127,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	$scope.listOauthUsers = function(row) {
 		var tId = row['_id'];
 		if(!row.alreadyGotAuthUsers) {
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/tenant/oauth/users/list",
 				"params": {"id": tId}
@@ -200,7 +200,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							'name': formData.name,
 							'description': formData.description
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/update",
 							"data": postData,
@@ -216,7 +216,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 										//'redirectURI': formData.redirectURI
 									};
 
-									getSendDataFromServer(ngDataApi, {
+									getSendDataFromServer($scope, ngDataApi, {
 										"method": "send",
 										"routeName": "/dashboard/tenant/oauth/update",
 										"data": oAuthData,
@@ -253,7 +253,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 					'label': 'Delete oAuth Info',
 					'btn': 'danger',
 					'action': function() {
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "get",
 							"routeName": "/dashboard/tenant/oauth/delete",
 							"params": {"id": data['_id']}
@@ -277,7 +277,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 	
 	$scope.removeTenant = function(row) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/delete",
 			"params": {"id": row._id}
@@ -310,7 +310,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							'name': formData.name,
 							'description': formData.description
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/add",
 							"data": postData
@@ -344,7 +344,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.reloadOauthUsers = function(tId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/oauth/users/list",
 			"params": {"id": tId}
@@ -364,7 +364,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.removeTenantOauthUser = function(tId, user) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/oauth/users/delete",
 			"params": {"id": tId, 'uId': user['_id']}
@@ -405,7 +405,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 								postData.password	= formData.password;
 							}
 						}
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/oauth/users/update",
 							"data": postData,
@@ -463,7 +463,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							return;
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/oauth/users/add",
 							"data": postData,
@@ -533,7 +533,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							var packageCode = formData.package.split("_")[1];
 							postData.productCode = productCode;
 							postData.packageCode = packageCode;
-							getSendDataFromServer(ngDataApi, {
+							getSendDataFromServer($scope, ngDataApi, {
 								"method": "send",
 								"routeName": "/dashboard/tenant/application/add",
 								"data": postData,
@@ -603,7 +603,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 
 						postData.packageCode = packageCode;
 						postData.acl = recordData.acl;
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/update",
 							"data": postData,
@@ -638,7 +638,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.reloadApplications = function(tId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/list",
 			"params": {"id": tId}
@@ -658,7 +658,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.removeTenantApplication = function(tId, appId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/delete",
 			"params": {"id": tId, "appId": appId}
@@ -674,7 +674,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.addNewKey = function(tId, appId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/add",
 			"params": {"id": tId, "appId": appId}
@@ -696,7 +696,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 			'config': configObj
 		};
 
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/config/update",
 			"data": postData,
@@ -756,7 +756,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							'config': configObj
 						};
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/config/update",
 							"data": postData,
@@ -835,7 +835,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 						};
 						
 						
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/ext/add",
 							"data": postData,
@@ -928,7 +928,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 							postData.expDate = new Date(formData.expDate).toISOString();
 						}
 						
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/ext/update",
 							"data": postData,
@@ -961,7 +961,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.removeExtKey = function(tId, appId, data, key) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey},
@@ -980,7 +980,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.listExtKeys = function(tId, appId, key) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/ext/list",
 			"params": {"id": tId, "appId": appId, "key": key}
@@ -1015,7 +1015,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 	
 	$scope.listKeys = function(tId, appId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/list",
 			"params": {"id": tId, "appId": appId}
@@ -1045,7 +1045,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 		$scope.currentApplicationKey = key;
 		$scope.currentApplicationKeyIndex = index;
 
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/config/list",
 			"params": {"id": tId, "appId": appId, "key": key}

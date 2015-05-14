@@ -59,7 +59,7 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 				var tId=  $routeParams.tId;
 				var appId=  $routeParams.appId;
 				// get tenant application info
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/dashboard/tenant/application/list",
 					"params": { "id": tId }
@@ -81,7 +81,7 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 							}
 						}
 						// get product info
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "get",
 							"routeName": "/dashboard/product/packages/get",
 							"params": {"productCode": $scope.currentApplication.product , "packageCode": $scope.currentApplication.package}
@@ -102,7 +102,7 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 									}
 								}
 
-								getSendDataFromServer(ngDataApi, {
+								getSendDataFromServer($scope, ngDataApi, {
 									"method": "send",
 									"routeName": "/dashboard/services/list",
 									"data": { "serviceNames": serviceNames }
@@ -146,7 +146,7 @@ soajsApp.directive('tenantAppAclform', ['ngDataApi', '$routeParams', function(ng
 										$scope.allServiceApis = servicesList;
 
 										// get groups list
-										getSendDataFromServer(ngDataApi, {
+										getSendDataFromServer($scope, ngDataApi, {
 											"method": "get",
 											"routeName": "/urac/admin/group/list",
 											"params":{'tId': tId }
@@ -357,7 +357,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 			};
 
 			$scope.reloadGroups = function(){
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/group/list",
 					"params":{'tId': $scope.tId }
@@ -393,7 +393,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 									'description': formData.description
 								};
 
-								getSendDataFromServer(ngDataApi, {
+								getSendDataFromServer($scope, ngDataApi, {
 									"method": "send",
 									"routeName": "/urac/admin/group/edit",
 									"params": {"gId": data['_id']},
@@ -447,7 +447,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 									'tCode': $scope.tenant.code
 								};
 								
-								getSendDataFromServer(ngDataApi, {
+								getSendDataFromServer($scope, ngDataApi, {
 									"method": "send",
 									"routeName": "/urac/admin/group/add",
 									"data": postData
@@ -495,7 +495,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 			};
 			
 			$scope.delete1Group = function(data) {
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/group/delete",
 					"params": {"gId": data._id }
@@ -511,7 +511,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 			};
 			
 			$scope.assignUsers = function(data) {
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/listUsers",
 					"params":{'tId': $scope.tId }
@@ -554,7 +554,7 @@ soajsApp.directive('manageGroups', ['ngDataApi', '$routeParams', '$timeout', '$m
 											'groupCode': data.code,
 											'users': formData.users
 										};
-										getSendDataFromServer(ngDataApi, {
+										getSendDataFromServer($scope, ngDataApi, {
 											"method": "send",
 											"routeName": "/urac/admin/group/addUsers",
 											"params":{'tId': $scope.tId },
@@ -669,7 +669,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 			};
 
 			$scope.listMembers = function() {
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/listUsers",
 					"params":{'tId': $scope.tId }
@@ -688,7 +688,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 
 			$scope.addMember = function() {
 				var config = angular.copy(membersConfig.form);
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/group/list",
 					"params":{'tId': $scope.tId}
@@ -730,7 +730,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 											'tCode': $scope.tenant.code
 										};
 
-										getSendDataFromServer(ngDataApi, {
+										getSendDataFromServer($scope, ngDataApi, {
 											"method": "send",
 											"routeName": "/urac/admin/addUser",
 											"data": postData
@@ -770,7 +770,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 
 			$scope.editMember = function(data) {
 				var config = angular.copy(membersConfig.form);
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/urac/admin/group/list",
 					"params":{'tId': $scope.tId }
@@ -830,7 +830,7 @@ soajsApp.directive('manageMembers', ['ngDataApi', '$routeParams', '$timeout', '$
 											'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 										};
 
-										getSendDataFromServer(ngDataApi, {
+										getSendDataFromServer($scope, ngDataApi, {
 											"method": "send",
 											"routeName": "/urac/admin/editUser",
 											"params": {"uId": data['_id']},

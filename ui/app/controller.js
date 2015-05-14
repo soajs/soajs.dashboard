@@ -202,7 +202,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
 						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
-							$scope.go("/dashboard");
+							$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 						}
 					}
 
@@ -224,6 +224,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
+				$cookieStore.remove('acl_access');
 				$scope.enableInterface = false;
 				if(!stopRedirect) {
 					$scope.displayFixedAlert('danger', "Session expired. Please login.");
@@ -271,6 +272,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', function($scope, ngDataApi, $cookieStore) {
 	$scope.$parent.$on('refreshWelcome', function(event, args) {
 		$scope.setUser();
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	});
 
 	$scope.setUser = function() {
@@ -285,7 +287,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', funct
 		var user = $cookieStore.get('soajs_user');
 
 		function logout() {
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/urac/logout",
 				"params": {"username": user.username}

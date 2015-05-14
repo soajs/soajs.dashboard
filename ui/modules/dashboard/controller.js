@@ -9,7 +9,7 @@ dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', 'ngDataApi', fun
 
 dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', 'ngDataApi', function($scope, $timeout, ngDataApi) {
 	$scope.listTenants = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/list"
 		}, function(error, response) {
@@ -34,7 +34,7 @@ dahsboardApp.controller('tenantsCtrl', ['$scope', '$timeout', 'ngDataApi', funct
 
 dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.list = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/list"
 		}, function(error, response) {
@@ -55,7 +55,7 @@ dahsboardApp.controller('productsCtrl', ['$scope', '$timeout', '$modal', 'ngData
 
 dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
 	$scope.list = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list"
 		}, function(error, response) {

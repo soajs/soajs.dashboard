@@ -1,17 +1,14 @@
 <section ng-controller="dahsboardCtrl">
     <div ng-if="access.environment">
         <h3>Environments</h3>
-
         <div ng-controller="environmentsCtrl">
             <nglist></nglist>
         </div>
-
         <hr/>
     </div>
 
     <div ng-if="access.product">
         <h3>Productization</h3>
-
         <div ng-controller="productsCtrl">
             <nglist></nglist>
         </div>
@@ -19,14 +16,11 @@
     </div>
 
     <div ng-if="access.tenant">
-    <h3>Multi-Tenancy</h3>
-
-    <div ng-controller="tenantsCtrl">
-        
-        <nglist></nglist>
-    </div>
-    
-    <hr/>
+        <h3>Multi-Tenancy</h3>
+        <div ng-controller="tenantsCtrl">
+            <nglist></nglist>
+        </div>
+        <hr/>
     </div>
 </section>
 	

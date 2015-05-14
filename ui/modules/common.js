@@ -95,7 +95,7 @@ function constructModulePermissions(scope, access, permissionsObj) {
 /*
  common function calls ngDataAPI angular service to connect and send/get data to api
  */
-function getSendDataFromServer(ngDataApi, options, callback) {
+function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var apiOptions = {
 		url: apiConfiguration.domain + options.routeName,
 		headers: {
@@ -128,7 +128,7 @@ function getSendDataFromServer(ngDataApi, options, callback) {
 		}
 	}
 	
-	ngDataApi[options.method](apiOptions, callback);
+	ngDataApi[options.method]($scope, apiOptions, callback);
 	
 }
 
@@ -182,7 +182,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			}
 		}
 
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": method,
 			"routeName": opts.routeName,
 			"params": opts.params,

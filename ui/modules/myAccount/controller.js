@@ -22,7 +22,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						var postData = {
 							'email': formData.email
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
@@ -75,7 +75,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							$scope.form.displayAlert('danger', 'Your password and confirm password fields do not match!');
 							return;
 						}
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
@@ -139,7 +139,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'username': formData.username, 'firstName': formData.firstName, 'lastName': formData.lastName,
 					'profile': prof
 				};
-				getSendDataFromServer(ngDataApi, {
+				getSendDataFromServer($scope, ngDataApi, {
 					"method": "send",
 					"routeName": "/urac/account/editProfile",
 					"params": {"uId": $scope.uId},
@@ -166,7 +166,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	};
 
 	$scope.getProfile = function(username) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
@@ -266,7 +266,7 @@ myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				'email': formData.email,
 				'password': formData.password
 			};
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/join",
 				"data": postData
@@ -287,14 +287,14 @@ myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 }]);
 
 myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function($scope, ngDataApi, $route, isUserLoggedIn) {
 
 	$scope.valiadteJoin = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/join/validate",
 			"params": {"token": $route.current.params.token}
@@ -310,7 +310,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	};
 
 	$scope.validateChangeEmail = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/changeEmail/validate",
 			"params": {"token": $route.current.params.token}
@@ -335,7 +335,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 }]);
 
@@ -349,7 +349,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 			var postData = {
 				'username': formData.username, 'password': formData.password
 			};
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/login",
 				"data": postData
@@ -361,7 +361,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					$cookieStore.put('soajs_user', response);
 					$cookieStore.put("soajs_auth", response.soajsauth);
 
-					getSendDataFromServer(ngDataApi, {
+					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/dashboard/tenant/permissions/get"
 					}, function(error, response) {
@@ -372,8 +372,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 							$cookieStore.put('acl_access', response);
 							$scope.$parent.$emit("loadUserInterface", {});
 							$scope.$parent.$emit('refreshWelcome', {});
-							$scope.$parent.go("/dashboard");
-
 						}
 					});
 
@@ -387,7 +385,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in.');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 	
 }]);
@@ -403,7 +401,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				'username': formData.username, 'email': formData.email
 			};
 			
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/urac/forgotPassword",
 				"params": postData
@@ -424,7 +422,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 }]);
 
@@ -442,7 +440,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
 			}
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
@@ -464,7 +462,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 }]);
 
@@ -482,7 +480,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
 			}
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
@@ -504,7 +502,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go("/dashboard");
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
 	}
 }]);
 

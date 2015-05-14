@@ -3,6 +3,10 @@
  */
 var navigation = [
 	{
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/list'
+		},
 		'id': 'home',
 		'label': 'Home',
 		'url': '#/dashboard',
@@ -10,7 +14,6 @@ var navigation = [
 		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
 		'icon': 'home',
 		'mainMenu': true,
-		'private': true,
 		'tracker': true
 	},
 	{

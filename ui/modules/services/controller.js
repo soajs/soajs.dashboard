@@ -40,7 +40,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 							postData.extKeyRequired = false;
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/services/update",
 							"params": {"name": service.name},
@@ -76,7 +76,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 	};
 
 	$scope.listServices = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/services/list"
 		}, function(error, response) {

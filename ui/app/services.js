@@ -2,13 +2,13 @@
 
 soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieStore) {
 
-	function returnAPIError(opts, status, headers, config, cb) {
+	function returnAPIError(scope, opts, status, headers, config, cb) {
 		console.log("Error: ngDataApi->" + opts.api);
 		console.log(status, headers, config);
 		return cb(new Error("Unable Fetching data from " + config.url));
 	}
 
-	function returnAPIResponse(response, cb) {
+	function returnAPIResponse(scope, response, cb) {
 		if(response && response.result === true) {
 			if(response.soajsauth && $cookieStore.get('soajs_auth')) {
 				$cookieStore.put("soajs_auth", response.soajsauth);
@@ -25,6 +25,15 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieS
 			return cb(null, resp.data);
 		}
 		else {
+			if(response.errors.codes[0] === 132){
+				$cookieStore.remove('soajs_auth');
+				$cookieStore.remove('soajs_user');
+				$cookieStore.remove('acl_access');
+				scope.$parent.enableInterface = false;
+				scope.$parent.isUserLoggedIn();
+				scope.$parent.go("/login");
+			}
+
 			var str = '';
 			for(var i = 0; i < response.errors.details.length; i++) {
 				str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
@@ -33,7 +42,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieS
 		}
 	}
 
-	function executeRequest(opts, cb) {
+	function executeRequest(scope, opts, cb) {
 		var config = {
 			url: opts.url,
 			method: opts.method,
@@ -59,22 +68,22 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieS
 		}
 
 		$http(config).success(function(response, status, headers, config) {
-			returnAPIResponse(response, cb);
+			returnAPIResponse(scope, response, cb);
 		}).error(function(errData, status, headers, config) {
-			returnAPIError(opts, status, headers, config, cb);
+			returnAPIError(scope, opts, status, headers, config, cb);
 		});
 	}
 
-	function getData(opts, cb) {
+	function getData(scope, opts, cb) {
 		opts.method = 'GET';
 		opts.api = 'getData';
-		executeRequest(opts, cb);
+		executeRequest(scope, opts, cb);
 	}
 
-	function sendData(opts, cb) {
+	function sendData(scope, opts, cb) {
 		opts.method = 'POST';
 		opts.api = 'sendData';
-		executeRequest(opts, cb);
+		executeRequest(scope, opts, cb);
 	}
 
 	return {

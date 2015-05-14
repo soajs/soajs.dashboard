@@ -5,7 +5,7 @@ var servicesNav =[
 		'label': 'Services',
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/services/update'
+			'route':'/services/list'
 		},
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',

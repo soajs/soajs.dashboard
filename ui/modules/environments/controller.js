@@ -36,7 +36,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.listEnvironments = function(environmentId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list"
 		}, function(error, response) {
@@ -103,7 +103,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
 			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
@@ -121,7 +121,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.listHosts = function(env) {
 		var controllers = [];
 		if($scope.access.listHosts){
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/hosts/list",
 				"params": {
@@ -146,7 +146,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 
 		function invokeHostsAwareness(defaultControllerHost) {
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/hosts/maintenanceOperation",
 				"data": {
@@ -222,7 +222,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.executeHeartbeatTest = function(env, oneHost) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
@@ -337,7 +337,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.executeAwarenessTest = function(env, oneHost) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
@@ -437,7 +437,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.reloadRegistry = function(env, oneHost, cb) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
@@ -479,7 +479,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.loadProvisioning = function(env, oneHost) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
@@ -516,7 +516,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.removeHost = function(env, serviceName, oneHost) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/hosts/delete",
 			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name}
@@ -569,7 +569,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.removeEnvironment = function(row) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/delete",
 			"params": {"id": row['_id']}
@@ -591,7 +591,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listDatabases = function(env) {
 		if(access.dbs.list){
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/dbs/list",
 				"params": {"env": env}
@@ -616,7 +616,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.removeDatabase = function(env, name) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/dbs/delete",
 			"params": {"env": env, 'name': name}
@@ -666,7 +666,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/dbs/add",
 							"params": {"env": env},
@@ -748,7 +748,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/dbs/update",
 							"params": {"env": env},
@@ -782,7 +782,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.updateDbPrefix = function(env, prefix) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/dbs/updatePrefix",
 			"params": {"env": env},
@@ -804,7 +804,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listClusters = function(env) {
 		if(access.clusters.list){
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/clusters/list",
 				"params": {"env": env}
@@ -859,7 +859,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							}
 						};
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/clusters/add",
 							"params": {"env": env, "name": formData.name},
@@ -934,7 +934,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								'extraParam': (formData.extraParam) ? JSON.parse(formData.extraParam) : {}
 							}
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/clusters/update",
 							"params": {"env": env, "name": name},
@@ -967,7 +967,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.removeCluster = function(env, name) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/clusters/delete",
 			"params": {"env": env, 'name': name}

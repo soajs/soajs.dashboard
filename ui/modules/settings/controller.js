@@ -11,7 +11,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.availableEnv = [];
 
 	$scope.getTenant = function(first) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/get"
 		}, function(error, response) {
@@ -32,7 +32,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.clearOauth = function(){
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/oauth/delete",
 			"params": { }
@@ -52,7 +52,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			'name': $scope.tenant.name,
 			'description': $scope.tenant.description
 		};
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/update",
 			"data": postData,
@@ -66,7 +66,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					var oAuthData = {
 						'secret': $scope.tenant.oauth.secret
 					};
-					getSendDataFromServer(ngDataApi, {
+					getSendDataFromServer($scope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/settings/tenant/oauth/update",
 						"data": oAuthData,
@@ -98,7 +98,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.removeAppKey = function(app, key, event) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/delete",
 			"params": {"id": id, "appId": app.appId, "key": key}
@@ -143,7 +143,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							}
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
@@ -201,7 +201,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							'password': formData.user_password
 						};
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/add",
 							"data": postData
@@ -234,7 +234,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.listOauthUsers = function() {
 		if($scope.access.tenant.oauth.users.list){
-			getSendDataFromServer(ngDataApi, {
+			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/settings/tenant/oauth/users/list",
 				"params": { }
@@ -250,7 +250,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.removeTenantOauthUser = function(user) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/oauth/users/delete",
 			"params": { 'uId': user['_id']}
@@ -284,7 +284,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							'userId': formData.userId,
 							'password': formData.password
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
@@ -318,7 +318,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.addNewKey = function( appId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/add",
 			"params": {"appId": appId}
@@ -340,7 +340,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			'config': configObj
 		};
 
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/config/update",
 			"data": postData,
@@ -400,7 +400,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							'config': configObj
 						};
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/config/update",
 							"data": postData,
@@ -479,7 +479,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/add",
 							"data": postData,
@@ -572,7 +572,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							postData.expDate = new Date(formData.expDate).toISOString();
 						}
 
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/update",
 							"data": postData,
@@ -605,7 +605,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.removeExtKey = function( appId, data, key) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey},
@@ -624,7 +624,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.listExtKeys = function( appId, key) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/list",
 			"params": { "appId": appId, "key": key}
@@ -656,7 +656,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.listKeys = function(appId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/list",
 			"params": { "appId": appId}
@@ -682,7 +682,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.reloadConfiguration = function(appId, key) {
 		$scope.currentApplicationKey = key;
 
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/config/list",
 			"params": { "appId": appId, "key": key}

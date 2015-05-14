@@ -14,7 +14,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.listProducts = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/list"
 		}, function(error, response) {
@@ -46,7 +46,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.removeProduct = function(row) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/delete",
 			"params": {"id": row._id}
@@ -79,7 +79,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'name': formData.name,
 							'description': formData.description
 						};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/add",
 							"data": postData
@@ -138,7 +138,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						'name': formData.name,
 						'description': formData.description
 					};
-					getSendDataFromServer(ngDataApi, {
+					getSendDataFromServer($scope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/product/update",
 						"data": postData,
@@ -170,7 +170,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	$scope.reloadPackages = function(productId) {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/list",
 			"params": {"id": productId}
@@ -216,7 +216,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						};
 
 						postData.acl = {};
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/add",
 							"data": postData,
@@ -278,7 +278,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
 						};
 						postData.acl = data.acl;
-						getSendDataFromServer(ngDataApi, {
+						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/product/packages/update",
 							"data": postData,
@@ -313,7 +313,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 	$scope.removeProductPackage = function(productId, packageCode) {
 		packageCode = packageCode.split("_")[1];
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/delete",
 			"params": {"id": productId, "code": packageCode}
@@ -353,7 +353,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	};
 
 	$scope.getPackageAcl = function() {
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/get",
 			"params": { "id": $routeParams.pid }
@@ -431,7 +431,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$timeout', '$modal', '$route
 	//default operation
 	$scope.getAllServicesList = function() {
 		var serviceNames = [];
-		getSendDataFromServer(ngDataApi, {
+		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/services/list",
 			"data": { "serviceNames":serviceNames }
