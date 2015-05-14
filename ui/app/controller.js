@@ -356,6 +356,13 @@ soajsApp.directive('footer', function() {
 	};
 });
 
+soajsApp.directive('overlay', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'themes/' + themeToUse + '/directives/overlay.tmpl'
+	};
+});
+
 soajsApp.directive('ngConfirmClick', [
 	function() {
 		return {
@@ -389,3 +396,19 @@ function findAndcestorProperties(tracker, ancestorName, params) {
 		}
 	}
 }
+
+var overlay = {
+	show: function(){
+		var overlayHeight = jQuery(document).height();
+		jQuery("#overlay").css('height',overlayHeight+'px').show(200);
+		jQuery("#overlay .bg").css('height',overlayHeight+'px').show(200);
+		jQuery("#overlay .content").css('top','10%');
+	},
+	hide: function(cb){
+		jQuery("#overlay .content").remove();
+		jQuery("#overlay").fadeOut(200);
+		if(cb && typeof(cb) === 'function'){
+			cb();
+		}
+	}
+};

@@ -1,6 +1,7 @@
 "use strict";
+
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', function($scope, $timeout, $modal, $http, $routeParams, ngDataApi) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', function($scope, $compile, $timeout, $modal, $http, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -61,6 +62,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							break;
 						}
 					}
+					$scope.waitMessage.message ='';
+					$scope.waitMessage.type ='';
 					$scope.formEnvironment.services.config.session.unset = ($scope.formEnvironment.services.config.session.unset === 'keep') ? false : true;
 				}
 				else {
@@ -118,7 +121,82 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	$scope.listHosts = function(env) {
+	$scope.UpdateTenantSecurity = function(){
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/key/update",
+			"params": {"id": $scope.envId},
+			"data": {
+				'algorithm': $scope.formEnvironment.services.config.key.algorithm,
+				'password': $scope.formEnvironment.services.config.key.password
+			}
+		}, function(error, response) {
+			if(error) {
+				$scope.waitMessage.type='danger';
+				$scope.waitMessage.message = error.message;
+			}
+			else {
+				var text = "<p>The Tenant Security Configuration has been updated.<br />Please copy the below key value marked in red <span class='red'>"+response.newKey+"</span> and place it the <b>config.js</b> file of this application where it says <b>apiConfiguration.key</b>.<br />Once you have updated and saved the <b>config.js</b>, Click on the button below and your dashboard will open up.</p><p>Once the page opens up, navigate to <b>Multi-Tenancy</b> and generate new external keys for all your tenants appplications.</p><br/><input type='button' onclick='overlay.hide(function(){location.reload();});' value='Reload Dashboard' class='btn btn-success'/><br /><br />";
+
+				jQuery('#overlay').html("<div class='bg'></div><div class='content'>"+text+"</div>");
+				overlay.show();
+			}
+		});
+	};
+
+	//$scope.reloadProvisioningSilently = function (env) {
+	//	getSendDataFromServer($scope, ngDataApi, {
+	//		"method": "get",
+	//		"routeName": "/dashboard/hosts/list",
+	//		"params": {
+	//			"env": env
+	//		}
+	//	}, function(error, response) {
+	//		if(error || !response) {
+	//			console.log(error.message);
+	//		}
+	//		else {
+	//			response.forEach(function(oneHost){
+	//				if(oneHost.name === 'dashboard'){
+	//					getSendDataFromServer($scope, ngDataApi, {
+	//						"method": "send",
+	//						"routeName": "/dashboard/hosts/maintenanceOperation",
+	//						"data": {
+	//							"serviceName":oneHost.name ,
+	//							"operation": "loadProvision",
+	//							"serviceHost": oneHost.ip,
+	//							"servicePort": oneHost.port,
+	//							"env": env
+	//						}
+	//					}, function(error, response) {
+	//						if(error || !response){
+	//							console.log(error.message);
+	//						}
+	//					});
+	//				}
+	//				if(oneHost.name === 'controller'){
+	//					getSendDataFromServer($scope, ngDataApi, {
+	//						"method": "send",
+	//						"routeName": "/dashboard/hosts/maintenanceOperation",
+	//						"data": {
+	//							"serviceName": 'controller',
+	//							"operation": "loadProvision",
+	//							"serviceHost": oneHost.ip,
+	//							"servicePort": 4000,
+	//							"env": env
+	//						}
+	//					}, function(error, response) {
+	//						if(error || !response){
+	//							console.log(error.message);
+	//						}
+	//					});
+	//				}
+	//			});
+	//		}
+	//	});
+	//};
+
+	$scope.listHosts = function(env, noPopulate) {
 		var controllers = [];
 		if($scope.access.listHosts){
 			getSendDataFromServer($scope, ngDataApi, {

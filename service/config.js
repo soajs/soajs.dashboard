@@ -119,6 +119,7 @@ module.exports = {
 		"403": "Environment already exists",
 		"404": "Unable to remove environment record",
 		"405": "Invalid environment id provided",
+		"406": "Unable to update tenant key security information",
 
 		"409": "Invalid product id provided",
 		"410": "Unable to add the product record",
@@ -461,6 +462,27 @@ module.exports = {
 				"group": "Environment"
 			},
 			"commonFields": ['id', 'description', 'services']
+		},
+		"/environment/key/update":{
+			_apiInfo: {
+				"l": "Update Environment Tenant Key Security",
+				"group": "Environment"
+			},
+			"commonFields": ['id'],
+			"algorithm":{
+				"source": ['body.algorithm'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"password":{
+				"source": ['body.password'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 
 		"/environment/dbs/list": {

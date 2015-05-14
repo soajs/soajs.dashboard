@@ -1141,7 +1141,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
 		describe("product", function() {
 			before(function(done) {
-				mongo.remove('products', {}, function(error) {
+				mongo.remove('products', {'code': 'TPROD'}, function(error) {
 					assert.ifError(error);
 					done();
 				});
@@ -1270,9 +1270,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.find('products', {}, {}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 1);
-						delete records[0]._id;
-						assert.deepEqual(records[0], {
+						assert.equal(records.length, 2);
+						delete records[1]._id;
+						assert.deepEqual(records[1], {
 							"code": "TPROD",
 							"name": "test product updated",
 							"description": "this is a dummy updated description",
@@ -1321,7 +1321,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.find('products', {}, {}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 0);
+						assert.equal(records.length, 1);
 						done();
 					});
 				});
@@ -1331,7 +1331,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				it("success - will get empty list", function(done) {
 					executeMyRequest({}, 'product/list', 'get', function(body) {
 						assert.ok(body.data);
-						assert.equal(body.data.length, 0);
+						assert.equal(body.data.length, 1);
 
 						done();
 					});
@@ -1353,11 +1353,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				it("success - will list product", function(done) {
 					executeMyRequest({}, 'product/list', 'get', function(body) {
 						assert.ok(body.data);
-						assert.equal(body.data.length, 1);
+						assert.equal(body.data.length, 2);
 
-						productId = body.data[0]._id.toString();
-						delete body.data[0]._id;
-						assert.deepEqual(body.data[0], {
+						productId = body.data[1]._id.toString();
+						delete body.data[1]._id;
+						assert.deepEqual(body.data[1], {
 							"code": "TPROD",
 							"name": "test product",
 							"description": "this is a dummy description",
@@ -1690,8 +1690,8 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					mongo.find('products', {}, {}, function(error, records) {
 						assert.ifError(error);
 						assert.ok(records);
-						assert.equal(records.length, 1);
-						assert.equal(records[0].packages.length, 0);
+						assert.equal(records.length, 2);
+						assert.equal(records[1].packages.length, 0);
 						done();
 					});
 				});
@@ -3009,7 +3009,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						assert.ifError(error);
 						assert.ok(body);
 						console.log(JSON.stringify(body));
-						executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}}, 'tenant/application/acl/get', 'post', function(body) {
+						executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}, 'qs':{'uId': body.data._id.toString()}}, 'tenant/application/acl/get', 'post', function(body) {
 							console.log(JSON.stringify(body));
 							assert.equal(body.result, true);
 							assert.ok(body.data);

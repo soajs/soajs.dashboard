@@ -58,6 +58,10 @@ service.init(function() {
 		checkForMongo(req);
 		environment.list(config, mongo, req, res);
 	});
+	service.post("/environment/key/update", function(req, res) {
+		checkForMongo(req);
+		environment.keyUpdate(config, mongo, req, res);
+	});
 
 	service.get("/environment/dbs/list", function(req, res) {
 		checkForMongo(req);

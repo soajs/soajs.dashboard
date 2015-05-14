@@ -1,6 +1,7 @@
 'use strict';
 
 var colName = "environment";
+var tenantColName = "tenants";
 
 function validateId(mongo, req, cb) {
 	try {
@@ -112,6 +113,139 @@ module.exports = {
 				return res.jsonp(req.soajs.buildResponse(null, records));
 			}
 		});
+	},
+
+	"keyUpdate": function(config, mongo, req,res){
+		var provision = require("soajs/modules/soajs.provision");
+		provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
+		var position = [];
+		var newKey;
+
+		validateId(mongo, req, function(err) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
+
+			//get tenant record
+			mongo.findOne(tenantColName, {'_id': mongo.ObjectId(req.soajs.tenant.id) }, function(error, tenantRecord){
+				if(error || !tenantRecord){ return res.jsonp(req.soajs.buildResponse({"code": 438, "msg": config.errors[438]})); }
+
+				//generate new key
+				generateNewKey(provision, tenantRecord, function(error){
+					if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+
+					//update tenant
+					updateTenantRecord(tenantRecord, function(error){
+						if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+
+						//generate external key
+						generateNewExtKey(provision, tenantRecord, function(error){
+							if(error){ rollback(tenantRecord, error); }
+
+							//update tenant
+							updateTenantRecord(tenantRecord, function(error){
+								if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+
+								//update environment
+								updateEnvironment(function(error){
+									if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+
+									provision.loadProvision(function(loaded) {
+										return res.jsonp(req.soajs.buildResponse(null, {'newKey': newKey.extKeys[0].extKey}));
+									});
+								});
+							})
+						});
+					});
+				})
+			});
+		});
+
+		function rollback(tenantRecord, error){
+			for(var key=0; key< tenantRecord.applications[position[0]].keys.length; key++){
+				if(tenantRecord.applications[position[0]].keys[key].key === newKey.key){
+					tenantRecord.applications[position[0]].keys.splice(key,1);
+				}
+			}
+			updateTenantRecord(tenantRecord, function(error){
+				if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+				return res.jsonp(req.soajs.buildResponse({"code": 406, "msg": config.errors[406]}));
+			});
+		}
+
+		function updateTenantRecord(tenantRecord, cb){
+			mongo.save(tenantColName, tenantRecord, function(error){
+				if(error) { return cb({"code": 436, "msg": config.errors[436] }); }
+				return cb(null, true);
+			});
+		}
+
+		function generateNewKey(provision, tenantRecord, cb){
+			for(var app =0; app < tenantRecord.applications.length; app++){
+				if(tenantRecord.applications[app].appId.toString() === req.soajs.tenant.application.appId){
+					position.push(app);
+
+					//get old key configuration
+					for(var key =0; key < tenantRecord.applications[app].keys.length; key++){
+						if(tenantRecord.applications[app].keys[key].key === req.soajs.tenant.key.iKey){
+							position.push(key);
+							provision.generateInternalKey(function(error, internalKey) {
+								if(error) { return cb({"code": 436, "msg": config.errors[436]}); }
+
+								newKey = {
+									"key": internalKey,
+									"config": tenantRecord.applications[app].keys[key].config,
+									"extKeys": []
+								};
+
+								tenantRecord.applications[app].keys.push(newKey);
+								return cb(null, true);
+							});
+						}
+					}
+				}
+			}
+		}
+
+		function generateNewExtKey(provision, tenantRecord, cb){
+			var app = position[0];
+			var key = position[1];
+			var internalKey = newKey.key;
+
+			//get old ext key security and expDate
+			for(var extKey=0; extKey < tenantRecord.applications[app].keys[key].extKeys.length; extKey++){
+				if(tenantRecord.applications[app].keys[key].extKeys[extKey].extKey === req.soajs.tenant.key.eKey){
+
+					var newExtKey ={
+						device : tenantRecord.applications[app].keys[key].extKeys[extKey].device,
+						geo : tenantRecord.applications[app].keys[key].extKeys[extKey].geo,
+						expDate : tenantRecord.applications[app].keys[key].extKeys[extKey].expDate
+					};
+					provision.generateExtKey(internalKey, {
+						algorithm: req.soajs.inputmaskData.algorithm,
+						password: req.soajs.inputmaskData.password
+					}, function(error, extKeyValue) {
+						if(error) { return cb({"code": 440, "msg": config.errors[440]}); }
+
+						newExtKey.extKey = extKeyValue;
+						newKey.extKeys.push(newExtKey);
+						tenantRecord.applications[app].keys[key].extKeys.push(newExtKey);
+						return cb(null, true);
+					});
+				}
+			}
+		}
+
+		function updateEnvironment(cb){
+			var s = {
+				'$set': {
+					"services.config.key.algorithm": req.soajs.inputmaskData.algorithm,
+					"services.config.key.password": req.soajs.inputmaskData.password
+				}
+			};
+			mongo.update(colName, {"_id": req.soajs.inputmaskData.id}, s, {'upsert': false, 'safe': true}, function(err) {
+				if(err) { return cb({"code": 406, "msg": config.errors[406]}); }
+				return cb(null, true);
+			});
+		}
 	},
 
 	"listDbs": function(config, mongo, req, res) {
@@ -255,7 +389,6 @@ module.exports = {
 			return res.jsonp(req.soajs.buildResponse(null, "environment Database prefix update successful"));
 		});
 	},
-
 
 	"listClusters": function(config, mongo, req, res) {
 		mongo.findOne(colName, {'code': req.soajs.inputmaskData.env.toUpperCase()}, function(err, envRecord) {

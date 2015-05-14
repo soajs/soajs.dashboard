@@ -21,14 +21,12 @@
 								<textarea tooltip="Enter a description explaining the usage of this environment"
                                           placeholder="Development Environment, used by developers and does not reach production server..." ng-model="formEnvironment.description" class="form-control">
 								</textarea>
-                                <hr/>
                             </td>
                         </tr>
                         <tr class="form-group">
                             <td class="">
                                 <hr/>
                                 <h3>Service Config</h3>
-
                                 <div class="grouped">
                                     <tabset>
                                         <tab heading="Controller">
@@ -79,8 +77,8 @@
                                                 <br /><em>Specify if services should auto register or not.</em>
                                             </div>
                                         </tab>
-                                        <tab heading="Key">
-                                            <div class="grouped">
+                                        <tab ng-show="newEntry" heading="Key">
+                                            <div ng-init="newEntry" class="grouped">
                                                 <label><span class="icon icon-arrow-right2"></span> Algorithm </label>
                                                 <input ng-disabled="!newEntry" type="text" ng-required="true"
                                                        ng-model="formEnvironment.services.config.key.algorithm" class="form-control"/><br/>
@@ -259,6 +257,40 @@
             </div>
             <div class="footer"><br/>
                 <input type="submit" class="btn btn-sm btn-primary" value="{{(newEntry) ? 'Add' : 'Edit'}} Environment"/>
+            </div>
+            <div ng-show="!newEntry" ng-init="!newEntry">
+                <h4>Tenant Key Security:</h4>
+                <alert type="warning">
+                    <h5><u>Warning:</u></h5>
+                    Changing the tenant key security encryption configuration, disables the usage of all tenant keys.<br/>If you choose to proceed:
+                    <ol>
+                        <li>A new dashboard key will be generated for you and you have to replace the current key in config.js</li>
+                        <li>You need to go to <a href="#/multi-tenancy">Multi-Tenancy</a> and generate new keys for all your tenants</li>
+                    </ol>
+                </alert>
+                <em>Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on what options are supported is found at <a href="https://github.com/Gozala/crypto" target="_blank">Crypto</a>.</em><br/>
+
+                <div ng-show="(waitMessage && waitMessage.message !== '')">
+                    <br/>
+                    <alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+                </div>
+
+                <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                    <tr class="form-group">
+                        <td class="form-select">
+                            <label>Algorithm</label>
+                            <input type="text" ng-required="true" ng-model="formEnvironment.services.config.key.algorithm" class="form-control"/>
+                        </td>
+                    </tr>
+                    <tr class="form-group">
+                        <td class="form-select">
+                            <label>Password</label>
+                            <input type="text" ng-required="true" ng-model="formEnvironment.services.config.key.password" class="form-control"/>
+                        </td>
+                    </tr>
+                </table><br/>
+                <input type="button" ng-confirm-click="Are you sure you want to Change the security key configuration?" ng-click="UpdateTenantSecurity();" value="Update Tenant Security" class="btn btn-primary f-right"/><br/>
+                <hr/>
             </div>
         </form>
     </div>
