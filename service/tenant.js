@@ -6,6 +6,8 @@ var envColName = "environment";
 
 var Hasher = require("./hasher.js");
 var request = require("request");
+var async = require("async");
+var lodash = require("lodash");
 
 function validateId(mongo, req, cb) {
 	try {
@@ -538,35 +540,130 @@ module.exports = {
 	},
 
 	"getTenantApplAcl": function(config, mongo, req, res) {
+		var tenantId, currentAcl;
 		var myUrac = req.soajs.session.getUrac();
-		if(!myUrac){
-			return res.jsonp(req.soajs.buildResponse(null, req.soajs.session.getAcl()));
-		}
-		var currentAcl = getPackageACLFromTenantConfig(req, myUrac.tenant.id);
-		var criteria = {
-			'_id': mongo.ObjectId(myUrac.tenant.id)
-		};
-		mongo.findOne(colName, criteria, function(error, tenantRecord) {
-			if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]})); }
-			var tenant = {
-				"_id": tenantRecord["_id"],
-				"code": tenantRecord["code"],
-				"application": getApp(tenantRecord)
-			};
 
-			function getApp(tenantRecord) {
-				var app = {};
-				var found = false;
-				tenantRecord.applications.forEach(function(oneApplication) {
-					app["product"] = oneApplication["product"];
-					app["package"] = oneApplication["package"];
-					app["app_acl"] = currentAcl;
-					found = true;
-				});
-				return app;
+		if(!req.soajs.inputmaskData.uId || req.soajs.inputmaskData.uId === myUrac._id.toString()) {
+			if(!myUrac) {
+				return res.jsonp(req.soajs.buildResponse(null, req.soajs.session.getAcl()));
 			}
-			return res.jsonp(req.soajs.buildResponse(null, tenant));
-		});
+
+			currentAcl = getPackageACLFromTenantConfig(req, myUrac.tenant.id);
+			tenantId = myUrac.tenant.id;
+			run();
+		}
+		else {
+			myUrac = null;
+			currentAcl = null;
+
+			var adminUserRequest = {
+				'uri': 'http://' + config.uracdomain + '/urac/admin/getUser',
+				'json': true,
+				'headers': {
+					'Content-Type': 'application/json',
+					'accept': 'application/json',
+					'connection': 'keep-alive',
+					'key': req.headers.key,
+					'soajsauth': req.headers.soajsauth
+				},
+				'qs': {
+					'uId': req.soajs.inputmaskData.uId
+				}
+			};
+			request.get(adminUserRequest, function(error, response, body){
+				console.log(body);
+				if(error || !body || !body.result){
+					return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]}));
+				}
+
+				tenantId = body.data.tenant.id;
+				run();
+			});
+		}
+
+		function run(){
+			var servicesNames = [];
+			var criteria = {'_id': mongo.ObjectId(tenantId)};
+			mongo.findOne(colName, criteria, function(error, tenantRecord) {
+				if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 431, "msg": config.errors[431]})); }
+				var tenant = {
+					"_id": tenantRecord["_id"],
+					"code": tenantRecord["code"],
+					"applications": getApps(tenantRecord)
+				};
+
+				function getApps(tenantRecord) {
+					var app = [];
+					tenantRecord.applications.forEach(function(oneApplication) {
+						app.push({
+							'product': oneApplication.product,
+							'package': oneApplication.package,
+							'app_acl': oneApplication.acl || null
+						})
+					});
+					return app;
+				}
+
+				async.mapLimit(tenant.applications, tenant.applications.length, retrieveAcl, function(error, response) {
+					if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+					tenant.applications = response;
+
+					getServicesAndTheirAPIs(function(error, servicesList) {
+						if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+
+						tenant.services = servicesList;
+						return res.jsonp(req.soajs.buildResponse(null, tenant));
+					});
+				});
+
+				function retrieveAcl(oneApplication, callback) {
+					if(!oneApplication.app_acl) {
+						var criteria = {'code': oneApplication.product};
+						mongo.findOne(prodColName, criteria, function(error, productRecord) {
+							if(error || !productRecord) {
+								return callback({"code": 412, "msg": config.errors[412]});
+							}
+
+							for(var i = 0; i < productRecord.packages.length; i++) {
+								if(productRecord.packages[i].code === oneApplication.package) {
+									oneApplication.parentPackageAcl = productRecord.packages[i].acl;
+								}
+							}
+							mergeWithCustomAcl(oneApplication);
+						});
+					}
+					else {
+						mergeWithCustomAcl(oneApplication);
+					}
+
+					function mergeWithCustomAcl(oneApplication) {
+						var services = [];
+						if(oneApplication.app_acl) {
+							if(currentAcl) {
+								oneApplication.app_acl = lodash.assign(oneApplication.app_acl, currentAcl);
+							}
+							services = Object.keys(oneApplication.app_acl);
+						}
+						else {
+							if(currentAcl) {
+								oneApplication.parentPackageAcl = lodash.assign(oneApplication.parentPackageAcl, currentAcl);
+							}
+							services = Object.keys(oneApplication.parentPackageAcl);
+						}
+						servicesNames = lodash.union(servicesNames, services);
+						return callback(null, oneApplication);
+					}
+				}
+
+				function getServicesAndTheirAPIs(cb) {
+					var criteria = (servicesNames.length > 0) ? {'name': {$in: servicesNames}} : {};
+					mongo.find('services', criteria, function(err, records) {
+						if(err) { return cb({"code": 600, "msg": config.errors[600]}); }
+						return cb(null, records);
+					});
+				}
+			});
+		}
 	},
 
 	"createApplicationKey": function(config, mongo, req, res) {

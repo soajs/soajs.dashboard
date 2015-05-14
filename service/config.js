@@ -849,7 +849,8 @@ module.exports = {
 			_apiInfo: {
 				"l": "Get Tenant Application By External Key",
 				"group": "Tenant Application"
-			}
+			},
+			"commonFields": ['uId']
 		},
 
 		"/tenant/application/key/add": {
