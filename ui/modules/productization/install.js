@@ -12,7 +12,7 @@ var productizationNav =[
 		'icon': 'list',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
+		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
 		'ancestor': ['Home']
 	},
 	{
@@ -21,7 +21,7 @@ var productizationNav =[
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,
-		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js'],
+		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
 		'ancestor': ['Home', 'Productization']
 	}
 ];
