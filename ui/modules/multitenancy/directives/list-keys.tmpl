@@ -1,0 +1,78 @@
+<em>{{application['description']}}</em>
+<div ng-if="access.tenant.appKeys.list">
+    <div style="clear:both; height:30px; padding-bottom:5px;"><b>Tenant Application Keys:</b>
+        <a ng-if="access.tenant.appKeys.add" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey(row['_id'],application['appId'])" tooltip="Add New Application Key">Add key</a>
+    </div>
+    <div class="keysAccordion">
+        <accordion close-others="true" ng-show="application.keys.length > 0">
+            <accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
+                <accordion-heading tooltip="Display Key Information"><span class="icon icon-key"></span>{{key.key}}
+                    <a ng-if="access.tenant.appKeys.delete" href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
+                        <span class="icon icon-cross" tooltip="Remove Key"></span>
+                    </a>
+                </accordion-heading>
+
+                <tabset>
+                    <tab heading="Key Environment Configuration" ng-if="access.tenant.appKeys.listConfig">
+                        <br/>
+                        <div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
+                            <br/>
+                            <div ng-repeat="enCode in availableEnv">
+                                <div class="entryBox greyBox" ng-class="{ blueBox: key.config[enCode] }">
+                                    <b>{{enCode}} Environment</b>&nbsp;&nbsp;
+                                    <a ng-if="access.tenant.appKeys.updateConfig" href="" ng-click="updateConfiguration(row['_id'], application['appId'], key.key, enCode, key.config[enCode]);">
+                                        <span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
+                                    </a>
+                                    <a ng-if="access.tenant.appKeys.updateConfig" ng-show="key.config[enCode]" href="" ng-click="emptyConfiguration(row['_id'], application['appId'], key.key, enCode );">
+                                        <span class="icon icon-bin" tooltip="Empty Service Configuration"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <br/>
+                        </div>
+                    </tab>
+                    <tab heading="External Keys" ng-if="access.tenant.externalKeys.list">
+                        <span ng-if="access.tenant.externalKeys.add"><br/>
+                            <button ng-click="addNewExtKey(row['_id'], application['appId'], key.key)" class="btn btn-primary btn-sm">Add New Application External Key</button>
+                        </span>
+                        <br/>
+                        <div class="small-text" id="externalKeys{{$index}}">
+                            <ul style="display:none;">
+                                <li ng-repeat="extnlKey in key.extKeys">
+                                    <span style="word-break: break-all;">{{extnlKey.extKey|trimmed100}}</span>
+                                </li>
+                            </ul>
+                            <nglist></nglist>
+                            <div class="grid externalKeysGrid" ng-show="key.extKeys.length>0">
+                                <table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+                                    <tbody>
+                                        <tr>
+                                            <th colspan="2"></th>
+                                            <th> External Key</th>
+                                            <th> Expiry Date</th>
+                                        </tr>
+                                        <tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
+
+                                            <td class="leftAction">
+                                                <a ng-if="access.tenant.externalKeys.update" ng-click="editExtKey(row['_id'], application['appId'], extnlKey, key.key)" href="">
+                                                    <span class="icon icon-pencil2" tooltip="Edit External Key"></span>
+                                                </a>
+                                            </td>
+                                            <td class="leftAction">
+                                                <a ng-if="access.tenant.externalKeys.delete" ng-click="removeExtKey(row['_id'], application['appId'], extnlKey, key.key)" ng-confirm-click="Are you sure you want to remove this external key?" href="">
+                                                    <span class="icon icon-cross" tooltip="Remove External Key"></span>
+                                                </a>
+                                            </td>
+                                            <td> {{extnlKey.extKey}}</td>
+                                            <td> {{extnlKey.expDate|date}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </tab>
+                </tabset>
+            </accordion-group>
+        </accordion>
+    </div>
+</div>

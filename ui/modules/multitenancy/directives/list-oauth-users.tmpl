@@ -1,0 +1,34 @@
+<br/>
+<a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addOauthUser(row['_id'])">Add oAuth User</a>
+<div class="grid" id="oUsers{{$index}}">
+    <label ng-show="row.oAuthUsers.length > 0">Tenant oAuth Users:</label>
+    <div class="grid oAuthUsers">
+        <table ng-if="row.oAuthUsers.length > 0" cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+            <tbody>
+                <tr>
+                    <th colspan="2"></th>
+                    <th>User Id</th>
+                    <th>Authorization</th>
+                </tr>
+                <tr ng-repeat="user in row.oAuthUsers" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
+                    <td class="leftAction">
+                        <a ng-if="access.tenant.oauth.users.update" href="" ng-click="editTenantOauthUser(row['_id'], user)">
+                            <span class="icon icon-pencil2" tooltip="Edit oAuth User"> </span>
+                        </a>
+                    </td>
+                    <td class="leftAction">
+                        <a ng-if="access.tenant.oauth.users.delete" href="" ng-confirm-click="Are you sure you want to remove this user ?" ng-click="removeTenantOauthUser(row['_id'], user);">
+                            <span class="icon icon-cross" tooltip="Remove oAuth User"> </span>
+                        </a>
+                    </td>
+                    <td>
+                        {{user['userId']}}
+                    </td>
+                    <td>
+                        {{row.oauth.authorization}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

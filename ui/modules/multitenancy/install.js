@@ -12,7 +12,7 @@ var multitenancyNav =[
 		'icon': 'tree',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
+		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js','modules/multitenancy/services/multitenancy.js'],
 		'ancestor': ['Home']
 	},
 	{
@@ -21,7 +21,7 @@ var multitenancyNav =[
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,
-		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
+		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js','modules/multitenancy/services/multitenancy.js'],
 		'ancestor': ['Home', 'Multi-Tenancy']
 	}
 ];
