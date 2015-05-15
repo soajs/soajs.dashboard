@@ -2982,7 +2982,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						productRecord.packages.push(ex3pckg);
 						mongo.save('products', productRecord, function(error) {
 							assert.ifError(error);
-							executeMyRequest({}, 'tenant/application/acl/get/', 'post', function(body) {
+							executeMyRequest({'qs': '551286bce603d7e01ab1688e' }, 'tenant/acl/get/', 'post', function(body) {
 								console.log(JSON.stringify(body));
 								assert.ok(!body.data);
 								done();
@@ -3009,7 +3009,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						assert.ifError(error);
 						assert.ok(body);
 						console.log(JSON.stringify(body));
-						executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}, 'qs':{'uId': body.data._id.toString()}}, 'tenant/application/acl/get', 'post', function(body) {
+						executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}, 'qs':{'id': '551286bce603d7e01ab1688e'}}, 'tenant/acl/get', 'post', function(body) {
 							console.log(JSON.stringify(body));
 							assert.equal(body.result, true);
 							assert.ok(body.data);

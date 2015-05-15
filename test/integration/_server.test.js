@@ -26,8 +26,8 @@ describe("importing sample data", function () {
             urac = require("soajs.urac");
             dashboard = helper.requireModule('./service/index');
             setTimeout(function () {
-                require("./soajs.dashboard.test.js");
                 require("./soajs.dashboard.locked.test.js");
+                require("./soajs.dashboard.test.js");
                 done();
             }, 1000);
         }, 1000);

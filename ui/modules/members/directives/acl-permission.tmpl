@@ -1,0 +1,44 @@
+<div class="body listApis" ng-class="{'openApis': openApi(application, service.name) }">
+    <div>
+        <span>
+            <input ng-disabled="service.forceRestricted" ng-click="applyRestriction(application.aclFill, service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="application.aclFill[service.name].apisRestrictPermission" ng-checked="application.aclFill[service.name].apisRestrictPermission===true" value="restricted"/>
+        </span>
+        <span><b>Restrict Access to Selected Apis</b></span>
+        <fieldset ng-repeat="(grp, val) in service.fixList">
+            <legend>{{grp}}</legend>
+            <div class="clearfix apiListing-container">
+                <div class="apiListing clearfix" ng-repeat="myApi in val.apis| orderBy:'groupMain' " ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:api.selected}">
+                    <div class="apiLabel">
+                        <input ng-click="checkForGroupDefault(application.aclFill,service,grp,val,myApi)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (application.aclFill[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="application.aclFill[service.name].apis[myApi.v].include" ng-show="application.aclFill[service.name].apisRestrictPermission"/> {{myApi.l}}
+                    </div>
+                    <div class="apiAccess" ng-hide="(application.aclFill[service.name].apisRestrictPermission && (application.aclFill[service.name].apis[myApi.v].include!==true))">
+                        <div style="float:left">
+                            <span style="padding-right: 15px;">
+                                <input ng-model="application.aclFill[service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{application.package}}_{{service.name}}_{{grp}}_{{$index}}_accessType"/>
+                                <em>inherit from service</em>
+                            </span>
+                            <span>
+                                <input ng-model="application.aclFill[service.name].apis[myApi.v].accessType" value="public" type="radio" /> public
+                            </span>
+                            <span>
+                                <input ng-model="application.aclFill[service.name].apis[myApi.v].accessType" value="private" type="radio" /> private
+                            </span>
+                            <span>
+                                <input ng-model="application.aclFill[service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/> Groups
+                            </span>
+                        </div>
+                        <div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[service.name].apis[myApi.v].accessType==='groups'">
+                            <ul class="grpsListing">
+                                <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
+                                    <input ng-model="application.aclFill[service.name].apis[myApi.v].grpCodes[code]" type="checkbox"/>
+                                    <span>{{code}} </span>
+                                </li>
+                            </ul>
+                            <span ng-repeat="code in allGroups"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

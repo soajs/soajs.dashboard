@@ -12,7 +12,7 @@ var membersNav= [
 		'icon': 'users',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js'],
+		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/members.js', 'modules/members/services/groups.js'],
 		'ancestor': ['Home']
 	},
 	{
@@ -21,7 +21,7 @@ var membersNav= [
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js' ],
+		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/acl.js'],
 		'ancestor': ['Home', 'Members']
 	}
 ];

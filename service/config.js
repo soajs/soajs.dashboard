@@ -867,12 +867,12 @@ module.exports = {
 			},
 			"commonFields": ['id', 'appId', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 		},
-		"/tenant/application/acl/get": {
+		"/tenant/acl/get": {
 			_apiInfo: {
 				"l": "Get Tenant Application By External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['uId']
+			"commonFields": ['id']
 		},
 
 		"/tenant/application/key/add": {

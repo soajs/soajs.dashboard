@@ -29,7 +29,7 @@ function checkForMongo(req) {
 
 function checkMyAccess(req, res, cb) {
 	if(!req.soajs.session || !req.soajs.session.getUrac()) {
-		res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 	}
 	var myTenant = req.soajs.session.getUrac().tenant;
 	if(!myTenant || !myTenant.id) {
@@ -217,9 +217,9 @@ service.init(function() {
 		tenant.deleteApplication(config, mongo, req, res);
 	});
 
-	service.post("/tenant/application/acl/get", function(req, res) {
+	service.post("/tenant/acl/get", function(req, res) {
 		checkForMongo(req);
-		tenant.getTenantApplAcl(config, mongo, req, res);
+		tenant.getTenantAcl(config, mongo, req, res);
 	});
 	service.post("/tenant/application/key/add", function(req, res) {
 		checkForMongo(req);
