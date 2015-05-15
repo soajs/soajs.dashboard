@@ -16,3 +16,4 @@ var settingsNav =[
 		'ancestor': ['Home']
 	}
 ];
+navigation = navigation.concat(settingsNav);

@@ -25,3 +25,4 @@ var environmentsNav= [
 		'ancestor': ['Home']
 	}
 ];
+navigation = navigation.concat(environmentsNav);

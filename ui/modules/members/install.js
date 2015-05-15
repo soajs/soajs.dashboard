@@ -25,3 +25,4 @@ var membersNav= [
 		'ancestor': ['Home', 'Members']
 	}
 ];
+navigation = navigation.concat(membersNav);

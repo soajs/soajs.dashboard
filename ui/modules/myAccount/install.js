@@ -67,3 +67,4 @@ var myAccountNav = [
 		'private': true
 	}
 ];
+navigation = navigation.concat(myAccountNav);

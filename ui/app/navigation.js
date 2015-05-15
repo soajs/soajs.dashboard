@@ -37,5 +37,3 @@ var navigation = [
 		'footerMenu': true
 	}
 ];
-
-var modules = ['members', 'settings','environments', 'services', 'productization', 'multitenancy', 'myAccount'];

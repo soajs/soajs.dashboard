@@ -16,3 +16,4 @@ var servicesNav =[
 		'ancestor': ['Home']
 	}
 ];
+navigation = navigation.concat(servicesNav);

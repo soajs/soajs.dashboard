@@ -25,3 +25,4 @@ var productizationNav =[
 		'ancestor': ['Home', 'Productization']
 	}
 ];
+navigation = navigation.concat(productizationNav);

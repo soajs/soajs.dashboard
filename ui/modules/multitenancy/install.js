@@ -25,3 +25,4 @@ var multitenancyNav =[
 		'ancestor': ['Home', 'Multi-Tenancy']
 	}
 ];
+navigation = navigation.concat(multitenancyNav);
