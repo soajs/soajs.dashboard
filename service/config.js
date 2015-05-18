@@ -488,14 +488,14 @@ module.exports = {
 		"/environment/dbs/list": {
 			_apiInfo: {
 				"l": "List Environment Databases",
-				"group": "Environment"
+				"group": "Environment Databases"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 		},
 		"/environment/dbs/add": {
 			_apiInfo: {
 				"l": "Add Environment Database",
-				"group": "Environment"
+				"group": "Environment Databases"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
@@ -520,7 +520,7 @@ module.exports = {
 		"/environment/dbs/update": {
 			_apiInfo: {
 				"l": "Update Environment Database",
-				"group": "Environment"
+				"group": "Environment Databases"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
@@ -545,7 +545,7 @@ module.exports = {
 		"/environment/dbs/delete": {
 			_apiInfo: {
 				"l": "Delete Environment Database",
-				"group": "Environment"
+				"group": "Environment Databases"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
@@ -553,7 +553,7 @@ module.exports = {
 		"/environment/dbs/updatePrefix": {
 			_apiInfo: {
 				"l": "Update Environment Databases Prefix",
-				"group": "Environment"
+				"group": "Environment Databases"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 			"prefix": {"source": ['body.prefix'], "required": false, "validation": {"type": "string", "required": false}}
@@ -562,14 +562,14 @@ module.exports = {
 		"/environment/clusters/list": {
 			_apiInfo: {
 				"l": "List Environment Database Clusters",
-				"group": "Environment"
+				"group": "Environment Clusters"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 		},
 		"/environment/clusters/add": {
 			_apiInfo: {
 				"l": "Add Environment Database Cluster",
-				"group": "Environment"
+				"group": "Environment Clusters"
 			},
 			"commonFields": ['cluster'],
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
@@ -578,7 +578,7 @@ module.exports = {
 		"/environment/clusters/update": {
 			_apiInfo: {
 				"l": "Update Environment Database Cluster",
-				"group": "Environment"
+				"group": "Environment Clusters"
 			},
 			"commonFields": ['cluster'],
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
@@ -587,7 +587,7 @@ module.exports = {
 		"/environment/clusters/delete": {
 			_apiInfo: {
 				"l": "Delete Environment Database Cluster",
-				"group": "Environment"
+				"group": "Environment Clusters"
 			},
 			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
@@ -869,8 +869,8 @@ module.exports = {
 		},
 		"/tenant/acl/get": {
 			_apiInfo: {
-				"l": "Get Tenant Application By External Key",
-				"group": "Tenant Application"
+				"l": "Get Current Tenant Access Level",
+				"group": "Tenant"
 			},
 			"commonFields": ['id']
 		},
@@ -944,13 +944,13 @@ module.exports = {
 		"/settings/tenant/get": {
 			_apiInfo: {
 				"l": "Get Tenant",
-				"group": "Tenant"
+				"group": "Tenant Settings"
 			}
 		},
 		"/settings/tenant/update": {
 			_apiInfo: {
 				"l": "Update Tenant",
-				"group": "Tenant"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['name', 'description']
 		},
@@ -958,26 +958,26 @@ module.exports = {
 		"/settings/tenant/oauth/list": {
 			_apiInfo: {
 				"l": "Get Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			}
 		},
 		"/settings/tenant/oauth/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			}
 		},
 		"/settings/tenant/oauth/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['secret', 'redirectURI']
 		},
 		"/settings/tenant/oauth/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['secret', 'redirectURI']
 		},
@@ -985,27 +985,27 @@ module.exports = {
 		"/settings/tenant/oauth/users/list": {
 			_apiInfo: {
 				"l": "List Tenant oAuth Users",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			}
 		},
 		"/settings/tenant/oauth/users/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant oAuth User",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['uId']
 		},
 		"/settings/tenant/oauth/users/add": {
 			_apiInfo: {
 				"l": "Add Tenant oAuth User",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['userId', 'password']
 		},
 		"/settings/tenant/oauth/users/update": {
 			_apiInfo: {
 				"l": "Update Tenant oAuth User",
-				"group": "Tenant oAuth"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['uId'],
 			"userId": {
@@ -1027,28 +1027,28 @@ module.exports = {
 		"/settings/tenant/application/list": {
 			_apiInfo: {
 				"l": "List Tenant Applications",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			}
 		},
 
 		"/settings/tenant/application/key/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application Key",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId']
 		},
 		"/settings/tenant/application/key/list": {
 			_apiInfo: {
 				"l": "List Tenant Application Keys",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId']
 		},
 		"/settings/tenant/application/key/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application Key",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key']
 		},
@@ -1056,28 +1056,28 @@ module.exports = {
 		"/settings/tenant/application/key/ext/list": {
 			_apiInfo: {
 				"l": "List Tenant Application External Keys",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key']
 		},
 		"/settings/tenant/application/key/ext/add": {
 			_apiInfo: {
 				"l": "Add Tenant Application External Key",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key', 'expDate', 'device', 'geo']
 		},
 		"/settings/tenant/application/key/ext/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application External Key",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo']
 		},
 		"/settings/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key', 'extKey']
 		},
@@ -1085,14 +1085,14 @@ module.exports = {
 		"/settings/tenant/application/key/config/list": {
 			_apiInfo: {
 				"l": "List Tenant Application Key Configuration",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key']
 		},
 		"/settings/tenant/application/key/config/update": {
 			_apiInfo: {
 				"l": "Update Tenant Application Key Configuration",
-				"group": "Tenant Application"
+				"group": "Tenant Settings"
 			},
 			"commonFields": ['appId', 'key', 'envCode', 'config']
 		},

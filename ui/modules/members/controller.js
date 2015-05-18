@@ -353,7 +353,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		$scope.tenantApp.applications.forEach(function(oneApplication){
 			if(postData.config.packages[oneApplication.package]){
-				postData.config.packages[oneApplication.package]={};
+				delete postData.config.packages[oneApplication.package];
 			}
 		});
 

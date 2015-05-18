@@ -1,9 +1,8 @@
 <div class="body listApis" ng-class="{'openApis': openApi(application, service.name) }">
     <div>
-        <span>
-            <input ng-disabled="service.forceRestricted" ng-click="applyRestriction(application.aclFill, service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="application.aclFill[service.name].apisRestrictPermission" ng-checked="application.aclFill[service.name].apisRestrictPermission===true" value="restricted"/>
+        <span ng-hide="service.forceRestricted">
+            <input ng-click="applyRestriction(application.aclFill, service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="application.aclFill[service.name].apisRestrictPermission" ng-checked="application.aclFill[service.name].apisRestrictPermission===true" value="restricted"/>&nbsp;<b>Restrict Access to Selected Apis</b>
         </span>
-        <span><b>Restrict Access to Selected Apis</b></span>
         <fieldset ng-repeat="(grp, val) in service.fixList">
             <legend>{{grp}}</legend>
             <div class="clearfix apiListing-container">

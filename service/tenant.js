@@ -815,10 +815,25 @@ module.exports = {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 		}
-		var ACL;
 		var myURAC = req.soajs.session.getUrac();
+
+		//get owner or client package
 		var packageName = getPackageACLFromTenantConfig(req, myURAC.tenant.id);
+		var ACL;
+
 		if(packageName) {
+			//check if current user has this package in his urac
+			if(req.soajs.session.session.sessions[myURAC.tenant.id] && req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName]){
+				ACL = req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName].acl;
+				if(ACL){
+
+					//update the acl of the user session to use the injected package acl
+					req.soajs.session.setURACPACKAGEACL(ACL);
+					return res.jsonp(req.soajs.buildResponse(null, ACL));
+				}
+			}
+
+			//if not, then get package acl from products collection
 			mongo.findOne("products",{'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord){
 				if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
@@ -827,12 +842,15 @@ module.exports = {
 						ACL = onePackage.acl;
 					}
 				});
+
+				//update the acl of the user session to use the injected package acl
 				req.soajs.session.setURACPACKAGEACL(ACL);
 				return res.jsonp(req.soajs.buildResponse(null, ACL));
 			});
 		}
 		else {
 			ACL = req.soajs.session.getAcl() || {};
+			req.soajs.session.setURACPACKAGEACL(ACL);
 			return res.jsonp(req.soajs.buildResponse(null, ACL));
 		}
 	}
