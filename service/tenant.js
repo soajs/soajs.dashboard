@@ -823,6 +823,7 @@ module.exports = {
 
 		if(packageName) {
 			//check if current user has this package in his urac
+			//todo: the below are two lines need to be fixed, they work for now but this is not how they should be done.
 			if(req.soajs.session.session.sessions[myURAC.tenant.id] && req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName]){
 				ACL = req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName].acl;
 				if(ACL){
