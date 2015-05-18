@@ -9,7 +9,7 @@ var servicesNav =[
 		},
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',
-		'icon': 'tree',
+		'icon': 'cloud',
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/services/config.js', 'modules/services/controller.js'],
