@@ -619,7 +619,7 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"format": "alphanumeric",
-					"maxLength": 5
+					"maxLength": 6
 				}
 			}
 		},
@@ -695,7 +695,7 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"format": "alphanumeric",
-					"maxLength": 5
+					"maxLength": 6
 				}
 			}
 		},
@@ -711,7 +711,7 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"format": "alphanumeric",
-					"maxLength": 5
+					"maxLength": 6
 				}
 			}
 		},

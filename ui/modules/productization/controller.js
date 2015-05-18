@@ -368,11 +368,12 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 				for (var x = 0; x<response.packages.length; x++){
 					if(response.packages[x].code === code){
 						$scope.currentPackage = angular.copy(response.packages[x]);
-						$scope.currentPackage._TTL = ($scope.currentPackage._TTL / 3600000).toString();
+						$scope.currentPackage._TTL = (response.packages[x]._TTL / 3600000).toString();
 						break;
 					}
 				}
 
+				console.log($scope.currentPackage);
 				$scope.aclFill= angular.copy($scope.currentPackage.acl);
 				aclHelpers.fillAcl($scope.aclFill);
 			}
@@ -413,7 +414,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"method": "send",
 			"routeName": "/dashboard/product/packages/update",
 			"data": postData,
-			"params": {"id": productId, "code": postData.code.split("_")[1]}
+			"params": {"id": productId, "code": postData.code.split("_")[1], '_TTL': postData._TTL }
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);

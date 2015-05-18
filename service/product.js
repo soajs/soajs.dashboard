@@ -10,13 +10,21 @@ function validateId(mongo, req, cb) {
 }
 
 function checkCanEdit(mongo, req, cb) {
-	var criteria1 = { '_id': req.soajs.inputmaskData.id, 'locked': true };
-	mongo.findOne(colName, criteria1, function(error, record) {
-		if(error) { cb(600); }
-		// return error msg that this record is locked
-		if(record) { return cb(501); }
+	var myProduct;
+	var myUrac = req.soajs.session.getUrac();
+	if(myUrac && myUrac.tenant.id === req.soajs.tenant.id){
+		myProduct = req.soajs.tenant.application.product;
+	}
 
-		return cb(null, {});
+	var criteria1 = { '_id': req.soajs.inputmaskData.id};
+	mongo.findOne(colName, criteria1, function(error, record) {
+		if(error) { return cb(600); }
+		//if i am the owner of the product
+		if(record && myProduct && record.code === myProduct){ return cb(null, {}); }
+		// return error msg that this record is locked
+		else if(record && record.locked){ return cb(501); }
+		//i am not the owner and the product is not locked
+		else{ return cb(null,{}); }
 	});
 }
 
@@ -27,7 +35,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = { '_id': req.soajs.inputmaskData.id, 'locked': {$ne: true} };
+				var criteria = { '_id': req.soajs.inputmaskData.id};
 				mongo.remove(colName, criteria, function(error) {
 					if(error) { return res.jsonp(req.soajs.buildResponse({"code": 414, "msg": config.errors[414]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "product delete successful"));
@@ -76,7 +84,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = { '_id': req.soajs.inputmaskData.id, 'locked': {$ne: true} };
+				var criteria = { '_id': req.soajs.inputmaskData.id};
 				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(err, data) {
 					if(err) { return res.jsonp(req.soajs.buildResponse({"code": 411, "msg": config.errors[411]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "product update successful"));
@@ -167,7 +175,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = { '_id': req.soajs.inputmaskData.id, 'locked': {$ne: true} };
+				var criteria = { '_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, productRecord) {
 					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 415, "msg": config.errors[415]})); }
 
@@ -205,7 +213,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = { '_id': req.soajs.inputmaskData.id, 'locked': {$ne: true} };
+				var criteria = { '_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, productRecord) {
 					if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 416, "msg": config.errors[416]})); }
 

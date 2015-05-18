@@ -19,13 +19,19 @@ function validateId(mongo, req, cb) {
 }
 
 function checkCanEdit(mongo, req, cb) {
-	var criteria1 = {'_id': req.soajs.inputmaskData.id, 'locked': true};
-	mongo.findOne(colName, criteria1, function(error, record) {
-		if(error) { cb(600); }
-		// return error msg that this record is locked
-		if(record) { return cb(501); }
+	var myUrac = req.soajs.session.getUrac();
+	if(myUrac && myUrac.tenant.id.toString() === req.soajs.inputmaskData.id.toString()){
 		return cb(null, {});
-	});
+	}
+	else{
+		var criteria1 = {'_id': req.soajs.inputmaskData.id, 'locked': true};
+		mongo.findOne(colName, criteria1, function(error, record) {
+			if(error) { return cb(600); }
+			// return error msg that this record is locked
+			if(record) { return cb(501); }
+			return cb(null, {});
+		});
+	}
 }
 
 function checkifProductAndPackageExist(productCode, packageCode, mongo, cb) {
@@ -245,7 +251,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(err) {
 					if(err) { return res.jsonp(req.soajs.buildResponse({"code": 421, "msg": config.errors[421]})); }
 					return res.jsonp(req.soajs.buildResponse(null, "tenant update successful"));
@@ -282,7 +288,7 @@ module.exports = {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
 				var criteria = {
-					'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}
+					'_id': req.soajs.inputmaskData.id
 				};
 				var s = {'$set': {'oauth': {}}};
 				mongo.update(colName, criteria, s, {'upsert': false, 'safe': true}, function(error) {
@@ -310,7 +316,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				var s = {
 					'$set': {
 						oauth: {
@@ -425,7 +431,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 432, "msg": config.errors[432]})); }
 
@@ -458,7 +464,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				req.soajs.inputmaskData.productCode = req.soajs.inputmaskData.productCode.toUpperCase();
 				req.soajs.inputmaskData.packageCode = req.soajs.inputmaskData.packageCode.toUpperCase();
 				checkifProductAndPackageExist(req.soajs.inputmaskData.productCode, req.soajs.inputmaskData.packageCode, mongo, function(error, infoRecord) {
@@ -495,7 +501,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				req.soajs.inputmaskData.productCode = req.soajs.inputmaskData.productCode.toUpperCase();
 				req.soajs.inputmaskData.packageCode = req.soajs.inputmaskData.packageCode.toUpperCase();
 				checkifProductAndPackageExist(req.soajs.inputmaskData.productCode, req.soajs.inputmaskData.packageCode, mongo, function(error, infoRecord) {
@@ -588,7 +594,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 436, "msg": config.errors[436]})); }
 
@@ -640,7 +646,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 437, "msg": config.errors[437]})); }
 
@@ -679,7 +685,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 440, "msg": config.errors[440]})); }
 
@@ -716,7 +722,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 441, "msg": config.errors[441]})); }
 
@@ -743,7 +749,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]})); }
 
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 443, "msg": config.errors[443]})); }
 
@@ -766,7 +772,7 @@ module.exports = {
 			checkCanEdit(mongo, req, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]}));}
 				
-				var criteria = {'_id': req.soajs.inputmaskData.id, 'locked': {$ne: true}};
+				var criteria = {'_id': req.soajs.inputmaskData.id};
 				mongo.findOne(colName, criteria, function(error, tenantRecord) {
 					if(error || !tenantRecord) { return res.jsonp(req.soajs.buildResponse({"code": 445, "msg": config.errors[445]})); }
 					

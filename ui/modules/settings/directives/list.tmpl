@@ -25,7 +25,7 @@
 
                             [{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
 
-                            <div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
+                            <div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys || tenant.applications.length === 1">
                                 <em>{{application['description']}}</em>
                                 <div ng-if="access.tenant.appKeys.list">
                                     <div style="clear:both; height:30px; padding-bottom:5px;"><b>Tenant Application Keys</b>
