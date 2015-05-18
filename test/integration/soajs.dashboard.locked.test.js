@@ -39,8 +39,8 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 		if(params.headers) {
 			for(var h in params.headers) {
-				if(params.headers.hasOwnProperty(h)) {
-					options.headers[h] = params.headers.h;
+				if(params.headers[h]) {
+					options.headers[h] = params.headers[h];
 				}
 			}
 		}
@@ -515,4 +515,110 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 		});
 	});
 
+	describe("owner tests", function(){
+		var request = require("request");
+		var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
+		var soajsauth, soajsauth2;
+		it("login owner user", function(done){
+			var options = {
+				uri: 'http://localhost:4001/login',
+				headers: {
+					'Content-Type': 'application/json',
+					'key': newKey
+				},
+				body: {
+					"username": "owner",
+					"password": "123456"
+				},
+				json: true
+			};
+
+			request.post(options, function(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				console.log(JSON.stringify(body));
+				soajsauth = body.soajsauth;
+				done();
+			});
+		});
+
+		it("will get owner acl", function(done){
+			executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth}}, 'tenant/permissions/get', 'get', function(body) {
+				console.log(JSON.stringify(body));
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+
+		it("get tenant acl owner", function(done){
+			executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth}, 'qs':{'id': '551286bce603d7e01ab1688e'}}, 'tenant/acl/get', 'post', function(body) {
+				console.log(JSON.stringify(body));
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+
+		it("logout owner", function(done){
+			var options = {
+				uri: 'http://localhost:4001/login',
+				headers: {
+					'Content-Type': 'application/json',
+					'key': newKey
+				},
+				body: {
+					"username": "owner"
+				},
+				json: true
+			};
+			request.get(options, function(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				console.log(JSON.stringify(body));
+				done();
+			});
+		});
+
+		it("login client user", function(done){
+			var options = {
+				uri: 'http://localhost:4001/login',
+				headers: {
+					'Content-Type': 'application/json',
+					'key': newKey
+				},
+				body: {
+					"username": "user1",
+					"password": "123456"
+				},
+				json: true
+			};
+
+			request.post(options, function(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				console.log(JSON.stringify(body));
+				soajsauth2 = body.soajsauth;
+				done();
+			});
+		});
+
+		it("will get client acl", function(done){
+			executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}}, 'tenant/permissions/get', 'get', function(body) {
+				console.log(JSON.stringify(body));
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+
+		it("get tenant acl client", function(done){
+			executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}, 'qs':{'id': '10d2cb5fc04ce51e06000001'}}, 'tenant/acl/get', 'post', function(body) {
+				console.log(JSON.stringify(body));
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+	});
 });

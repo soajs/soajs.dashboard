@@ -227,6 +227,34 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
+			it("success - will add environment", function(done) {
+				var data2 = util.cloneObj(validEnvRecord);
+				data2.code = 'STG';
+				data2.services.config.session.proxy = "true";
+				var params = {
+					form: data2
+				};
+				executeMyRequest(params, 'environment/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will add environment", function(done) {
+				var data2 = util.cloneObj(validEnvRecord);
+				data2.code = 'PROD';
+				data2.services.config.session.proxy = "false";
+				var params = {
+					form: data2
+				};
+				executeMyRequest(params, 'environment/add', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					done();
+				});
+			});
+
 			it('fail - missing params', function(done) {
 				var params = {
 					form: {
@@ -267,6 +295,38 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		});
 
 		describe("update environment tests", function() {
+			it("success - will update environment", function(done) {
+				var data2 = util.cloneObj(validEnvRecord);
+				data2.services.config.session.proxy = "true";
+				var params = {
+					qs: {"id": envId},
+					form: {
+						"description": 'this is a dummy updated description',
+						"services": data2.services
+					}
+				};
+				executeMyRequest(params, 'environment/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will update environment", function(done) {
+				var data2 = util.cloneObj(validEnvRecord);
+				data2.services.config.session.proxy = "false";
+				var params = {
+					qs: {"id": envId},
+					form: {
+						"description": 'this is a dummy updated description',
+						"services": data2.services
+					}
+				};
+				executeMyRequest(params, 'environment/update', 'post', function(body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
 			it("success - will update environment", function(done) {
 				var params = {
 					qs: {"id": envId},
@@ -360,7 +420,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				mongo.find('environment', {}, {}, function(error, records) {
 					assert.ifError(error);
 					assert.ok(records);
-					assert.equal(records.length, 0);
+					assert.equal(records.length, 2);
 					done();
 				});
 			});
@@ -370,7 +430,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			it("success - will get empty list", function(done) {
 				executeMyRequest({}, 'environment/list', 'get', function(body) {
 					assert.ok(body.data);
-					assert.equal(body.data.length, 0);
+					assert.equal(body.data.length, 2);
 					done();
 				});
 			});
@@ -386,12 +446,17 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			it("success - will list environment", function(done) {
 				executeMyRequest({}, 'environment/list', 'get', function(body) {
 					assert.ok(body.data);
-					assert.equal(body.data.length, 1);
-					delete body.data[0]._id;
-					var tester = util.cloneObj(validEnvRecord);
-					tester.dbs = {clusters: {}, config: {}, databases: {}};
-					delete tester.services.config.session.proxy;
-					assert.deepEqual(body.data[0], tester);
+					assert.equal(body.data.length, 3);
+
+					body.data.forEach(function(oneEnv){
+						if(oneEnv.code === 'DEV'){
+							delete oneEnv._id;
+							var tester = util.cloneObj(validEnvRecord);
+							tester.dbs = {clusters: {}, config: {}, databases: {}};
+							delete tester.services.config.session.proxy;
+							assert.deepEqual(oneEnv, tester);
+						}
+					});
 					done();
 				});
 			});
@@ -744,7 +809,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it('mongo - testing database content', function(done) {
-				mongo.find('environment', {}, {}, function(error, records) {
+				mongo.find('environment', {'code':'DEV'}, {}, function(error, records) {
 					assert.ifError(error);
 					assert.ok(records);
 					assert.ok(records[0].dbs.databases.urac);
@@ -903,7 +968,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 
 			it('mongo - testing database content', function(done) {
-				mongo.find('environment', {}, {}, function(error, records) {
+				mongo.find('environment', {'code': 'DEV'}, {}, function(error, records) {
 					assert.ifError(error);
 					assert.ok(records);
 					assert.ok(records[0].dbs.databases.urac);
@@ -1134,6 +1199,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 		});
+
 	});
 
 	describe("products tests", function() {
@@ -2982,7 +3048,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						productRecord.packages.push(ex3pckg);
 						mongo.save('products', productRecord, function(error) {
 							assert.ifError(error);
-							executeMyRequest({'qs': '551286bce603d7e01ab1688e' }, 'tenant/acl/get/', 'post', function(body) {
+							executeMyRequest({'qs': {'id':'551286bce603d7e01ab1688e'} }, 'tenant/acl/get/', 'post', function(body) {
 								console.log(JSON.stringify(body));
 								assert.ok(!body.data);
 								done();
@@ -3762,7 +3828,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					console.log(JSON.stringify(body));
 					assert.equal(body.result, true);
 					assert.ok(body.data);
-					assert.ok(JSON.stringify(body.data) !== '{}');
 					done();
 				});
 			});
@@ -3931,7 +3996,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				});
 			});
 
-			it("success - will add application", function(done) {
+			it("success - will list applications", function(done) {
 				applicationId = "5550b473373137a130ebbb68";
 				var newApplication = {
 					"product": "TPROD",
@@ -4385,6 +4450,32 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					"description": "this is a dummy description"
 				});
 				done();
+			});
+		});
+	});
+
+	describe("change tenant security key", function(){
+
+		it("success - will change tenant security key", function(done){
+
+			mongo.findOne('environment', {'code': 'DEV'}, function(error, envRecord){
+				assert.ifError(error);
+				assert.ok(envRecord);
+				var params = {
+					qs: {
+						'id': envRecord._id.toString()
+					},
+					form: {
+						'algorithm': 'aes256',
+						'password': 'new test case password'
+					}
+				};
+				executeMyRequest(params, 'environment/key/update', 'post', function(body) {
+					console.log(JSON.stringify(body));
+					assert.ok(body.data);
+					assert.ok(body.data.newKey);
+					done();
+				});
 			});
 		});
 	});

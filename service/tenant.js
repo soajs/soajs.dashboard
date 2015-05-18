@@ -826,7 +826,7 @@ module.exports = {
 			});
 		}
 		else {
-			ACL = req.soajs.session.getAcl();
+			ACL = req.soajs.session.getAcl() || {};
 			return res.jsonp(req.soajs.buildResponse(null, ACL));
 		}
 	}
