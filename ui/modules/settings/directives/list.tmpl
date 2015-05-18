@@ -5,88 +5,12 @@
                 {{tenant['name']}}<span>[ {{tenant['code']}} ]</span>
             </div>
             <div class="body">
-                <form id="tenantInfo" novalidate="" class="css-form" name="">
-                    <div class="body">
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                            <tbody>
-                                <tr class="form-group ng-scope">
-                                    <td class="ng-scope">
-                                        <label class="ng-binding">Name</label>
-                                        <input type="text" ng-required="true" tooltip="Enter Tenant Name." placeholder="Test Tenant..." ng-model="tenant.name" name="name" class="form-control" required="required">
-                                    </td>
-                                </tr>
-                                <tr class="form-group ng-scope">
-                                    <td class="ng-scope">
-                                        <label class="ng-binding">Description</label>
-                                        <textarea tooltip="Enter a description explaining the usage of this tenant" placeholder="Testing Tenant, used by developers and does not reach production server..." class="form-control" ng-model="tenant.description" rows="5" name="description" id="iddescription">
-                                        </textarea>
-                                    </td>
-                                </tr>
-                                <tr class="form-group ng-scope" ng-if="access.tenant.oauth.list">
-                                    <td class="ng-scope">
-                                        <label class="ng-binding">oAuth Secret</label>
-                                        <input type="text" tooltip="Enter Tenant oAuth Secret." placeholder="SECRET..." value="My secret phrase" ng-model="tenant.oauth.secret" name="secret" class="form-control">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="footer"><br>
-
-                        <input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="Update Tenant">
-
-                        <input ng-if="access.tenant.oauth.delete" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info">
-
-                    </div>
-                </form>
-
-            <hr/>
-
-            <br/>
-
-            <div ng-if="access.tenant.oauth.users.list" class="clearfix">
-                <label>Tenant oAuth Users</label>
-
-                <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addThisOauthUser()">Add oAuth User</a>
+                <div ng-include="'modules/settings/directives/list-tenant-info.tmpl'"></div>
+                <hr/>
                 <br/>
+                <div ng-include="'modules/settings/directives/list-oauth-users.tmpl'"></div>
 
-                <div class="grid oAuthUsers">
-                    <table ng-if="oAuthUsers.list.length > 0" cellspacing="0" cellpadding="0" border="0" width="100%" class="">
-                        <tbody>
-                            <tr>
-                                <th colspan="2"></th>
-                                <th>User Id</th>
-                                <th>Authorization</th>
-                            </tr>
-                            <tr ng-repeat="user in oAuthUsers.list" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
-
-                                <td class="leftAction">
-                                    <a ng-if="access.tenant.oauth.users.update" href="" ng-click="editMyOauthUser(user)">
-                                        <span class="icon icon-pencil2" tooltip="Edit oAuth User"> </span>
-                                    </a>
-                                </td>
-                                <td class="leftAction">
-                                    <a ng-if="access.tenant.oauth.users.delete" href="" ng-confirm-click="Are you sure you want to remove this user ?" ng-click="removeTenantOauthUser(user);">
-                                        <span class="icon icon-cross" tooltip="Remove oAuth User"> </span>
-                                    </a>
-                                </td>
-                                <td>
-                                    {{user['userId']}}
-                                </td>
-                                <td>
-                                    {{tenant.oauth.authorization}}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div ng-if="oAuthUsers.list.length == 0">
-                        <alert type="warning">No oauth users have been added.</alert>
-                    </div>
-                </div>
-            </div>
-
-            <div ng-if="access.tenant.application.list"><br/><br/>
-                <div>
+                <div ng-if="access.tenant.application.list"><br/><br/>
                     <label>Tenant Applications</label>
                     <br/>
 
@@ -103,106 +27,21 @@
 
                             <div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys">
                                 <em>{{application['description']}}</em>
-
                                 <div ng-if="access.tenant.appKeys.list">
                                     <div style="clear:both; height:30px; padding-bottom:5px;"><b>Tenant Application Keys</b>
-                                        <a ng-if="access.tenant.appKeys.add" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey( application['appId'])" tooltip="Add New Application Key">Add
-                                            key</a>
+                                        <a ng-if="access.tenant.appKeys.add" href="" class="btn btn-primary btn-sm btn-ssm" ng-click="addNewKey( application['appId'])" tooltip="Add New Application Key">Add New Key</a>
                                     </div>
-                                    <div class="keysAccordion">
-                                        <accordion close-others="true" ng-show="application.keys.length > 0">
-                                            <accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
-                                                <accordion-heading tooltip="Display Key Information"><span class="icon icon-key"></span>{{key.key}}
-                                                    <a ng-if="access.tenant.appKeys.delete" href="" ng-click="removeAppKey(application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
-                                                        <span class="icon icon-cross" tooltip="Remove Key"></span>
-                                                    </a>
-                                                </accordion-heading>
-
-                                                <tabset>
-                                                    <tab heading="Key Environment Configuration" ng-if="access.tenant.appKeys.listConfig">
-                                                        <br/>
-
-                                                        <div class="entryBoxes entryBoxesGrid" id="keyConfig{{$index}}">
-                                                            <br/>
-
-                                                            <div ng-repeat="enCode in availableEnv">
-                                                                <div class="entryBox greyBox" ng-class="{ blueBox: key.config[enCode] }">
-                                                                    <b>{{enCode}} Environment</b>&nbsp;&nbsp;
-                                                                    <a ng-if="access.tenant.appKeys.updateConfig" href="" ng-click="updateConfiguration(application['appId'], key.key, enCode, key.config[enCode]);">
-                                                                        <span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
-                                                                    </a>
-                                                                    <a ng-if="access.tenant.appKeys.updateConfig" ng-show="key.config[enCode]" href="" ng-click="emptyConfiguration(application['appId'], key.key, enCode );">
-                                                                        <span class="icon icon-bin" tooltip="Empty Service Configuration"></span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <br/>
-                                                        </div>
-                                                    </tab>
-                                                    <tab heading="External Keys" ng-if="access.tenant.externalKeys.list">
-                                                        <span ng-if="access.tenant.externalKeys.add"><br/>
-                                                        <button ng-click="addNewExtKey(application['appId'], key.key)" class="btn btn-primary btn-sm">Add New Application External Key
-                                                        </button>
-                                                        </span>
-                                                        <br/>
-
-                                                        <div class="small-text" id="externalKeys{{$index}}">
-                                                            <ul style="display:none;">
-                                                                <li ng-repeat="extnlKey in key.extKeys">
-                                                                    <span style="word-break: break-all;">{{extnlKey.extKey|trimmed100}}</span>
-                                                                </li>
-                                                            </ul>
-                                                            <nglist></nglist>
-                                                            <div class="grid externalKeysGrid" ng-show="key.extKeys.length>0">
-                                                                <table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <th colspan="2"></th>
-                                                                            <th> External Key</th>
-                                                                            <th> Expiry Date</th>
-                                                                        </tr>
-                                                                        <tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
-
-                                                                            <td class="leftAction">
-                                                                                <a ng-if="access.tenant.externalKeys.update" ng-click="editExtKey(application['appId'], extnlKey, key.key)" href="">
-                                                                                    <span class="icon icon-pencil2" tooltip="Edit External Key"></span>
-                                                                                </a>
-                                                                            </td>
-                                                                            <td class="leftAction">
-                                                                                <a ng-if="access.tenant.externalKeys.delete" ng-click="removeExtKey(application['appId'], extnlKey, key.key)" ng-confirm-click="Are you sure you want to remove this external key?" href="">
-                                                                                    <span class="icon icon-cross" tooltip="Remove External Key"></span>
-                                                                                </a>
-                                                                            </td>
-                                                                            <td> {{extnlKey.extKey}}</td>
-                                                                            <td> {{extnlKey.expDate|date}}</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </tab>
-                                                </tabset>
-                                            </accordion-group>
-                                        </accordion>
-                                    </div>
+                                    <div ng-include="'modules/settings/directives/list-app-keys.tmpl'"></div>
                                 </div>
-
                             </div>
                         </li>
                     </ul>
                     <div ng-if="tenant.applications == 0">
                         <alert type="warning">No applications have been added.</alert>
                     </div>
-
+                    <hr/>
                 </div>
-                <hr/>
-            </div>
-
-
-            <div class="entryAction">
             </div>
         </div>
     </div>
-</div>
-
-        </section>
+</section>

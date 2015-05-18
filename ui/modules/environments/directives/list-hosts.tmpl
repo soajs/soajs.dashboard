@@ -1,0 +1,126 @@
+<script type="text/ng-template" id="serviceInfoBox.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body"><pre><code class="javascript">{{data}}</code></pre></div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
+    <alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+</div>
+<br/>
+<div ng-init="listHosts(row['code'])" >
+    <a href="" ng-click="listHosts(row['code'])" class="btn btn-primary">
+        <span class="icon icon-undo" tooltip="Refresh List"></span>Refresh
+    </a>
+</div>
+<div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
+    <div ng-repeat="(serviceName, serviceInfo) in row.hosts track by serviceName">
+        <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
+            <div style="width: 100%;" class="head {{serviceInfo.color}}">
+                <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
+            </div>
+            <div class="service-ips clearfix">
+                <div ng-repeat="oneIp in serviceInfo.ips" style="float:left;">
+                    <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable">
+                        <tr>
+                            <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
+                            <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
+                                    <span class="icon icon-heart"></span>&nbsp;
+                                </a>
+
+                                <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(row['code'], oneIp)" title="Execute Awareness Operation">
+                                    <span class="icon icon-connection"></span>&nbsp;
+                                </a>
+
+                                <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation">
+                                    <span class="icon icon-undo"></span>&nbsp;
+                                </a>
+
+                                <a href="" ng-show="!oneIp.heartbeat" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                    <span class="icon icon-cross" title="Remove Host IP"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <div ng-if="serviceName !== 'controller' && serviceInfo.ips.length > 0" class="serviceBox">
+            <div style="padding: 10px 0px 25px 5px;" ng-show="(serviceInfo.waitMessage && serviceInfo.waitMessage.message!=='')">
+                <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
+            </div>
+            <div style="width: 100%;" class="head {{serviceInfo.color}}">
+                <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
+            </div>
+            <div class="service-ips">
+                <div ng-repeat="oneIp in serviceInfo.ips" class="">
+                    <table border="0" width="100%" cellpadding="2" cellspacing="1">
+                        <tr>
+                            <td width="25%" valign="top">
+                                <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
+                                    <thead>
+                                        <tr>
+                                            <th class="actions">Actions</th>
+                                            <th class="host-ip">Host IP</th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td valign="top">
+                                            <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
+                                                <span class="icon icon-heart"></span>&nbsp;
+                                            </a>
+                                            <a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation">
+                                                <span class="icon icon-undo"></span>&nbsp;
+                                            </a>
+
+                                            <a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(row['code'], oneIp)" title="Load Provisioning Operation">
+                                                <span class="icon icon-download3"></span>&nbsp;
+                                            </a>
+
+                                            <a href="" ng-show="!oneIp.healthy" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                                <span class="icon icon-cross" title="Remove Host IP"></span>
+                                            </a>
+                                        </td>
+                                        <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td width="75%">
+                                <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
+                                    <thead>
+                                        <tr>
+                                            <th width="15%">Controller</th>
+                                            <th width="15%">Status</th>
+                                            <th class="lastCheck">Last Check</th>
+                                            <th class="downSince">Down Since</th>
+                                            <th class="downCount">Down Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tr ng-repeat="oneController in oneIp.controllers" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'">
+                                        <td><span class="{{oneController.color}}">{{oneController.ip}}</span></td>
+                                        <td><span class="{{oneController.color}}">{{oneController.color === 'green' ? 'Healthy': 'Not Healthy'}}</span></td>
+                                        <td><span>{{oneIp.lastCheck}}</span></td>
+                                        <td><span>{{oneIp.downSince}}</span></td>
+                                        <td><span>{{oneIp.downCount}}</span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <br/>
+                </div>
+            </div>
+
+        </div>
+        <br/>
+    </div>
+</div>

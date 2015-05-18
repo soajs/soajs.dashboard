@@ -1,0 +1,36 @@
+<br/>
+<div ng-if="row.services">
+    <table width="99%" align="center">
+        <tr>
+            <td width="50%" valign="top">
+                <fieldset>
+                    <label><h3>Service Configuration</h3></label>
+
+                    <div class="grid">
+                        <table width="100%">
+                            <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.config track by key" ng-if="key!='agent' ">
+                                <td width="15%" style="min-width:75px"><b>{{key|label}}</b></td>
+                                <td ng-bind-html="prop|object"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </fieldset>
+            </td>
+            <td width="20%">&nbsp;</td>
+            <td width="30%" valign="top">
+                <fieldset>
+                    <label><h3>Controller</h3></label>
+
+                    <div class='grid'>
+                        <table width="100%">
+                            <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.controller track by key">
+                                <td><b>{{key|label}}</b></td>
+                                <td align="right">{{prop}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+</div>

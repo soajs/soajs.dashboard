@@ -5,7 +5,7 @@
             <div class="body">
                 <div id="application-ApiList" class="entryServiceBoxes">
                     <div ng-repeat="application in tenantApp.applications">
-                        <label>package:</label> {{application.package}}<br/>
+                        <label>{{application.package}}:</label> {{application.description}}<br/>
                         <div class="clearfix service-container" ng-repeat="service in application.services">
                             <div class="clearfix serviceNameHead">
                                 <div ng-include="'modules/members/directives/service-name.tmpl'"></div>

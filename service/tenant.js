@@ -111,10 +111,10 @@ function saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, code, ms
 function getPackageACLFromTenantConfig(req, tenantId) {
 	if(req.soajs.servicesConfig.dashboard && req.soajs.servicesConfig.dashboard.package) {
 		if(req.soajs.tenant.id === tenantId) {
-			return req.soajs.servicesConfig.dashboard.package.owner.acl;
+			return req.soajs.servicesConfig.dashboard.package.owner.package;
 		}
 		else {
-			return req.soajs.servicesConfig.dashboard.package.consumer.acl;
+			return req.soajs.servicesConfig.dashboard.package.consumer.package;
 		}
 	}
 	else {
@@ -540,29 +540,37 @@ module.exports = {
 	},
 
 	"getTenantAcl": function(config, mongo, req, res) {
-		var packageName;
-		var accessLevels;
+		var packageName, packageDescription, accessLevels;
 		if(req.soajs.tenant.id.toString() === req.soajs.inputmaskData.id.toString()){
-			packageName = req.soajs.servicesConfig.dashboard.package.owner.name;
-			accessLevels = req.soajs.servicesConfig.dashboard.package.owner.acl;
+			packageName = req.soajs.servicesConfig.dashboard.package.owner.package;
 		}else{
-			packageName = req.soajs.servicesConfig.dashboard.package.consumer.name;
-			accessLevels = req.soajs.servicesConfig.dashboard.package.consumer.acl;
+			packageName = req.soajs.servicesConfig.dashboard.package.consumer.package;
 		}
 
-		var servicesNames = Object.keys(accessLevels);
-		getServicesAndTheirAPIs(servicesNames, function(error, servicesInfo) {
-			if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
+		mongo.findOne("products",{'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord){
+			if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-			var data = {
-				"services": servicesInfo,
-				"applications": [{
-					'package': packageName,
-					'parentPackageAcl': accessLevels
-				}]
-			};
+			productRecord.packages.forEach(function(onePackage){
+				if(onePackage.code === packageName){
+					accessLevels = onePackage.acl;
+					packageDescription = onePackage.description;
+				}
+			});
+			var servicesNames = Object.keys(accessLevels);
+			getServicesAndTheirAPIs(servicesNames, function(error, servicesInfo) {
+				if(error) { return res.jsonp(req.soajs.buildResponse(error)); }
 
-			return res.jsonp(req.soajs.buildResponse(null, data));
+				var data = {
+					"services": servicesInfo,
+					"applications": [{
+						'package': packageName,
+						'description': packageDescription,
+						'parentPackageAcl': accessLevels
+					}]
+				};
+
+				return res.jsonp(req.soajs.buildResponse(null, data));
+			});
 		});
 
 		function getServicesAndTheirAPIs(servicesNames, cb) {
@@ -801,15 +809,25 @@ module.exports = {
 		if(!req.soajs.session || !req.soajs.session.getUrac()) {
 			return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 		}
+		var ACL;
 		var myURAC = req.soajs.session.getUrac();
-		var ACL = getPackageACLFromTenantConfig(req, myURAC.tenant.id);
-		if(ACL) {
-			req.soajs.session.setURACPACKAGEACL(ACL);
+		var packageName = getPackageACLFromTenantConfig(req, myURAC.tenant.id);
+		if(packageName) {
+			mongo.findOne("products",{'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord){
+				if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+				productRecord.packages.forEach(function(onePackage){
+					if(onePackage.code === packageName){
+						ACL = onePackage.acl;
+					}
+				});
+				req.soajs.session.setURACPACKAGEACL(ACL);
+				return res.jsonp(req.soajs.buildResponse(null, ACL));
+			});
 		}
 		else {
 			ACL = req.soajs.session.getAcl();
+			return res.jsonp(req.soajs.buildResponse(null, ACL));
 		}
-
-		return res.jsonp(req.soajs.buildResponse(null, ACL));
 	}
 };

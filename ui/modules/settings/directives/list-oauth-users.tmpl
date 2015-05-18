@@ -1,0 +1,40 @@
+<div ng-if="access.tenant.oauth.users.list" class="clearfix">
+    <label>Tenant oAuth Users</label>
+
+    <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addThisOauthUser()">Add oAuth User</a>
+    <br/>
+
+    <div class="grid oAuthUsers">
+        <table ng-if="oAuthUsers.list.length > 0" cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+            <tbody>
+                <tr>
+                    <th colspan="2"></th>
+                    <th>User Id</th>
+                    <th>Authorization</th>
+                </tr>
+                <tr ng-repeat="user in oAuthUsers.list" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
+
+                    <td class="leftAction">
+                        <a ng-if="access.tenant.oauth.users.update" href="" ng-click="editMyOauthUser(user)">
+                            <span class="icon icon-pencil2" tooltip="Edit oAuth User"> </span>
+                        </a>
+                    </td>
+                    <td class="leftAction">
+                        <a ng-if="access.tenant.oauth.users.delete" href="" ng-confirm-click="Are you sure you want to remove this user ?" ng-click="removeTenantOauthUser(user);">
+                            <span class="icon icon-cross" tooltip="Remove oAuth User"> </span>
+                        </a>
+                    </td>
+                    <td>
+                        {{user['userId']}}
+                    </td>
+                    <td>
+                        {{tenant.oauth.authorization}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-if="oAuthUsers.list.length == 0">
+            <alert type="warning">No oauth users have been added.</alert>
+        </div>
+    </div>
+</div>
