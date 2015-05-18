@@ -46,6 +46,7 @@ var configDashbrd = {
 	'permissions': {
 		'environment': ['dashboard', '/environment/list'],
 		'tenant': ['dashboard', '/tenant/list'],
-		'product': ['dashboard', '/product/list']
+		'product': ['dashboard', '/product/list'],
+		'services': ['dashboard', '/services/list']
 	}
 };

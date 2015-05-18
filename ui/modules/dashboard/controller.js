@@ -77,4 +77,7 @@ dahsboardApp.controller('environmentsCtrl', ['$scope', '$timeout', '$modal', 'ng
 
 dahsboardApp.controller('helpPageCtrl', ['$scope', function($scope) {
 	$scope.$parent.isUserLoggedIn(true);
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, configDashbrd.permissions);
+	console.log($scope.access);
 }]);

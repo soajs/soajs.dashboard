@@ -32,7 +32,15 @@ var navigation = [
 		'userMenu': true,
 		'private': true,
 		'icon': 'question',
-		'scripts': ['modules/dashboard/controller.js'],
+		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
+		'tplPath': 'modules/dashboard/directives/help.tmpl'
+	},
+	{
+		'id': 'help',
+		'label': 'Help',
+		'url': '#/help',
+		'guestMenu': true,
+		'scripts': ['modules/dashboard/config.js','modules/dashboard/controller.js'],
 		'tplPath': 'modules/dashboard/directives/help.tmpl',
 		'footerMenu': true
 	}
