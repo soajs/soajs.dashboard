@@ -198,7 +198,8 @@ module.exports = {
 		"605": "Service Host not found.",
 		"606": "Error adding an administrator user for tenant",
 		"607": "Error adding an administrator group for tenant",
-		"608": "Permissions denied to access this section"
+		"608": "Permissions denied to access this section",
+		"609": "Dashboard service is not accessible at the time being Come back later."
 	},
 
 	"schema": {

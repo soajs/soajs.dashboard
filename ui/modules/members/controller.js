@@ -368,6 +368,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
+				$scope.getTenantAppInfo();
 			}
 		});
 	};

@@ -20,10 +20,10 @@ function validateId(mongo, req, cb) {
 
 function checkCanEdit(mongo, req, cb) {
 	var myUrac = req.soajs.session.getUrac();
-	if(myUrac && myUrac.tenant.id.toString() === req.soajs.inputmaskData.id.toString()){
+	if(myUrac && myUrac.tenant.id.toString() === req.soajs.inputmaskData.id.toString()) {
 		return cb(null, {});
 	}
-	else{
+	else {
 		var criteria1 = {'_id': req.soajs.inputmaskData.id, 'locked': true};
 		mongo.findOne(colName, criteria1, function(error, record) {
 			if(error) { return cb(600); }
@@ -112,20 +112,6 @@ function saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, code, ms
 
 		return res.jsonp(req.soajs.buildResponse(null, msg));
 	});
-}
-
-function getPackageACLFromTenantConfig(req, tenantId) {
-	if(req.soajs.servicesConfig.dashboard && req.soajs.servicesConfig.dashboard.package) {
-		if(req.soajs.tenant.id === tenantId) {
-			return req.soajs.servicesConfig.dashboard.package.owner.package;
-		}
-		else {
-			return req.soajs.servicesConfig.dashboard.package.consumer.package;
-		}
-	}
-	else {
-		return null;
-	}
 }
 
 module.exports = {
@@ -547,17 +533,17 @@ module.exports = {
 
 	"getTenantAcl": function(config, mongo, req, res) {
 		var packageName, packageDescription, accessLevels;
-		if(req.soajs.tenant.id.toString() === req.soajs.inputmaskData.id.toString()){
+		if(req.soajs.tenant.id.toString() === req.soajs.inputmaskData.id.toString()) {
 			packageName = req.soajs.servicesConfig.dashboard.package.owner.package;
-		}else{
+		} else {
 			packageName = req.soajs.servicesConfig.dashboard.package.consumer.package;
 		}
 
-		mongo.findOne("products",{'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord){
+		mongo.findOne("products", {'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord) {
 			if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-			productRecord.packages.forEach(function(onePackage){
-				if(onePackage.code === packageName){
+			productRecord.packages.forEach(function(onePackage) {
+				if(onePackage.code === packageName) {
 					accessLevels = onePackage.acl;
 					packageDescription = onePackage.description;
 				}
@@ -817,42 +803,60 @@ module.exports = {
 		}
 		var myURAC = req.soajs.session.getUrac();
 
-		//get owner or client package
+		//get owner or client package name
 		var packageName = getPackageACLFromTenantConfig(req, myURAC.tenant.id);
 		var ACL;
 
-		if(packageName) {
-			//check if current user has this package in his urac
-			//todo: the below are two lines need to be fixed, they work for now but this is not how they should be done.
-			if(req.soajs.session.session.sessions[myURAC.tenant.id] && req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName]){
-				ACL = req.soajs.session.session.sessions[myURAC.tenant.id].urac.config.packages[packageName].acl;
-				if(ACL){
-
-					//update the acl of the user session to use the injected package acl
-					req.soajs.session.setURACPACKAGEACL(ACL);
-					return res.jsonp(req.soajs.buildResponse(null, ACL));
-				}
-			}
-
-			//if not, then get package acl from products collection
-			mongo.findOne("products",{'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord){
-				if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-				productRecord.packages.forEach(function(onePackage){
-					if(onePackage.code === packageName){
-						ACL = onePackage.acl;
-					}
-				});
-
-				//update the acl of the user session to use the injected package acl
-				req.soajs.session.setURACPACKAGEACL(ACL);
-				return res.jsonp(req.soajs.buildResponse(null, ACL));
-			});
+		if(!packageName) {
+			return res.jsonp(req.soajs.buildResponse({"code": 609, "msg": config.errors[609]}));
 		}
-		else {
-			ACL = req.soajs.session.getAcl() || {};
+
+		//todo: this should be updated to change the package after core has been updated
+		ACL = req.soajs.session.getPackageAcl(packageName);
+		if(ACL) {
+			//update the acl of the user session to use the injected package acl from urac and return
 			req.soajs.session.setURACPACKAGEACL(ACL);
 			return res.jsonp(req.soajs.buildResponse(null, ACL));
 		}
+
+		//if no acl for this package in urac, then get package acl from products collection
+		mongo.findOne("products", {'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord) {
+			if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			productRecord.packages.forEach(function(onePackage) {
+				if(onePackage.code === packageName) {
+					ACL = onePackage.acl;
+				}
+			});
+
+			//update the acl of the user session to use the injected package acl
+			req.soajs.session.setURACPACKAGEACL(ACL);
+			return res.jsonp(req.soajs.buildResponse(null, ACL));
+		});
+
 	}
 };
+
+function getPackageACLFromTenantConfig(req, tenantId) {
+	if(req.soajs.servicesConfig.dashboard) {
+		if(req.soajs.tenant.id === tenantId) {
+			return req.soajs.servicesConfig.dashboard.ownerPackage;
+		}
+		else {
+			var pckgName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
+			//check if the client has a custom package
+			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
+			if(customPackages.length > 0){
+				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
+					if(userTenantId === tenantId){
+						pckgName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
+					}
+				}
+			}
+			return pckgName;
+		}
+	}
+	else {
+		return null;
+	}
+}
