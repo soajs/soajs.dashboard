@@ -144,58 +144,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 		});
 	};
 
-	//$scope.reloadProvisioningSilently = function (env) {
-	//	getSendDataFromServer($scope, ngDataApi, {
-	//		"method": "get",
-	//		"routeName": "/dashboard/hosts/list",
-	//		"params": {
-	//			"env": env
-	//		}
-	//	}, function(error, response) {
-	//		if(error || !response) {
-	//			console.log(error.message);
-	//		}
-	//		else {
-	//			response.forEach(function(oneHost){
-	//				if(oneHost.name === 'dashboard'){
-	//					getSendDataFromServer($scope, ngDataApi, {
-	//						"method": "send",
-	//						"routeName": "/dashboard/hosts/maintenanceOperation",
-	//						"data": {
-	//							"serviceName":oneHost.name ,
-	//							"operation": "loadProvision",
-	//							"serviceHost": oneHost.ip,
-	//							"servicePort": oneHost.port,
-	//							"env": env
-	//						}
-	//					}, function(error, response) {
-	//						if(error || !response){
-	//							console.log(error.message);
-	//						}
-	//					});
-	//				}
-	//				if(oneHost.name === 'controller'){
-	//					getSendDataFromServer($scope, ngDataApi, {
-	//						"method": "send",
-	//						"routeName": "/dashboard/hosts/maintenanceOperation",
-	//						"data": {
-	//							"serviceName": 'controller',
-	//							"operation": "loadProvision",
-	//							"serviceHost": oneHost.ip,
-	//							"servicePort": 4000,
-	//							"env": env
-	//						}
-	//					}, function(error, response) {
-	//						if(error || !response){
-	//							console.log(error.message);
-	//						}
-	//					});
-	//				}
-	//			});
-	//		}
-	//	});
-	//};
-
 	$scope.listHosts = function(env, noPopulate) {
 		var controllers = [];
 		if($scope.access.listHosts){
