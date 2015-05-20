@@ -1,6 +1,6 @@
 <div class="keysAccordion">
     <accordion close-others="true" ng-show="application.keys.length > 0">
-        <accordion-group ng-repeat="key in application.keys" is-open="application.keys.length === 1">
+        <accordion-group ng-repeat="key in application.keys">
             <accordion-heading tooltip="Display Key Information"><span class="icon icon-key"></span>{{key.key}}
                 <a ng-if="access.tenant.appKeys.delete" href="" ng-click="removeAppKey(application, key.key, $event)" style="float:right" class="f-right" tooltip="Remove Application Key" ng-confirm-click="Are you sure you want to delete this key ?">
                     <span class="icon icon-cross" tooltip="Remove Key"></span>
