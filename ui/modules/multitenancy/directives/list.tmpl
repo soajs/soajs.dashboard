@@ -2,7 +2,7 @@
     <span ng-if="access.tenant.add"><a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a></span><br/><br/>
     <div class="entryBoxes">
         <div ng-repeat="row in tenantsList.rows" class="entryBox" ng-if="row.locked!==true">
-            <div class="header">{{row['name']}}<span>[ {{row['code']}} ]</span> </div>
+            <div class="header">{{row['name']}}<span>[ {{row['code']}}  - {{row['_id']}} ]</span> </div>
             <div class="body">
                 <div class="description">{{row['description']}}</div>
                 <div ng-if="access.tenant.application.list || access.tenant.oauth.users.list">
