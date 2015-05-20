@@ -369,6 +369,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
+							delete response.soajsauth;
 							$cookieStore.put('acl_access', response);
 							$scope.$parent.$emit("loadUserInterface", {});
 							$scope.$parent.$emit('refreshWelcome', {});

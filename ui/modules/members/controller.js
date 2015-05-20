@@ -321,7 +321,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/urac/admin/group/list",
-						"params": {'tId': $scope.userCookie.tenant.id}
+						"params": {'tId': $scope.user.tenant.id}
 					}, function(error, response) {
 						if(error) {
 							$scope.$parent.displayAlert("danger", error.message);
