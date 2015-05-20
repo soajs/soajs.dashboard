@@ -114,6 +114,31 @@ function saveTenantRecordAndExit(mongo, tenantRecord, config, req, res, code, ms
 	});
 }
 
+function getPackageACLFromTenantConfig(req, tenantId) {
+	if(req.soajs.servicesConfig.dashboard) {
+		if(req.soajs.tenant.id === tenantId) {
+			return req.soajs.servicesConfig.dashboard.ownerPackage;
+		}
+		else {
+			var pckgName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
+			//check if the client has a custom package
+			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
+			if(customPackages.length > 0){
+				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
+					if(userTenantId === tenantId){
+						pckgName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
+						break;
+					}
+				}
+			}
+			return pckgName;
+		}
+	}
+	else {
+		return null;
+	}
+}
+
 module.exports = {
 	"delete": function(config, mongo, req, res) {
 		validateId(mongo, req, function(err) {
@@ -534,9 +559,19 @@ module.exports = {
 	"getTenantAcl": function(config, mongo, req, res) {
 		var packageName, packageDescription, accessLevels;
 		if(req.soajs.tenant.id.toString() === req.soajs.inputmaskData.id.toString()) {
-			packageName = req.soajs.servicesConfig.dashboard.package.owner.package;
+			packageName = req.soajs.servicesConfig.dashboard.ownerPackage;
 		} else {
-			packageName = req.soajs.servicesConfig.dashboard.package.consumer.package;
+			packageName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
+			//check if the client has a custom package
+			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
+			if(customPackages.length > 0){
+				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
+					if(userTenantId === req.soajs.tenant.id.toString()){
+						packageName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
+						break;
+					}
+				}
+			}
 		}
 
 		mongo.findOne("products", {'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord) {
@@ -836,27 +871,3 @@ module.exports = {
 
 	}
 };
-
-function getPackageACLFromTenantConfig(req, tenantId) {
-	if(req.soajs.servicesConfig.dashboard) {
-		if(req.soajs.tenant.id === tenantId) {
-			return req.soajs.servicesConfig.dashboard.ownerPackage;
-		}
-		else {
-			var pckgName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
-			//check if the client has a custom package
-			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
-			if(customPackages.length > 0){
-				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
-					if(userTenantId === tenantId){
-						pckgName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
-					}
-				}
-			}
-			return pckgName;
-		}
-	}
-	else {
-		return null;
-	}
-}

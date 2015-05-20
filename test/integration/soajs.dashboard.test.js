@@ -3824,12 +3824,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				assert.ifError(error);
 				assert.ok(body);
 				soajsauth = body.soajsauth;
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'tenant/permissions/get', 'get', function(body) {
-					console.log(JSON.stringify(body));
-					assert.equal(body.result, true);
-					assert.ok(body.data);
-					done();
-				});
+				done();
 			});
 		});
 
