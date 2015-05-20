@@ -248,7 +248,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 	}]);
 
-soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', function($scope, ngDataApi, $cookieStore) {
+soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$localStorage', function($scope, ngDataApi, $cookieStore, $localStorage) {
 	$scope.$parent.$on('refreshWelcome', function(event, args) {
 		$scope.setUser();
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
@@ -277,7 +277,8 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', funct
 
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
-				$cookieStore.remove('acl_access');
+				//$cookieStore.remove('acl_access');
+				$localStorage.acl_access = null;
 				$scope.dashboard = [];
 				$scope.$parent.enableInterface = false;
 				$scope.$parent.go("/login");

@@ -76,6 +76,11 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 		});
 	});
 
+	afterEach(function(done) {
+		console.log("=======================================");
+		done();
+	});
+
 	var expDateValue = new Date().toISOString();
 	var envId;
 	describe("environment tests", function() {
@@ -535,8 +540,9 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 
 			request.post(options, function(error, response, body) {
 				assert.ifError(error);
-				assert.ok(body);
 				console.log(JSON.stringify(body));
+				assert.ok(body);
+				assert.equal(body.result, true);
 				soajsauth = body.soajsauth;
 				done();
 			});
@@ -573,9 +579,9 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
 				json: true
 			};
 			request.get(options, function(error, response, body) {
+				console.log(JSON.stringify(body));
 				assert.ifError(error);
 				assert.ok(body);
-				console.log(JSON.stringify(body));
 				done();
 			});
 		});
