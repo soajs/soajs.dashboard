@@ -56,11 +56,11 @@ membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, 
 	};
 
 	$scope.groups.addGroup = function() {
-		groupsHelper.addGroup($scope.groups, groupsConfig);
+		groupsHelper.addGroup($scope.groups, groupsConfig, true);
 	};
 
 	$scope.groups.editGroup = function(data) {
-		groupsHelper.editGroup($scope.groups, groupsConfig, data);
+		groupsHelper.editGroup($scope.groups, groupsConfig, data, true);
 	};
 
 	$scope.groups.deleteGroups = function() {

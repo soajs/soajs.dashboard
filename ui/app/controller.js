@@ -251,7 +251,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$localStorage', function($scope, ngDataApi, $cookieStore, $localStorage) {
 	$scope.$parent.$on('refreshWelcome', function(event, args) {
 		$scope.setUser();
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+
+		if($scope.$parent.mainMenu.links.length>0){
+			$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+		}
+		else{
+			$scope.$parent.go("/myaccount");
+		}
 	});
 
 	$scope.setUser = function() {
