@@ -6,8 +6,6 @@ var envColName = "environment";
 
 var Hasher = require("./hasher.js");
 var request = require("request");
-var async = require("async");
-var lodash = require("lodash");
 
 function validateId(mongo, req, cb) {
 	try {
