@@ -101,7 +101,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/settings/tenant/application/key/delete",
-			"params": {"id": id, "appId": app.appId, "key": key}
+			"params": {"appId": app.appId, "key": key}
 		}, function(error) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -237,7 +237,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/settings/tenant/oauth/users/list",
-				"params": { }
+				"params": {}
 			}, function(error, response) {
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
@@ -616,8 +616,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'External Key Removed Successfully.');
-				$scope.modalInstance.close();
-				$scope.form.formData = {};
 				$scope.listExtKeys( appId, key);
 			}
 		});
