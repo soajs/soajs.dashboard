@@ -1,6 +1,6 @@
 "use strict";
 
-soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieStore) {
+soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', function($http, $cookieStore, $localStorage) {
 
 	function returnAPIError(scope, opts, status, headers, config, cb) {
 		console.log("Error: ngDataApi->" + opts.api);
@@ -28,7 +28,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', function($http, $cookieS
 			if(response.errors.codes[0] === 132){
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
-				$cookieStore.remove('acl_access');
+				$localStorage.acl_access = null;
 				scope.$parent.enableInterface = false;
 				scope.$parent.isUserLoggedIn();
 				scope.$parent.go("/login");

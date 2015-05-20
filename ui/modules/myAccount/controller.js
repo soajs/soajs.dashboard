@@ -370,7 +370,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						}
 						else {
 							$localStorage.acl_access = response;
-							//$cookieStore.put('acl_access', response);
 							$scope.$parent.$emit("loadUserInterface", {});
 							$scope.$parent.$emit('refreshWelcome', {});
 						}

@@ -203,7 +203,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if(!$cookies['soajs_auth'] || !$cookies['soajs_user']) {
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
-				$cookieStore.remove('acl_access');
+				$localStorage.acl_access = null;
 				$scope.enableInterface = false;
 				if(!stopRedirect) {
 					$scope.displayFixedAlert('danger', "Session expired. Please login.");
@@ -277,7 +277,6 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
-				//$cookieStore.remove('acl_access');
 				$localStorage.acl_access = null;
 				$scope.dashboard = [];
 				$scope.$parent.enableInterface = false;
