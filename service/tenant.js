@@ -123,9 +123,9 @@ function getPackageACLFromTenantConfig(req, tenantId) {
 			var pckgName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
 			//check if the client has a custom package
 			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
-			if(customPackages.length > 0){
-				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
-					if(userTenantId === tenantId){
+			if(customPackages.length > 0) {
+				for(var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage) {
+					if(userTenantId === tenantId) {
 						pckgName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
 						break;
 					}
@@ -213,7 +213,7 @@ module.exports = {
 					'soajsauth': req.headers.soajsauth
 				},
 				'body': {
-					'username': 'admin',
+					'username': 'admin_' + record.code.toLowerCase(),
 					'firstName': 'Administrator',
 					'lastName': record.name,
 					'tId': data[0]._id.toString(),
@@ -564,9 +564,9 @@ module.exports = {
 			packageName = req.soajs.servicesConfig.dashboard.defaultClientPackage;
 			//check if the client has a custom package
 			var customPackages = Object.keys(req.soajs.servicesConfig.dashboard.clientspackage);
-			if(customPackages.length > 0){
-				for( var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage){
-					if(userTenantId === req.soajs.tenant.id.toString()){
+			if(customPackages.length > 0) {
+				for(var userTenantId in req.soajs.servicesConfig.dashboard.clientspackage) {
+					if(userTenantId === req.soajs.tenant.id.toString()) {
 						packageName = req.soajs.servicesConfig.dashboard.clientspackage[userTenantId];
 						break;
 					}
