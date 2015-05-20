@@ -4,7 +4,6 @@ var loginConfig={
 			'name': 'login',
 			'label': 'Login',
 			'msgs':{
-				'header': '<strong>Haven\'t signed up yet? </strong> <a href="#/register">Sign up now</a>',
 				'footer': ''
 			},
 			

@@ -36,10 +36,9 @@ var navigation = [
 		'tplPath': 'modules/dashboard/directives/help.tmpl'
 	},
 	{
-		'id': 'help',
+		'id': 'help2',
 		'label': 'Help',
 		'url': '#/help',
-		'guestMenu': true,
 		'scripts': ['modules/dashboard/config.js','modules/dashboard/controller.js'],
 		'tplPath': 'modules/dashboard/directives/help.tmpl',
 		'footerMenu': true

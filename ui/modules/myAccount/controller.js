@@ -235,7 +235,6 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		});
 	};
 
-	
 	if((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
 		var uname = userCookie.username;
 		$scope.getProfile(uname);
@@ -247,67 +246,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 
 }]);
 
-myAccountApp.controller('registerCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function($scope, ngDataApi, isUserLoggedIn) {
-	
-	var formConfig = registerConfig.formConf;
-	formConfig.actions = [{
-		'type': 'submit',
-		'label': 'Register',
-		'btn': 'primary',
-		'action': function(formData) {
-			if(formData.password != formData.confirmPassword) {
-				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
-				return;
-			}
-			var postData = {
-				'username': formData.username,
-				'firstName': formData.firstName,
-				'lastName': formData.lastName,
-				'email': formData.email,
-				'password': formData.password
-			};
-			getSendDataFromServer($scope, ngDataApi, {
-				"method": "send",
-				"routeName": "/urac/join",
-				"data": postData
-			}, function(error) {
-				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
-				}
-				else {
-					$scope.$parent.displayAlert('success', 'Profile Created Successfully. We will send a link to validate your email address. Please check your Email');
-					$scope.$parent.go("/login");
-				}
-			});
-		}
-	}];
-	
-	if(!isUserLoggedIn()) {
-		buildForm($scope, null, formConfig);
-	}
-	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
-	}
-}]);
-
 myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function($scope, ngDataApi, $route, isUserLoggedIn) {
-
-	$scope.valiadteJoin = function() {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"routeName": "/urac/join/validate",
-			"params": {"token": $route.current.params.token}
-		}, function(error) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', 'Your Email was Validated Successfully. You can login now');
-				$scope.$parent.go("/login");
-			}
-		});
-	};
 
 	$scope.validateChangeEmail = function() {
 		getSendDataFromServer($scope, ngDataApi, {
@@ -319,24 +258,13 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Your email was validated and changed successfully. ');
-				$scope.$parent.go("/myaccount");
+				$scope.$parent.displayAlert('success', 'Your email was validated and changed successfully.');
+				setTimeout(function() { $scope.$parent.go("/myaccount"); }, 2000);
 			}
 		});
 	};
 
-	if(!isUserLoggedIn()) {
-		if($route.current.originalPath === '/join/validate') {
-			$scope.valiadteJoin();
-		}
-		else if($route.current.originalPath === '/changeEmail/validate') {
-			$scope.validateChangeEmail();
-		}
-	}
-	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
-	}
+	$scope.validateChangeEmail();
 }]);
 
 myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', '$localStorage', function($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn, $localStorage) {
