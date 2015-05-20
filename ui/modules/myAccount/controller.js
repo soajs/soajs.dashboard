@@ -339,7 +339,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	}
 }]);
 
-myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', function($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn) {
+myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', '$localStorage', function($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn, $localStorage) {
 	var formConfig = loginConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
@@ -369,7 +369,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
-							delete response.soajsauth;
+							$localStorage.acl_access = response;
 							$cookieStore.put('acl_access', response);
 							$scope.$parent.$emit("loadUserInterface", {});
 							$scope.$parent.$emit('refreshWelcome', {});

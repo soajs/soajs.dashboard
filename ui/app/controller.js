@@ -8,7 +8,7 @@ var index = 0;
 })();
 
 /* App Module */
-var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies']);
+var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies', 'ngStorage']);
 soajsApp.config([
 	'$routeProvider',
 	'$controllerProvider',
@@ -57,8 +57,8 @@ soajsApp.config([
 	}
 ]);
 
-soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi',
-	function($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi) {
+soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', '$localStorage',
+	function($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, $localStorage) {
 		$scope.enableInterface = false;
 		$scope.go = function(path) {
 			$location.path(path);
@@ -239,7 +239,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			var user = $cookieStore.get('soajs_user');
 			if(user){
 				var userGroups = user.groups;
-				var acl = $cookieStore.get('acl_access');
+				var acl = $localStorage.acl_access;
 				if(acl[serviceName]) {
 					access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
 				}
