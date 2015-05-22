@@ -78,19 +78,17 @@ productizationService.service('aclHelpers', function(){
 	}
 
 	function applyPermissionRestriction(scope,service){
-		if( scope.aclFill.services[service.name].apisRestrictPermission===true ){
+		if( scope.aclFill[service.name].apisRestrictPermission===true ){
 			for(var grpLabel in service.fixList ){
-
 				if(service.fixList.hasOwnProperty(grpLabel)){
-
 					var defaultApi = service.fixList[grpLabel]['defaultApi'];
 					if(defaultApi){
-						if( scope.aclFill.services[service.name].apis ){
+						if( scope.aclFill[service.name].apis ){
 							var apisList = service.fixList[grpLabel]['apis'];
-							if ((!scope.aclFill.services[service.name].apis[defaultApi]) || scope.aclFill.services[service.name].apis[defaultApi].include !== true){
+							if ((!scope.aclFill[service.name].apis[defaultApi]) || scope.aclFill[service.name].apis[defaultApi].include !== true){
 								apisList.forEach(function( oneApi ) {
-									if(scope.aclFill.services[service.name].apis[oneApi.v]){
-										scope.aclFill.services[service.name].apis[oneApi.v].include=false;
+									if(scope.aclFill[service.name].apis[oneApi.v]){
+										scope.aclFill[service.name].apis[oneApi.v].include=false;
 									}
 								});
 							}
@@ -101,14 +99,14 @@ productizationService.service('aclHelpers', function(){
 		}
 	}
 
-	function checkForGroupDefault(aclFill, service,grp,val,myApi){
+	function checkForGroupDefault(scope, service,grp,val,myApi){
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if(myApi.groupMain===true){
-			if( aclFill[service.name].apis ) {
-				if ((aclFill[service.name].apis[defaultApi]) && aclFill[service.name].apis[defaultApi].include !== true) {
+			if( scope.aclFill[service.name] && scope.aclFill[service.name].apis ) {
+				if ((scope.aclFill[service.name].apis[defaultApi]) && scope.aclFill[service.name].apis[defaultApi].include !== true) {
 					val.apis.forEach(function( one ) {
-						if(aclFill[service.name].apis[one.v]){
-							aclFill[service.name].apis[one.v].include=false;
+						if(scope.aclFill[service.name].apis[one.v]){
+							scope.aclFill[service.name].apis[one.v].include=false;
 						}
 					});
 				}

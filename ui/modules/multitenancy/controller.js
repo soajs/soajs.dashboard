@@ -1219,9 +1219,9 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope','ngDataApi', '$route
 			if(service.forceRestricted) {
 				$scope.currentApplication.aclFill[service.name].apisRestrictPermission = true;
 			}
-			$scope.currentApplication.aclFill.services[service.name].collapse = false;
+			$scope.currentApplication.aclFill[service.name].collapse = false;
 		} else {
-			$scope.currentApplication.aclFill.services[service.name].collapse = true;
+			$scope.currentApplication.aclFill[service.name].collapse = true;
 		}
 	};
 
