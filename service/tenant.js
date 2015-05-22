@@ -6,8 +6,6 @@ var envColName = "environment";
 
 var Hasher = require("./hasher.js");
 var request = require("request");
-var async = require("async");
-var lodash = require("lodash");
 
 function validateId(mongo, req, cb) {
 	try {
@@ -201,51 +199,57 @@ module.exports = {
 		});
 
 		function createAdminUser(record, data, cb) {
-			//call urac, insert an admin user
-			var adminUserRequest = {
-				'uri': 'http://' + config.uracdomain + '/urac/admin/addUser',
-				'json': true,
-				'headers': {
-					'Content-Type': 'application/json',
-					'accept': 'application/json',
-					'connection': 'keep-alive',
-					'key': req.headers.key,
-					'soajsauth': req.headers.soajsauth
-				},
-				'body': {
-					'username': 'admin_' + record.code.toLowerCase(),
-					'firstName': 'Administrator',
-					'lastName': record.name,
-					'tId': data[0]._id.toString(),
-					'tCode': record.code,
-					'email': 'admin@' + record.code.toLowerCase() + '.com',
-					'groups': ['administrator']
-				}
-			};
-			request.post(adminUserRequest, cb);
+			req.soajs.awareness.getHost('controller', function(host) {
+
+				//call urac, insert an admin user
+				var adminUserRequest = {
+					'uri': 'http://' + host + ':' + req.soajs.registry.services.controller.port + '/urac/admin/addUser',
+					'json': true,
+					'headers': {
+						'Content-Type': 'application/json',
+						'accept': 'application/json',
+						'connection': 'keep-alive',
+						'key': req.headers.key,
+						'soajsauth': req.headers.soajsauth
+					},
+					'body': {
+						'username': 'admin_' + record.code.toLowerCase(),
+						'firstName': 'Administrator',
+						'lastName': record.name,
+						'tId': data[0]._id.toString(),
+						'tCode': record.code,
+						'email': 'admin@' + record.code.toLowerCase() + '.com',
+						'groups': ['administrator']
+					}
+				};
+				request.post(adminUserRequest, cb);
+
+			});
 		}
 
 		function createAdminGroup(record, data, cb) {
-			//call urac, insert an admin group
-			var adminUserRequest = {
-				'uri': 'http://' + config.uracdomain + '/urac/admin/group/add',
-				'json': true,
-				'headers': {
-					'Content-Type': 'application/json',
-					'accept': 'application/json',
-					'connection': 'keep-alive',
-					'key': req.headers.key,
-					'soajsauth': req.headers.soajsauth
-				},
-				'body': {
-					'code': 'administrator',
-					'name': 'Administrator',
-					'description': "Administrator Group for tenant " + record.name,
-					'tId': data[0]._id.toString(),
-					'tCode': record.code
-				}
-			};
-			request.post(adminUserRequest, cb);
+			req.soajs.awareness.getHost('controller', function(host) {
+				//call urac, insert an admin group
+				var adminUserRequest = {
+					'uri': 'http://' + host + ':' + req.soajs.registry.services.controller.port + '/urac/admin/group/add',
+					'json': true,
+					'headers': {
+						'Content-Type': 'application/json',
+						'accept': 'application/json',
+						'connection': 'keep-alive',
+						'key': req.headers.key,
+						'soajsauth': req.headers.soajsauth
+					},
+					'body': {
+						'code': 'administrator',
+						'name': 'Administrator',
+						'description': "Administrator Group for tenant " + record.name,
+						'tId': data[0]._id.toString(),
+						'tCode': record.code
+					}
+				};
+				request.post(adminUserRequest, cb);
+			});
 		}
 	},
 

@@ -98,19 +98,17 @@ var serviceConfig = {
 
 module.exports = {
 	"serviceName": "dashboard",
-	"productCode": "DSBRD",
 	"servicePort": 4003,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,
-	"hashIterations": 1024,
-	"seedLength": 32,
 	"extKeyRequired": true,
-	"expDateTTL": 86400000,
-	"uracdomain": "dashboard-api.soajs.org:4000",
-	"hasher": {
+	"awareness": true,
+
+	"hasher":{
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
+	"expDateTTL": 86400000,
 
 	"errors": {
 		"400": "Unable to add the environment record",
