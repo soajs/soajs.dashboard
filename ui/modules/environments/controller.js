@@ -7,6 +7,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 	$scope.envId = null;
 	$scope.formEnvironment = {services: {}};
 	$scope.formEnvironment.config_loggerObj='';
+	$scope.formEnvironment.proxyStr = undefined;
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
@@ -84,6 +85,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 
 	$scope.save = function() {
 		var postData = angular.copy($scope.formEnvironment);
+
+		if( typeof($scope.formEnvironment.services.config.session.proxy)=='undefined'){
+			postData.services.config.session.proxy = 'undefined';
+		}
+		else if( $scope.formEnvironment.services.config.session.proxy === false){
+			postData.services.config.session.proxy = 'false';
+		}
+		else if( $scope.formEnvironment.services.config.session.proxy === true){
+			postData.services.config.session.proxy = 'true';
+		}
 		delete postData.dbs;
 		if(postData.services.config && postData.services.config.oauth && postData.services.config.oauth.grants) {
 			if(typeof(postData.services.config.oauth.grants) == 'string') {
@@ -99,6 +110,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 			try {
 				$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.config_loggerObj);
 				postData.services.config.logger = $scope.formEnvironment.services.config.logger;
+				postData.config_loggerObj;
 			}
 			catch(e) {
 				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
