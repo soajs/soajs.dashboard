@@ -1094,6 +1094,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$timeout', '$modal', '$route
 }]);
 
 multiTenantApp.controller('tenantApplicationAcl', ['$scope','ngDataApi', '$routeParams', 'aclHelper', function($scope, ngDataApi, $routeParams, aclHelper) {
+	$scope.$parent.isUserLoggedIn();
 	$scope.isInherited = false;
 	$scope.currentApplication = {};
 	$scope.allGroups = [];
