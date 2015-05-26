@@ -791,7 +791,7 @@ fieldset .grid table {
 }
 .form .grouped{
     padding-left:0px;
-    width: 1056px;
+    min-width: 1056px;
     margin-top:20px;
 }
 
@@ -964,5 +964,5 @@ div.entryBox .body .btn-primary.noFloat{
 }
 
 #envirForm{
-    max-width: 1056px;
+    min-width: 1056px;
 }

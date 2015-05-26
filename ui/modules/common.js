@@ -139,9 +139,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	var err = 0, valid = [];
 	var referenceKeys = [];
-	var fieldName = (opts.override && opts.override.fieldName) ? opts.override.fieldName : "_id";
-	var token = (opts.override && opts.override.fieldName) ? "%" + opts.override.fieldName + "%" : "%id%";
-	var method = opts.method || 'get';
+	var options = angular.copy(opts);
+	var fieldName = (opts.override && opts.override.fieldName) ? options.override.fieldName : "_id";
+	var token = (opts.override && opts.override.fieldName) ? "%" + options.override.fieldName + "%" : "%id%";
+	var method = options.method || 'get';
 	for(var i = $scope.grid.rows.length - 1; i >= 0; i--) {
 		if($scope.grid.rows[i].selected) {
 			referenceKeys.push($scope.grid.rows[i][fieldName]);
@@ -160,13 +161,12 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	});
 
 	function performUpdate(referenceKeys, counter, cb) {
-
 		if(opts.params) {
 			for(var i in opts.params) {
 				if(opts.params[i] === token) {
-					opts.params[i] = referenceKeys[counter];
+					options.params[i] = referenceKeys[counter];
 					if(opts.override && opts.override.fieldReshape) {
-						opts.params[i] = opts.override.fieldReshape(opts.params[i]);
+						options.params[i] = opts.override.fieldReshape(opts.params[i]);
 					}
 				}
 			}
@@ -175,19 +175,18 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 		if(opts.data) {
 			for(var i in opts.data) {
 				if(opts.data[i] === token) {
-					opts.data[i] = referenceKeys[counter];
+					options.data[i] = referenceKeys[counter];
 					if(opts.override && opts.override.fieldReshape) {
-						opts.data[i] = opts.override.fieldReshape(opts.data[i]);
+						options.data[i] = opts.override.fieldReshape(opts.data[i]);
 					}
 				}
 			}
 		}
-
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": method,
-			"routeName": opts.routeName,
-			"params": opts.params,
-			"data": opts.data
+			"routeName": options.routeName,
+			"params": options.params,
+			"data": options.data
 		}, function(error, response) {
 			if(error || !response) {
 				err++;

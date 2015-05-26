@@ -192,12 +192,13 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		});
 	}
 
-	function delete1Group(currentScope, data) {
+	function delete1Group(currentScope, data, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
+		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
-			"params": {"gId": data._id, 'tId': userCookie.tenant.id}
+			"params": {"gId": data._id, 'tId': tenantId}
 		}, function(error) {
 			if(error) {
 				currentScope.$parent.displayAlert('danger', error.message);
@@ -255,7 +256,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"routeName": "/urac/admin/group/addUsers",
-									"params": {'tId': userCookie.tenant.id},
+									"params": {'tId': tenantId},
 									"data": postData
 								}, function(error) {
 									if(error) {

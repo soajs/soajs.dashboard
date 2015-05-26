@@ -68,7 +68,7 @@ membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, 
 	};
 
 	$scope.groups.delete1Group = function(data) {
-		groupsHelper.delete1Group($scope.groups, data);
+		groupsHelper.delete1Group($scope.groups, data, true);
 	};
 
 	$scope.groups.assignUsers = function(data) {
@@ -216,7 +216,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 	};
 
 	$scope.tenantGroups.delete1Group = function(data) {
-		groupsHelper.delete1Group($scope.tenantGroups);
+		groupsHelper.delete1Group($scope.tenantGroups, data, false);
 	};
 
 	$scope.tenantGroups.assignUsers = function(data) {

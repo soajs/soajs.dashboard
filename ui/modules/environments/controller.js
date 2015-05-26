@@ -616,7 +616,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 	};
 
 	$scope.listDatabases = function(env) {
-		if(access.dbs.list){
+		if($scope.access.dbs.list){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/dbs/list",
@@ -829,7 +829,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 	};
 
 	$scope.listClusters = function(env) {
-		if(access.clusters.list){
+		if($scope.access.clusters.list){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/clusters/list",
