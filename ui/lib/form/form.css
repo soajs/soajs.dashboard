@@ -52,6 +52,7 @@ form .btn-sm{
 }
 
 .grouped .form-control{
+    width: 70%;
     min-width: 725px;
     display: inline;
 }

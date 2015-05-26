@@ -6,7 +6,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 	$scope.newEntry = true;
 	$scope.envId = null;
 	$scope.formEnvironment = {services: {}};
-
+	$scope.formEnvironment.config_loggerObj='';
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
@@ -56,7 +56,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 							}
 							if(response[x].services && response[x].services.config) {
 								if(response[x].services.config.logger) {
-									$scope.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
+									$scope.formEnvironment.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
 								}
 							}
 							break;
@@ -95,9 +95,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile','$timeout', 
 				"topologyDir": "/opt/soajs/"
 		};
 
-		if($scope.config_loggerObj && ($scope.config_loggerObj != "")) {
+		if($scope.formEnvironment.config_loggerObj && ($scope.formEnvironment.config_loggerObj != "")) {
 			try {
-				$scope.formEnvironment.services.config.logger = JSON.parse($scope.config_loggerObj);
+				$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.config_loggerObj);
+				postData.services.config.logger = $scope.formEnvironment.services.config.logger;
 			}
 			catch(e) {
 				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
