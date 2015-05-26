@@ -72,7 +72,7 @@ membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, 
 	};
 
 	$scope.groups.assignUsers = function(data) {
-		groupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}});
+		groupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}}, true);
 	};
 
 	$scope.groups.listGroups();
@@ -220,7 +220,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 	};
 
 	$scope.tenantGroups.assignUsers = function(data) {
-		groupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadTenantMembers', params: {'name': 'tIdReload', 'params': $scope.tenantGroups.tId}});
+		groupsHelper.assignUsers($scope.tenantGroups, groupsConfig, data, {'name': 'reloadTenantMembers', params: {'name': 'tIdReload', 'params': $scope.tenantGroups.tId}});
 	};
 
 }]);
