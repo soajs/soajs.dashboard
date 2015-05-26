@@ -152,10 +152,10 @@ module.exports = {
 										return res.jsonp(req.soajs.buildResponse(null, {'newKey': newKey.extKeys[0].extKey}));
 									});
 								});
-							})
+							});
 						});
 					});
-				})
+				});
 			});
 		});
 
