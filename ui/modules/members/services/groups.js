@@ -209,12 +209,14 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		});
 	}
 
-	function assignUsers(currentScope, groupsConfig, data, event) {
+	function assignUsers(currentScope, groupsConfig, data, event, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
+		var tenantId = (useCookie) ? userCookie.tenant.id: currentScope.tId;
+
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers",
-			"params": {'tId': userCookie.tenant.id}
+			"params": {'tId': tenantId}
 		}, function(error, response) {
 			if(error) {
 				currentScope.$parent.displayAlert('danger', error.message);

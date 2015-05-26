@@ -373,7 +373,6 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 					}
 				}
 
-				console.log($scope.currentPackage);
 				$scope.aclFill= angular.copy($scope.currentPackage.acl);
 				aclHelpers.fillAcl($scope.aclFill);
 			}
@@ -408,7 +407,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 	$scope.saveACL=function(){
 		var productId=  $routeParams.pid;
 		var postData = $scope.currentPackage ;
-		postData.acl = aclHelpers.constructAclFromPost($scope.aclFill);;
+		postData.acl = aclHelpers.constructAclFromPost($scope.aclFill);
 
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -426,7 +425,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 	};
 
 	$scope.checkForGroupDefault=function(service,grp,val,myApi) {
-		aclHelpers.checkForGroupDefault($scope, service,grp,val,myApi);
+		aclHelpers.checkForGroupDefault($scope,service,grp,val,myApi);
 	};
 
 	$scope.applyRestriction=function(service){

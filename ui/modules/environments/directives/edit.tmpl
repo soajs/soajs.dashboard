@@ -1,6 +1,6 @@
 <section ng-controller="environmentCtrl">
     <div class="form">
-        <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" name="envirForm" ng-submit="envirForm.$valid && save()">
+        <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" id="envirForm" name="envirForm" ng-submit="envirForm.$valid && save()">
             <div class="header"><h3 class="ng-binding">{{newEntry? "Create" : "Edit"}} Environment</h3></div>
             <div class="body">
                 <a href="#/environments" class="w100 f-right t-right">Go Back to Environments</a>
