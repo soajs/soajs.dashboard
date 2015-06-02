@@ -57,8 +57,8 @@ soajsApp.config([
 	}
 ]);
 
-soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', '$localStorage',
-	function($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, $localStorage) {
+soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
+	function($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
 		$scope.enableInterface = false;
 		$scope.go = function(path) {
 			$location.path(path);

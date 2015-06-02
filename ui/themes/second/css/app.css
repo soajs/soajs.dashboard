@@ -50,6 +50,14 @@ a:hover {
     text-transform: uppercase;
 }
 
+#header #logo img{
+    width:35px;
+    position:relative;
+    top:-4px;
+    margin-right:5px;
+    display:inline;
+}
+
 #header #slogan {
     font-style: italic;
     color: #337ab7;
