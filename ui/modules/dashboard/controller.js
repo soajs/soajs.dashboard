@@ -1,6 +1,6 @@
 "use strict";
 var dahsboardApp = soajsApp.components;
-dahsboardApp.controller('dahsboardCtrl', ['$scope', '$timeout', 'ngDataApi', function($scope, $timeout, ngDataApi) {
+dahsboardApp.controller('dahsboardCtrl', ['$scope','ngDataApi', function($scope, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
