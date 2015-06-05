@@ -68,7 +68,7 @@ function buildGrid($scope, opts) {
 			original: configuration.rows,
 			rows: configuration.rows,
 			sortField: configuration.defaultSortField,
-			reverse: false,
+			reverse: configuration.defaultSortASC || false,
 			recordsPerPageArray: configuration.recordsPerPageArray,
 			search: (configuration.search === false) ? false : true
 		};

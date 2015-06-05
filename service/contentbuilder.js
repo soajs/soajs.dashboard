@@ -148,7 +148,7 @@ function compareUI(oldUI, newUI) {
 module.exports = {
 
 	"list": function(config, mongo, req, res) {
-		var fields = {"id": 1, "name": 1, "ts": 1, "modified": 1, "v": 1};
+		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1};
 		mongo.find(collectionName, {$query: {}, $orderby: {"ts": -1, "v": -1}}, fields, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
 			return res.jsonp(req.soajs.buildResponse(null, response));
@@ -178,30 +178,10 @@ module.exports = {
 	},
 
 	"revisions": function(config, mongo, req, res) {
-		mongo.getCollection(collectionName + "_versioning", function(error, collection) {
+		var fields = {"name": 1, "author": 1, "modified": 1, "v": 1};
+		mongo.find(collectionName + "_versioning", {$query: {},$orderby: {'v': -1}}, fields, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
-			var aggCondition = [
-				{
-					$group: {
-						'_id': "$name",
-						'versions': {
-							$addToSet: "$v"
-						}
-					}
-				},
-				{
-					$sort: {
-						'name': 1
-					}
-				}
-			];
-			collection.aggregate(aggCondition, function(error, result) {
-				if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
-				result.forEach(function(oneResult) {
-					oneResult.versions = oneResult.versions.sort();
-				});
-				return res.jsonp(req.soajs.buildResponse(null, result));
-			});
+			return res.jsonp(req.soajs.buildResponse(null, response));
 		});
 	},
 

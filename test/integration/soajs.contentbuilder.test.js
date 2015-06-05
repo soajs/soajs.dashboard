@@ -788,8 +788,6 @@ describe("DASHBOARD CONTENT BUILDER TESTS", function() {
 				}
 			}, 'cb/listRevisions', 'get', function(body) {
 				assert.ok(body.data);
-				assert.equal(body.data.length, 1);
-				assert.equal(body.data[0].versions.length, oldVTotal);
 				done();
 			});
 		});

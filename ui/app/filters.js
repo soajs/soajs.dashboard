@@ -16,6 +16,12 @@ soajsApp.filter('TTL', function() {
 	}
 });
 
+soajsApp.filter('fulldate', function() {
+	return function(text) {
+		return new Date(text).toISOString();
+	};
+});
+
 soajsApp.filter('toTrustedHtml', ['$sce', function($sce) {
 	return function(text) {
 		return $sce.trustAsHtml(text);
