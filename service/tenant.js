@@ -4,7 +4,7 @@ var oauthUsersColName = "oauth_urac";
 var prodColName = "products";
 var envColName = "environment";
 
-var Hasher = require("./hasher.js");
+var Hasher = require("./utils/hasher.js");
 var request = require("request");
 
 function validateId(mongo, req, cb) {

@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "soajs": "0.1.*",
+    "object-hash": "*",
     "bcrypt": "*",
     "request" :"*"
   }

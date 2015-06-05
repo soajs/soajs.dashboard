@@ -136,6 +136,7 @@ module.exports = {
 			});
 		});
 	},
+
 	"getPackage": function(config, mongo, req, res) {
 		mongo.findOne(colName, {"code": req.soajs.inputmaskData.productCode}, function(err, product) {
 			if(err || !product) { return res.jsonp(req.soajs.buildResponse({"code": 460, "msg": config.errors[460]})); }

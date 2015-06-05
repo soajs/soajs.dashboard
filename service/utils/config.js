@@ -1,7 +1,7 @@
 'use strict';
-var serviceConfig = require("./schemas/serviceConfig");
-var cbSchema = require("./schemas/cb");
-var aclSchema = require("./schemas/acl");
+var serviceConfig = require("../schemas/serviceConfig");
+var cbSchema = require("../schemas/cb");
+var aclSchema = require("../schemas/acl");
 
 module.exports = {
 	"serviceName": "dashboard",
@@ -1050,7 +1050,7 @@ module.exports = {
 				}
 			}
 		},
-		"/cb/listRevision": {
+		"/cb/listRevisions": {
 			"_apiInfo": {
 				"l": "List Content Schema Revisions",
 				"group": "Content Builder"

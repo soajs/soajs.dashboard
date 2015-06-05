@@ -37,7 +37,7 @@ var genericService = {
 							}
 						},
 						"patternProperties": {
-							"^\/[a-zA-Z0-9_\-\.]+$": {
+							"^\/[a-zA-Z0-9_\.\-]+$": {
 								"type": "object",
 								"properties": {
 									"_apiInfo": {
@@ -82,7 +82,7 @@ var soajsService = {
 		"apis": {
 			"type": "object",
 			"patternProperties": {
-				"^\/[a-zA-Z0-9_\-\.]+$": {
+				"^\/[a-zA-Z0-9_\.\-]+$": {
 					"type": "object",
 					"properties": {
 						"type": {"type": "string", "enum": ['get', 'list', 'add', 'update', 'delete', 'restore']},
@@ -97,22 +97,11 @@ var soajsService = {
 						"workflow": {
 							"type": "object",
 							"properties": {
-								//todo: figure out what to do with functions
-								"initialize": {
-
-								},
-								"preExec": {
-
-								},
-								"exec": {
-
-								},
-								"postExec": {
-
-								},
-								"response":{
-
-								}
+								"initialize": {"type": "string"},
+								"preExec": {"type": "string"},
+								"exec": {"type": "string"},
+								"postExec": {"type": "string"},
+								"response": {"type": "string"}
 							}
 						}
 					},
@@ -133,9 +122,9 @@ var formElements = {
 			"name": {"type": "string"},
 			"label": {"type": "string"},
 			"req": {"type": "boolean"},
-			"type": {
+			"_type": {
 				"type": "string",
-				"enum": ['text', 'password', 'email', 'number', 'phone', 'url', 'readonly', 'textarea', 'radio', 'checkbox', 'select', 'multi-select', 'date-picker', 'html']
+				"enum": ['text', 'password', 'email', 'number', 'phone', 'url', 'readonly', 'textarea', 'radio', 'checkbox', 'select', 'multi-select', 'date-picker', 'html', 'editor']
 			},
 			"placeholder": {"type": "string"},
 			"tooltip": {"type": "string"},
@@ -163,7 +152,7 @@ var formElements = {
 			"rows": {"type": "integer"},
 			"min": {"type": "date-time"}
 		},
-		"required": ["name", "label", "req", "type"]
+		"required": ["name", "label", "req", "_type"]
 	}
 };
 

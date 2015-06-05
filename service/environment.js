@@ -1,5 +1,4 @@
 'use strict';
-
 var colName = "environment";
 var tenantColName = "tenants";
 

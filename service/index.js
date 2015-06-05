@@ -1,16 +1,15 @@
 'use strict';
-var soajs = require('soajs');
 var request = require('request');
-
+var soajs = require('soajs');
 var Mongo = soajs.mongo;
+var mongo = null;
 
-var config = require('./config.js');
+var config = require('./utils/config.js');
 var environment = require('./environment.js');
 var product = require('./product.js');
 var tenant = require('./tenant.js');
 var host = require("./host.js");
-
-var mongo = null;
+var cb = require("./contentbuilder.js");
 
 var service = new soajs.server.service({
 	"oauth": false,
@@ -42,6 +41,9 @@ function checkMyAccess(req, res, cb) {
 }
 
 service.init(function() {
+	/**
+	 * Environments features
+	 */
 	service.post("/environment/add", function(req, res) {
 		checkForMongo(req);
 		environment.add(config, mongo, req, res);
@@ -102,7 +104,9 @@ service.init(function() {
 		environment.listClusters(config, mongo, req, res);
 	});
 
-
+	/**
+	 * Products features
+	 */
 	service.post("/product/add", function(req, res) {
 		checkForMongo(req);
 		product.add(config, mongo, req, res);
@@ -145,6 +149,9 @@ service.init(function() {
 		product.deletePackage(config, mongo, req, res);
 	});
 
+	/**
+	 * Tenants features
+	 */
 	service.post("/tenant/add", function(req, res) {
 		checkForMongo(req);
 		tenant.add(config, mongo, req, res);
@@ -263,7 +270,10 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.injectTenantACL(config, mongo, req, res);
 	});
-	
+
+	/**
+	 * Hosts features
+	 */
 	service.get("/hosts/list", function(req, res) {
 		checkForMongo(req);
 		host.list(config, mongo, req, res);
@@ -277,6 +287,9 @@ service.init(function() {
 		host.maintenanceOperation(config, mongo, req, res);
 	});
 
+	/**
+	 * Sesttings features
+	 */
 	service.post("/services/list", function(req, res) {
 		checkForMongo(req);
 		var colName = 'services';
@@ -311,8 +324,8 @@ service.init(function() {
 	service.get("/settings/tenant/get", function(req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function() {
-			environment.list(config, mongo, req, res, function(environments){
-				tenant.get(config, mongo, req, res, function(tenant){
+			environment.list(config, mongo, req, res, function(environments) {
+				tenant.get(config, mongo, req, res, function(tenant) {
 					return res.jsonp(req.soajs.buildResponse(null, {'tenant': tenant, 'environments': environments}));
 				});
 			});
@@ -433,5 +446,32 @@ service.init(function() {
 		});
 	});
 
+	/**
+	 * content builder features
+	 */
+	service.get("/cb/list", function(req, res) {
+		checkForMongo(req);
+		cb.list(config, mongo, req, res);
+	});
+	service.get("/cb/get", function(req, res) {
+		checkForMongo(req);
+		cb.get(config, mongo, req, res);
+	});
+	service.get("/cb/listRevisions", function(req, res) {
+		checkForMongo(req);
+		cb.revisions(config, mongo, req, res);
+	});
+	service.post("/cb/add", function(req, res) {
+		checkForMongo(req);
+		cb.add(config, mongo, req, res);
+	});
+	service.post("/cb/update", function(req, res) {
+		checkForMongo(req);
+		cb.update(config, mongo, req, res);
+	});
+
+	/**
+	 * Service Start
+	 */
 	service.start();
 });
