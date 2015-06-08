@@ -37,11 +37,27 @@ contentBuilderApp.controller("contentBuilderActiveCtrl", ['$scope', 'cbHelper', 
 	};
 
 	$scope.viewService = function(data) {
-		console.log(data);
+		cbHelper.viewEntry($scope, {"id": data._id});
 	};
 
 	$scope.addService = function() {
-		console.log("open wizard!");
+		$modal.open({
+			templateUrl: "addService.html",
+			size: 'lg',
+			backdrop: false,
+			keyboard: false,
+			controller: function($scope, $modalInstance) {
+				$scope.name = "";
+				$scope.config ={
+					"genericService": {},
+					"soajsService": {},
+					"soajsUI": {}
+				};
+				$scope.cancel = function() {
+					$modalInstance.dismiss('cancel');
+				};
+			}
+		});
 	};
 
 	$scope.editService = function(data) {
@@ -59,12 +75,12 @@ contentBuilderApp.controller("contentBuilderRevisionsCtrl", ['$scope', 'cbHelper
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, cbConfig.permissions);
 
-	$scope.assingRevisionsToGrid = function(versionsRecords){
+	$scope.assingRevisionsToGrid = function(versionsRecords) {
 		$scope.rows = versionsRecords;
 		cbHelper.printEntries($scope, $scope.rows, cbConfig.grid.revisions, true);
 	};
 
 	$scope.viewService = function(data) {
-		console.log(data);
+		cbHelper.viewEntry($scope, {"id": data.refId.toString(), "version": data.v});
 	};
 }]);

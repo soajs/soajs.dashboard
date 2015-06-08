@@ -7,7 +7,7 @@ var cbConfig = {
 				{'label': 'Name', 'field': 'name'},
 				{'label': 'Version', 'field': 'v'},
 				{'label': 'Author', 'field': 'author'},
-				{'label': 'Created', 'field': 'ts', 'filter': 'date'},
+				{'label': 'Created', 'field': 'ts', 'filter': 'fulldate'},
 				{'label': 'Last Modified', 'field': 'modified', 'filter': 'fulldate'}
 			],
 			'defaultSortField': 'name',

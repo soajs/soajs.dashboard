@@ -974,3 +974,16 @@ div.entryBox .body .btn-primary.noFloat{
 #envirForm{
     min-width: 1056px;
 }
+
+.inlineAPIBox{
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+    margin-bottom: 15px;
+}
+
+.inlineAPIBox .apiLabel{
+    font-weight:bold;
+    font-size:16px;
+    background-color:#f8f8f8;
+    padding: 3px;
+}

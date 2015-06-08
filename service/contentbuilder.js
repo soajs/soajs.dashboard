@@ -178,7 +178,7 @@ module.exports = {
 	},
 
 	"revisions": function(config, mongo, req, res) {
-		var fields = {"name": 1, "author": 1, "modified": 1, "v": 1};
+		var fields = {"refId": 1,"name": 1, "author": 1, "modified": 1, "v": 1};
 		mongo.find(collectionName + "_versioning", {$query: {},$orderby: {'v': -1}}, fields, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
 			return res.jsonp(req.soajs.buildResponse(null, response));

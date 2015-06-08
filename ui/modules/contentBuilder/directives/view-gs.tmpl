@@ -1,0 +1,66 @@
+<h4>Service Information:</h4>
+<table width="100%">
+    <tr class="ng-scope">
+        <td><b>serviceName:</b></td>
+        <td>{{data.genericService.config.serviceName}}</td>
+        <td><b>servicePort:</b></td>
+        <td>{{data.genericService.config.servicePort}}</td>
+    </tr>
+    <tr class="ng-scope">
+        <td><b>extKeyRequired:</b></td>
+        <td>{{data.genericService.config.extKeyRequired}}</td>
+        <td><b>requestTimeout:</b></td>
+        <td>{{data.genericService.config.requestTimeout}}</td>
+    </tr>
+    <tr class="ng-scope">
+        <td><b>requestTimeoutRenewal:</b></td>
+        <td>{{data.genericService.config.requestTimeoutRenewal}}</td>
+        <td><b>awareness:</b></td>
+        <td>{{data.genericService.config.awareness}}</td>
+    </tr>
+    <tr class="ng-scope">
+        <td colspan="2" valign="top"><b>errors:</b></td>
+        <td colspan="2" ng-bind-html="data.genericService.config.errors|object"></td>
+    </tr>
+</table>
+
+<h4>Schema:</h4>
+<div class="w100 c-both" style="display: table">
+    <div ng-repeat="(entryLabel, entryField) in data.genericService.config.schema track by entryLabel">
+        <div ng-if="entryLabel !=='commonFields'" class="w50 f-left inlineAPIBox">
+            <div class="apiLabel">{{entryLabel}}</div>
+            <table width="100%">
+                <!--<caption>API Group &amp; Inputs:</caption>-->
+                <tr ng-repeat="(imfvInputName, imfvInputValue) in entryField track by imfvInputName">
+                    <td width="30%" valign="top"><b>{{imfvInputName}}:</b></td>
+                    <td ng-if="imfvInputName==='_apiInfo'" ng-bind-html="imfvInputValue|object"></td>
+                    <td ng-if="imfvInputName==='commonFields'">{{imfvInputValue}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-if="entryLabel === 'commonFields'" class="w100 c-both inlineAPIBox">
+            <div class="apiLabel">{{entryLabel}}</div>
+            <div class="w50 f-left">
+                <table width="100%" ng-repeat="cf in twoCols.col1" ng-class-odd="'odd'" ng-class-even="'even'">
+                    <!--<caption>IMFV Configuration:</caption>-->
+                    <tr>
+                        <td width="30%" valign="top"><b>{{cf.l}}:</b></td>
+                        <td ng-bind-html="cf.v|object"></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                </table>
+            </div>
+            <div class="w50 f-left">
+                <table width="100%" ng-repeat="cf in twoCols.col2" ng-class-odd="'odd'" ng-class-even="'even'">
+                    <!--<caption>IMFV Configuration:</caption>-->
+                    <tr>
+                        <td width="30%" valign="top"><b>{{cf.l}}:</b></td>
+                        <td ng-bind-html="cf.v|object"></td>
+                    </tr>
+                    <tr><td><br/></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,8 @@
     <tabset>
         <tab heading="Active">
             <section ng-controller="contentBuilderActiveCtrl">
+                <div ng-include="'modules/contentBuilder/directives/add.tmpl'"></div>
+                <div ng-include="'modules/contentBuilder/directives/view.tmpl'"></div>
                 <span ng-if="access.addService">
                     <a href="" ng-click="addService()" class="btn btn-primary">Add New Schema</a><br/><br/>
                 </span>
@@ -16,6 +18,7 @@
                             {{serviceName}}
                         </div>
                         <div class="body" ng-controller="contentBuilderRevisionsCtrl">
+                            <div ng-include="'modules/contentBuilder/directives/view.tmpl'"></div>
                             <div ng-init="assingRevisionsToGrid(versionsRecords);">
                                 <nglist></nglist>
                             </div>

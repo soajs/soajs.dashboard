@@ -1,0 +1,36 @@
+<h4>Database Connection:</h4>
+<table width="100%">
+    <tr class="ng-scope">
+        <td><b>Default Collection:</b></td>
+        <td>{{data.soajsService.db.collection}}</td>
+        <td><b>Multitenant:</b></td>
+        <td>{{data.soajsService.db.multitenant}}</td>
+    </tr>
+    <tr class="ng-scope" ng-if="data.soajsService.db.config">
+        <td><b>Configuration:</b></td>
+        <td ng-bind-html="data.soajsService.db.config|object" colspan="3"></td>
+    </tr>
+</table>
+<h4>APIs &amp; Workflow</h4>
+<div ng-repeat="(entryLabel, entryField) in data.soajsService.apis track by entryLabel" class="w100 c-both inlineAPIBox">
+    <div class="apiLabel">{{entryLabel}}</div>
+    <table width="100%">
+        <tr>
+            <td width="10%"><b>method:</b></td>
+            <td>{{entryField.method}}</td>
+            <td width="10%"><b>type:</b></td>
+            <td>{{entryField.type}}</td>
+        </tr>
+        <tr>
+            <td valign="top"><b>mw:</b></td>
+            <td ng-bind-html="entryField.mw|object"></td>
+        </tr>
+        <tr>
+            <td colspan="4"><b>Workflow:</b></td>
+        </tr>
+        <tr ng-repeat="(stepName, stepCode) in entryField.workflow">
+            <td width="15%" valign="top">-&nbsp;<b>{{stepName}}</b></td>
+            <td colspan="3"><pre><code class="javascript">{{stepCode}}</code></pre></td>
+        </tr>
+    </table>
+</div>

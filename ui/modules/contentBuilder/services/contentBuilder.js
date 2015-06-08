@@ -49,8 +49,69 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 		buildGrid(currentScope, options);
 	}
 
+	function viewEntry(currentScope, params) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/cb/get",
+			"params": params
+		}, function(error, response) {
+			if(error) {
+				currentScope.$parent.displayAlert("danger", error.message);
+			}
+			else {
+				$modal.open({
+					templateUrl: "serviceInfoBox.html",
+					size: 'lg',
+					backdrop: true,
+					keyboard: true,
+					controller: function($scope, $modalInstance) {
+						$scope.data = response;
+						$scope.twoCols = {col1: [], col2: []};
+						var count = 0;
+						for(var i in $scope.data.genericService.config.schema.commonFields) {
+							count++;
+							if(count % 2 === 0) {
+								$scope.twoCols.col2.push({'l': i, 'v': $scope.data.genericService.config.schema.commonFields[i]});
+							}
+							else {
+								$scope.twoCols.col1.push({'l': i, 'v': $scope.data.genericService.config.schema.commonFields[i]});
+							}
+						}
+
+						if(Object.keys($scope.data.soajsService.db.config).length === 0) {
+							delete $scope.data.soajsService.db.config;
+						}
+
+						for(var api in $scope.data.soajsService.apis) {
+							if($scope.data.soajsService.apis.hasOwnProperty(api)) {
+								for(var stepName in $scope.data.soajsService.apis[api].workflow) {
+									if($scope.data.soajsService.apis[api].workflow.hasOwnProperty(stepName)) {
+										$scope.data.soajsService.apis[api].workflow[stepName] = $scope.data.soajsService.apis[api].workflow[stepName].replace(/\\n/g,"<br />");
+									}
+								}
+							}
+						}
+						for(var i =0; i< $scope.data.soajsUI.form.add.length; i++){
+							$scope.data.soajsUI.form.add[i].print = JSON.stringify($scope.data.soajsUI.form.add[i], null, 2);
+						}
+
+						for(var i =0; i< $scope.data.soajsUI.form.update.length; i++){
+							$scope.data.soajsUI.form.update[i].print = JSON.stringify($scope.data.soajsUI.form.update[i], null, 2);
+						}
+
+						setTimeout(function() {highlightMyCode()}, 500);
+						$scope.ok = function() {
+							$modalInstance.dismiss('ok');
+						};
+					}
+				});
+			}
+		});
+	}
+
 	return {
 		'listEntries': listEntries,
-		'printEntries': printEntries
+		'printEntries': printEntries,
+		'viewEntry': viewEntry
 	}
 }]);
