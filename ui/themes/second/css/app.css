@@ -3,36 +3,42 @@ body {
     padding: 0;
     background: #E5EAEE;
 }
+
 a:hover {
     text-decoration: none;
 }
 
-#overlay{
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:10000;
-    display:none;
+em {
+    color: #999;
 }
-#overlay .bg{
-    background-color:black;
-    opacity:0.7;
-    width:100%;
+
+#overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    display: none;
+}
+
+#overlay .bg {
+    background-color: black;
+    opacity: 0.7;
+    width: 100%;
     height: 100%;
 }
 
-#overlay .content{
-    background:white;
-    width:80%;
-    margin:auto;
-    opacity:1.3;
-    text-align:center;
+#overlay .content {
+    background: white;
+    width: 80%;
+    margin: auto;
+    opacity: 1.3;
+    text-align: center;
     border-radius: 10px;
-    position:fixed;
-    left:10%;
-    overflow:scroll;
+    position: fixed;
+    left: 10%;
+    overflow: scroll;
 }
 
 #header {
@@ -50,12 +56,12 @@ a:hover {
     text-transform: uppercase;
 }
 
-#header #logo img{
-    width:35px;
-    position:relative;
-    top:-4px;
-    margin-right:5px;
-    display:inline;
+#header #logo img {
+    width: 35px;
+    position: relative;
+    top: -4px;
+    margin-right: 5px;
+    display: inline;
 }
 
 #header #slogan {
@@ -103,7 +109,7 @@ a:hover {
     top: -35px;
 }
 
-#noMainMenu{
+#noMainMenu {
     margin-top: 35px;
     float: left;
     width: 13%;
@@ -288,12 +294,24 @@ a:hover {
     letter-spacing: 1px;
 }
 
-.w20 {
-    width: 20%;
+.redFlag {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+    padding: 15px;
+    border-radius: 4px;
 }
 
-.w80 {
-    width: 80%;
+.w20i {
+    width: 20% !important;
+}
+
+.w10 {
+    width: 10%;
+}
+
+.w20 {
+    width: 20%;
 }
 
 .w30 {
@@ -302,6 +320,16 @@ a:hover {
 
 .w50 {
     width: 50%;
+}
+
+.w80 {
+    min-width: 80%;
+    width: 80%;
+}
+
+.w90 {
+    min-width: 90%;
+    width: 90%;
 }
 
 .w100 {
@@ -320,18 +348,28 @@ a:hover {
     float: right;
 }
 
-.f-left{
+.f-left {
     float: left;
 }
 
-.c-both{
-    clear:both;
+.c-both {
+    clear: both;
+}
+
+.table {
+    display: table;
+    /*display: flex;*/
+}
+
+.table-cell{
+    display: table-cell;
+    /*flex: 1;*/
 }
 
 /**
     THEME SPECIFIC
 **/
-#header #userMenu ul li a{
+#header #userMenu ul li a {
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
@@ -344,7 +382,7 @@ a:hover {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#mainMenu ul li a{
+#mainMenu ul li a {
     padding-left: 5px;
     display: block;
 }
@@ -353,49 +391,51 @@ a:hover {
     THEME ENDS HERE
     CUSTOM CSS STARTS HERE
 **/
-.entryServiceBoxes{
+.entryServiceBoxes {
 
 }
-.entryServiceBoxes .service-container{
+
+.entryServiceBoxes .service-container {
     border: solid 1px #cccccc;
     position: relative;
     border-radius: 8px;
     width: 100%;
     margin-bottom: 10px;
 }
+
 .entryServiceBoxes .service-container label {
     text-decoration: underline;
 }
 
-.entryServiceBoxes .service-container div.blueBox{
+.entryServiceBoxes .service-container div.blueBox {
     /*#page div.entryBoxes div.entryBox:hover {*/
     background: #DEF1F7;
     border: solid 1px #337ab7;
     color: black;
 }
 
-.entryServiceBoxes .service-container .serviceNameHead{
+.entryServiceBoxes .service-container .serviceNameHead {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
-    border-bottom:solid 1px #cccccc;
-    padding:5px;
-    font-weight:bold;
-    background-color:#eeeeee;
+    border-bottom: solid 1px #cccccc;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #eeeeee;
     border-radius: 8px;
 }
 
-.entryServiceBoxes .service-container .serviceNameHead span{
+.entryServiceBoxes .service-container .serviceNameHead span {
     font-weight: normal;
     margin-left: 10px;
 }
 
-.serviceNameHead .serviceName{
+.serviceNameHead .serviceName {
     float: left;
     width: 200px;
 }
 
-.entryServiceBoxes .service-container .body{
-    padding:5px;
+.entryServiceBoxes .service-container .body {
+    padding: 5px;
 }
 
 /*****/
@@ -436,7 +476,13 @@ div.entryBoxes {
     color: black;
 }
 
-div.entryBox .header{
+#page div.entryBoxes div.redBox {
+    background: #f2dede;
+    border: solid 1px #d43f3a;
+    color: black;
+}
+
+div.entryBox .header {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     border-bottom: solid 1px #cccccc;
@@ -445,11 +491,12 @@ div.entryBox .header{
     background-color: #eeeeee;
 }
 
-div.entryBox .header span{
+div.entryBox .header span {
     font-weight: normal;
     margin-left: 10px;
 }
-div.entryBox .header b{
+
+div.entryBox .header b {
     margin-left: 50px;
 }
 
@@ -467,7 +514,8 @@ div.entryBox .body .btn-primary {
     position: relative;
     top: -10px;
 }
-div.entryBox .body form .btn-primary{
+
+div.entryBox .body form .btn-primary {
     float: none;
     top: 0px;
 }
@@ -503,11 +551,11 @@ div.entryBox .listoUsers li.blueLi {
     margin-right: 10px;
 }
 
-div.entryBox li.blueLi.blueLiBox{
-    width:23%;
-    margin:1%;
-    float:left;
-    height:120px;
+div.entryBox li.blueLi.blueLiBox {
+    width: 23%;
+    margin: 1%;
+    float: left;
+    height: 120px;
     word-wrap: break-word;
 }
 
@@ -518,6 +566,7 @@ div.entryBox .blueListing li.blueLi a {
 .rightActions a {
     float: right;
 }
+
 div.entryBox .blueListing li.row-list a {
     position: relative;
     top: 0;
@@ -606,25 +655,22 @@ form .header h3 {
     background-color: #99C9FF !important;
 }
 
-.nav-tabs > li.active > a, 
-.nav-tabs > li.active > a:hover, 
-.nav-tabs > li.active > a:focus{
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
 }
 
 .nav-tabs li a:focus {
     outline: 0;
 }
-div.entryBox .body .btn-ssm{
-    position:relative;
-    top:0px;	
-    padding-top: 3px; 
+
+div.entryBox .body .btn-ssm {
+    position: relative;
+    top: 0px;
+    padding-top: 3px;
     padding-bottom: 2px;
     margin-left: 10px;
-    margin-bottom :5px;
-}
-
-.tab-content > .active{
-	
+    margin-bottom: 5px;
 }
 
 fieldset {
@@ -633,6 +679,7 @@ fieldset {
     padding: 8px 12px;
     margin-bottom: 10px;
 }
+
 fieldset legend {
     margin-bottom: 0;
     text-decoration: none;
@@ -641,27 +688,33 @@ fieldset legend {
     padding-left: 10px;
     padding-right: 10px;
 }
-.apiListing{
+
+.apiListing {
     display: inline-block;
     vertical-align: top;
     padding-bottom: 10px;
 }
-.apiListing .apiLabel{
+
+.apiListing .apiLabel {
     float: left;
     width: 300px;
     padding-right: 30px;
 }
-.apiListing .apiAccess{
+
+.apiListing .apiAccess {
     float: left;
     width: 370px;
 }
-.apiListing-container .odd{
+
+.apiListing-container .odd {
     margin-right: 45px;
 }
-.apiListing-container .even, .apiListing-container .odd{
+
+.apiListing-container .even, .apiListing-container .odd {
     width: 670px;
 }
-.apiListing-container input{
+
+.apiListing-container input {
     margin-top: 0;
 }
 
@@ -672,22 +725,24 @@ fieldset legend {
 .listApis tr td {
     padding: 3px;;
 }
-.service-container{
+
+.service-container {
 }
 
-.listApis{
+.listApis {
     display: none;
 }
 
-.openApis{
+.openApis {
     display: block;
     transition: all 0.5s ease 0s;
 }
 
 #application-ApiList .apiListing-container .even, #application-ApiList .apiListing-container .odd {
-   width: 100%;
+    width: 100%;
 }
-.grpsListingScroll{
+
+.grpsListingScroll {
     width: 378px;
     height: 70px;
     overflow-y: scroll;
@@ -698,43 +753,49 @@ fieldset legend {
     border-radius: 10px;
     padding: 5px;
 }
-.smallGrpsListingScroll{
+
+.smallGrpsListingScroll {
     height: 35px;
     overflow: hidden;
 }
 
-.apiListing .grpsListingScroll{
+.apiListing .grpsListingScroll {
     margin-top: -5px;
 }
 
-ul.grpsListing{
+ul.grpsListing {
     margin: 0;
     list-style: none;
     display: inline-block;
     padding-left: 5px;
     padding: 0;
 }
-.grpsListing li{
+
+.grpsListing li {
     float: left;
     width: 170px;
     font-weight: normal;
     font-size: 12px;
 }
-.grpsListing li.oddLi{
+
+.grpsListing li.oddLi {
     margin-right: 10px;
 }
-.grpsListing li input{
+
+.grpsListing li input {
     margin-right: 3px;
     margin-top: 1px;
 }
 
-input[type="radio"], input[type="checkbox"]{}
+input[type="radio"], input[type="checkbox"] {
+}
 
 #application-ApiList .apiListing .apiAccess {
     width: auto;
     vertical-align: top;
 }
-.apiAccess em{
+
+.apiAccess em {
     font-size: 12px;
 }
 
@@ -742,124 +803,156 @@ fieldset .grid table {
     min-width: 100px;
 }
 
-.dbBox{
-    padding:5px;
+.dbBoxRed,
+.dbBox {
+    padding: 5px;
     float: left;
     display: table;
     width: auto;
     margin: 5px;
 }
 
-.dbBox .head{
-    padding:5px 5px 5px 10px;
-    border:solid 1px #337ab7;
-    border-radius:5px;
-    position:relative;
-    background-color:#DEF1F7;
+.dbBoxRed .head,
+.dbBox .head {
+    padding: 5px 5px 5px 10px;
+    border: solid 1px #337ab7;
+    border-radius: 5px;
+    position: relative;
+    background-color: #DEF1F7;
 }
 
-.dbBox .rightActions{
-    position:absolute;
-    top:5px;
-    right:5px;
+.dbBoxRed .head {
+    background: #f2dede;
+    border: solid 1px #d43f3a;
 }
 
-.dbBox .head h4{
-    margin-top:0;
-    margin-bottom:0;
+.dbBoxRed .rightActions,
+.dbBox .rightActions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
-.dbBox .info2{
-    display:table;
-    background-color:white;
-    padding:5px;
-    border:solid 1px #cccccc;
-    border-bottom-right-radius:10px;
-    border-bottom-left-radius:10px;
-    width:90%;
-    margin:0 10px;
-    border-top:none;
-    min-height:60px;
+.dbBoxRed .head h4,
+.dbBox .head h4 {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.apisList{
-    list-style-type:none;
-    margin:0;
-    padding:0
+.dbBoxRed .info,
+.dbBox .info {
+    display: table;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 90%;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 10px;
 }
 
-.apisList li{
-    border-bottom:solid 1px #ccc;
-    margin-bottom:5px;
-    padding-bottom:5px;
+.dbBoxRed .info2,
+.dbBox .info2 {
+    display: table;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 90%;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 60px;
 }
 
-.form .grouped p{
+.apisList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0
+}
+
+.apisList li {
+    border-bottom: solid 1px #ccc;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.form .grouped p {
     font-weight: bold;
 }
-.form .grouped{
-    padding-left:0px;
+
+.form .grouped {
+    padding-left: 0px;
     min-width: 1056px;
-    margin-top:20px;
+    margin-top: 20px;
 }
 
-.form h4{
-    background-color:#E5EAEE;
-    padding:5px;
-    border-radius:5px;
-    margin-top:20px;
+.form h4 {
+    background-color: #E5EAEE;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 20px;
 }
 
-.form .grouped label{
+.form .grouped label {
     width: 280px;
     /*background-color:#E5EAEE;*/
     /*padding:8px 0;*/
     /*border-radius:5px;*/
 }
+
 form tr .grouped em {
     margin-left: 285px;
     color: #ccc;
 }
 
-form tr .grouped label{
+form tr .grouped label {
     margin-top: 5px;
     margin-bottom: 10px;
 }
-form tr .grouped input[type="text"]{
-    height:30px;
+
+form tr .grouped input[type="text"] {
+    height: 30px;
 }
 
-.grouped .icon-arrow-right{
+.grouped .icon-arrow-right {
     padding-left: 20px;
 }
-.grouped .icon-arrow-right2{
+
+.grouped .icon-arrow-right2 {
     padding-left: 5px;
 }
-.grid table.serviceApis{
-    min-width:480px;
-    width:480px;
+
+.grid table.serviceApis {
+    min-width: 480px;
+    width: 480px;
     display: block;
     float: left;
 }
-.serviceApis .routeApi{
+
+.serviceApis .routeApi {
     width: 230px;
 }
-.serviceApis .labelApi{
+
+.serviceApis .labelApi {
     width: 250px;
 }
 
-.red{
-    color:red;
+.red {
+    color: red;
 }
 
-.green{
-    color:green;
+.green {
+    color: green;
 }
 
-.yellow{
+.yellow {
     color: gold;
 }
-.noWrap{
+
+.noWrap {
     white-space: nowrap;
 }
 
@@ -884,47 +977,53 @@ form tr .grouped input[type="text"]{
 }
 
 .hostsGrid td {
-    padding:4px;
+    padding: 4px;
     border: 1px solid #bbb;
 }
 
-.OneIpTable{
+.OneIpTable {
 
 }
 
-.OneIpTable td{
-    padding:4px;
+.OneIpTable td {
+    padding: 4px;
     border: 1px solid #2694E8;
 }
 
-.OneIpTable th{
+.OneIpTable th {
     padding-left: 4px;
 }
 
-tr.sApisEven{
+tr.sApisEven {
     background-color: #F8F8F8;
 }
 
-.controllerEnvelop{
+.controllerEnvelop {
     width: 100%;
-    display:table;
+    display: table;
     padding-bottom: 30px;
 }
-.actions{
+
+.actions {
     min-width: 95px;
 }
-.host-ip{
+
+.host-ip {
     min-width: 154px;
 }
-.downSince{
+
+.downSince {
     min-width: 180px;
 }
-.downCount{
+
+.downCount {
     min-width: 110px;
 }
-.lastCheck{
+
+.lastCheck {
     min-width: 110px;
 }
+
 .serviceBox .head {
     background-color: #DEF1F7;
     border: 1px solid #337AB7;
@@ -933,57 +1032,111 @@ tr.sApisEven{
     position: relative;
 }
 
-.serviceBox .service-ips{
-    display:block;
-    background-color:white;
-    padding:5px;
-    border:solid 1px #cccccc;
-    border-bottom-right-radius:10px;
-    border-bottom-left-radius:10px;
-    margin:0 10px;
-    border-top:none;
-    min-height:60px;
+.serviceBox .service-ips {
+    display: block;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 60px;
 }
-#membersSection .nav-tabs{
+
+#membersSection .nav-tabs {
     border-bottom-width: 0px;
 }
 
-#page section.membersCtrl{
+#page section.membersCtrl {
     border-top-left-radius: 0;
 }
 
-.helpPage .tab-pane{
+.helpPage .tab-pane {
     padding: 10px;
 }
 
-#tenantInfo form .header{
+#tenantInfo form .header {
     display: none;
 }
 
-.grid.oAuthUsers td.leftAction{
+.grid.oAuthUsers td.leftAction {
     width: 30px;
 }
-div.entryBox .body .btn-primary.noFloat{
-    float: none; top:0
+
+div.entryBox .body .btn-primary.noFloat {
+    float: none;
+    top: 0
 }
 
 #tenantsMembers .nav-tabs {
     border-bottom-width: 1px;
 }
 
-#envirForm{
+#envirForm {
     min-width: 1056px;
 }
 
-.inlineAPIBox{
+.inlineAPIBox {
     border-top: 1px solid #ccc;
     padding-top: 5px;
     margin-bottom: 15px;
 }
 
-.inlineAPIBox .apiLabel{
-    font-weight:bold;
-    font-size:16px;
-    background-color:#f8f8f8;
+.inlineAPIBox .apiLabel {
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #f8f8f8;
     padding: 3px;
+}
+
+.fieldMsg {
+    font-style: italic;
+    color: #999;
+    font-size: 12px;
+    clear: both;
+    width: 100%;
+}
+
+.wizardForm td ul {
+    clear: both;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 3px;
+}
+
+.wizardForm td ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 20px;
+}
+
+.wizardForm #defaultValue-wrapper, .wizardForm #limit-wrapper, .wizardForm #codeValues-wrapper,
+.wizardForm #filter-wrapper, .wizardForm #sorting-wrapper, .wizardForm #sortDirection-wrapper {
+    display: none;
+}
+
+.apiErrorCodes li,
+.APIInputBox {
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+    padding: 2px 10px;
+    position: relative;
+    top: 3px;
+    border-radius: 5px;
+}
+
+.npicons{
+    font-size:100px;
+    position:absolute;
+    top:50%;
+    color:#e5eaee;
+}
+
+.npicons:hover{
+    color:#9EBC5D;
 }

@@ -1,0 +1,3 @@
+<label>{{entry.label}}</label>
+<div text-angular ng-model="form.formData[entry.name]" ng-required="entry.required">{{entry.value}}</div>
+<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

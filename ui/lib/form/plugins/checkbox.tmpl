@@ -1,0 +1,9 @@
+<label>{{entry.label}}</label>
+<ul>
+<li ng-repeat="dv in entry.value">
+    <input type="checkbox" id="{{entry.name+'_'+$index}}" name="{{entry.name}}" ng-checked="dv.selected" tooltip="{{entry.tooltip}}"
+           ng-click="form.toggleSelection(entry.name, dv.v); form.call(entry.onAction, entry.name , form.formData[entry.name] )"/>
+    {{dv.l}}
+</li>
+</ul>
+<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

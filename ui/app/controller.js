@@ -8,7 +8,7 @@ var index = 0;
 })();
 
 /* App Module */
-var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies', 'ngStorage']);
+var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies', 'ngStorage', 'textAngular']);
 soajsApp.config([
 	'$routeProvider',
 	'$controllerProvider',

@@ -1,0 +1,3 @@
+<label>{{entry.label}}</label>
+<input class="form-control" name="{{entry.name}}" id="{{entry.name}}" type="{{entry.type}}" value="{{entry.value}}" disabled="disabled" readonly="" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name] )"/>
+<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

@@ -12,7 +12,7 @@ var cbNav =[
 		'icon': 'hammer',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js'],
+		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],
 		'ancestor': ['Home']
 	},
 	{
@@ -21,7 +21,7 @@ var cbNav =[
 		'url': '#/content-builder/add',
 		'tplPath': 'modules/contentBuilder/directives/add.tmpl',
 		'tracker': true,
-		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js'],
+		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],
 		'ancestor': ['Home', 'Content Builder']
 	},
 	{
@@ -30,7 +30,7 @@ var cbNav =[
 		'url': '#/content-builder/edit/:id',
 		'tplPath': 'modules/contentBuilder/directives/edit.tmpl',
 		'tracker': true,
-		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js'],
+		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],
 		'ancestor': ['Home', 'Content Builder']
 	}
 ];

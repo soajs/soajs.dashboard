@@ -6,36 +6,16 @@ function buildFormWithModal($scope, $modal, opts) {
 	formConfig.timeout = opts.timeout;
 	formConfig.msgs = opts.msgs;
 	formConfig.buttonLabels = opts.buttonLabels;
-
-	if(opts.data) {
-		var keys = Object.keys(opts.data);
-		for(var i = 0; i < formConfig.entries.length; i++) {
-			keys.forEach(function(inputName) {
-				if(formConfig.entries[i].name === inputName) {
-					if(Array.isArray(formConfig.entries[i].value)) {
-						formConfig.entries[i].value.forEach(function(oneValue) {
-							if(oneValue.v === opts.data[inputName]) {
-								oneValue.selected = true;
-							}
-						});
-					}
-					else {
-						formConfig.entries[i].value = opts.data[inputName];
-					}
-				}
-			});
-		}
-	}
+	formConfig.data = opts.data;
 
 	var m = ($modal && $modal !== null) ? true : false;
 
-	buildForm($scope, m, formConfig, function(){
-		if(opts.postBuild && (typeof(opts.postBuild)=='function') ){
+	buildForm($scope, m, formConfig, function() {
+		if(opts.postBuild && (typeof(opts.postBuild) == 'function')) {
 			opts.postBuild();
 		}
 	});
 
-	//if ($modal && $modal==true)
 	if($modal && $modal !== null) {
 		var formContext = $scope;
 		$scope.form.openForm = function() {
@@ -83,8 +63,30 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.timeout(function() { context.form.alerts = []; }, 7000);
 	};
 
-	for(var i = 0; i < context.form.entries.length; i++) {
-		var oneEntry = context.form.entries[i];
+	function rebuildData(fieldEntry){
+		var keys = Object.keys(configuration.data);
+		keys.forEach(function(inputName) {
+			if(fieldEntry.name === inputName) {
+				if(Array.isArray(fieldEntry.value)) {
+					fieldEntry.value.forEach(function(oneValue) {
+						if(Array.isArray(configuration.data[inputName])){
+							if(configuration.data[inputName].indexOf(oneValue.v) !== -1){
+								oneValue.selected = true;
+							}
+						}
+						else if(oneValue.v === configuration.data[inputName]) {
+							oneValue.selected = true;
+						}
+					});
+				}
+				else {
+					fieldEntry.value = configuration.data[inputName];
+				}
+			}
+		});
+	}
+
+	function updateFormData(oneEntry){
 		if(oneEntry.value) {
 			if(Array.isArray(oneEntry.value)) {
 				context.form.formData[oneEntry.name] = [];
@@ -100,7 +102,7 @@ function buildForm(context, modal, configuration, cb) {
 		}
 
 		if(oneEntry.type === 'date-picker') {
-			if(typeof(oneEntry.min)==='object'){
+			if(typeof(oneEntry.min) === 'object') {
 				oneEntry.min = oneEntry.min.getTime();
 			}
 
@@ -112,15 +114,38 @@ function buildForm(context, modal, configuration, cb) {
 		}
 
 		if(oneEntry.type === 'select') {
-			if(oneEntry.onChange && typeof(oneEntry.onChange.action)==='function')
-			{
-				oneEntry.action= oneEntry.onChange;
+			if(oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
+				oneEntry.action = oneEntry.onChange;
 			}
-			else{
-				oneEntry.action= {};
+			else {
+				oneEntry.action = {};
 			}
 		}
+	}
 
+	if(configuration.data) {
+		for(var i = 0; i < context.form.entries.length; i++) {
+			if(context.form.entries[i].type === 'group'){
+				context.form.entries[i].entries.forEach(function(oneSubEntry){
+					rebuildData(oneSubEntry);
+				});
+			}
+			else{
+				rebuildData(context.form.entries[i]);
+			}
+		}
+	}
+
+	for(var i =0; i < context.form.entries.length; i++){
+		if(context.form.entries[i].type === 'group'){
+			context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
+			context.form.entries[i].entries.forEach(function(oneSubEntry){
+				updateFormData(oneSubEntry);
+			});
+		}
+		else{
+			updateFormData(context.form.entries[i]);
+		}
 	}
 
 	context.form.do = function(functionObj) {
@@ -134,15 +159,15 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 	context.form.callObj = function(functionObj) {
-		if(functionObj){
-			if(functionObj.action){
+		if(functionObj) {
+			if(functionObj.action) {
 				functionObj.action();
 			}
 		}
 	};
 	context.form.call = function(action, id, data) {
-		if(action){
-			if( typeof(action) == 'function'){
+		if(action) {
+			if(typeof(action) == 'function') {
 				action(id, data);
 			}
 		}
@@ -176,12 +201,26 @@ function buildForm(context, modal, configuration, cb) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
-	if(cb && (typeof(cb)=='function')){
+	if(cb && (typeof(cb) == 'function')) {
 		context.form.timeout(function() {
 			cb();
 		}, 1000);
 	}
 
+	context.form.showHide = function(oneEntry) {
+		var name = oneEntry.name;
+
+		if(oneEntry.collapsed) {
+			oneEntry.collapsed = false;
+			oneEntry.icon = "minus";
+			//jQuery('#' + name).slideDown(1000);
+		}
+		else {
+			oneEntry.collapsed = true;
+			oneEntry.icon = "plus";
+			//jQuery('#' + name).slideUp(1000);
+		}
+	};
 }
 
 soajsApp.directive('ngform', function() {

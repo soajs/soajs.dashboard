@@ -1,6 +1,6 @@
 "use strict";
 var contentBuilderApp = soajsApp.components;
-contentBuilderApp.controller("contentBuilderCtrl", ['$scope', 'cbHelper', function($scope, cbHelper) {
+contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$routeParams', '$location', '$localStorage', 'cbHelper', 'cbAPIHelper', 'cbInputHelper', function($window, $scope, $routeParams, $location, $localStorage, cbHelper, cbAPIHelper, cbInputHelper) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -21,9 +21,235 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$scope', 'cbHelper', functi
 		});
 	};
 
-	if($scope.access.servicesRevisions) {
+	/*
+	 Prepare wizard
+	 */
+	$scope.prepareAddForm = function() {
+		$scope.steps = [true, false, false, false];
+		cbHelper.getEmptySchema($scope);
+		//load the environments and show their databases
+		cbHelper.getEnvironments($scope);
+
+		if($localStorage.cbSchema) {
+			$scope.config = $localStorage.cbSchema;
+		}
+	};
+
+	$scope.prepareUpdateForm = function() {
+		$scope.steps = [true, false, false, false];
+
+		//get the content schema from the database
+		cbHelper.loadExistingSchema($scope, $routeParams, function() {
+			//load the environments and show their databases
+			cbHelper.getEnvironments($scope, function() {
+
+				if($localStorage.cbSchema) {
+					$scope.config = $localStorage.cbSchema;
+				}
+			});
+		});
+	};
+
+	$scope.purgeSchema = function() {
+		$localStorage.cbSchema = null;
+		$scope.$parent.go("/content-builder");
+	};
+
+	/*
+	 navigation behavior
+	 */
+	$scope.goBack = function() {
+		var currentStep = $scope.steps.indexOf(true);
+		jQuery("#wizardStep" + (currentStep + 1)).hide();
+		currentStep--;
+		$scope.steps = [false, false, false, false];
+		$scope.steps[currentStep] = true;
+		jQuery("#wizardStep" + (currentStep + 1)).show();
+		$scope['validateStep' + (currentStep + 1)](true);
+	};
+
+	$scope.goForward = function() {
+		var currentStep = $scope.steps.indexOf(true);
+		jQuery("#wizardStep" + (currentStep + 1)).hide();
+		currentStep++;
+		$scope.steps = [false, false, false, false];
+		$scope.steps[currentStep] = true;
+		jQuery("#wizardStep" + (currentStep + 1)).show();
+		$scope.nextStep = false;
+		$scope['validateStep' + (currentStep + 1)]();
+	};
+
+	/*
+	 Step 1 functions
+	 */
+	$scope.renderServiceMultiTenant = function(multitenant) {
+		if(multitenant) {
+			$scope.config.dbtoUse = {};
+		}
+		else {
+			$scope.config.clustertoUse = {};
+		}
+		$scope.config.genericService.options.multitenant = multitenant;
+		$scope.config.soajsService.db.multitenant = multitenant;
+	};
+
+	$scope.validateStep1 = function(force) {
+		if(!$scope.config.name) {
+			//show error, no service name given
+			$window.alert("Enter a name for your service!");
+		}
+
+		if(Object.keys($scope.config.dbtoUse).length !== $scope.envList.length && Object.keys($scope.config.clustertoUse).length !== $scope.envList.length) {
+			$window.alert("Please choose either to create a new database or use an existing one for every environment.");
+		}
+		else {
+			$scope.config.genericService.config.serviceName = $scope.config.name.toLowerCase().replace(/\s/g, "_");
+
+			if(Object.keys($scope.config.dbtoUse).length !== 0) {
+
+				for(var env in $scope.config.dbtoUse) {
+					if($scope.config.dbtoUse.hasOwnProperty(env)) {
+						var dbName = $scope.config.dbtoUse[env];
+						$scope.config.soajsService.db.config[env] = {};
+
+						for(var i = 0; i < $scope.envList.length; i++) {
+							if($scope.envList[i].name === env) {
+								$scope.config.soajsService.db.config[env][dbName] = $scope.envList[i].databases[dbName];
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			if(Object.keys($scope.config.clustertoUse).length !== 0) {
+				var serviceName = $scope.config.genericService.config.serviceName;
+				for(var env in $scope.config.clustertoUse) {
+					if($scope.config.clustertoUse.hasOwnProperty(env)) {
+						$scope.config.soajsService.db.config[env] = {};
+						$scope.config.soajsService.db.config[env][serviceName] = $scope.config.clustertoUse[env];
+					}
+				}
+			}
+
+			$localStorage.cbSchema = $scope.config;
+			if(!force) {
+				$scope.goForward();
+			}
+		}
+	};
+
+	/*
+	 Step 2 functions
+	 */
+	$scope.validateStep2 = function() {
+		$scope.nextStep = (Object.keys($scope.config.genericService.config.schema.commonFields).length > 1) ? true : false;
+	};
+
+	$scope.addInput = function() {
+		cbInputHelper.addInput($scope);
+	};
+
+	$scope.updateInput = function(type, fieldName, fieldInfo) {
+		cbInputHelper.editInput($scope, type, fieldName, fieldInfo);
+	};
+
+	$scope.removeInput = function(fieldName) {
+		cbInputHelper.removeInput($scope, fieldName);
+	};
+
+	/*
+	 Step 3 functions
+	 */
+	$scope.validateStep3 = function(force) {
+		if(force === false){
+			var formData = $scope.form.formData;
+			if(formData.errors && formData.collection) {
+				try {
+					$scope.config.genericService.config.errors = JSON.parse(formData['errors']);
+
+					$scope.config.soajsService.db.collection = formData['collection'];
+
+					$scope.config.genericService.config.servicePort = formData['servicePort'];
+					$scope.config.genericService.config.requestTimeout = formData['requestTimeout'];
+					$scope.config.genericService.config.requestTimeoutRenewal = formData['requestTimeoutRenewal'];
+
+					$scope.config.genericService.config.awareness = (formData['awareness'] && formData['awareness'] === 'true');
+					$scope.config.genericService.config.extKeyRequired = (formData['extKeyRequired'] && formData['extKeyRequired'] === 'true');
+					$scope.config.genericService.options.security = (formData['security'] && formData['security'] === 'true');
+					$scope.config.genericService.options.session = (formData['session'] && formData['session'] === 'true');
+					$scope.config.genericService.options.acl = (formData['acl'] && formData['acl'] === 'true');
+					$scope.config.genericService.options.oauth = (formData['oauth'] && formData['oauth'] === 'true');
+
+					$scope.goForward();
+
+				}
+				catch(e) {
+					$window.alert("Invalid Error Code format provided, please make sure it is a JSON object.");
+				}
+			}
+			else{
+				$window.alert("Please fill out the mandatory fields.");
+			}
+		}
+
+		$scope.populateSettingsForm();
+		$scope.nextStep = (Object.keys($scope.config.genericService.config).length > 3);
+	};
+
+	$scope.populateSettingsForm = function() {
+		cbHelper.populateSettingsForm($scope);
+	};
+
+	/*
+	 Step 4 functions
+	 */
+	$scope.validateStep4 = function() {
+		$scope.generateSchema = (Object.keys($scope.config.soajsService.apis).length > 0);
+	};
+
+	$scope.addAPI = function() {
+		cbAPIHelper.addAPI($scope, cbAPIHelper.colorInputs);
+	};
+
+	$scope.editAPI = function(apiName, apiInfo) {
+		cbAPIHelper.editAPI($scope, apiName, apiInfo, cbAPIHelper.colorInputs);
+	};
+
+	$scope.removeAPI = function(apiName) {
+		cbAPIHelper.removeAPI($scope, apiName);
+	};
+
+	$scope.saveService = function() {
+		cbHelper.saveContentSchema($scope, function() {
+			$localStorage.cbSchema = null;
+		});
+	};
+
+	$scope.updateService = function() {
+		cbHelper.updateContentSchema($scope, $routeParams.id, function() {
+			$localStorage.cbSchema = null;
+		});
+	};
+
+	if($location.path() === '/content-builder' && $scope.access.listServices) {
 		$scope.listServices();
 	}
+	else if($location.path() === '/content-builder/add' && $scope.access.addService) {
+		$scope.nextStep = false;
+		$scope.generateSchema = false;
+		$scope.prepareAddForm();
+	}
+	else if($routeParams.id && ($location.path() === '/content-builder/edit/' + $routeParams.id) && $scope.access.updateService) {
+		$scope.nextStep = false;
+		$scope.generateSchema = false;
+		$scope.prepareUpdateForm();
+	}
+	else {
+		$scope.$parent.displayAlert('danger', "You do not have access to the requested section");
+		$scope.$parent.go("/content-builder");
+	}
+
 }]);
 
 contentBuilderApp.controller("contentBuilderActiveCtrl", ['$scope', 'cbHelper', function($scope, cbHelper) {
@@ -40,28 +266,8 @@ contentBuilderApp.controller("contentBuilderActiveCtrl", ['$scope', 'cbHelper', 
 		cbHelper.viewEntry($scope, {"id": data._id});
 	};
 
-	$scope.addService = function() {
-		$modal.open({
-			templateUrl: "addService.html",
-			size: 'lg',
-			backdrop: false,
-			keyboard: false,
-			controller: function($scope, $modalInstance) {
-				$scope.name = "";
-				$scope.config ={
-					"genericService": {},
-					"soajsService": {},
-					"soajsUI": {}
-				};
-				$scope.cancel = function() {
-					$modalInstance.dismiss('cancel');
-				};
-			}
-		});
-	};
-
 	$scope.editService = function(data) {
-		console.log(data);
+		$scope.$parent.go("/content-builder/edit/" + data._id);
 	};
 
 	if($scope.access.listServices) {

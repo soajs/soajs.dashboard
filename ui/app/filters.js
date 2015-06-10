@@ -18,6 +18,7 @@ soajsApp.filter('TTL', function() {
 
 soajsApp.filter('fulldate', function() {
 	return function(text) {
+		if(!text) { return ''; }
 		return new Date(text).toISOString();
 	};
 });
@@ -65,13 +66,13 @@ soajsApp.filter('object', ['$sce', function($sce) {
 					var t = [];
 					for(var e = 0; e < obj[i].length; e++) {
 						if(typeof(obj[i][e]) === 'object') {
-							t.push('<span class="noWrap">'+ iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g," ") + '</span>');
+							t.push('<span class="noWrap">' + iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g, " ") + '</span>');
 						}
 						else {
 							t.push(obj[i][e]);
 						}
 					}
-					string += t +"<br />";
+					string += t + "<br />";
 				}
 				else if(typeof(obj[i]) === 'object') {
 					string += iterateAndPrintObj(obj[i]);
@@ -95,7 +96,7 @@ soajsApp.filter('object', ['$sce', function($sce) {
 	};
 }]);
 
-function highlightMyCode(){
+function highlightMyCode() {
 	hljs.configure({"tabReplace": "    "});
 	jQuery('pre code').each(function(i, block) {
 		var parentId = jQuery(block).parent().attr('id');
