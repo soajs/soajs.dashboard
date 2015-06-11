@@ -1,7 +1,7 @@
 <section ng-controller="contentBuilderCtrl">
     <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" id="addServiceSchema" name="serviceSchemaForm" ng-submit="serviceSchemaForm.$valid && updateService()">
         <div class="modal-header">
-            <h3 class="modal-title">Update Service Schema</h3>
+            <h3 class="modal-title">Update Service Schema of [ {{config.name}} ]</h3>
         </div>
         <div class="modal-body">
             <div ng-include="'modules/contentBuilder/directives/add-s1.tmpl'"></div>

@@ -70,21 +70,18 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 						keyboard: true,
 						controller: function($scope, $modalInstance) {
 							$scope.data = response;
-							$scope.twoCols = {col1: [], col2: []};
-							var count = 0;
-							for(var i in $scope.data.genericService.config.schema.commonFields) {
-								count++;
-								if(count % 2 === 0) {
-									$scope.twoCols.col2.push({'l': i, 'v': $scope.data.genericService.config.schema.commonFields[i]});
-								}
-								else {
-									$scope.twoCols.col1.push({'l': i, 'v': $scope.data.genericService.config.schema.commonFields[i]});
-								}
-							}
 
 							if(Object.keys($scope.data.soajsService.db.config).length === 0) {
 								delete $scope.data.soajsService.db.config;
 							}
+							var errorCodes = $scope.data.genericService.config.errors;
+							var str = "";
+							for(var err in errorCodes){
+								str += "<li class='APIInputBox mb5'><b>"+err+"</b>:&nbsp;"+errorCodes[err]+"</li>"
+							}
+							str = "<ul class='apiErrorCodes'>"+str+"</ul>";
+							$scope.data.genericService.config.errors = str;
+
 
 							for(var api in $scope.data.soajsService.apis) {
 								if($scope.data.soajsService.apis.hasOwnProperty(api)) {

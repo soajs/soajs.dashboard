@@ -93,10 +93,6 @@ function compareAPIs(oldAPIs, newAPIs) {
 				for(var wfStep in newAPIs[route].workflow) {
 					var hash1 = objecthash(oldAPIs[route].workflow[wfStep]);
 					var hash2 = objecthash(newAPIs[route].workflow[wfStep]);
-					console.log(oldAPIs[route].workflow[wfStep]);
-					console.log(newAPIs[route].workflow[wfStep]);
-					console.log(hash1);
-					console.log(hash2);
 					if(hash1 !== hash2) {
 						return true;
 					}

@@ -244,9 +244,7 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 
 	function colorInputs(){
 		$timeout(function(){
-			//todo: attempt to rerender the error codes
 			var errorCodes = jQuery(".wizardForm #codeValues").val();
-			console.log(errorCodes);
 			errorCodes = JSON.parse(errorCodes);
 			var str = "";
 			for(var err in errorCodes){

@@ -21,14 +21,14 @@
                 <div class="dbBox w20i" ng-repeat="(apiName, apiInfo) in config.soajsService.apis track by $index">
                     <div class="head">
                         <b><span class="icon icon-cog"></span>{{config.genericService.config.schema[apiName]._apiInfo.l}}</b>&nbsp;<span ng-show="config.genericService.config.schema[apiName]._apiInfo.groupMain" class="icon icon-star-full"></span>
-                <span class="rightActions">
-                    <a href="" ng-click="editAPI(apiName, apiInfo);">
-                        <span class="icon icon-pencil" tooltip="Update API"></span>
-                    </a>
-                    <a href="" ng-confirm-click="Are you sure you want to remove this API ?" ng-click="removeAPI(apiName);">
-                        <span class="icon icon-cross" tooltip="Remove API"></span>
-                    </a>
-                </span>
+                        <span class="rightActions">
+                            <a href="" ng-click="editAPI(apiName, apiInfo);">
+                                <span class="icon icon-pencil" tooltip="Update API"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this API ?" ng-click="removeAPI(apiName);">
+                                <span class="icon icon-cross" tooltip="Remove API"></span>
+                            </a>
+                        </span>
                     </div>
                     <div class="info">
                         <b>Group:</b>&nbsp;{{config.genericService.config.schema[apiName]._apiInfo.group}}<br/>
@@ -37,21 +37,7 @@
                         <b>Type:</b>&nbsp;{{apiInfo.type}}
                     </div>
                 </div>
-
-                <!--<div class="entryBox btn blueBox" ng-repeat="(apiName, apiInfo) in config.soajsService.apis track by $index">-->
-                <!--<b><span class="icon icon-cog"></span>API: </b>{{apiName}}&nbsp;&nbsp;-->
-                <!--<a href="" ng-click="editAPI(apiName, apiInfo);">-->
-                <!--<span class="icon icon-pencil" tooltip="Update API"></span>-->
-                <!--</a>-->
-                <!--<a href="" ng-confirm-click="Are you sure you want to remove this API ?" ng-click="removeAPI(apiName);">-->
-                <!--<span class="icon icon-cross" tooltip="Remove API"></span>-->
-                <!--</a>-->
-                <!--</div>-->
-
             </div>
         </div>
     </div>
-    <!--<div class="w100 c-both" style="display:table;">-->
-    <!--<input type="button" class="f-left btn btn-sm btn-success" value="Back to Step 3" ng-click="goBack()"/>-->
-    <!--</div>-->
 </div>

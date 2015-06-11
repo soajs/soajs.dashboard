@@ -8,8 +8,8 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 	function buildListinUI(currentScope, formData, machineName, force) {
 		if(force || (formData.listing && formData.listing[0] === 'yes')) {
 			var listing = {'label': formData.label, 'name': machineName, 'field': 'fields.' + machineName};
-			if(formData.filter) {
-				listing.filter = formData.filter;
+			if(formData.filter && formData.filter.length > 0 ) {
+				listing.filter = formData.filter[0];
 			}
 			var found = false;
 			for(var i = 0; i < currentScope.config.soajsUI.list.columns.length; i++) {
@@ -270,7 +270,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					}
 					else {
 						var machineName = formData.label.toLowerCase().trim().replace(/\s/g, "_");
-						if(currentScope.config.genericService.config.schema.commonFields[machineName]) {
+						if(machineName !== fieldName && currentScope.config.genericService.config.schema.commonFields[machineName]) {
 							$window.alert("You already have an input named: " + formData.label);
 						}
 						else {

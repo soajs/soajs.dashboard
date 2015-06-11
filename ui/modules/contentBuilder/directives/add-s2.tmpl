@@ -37,65 +37,42 @@
                 <div class="dbBox" style="width:30% !important;" ng-repeat="(fieldName, fieldInfo) in config.genericService.config.schema.commonFields track by $index">
                     <div class="head">
                         <b>Provided by <span class="icon icon-user"></span></b>
-                <span class="rightActions">
-                    <span ng-show="fieldName === 'id'">(auto)</span>
-                    <a href="" ng-click="updateInput('user', fieldName, fieldInfo);" ng-show="fieldName !=='id'">
-                        <span class="icon icon-pencil" tooltip="Update Input"></span>
-                    </a>
-                    <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">
-                        <span class="icon icon-cross" tooltip="Remove Input"></span>
-                    </a>
-                </span>
+                        <span class="rightActions">
+                            <span ng-show="fieldName === 'id'">(auto)</span>
+                            <a href="" ng-click="updateInput('user', fieldName, fieldInfo);" ng-show="fieldName !=='id'">
+                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">
+                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            </a>
+                        </span>
                     </div>
                     <div class="info">
                         <b>Label:</b>&nbsp;{{fieldName}}<br/>
                     </div>
                 </div>
 
-                <!--<div class="entryBox btn blueBox" ng-repeat="(fieldName, fieldInfo) in config.genericService.config.schema.commonFields track by $index">-->
-                <!--<b><span class="icon icon-user"></span></b>{{fieldName}}&nbsp;&nbsp;-->
-                <!--<a href="" ng-click="updateInput('user', fieldName, fieldInfo);" ng-show="fieldName !=='id'">-->
-                <!--<span class="icon icon-pencil" tooltip="Update Input"></span>-->
-                <!--</a>-->
-                <!--<a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">-->
-                <!--<span class="icon icon-cross" tooltip="Remove Input"></span>-->
-                <!--</a>-->
-                <!--</div>-->
-
                 <div class="dbBoxRed w20i" ng-repeat="columns in config.soajsUI.list.columns" ng-if="!config.genericService.config.schema.commonFields[columns.name]">
                     <div class="head">
                         <b>Provided by <span class="icon icon-laptop"></span></b>
-                <span class="rightActions">
-                    <a href="" ng-click="updateInput('computedUI', columns.name, columns);">
-                        <span class="icon icon-pencil" tooltip="Update Input"></span>
-                    </a>
-                    <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(columns.name);">
-                        <span class="icon icon-cross" tooltip="Remove Input"></span>
-                    </a>
-                </span>
+                        <span class="rightActions">
+                            <a href="" ng-click="updateInput('computedUI', columns.name, columns);">
+                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(columns.name);">
+                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            </a>
+                        </span>
                     </div>
                     <div class="info">
                         <b>Label:</b>&nbsp;{{columns.label}}<br/>
                     </div>
                 </div>
 
-                <!--<div class="entryBox btn redBox" ng-repeat="columns in config.soajsUI.list.columns" ng-if="!config.genericService.config.schema.commonFields[columns.name]">-->
-                <!--<b><span class="icon icon-laptop"></span></b>{{columns.label}}&nbsp;&nbsp;-->
-                <!--<a href="" ng-click="updateInput('computedUI', columns.name, columns);">-->
-                <!--<span class="icon icon-pencil" tooltip="Update Input"></span>-->
-                <!--</a>-->
-                <!--<a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(columns.name);">-->
-                <!--<span class="icon icon-cross" tooltip="Remove Input"></span>-->
-                <!--</a>-->
-                <!--</div>-->
             </div>
         </div>
         <div class="table-cell w10">
             <a ng-show="nextStep" href="" ng-click="goForward()"><span class="npicons icon icon-circle-right"></span></a>
         </div>
     </div>
-    <!--<div class="w100 c-both" style="display:table;">-->
-    <!--<input type="button" class="f-left btn btn-sm btn-success" value="Back to Step 1" ng-click="goBack()"/>-->
-    <!--<input type="button" class="f-right btn btn-sm btn-success" value="Proceed to Step 3" ng-show="nextStep" ng-click="goForward()"/>-->
-    <!--</div>-->
 </div>

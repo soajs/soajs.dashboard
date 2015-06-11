@@ -170,7 +170,16 @@ var cbConfig = {
 							'name': 'filter',
 							'label': 'Optional Display Filter',
 							'type': 'select',
-							'value': [{"v": "date", "l": "Date"}, {"v": "uppercase", "l": "Uppercase"}],
+							'value': [
+								{"v": "date", "l": "Date"},
+								{"v": "fulldate", "l": "Full Date"},
+								{"v": "TTL", "l": "TTL Value"},
+								{"v": "uppercase", "l": "Uppercase"},
+								{"v": "lowercase", "l": "Lowercase"},
+								{"v": "trimmed", "l": "Trimmed 170 Characters"},
+								{"v": "trimmed100", "l": "Lowercase 100 Characters"},
+								{"v": "object", "l": "Rendered Object"}
+							],
 							'required': false,
 							'fieldMsg': 'If it should be included in the Listing Grid, pick an optional filter for it'
 						},

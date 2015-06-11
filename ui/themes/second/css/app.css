@@ -302,6 +302,10 @@ em {
     border-radius: 4px;
 }
 
+.w17i {
+    width: 17% !important;
+}
+
 .w20i {
     width: 20% !important;
 }
@@ -361,9 +365,13 @@ em {
     /*display: flex;*/
 }
 
-.table-cell{
+.table-cell {
     display: table-cell;
     /*flex: 1;*/
+}
+
+.mb5 {
+    margin-bottom: 5px;
 }
 
 /**
@@ -1128,15 +1136,21 @@ div.entryBox .body .btn-primary.noFloat {
     position: relative;
     top: 3px;
     border-radius: 5px;
+    list-style-type: none;
+    margin-right: 20px;
 }
 
-.npicons{
-    font-size:100px;
-    position:absolute;
-    top:50%;
-    color:#e5eaee;
+.npicons {
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    color: #e5eaee;
 }
 
-.npicons:hover{
-    color:#9EBC5D;
+.npicons:hover {
+    color: #9EBC5D;
+}
+
+.view table tr.odd {
+    background: #F8F8F8;
 }
