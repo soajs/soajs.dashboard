@@ -18,6 +18,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 			});
 
 			$scope.revisions = groups;
+			$localStorage.cbSchema = null;
 		});
 	};
 
