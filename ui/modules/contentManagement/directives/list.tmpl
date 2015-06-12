@@ -1,0 +1,41 @@
+<section ng-controller="ContentManagementCtrl">
+    <script type="text/ng-template" id="infoBox.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{title}}</h3>
+        </div>
+        <div class="modal-body">
+            <div ng-bind-html="data|object"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+        </div>
+    </script>
+    <tabset>
+        <tab heading="{{envCode}}" ng-repeat="(envCode, envInfo) in envList track by envCode" ng-click="listHosts(envCode)">
+
+            <div ng-if="envInfo.services.length >0" class="entryBoxes entryBoxesGrid">
+                <div ng-repeat="oneService in envInfo.services" class="dbBox w10" ng-show="hp">
+                    <div class="head">
+                        <h4>{{oneService.name}}</h4>
+                        <span class="rightActions">
+                            <span class="icon icon-newspaper"></span>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>version:</b>&nbsp;{{oneService.v}}<br /><br />
+                        <a ng-show="oneService.healthy" href="" ng-click="loadUIModule(oneService, envCode)" class="btn btn-primary" >Manage Content</a>
+
+                    </div>
+                </div>
+
+                <div id="contentGridContainer_{{envCode}}" ng-show="!hp"></div>
+            </div>
+
+            <div ng-if="envInfo.services.length === 0">
+                <div class="redFlag"> No Content Management Services where found. </div><br/>
+                <p>Create New Service(s) in <a href="#/content-builder">Content Builder</a>.</p>
+            </div>
+
+        </tab>
+    </tabset>
+</section>

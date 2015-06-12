@@ -778,6 +778,19 @@ describe("DASHBOARD CONTENT BUILDER TESTS", function() {
 				done();
 			});
 		});
+
+		it("success - will get list with ports", function(done) {
+			executeMyRequest({
+				headers: {
+					'soajsauth': soajsauth
+				},
+				'qs': { 'port': true }
+			}, 'cb/list', 'get', function(body) {
+				assert.ok(body.data);
+				assert.equal(body.data.length, 1);
+				done();
+			});
+		});
 	});
 
 	describe("list gc revisions tests", function() {

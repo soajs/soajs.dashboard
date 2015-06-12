@@ -28,7 +28,6 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 		switch(formData.type.toLowerCase()) {
 			case 'get':
 			case 'delete':
-			case 'restore':
 				if(!gcAPI.commonFields) { gcAPI.commonFields = []; }
 
 				if(gcAPI.commonFields.indexOf("id") === -1) {

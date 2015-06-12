@@ -12,7 +12,8 @@ function getRandomString(len, charSet) {
 
 function buildGrid($scope, opts) {
 	var gridConfig = opts.grid;
-	gridConfig.defaultSortField = opts.defaultSortField;
+	gridConfig.defaultSortField = opts.defaultSortField || opts.grid.defaultSortField;
+	gridConfig.defaultSortASC = opts.defaultSortASC || opts.grid.defaultSortASC;
 	gridConfig.rows = opts.data;
 	if(opts.gridId)
 	{
@@ -46,19 +47,6 @@ function buildGrid($scope, opts) {
 	constructGrid($scope, gridConfig);
 	
 	function constructGrid(context, configuration) {
-		context.grid = {};
-		/*
-		var gridId = null;
-		if(configuration.gridId){
-			gridId = configuration.gridId;
-		}
-		else{
-			gridId= getRandomString(12);
-		}
-		context.grid[gridId] = {
-			myGridId: gridId
-		}
-		*/  
 		context.grid = {
 			//thisGridId: gridId,	
 			themeToUse: themeToUse,

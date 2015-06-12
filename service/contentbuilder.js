@@ -144,7 +144,12 @@ function compareUI(oldUI, newUI) {
 module.exports = {
 
 	"list": function(config, mongo, req, res) {
+
 		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1};
+		if(req.soajs.inputmaskData.port) {
+			fields['genericService.config.servicePort'] = 1;
+		}
+
 		mongo.find(collectionName, {$query: {}, $orderby: {"ts": -1, "v": -1}}, fields, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
 			return res.jsonp(req.soajs.buildResponse(null, response));
@@ -174,8 +179,8 @@ module.exports = {
 	},
 
 	"revisions": function(config, mongo, req, res) {
-		var fields = {"refId": 1,"name": 1, "author": 1, "modified": 1, "v": 1};
-		mongo.find(collectionName + "_versioning", {$query: {},$orderby: {'v': -1}}, fields, function(error, response) {
+		var fields = {"refId": 1, "name": 1, "author": 1, "modified": 1, "v": 1};
+		mongo.find(collectionName + "_versioning", {$query: {}, $orderby: {'v': -1}}, fields, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
 			return res.jsonp(req.soajs.buildResponse(null, response));
 		});

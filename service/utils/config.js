@@ -11,7 +11,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
-	"hasher":{
+	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
@@ -239,20 +239,20 @@ module.exports = {
 			},
 			"commonFields": ['id', 'description', 'services']
 		},
-		"/environment/key/update":{
+		"/environment/key/update": {
 			_apiInfo: {
 				"l": "Update Environment Tenant Key Security",
 				"group": "Environment"
 			},
 			"commonFields": ['id'],
-			"algorithm":{
+			"algorithm": {
 				"source": ['body.algorithm'],
 				"required": true,
 				"validation": {
 					"type": "string"
 				}
 			},
-			"password":{
+			"password": {
 				"source": ['body.password'],
 				"required": true,
 				"validation": {
@@ -1010,6 +1010,13 @@ module.exports = {
 				"l": "List Content Schema",
 				"group": "Content Builder",
 				"groupMain": true
+			},
+			'port': {
+				'required': false,
+				'source': ['query.port'],
+				'validation': {
+					'type': 'boolean'
+				}
 			}
 		},
 		"/cb/add": {

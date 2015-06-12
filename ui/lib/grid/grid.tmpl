@@ -61,7 +61,7 @@
                 </td>
                 <td ng-repeat="column in grid.columns">
                     <span ng-if="column.filter">{{row[column.field] | filterPicker: column.filter}}</span>
-                    <span ng-if="!column.filter">{{row[column.field]}}</span>
+                    <span ng-if="!column.filter" ng-bind-html="row[column.field]"></span>
                 </td>
             </tr>
         </table>

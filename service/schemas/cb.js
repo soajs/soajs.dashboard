@@ -85,7 +85,7 @@ var soajsService = {
 				"^\/[a-zA-Z0-9_\.\-]+$": {
 					"type": "object",
 					"properties": {
-						"type": {"type": "string", "enum": ['get', 'list', 'add', 'update', 'delete', 'restore']},
+						"type": {"type": "string", "enum": ['get', 'list', 'add', 'update', 'delete']},
 						"mw": {
 							"type": "object",
 							"properties": {

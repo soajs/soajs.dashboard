@@ -69,13 +69,6 @@ var validSchema = {
 					},
 					"commonFields": ['id']
 				},
-				"/restore": {
-					"_apiInfo": {
-						"l": "Restore News Entry",
-						"group": "News"
-					},
-					"commonFields": ['id']
-				},
 				"/add": {
 					"_apiInfo": {
 						"l": "Add News Entry",
@@ -137,24 +130,6 @@ var validSchema = {
 				"method": "get",
 				"mw": {'code': 403},
 				"type": "delete",
-				workflow: {
-					"preExec": "//some custom instructions to execute if any otherwise this function is ignored...." +
-					           "req.soajs.log.debug(\"YOU HAVE REACHED THE GET DATA API\");" +
-					           "try {" +
-					           "\treq.soajs.dataMw.db.condition = {'_id': req.soajs.dataMw.mongo.ObjectId(req.soajs.inputmaskData.id)};" +
-					           "\tnext();" +
-					           "}" +
-					           "catch(e) {" +
-					           "\treturn res.jsonp(req.soajs.buildResponse({\"code\": 404, \"msg\": e.message}));" +
-					           "}" +
-					           "next();"
-				}
-			},
-
-			"/restore": {
-				"method": "get",
-				"mw": {'code': 403},
-				"type": "restore",
 				workflow: {
 					"preExec": "//some custom instructions to execute if any otherwise this function is ignored...." +
 					           "req.soajs.log.debug(\"YOU HAVE REACHED THE GET DATA API\");" +

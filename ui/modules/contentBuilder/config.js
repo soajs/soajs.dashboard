@@ -427,7 +427,6 @@ var cbConfig = {
 							{'v': "list", "l": "list"},
 							{'v': "get", "l": "get"},
 							{'v': "delete", "l": "delete"},
-							{'v': "restore", "l": "restore"},
 							{'v': "add", "l": "add"},
 							{'v': "update", "l": "update"}
 						],
@@ -501,7 +500,7 @@ var cbConfig = {
 						'type': 'checkbox',
 						'value': [],
 						'required': true,
-						'fieldMsg': "Pick the inputs this API will receive. (APIs of type: get - update - delete - restore have the 'id' input auto-included)"
+						'fieldMsg': "Pick the inputs this API will receive. (APIs of type: get - update - delete have the 'id' input auto-included)"
 					}
 				]
 			},
