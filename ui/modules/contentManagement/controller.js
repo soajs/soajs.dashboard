@@ -151,7 +151,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							$scope.ui.left.push({
 								'label': 'Edit',
 								'icon': 'pencil2',
-								'handler': 'editEntry'
+								'handler': 'editCMDataEntry'
 							});
 						}
 						break;
@@ -160,7 +160,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							$scope.ui.left.push({
 								'label': 'View',
 								'icon': 'search',
-								'handler': 'viewEntry'
+								'handler': 'viewCMDataEntry'
 							});
 						}
 						break;
@@ -169,13 +169,13 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							$scope.ui.left.push({
 								'label': 'Delete',
 								'icon': 'cross',
-								'handler': 'deleteEntry',
+								'handler': 'deleteCMDataEntry',
 								'msg': "Are you sure you want to delete the selected entry?"
 							});
 							$scope.ui.top.push({
 								'label': 'Delete',
 								'msg': "Are you sure you want to delete the selected entry(s)?",
-								'handler': 'deleteEntries'
+								'handler': 'deleteCMDataEntries'
 							});
 						}
 						break;
@@ -191,7 +191,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		$scope.selectedEnv = envCode;
 		$scope.selectedService = oneService;
 		if($scope.ui.grid) {
-			$scope.listEntries();
+			$scope.listCMDataEntries();
 		}
 		else{
 			var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv));
@@ -210,7 +210,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		$scope.hp = true;
 	};
 
-	$scope.listEntries = function() {
+	$scope.listCMDataEntries = function() {
 		var grid = angular.copy(cmConfig.grid);
 		for(var i = 0; i < $scope.selectedService.schema.soajsUI.list.columns.length; i++) {
 			$scope.selectedService.schema.soajsUI.list.columns[i].field = $scope.selectedService.schema.soajsUI.list.columns[i].field.replace("fields.", "");
@@ -252,13 +252,13 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 				}
 				buildGrid($scope, options);
 				var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv));
-				el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><a href=\"\" ng-click=\"addEntry()\" class=\"btn btn-primary\">Add New Entry</a><br/><br/><nglist></nglist>");
+				el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">Add New Entry</a><br/><br/><nglist></nglist>");
 				$compile(el.contents())($scope);
 			}
 		});
 	};
 
-	$scope.addEntry = function() {
+	$scope.addCMDataEntry = function() {
 		var config = cmConfig.form.add;
 		config.entries = $scope.selectedService.schema.soajsUI.form.add;
 		var options = {
@@ -295,7 +295,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 								$scope.$parent.displayAlert('success', 'Data Added Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.listEntries();
+								$scope.listCMDataEntries();
 							}
 						});
 					}
@@ -314,7 +314,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editEntry = function(data) {
+	$scope.editCMDataEntry = function(data) {
 		var config = cmConfig.form.update;
 		config.entries = $scope.selectedService.schema.soajsUI.form.update;
 		var options = {
@@ -353,7 +353,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 								$scope.$parent.displayAlert('success', 'Data Updated Successfully.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
-								$scope.listEntries();
+								$scope.listCMDataEntries();
 							}
 						});
 					}
@@ -372,7 +372,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.viewEntry = function(data) {
+	$scope.viewCMDataEntry = function(data) {
 		$modal.open({
 			templateUrl: "infoBox.html",
 			size: 'lg',
@@ -395,7 +395,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		});
 	};
 
-	$scope.deleteEntry = function(data) {
+	$scope.deleteCMDataEntry = function(data) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/" + $scope.selectedService.name + "/delete",
@@ -406,12 +406,12 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Data Deleted Successfully.');
-				$scope.listEntries();
+				$scope.listCMDataEntries();
 			}
 		});
 	};
 
-	$scope.deleteEntries = function() {
+	$scope.deleteCMDataEntries = function() {
 		var config = {
 			'routeName': "/" + $scope.selectedService.name + "/delete",
 			"params": {'id': '%id%'},
@@ -422,7 +422,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		};
 
 		multiRecordUpdate(ngDataApi, $scope, config, function() {
-			$scope.listEntries();
+			$scope.listCMDataEntries();
 		});
 	};
 }]);

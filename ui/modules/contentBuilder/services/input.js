@@ -54,7 +54,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				'placeholder': formData.placeholder || '',
 				'tooltip': formData.tooltip || '',
 				'req': (formData.required === 'true'),
-				'value': populateValue(formData.type, formData.defaultValue),
+				'value': populateValue(formType, formData.defaultValue),
 				'limit': formData.limit
 			};
 
