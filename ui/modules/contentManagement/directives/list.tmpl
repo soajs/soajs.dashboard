@@ -11,31 +11,36 @@
         </div>
     </script>
     <tabset>
-        <tab heading="{{envCode}}" ng-repeat="(envCode, envInfo) in envList track by envCode" ng-click="listHosts(envCode)">
-
-            <div ng-if="envInfo.services.length >0" class="entryBoxes entryBoxesGrid">
-                <div ng-repeat="oneService in envInfo.services" class="dbBox w10" ng-show="hp">
-                    <div class="head">
-                        <h4>{{oneService.name}}</h4>
+        <div ng-if="services.length >0" class="entryBoxes entryBoxesGrid">
+            <div ng-repeat="oneService in services" class="dbBox w10" ng-show="hp">
+                <div class="head">
+                    <h4>{{oneService.name}}</h4>
                         <span class="rightActions">
                             <span class="icon icon-newspaper"></span>
                         </span>
-                    </div>
-                    <div class="info">
-                        <b>version:</b>&nbsp;{{oneService.v}}<br /><br />
-                        <a ng-show="oneService.healthy" href="" ng-click="loadUIModule(oneService, envCode)" class="btn btn-primary" >Manage Content</a>
-
-                    </div>
                 </div>
+                <div class="info">
+                    <b>version:</b>&nbsp;{{oneService.v}}<br/><br/>
+                    <a href="" ng-click="loadUIModule(oneService)" class="btn btn-primary">Manage Content</a>
 
-                <div id="contentGridContainer_{{envCode}}" ng-show="!hp"></div>
+                </div>
             </div>
 
-            <div ng-if="envInfo.services.length === 0">
-                <div class="redFlag"> No Content Management Services where found. </div><br/>
-                <p>Create New Service(s) in <a href="#/content-builder">Content Builder</a>.</p>
+            <div ng-show="!hp">
+                <tabset>
+                    <tab heading="{{envCode}}" ng-repeat="(envCode, envInfo) in selectedService.schema.soajsService.db.config track by envCode" ng-click="populateCMUI(envCode)">
+                        <div id="contentGridContainer_{{envCode}}"></div>
+                    </tab>
+                </tabset>
             </div>
 
-        </tab>
+        </div>
+
+        <div ng-if="services.length === 0">
+            <div class="redFlag"> No Content Management Services where found.</div>
+            <br/>
+
+            <p>Create New Service(s) in <a href="#/content-builder">Content Builder</a>.</p>
+        </div>
     </tabset>
 </section>

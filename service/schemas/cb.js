@@ -124,7 +124,7 @@ var formElements = {
 			"req": {"type": "boolean"},
 			"_type": {
 				"type": "string",
-				"enum": ['text', 'password', 'email', 'number', 'phone', 'url', 'readonly', 'textarea', 'radio', 'checkbox', 'select', 'multi-select', 'date-picker', 'html', 'editor']
+				"enum": ['text', 'password', 'email', 'number', 'phone', 'url', 'readonly', 'textarea', 'radio', 'checkbox', 'select', 'multi-select', 'date-picker', 'html', 'editor', 'audio','image','video','document']
 			},
 			"placeholder": {"type": "string"},
 			"tooltip": {"type": "string"},

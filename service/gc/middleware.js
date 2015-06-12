@@ -42,7 +42,8 @@ var dataMw = function(config) {
 		'initialize': function(req, res, next) {
 			//if multitenant, on each request build a new mongo connection
 			if(self.config.db.multitenant) {
-				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, req.soajs.tenant.code));
+				var tenantCode = req.soajs.session.getUrac().tenant.code;
+				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, tenantCode));
 			}
 			//store an empty data object, the db info and the mongo instance, might be used by preExec and postExec
 			req.soajs.dataMw = {"data": null, "db": self.context.db, "mongo": self.mongo};
@@ -78,7 +79,8 @@ var dataMw = function(config) {
 		'initialize': function(req, res, next) {
 			//if multitenant, on each request build a new mongo connection
 			if(self.config.db.multitenant) {
-				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, req.soajs.tenant.code));
+				var tenantCode = req.soajs.session.getUrac().tenant.code;
+				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, tenantCode));
 			}
 
 			//id is needed, attempt to parse it to mongo ObjectId and added it to the condition, used in exec
@@ -124,7 +126,8 @@ var dataMw = function(config) {
 		'initialize': function(req, res, next) {
 			//if multitenant, on each request build a new mongo connection
 			if(self.config.db.multitenant) {
-				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, req.soajs.tenant.code));
+				var tenantCode = req.soajs.session.getUrac().tenant.code;
+				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, tenantCode));
 			}
 
 			//id is needed, attempt to parse it to mongo ObjectId and added it to the condition, used in exec
@@ -178,7 +181,8 @@ var dataMw = function(config) {
 
 			//if multitenant, on each request build a new mongo connection
 			if(self.config.db.multitenant) {
-				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, req.soajs.tenant.code));
+				var tenantCode = req.soajs.session.getUrac().tenant.code;
+				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, tenantCode));
 			}
 			next();
 		},
@@ -240,7 +244,8 @@ var dataMw = function(config) {
 
 			//if multitenant, on each request build a new mongo connection
 			if(self.config.db.multitenant) {
-				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, req.soajs.tenant.code));
+				var tenantCode = req.soajs.session.getUrac().tenant.code;
+				self.mongo = new Mongo(req.soajs.meta.tenantDB(req.soajs.registry.tenantMetaDB, self.config.serviceName, tenantCode));
 			}
 
 			//id is needed, attempt to parse it to mongo ObjectId and added it to the condition, used in exec

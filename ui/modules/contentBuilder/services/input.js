@@ -16,6 +16,10 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					listing.filter = formData.filter;
 				}
 			}
+
+			if(listing.filter === []){
+				delete listing.filter;
+			}
 			var found = false;
 			for(var i = 0; i < currentScope.config.soajsUI.list.columns.length; i++) {
 				if(currentScope.config.soajsUI.list.columns[i].name === listing.name) {
@@ -351,7 +355,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				};
 				if(formInfo && Object.keys(formInfo).length > 0) {
 					data['label'] = formInfo.label;
-					data['type'] = formInfo.type;
+					data['type'] = formInfo._type;
 					data['placeholder'] = formInfo.placeholder;
 					data['tooltip'] = formInfo.tooltip;
 					data['limit'] = formInfo.limit;

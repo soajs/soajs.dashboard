@@ -69,6 +69,23 @@
                     </div>
                 </div>
 
+                <div class="dbBoxRed w20i" ng-repeat="formField in config.soajsUI.form.add" ng-if="!config.genericService.config.schema.commonFields[formField.name]">
+                    <div class="head">
+                        <b>Provided by <span class="icon icon-laptop"></span></b>
+                        <span class="rightActions">
+                            <a href="" ng-click="updateInput('user', formField.name, formField);">
+                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(formField.name);">
+                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>Label:</b>&nbsp;{{formField.label}}<br/>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="table-cell w10">

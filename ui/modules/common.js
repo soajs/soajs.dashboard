@@ -20,7 +20,7 @@ function constructModulePermissions(scope, access, permissionsObj) {
  */
 function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var apiOptions = {
-		url: apiConfiguration.domain + options.routeName,
+		url: (options.url) ? options.url + options.routeName : apiConfiguration.domain + options.routeName,
 		headers: {
 			'Content-Type': 'application/json',
 			'key': apiConfiguration.key
@@ -50,7 +50,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			}
 		}
 	}
-	
+
 	ngDataApi[options.method]($scope, apiOptions, callback);
 	
 }
@@ -108,7 +108,8 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			"method": method,
 			"routeName": options.routeName,
 			"params": options.params,
-			"data": options.data
+			"data": options.data,
+			"url": options.url
 		}, function(error, response) {
 			if(error || !response) {
 				err++;

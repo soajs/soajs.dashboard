@@ -5,7 +5,7 @@ var cbNav =[
 		'label': 'Content Builder',
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/cb/list'
+			'route':'/cb/get'
 		},
 		'url': '#/content-builder',
 		'tplPath': 'modules/contentBuilder/directives/list.tmpl',

@@ -37,7 +37,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	};
 
 	$scope.prepareUpdateForm = function() {
-		$scope.steps = [false, true, false, false];
+		$scope.steps = [true, false, false, false];
 
 		//get the content schema from the database
 		cbHelper.loadExistingSchema($scope, $routeParams, function() {
