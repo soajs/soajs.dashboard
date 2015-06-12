@@ -29,22 +29,34 @@ soajsApp.filter('toTrustedHtml', ['$sce', function($sce) {
 	};
 }]);
 
-soajsApp.filter('trimmed', function() {
+soajsApp.filter('trimmed', ['$sce', function($sce) {
+	function hed(text) {
+		return text.replace(/(<([^>]+)>)/ig,"").toString();
+	}
+
 	return function(value) {
+		value = hed(value);
 		if(value.length > 170) {
 			value = value.slice(0, 170) + " ...";
 		}
 		return value;
 	};
-});
-soajsApp.filter('trimmed100', function() {
+}]);
+
+soajsApp.filter('trimmed100', ['$sce', function($sce) {
+
+	function hed(text) {
+		return text.replace(/(<([^>]+)>)/ig,"").toString();
+	}
+
 	return function(value) {
+		value = hed(value);
 		if(value.length > 100) {
 			value = value.slice(0, 100) + " ...";
 		}
 		return value;
 	};
-});
+}]);
 
 soajsApp.filter('label', function() {
 	return function(value) {

@@ -195,7 +195,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		}
 		else{
 			var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv));
-			el.html("<br/><p>You do not have access to this content module.</p>");
+			el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><p>You do not have access to this content module.</p>");
 			$compile(el.contents())($scope);
 		}
 	};

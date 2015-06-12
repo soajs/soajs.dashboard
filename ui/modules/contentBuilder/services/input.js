@@ -8,8 +8,13 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 	function buildListinUI(currentScope, formData, machineName, force) {
 		if(force || (formData.listing && formData.listing[0] === 'yes')) {
 			var listing = {'label': formData.label, 'name': machineName, 'field': 'fields.' + machineName};
-			if(formData.filter && formData.filter.length > 0 ) {
-				listing.filter = formData.filter[0];
+			if(formData.filter) {
+				if(Array.isArray(formData.filter) && formData.filter.length > 0) {
+					listing.filter = formData.filter[0];
+				}
+				else {
+					listing.filter = formData.filter;
+				}
 			}
 			var found = false;
 			for(var i = 0; i < currentScope.config.soajsUI.list.columns.length; i++) {
@@ -34,11 +39,18 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 	}
 
 	function buildFormUI(currentScope, formData, machineName) {
-		if(formData.type && formData.type !== '') {
+		var formType;
+		if(Array.isArray(formData.type) && formData.type.length > 0) {
+			formType = formData.type[0];
+		}
+		else if(formData.type !== '') {
+			formType = formData.type;
+		}
+		if(formType) {
 			var form = {
 				'name': machineName,
 				'label': formData.label,
-				'_type': formData.type,
+				'_type': formType,
 				'placeholder': formData.placeholder || '',
 				'tooltip': formData.tooltip || '',
 				'req': (formData.required === 'true'),
@@ -55,17 +67,17 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				}
 			}
 			if(found) {
-				for(i = 0; i < currentScope.config.soajsUI.form.update.length; i++) {
-					if(currentScope.config.soajsUI.form.update[i].name === form.name) {
-						currentScope.config.soajsUI.form.update[i] = form;
+				for(i = 0; i < currentScope.config.soajsUI.form.add.length; i++) {
+					if(currentScope.config.soajsUI.form.add[i].name === form.name) {
+						currentScope.config.soajsUI.form.add[i] = form;
 						break;
 					}
 				}
 			}
 			else {
 				currentScope.config.soajsUI.form.add.push(form);
-				currentScope.config.soajsUI.form.update.push(form);
 			}
+			currentScope.config.soajsUI.form.update = angular.copy(currentScope.config.soajsUI.form.add);
 		}
 	}
 
@@ -224,8 +236,6 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				currentScope.config.soajsUI.form.update.splice(j, 1);
 			}
 		}
-
-		currentScope.validateStep2();
 	}
 
 	function editInput(currentScope, inputType, fieldName, fieldInfo) {
@@ -251,7 +261,22 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					op.entries = angular.copy(cbConfig.form.step2.user);
 					$scope.input = {};
 					$scope.input.user = angular.extend($scope);
-					buildForm($scope.input.user, null, op);
+					buildForm($scope.input.user, null, op, function() {
+						var arr1 = ['radio', 'checkbox', 'select', 'multi-select'];
+						var arr2 = ['audio', 'video', 'image', 'document'];
+						if(arr1.indexOf(data['type']) !== -1) {
+							jQuery(".wizardForm #limit-wrapper").slideUp();
+							jQuery(".wizardForm #defaultValue-wrapper").slideDown();
+						}
+						else if(arr2.indexOf(data['type']) !== -1) {
+							jQuery(".wizardForm #defaultValue-wrapper").slideUp();
+							jQuery(".wizardForm #limit-wrapper").slideDown();
+						}
+						else {
+							jQuery(".wizardForm #defaultValue-wrapper").slideUp();
+							jQuery(".wizardForm #limit-wrapper").slideUp();
+						}
+					});
 				};
 
 				$scope.computedInputUI = function() {
@@ -279,7 +304,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 							} else {
 								buildIMFV(currentScope, formData, machineName);
 								buildFormUI(currentScope, formData, machineName);
-								buildListinUI(currentScope, formData, machineName);
+								buildListinUI(currentScope, formData, machineName, false);
 							}
 
 							currentScope.validateStep2();
@@ -298,12 +323,12 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				else {
 					$scope.computedInputUI();
 				}
-				if(data.listing === 'yes'){
-					$timeout(function(){
+				if(data.listing === 'yes') {
+					$timeout(function() {
 						jQuery(".wizardForm #filter-wrapper").show();
 						jQuery(".wizardForm #sorting-wrapper").show();
 						jQuery(".wizardForm #sortDirection-wrapper").show();
-					},1000);
+					}, 1000);
 				}
 			}
 		});
@@ -317,15 +342,13 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 						formInfo = formField;
 					}
 				});
-
 				data = {
 					"name": fieldName,
 					"label": fieldName,
-					"required": fieldInfo.required,
+					"required": fieldInfo.req,
 					"imfv": JSON.stringify(fieldInfo.validation, null, 2),
 					"defaultValue": ""
 				};
-
 				if(formInfo && Object.keys(formInfo).length > 0) {
 					data['label'] = formInfo.label;
 					data['type'] = formInfo.type;
@@ -352,7 +375,6 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				data['sorting'] = (currentScope.config.soajsUI.list.defaultSortField === fieldName) ? 'yes' : '';
 				data['sortDirection'] = (currentScope.config.soajsUI.list.defaultSortASC) ? 'desc' : 'asc';
 			}
-
 			return data;
 		}
 	}

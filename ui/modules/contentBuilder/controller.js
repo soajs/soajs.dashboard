@@ -37,7 +37,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	};
 
 	$scope.prepareUpdateForm = function() {
-		$scope.steps = [true, false, false, false];
+		$scope.steps = [false, true, false, false];
 
 		//get the content schema from the database
 		cbHelper.loadExistingSchema($scope, $routeParams, function() {
@@ -163,10 +163,15 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	 Step 3 functions
 	 */
 	$scope.validateStep3 = function(force) {
-		if(force === false){
+		if(force === false) {
 			var formData = $scope.form.formData;
 			if(formData.errors && formData.collection) {
 				try {
+					for(var i in formData){
+						if(Array.isArray(formData[i])){
+							formData[i] = formData[i][0].toString();
+						}
+					}
 					$scope.config.genericService.config.errors = JSON.parse(formData['errors']);
 
 					$scope.config.soajsService.db.collection = formData['collection'];
@@ -175,12 +180,24 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 					$scope.config.genericService.config.requestTimeout = formData['requestTimeout'];
 					$scope.config.genericService.config.requestTimeoutRenewal = formData['requestTimeoutRenewal'];
 
-					$scope.config.genericService.config.awareness = (formData['awareness'] && formData['awareness'] === 'true');
-					$scope.config.genericService.config.extKeyRequired = (formData['extKeyRequired'] && formData['extKeyRequired'] === 'true');
-					$scope.config.genericService.options.security = (formData['security'] && formData['security'] === 'true');
-					$scope.config.genericService.options.session = (formData['session'] && formData['session'] === 'true');
-					$scope.config.genericService.options.acl = (formData['acl'] && formData['acl'] === 'true');
-					$scope.config.genericService.options.oauth = (formData['oauth'] && formData['oauth'] === 'true');
+					if(formData['awareness']) {
+						$scope.config.genericService.config.awareness = (formData['awareness'] && formData['awareness'] === 'true');
+					}
+					if(formData['extKeyRequired']) {
+						$scope.config.genericService.config.extKeyRequired = (formData['extKeyRequired'] && formData['extKeyRequired'] === 'true');
+					}
+					if(formData['security']) {
+						$scope.config.genericService.options.security = (formData['security'] && formData['security'] === 'true');
+					}
+					if(formData['session']) {
+						$scope.config.genericService.options.session = (formData['session'] && formData['session'] === 'true');
+					}
+					if(formData['acl']) {
+						$scope.config.genericService.options.acl = (formData['acl'] && formData['acl'] === 'true');
+					}
+					if(formData['oauth']) {
+						$scope.config.genericService.options.oauth = (formData['oauth'] && formData['oauth'] === 'true');
+					}
 
 					$scope.goForward();
 
@@ -189,7 +206,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 					$window.alert("Invalid Error Code format provided, please make sure it is a JSON object.");
 				}
 			}
-			else{
+			else {
 				$window.alert("Please fill out the mandatory fields.");
 			}
 		}
