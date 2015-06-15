@@ -1,5 +1,18 @@
 var servicesConfig = {
 	form:{
+		serviceAdd: {
+			'entries': [
+				{
+					'name': 'serviceFile',
+					'label': 'Choose Service File',
+					'type': 'document',
+					'tooltip': 'Drag your file here of click Browse to choose it',
+					'limit': 1,
+					"fieldMsg": "Upload your custom service as a zip file.",
+					'required': true
+				}
+			]
+		},
 		serviceEdit:{
 			'entries': [
 				{
