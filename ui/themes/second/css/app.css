@@ -499,6 +499,11 @@ div.entryBox .header {
     background-color: #eeeeee;
 }
 
+div.entryBox .header.closed{
+    border-radius:8px;
+    border-bottom:none;
+}
+
 div.entryBox .header span {
     font-weight: normal;
     margin-left: 10px;

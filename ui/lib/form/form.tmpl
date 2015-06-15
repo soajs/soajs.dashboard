@@ -1,4 +1,4 @@
-<form name="{{form.name}}" class="css-form" novalidate>
+<form id="{{form.id}}" name="{{form.name}}" class="css-form" novalidate>
     <div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
         <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span>
     </div>

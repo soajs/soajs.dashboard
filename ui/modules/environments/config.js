@@ -164,6 +164,23 @@ var environmentsConfig = {
 					'required': true
 				}
 			]
+		},
+		host:{
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'number',
+					'label': 'Host(s) Number',
+					'type': 'number',
+					'placeholder': '1',
+					'value': 1,
+					'tooltip': 'Enter How Many Host(s)',
+					'fieldMsg': 'Enter How Many Host(s) you would like to add for this service.',
+					'required': true
+				}
+			]
 		}
 	},
 	permissions: {

@@ -961,6 +961,36 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/add": {
+			_apiInfo: {
+				"l": "Add Hosts",
+				"group": "Hosts"
+			},
+			'env': {
+				'source': ['query.env'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			'name': {
+				'source': ['query.name'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			'number': {
+				'source': ['body.number'],
+				'required': true,
+				"validation": {
+					"type": "integer",
+					"required": true
+				}
+			}
+		},
 		"/hosts/maintenanceOperation": {
 			"_apiInfo": {
 				"l": "Perform Maintenance Operation",
@@ -971,7 +1001,7 @@ module.exports = {
 				"source": ['body.operation'],
 				"validation": {
 					"type": "string",
-					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat"]
+					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'startHost', 'stopHost']
 				}
 			},
 			"serviceName": {
