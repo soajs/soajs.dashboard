@@ -374,11 +374,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						size: 'lg',
 						backdrop: false,
 						keyboard: false,
-						controller: function(currentScope, $modalInstance) {
-							currentScope.title = "Reloaded Registry of " + oneHost.name;
-							currentScope.data = JSON.stringify(response, null, 2);
+						controller: function($scope, $modalInstance) {
+							$scope.title = "Reloaded Registry of " + oneHost.name;
+							$scope.data = JSON.stringify(response, null, 2);
 							setTimeout(function() {highlightMyCode()}, 500);
-							currentScope.ok = function() {
+							$scope.ok = function() {
 								$modalInstance.dismiss('ok');
 							};
 						}
@@ -412,11 +412,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					size: 'lg',
 					backdrop: false,
 					keyboard: false,
-					controller: function(currentScope, $modalInstance) {
-						currentScope.title = "Reloaded Provisioned Information of " + oneHost.name;
-						currentScope.data = JSON.stringify(response, null, 2);
+					controller: function($scope, $modalInstance) {
+						$scope.title = "Reloaded Provisioned Information of " + oneHost.name;
+						$scope.data = JSON.stringify(response, null, 2);
 						setTimeout(function() {highlightMyCode()}, 500);
-						currentScope.ok = function() {
+						$scope.ok = function() {
 							$modalInstance.dismiss('ok');
 						};
 					}
