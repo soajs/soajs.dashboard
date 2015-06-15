@@ -4,7 +4,7 @@ var soajs = require('soajs');
 var Mongo = soajs.mongo;
 var mongo = null;
 
-var config = require('./utils/config.js');
+var config = require('./config.js');
 var environment = require('./environment.js');
 var product = require('./product.js');
 var tenant = require('./tenant.js');

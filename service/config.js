@@ -1,7 +1,7 @@
 'use strict';
-var serviceConfig = require("../schemas/serviceConfig");
-var cbSchema = require("../schemas/cb");
-var aclSchema = require("../schemas/acl");
+var serviceConfig = require("./schemas/serviceConfig");
+var cbSchema = require("./schemas/cb");
+var aclSchema = require("./schemas/acl");
 
 module.exports = {
 	"serviceName": "dashboard",
@@ -17,7 +17,7 @@ module.exports = {
 	},
 	"expDateTTL": 86400000,
 
-	"errors": require("./errors"),
+	"errors": require("./utils/errors"),
 
 	"schema": {
 		"commonFields": {
