@@ -102,6 +102,11 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 						}
 					}
 				}
+
+				$scope.selectedEnv = Object.keys($scope.selectedService.schema.soajsService.db.config)[0];
+				$timeout(function(){
+					$scope.populateCMUI($scope.selectedEnv);
+				}, 1000);
 			}
 		});
 
@@ -109,6 +114,10 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 
 	$scope.populateCMUI = function(envCode) {
 		$scope.selectedEnv = envCode;
+		for(var envName in $scope.selectedService.schema.soajsService.db.config){
+			$scope.selectedService.schema.soajsService.db.config[envName].active = false;
+		}
+		$scope.selectedService.schema.soajsService.db.config[$scope.selectedEnv].active = true;
 
 		$scope.selectedService.schema.hosts.forEach(function(oneHost) {
 			if(oneHost.env === envCode.toLowerCase()) {
