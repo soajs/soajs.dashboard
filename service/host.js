@@ -19,24 +19,6 @@ module.exports = {
 		});
 	},
 
-	//todo: complete the below from docker api
-	"add": function(config, mongo, req, res) {
-		var response = [];
-		for(var i = 0; i < req.soajs.inputmaskData.number; i++) {
-			response.push({
-				'ip': '127.0.0.1',
-				'controllers': [
-					{
-						'ip': '127.0.0.1',
-						'port': '4000'
-					}
-				]
-			})
-		}
-		return res.jsonp(req.soajs.buildResponse(null, response));
-	},
-
-	//todo: complete the cases of the switch inside this method
 	"maintenanceOperation": function(config, mongo, req, res) {
 		req.soajs.inputmaskData.env = req.soajs.inputmaskData.env.toLowerCase();
 
@@ -74,39 +56,17 @@ module.exports = {
 		}
 
 		function doMaintenance() {
-			switch(req.soajs.inputmaskData.operation) {
-				case 'startHost':
-				case 'stopHost':
-					//todo: complete the below from docker api
-					return res.jsonp(req.soajs.buildResponse(null, {'response': true}));
-					break;
-				case 'infoHost':
-					//todo: complete the below from docker api
-					var response = {
-						"name": req.soajs.inputmaskData.serviceName,
-						"ip": req.soajs.inputmaskData.serviceHost,
-						"port": req.soajs.inputmaskData.servicePort,
-						"hostname": req.soajs.inputmaskData.serviceName + "_" + req.soajs.inputmaskData.env,
-						"cpu": "20%",
-						"memory": "2048M",
-						"status": "running"
-					};
-					return res.jsonp(req.soajs.buildResponse(null, response));
-					break;
-				default:
-					req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
-					var maintenanceURL = "http://" + req.soajs.inputmaskData.serviceHost + ":" + req.soajs.inputmaskData.servicePort;
-					maintenanceURL += "/" + req.soajs.inputmaskData.operation;
-					request.get(maintenanceURL, function(error, response, body) {
-						if(error) {
-							return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
-						}
-						else {
-							return res.jsonp(req.soajs.buildResponse(null, JSON.parse(body)));
-						}
-					});
-					break;
-			}
+			req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
+			var maintenanceURL = "http://" + req.soajs.inputmaskData.serviceHost + ":" + req.soajs.inputmaskData.servicePort;
+			maintenanceURL += "/" + req.soajs.inputmaskData.operation;
+			request.get(maintenanceURL, function(error, response, body) {
+				if(error) {
+					return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
+				}
+				else {
+					return res.jsonp(req.soajs.buildResponse(null, JSON.parse(body)));
+				}
+			});
 		}
 	}
 };

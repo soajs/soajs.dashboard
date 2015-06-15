@@ -183,22 +183,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		envHosts.removeHost($scope, env, serviceName, oneHost);
 	};
 
-	$scope.stopHost = function(env, serviceName, oneHost, serviceInfo) {
-		envHosts.stopHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.startHost = function(env, serviceName, oneHost, serviceInfo) {
-		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.infoHost = function(env, serviceName, oneHost, serviceInfo) {
-		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.addHost = function(env, serviceName, serviceInfo) {
-		envHosts.addHost($scope, env, serviceName, serviceInfo);
-	};
-
 	$scope.updateServicesControllers = function(env, oneCtrl) {
 		envHosts.updateServicesControllers($scope, env, oneCtrl);
 	};

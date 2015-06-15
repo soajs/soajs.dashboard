@@ -278,10 +278,6 @@ service.init(function() {
 		checkForMongo(req);
 		host.list(config, mongo, req, res);
 	});
-	service.post("/hosts/add", function(req, res) {
-		checkForMongo(req);
-		host.add(config, mongo, req, res);
-	});
 	service.get("/hosts/delete", function(req, res) {
 		checkForMongo(req);
 		host.delete(config, mongo, req, res);
