@@ -22,61 +22,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		}
 	};
 
-	$scope.addService = function() {
-		var formConfig = angular.copy(servicesConfig.form.serviceAdd);
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'addService',
-			label: 'Add Custom Service',
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Submit',
-					'btn': 'primary',
-					'action': function(formData) {
-						console.log(formData);
-						//todo: complete the code here.
-						//getSendDataFromServer($scope, ngDataApi, {
-						//	"method": "send",
-						//	"routeName": "/dashboard/services/add",
-						//	"file": formData.serviceFile
-						//}, function(error) {
-						//	if(error) {
-						//		$scope.form.displayAlert('danger', error.message);
-						//	}
-						//	else {
-						//		$scope.$parent.displayAlert('success', 'Service Data Updated Successfully.');
-						//		$scope.modalInstance.close();
-						//		$scope.form.formData = {};
-						//		$scope.listServices();
-						//	}
-						//});
-
-						$scope.form.displayAlert('success', "Your service has been Uploaded and Created.");
-						jQuery('.modal-content .modal-body table').slideUp();
-						jQuery('.modal-content .modal-body').append("<br /><div id='deployServiceDiv'></div>");
-						var ele = angular.element(document.getElementById('deployServiceDiv'));
-						ele.html("<a href='#/environments' class='btn btn-sm btn-primary'>Click Here to Deploy The Service</a>");
-						$compile(ele.contents())($scope);
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
 	$scope.editService = function(service) {
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
 
