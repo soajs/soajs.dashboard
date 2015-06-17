@@ -19,6 +19,13 @@ soajsApp.filter('TTL', function() {
 	}
 });
 
+soajsApp.filter('prettyLocalDate', function() {
+	return function(text) {
+		if(!text) { return ''; }
+		return new Date(text).toLocaleString();
+	};
+});
+
 soajsApp.filter('fulldate', function() {
 	return function(text) {
 		if(!text) { return ''; }
