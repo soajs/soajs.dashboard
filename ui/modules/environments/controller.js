@@ -7,6 +7,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 	$scope.envId = null;
 	$scope.formEnvironment = {services: {}};
 	$scope.formEnvironment.config_loggerObj = '';
+	$scope.formEnvironment.proxyStr = undefined;
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
@@ -109,6 +110,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 			try {
 				$scope.formEnvironment.services.config.logger = JSON.parse($scope.formEnvironment.config_loggerObj);
 				postData.services.config.logger = $scope.formEnvironment.services.config.logger;
+				postData.config_loggerObj;
 			}
 			catch(e) {
 				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
@@ -179,6 +181,22 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 
 	$scope.removeHost = function(env, serviceName, oneHost) {
 		envHosts.removeHost($scope, env, serviceName, oneHost);
+	};
+
+	$scope.stopHost = function(env, serviceName, oneHost, serviceInfo) {
+		envHosts.stopHost($scope, env, serviceName, oneHost, serviceInfo);
+	};
+
+	$scope.startHost = function(env, serviceName, oneHost, serviceInfo) {
+		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
+	};
+
+	$scope.infoHost = function(env, serviceName, oneHost, serviceInfo) {
+		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
+	};
+
+	$scope.addHost = function(env, serviceName, serviceInfo) {
+		envHosts.addHost($scope, env, serviceName, serviceInfo);
 	};
 
 	$scope.updateServicesControllers = function(env, oneCtrl) {

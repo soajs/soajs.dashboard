@@ -6,7 +6,7 @@ var util = require('soajs/lib/utils');
 var helper = require("../helper.js");
 var dashboard;
 
-var config = helper.requireModule('./service/config');
+var config = helper.requireModule('./service/utils/config');
 var errorCodes = config.errors;
 
 var Mongo = soajs.mongo;
@@ -64,16 +64,6 @@ describe("DASHBOARD CONTENT BUILDER TESTS", function() {
 	var latestV = 13;
 	var oldVTotal = 12;
 	before(function(done) {
-		mongo.remove('gc', {}, function(error) {
-			assert.ifError(error);
-			mongo.remove('gc_versioning', {}, function(error) {
-				assert.ifError(error);
-				done();
-			});
-		});
-	});
-
-	after(function(done) {
 		mongo.remove('gc', {}, function(error) {
 			assert.ifError(error);
 			mongo.remove('gc_versioning', {}, function(error) {

@@ -1,9 +1,6 @@
 "use strict";
 soajsApp.filter('filterPicker', function($filter) {
 	return function(value, filterName) {
-		if(Array.isArray(filterName) && filterName.length === 0){
-			return value;
-		}
 		return $filter(filterName)(value);
 	}
 });
@@ -17,13 +14,6 @@ soajsApp.filter('TTL', function() {
 		}
 		return value;
 	}
-});
-
-soajsApp.filter('prettyLocalDate', function() {
-	return function(text) {
-		if(!text) { return ''; }
-		return new Date(text).toLocaleString();
-	};
 });
 
 soajsApp.filter('fulldate', function() {

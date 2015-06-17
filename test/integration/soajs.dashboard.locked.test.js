@@ -6,7 +6,7 @@ var soajs = require('soajs');
 var helper = require("../helper.js");
 var dashboard;
 
-var config = helper.requireModule('./service/config');
+var config = helper.requireModule('./service/utils/config');
 var errorCodes = config.errors;
 
 var Mongo = soajs.mongo;

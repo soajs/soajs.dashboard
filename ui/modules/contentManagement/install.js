@@ -3,10 +3,10 @@ var cmNav =[
 	{
 		'id': 'content-management',
 		'label': 'Content Management',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/cb/list'
-		},
+		//'checkPermission':{
+		//	'service':'dashboard',
+		//	'route':'/cb/list'
+		//},
 		'url': '#/content-management',
 		'tplPath': 'modules/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',

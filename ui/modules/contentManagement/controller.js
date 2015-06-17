@@ -41,8 +41,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 			grid: false,
 			add: false,
 			left: [],
-			top: [],
-			links:{}
+			top: []
 		};
 
 		getSendDataFromServer($scope, ngDataApi, {
@@ -60,7 +59,6 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							case 'add':
 								if($scope.access.addEntry) {
 									$scope.ui.add = true;
-									$scope.ui.links['add'] = apiRoute;
 								}
 								break;
 							case 'update':
@@ -70,7 +68,6 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 										'icon': 'pencil2',
 										'handler': 'editCMDataEntry'
 									});
-									$scope.ui.links['update'] = apiRoute;
 								}
 								break;
 							case 'get':
@@ -80,7 +77,6 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 										'icon': 'search',
 										'handler': 'viewCMDataEntry'
 									});
-									$scope.ui.links['get'] = apiRoute;
 								}
 								break;
 							case 'delete':
@@ -96,34 +92,26 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 										'msg': "Are you sure you want to delete the selected entry(s)?",
 										'handler': 'deleteCMDataEntries'
 									});
-									$scope.ui.links['delete'] = apiRoute;
 								}
 								break;
 							case 'list':
 								if($scope.access.listEntries) {
 									$scope.ui.grid = true;
 								}
-								$scope.ui.links['list'] = apiRoute;
 								break;
 						}
 					}
 				}
-
-				$timeout(function(){
-					$scope.populateCMUI($scope.selectedService.schema.hosts[0].env.toUpperCase());
-				}, 1000);
 			}
 		});
 
 	};
 
 	$scope.populateCMUI = function(envCode) {
-		$scope.selectedEnv = envCode.toLowerCase();
-		$scope.selectedService.schema.hosts.forEach(function(oneHost){
-			oneHost.active = (oneHost.env === $scope.selectedEnv);
-		});
+		$scope.selectedEnv = envCode;
+
 		$scope.selectedService.schema.hosts.forEach(function(oneHost) {
-			if(oneHost.env === $scope.selectedEnv) {
+			if(oneHost.env === envCode.toLowerCase()) {
 				$scope.selectedDomainAddress = "http://" + oneHost.ip;
 			}
 		});
@@ -167,7 +155,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		getSendDataFromServer($scope, ngDataApi, {
 			"url": $scope.selectedDomainAddress,
 			"method": "get",
-			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['list']
+			"routeName": "/" + $scope.selectedService.name + "/list"
 		}, function(error, response) {
 			if(error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -224,7 +212,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 						getSendDataFromServer($scope, ngDataApi, {
 							"url": $scope.selectedDomainAddress,
 							"method": "send",
-							"routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'],
+							"routeName": "/" + $scope.selectedService.name + "/add",
 							"data": formData
 						}, function(error) {
 							if(error) {
@@ -282,7 +270,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 						getSendDataFromServer($scope, ngDataApi, {
 							"url": $scope.selectedDomainAddress,
 							"method": "send",
-							"routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
+							"routeName": "/" + $scope.selectedService.name + "/update",
 							"params": {"id": data._id},
 							"data": formData
 						}, function(error) {
@@ -313,37 +301,24 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 	};
 
 	$scope.viewCMDataEntry = function(data) {
-
-		getSendDataFromServer($scope, ngDataApi, {
-			"url": $scope.selectedDomainAddress,
-			"method": "get",
-			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['get'],
-			"params": {"id": data._id}
-		}, function(error, repsonse) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
-			}
-			else {
-				$modal.open({
-					templateUrl: "infoBox.html",
-					size: 'lg',
-					backdrop: false,
-					keyboard: false,
-					controller: function($scope, $modalInstance) {
-						$scope.title = "View Entry";
-						$scope.data = angular.copy(repsonse);
-						delete $scope.data['$$hashKey'];
-						delete $scope.data['_id'];
-						for(var i in $scope.data) {
-							if(i === 'created' || i === 'modified') {
-								$scope.data[i] = new Date($scope.data[i]).toISOString();
-							}
-						}
-						$scope.ok = function() {
-							$modalInstance.dismiss('ok');
-						};
+		$modal.open({
+			templateUrl: "infoBox.html",
+			size: 'lg',
+			backdrop: false,
+			keyboard: false,
+			controller: function($scope, $modalInstance) {
+				$scope.title = "View Entry";
+				$scope.data = angular.copy(data);
+				delete $scope.data['$$hashKey'];
+				delete $scope.data['_id'];
+				for(var i in $scope.data) {
+					if(i === 'created' || i === 'modified') {
+						$scope.data[i] = new Date($scope.data[i]).toISOString();
 					}
-				});
+				}
+				$scope.ok = function() {
+					$modalInstance.dismiss('ok');
+				};
 			}
 		});
 	};
@@ -352,7 +327,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		getSendDataFromServer($scope, ngDataApi, {
 			"url": $scope.selectedDomainAddress,
 			"method": "get",
-			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
+			"routeName": "/" + $scope.selectedService.name + "/delete",
 			"params": {"id": data._id}
 		}, function(error) {
 			if(error) {
@@ -368,7 +343,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 	$scope.deleteCMDataEntries = function() {
 		var config = {
 			"url": $scope.selectedDomainAddress,
-			'routeName': "/" + $scope.selectedService.name + $scope.ui.links['delete'],
+			'routeName': "/" + $scope.selectedService.name + "/delete",
 			"params": {'id': '%id%'},
 			'msg': {
 				'error': 'one or more of the selected Data was not deleted.',

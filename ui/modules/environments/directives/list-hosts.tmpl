@@ -18,7 +18,7 @@
     </a>
 </div>
 <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
-    <div ng-repeat="(serviceName, serviceInfo) in row.hosts">
+    <div ng-repeat="(serviceName, serviceInfo) in row.hosts track by serviceName">
         <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
             <div style="width: 100%;" class="head {{serviceInfo.color}}">
                 <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
@@ -48,6 +48,18 @@
                                 <a href="" ng-show="!oneIp.heartbeat" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                     <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
                                 </a>
+
+                                <a href="" ng-show="oneIp.heartbeat" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                    <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
+                                </a>
+
+                                <a href="" ng-show="!oneIp.heartbeat" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                    <span class="icon icon-play3" title="Start Selected Host"></span>&nbsp;
+                                </a>
+
+                                <a href="" ng-show="oneIp.heartbeat" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                    <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
+                                </a>
                             </td>
                         </tr>
                     </table>
@@ -55,8 +67,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div ng-repeat="(serviceName, serviceInfo) in row.hosts">
         <div ng-if="serviceName !== 'controller' && serviceInfo.ips.length > 0" class="serviceBox">
             <div style="padding: 10px 0px 25px 5px;" ng-show="(serviceInfo.waitMessage && serviceInfo.waitMessage.message!=='')">
                 <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
@@ -92,6 +102,18 @@
 
                                             <a href="" ng-show="!oneIp.healthy" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                                 <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
+                                            </a>
+
+                                            <a href="" ng-show="oneIp.healthy" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                                <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
+                                            </a>
+
+                                            <a href="" ng-show="!oneIp.healthy" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)" title="Start Selected Host">
+                                                <span class="icon icon-play3"></span>&nbsp;
+                                            </a>
+
+                                            <a href="" ng-show="oneIp.healthy" ng-click="infoHost(row['code'], serviceName, oneIp)">
+                                                <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
                                             </a>
                                         </td>
                                         <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>

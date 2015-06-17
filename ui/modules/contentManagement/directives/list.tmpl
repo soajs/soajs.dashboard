@@ -27,10 +27,9 @@
             </div>
 
             <div ng-show="!hp">
-                <h2>Managing Content of {{selectedService.name}}</h2>
                 <tabset>
-                    <tab heading="{{oneHost.env|uppercase}}" ng-repeat="oneHost in selectedService.schema.hosts" ng-click="populateCMUI(oneHost.env)" active="oneHost.active">
-                        <div id="contentGridContainer_{{oneHost.env}}"><br/><p>Loading Data...</p></div>
+                    <tab heading="{{envCode}}" ng-repeat="(envCode, envInfo) in selectedService.schema.soajsService.db.config track by envCode" ng-click="populateCMUI(envCode)">
+                        <div id="contentGridContainer_{{envCode}}"></div>
                     </tab>
                 </tabset>
             </div>
