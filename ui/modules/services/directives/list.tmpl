@@ -1,5 +1,4 @@
 <section ng-controller="servicesCtrl">
-    <input type="button" class="btn btn-sm btn-primary" value="Add New Custom Service" ng-click="addService();" /><br/><br/>
     <div class="entryBoxes" ng-show="grid.rows">
         <div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox">
             <div class="header"><a href="" ng-click="showHide(service)"><span class="icon icon-{{service.icon || 'minus'}}"></span></a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>

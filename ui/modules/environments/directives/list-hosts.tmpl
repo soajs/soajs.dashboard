@@ -18,7 +18,7 @@
     </a>
 </div>
 <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
-    <div ng-repeat="(serviceName, serviceInfo) in row.hosts track by serviceName">
+    <div ng-repeat="(serviceName, serviceInfo) in row.hosts">
         <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
             <div style="width: 100%;" class="head {{serviceInfo.color}}">
                 <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
@@ -67,6 +67,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div ng-repeat="(serviceName, serviceInfo) in row.hosts">
         <div ng-if="serviceName !== 'controller' && serviceInfo.ips.length > 0" class="serviceBox">
             <div style="padding: 10px 0px 25px 5px;" ng-show="(serviceInfo.waitMessage && serviceInfo.waitMessage.message!=='')">
                 <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
