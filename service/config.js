@@ -1019,14 +1019,14 @@ module.exports = {
 				}
 			}
 		},
-		"host/deployController": {
+		"/hosts/deployController": {
 			"_apiInfo": {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
 			},
 			commonFields: ['envCode', 'profile', 'nodesNumber']
 		},
-		"host/deployNginx": {
+		"/hosts/deployNginx": {
 			"_apiInfo": {
 				"l": "Deploy New Nginx",
 				"group": "Hosts"
@@ -1045,7 +1045,7 @@ module.exports = {
 				}
 			}
 		},
-		"host/deployService": {
+		"/hosts/deployService": {
 			"_apiInfo": {
 				"l": "Deploy New Service",
 				"group": "Hosts"
@@ -1067,7 +1067,7 @@ module.exports = {
 			},
 			"gcVersion": {
 				"required": false,
-				"source": ['body.gcName'],
+				"source": ['body.gcVersion'],
 				"validation": {
 					"type": "integer",
 					"minimum": 1

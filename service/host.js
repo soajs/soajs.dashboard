@@ -11,7 +11,7 @@ module.exports = {
 
 	"deployController": function(config, mongo, req, res) {
 		//from profile name, construct profile path and equivalently soajsData01....
-		mongo.findOne("environments", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
 			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 			//build the regFile path
@@ -26,7 +26,7 @@ module.exports = {
 			var profile = require(regFile);
 			//todo: this is hardcoded for now, needs to become dynamic
 			for(var i = 0; i < profile.servers.length; i++) {
-				mongoList.push("soajsData" + pad(i));
+				mongoList.push("soajsData" + pad(i + 1));
 			}
 
 			var dockerParams = {
@@ -44,7 +44,7 @@ module.exports = {
 
 	"deployNginx": function(config, mongo, req, res) {
 		//from envCode, load env, get port and domain
-		mongo.findOne("environments", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
 			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 
@@ -63,26 +63,30 @@ module.exports = {
 
 	"deployService": function(config, mongo, req, res) {
 
-		if(req.soajs.inputmaskData.image && req.soajs.inputmaskData.gcName){
-			return res.json(req.soajs.buildResponse({"code": 612, "msg": config.errors[612] }));
+		if(!req.soajs.inputmaskData.image && !req.soajs.inputmaskData.gcName){
+			return res.json(req.soajs.buildResponse({"code": 613, "msg": config.errors[613]}));
 		}
 
-		if(req.soajs.inputmaskData.image){
-			mongo.findOne("services", {"image": req.soajs.inputmaskData.image}, function(error, imageRecord){
-				if(error){ return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600] })); }
+		if(req.soajs.inputmaskData.image && req.soajs.inputmaskData.gcName) {
+			return res.json(req.soajs.buildResponse({"code": 612, "msg": config.errors[612]}));
+		}
 
-				if(!imageRecord){ return res.json(req.soajs.buildResponse({"code": 611, "msg": config.errors[611] })); }
+		if(req.soajs.inputmaskData.image) {
+			mongo.findOne("services", {"image": req.soajs.inputmaskData.image}, function(error, imageRecord) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+				if(!imageRecord) { return res.json(req.soajs.buildResponse({"code": 611, "msg": config.errors[611]})); }
 
 				req.soajs.inputmaskData.serviceName = imageRecord.name;
 				proceed(false);
 			});
 		}
 
-		if(req.soajs.inputmaskData.gcName){
-			mongo.findOne("gc", {"name": req.soajs.inputmaskData.gcName, "v": req.soajs.inputmaskData.gcVersion}, function(error, gcRecord){
-				if(error){ return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600] })); }
+		if(req.soajs.inputmaskData.gcName) {
+			mongo.findOne("gc", {"name": req.soajs.inputmaskData.gcName, "v": req.soajs.inputmaskData.gcVersion}, function(error, gcRecord) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-				if(!gcRecord){ return res.json(req.soajs.buildResponse({"code": 703, "msg": config.errors[703] })); }
+				if(!gcRecord) { return res.json(req.soajs.buildResponse({"code": 703, "msg": config.errors[703]})); }
 
 				proceed(true);
 			});
@@ -91,7 +95,7 @@ module.exports = {
 		function proceed(gcService) {
 			//from profile name, construct profile path and equivalently soajsData01....
 			//if gc info, check if gc exists before proceeding
-			mongo.findOne("environments", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+			mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
 				if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 				//build the regFile path
@@ -106,7 +110,7 @@ module.exports = {
 				var profile = require(regFile);
 				//todo: this is hardcoded for now, need to become dynamic
 				for(var i = 0; i < profile.servers.length; i++) {
-					mongoList.push("soajsData" + pad(i));
+					mongoList.push("soajsData" + pad(i + 1));
 				}
 
 				var dockerParams = {
@@ -114,11 +118,11 @@ module.exports = {
 					"profile": regFile,
 					"mongo": mongoList
 				};
-				if(gcService){
+				if(gcService) {
 					dockerParams.serviceName = req.soajs.inputmaskData.gcName;
 					dockerParams.serviceVersion = req.soajs.inputmaskData.gcVersion;
 				}
-				else{
+				else {
 					dockerParams.image = req.soajs.inputmaskData.image;
 				}
 				console.log(dockerParams);

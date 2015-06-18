@@ -91,6 +91,7 @@ var errors = {
 	"610": "Invalid or profile not found.",
 	"611": "Invalid Service Image Name provided",
 	"612": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both.",
+	"613": "Invalid Operation! either deploy a service by providing its image or its GC information.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",

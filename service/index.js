@@ -286,17 +286,17 @@ service.init(function() {
 		checkForMongo(req);
 		host.maintenanceOperation(config, mongo, req, res);
 	});
-	service.post("hosts/deployController", function(req, res){
+	service.post("/hosts/deployController", function(req, res){
 		checkForMongo(req);
 		host.deployController(config, mongo, req, res);
 	});
 
-	service.post("hosts/deployNginx", function(req, res){
+	service.post("/hosts/deployNginx", function(req, res){
 		checkForMongo(req);
 		host.deployNginx(config, mongo, req, res);
 	});
 
-	service.post("hosts/deployService", function(req, res){
+	service.post("/hosts/deployService", function(req, res){
 		checkForMongo(req);
 		host.deployService(config, mongo, req, res);
 	});
