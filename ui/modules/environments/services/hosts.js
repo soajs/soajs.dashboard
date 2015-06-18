@@ -703,6 +703,111 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		buildFormWithModal(currentScope, $modal, options);
 	}
 
+	function createHost(currentScope, env) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/services/list"
+		}, function(error, response) {
+			if(error || !response) {
+				currentScope.$parent.displayAlert('danger', "Unable to retrieve the list of services.");
+			}
+			else {
+				var servicesList = [];
+				response.forEach(function(oneService) {
+					servicesList.push({'v': oneService.name, 'l': oneService.name})
+				});
+
+				var entry = {
+					'name': 'service',
+					'label': 'Service Name',
+					'type': 'select',
+					'value': servicesList,
+					'fieldMsg': 'Select the service from the list above.',
+					'required': true
+				};
+				var hostForm = angular.copy(environmentsConfig.form.host);
+				hostForm.entries.unshift(entry);
+				var options = {
+					timeout: $timeout,
+					form: hostForm,
+					name: 'createHost',
+					label: 'Create New Service Host',
+					actions: [
+						{
+							'type': 'submit',
+							'label': 'Submit',
+							'btn': 'primary',
+							'action': function(formData) {
+								console.log(formData);
+								//getSendDataFromServer(currentScope, ngDataApi, {
+								//	"method": "send",
+								//	"routeName": "/dashboard/hosts/add",
+								//	"params": {"env": env, "name": serviceName},
+								//	"data": {'number': formData.number}
+								//}, function(error, response) {
+								//	serviceInfo.waitMessage = {};
+								//	if(error) {
+								//		serviceInfo.waitMessage.type = 'danger';
+								//		serviceInfo.waitMessage.message = error.message;
+								//		currentScope.closeWaitMessage(serviceInfo);
+								//		//currentScope.form.displayAlert('danger', error.message);
+								//	}
+								//	else {
+								//		serviceInfo.waitMessage.type = 'success';
+								//		serviceInfo.waitMessage.message = "Host(s) Added Successfully.";
+								//		currentScope.closeWaitMessage(serviceInfo);
+								//
+								//		currentScope.modalInstance.close();
+								//		currentScope.form.formData = {};
+								//
+								//		var hosttmpl = {
+								//			'ip': '',
+								//			'port': serviceInfo.port,
+								//			'name': serviceName,
+								//			'downCount': 'N/A',
+								//			'downSince': 'N/A',
+								//			'lastCheck': 'N/A',
+								//			'healthy': true,
+								//			'color': 'green',
+								//			'controllers': []
+								//		};
+								//
+								//		for(var i = 0; i < response.length; i++) {
+								//			var newHost = angular.copy(hosttmpl);
+								//			newHost.ip = response[i].ip;
+								//
+								//			response[i].controllers.forEach(function(oneCtrl) {
+								//				newHost.controllers.push({
+								//					'color': 'green',
+								//					'ip': oneCtrl.ip,
+								//					'port': oneCtrl.port,
+								//					'name': 'controller'
+								//				});
+								//			});
+								//			serviceInfo.ips.push(newHost);
+								//		}
+								//
+								//		currentScope.executeHeartbeatTest(env, newHost);
+								//	}
+								//});
+							}
+						},
+						{
+							'type': 'reset',
+							'label': 'Cancel',
+							'btn': 'danger',
+							'action': function() {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
+	}
+
 	return {
 		'listHosts': listHosts,
 		'executeHeartbeatTest': executeHeartbeatTest,
@@ -714,6 +819,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		'startHost': startHost,
 		'infoHost': infoHost,
 		'addHost': addHost,
+		'createHost': createHost,
 		'updateServicesControllers': updateServicesControllers
 	};
 

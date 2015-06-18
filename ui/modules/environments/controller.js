@@ -193,6 +193,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
 	};
 
+	$scope.createHost = function(env) {
+		envHosts.createHost($scope, env);
+	};
+
 	$scope.addHost = function(env, serviceName, serviceInfo) {
 		envHosts.addHost($scope, env, serviceName, serviceInfo);
 	};

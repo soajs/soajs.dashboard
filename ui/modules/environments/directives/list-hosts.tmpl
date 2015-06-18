@@ -13,10 +13,12 @@
 </div>
 <br/>
 <div ng-init="listHosts(row['code'])" >
+    <input type="button" value="Add New Service Host" ng-click="createHost(row['code']);" class="btn btn-primary" style="float:left !important;"/>
     <a href="" ng-click="listHosts(row['code'])" class="btn btn-primary">
         <span class="icon icon-undo" tooltip="Refresh List"></span>Refresh
     </a>
 </div>
+<br/>
 <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;">
     <div ng-repeat="(serviceName, serviceInfo) in row.hosts">
         <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
