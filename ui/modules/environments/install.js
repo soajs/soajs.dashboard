@@ -12,7 +12,7 @@ var environmentsNav = [
 		'icon': 'earth',
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js', 'modules/environments/services/clusters.js', 'modules/environments/services/database.js', 'modules/environments/services/hosts.js'],
+		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js', 'modules/environments/services/clusters.js', 'modules/environments/services/database.js', 'modules/environments/services/hosts.js', 'modules/environments/services/deploy.js'],
 		'ancestor': ['Home']
 	},
 	{

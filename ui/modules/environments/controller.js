@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', 'envHosts', 'envDB', 'envClusters', function($scope, $compile, $timeout, $modal, $http, $routeParams, ngDataApi, envHosts, envDB, envClusters) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', 'envHosts', 'envDB', 'envClusters', 'deploySrv', function($scope, $compile, $timeout, $modal, $http, $routeParams, ngDataApi, envHosts, envDB, envClusters, deploySrv) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -36,7 +36,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 			}
 		});
 	};
-
 
 	$scope.closeWaitMessage = function(context) {
 		if(!context) {
@@ -180,6 +179,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		});
 	};
 
+	$scope.deployEnvironment = function(envCode){
+		deploySrv.deployEnvironment($scope, envCode);
+	};
+
 	$scope.listHosts = function(env, noPopulate) {
 		if($scope.grid.rows){
 			$scope.grid.rows.forEach(function(oneEnvRecord){
@@ -230,12 +233,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
 	};
 
-	$scope.createHost = function(env) {
-		envHosts.createHost($scope, env);
-	};
-
-	$scope.addHost = function(env, serviceName, serviceInfo) {
-		envHosts.addHost($scope, env, serviceName, serviceInfo);
+	$scope.createHost = function(env, services) {
+		envHosts.createHost($scope, env, services);
 	};
 
 	$scope.updateServicesControllers = function(env, oneCtrl) {

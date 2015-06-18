@@ -14,14 +14,17 @@
 <br/>
 <div>
     <div ng-show="!row.hosts">
-        hi
+        <div style="padding: 10px 0px 25px 5px;">
+            <alert type="warning">This Environment has not been deployed yet.</alert>
+            <input type="button" value="Deploy Environment" class="btn btn-primary" ng-click="deployEnvironment(row['code'])" style="float:none; top:0; display:block; margin:20px auto 0;"/>
+        </div>
     </div>
     <div ng-show="row.hosts">
         <div style="padding: 10px 0px 25px 5px;" ng-show="(row.hostInfo.waitMessage && row.hostInfo.waitMessage.message!=='')">
             <alert type="{{row.hostInfo.waitMessage.type}}" close="closeWaitMessage(row.hostInfo)" >{{row.hostInfo.waitMessage.message}}</alert>
         </div>
 
-        <input type="button" value="Add New Service Host" ng-click="createHost(row['code']);" class="btn btn-primary" style="float:left !important;"/>
+        <input type="button" value="Add new Hosts" ng-click="createHost(row['code'], row.hosts);" class="btn btn-primary" style="float:left !important;"/>
         <a href="" ng-click="listHosts(row['code'])" class="btn btn-primary">
             <span class="icon icon-undo" tooltip="Refresh List"></span>Refresh
         </a>
@@ -32,7 +35,6 @@
             <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
                 <div style="width: 100%;" class="head {{serviceInfo.color}}">
                     <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
-                    <a href="" ng-click="addHost(row['code'], serviceName, serviceInfo)" class="f-right"><span class="icon icon-plus"></span></a>
                 </div>
                 <div class="service-ips clearfix">
                     <div ng-repeat="oneIp in serviceInfo.ips" style="float:left;">
@@ -94,7 +96,6 @@
                 </div>
                 <div style="width: 100%;" class="head {{serviceInfo.color}}">
                     <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
-                    <a href="" ng-click="addHost(row['code'], serviceName, serviceInfo)" class="f-right"><span class="icon icon-plus"></span></a>
                 </div>
                 <div class="service-ips">
                     <div ng-repeat="oneIp in serviceInfo.ips" class="">

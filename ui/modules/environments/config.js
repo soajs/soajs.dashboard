@@ -1,5 +1,6 @@
 "use strict";
 var environmentsConfig = {
+	profiles: '/opt/soajs/FILES/profiles/',
 	form: {
 		database: {
 			'name': '',
@@ -171,6 +172,18 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'profile',
+					'label': 'Profile to Use',
+					'type': 'select',
+					'value': [
+						{'v': 'single', 'l': 'Single'},
+						{'v': 'replica3', 'l': 'Replica of 3'},
+						{'v': 'replica5', 'l': 'Replica of 5'}
+					],
+					'required': true,
+					'fieldMsg': "Select which profile to use."
+				},
+				{
 					'name': 'number',
 					'label': 'Host(s) Number',
 					'type': 'number',
@@ -178,6 +191,35 @@ var environmentsConfig = {
 					'value': 1,
 					'tooltip': 'Enter How Many Host(s)',
 					'fieldMsg': 'Enter How Many Host(s) you would like to add for this service.',
+					'required': true
+				}
+			]
+		},
+		"deploy":{
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'profile',
+					'label': 'Profile to Use',
+					'type': 'select',
+					'value': [
+						{'v': 'single', 'l': 'Single'},
+						{'v': 'replica3', 'l': 'Replica of 3'},
+						{'v': 'replica5', 'l': 'Replica of 5'}
+					],
+					'required': true,
+					'fieldMsg': "Select which profile to use."
+				},
+				{
+					'name': 'controllers',
+					'label': 'Controller(s)',
+					'type': 'number',
+					'placeholder': '1',
+					'value': '',
+					'tooltip': 'Choose how many controllers to deploy',
+					'fieldMsg': 'Choose how many controllers you want to deploy',
 					'required': true
 				}
 			]
