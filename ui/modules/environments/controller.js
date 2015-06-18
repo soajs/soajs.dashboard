@@ -11,13 +11,33 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
 	$scope.waitMessage = {
-		type: "info",
-		message: "Services Detected. Awareness check in progress. Please wait...",
+		type: "",
+		message: "",
 		close: function() {
 			$scope.waitMessage.message = '';
 			$scope.waitMessage.type = '';
 		}
 	};
+
+	$scope.generateNewMsg = function(env, type, msg) {
+		$scope.grid.rows.forEach(function(oneEnvRecord){
+			if(oneEnvRecord.code === env){
+				oneEnvRecord.hostInfo = {
+					waitMessage: {
+						"type": type,
+						"message": msg
+					}
+				};
+
+				$timeout(function() {
+					oneEnvRecord.hostInfo.waitMessage.message = '';
+					oneEnvRecord.hostInfo.waitMessage.type = '';
+				}, 7000);
+			}
+		});
+	};
+
+
 	$scope.closeWaitMessage = function(context) {
 		if(!context) {
 			context = $scope;
@@ -72,6 +92,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 						if($scope.grid.rows.length == 1) {
 							$scope.grid.rows[0].showOptions = true;
 						}
+						$scope.grid.rows.forEach(function(env){
+							$scope.listHosts(env.code);
+						});
 					}
 				}
 			}
@@ -158,6 +181,20 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 	};
 
 	$scope.listHosts = function(env, noPopulate) {
+		if($scope.grid.rows){
+			$scope.grid.rows.forEach(function(oneEnvRecord){
+				if(oneEnvRecord.code === env){
+					oneEnvRecord.hostInfo = {
+						waitMessage: {
+							"type": "",
+							"message": ""
+						}
+					};
+					oneEnvRecord.hostInfo.waitMessage.type = 'info';
+					oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
+				}
+			});
+		}
 		envHosts.listHosts($scope, env, noPopulate);
 	};
 

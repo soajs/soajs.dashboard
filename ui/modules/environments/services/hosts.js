@@ -4,7 +4,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 
 	function listHosts(currentScope, env, noPopulate) {
 		var controllers = [];
-		currentScope.hostList =[];
+		currentScope.hostList = [];
 		if(currentScope.access.listHosts) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
@@ -14,14 +14,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				}
 			}, function(error, response) {
 				if(error || !response) {
-					currentScope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
 					console.log(error.message);
+					currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
 				}
 				else {
 					currentScope.hostList = response;
 					for(var i = 0; i < response.length; i++) {
 						if(response[i].name === 'controller') {
-							controllers.push({'name': 'controller', 'hostname': response[i].hostname,'ip': response[i].ip, 'color': 'red', 'port': 4000});
+							controllers.push({'name': 'controller', 'hostname': response[i].hostname, 'ip': response[i].ip, 'color': 'red', 'port': 4000});
 						}
 					}
 					controllers.forEach(function(oneController) {
@@ -44,7 +44,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				}
 			}, function(error, response) {
 				if(error || !response || !response.result || !response.data) {
-					currentScope.$parent.displayAlert('danger', "Unable to retrieve services hosts information.");
+					currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
 					console.log(error.message);
 				}
 				else {
@@ -56,6 +56,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		function propulateServices(regServices) {
 			for(var i = 0; i < currentScope.grid.rows.length; i++) {
 				if(currentScope.grid.rows[i]['code'] === env) {
+
 					currentScope.grid.rows[i].controllers = controllers;
 					var renderedHosts = {};
 					var services = Object.keys(regServices);
@@ -78,7 +79,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
 								var oneHost;
 								if(serviceName === 'controller') {
-									oneHost = {'ip': oneHostIP, 'name': serviceName,'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
+									oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
 									$timeout(function() {
 										currentScope.executeHeartbeatTest(env, oneHost);
 									}, 2000);
@@ -95,8 +96,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 										'port': regServices[serviceName].port
 									};
 
-									currentScope.hostList.forEach(function(origHostRec){
-										if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip){
+									currentScope.hostList.forEach(function(origHostRec) {
+										if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 											oneHost.hostname = origHostRec.hostname;
 										}
 									});
@@ -128,9 +129,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 			if(error) {
 				console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
 				updateServiceStatus(false);
-				currentScope.waitMessage.type = 'danger';
-				currentScope.waitMessage.message = "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString();
-				currentScope.closeWaitMessage();
+				currentScope.generateNewMsg(env, 'danger', "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString());
 				currentScope.updateServicesControllers(env, oneHost);
 			}
 			else {
@@ -148,16 +147,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				}
 				updateServiceStatus(true);
 				if(oneHost.name === 'controller') {
-					currentScope.waitMessage.type = 'success';
-					currentScope.waitMessage.message = "Service " +
-					                                   oneHost.name +
-					                                   " on address: " +
-					                                   oneHost.ip +
-					                                   ":" +
-					                                   oneHost.port +
-					                                   " is healthy @ " +
-					                                   new Date().toISOString() +
-					                                   ", checking services please wait...";
+					currentScope.generateNewMsg(env, 'success', "Service " +
+					                                       oneHost.name +
+					                                       " on address: " +
+					                                       oneHost.ip +
+					                                       ":" +
+					                                       oneHost.port +
+					                                       " is healthy @ " +
+					                                       new Date().toISOString() +
+					                                       ", checking services please wait...");
 				}
 			}
 		});
@@ -173,8 +171,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
 						if(oneHost.ip === oneEnvironmentRow.hosts[oneHost.name].ips[i].ip) {
 							if(healthyCheck) {
-								currentScope.hostList.forEach(function(origHostRec){
-									if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip){
+								currentScope.hostList.forEach(function(origHostRec) {
+									if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 										oneEnvironmentRow.hosts[oneHost.name].ips[i].hostname = origHostRec.hostname;
 									}
 								});
@@ -197,7 +195,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 										}
 									};
 								}
-								console.log(oneEnvironmentRow.hosts[oneHost.name].ips[i]);
 							}
 							else {
 								oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
@@ -273,10 +270,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 			}
 		}, function(error, awarenessResponse) {
 			if(error || !awarenessResponse.result || !awarenessResponse.data) {
-				console.log("error executing awareness test for controller on ip: " + oneHost.ip);
-				currentScope.waitMessage.type = 'danger';
-				currentScope.waitMessage.message = "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
-				currentScope.closeWaitMessage();
+				currentScope.generateNewMsg(env, 'danger',"error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
 			}
 			else {
 				awarenessResponse = awarenessResponse.data;
@@ -351,10 +345,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					}
 					oneEnvironmentRow.hosts[oneService].healthy = healthy;
 					oneEnvironmentRow.hosts[oneService].color = color;
-
-					currentScope.waitMessage.type = 'success';
-					currentScope.waitMessage.message = "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString();
-					currentScope.closeWaitMessage();
+					currentScope.generateNewMsg(env, 'success',"Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString());
 				}
 			});
 		}
@@ -374,9 +365,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		}, function(error, response) {
 			if(error) {
 				console.log("error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip);
-				currentScope.waitMessage.type = 'danger';
-				currentScope.waitMessage.message = "error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
-				currentScope.closeWaitMessage();
+				currentScope.generateNewMsg(env, 'danger',"error executing Reload Registry test for " +
+				                                                           oneHost.name +
+				                                                           " on ip: " +
+				                                                           oneHost.ip +
+				                                                           ":" +
+				                                                           oneHost.port +
+				                                                           " @ " +
+				                                                           new Date().toISOString());
 			}
 			else {
 				if(cb) {
@@ -416,9 +412,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		}, function(error, response) {
 			if(error) {
 				console.log("error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip);
-				currentScope.waitMessage.type = 'danger';
-				currentScope.waitMessage.message = "error executing Reload Provision test for " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString();
-				currentScope.closeWaitMessage();
+				currentScope.generateNewMsg(env, 'danger',"error executing Reload Provision test for " +
+				                                                           oneHost.name +
+				                                                           " on ip: " +
+				                                                           oneHost.ip +
+				                                                           ":" +
+				                                                           oneHost.port +
+				                                                           " @ " +
+				                                                           new Date().toISOString());
 			}
 			else {
 				$modal.open({
@@ -446,7 +447,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name}
 		}, function(error) {
 			if(error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.generateNewMsg(env, 'danger',error.message);
 			}
 			else {
 				for(var e = 0; e < currentScope.grid.rows.length; e++) {
@@ -487,7 +488,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						});
 					}
 				}
-				currentScope.$parent.displayAlert('success', "Selected Environment host has been removed.");
+				currentScope.generateNewMsg(env, 'success','Selected Environment host has been removed.');
 			}
 		});
 	}
@@ -723,7 +724,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 			"routeName": "/dashboard/services/list"
 		}, function(error, response) {
 			if(error || !response) {
-				currentScope.$parent.displayAlert('danger', "Unable to retrieve the list of services.");
+				currentScope.generateNewMsg(env, 'danger','Unable to retrieve the list of services');
 			}
 			else {
 				var servicesList = [];
