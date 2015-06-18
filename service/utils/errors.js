@@ -88,10 +88,14 @@ var errors = {
 	"607": "Error adding an administrator group for tenant",
 	"608": "Permissions denied to access this section",
 	"609": "Dashboard service is not accessible at the time being Come back later.",
+	"610": "Invalid or profile not found.",
+	"611": "Invalid Service Image Name provided",
+	"612": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
-	"702": "Content Schema doesn't exists"
+	"702": "Content Schema doesn't exists",
+	"703": "Invalid or no Content Service with this name and version"
 };
 
 

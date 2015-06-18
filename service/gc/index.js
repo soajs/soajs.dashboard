@@ -1,6 +1,5 @@
 "use strict";
 var soajs = require('soajs');
-var serviceGenerator = require("./sg");
 
 //the service name and version are provided as Environment Variables
 var serviceInfo = {
@@ -22,6 +21,7 @@ soajs.contentBuilder(serviceInfo, function(error, config) {
 	}
 
 	//generate the service from the configuration
+	var serviceGenerator = require("./lib/sg");
 	var gcService = new serviceGenerator(config);
 
 	//Initialize and deploy the service

@@ -18,7 +18,6 @@ module.exports = {
 	"expDateTTL": 86400000,
 
 	"errors": require("./utils/errors"),
-
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -199,6 +198,22 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "object"
+				}
+			},
+			"nodesNumber": {
+				"required": true,
+				"source": ['body.nodesNumber'],
+				"validation": {
+					"type": "integer",
+					"minimum": 1
+				}
+			},
+			"profile": {
+				"required": true,
+				"source": ['body.profile'],
+				"validation": {
+					"type": "string",
+					"pattern": "^(/[^/]+)+\/(single|replica3|replica5)\.js$"
 				}
 			}
 		},
@@ -961,36 +976,6 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/add": {
-			_apiInfo: {
-				"l": "Add Hosts",
-				"group": "Hosts"
-			},
-			'env': {
-				'source': ['query.env'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			'name': {
-				'source': ['query.name'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			'number': {
-				'source': ['body.number'],
-				'required': true,
-				"validation": {
-					"type": "integer",
-					"required": true
-				}
-			}
-		},
 		"/hosts/maintenanceOperation": {
 			"_apiInfo": {
 				"l": "Perform Maintenance Operation",
@@ -1031,6 +1016,61 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "string"
+				}
+			}
+		},
+		"host/deployController": {
+			"_apiInfo": {
+				"l": "Deploy New Controller",
+				"group": "Hosts"
+			},
+			commonFields: ['envCode', 'profile', 'nodesNumber']
+		},
+		"host/deployNginx": {
+			"_apiInfo": {
+				"l": "Deploy New Nginx",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode'],
+			"containerNames": {
+				"required": true,
+				"source": ['body.containerNames'],
+				"validation": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string",
+						"required": true
+					}
+				}
+			}
+		},
+		"host/deployService": {
+			"_apiInfo": {
+				"l": "Deploy New Service",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode', 'profile'],
+			"image": {
+				"required": false,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			},
+			"gcName": {
+				"required": false,
+				"source": ['body.gcName'],
+				"validation": {
+					"type": "string"
+				}
+			},
+			"gcVersion": {
+				"required": false,
+				"source": ['body.gcName'],
+				"validation": {
+					"type": "integer",
+					"minimum": 1
 				}
 			}
 		},
