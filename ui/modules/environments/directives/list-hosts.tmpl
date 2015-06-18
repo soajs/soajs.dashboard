@@ -28,42 +28,51 @@
             </div>
             <div class="service-ips clearfix">
                 <div ng-repeat="oneIp in serviceInfo.ips" style="float:left;">
-                    <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable">
-                        <tr>
-                            <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
-                            <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
-                                    <span class="icon icon-heart"></span>&nbsp;
-                                </a>
+                    <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable hostsGrid">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="host-ip">Host IP</th>
+                                <th class="host-ip">Hostname</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
+                                <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
+                                <td><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
+                                        <span class="icon icon-heart"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(row['code'], oneIp)" title="Execute Awareness Operation">
-                                    <span class="icon icon-connection"></span>&nbsp;
-                                </a>
+                                    <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(row['code'], oneIp)" title="Execute Awareness Operation">
+                                        <span class="icon icon-connection"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation">
-                                    <span class="icon icon-undo"></span>&nbsp;
-                                </a>
+                                    <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(row['code'], oneIp)" title="Reload Registry Operation">
+                                        <span class="icon icon-undo"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="!oneIp.heartbeat" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
-                                    <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
-                                </a>
+                                    <a href="" ng-show="!oneIp.heartbeat" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                        <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="oneIp.heartbeat" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                    <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
-                                </a>
+                                    <a href="" ng-show="oneIp.heartbeat" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                        <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="!oneIp.heartbeat" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                    <span class="icon icon-play3" title="Start Selected Host"></span>&nbsp;
-                                </a>
+                                    <a href="" ng-show="!oneIp.heartbeat" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                        <span class="icon icon-play3" title="Start Selected Host"></span>&nbsp;
+                                    </a>
 
-                                <a href="" ng-show="oneIp.heartbeat" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                    <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
-                                </a>
-                            </td>
-                        </tr>
+                                    <a href="" ng-show="oneIp.heartbeat" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                        <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                     <br/>
                 </div>
@@ -89,6 +98,7 @@
                                         <tr>
                                             <th class="actions">Actions</th>
                                             <th class="host-ip">Host IP</th>
+                                            <th class="host-ip">Hostname</th>
                                         </tr>
                                     </thead>
                                     <tr>
@@ -121,6 +131,7 @@
                                             </a>
                                         </td>
                                         <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
+                                        <td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
                                     </tr>
                                 </table>
                             </td>

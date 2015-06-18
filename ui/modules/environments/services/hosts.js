@@ -4,6 +4,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 
 	function listHosts(currentScope, env, noPopulate) {
 		var controllers = [];
+		currentScope.hostList =[];
 		if(currentScope.access.listHosts) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
@@ -17,9 +18,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					console.log(error.message);
 				}
 				else {
+					currentScope.hostList = response;
 					for(var i = 0; i < response.length; i++) {
 						if(response[i].name === 'controller') {
-							controllers.push({'name': 'controller', 'ip': response[i].ip, 'color': 'red', 'port': 4000});
+							controllers.push({'name': 'controller', 'hostname': response[i].hostname,'ip': response[i].ip, 'color': 'red', 'port': 4000});
 						}
 					}
 					controllers.forEach(function(oneController) {
@@ -76,7 +78,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
 								var oneHost;
 								if(serviceName === 'controller') {
-									oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
+									oneHost = {'ip': oneHostIP, 'name': serviceName,'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
 									$timeout(function() {
 										currentScope.executeHeartbeatTest(env, oneHost);
 									}, 2000);
@@ -92,6 +94,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 										'downSince': 'N/A',
 										'port': regServices[serviceName].port
 									};
+
+									currentScope.hostList.forEach(function(origHostRec){
+										if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip){
+											oneHost.hostname = origHostRec.hostname;
+										}
+									});
 								}
 								renderedHosts[serviceName].ips.push(oneHost);
 							});
@@ -165,6 +173,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					for(var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
 						if(oneHost.ip === oneEnvironmentRow.hosts[oneHost.name].ips[i].ip) {
 							if(healthyCheck) {
+								currentScope.hostList.forEach(function(origHostRec){
+									if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip){
+										oneEnvironmentRow.hosts[oneHost.name].ips[i].hostname = origHostRec.hostname;
+									}
+								});
 								if(oneHost.name === 'controller') {
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
@@ -184,6 +197,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 										}
 									};
 								}
+								console.log(oneEnvironmentRow.hosts[oneHost.name].ips[i]);
 							}
 							else {
 								oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
