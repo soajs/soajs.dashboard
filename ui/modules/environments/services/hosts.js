@@ -733,23 +733,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 					currentScope.modalInstance.close();
 					currentScope.form.formData = {};
 
-					//var hosttmpl = {
-					//	'ip': response.ip,
-					//	'hostname': response.hostname,
-					//	'heartbeat': false,
-					//	'color': 'red',
-					//  'name': 'controller',
-					//  'port': services.controller.port,
-					//};
-					//todo: this for loop will have a limit based on the returned api response
 					for(var i =0; i< formData.number; i++){
 						var hosttmpl = {
-							'ip': "127.0.0.1",
+							'ip': response.ip,
 							'name': 'controller',
 							'heartbeat': false,
 							'color': 'red',
 							'port': services.controller.port,
-							'hostname': services.controller.ips[0].hostname
+							'hostname': response.hostname
 						};
 						services.controller.ips.push(hosttmpl);
 						currentScope.executeHeartbeatTest(env, hosttmpl);
@@ -802,16 +793,18 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							'lastCheck': 'N/A',
 							'healthy': true,
 							'color': 'red',
-							'controllers': [
-								{
-									'ip': services.controller.ips[0].ip,
-									'color': 'green',
-									'lastCheck': 'N/A',
-									'downSince': 'N/A',
-									'downCount': 'N/A'
-								}
-							]
+							'controllers': []
 						};
+
+						response.controllers.forEach(function(oneCtrl){
+							hosttmpl.push({
+								'ip': oneCtrl.ip,
+								'color': 'green',
+								'lastCheck': 'N/A',
+								'downSince': 'N/A',
+								'downCount': 'N/A'
+							});
+						});
 						services[formData.service].ips.push(hosttmpl);
 						currentScope.executeHeartbeatTest(env, hosttmpl);
 					}

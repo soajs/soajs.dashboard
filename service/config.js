@@ -200,14 +200,6 @@ module.exports = {
 					"type": "object"
 				}
 			},
-			"nodesNumber": {
-				"required": true,
-				"source": ['body.nodesNumber'],
-				"validation": {
-					"type": "integer",
-					"minimum": 1
-				}
-			},
 			"profile": {
 				"required": true,
 				"source": ['body.profile'],
@@ -1048,7 +1040,7 @@ module.exports = {
 			},
 			"hostname": {
 				"source": ['body.hostname'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -1059,7 +1051,7 @@ module.exports = {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
 			},
-			commonFields: ['envCode', 'profile', 'nodesNumber']
+			commonFields: ['envCode', 'profile']
 		},
 		"/hosts/deployNginx": {
 			"_apiInfo": {

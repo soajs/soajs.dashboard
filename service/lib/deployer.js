@@ -70,10 +70,30 @@ var deployer = {
 			];
 
 			//used by gc service to pass new env params
-			if(params.env && Array.isArray(params.env) && params.env.length > 0){
-				env = env.concat(params.env);
+			if(params.variables && Array.isArray(params.variables) && params.variables.length > 0){
+				env = env.concat(params.variables);
 			}
 
+			var port = null;
+			if(params.port){
+				port = {};
+				port[params.port+"/tcp"] = [{ "HostPort": params.port }];
+			}
+
+			console.log("dockerInfo:", dockerInfo);
+			console.log("createContainer called with params:");
+			console.log({
+				Image: dockerImage,
+				name: containerName,
+				"Env": env,
+				"Tty": false,
+				"Hostname": containerName,
+				"HostConfig": {
+					"Links": links,
+					"PortBindings": port,
+					"PublishAllPorts": true
+				}
+			});
 			var docker = lib.getDocker(dockerInfo);
 			docker.createContainer({
 				Image: dockerImage,
@@ -83,14 +103,21 @@ var deployer = {
 				"Hostname": containerName,
 				"HostConfig": {
 					"Links": links,
-					"PortBindings": null,
+					"PortBindings": port,
 					"PublishAllPorts": true
 				}
 			}, function(err, container) {
 				if(err) { return cb(err); }
-
+				console.log("done creating container");
+				console.log(container);
 				container.inspect(function(err, data) {
+					console.log("--------");
+					console.log(err);
+					console.log(data);
+					console.log("--------");
 					if(err) { return cb(err); }
+					console.log("done inspection, returning data");
+					console.log(data);
 					return cb(null, data);
 				});
 			});

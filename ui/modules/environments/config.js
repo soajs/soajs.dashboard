@@ -1,7 +1,7 @@
 "use strict";
 var environmentsConfig = {
 	profiles: '/opt/soajs/FILES/profiles/',
-	gcImage: 'soajsorg/soajsgcs',
+	gcImage: 'local/soajsgcs',
 	form: {
 		database: {
 			'name': '',
