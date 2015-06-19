@@ -8,6 +8,7 @@ function pad(d) {
 	return (d < 10) ? '0' + d.toString() : d.toString();
 }
 
+//todo: move this to registry when done and update the mapping below
 var dockerInfo = {
 	'host': '192.168.59.103',
 	'port': 2376
