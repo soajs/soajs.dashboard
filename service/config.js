@@ -928,6 +928,34 @@ module.exports = {
 				"source": ['body.requestTimeoutRenewal'],
 				"required": true,
 				"validation": {"type": "integer", "min": 0}
+			},
+			"image": {
+				"required": false,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/services/create": {
+			_apiInfo: {
+				"l": "Create Custom Service",
+				"group": "Services"
+			},
+			'name': {
+				'source': ['body.name'],
+				'required': true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			'folder': {
+				'source': ['body.folder'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"pattern": "^(/[^/]+)+$"
+				}
 			}
 		},
 
@@ -1017,6 +1045,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"hostname": {
+				"source": ['body.hostname'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployController": {
@@ -1052,8 +1087,15 @@ module.exports = {
 			},
 			"commonFields": ['envCode', 'profile'],
 			"image": {
-				"required": false,
+				"required": true,
 				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			},
+			"name": {
+				"required": false,
+				"source": ['body.name'],
 				"validation": {
 					"type": "string"
 				}

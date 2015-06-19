@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "soajs": "0.1.*",
+    "dockerode": "*",
     "object-hash": "*",
     "bcrypt": "*",
     "request" :"*"

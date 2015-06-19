@@ -53,24 +53,33 @@ function buildForm(context, modal, configuration, cb) {
 		formData: {}
 	};
 
+	context.form.closeAlert = function(i) {
+		context.form.alerts.splice(i, 1);
+	};
+
 	context.form.displayAlert = function(type, msg) {
 		context.form.alerts = [];
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
 	};
 
-	context.form.closeAllAlerts = function() {
-		context.form.timeout(function() { context.form.alerts = []; }, 7000);
+	context.form.closeAllAlerts = function(instant) {
+		if(instant){
+			context.form.alerts = [];
+		}
+		else{
+			context.form.timeout(function() { context.form.alerts = []; }, 7000);
+		}
 	};
 
-	function rebuildData(fieldEntry){
+	function rebuildData(fieldEntry) {
 		var keys = Object.keys(configuration.data);
 		keys.forEach(function(inputName) {
 			if(fieldEntry.name === inputName) {
 				if(Array.isArray(fieldEntry.value)) {
 					fieldEntry.value.forEach(function(oneValue) {
-						if(Array.isArray(configuration.data[inputName])){
-							if(configuration.data[inputName].indexOf(oneValue.v) !== -1){
+						if(Array.isArray(configuration.data[inputName])) {
+							if(configuration.data[inputName].indexOf(oneValue.v) !== -1) {
 								oneValue.selected = true;
 							}
 						}
@@ -86,7 +95,7 @@ function buildForm(context, modal, configuration, cb) {
 		});
 	}
 
-	function updateFormData(oneEntry){
+	function updateFormData(oneEntry) {
 		if(oneEntry.value) {
 			if(Array.isArray(oneEntry.value)) {
 				context.form.formData[oneEntry.name] = [];
@@ -125,25 +134,25 @@ function buildForm(context, modal, configuration, cb) {
 
 	if(configuration.data) {
 		for(var i = 0; i < context.form.entries.length; i++) {
-			if(context.form.entries[i].type === 'group'){
-				context.form.entries[i].entries.forEach(function(oneSubEntry){
+			if(context.form.entries[i].type === 'group') {
+				context.form.entries[i].entries.forEach(function(oneSubEntry) {
 					rebuildData(oneSubEntry);
 				});
 			}
-			else{
+			else {
 				rebuildData(context.form.entries[i]);
 			}
 		}
 	}
 
-	for(var i =0; i < context.form.entries.length; i++){
-		if(context.form.entries[i].type === 'group'){
+	for(var i = 0; i < context.form.entries.length; i++) {
+		if(context.form.entries[i].type === 'group') {
 			context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
-			context.form.entries[i].entries.forEach(function(oneSubEntry){
+			context.form.entries[i].entries.forEach(function(oneSubEntry) {
 				updateFormData(oneSubEntry);
 			});
 		}
-		else{
+		else {
 			updateFormData(context.form.entries[i]);
 		}
 	}

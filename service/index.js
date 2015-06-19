@@ -5,11 +5,12 @@ var Mongo = soajs.mongo;
 var mongo = null;
 
 var config = require('./config.js');
-var environment = require('./environment.js');
-var product = require('./product.js');
-var tenant = require('./tenant.js');
-var host = require("./host.js");
-var cb = require("./contentbuilder.js");
+var environment = require('./lib/environment.js');
+var product = require('./lib/product.js');
+var tenant = require('./lib/tenant.js');
+var host = require("./lib/host.js");
+var services = require("./lib/services.js");
+var cb = require("./lib/contentbuilder.js");
 
 var service = new soajs.server.service({
 	"oauth": false,
@@ -290,45 +291,34 @@ service.init(function() {
 		checkForMongo(req);
 		host.deployController(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployNginx", function(req, res){
 		checkForMongo(req);
 		host.deployNginx(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployService", function(req, res){
 		checkForMongo(req);
 		host.deployService(config, mongo, req, res);
 	});
 
 	/**
-	 * Sesttings features
+	 * Services features
 	 */
 	service.post("/services/list", function(req, res) {
 		checkForMongo(req);
-		var colName = 'services';
-		var criteria = ((req.soajs.inputmaskData.serviceNames) && (req.soajs.inputmaskData.serviceNames.length > 0)) ? {'name': {$in: req.soajs.inputmaskData.serviceNames}} : {};
-		mongo.find(colName, criteria, function(err, records) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-			return res.jsonp(req.soajs.buildResponse(null, records));
-		});
+		services.list(config, mongo, req, res);
 	});
 	service.post("/services/update", function(req, res) {
 		checkForMongo(req);
-		var set = {
-			'$set': {
-				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
-				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
-				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null
-			}
-		};
-		mongo.update('services', {'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-			if(data === 0) { return res.jsonp(req.soajs.buildResponse({"code": 604, "msg": config.errors[604]})); }
-			return res.jsonp(req.soajs.buildResponse(null, "service updated successfully."));
-		});
+		services.update(config, mongo, req, res);
 	});
-	
+	service.post("/services/create", function(req, res) {
+		checkForMongo(req);
+		services.create(config, mongo, req, res);
+	});
+
+	/**
+	 * Settings features
+	 */
 	service.post("/settings/tenant/update", function(req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function() {

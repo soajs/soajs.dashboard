@@ -2,10 +2,16 @@
 var fs = require("fs");
 var request = require("request");
 var colName = "hosts";
+var deployer = require("./deployer.js");
 
 function pad(d) {
 	return (d < 10) ? '0' + d.toString() : d.toString();
 }
+
+var dockerInfo = {
+	'host': '192.168.59.103',
+	'port': 2376
+};
 
 module.exports = {
 
@@ -38,6 +44,7 @@ module.exports = {
 			console.log(dockerParams);
 			//todo: call api here and pass the object
 
+			//todo: update docker collection
 			return res.json(req.soajs.buildResponse(null, true));
 		});
 	},
@@ -46,7 +53,6 @@ module.exports = {
 		//from envCode, load env, get port and domain
 		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
 			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
 
 			var dockerParams = {
 				"env": req.soajs.inputmaskData.envCode,
@@ -62,75 +68,71 @@ module.exports = {
 	},
 
 	"deployService": function(config, mongo, req, res) {
+		//from profile name, construct profile path and equivalently soajsData01....
+		//if gc info, check if gc exists before proceeding
+		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-		if(!req.soajs.inputmaskData.image && !req.soajs.inputmaskData.gcName){
-			return res.json(req.soajs.buildResponse({"code": 613, "msg": config.errors[613]}));
-		}
+			//build the regFile path
+			var regFile = req.soajs.inputmaskData.profile;
+			//check if path actually exists
+			if(!fs.existsSync(regFile)) {
+				return res.json(req.soajs.buildResponse({"code": 610, "msg": config.errors[610]}));
+			}
 
-		if(req.soajs.inputmaskData.image && req.soajs.inputmaskData.gcName) {
-			return res.json(req.soajs.buildResponse({"code": 612, "msg": config.errors[612]}));
-		}
+			//fetch how many servers are in the profile
+			var links = [];
+			var profile = require(regFile);
 
-		if(req.soajs.inputmaskData.image) {
-			mongo.findOne("services", {"image": req.soajs.inputmaskData.image}, function(error, imageRecord) {
-				if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+			//todo: this is hardcoded for now, need to become dynamic
+			for(var i = 0; i < profile.servers.length; i++) {
+				links.push("soajsData" + pad(i + 1) + ":dataproxy" + pad(i + 1));
+			}
 
-				if(!imageRecord) { return res.json(req.soajs.buildResponse({"code": 611, "msg": config.errors[611]})); }
+			var dockerParams = {
+				"env": req.soajs.inputmaskData.envCode,
+				"profile": regFile,
+				"links": links,
+				"image": req.soajs.inputmaskData.image
+			};
 
-				req.soajs.inputmaskData.serviceName = imageRecord.name;
-				proceed(false);
+			var serviceName;
+			if(req.soajs.inputmaskData.gcName) {
+				dockerParams.env = [
+					"SOAJS_GC_NAME=" + req.soajs.inputmaskData.gcName,
+					"SOAJS_GC_VERSION=" + req.soajs.inputmaskData.gcVersion
+				];
+				serviceName = req.soajs.inputmaskData.gcName;
+			}
+			else {
+				serviceName = req.soajs.inputmaskData.name;
+			}
+
+			deployer.createContainer(dockerInfo, dockerParams, function(error, data) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+				//todo: remove this when done
+				console.log("response from createcontainer");
+				console.log(data);
+
+				//get the ip of the host from hosts
+				mongo.findOne(colName, {"env":req.soajs.inputmaskData.envCode, "name": serviceName, "hostname": data.Config.Hostname}, function(error, hostRecord){
+					if(error){ return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+					//insert into docker collection
+					var document = {
+						"ip": hostRecord.ip,
+						"cid": data.Id,
+						"env": hostRecord.env,
+						"hostname": hostRecord.name
+					};
+					mongo.insert("docker", document, function(error) {
+						if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+						return res.json(req.soajs.buildResponse(null, {"ip": data.ip, 'hostname': data.hostname}));
+					});
+				});
 			});
-		}
-
-		if(req.soajs.inputmaskData.gcName) {
-			mongo.findOne("gc", {"name": req.soajs.inputmaskData.gcName, "v": req.soajs.inputmaskData.gcVersion}, function(error, gcRecord) {
-				if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-				if(!gcRecord) { return res.json(req.soajs.buildResponse({"code": 703, "msg": config.errors[703]})); }
-
-				proceed(true);
-			});
-		}
-
-		function proceed(gcService) {
-			//from profile name, construct profile path and equivalently soajsData01....
-			//if gc info, check if gc exists before proceeding
-			mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
-				if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-				//build the regFile path
-				var regFile = req.soajs.inputmaskData.profile;
-				//check if path actually exists
-				if(!fs.existsSync(regFile)) {
-					return res.json(req.soajs.buildResponse({"code": 610, "msg": config.errors[610]}));
-				}
-
-				//fetch how many servers are in the profile
-				var mongoList = [];
-				var profile = require(regFile);
-				//todo: this is hardcoded for now, need to become dynamic
-				for(var i = 0; i < profile.servers.length; i++) {
-					mongoList.push("soajsData" + pad(i + 1));
-				}
-
-				var dockerParams = {
-					"env": req.soajs.inputmaskData.envCode,
-					"profile": regFile,
-					"mongo": mongoList
-				};
-				if(gcService) {
-					dockerParams.serviceName = req.soajs.inputmaskData.gcName;
-					dockerParams.serviceVersion = req.soajs.inputmaskData.gcVersion;
-				}
-				else {
-					dockerParams.image = req.soajs.inputmaskData.image;
-				}
-				console.log(dockerParams);
-				//todo: call api here and pass the object
-
-				return res.json(req.soajs.buildResponse(null, true));
-			});
-		}
+		});
 	},
 
 	"list": function(config, mongo, req, res) {
@@ -142,10 +144,33 @@ module.exports = {
 	},
 
 	"delete": function(config, mongo, req, res) {
-		mongo.remove(colName, {env: req.soajs.inputmaskData.env.toLowerCase(), name: req.soajs.inputmaskData.name, ip: req.soajs.inputmaskData.ip}, function(err, records) {
-			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+		var dockerColCriteria = {
+			'env': req.soajs.inputmaskData.env.toLowerCase(),
+			"ip": req.soajs.inputmaskData.ip,
+			'hostname': req.soajs.inputmaskData.hostname
+		};
+		mongo.findOne('docker', dockerColCriteria, function(error, response) {
+			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-			return res.jsonp(req.soajs.buildResponse(null, "host delete successfull."));
+			deployer.remove(dockerInfo, response.cid, req, res, function(error) {
+				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+				else {
+					mongo.remove('docker', {'_id': response._id}, function(err) {
+						if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+						var hostCriteria = {
+							'env': req.soajs.inputmaskData.env.toLowerCase(),
+							'name': req.soajs.inputmaskData.name,
+							'ip': req.soajs.inputmaskData.ip
+						};
+						mongo.remove(colName, hostCriteria, function(err) {
+							if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+							return res.jsonp(req.soajs.buildResponse(null, "host delete successfull."));
+						});
+					});
+				}
+			});
 		});
 	},
 
@@ -176,7 +201,7 @@ module.exports = {
 		}
 
 		function checkServiceHost() {
-			mongo.findOne(colName, {'env': req.soajs.inputmaskData.env, "name": req.soajs.inputmaskData.serviceName, "ip": req.soajs.inputmaskData.serviceHost}, function(error, record) {
+			mongo.findOne(colName, {'env': req.soajs.inputmaskData.env.toLowerCase(), "name": req.soajs.inputmaskData.serviceName, "ip": req.soajs.inputmaskData.serviceHost}, function(error, record) {
 				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
 				if(!record) { return res.jsonp(req.soajs.buildResponse({"code": 605, "msg": config.errors[605]})); }
 
@@ -186,24 +211,32 @@ module.exports = {
 		}
 
 		function doMaintenance() {
+			var criteria = {
+				'env': req.soajs.inputmaskData.env.toLowerCase(),
+				"ip": req.soajs.inputmaskData.ip,
+				"hostname": req.soajs.inputmaskData.hostname
+			};
+
 			switch(req.soajs.inputmaskData.operation) {
 				case 'startHost':
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+
+						deployer.start(dockerInfo, response.cid, req, res);
+					});
 				case 'stopHost':
-					//todo: complete the below from docker api
-					return res.jsonp(req.soajs.buildResponse(null, {'response': true}));
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+
+						deployer.stop(dockerInfo, response.cid, req, res);
+					});
 					break;
 				case 'infoHost':
-					//todo: complete the below from docker api
-					var response = {
-						"name": req.soajs.inputmaskData.serviceName,
-						"ip": req.soajs.inputmaskData.serviceHost,
-						"port": req.soajs.inputmaskData.servicePort,
-						"hostname": req.soajs.inputmaskData.serviceName + "_" + req.soajs.inputmaskData.env,
-						"cpu": "20%",
-						"memory": "2048M",
-						"status": "running"
-					};
-					return res.jsonp(req.soajs.buildResponse(null, response));
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+
+						deployer.info(dockerInfo, response.cid, req, res);
+					});
 					break;
 				default:
 					req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;

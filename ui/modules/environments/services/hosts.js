@@ -443,7 +443,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/hosts/delete",
-			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name}
+			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name, 'hostname': oneHost.hostname}
 		}, function(error) {
 			if(error) {
 				currentScope.generateNewMsg(env, 'danger',error.message);
@@ -492,7 +492,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		});
 	}
 
-	//todo: complete the below function if api changed
 	function stopHost(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -502,6 +501,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "stopHost",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, response) {
@@ -537,7 +537,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		});
 	}
 
-	//todo: complete the below function if api changed
 	function startHost(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -547,6 +546,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "startHost",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, response) {
@@ -590,7 +590,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 		});
 	}
 
-	//todo: complete the below function if api changed
 	function infoHost(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -600,6 +599,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "infoHost",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, response) {
@@ -687,10 +687,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 									'btn': 'primary',
 									'action': function(formData) {
 										if(formData.service === 'controller'){
-											deployController(formData);
+											newController(formData);
 										}
 										else{
-											deployService(formData);
+											newService(formData);
 										}
 									}
 								},
@@ -712,25 +712,23 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 			}
 		});
 
-		function deployController(formData){
+		function newController(formData){
 			var params = {
 				'envCode': env,
-				'profile': environmentsConfig.profiles + formData.profile + ".js",
+				//'profile': environmentsConfig.profiles + formData.profile + ".js",
+				'profile': environmentsConfig.profiles + "single.js",
 				'nodesNumber': formData.number
 			};
 
-			console.log("calling deployController:");
-			console.log(params);
-
-			//getSendDataFromServer(currentScope, ngDataApi, {
-			//	"method": "send",
-			//	"routeName": "/dashboard/hosts/deployService",
-			//	"data": params
-			//}, function(error, response) {
-			//	if(error) {
-			//		currentScope.generateNewMsg(env, 'danger', error.message);
-			//	}
-			//	else {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "send",
+				"routeName": "/dashboard/hosts/deployController",
+				"data": params
+			}, function(error, response) {
+				if(error) {
+					currentScope.generateNewMsg(env, 'danger', error.message);
+				}
+				else {
 					currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
 					currentScope.modalInstance.close();
 					currentScope.form.formData = {};
@@ -756,51 +754,48 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						services.controller.ips.push(hosttmpl);
 						currentScope.executeHeartbeatTest(env, hosttmpl);
 					}
-				//}
-			//});
+				}
+			});
 		}
 
-		function deployService(formData){
+		function newService(formData){
 			for( var n=0; n < formData.number; n++){
 				var params = {
 					'envCode': env,
-					'profile': environmentsConfig.profiles + formData.profile + ".js",
+					//'profile': environmentsConfig.profiles + formData.profile + ".js",
+					'profile': environmentsConfig.profiles + "single.js"
 				};
 				for(var i =0; i < postServiceList.length; i++){
 					if(postServiceList[i].name === formData.service){
 						if(postServiceList[i].image){
 							params.image = postServiceList[i].image;
+							params.name = formData.service;
 						}
 						else{
 							params.gcName = postServiceList[i].gcName;
 							params.gcVersion = postServiceList[i].gcVersion;
+							params.image = environmentsConfig.gcImage;
 						}
 					}
 				}
 
-				console.log("calling deployService:");
-				console.log(params);
-
-				//getSendDataFromServer(currentScope, ngDataApi, {
-				//	"method": "send",
-				//	"routeName": "/dashboard/hosts/deployService",
-				//	"data": params
-				//}, function(error, response) {
-				//	if(error) {
-				//		currentScope.generateNewMsg(env, 'danger', error.message);
-				//	}
-				//	else {
+				getSendDataFromServer(currentScope, ngDataApi, {
+					"method": "send",
+					"routeName": "/dashboard/hosts/deployService",
+					"data": params
+				}, function(error, response) {
+					if(error) {
+						currentScope.generateNewMsg(env, 'danger', error.message);
+					}
+					else {
 						currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
 						currentScope.modalInstance.close();
 						currentScope.form.formData = {};
 
-						//var hosttmpl = {
-						//	'ip': response.ip,
-						//};
 						var hosttmpl = {
-							'ip': "127.0.0.1",
+							'ip': response.ip,
 							'port': services[formData.service].port,
-							'hostname': services[formData.service].hostname,
+							'hostname': response.hostname,
 							'name': formData.service,
 							'downCount': 'N/A',
 							'downSince': 'N/A',
@@ -817,11 +812,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 								}
 							]
 						};
-						//todo: rebuild the controllers list
 						services[formData.service].ips.push(hosttmpl);
 						currentScope.executeHeartbeatTest(env, hosttmpl);
-				//	}
-				//});
+					}
+				});
 			}
 		}
 	}

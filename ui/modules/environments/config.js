@@ -1,6 +1,7 @@
 "use strict";
 var environmentsConfig = {
 	profiles: '/opt/soajs/FILES/profiles/',
+	gcImage: 'soajsorg/soajsgcs',
 	form: {
 		database: {
 			'name': '',
@@ -171,18 +172,18 @@ var environmentsConfig = {
 			'label': '',
 			'actions': {},
 			'entries': [
-				{
-					'name': 'profile',
-					'label': 'Profile to Use',
-					'type': 'select',
-					'value': [
-						{'v': 'single', 'l': 'Single'},
-						{'v': 'replica3', 'l': 'Replica of 3'},
-						{'v': 'replica5', 'l': 'Replica of 5'}
-					],
-					'required': true,
-					'fieldMsg': "Select which profile to use."
-				},
+				//{
+				//	'name': 'profile',
+				//	'label': 'Profile to Use',
+				//	'type': 'select',
+				//	'value': [
+				//		{'v': 'single', 'l': 'Single'},
+				//		{'v': 'replica3', 'l': 'Replica of 3'},
+				//		{'v': 'replica5', 'l': 'Replica of 5'}
+				//	],
+				//	'required': true,
+				//	'fieldMsg': "Select which profile to use."
+				//},
 				{
 					'name': 'number',
 					'label': 'Host(s) Number',
@@ -200,18 +201,18 @@ var environmentsConfig = {
 			'label': '',
 			'actions': {},
 			'entries': [
-				{
-					'name': 'profile',
-					'label': 'Profile to Use',
-					'type': 'select',
-					'value': [
-						{'v': 'single', 'l': 'Single'},
-						{'v': 'replica3', 'l': 'Replica of 3'},
-						{'v': 'replica5', 'l': 'Replica of 5'}
-					],
-					'required': true,
-					'fieldMsg': "Select which profile to use."
-				},
+				//{
+				//	'name': 'profile',
+				//	'label': 'Profile to Use',
+				//	'type': 'select',
+				//	'value': [
+				//		{'v': 'single', 'l': 'Single'},
+				//		{'v': 'replica3', 'l': 'Replica of 3'},
+				//		{'v': 'replica5', 'l': 'Replica of 5'}
+				//	],
+				//	'required': true,
+				//	'fieldMsg': "Select which profile to use."
+				//},
 				{
 					'name': 'controllers',
 					'label': 'Controller(s)',

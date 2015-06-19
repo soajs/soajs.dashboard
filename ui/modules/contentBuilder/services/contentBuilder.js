@@ -76,10 +76,10 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 							}
 							var errorCodes = $scope.data.genericService.config.errors;
 							var str = "";
-							for(var err in errorCodes){
-								str += "<li class='APIInputBox mb5'><b>"+err+"</b>:&nbsp;"+errorCodes[err]+"</li>"
+							for(var err in errorCodes) {
+								str += "<li class='APIInputBox mb5'><b>" + err + "</b>:&nbsp;" + errorCodes[err] + "</li>"
 							}
-							str = "<ul class='apiErrorCodes'>"+str+"</ul>";
+							str = "<ul class='apiErrorCodes'>" + str + "</ul>";
 							$scope.data.genericService.config.errors = str;
 
 
@@ -264,7 +264,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			"method": "send",
 			"routeName": "/dashboard/cb/add",
 			"data": {
-				"name": currentScope.config.name,
+				"name": "gc_" + currentScope.config.name,
 				"config": {
 					"genericService": currentScope.config.genericService,
 					"soajsService": currentScope.config.soajsService,
