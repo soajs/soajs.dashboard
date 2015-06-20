@@ -1018,7 +1018,7 @@ module.exports = {
 			},
 			"serviceHost": {
 				"source": ['body.serviceHost'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -1040,7 +1040,7 @@ module.exports = {
 			},
 			"hostname": {
 				"source": ['body.hostname'],
-				"required": false,
+				"required": true,
 				"validation": {
 					"type": "string"
 				}

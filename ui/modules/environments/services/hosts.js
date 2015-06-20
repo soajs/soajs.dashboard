@@ -25,7 +25,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						}
 					}
 					controllers.forEach(function(oneController) {
-						invokeHostsAwareness(oneController.ip);
+						invokeHostsAwareness(oneController.hostname);
 					});
 				}
 			});
@@ -38,7 +38,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"data": {
 					"serviceName": "controller",
 					"operation": "awarenessStat",
-					"serviceHost": defaultControllerHost,
+					"hostname": defaultControllerHost,
 					"servicePort": 4000,
 					"env": env
 				}
@@ -79,7 +79,19 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
 								var oneHost;
 								if(serviceName === 'controller') {
-									oneHost = {'ip': oneHostIP, 'name': serviceName, 'heartbeat': false, 'color': 'red', 'port': regServices[serviceName].port};
+									oneHost = {
+										'ip': oneHostIP,
+										'name': serviceName,
+										'heartbeat': false,
+										'color': 'red',
+										'port': regServices[serviceName].port
+									};
+									controllers.forEach(function(oneCtrl){
+										if(oneCtrl.ip == oneHostIP){
+											oneHost.hostname = oneCtrl.hostname;
+										}
+									});
+
 									$timeout(function() {
 										currentScope.executeHeartbeatTest(env, oneHost);
 									}, 2000);
@@ -124,6 +136,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "heartbeat",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, heartbeatResponse) {
@@ -268,6 +281,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "awarenessStat",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, awarenessResponse) {
@@ -362,6 +376,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "reloadRegistry",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, response) {
@@ -409,6 +424,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"operation": "loadProvision",
 				"serviceHost": oneHost.ip,
 				"servicePort": oneHost.port,
+				"hostname": oneHost.hostname,
 				"env": env
 			}
 		}, function(error, response) {
@@ -739,7 +755,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 
 					for(var i =0; i< formData.number; i++){
 						var hosttmpl = {
-							'ip': response.ip,
 							'name': 'controller',
 							'heartbeat': false,
 							'color': 'red',
@@ -747,7 +762,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							'hostname': response.hostname
 						};
 						services.controller.ips.push(hosttmpl);
-						currentScope.executeHeartbeatTest(env, hosttmpl);
+						$timeout(function(){
+							currentScope.executeHeartbeatTest(env, hosttmpl);
+						},1000);
 					}
 				}
 			});
@@ -788,7 +805,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						currentScope.form.formData = {};
 
 						var hosttmpl = {
-							'ip': response.ip,
 							'port': services[formData.service].port,
 							'hostname': response.hostname,
 							'name': formData.service,
@@ -810,7 +826,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 							});
 						});
 						services[formData.service].ips.push(hosttmpl);
-						currentScope.executeHeartbeatTest(env, hosttmpl);
+						$timeout(function(){
+							currentScope.executeHeartbeatTest(env, hosttmpl);
+						}, 1000);
 					}
 				});
 			}

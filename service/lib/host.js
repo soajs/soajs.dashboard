@@ -39,29 +39,24 @@ module.exports = {
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
-					setTimeout(function() {
-						registerNewHost(data, envRecord);
-					}, 2000);
+					registerNewHost(data, deployerConfig);
 				});
 			});
 		});
 
-		function registerNewHost(data, envRecord) {
+		function registerNewHost(data, deployerConfig) {
 			//get the ip of the host from hosts
-			mongo.findOne(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller", "hostname": data.Config.Hostname}, function(error, hostRecord) {
-				if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-				//insert into docker collection
-				var document = {
-					"ip": hostRecord.ip,
-					"cid": data.Id,
-					"env": hostRecord.env.toLowerCase(),
-					"hostname": data.Config.Hostname
-				};
-				mongo.insert("docker", document, function(error) {
-					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-					return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': hostRecord.name}));
-				});
+			//insert into docker collection
+			var document = {
+				"cid": data.Id,
+				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+				"hostname": data.Config.Hostname,
+				"deployer": deployerConfig
+			};
+			mongo.insert("docker", document, function(error) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+				//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.hostname}));
+				return res.json(req.soajs.buildResponse(null, {'hostname': data.Config.hostname}));
 			});
 		}
 	},
@@ -141,31 +136,25 @@ module.exports = {
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 					//get the ip of the host from hosts
-					setTimeout(function() {
-						registerHost(data, serviceName, envRecord);
-					}, 2000);
+					registerHost(data, deployerConfig);
 				});
 			});
 		});
 
-		function registerHost(data, serviceName, envRecord) {
-			mongo.findOne(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": serviceName, "hostname": data.Config.Hostname}, function(error, hostRecord) {
-				if(error || !hostRecord) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+		function registerHost(data, deployerConfig) {
+			var document = {
+				"cid": data.Id,
+				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+				"hostname": data.Config.Hostname,
+				"deployer": deployerConfig
+			};
+			mongo.insert("docker", document, function(error) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
-				console.log(data);
-				var document = {
-					"ip": hostRecord.ip,
-					"cid": data.Id,
-					"env": hostRecord.env,
-					"hostname": data.Config.Hostname
-				};
-				mongo.insert("docker", document, function(error) {
-					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-
-					mongo.find(colName, {"env": hostRecord.env, "name": "controller"}, function(error, controllers) {
-						if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-						return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': hostRecord.hostname, "controllers": controllers}));
-					});
+				mongo.find(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller"}, function(error, controllers) {
+					if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+					//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname, "controllers": controllers}));
+					return res.json(req.soajs.buildResponse(null, {'hostname': data.Config.Hostname, "controllers": controllers}));
 				});
 			});
 		}
@@ -180,7 +169,7 @@ module.exports = {
 
 				hosts.forEach(function(oneHost) {
 					containers.forEach(function(oneContainer) {
-						if(oneHost.ip === oneContainer.ip && oneHost.hostname === oneContainer.hostname) {
+						if(oneHost.hostname === oneContainer.hostname) {
 							oneHost.cid = oneContainer.cid;
 						}
 					});
@@ -191,36 +180,24 @@ module.exports = {
 	},
 
 	"delete": function(config, mongo, req, res) {
-		mongo.findOne("environment", {code: req.soajs.inputmaskData.env.toUpperCase()}, function(err, envRecord) {
-			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+		var dockerColCriteria = {
+			'env': req.soajs.inputmaskData.env.toLowerCase(),
+			'hostname': req.soajs.inputmaskData.hostname
+		};
 
-			var dockerColCriteria = {
-				'env': req.soajs.inputmaskData.env.toLowerCase(),
-				"ip": req.soajs.inputmaskData.ip,
-				'hostname': req.soajs.inputmaskData.hostname,
-				"docker.ip": envRecord.docker.local.ip,
-				"docker.port": envRecord.docker.local.port
-			};
+		mongo.findOne('docker', dockerColCriteria, function(error, response) {
+			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-			mongo.findOne('docker', dockerColCriteria, function(error, response) {
+			var deployerConfig = response.deployer;
+			deployer.remove(deployerConfig, response.cid, function(error) {
 				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-				if(response && response.cid) {
-					var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
-					deployer.remove(deployerConfig, response.cid, function(error) {
-						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-						else {
-							mongo.remove('docker', {'_id': response._id}, function(err) {
-								if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-								removeFromHosts();
-							});
-						}
-					});
-				}
 				else {
-					removeFromHosts();
+					mongo.remove('docker', {'_id': response._id}, function(err) {
+						if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+						removeFromHosts();
+					});
 				}
 			});
 		});
@@ -252,7 +229,23 @@ module.exports = {
 		//check that the given service has the given port in services collection
 		if(req.soajs.inputmaskData.serviceName === 'controller') {
 			//check that the given service has the given host in hosts collection
-			doMaintenance();
+			var condition = {
+				'env': req.soajs.inputmaskData.env.toLowerCase(),
+				"name": req.soajs.inputmaskData.serviceName
+			};
+			if(req.soajs.inputmaskData.ip){
+				condition.ip = req.soajs.inputmaskData.serviceHost;
+			}
+			else{
+				condition.hostname = req.soajs.inputmaskData.hostname;
+			}
+			mongo.findOne(colName, condition, function(error, record) {
+				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+				if(!record) { return res.jsonp(req.soajs.buildResponse({"code": 605, "msg": config.errors[605]})); }
+
+				//perform maintenance operation
+				doMaintenance(record);
+			});
 		}
 		else {
 			mongo.findOne('services', {'name': req.soajs.inputmaskData.serviceName, 'port': req.soajs.inputmaskData.servicePort}, function(error, record) {
@@ -265,68 +258,62 @@ module.exports = {
 		}
 
 		function checkServiceHost() {
-			mongo.findOne(colName, {'env': req.soajs.inputmaskData.env.toLowerCase(), "name": req.soajs.inputmaskData.serviceName, "ip": req.soajs.inputmaskData.serviceHost}, function(error, record) {
+			var condition = {
+				'env': req.soajs.inputmaskData.env.toLowerCase(),
+				"name": req.soajs.inputmaskData.serviceName
+			};
+			if(req.soajs.inputmaskData.ip){
+				condition.ip = req.soajs.inputmaskData.serviceHost;
+			}
+			else{
+				condition.hostname = req.soajs.inputmaskData.hostname;
+			}
+			mongo.findOne(colName, condition, function(error, record) {
 				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
 				if(!record) { return res.jsonp(req.soajs.buildResponse({"code": 605, "msg": config.errors[605]})); }
 
 				//perform maintenance operation
-				doMaintenance();
+				doMaintenance(record);
 			});
 		}
 
-		function doMaintenance() {
+		function doMaintenance(oneHost) {
 			var criteria = {
 				'env': req.soajs.inputmaskData.env.toLowerCase(),
-				"ip": req.soajs.inputmaskData.serviceHost,
 				"hostname": req.soajs.inputmaskData.hostname
 			};
 
 			switch(req.soajs.inputmaskData.operation) {
 				case 'startHost':
-					mongo.findOne("environment", {code: req.soajs.inputmaskData.env.toUpperCase()}, function(err, envRecord) {
-						if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-						mongo.findOne("docker", criteria, function(error, response) {
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+						var deployerConfig = response.deployer;
+						deployer.start(deployerConfig, response.cid, function(error) {
 							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-							var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
-							deployer.start(deployerConfig, response.cid, function(error) {
-								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-								return res.jsonp(req.soajs.buildResponse(null, true));
-							});
+							return res.jsonp(req.soajs.buildResponse(null, true));
 						});
 					});
 					break;
 				case 'stopHost':
-					mongo.findOne("environment", {code: req.soajs.inputmaskData.env.toUpperCase()}, function(err, envRecord) {
-						if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-						mongo.findOne("docker", criteria, function(error, response) {
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+						var deployerConfig = response.deployer;
+						deployer.stop(deployerConfig, response.cid, function(error) {
 							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-							var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
-							deployer.stop(deployerConfig, response.cid, function(error) {
-								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-								return res.jsonp(req.soajs.buildResponse(null, true));
-							});
+							return res.jsonp(req.soajs.buildResponse(null, true));
 						});
 					});
 					break;
 				case 'infoHost':
-					mongo.findOne("environment", {code: req.soajs.inputmaskData.env.toUpperCase()}, function(err, envRecord) {
-						if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-						mongo.findOne("docker", criteria, function(error, response) {
-							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-							var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
-							deployer.info(deployerConfig, response.cid, req, res);
-						});
+					mongo.findOne("docker", criteria, function(error, response) {
+						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+						var deployerConfig = response.deployer;
+						deployer.info(deployerConfig, response.cid, req, res);
 					});
 					break;
 				default:
 					req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
-					var maintenanceURL = "http://" + req.soajs.inputmaskData.serviceHost + ":" + req.soajs.inputmaskData.servicePort;
+					var maintenanceURL = "http://" + oneHost.ip + ":" + req.soajs.inputmaskData.servicePort;
 					maintenanceURL += "/" + req.soajs.inputmaskData.operation;
 					request.get(maintenanceURL, function(error, response, body) {
 						if(error) {
