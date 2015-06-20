@@ -1,37 +1,33 @@
 "use strict";
+var crypto = require('crypto');
 var fs = require("fs");
 var Docker = require('dockerode');
-var crypto = require('crypto');
+var utils = require("soajs/lib/utils");
 
 var lib = {
-	"getDocker": function(dockerInfo) {
-		var docker = new Docker({
-			host: dockerInfo.host,
-			port: dockerInfo.port,
-			ca: fs.readFileSync('../certs/ca.pem'),
-			cert: fs.readFileSync('../certs/cert.pem'),
-			key: fs.readFileSync('../certs/key.pem')
-		});
+	"getDeployer": function(deployerConfig) {
+		var config = utils.cloneObj(deployerConfig);
+		delete config.driver;
+		if(config.socketPath){
+			var docker = new Docker({socketPath : config.socketPath});
+		}
+		else{
+			var docker = new Docker({
+				host: config.host,
+				port: config.port,
+				ca: fs.readFileSync(__dirname + '/../certs/ca.pem'),
+				cert: fs.readFileSync(__dirname + '/../certs/cert.pem'),
+				key: fs.readFileSync(__dirname + '/../certs/key.pem')
+			});
+		}
+
 		return docker;
 	},
 
-	"container": function(dockerInfo, action, cid, opts, req, res, cb) {
-		var docker = lib.getDocker(dockerInfo);
-		var container = docker.getContainer(cid);
-		container[action](opts || null, function(err, data) {
-
-			//only remove container will require a cb
-			//remove container, if success, remove db entry
-			if(cb && typeof(cb) === 'function') {
-				return cb(err, data);
-			}
-			else {
-				if(err) {
-					return res.jsonp(req.soajs.buildResponse({"code": 401, "msg": err.message}));
-				}
-				return res.json(req.soajs.buildResponse(null, data));
-			}
-		});
+	"container": function(dockerInfo, action, cid, opts, cb) {
+		var deployer = lib.getDeployer(dockerInfo);
+		var container = deployer.getContainer(cid);
+		container[action](opts || null, cb);
 	},
 
 	"generateUniqueId": function(len, cb) {
@@ -46,7 +42,7 @@ var lib = {
 
 };
 var deployer = {
-	"createContainer": function(dockerInfo, params, cb) {
+	"createContainer": function(deployerConfig, params, cb) {
 		var environment = params.env;
 		var dockerImage = params.image;
 		var profile = params.profile; //"/opt/soajs/FILES/profiles/single.js";
@@ -70,32 +66,18 @@ var deployer = {
 			];
 
 			//used by gc service to pass new env params
-			if(params.variables && Array.isArray(params.variables) && params.variables.length > 0){
+			if(params.variables && Array.isArray(params.variables) && params.variables.length > 0) {
 				env = env.concat(params.variables);
 			}
 
 			var port = null;
-			if(params.port){
+			if(params.port) {
 				port = {};
-				port[params.port+"/tcp"] = [{ "HostPort": params.port }];
+				port[params.port + "/tcp"] = [{"HostPort": params.port}];
 			}
 
-			console.log("dockerInfo:", dockerInfo);
-			console.log("createContainer called with params:");
-			console.log({
-				Image: dockerImage,
-				name: containerName,
-				"Env": env,
-				"Tty": false,
-				"Hostname": containerName,
-				"HostConfig": {
-					"Links": links,
-					"PortBindings": port,
-					"PublishAllPorts": true
-				}
-			});
-			var docker = lib.getDocker(dockerInfo);
-			docker.createContainer({
+			var deployer = lib.getDeployer(deployerConfig);
+			deployer.createContainer({
 				Image: dockerImage,
 				name: containerName,
 				"Env": env,
@@ -108,37 +90,29 @@ var deployer = {
 				}
 			}, function(err, container) {
 				if(err) { return cb(err); }
-				console.log("done creating container");
-				console.log(container);
 				container.inspect(function(err, data) {
-					console.log("--------");
-					console.log(err);
-					console.log(data);
-					console.log("--------");
 					if(err) { return cb(err); }
-					console.log("done inspection, returning data");
-					console.log(data);
 					return cb(null, data);
 				});
 			});
 		});
 	},
 
-	"start": function(dockerInfo, cid, req, res) {
-		lib.container(dockerInfo, "start", cid, null, req, res);
+	"start": function(deployerConfig, cid, cb) {
+		lib.container(deployerConfig, "start", cid, null, cb);
 	},
 
-	"stop": function(dockerInfo, cid, req, res) {
-		lib.container(dockerInfo, "stop", cid, null, req, res);
+	"stop": function(deployerConfig, cid, cb) {
+		lib.container(deployerConfig, "stop", cid, null, cb);
 	},
 
-	"remove": function(dockerInfo, cid, req, res, cb) {
-		lib.container(dockerInfo, "remove", cid, {"force": true}, req, res, cb);
+	"remove": function(deployerConfig, cid, cb) {
+		lib.container(deployerConfig, "remove", cid, {"force": true}, cb);
 	},
 
-	"info": function(dockerInfo, cid, req, res) {
-		var docker = lib.getDocker(dockerInfo);
-		docker.getContainer(cid).logs({
+	"info": function(deployerConfig, cid, req, res) {
+		var deployer = lib.getDeployer(deployerConfig);
+		deployer.getContainer(cid).logs({
 				stderr: true,
 				stdout: true,
 				timestamps: false,
@@ -147,7 +121,7 @@ var deployer = {
 			function(error, stream) {
 				if(error) {
 					req.soajs.log.error('logStreamContainer error: ', error);
-					res.status(601).send(error);
+					return res.json(req.soajs.buildResponse({"code": 601, "msg": error.message}));
 				}
 				else {
 					var data = '';
@@ -155,12 +129,15 @@ var deployer = {
 					stream.setEncoding('utf8');
 					stream.on('readable', function() {
 						while((chunk = stream.read()) != null) {
-							data += chunk;
+							data += chunk.toString();
 						}
 					});
 					stream.on('end', function() {
 						stream.destroy();
-						res.status(200).send(data);
+						console.log('hi final time.');
+						var out = req.soajs.buildResponse(null, data.toString());
+						console.log(out);
+						return res.json(out);
 					})
 				}
 			});

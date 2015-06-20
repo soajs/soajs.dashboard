@@ -106,12 +106,11 @@
                                         <thead>
                                             <tr>
                                                 <th class="actions">Actions</th>
-                                                <th class="host-ip">Host IP</th>
-                                                <th class="host-ip">Hostname</th>
+                                                <th class="host-ip">Host Info</th>
                                             </tr>
                                         </thead>
                                         <tr>
-                                            <td valign="top">
+                                            <td valign="top" width="10%">
                                                 <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
                                                     <span class="icon icon-heart"></span>&nbsp;
                                                 </a>
@@ -123,24 +122,23 @@
                                                     <span class="icon icon-download3"></span>&nbsp;
                                                 </a>
 
-                                                <a href="" ng-show="!oneIp.healthy" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                                <a href="" ng-show="!oneIp.healthy && oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                                     <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
                                                 </a>
 
-                                                <a href="" ng-show="oneIp.healthy" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
+                                                <a href="" ng-show="oneIp.healthy && oneIp.cid" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
                                                     <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
                                                 </a>
 
-                                                <a href="" ng-show="!oneIp.healthy" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)" title="Start Selected Host">
+                                                <a href="" ng-show="!oneIp.healthy && oneIp.cid" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)" title="Start Selected Host">
                                                     <span class="icon icon-play3"></span>&nbsp;
                                                 </a>
 
-                                                <a href="" ng-show="oneIp.healthy" ng-click="infoHost(row['code'], serviceName, oneIp)">
+                                                <a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
                                                     <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
                                                 </a>
                                             </td>
-                                            <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
-                                            <td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
+                                            <td valign="top"><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}<br />{{oneIp.hostname}}</span></td>
                                         </tr>
                                     </table>
                                 </td>

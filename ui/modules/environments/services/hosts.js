@@ -99,6 +99,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 									currentScope.hostList.forEach(function(origHostRec) {
 										if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 											oneHost.hostname = origHostRec.hostname;
+											oneHost.cid = origHostRec.cid;
 										}
 									});
 								}
@@ -174,6 +175,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 								currentScope.hostList.forEach(function(origHostRec) {
 									if(origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 										oneEnvironmentRow.hosts[oneHost.name].ips[i].hostname = origHostRec.hostname;
+										oneEnvironmentRow.hosts[oneHost.name].ips[i].cid = origHostRec.cid;
 									}
 								});
 								if(oneHost.name === 'controller') {
@@ -603,6 +605,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 				"env": env
 			}
 		}, function(error, response) {
+			console.log(error);
+			console.log(response);
 			if(error) {
 				serviceInfo.waitMessage.type = 'danger';
 				serviceInfo.waitMessage.message = "error executing get Host Info Operation for " +
@@ -797,7 +801,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', function(n
 						};
 
 						response.controllers.forEach(function(oneCtrl){
-							hosttmpl.push({
+							hosttmpl.controllers.push({
 								'ip': oneCtrl.ip,
 								'color': 'green',
 								'lastCheck': 'N/A',
