@@ -26,7 +26,7 @@ module.exports = {
 			}
 
 			var dockerParams = {
-				"image": "local/controller",
+				"image": req.soajs.inputmaskData.image,
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
 				"profile": regFile,
 				"links": list
@@ -55,8 +55,8 @@ module.exports = {
 			};
 			mongo.insert("docker", document, function(error) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-				//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.hostname}));
-				return res.json(req.soajs.buildResponse(null, {'hostname': data.Config.hostname}));
+				//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname}));
+				return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname}));
 			});
 		}
 	},
@@ -68,7 +68,7 @@ module.exports = {
 
 			var dockerParams = {
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
-				"image": "local/nginxapi",
+				"image": req.soajs.inputmaskData.image,
 				"port": envRecord.port,
 				"variables": [
 					"SOAJS_NX_NBCONTROLLER=" + req.soajs.inputmaskData.containerNames.length,
@@ -154,7 +154,7 @@ module.exports = {
 				mongo.find(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller"}, function(error, controllers) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 					//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname, "controllers": controllers}));
-					return res.json(req.soajs.buildResponse(null, {'hostname': data.Config.Hostname, "controllers": controllers}));
+					return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname, "controllers": controllers}));
 				});
 			});
 		}
