@@ -73,9 +73,10 @@ var deployer = {
 			var port = null;
 			if(params.port) {
 				port = {};
-				port[params.port + "/tcp"] = [{"HostPort": params.port}];
+				port["" + params.port + "/tcp"] = [{"HostPort": ""+params.port}];
 			}
 
+			console.log(port);
 			var deployer = lib.getDeployer(deployerConfig);
 			deployer.createContainer({
 				Image: dockerImage,
