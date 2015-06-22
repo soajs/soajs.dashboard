@@ -76,7 +76,7 @@ module.exports = {
 				"variables": [
 					"SOAJS_NX_NBCONTROLLER=" + req.soajs.inputmaskData.containerNames.length,
 					"SOAJS_NX_APIPORT=" + envRecord.port,
-					"SOAJS_NX_APIDOMAIN=" + envRecord.services.config.session.cookie.domain //mydomain.com
+					"SOAJS_NX_APIDOMAIN=api." + envRecord.services.config.session.cookie.domain //mydomain.com
 				],
 				"links": req.soajs.inputmaskData.containerNames
 			};

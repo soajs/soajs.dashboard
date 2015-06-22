@@ -105,7 +105,7 @@
                     <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
                 </div>
                 <div style="width: 100%;" class="head {{serviceInfo.color}}">
-                    <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
+                    <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}&nbsp;port:&nbsp;{{serviceInfo.port}}
                 </div>
                 <div class="service-ips">
                     <div ng-repeat="oneIp in serviceInfo.ips" class="">
@@ -120,7 +120,7 @@
                                             </tr>
                                         </thead>
                                         <tr>
-                                            <td valign="top" width="10%">
+                                            <td valign="top" width="30%">
                                                 <a href="" ng-click="executeHeartbeatTest(row['code'], oneIp)" title="Execute Heartbeat Operation">
                                                     <span class="icon icon-heart"></span>&nbsp;
                                                 </a>
@@ -148,7 +148,7 @@
                                                     <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
                                                 </a>
                                             </td>
-                                            <td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br />{{serviceInfo.port}}</span></td>
+                                            <td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
                                         </tr>
                                     </table>
                                 </td>
