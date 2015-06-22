@@ -59,7 +59,7 @@ function deployNginx(config, mongo, req, res) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 			//no controllers found, no need to proceed
-			else if(!controllers) {
+			else if(!controllers || (controllers && controllers.length === 0)) {
 				req.soajs.log.debug("No controllers found for environment: " + req.soajs.inputmaskData.envCode + ". No need to proceed.");
 				return res.json(req.soajs.buildResponse(null, true));
 			}

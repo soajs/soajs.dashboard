@@ -32,6 +32,7 @@ module.exports = {
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
+			"profile": config.profiles + req.soajs.inputmaskData.profile + ".js",
 			"deployer": req.soajs.inputmaskData.deployer,
 			"description": req.soajs.inputmaskData.description,
 			"services": req.soajs.inputmaskData.services,
@@ -103,7 +104,8 @@ module.exports = {
 				'$set': {
 					"deployer": req.soajs.inputmaskData.deployer,
 					"description": req.soajs.inputmaskData.description,
-					"services": req.soajs.inputmaskData.services
+					"services": req.soajs.inputmaskData.services,
+					"profile": config.profiles + req.soajs.inputmaskData.profile + ".js"
 				}
 			};
 			mongo.update(colName, {"_id": req.soajs.inputmaskData.id}, s, {'upsert': false, 'safe': true}, function(err, data) {

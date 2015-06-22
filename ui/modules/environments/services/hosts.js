@@ -493,31 +493,39 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									}
 								}
 							}
-							var oneCtrl = {
-								"name": "controller",
-								"port": currentScope.grid.rows[e].hosts.controller.port,
-								"ip": currentScope.grid.rows[e].hosts.controller.ips[0].ip,
-								"hostname": currentScope.grid.rows[e].hosts.controller.ips[0].hostname
-							};
-							reloadRegistry(currentScope, env, oneCtrl, function(){
-								listHosts(currentScope, env);
-							});
-						}
 
-						if(serviceName === 'controller') {
-							for(var c = 0; c < currentScope.grid.rows[e].controllers.length; c++) {
-								if(currentScope.grid.rows[e].controllers[c].ip === oneHost.ip) {
-									currentScope.grid.rows[e].controllers[c].splice(c, 1);
+							if(currentScope.grid.rows[e].hosts.controller.ips.length > 0) {
+								var oneCtrl = {
+									"name": "controller",
+									"port": currentScope.grid.rows[e].hosts.controller.port,
+									"ip": currentScope.grid.rows[e].hosts.controller.ips[0].ip,
+									"hostname": currentScope.grid.rows[e].hosts.controller.ips[0].hostname
+								};
+								reloadRegistry(currentScope, env, oneCtrl, function() {
+									listHosts(currentScope, env);
+								});
+
+								if(serviceName === 'controller') {
+									if(currentScope.grid.rows[e].controllers[c].length > 0) {
+										for(var c = 0; c < currentScope.grid.rows[e].controllers.length; c++) {
+											if(currentScope.grid.rows[e].controllers[c].ip === oneHost.ip) {
+												currentScope.grid.rows[e].controllers[c].splice(c, 1);
+											}
+										}
+									}
+									currentScope.grid.rows[e].controllers.forEach(function(oneController) {
+										if(oneController.color === 'green') {
+											currentScope.reloadRegistry(env, oneController, function() {
+												currentScope.executeAwarenessTest(env, oneController);
+											});
+										}
+									});
 								}
 							}
-						}
-						currentScope.grid.rows[e].controllers.forEach(function(oneController) {
-							if(oneController.color === 'green') {
-								currentScope.reloadRegistry(env, oneController, function() {
-									currentScope.executeAwarenessTest(env, oneController);
-								});
+							else{
+								delete currentScope.grid.rows[e].hosts;
 							}
-						});
+						}
 					}
 				}
 				currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
@@ -807,7 +815,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					"ip": services.controller.ips[0].ip,
 					"hostname": services.controller.ips[0].hostname
 				};
-				reloadRegistry(currentScope, env, oneCtrl, function(){
+				reloadRegistry(currentScope, env, oneCtrl, function() {
 					listHosts(currentScope, env);
 				});
 			});

@@ -88,6 +88,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 									$scope.formEnvironment.deployer[driver] = JSON.stringify($scope.formEnvironment.deployer[driver], null, 2);
 								}
 							}
+
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile.split("/");
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile[$scope.formEnvironment.profile.length -1];
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile.replace(".js", "");
 							break;
 						}
 					}

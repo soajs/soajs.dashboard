@@ -11,6 +11,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
+	"profiles": "/opt/soajs/FILES/profiles/",
 	"images":{
 		"nginx": 'local/nginxapi',
 		"controller": "local/controller"
@@ -240,6 +241,14 @@ module.exports = {
 					"format": "alphanumeric",
 					"maxLength": 4
 				}
+			},
+			"profile": {
+				"required": true,
+				"source": ['body.profile'],
+				"validation": {
+					"type":"string",
+					"enum": ['single','replica3','replica5']
+				}
 			}
 		},
 		"/environment/delete": {
@@ -254,7 +263,15 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services', 'deployer']
+			"commonFields": ['id', 'description', 'services', 'deployer'],
+			"profile": {
+				"required": true,
+				"source": ['body.profile'],
+				"validation": {
+					"type":"string",
+					"enum": ['single','replica3','replica5']
+				}
+			}
 		},
 		"/environment/key/update": {
 			_apiInfo: {

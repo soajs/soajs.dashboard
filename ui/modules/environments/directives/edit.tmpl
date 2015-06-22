@@ -25,6 +25,16 @@
                         </tr>
                         <tr class="form-group">
                             <td class="">
+                                <label>Profile</label>
+                                <select ng-model="formEnvironment.profile">
+                                    <option value="single" ng-selected="formEnvironment.profile === 'single'">Single</option>
+                                    <option value="replica3" ng-selected="formEnvironment.profile === 'replica3'">Replica 3</option>
+                                    <option value="replica5" ng-selected="formEnvironment.profile === 'replica5'">Replica 5</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
                                 <hr/>
                                 <h3>Platforms</h3>
                                 <div class="grouped">
