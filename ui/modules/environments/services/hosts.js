@@ -714,7 +714,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						});
 
 						//push controller
-						//servicesList.unshift({"v": "controller", "l": "controller"});
+						servicesList.unshift({"v": "controller", "l": "controller"});
 
 						var entry = {
 							'name': 'service',

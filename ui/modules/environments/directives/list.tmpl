@@ -25,7 +25,7 @@
                     <tab heading="Mongo Cluster" ng-if="access.clusters.list">
                         <div ng-include="'modules/environments/directives/list-clusters.tmpl'"></div>
                     </tab>
-                    <tab heading="Services Hosts" ng-if="access.listHosts">
+                    <tab heading="Services Hosts" ng-if="access.listHosts" ng-click="listHosts(row.code)">
                         <div ng-include="'modules/environments/directives/list-hosts.tmpl'"></div>
                     </tab>
                 </tabset>

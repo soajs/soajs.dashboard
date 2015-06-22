@@ -101,9 +101,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 						if($scope.grid.rows.length == 1) {
 							$scope.grid.rows[0].showOptions = true;
 						}
-						$scope.grid.rows.forEach(function(env){
-							$scope.listHosts(env.code);
-						});
+						//$scope.grid.rows.forEach(function(env){
+						//	$scope.listHosts(env.code);
+						//});
 					}
 				}
 			}
