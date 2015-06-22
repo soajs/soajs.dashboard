@@ -86,6 +86,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 										'color': 'red',
 										'port': regServices[serviceName].port
 									};
+									currentScope.hostList.forEach(function(origHostRec) {
+										if(origHostRec.name === oneHost.name) {
+											oneHost.hostname = origHostRec.hostname;
+											oneHost.cid = origHostRec.cid;
+										}
+									});
 									controllers.forEach(function(oneCtrl) {
 										if(oneCtrl.ip == oneHostIP) {
 											oneHost.hostname = oneCtrl.hostname;
