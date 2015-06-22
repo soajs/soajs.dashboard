@@ -655,24 +655,24 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	}
 
 	function remove_special(str) {
-		var rExps=[ /[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
+		var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
 			/[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
 			/[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
 			/[\xD2-\xD4]/g, /[\xF2-\xF4]/g,
 			/[\xD9-\xDB]/g, /[\xF9-\xFB]/g,
-			/\xD1/,/\xF1/g,
+			/\xD1/, /\xF1/g,
 			"/[\u00a0|\u1680|[\u2000-\u2009]|u200a|\u200b|\u2028|\u2029|\u202f|\u205f|\u3000|\xa0]/g",
 			/\uFFFD/g,
-			/\u000b/g,'/[\u180e|\u000c]/g',
+			/\u000b/g, '/[\u180e|\u000c]/g',
 			/\u2013/g, /\u2014/g,
-			/\xa9/g,/\xae/g,/\xb7/g,/\u2018/g,/\u2019/g,/\u201c/g,/\u201d/g,/\u2026/g];
-		var repChar=['A','a','E','e','I','i','O','o','U','u','N','n',' ','','\t','','-','--','(c)','(r)','*',"'","'",'"','"','...'];
-		for(var i=0; i<rExps.length; i++) {
-			str=str.replace(rExps[i],repChar[i]);
+			/\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g];
+		var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...'];
+		for(var i = 0; i < rExps.length; i++) {
+			str = str.replace(rExps[i], repChar[i]);
 		}
-		for (var x = 0; x < str.length; x++) {
+		for(var x = 0; x < str.length; x++) {
 			var charcode = str.charCodeAt(x);
-			if ((charcode < 32 || charcode > 126) && charcode !=10 && charcode != 13) {
+			if((charcode < 32 || charcode > 126) && charcode != 10 && charcode != 13) {
 				str = str.replace(str.charAt(x), "");
 			}
 		}
@@ -700,7 +700,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						services.forEach(function(oneService) {
 							if(oneService.image && oneService.image !== '') {
 								servicesList.push({'v': oneService.name, 'l': oneService.name});
-								postServiceList.push({"name": oneService.name, "image": oneService.image});
+								postServiceList.push({"name": oneService.name, "image": oneService.image, "port": oneService.port});
 							}
 						});
 
@@ -708,13 +708,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							services.forEach(function(oneService) {
 								if(oneService.name === oneGCService.name && oneService.image && oneService.image !== '') {
 									servicesList.push({'v': oneGCService.name, 'l': oneGCService.name});
-									postServiceList.push({"name": oneGCService.name, "gcName": oneGCService.name, "gcVersion": oneGCService.v});
+									postServiceList.push({"name": oneGCService.name, "gcName": oneGCService.name, "gcVersion": oneGCService.v, "port": oneService.port});
 								}
 							});
 						});
 
 						//push controller
-						servicesList.unshift({"v": "controller", "l": "controller"});
+						//servicesList.unshift({"v": "controller", "l": "controller"});
 
 						var entry = {
 							'name': 'service',
@@ -843,6 +843,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					//'profile': environmentsConfig.profiles + formData.profile + ".js",
 					'profile': environmentsConfig.profiles + "single.js"
 				};
+				var port;
 				for(var i = 0; i < postServiceList.length; i++) {
 					if(postServiceList[i].name === formData.service) {
 						if(postServiceList[i].image) {
@@ -854,6 +855,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							params.gcVersion = postServiceList[i].gcVersion;
 							params.image = environmentsConfig.gcImage;
 						}
+						port = postServiceList[i].port;
 					}
 				}
 
@@ -868,8 +870,18 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					else {
 						currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
 
+						if(!services[formData.service]) {
+							services[formData.service] = {
+								'name': formData.service,
+								'port': port,
+								'ips': [],
+								'color': 'red',
+								'heartbeat': false
+							};
+						}
+
 						var hosttmpl = {
-							'port': services[formData.service].port,
+							'port': port,
 							'cid': response.cid,
 							'hostname': response.hostname,
 							'name': formData.service,
@@ -891,6 +903,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							});
 						});
 						services[formData.service].ips.push(hosttmpl);
+
 						$timeout(function() {
 							currentScope.executeHeartbeatTest(env, hosttmpl);
 						}, 1000);
