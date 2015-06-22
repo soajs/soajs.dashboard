@@ -33,12 +33,15 @@ module.exports = {
 			};
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+			req.soajs.log.debug("Calling create controller container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
 			deployer.createContainer(deployerConfig, dockerParams, function(error, data) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
+				req.soajs.log.debug("Controller Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
+					req.soajs.log.debug("Controller Container started, saving information in core_provision");
 					registerNewHost(data, deployerConfig);
 				});
 			});
@@ -79,15 +82,16 @@ module.exports = {
 			};
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+			req.soajs.log.debug("Calling create nginx container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
 			deployer.createContainer(deployerConfig, dockerParams, function(error, data) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
+				req.soajs.log.debug("Nginx Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
-					setTimeout(function() {
-						return res.json(req.soajs.buildResponse(null, true));
-					}, 2000);
+					req.soajs.log.debug("Nginx Container started...");
+					return res.json(req.soajs.buildResponse(null, true));
 				});
 			});
 		});
@@ -131,10 +135,15 @@ module.exports = {
 			}
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+			req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
 			deployer.createContainer(deployerConfig, dockerParams, function(error, data) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+				req.soajs.log.debug("Service Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+					req.soajs.log.debug("Service Container started, saving information in core_provision");
 					//get the ip of the host from hosts
 					registerHost(data, deployerConfig);
 				});
