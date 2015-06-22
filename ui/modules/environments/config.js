@@ -1,9 +1,6 @@
 "use strict";
 var environmentsConfig = {
-	profiles: '/opt/soajs/FILES/profiles/',
 	gcImage: 'local/soajsgcs',
-	ctrlImage : 'local/controller',
-	nginxImage : 'local/nginxapi',
 	form: {
 		database: {
 			'name': '',

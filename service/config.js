@@ -11,6 +11,11 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
+	"images":{
+		"nginx": 'local/nginxapi',
+		"controller": "local/controller"
+	},
+
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
@@ -198,14 +203,6 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "object"
-				}
-			},
-			"profile": {
-				"required": true,
-				"source": ['body.profile'],
-				"validation": {
-					"type": "string",
-					"pattern": "^(/[^/]+)+\/(single|replica3|replica5)\.js$"
 				}
 			},
 			"deployer": {
@@ -1072,38 +1069,13 @@ module.exports = {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
 			},
-			commonFields: ['envCode', 'profile'],
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/deployNginx": {
-			"_apiInfo": {
-				"l": "Deploy New Nginx",
-				"group": "Hosts"
-			},
 			"commonFields": ['envCode'],
-			"containerNames": {
+			"number": {
 				"required": true,
-				"source": ['body.containerNames'],
+				"source": ["body.number"],
 				"validation": {
-					"type": "array",
-					"minItems": 1,
-					"items": {
-						"type": "string",
-						"required": true
-					}
-				}
-			},
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
+					"type": "number",
+					"minimum": 1
 				}
 			}
 		},
@@ -1112,7 +1084,7 @@ module.exports = {
 				"l": "Deploy New Service",
 				"group": "Hosts"
 			},
-			"commonFields": ['envCode', 'profile'],
+			"commonFields": ['envCode'],
 			"image": {
 				"required": true,
 				"source": ["body.image"],

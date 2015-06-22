@@ -487,6 +487,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									}
 								}
 							}
+							var oneCtrl = {
+								"name": "controller",
+								"port": currentScope.grid.rows[e].hosts.controller.port,
+								"ip": currentScope.grid.rows[e].hosts.controller.ips[0].ip,
+								"hostname": currentScope.grid.rows[e].hosts.controller.ips[0].hostname
+							};
+							reloadRegistry(currentScope, env, oneCtrl, function(){
+								listHosts(currentScope, env);
+							});
 						}
 
 						if(serviceName === 'controller') {
@@ -778,15 +787,23 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		function newController(formData, ele, max) {
 			var params = {
 				'envCode': env,
-				//'profile': environmentsConfig.profiles + formData.profile + ".js",
-				'profile': environmentsConfig.profiles + "single.js",
-				"image": environmentsConfig.ctrlImage
+				"number": max
 			};
 
 			doDeploy(0, max, function() {
 				overlay.hide();
 				currentScope.modalInstance.close();
 				currentScope.form.formData = {};
+
+				var oneCtrl = {
+					"name": "controller",
+					"port": services.controller.port,
+					"ip": services.controller.ips[0].ip,
+					"hostname": services.controller.ips[0].hostname
+				};
+				reloadRegistry(currentScope, env, oneCtrl, function(){
+					listHosts(currentScope, env);
+				});
 			});
 
 			function doDeploy(counter, max, cb) {
@@ -810,9 +827,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							'hostname': response.hostname
 						};
 						services.controller.ips.push(hosttmpl);
-						$timeout(function() {
-							currentScope.executeHeartbeatTest(env, hosttmpl);
-						}, 1000);
 
 						counter++;
 						var percentage = Math.ceil((counter * 100) / max);
@@ -839,9 +853,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 			function doDeploy(counter, max, cb) {
 				var params = {
-					'envCode': env,
-					//'profile': environmentsConfig.profiles + formData.profile + ".js",
-					'profile': environmentsConfig.profiles + "single.js"
+					'envCode': env
 				};
 				var port;
 				for(var i = 0; i < postServiceList.length; i++) {

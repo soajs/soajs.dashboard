@@ -8,77 +8,84 @@ function pad(d) {
 	return (d < 10) ? '0' + d.toString() : d.toString();
 }
 
-module.exports = {
+function deployNginx(config, mongo, req, res) {
+	//from envCode, load env, get port and domain
+	mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+		if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-	"deployController": function(config, mongo, req, res) {
-		//from profile name, construct profile path and equivalently soajsData01....
-		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
-			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+		req.soajs.log.debug("checking for old nginx container for environment: " + envRecord.code);
+		var condition = {
+			"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+			"hostname": "nginx_" + req.soajs.inputmaskData.envCode.toLowerCase()
+		};
+		mongo.findOne("docker", condition, function(error, oldNginx) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
-			//fetch how many servers are in the profile
-			var list = [];
-			var regFile = req.soajs.inputmaskData.profile;
-			var profile = require(regFile);
+			if(oldNginx) {
+				removeOldNginx(oldNginx, envRecord)
+			}
+			else {
+				req.soajs.log.debug("NO old Nginx container found, building new nginx...");
+				rebuildNginx(envRecord);
+			}
+		});
+	});
 
-			//todo: this is hardcoded for now, needs to become dynamic
-			for(var i = 0; i < profile.servers.length; i++) {
-				list.push("soajsData:dataProxy" + pad(i + 1));
+	function removeOldNginx(oldNginx, envRecord) {
+		var condition = {
+			"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+			"hostname": "nginx_" + req.soajs.inputmaskData.envCode.toLowerCase()
+		};
+		req.soajs.log.debug("Old Nginx container found, removing nginx ...");
+		mongo.remove("docker", condition, function(err) {
+			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			deployer.remove(oldNginx.deployer, oldNginx.cid, function(error) {
+				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+				req.soajs.log.debug("Old Nginx container removed, building new nginx...");
+				rebuildNginx(envRecord);
+			});
+		});
+	}
+
+	function getRunningControllers(cb) {
+		var condition = {
+			"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+			"running": true,
+			"type": "controller"
+		};
+		mongo.find("docker", condition, function(error, controllers) {
+			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			//no controllers found, no need to proceed
+			else if(!controllers) {
+				req.soajs.log.debug("No controllers found for environment: " + req.soajs.inputmaskData.envCode + ". No need to proceed.");
+				return res.json(req.soajs.buildResponse(null, true));
+			}
+			else {
+				return cb(controllers);
+			}
+		});
+	}
+
+	function rebuildNginx(envRecord) {
+		var links = [];
+		getRunningControllers(function(controllers) {
+			for(var i = 0; i < controllers.length; i++) {
+				links.push(controllers[i].hostname + ":controllerProxy0" + (i + 1));
 			}
 
 			var dockerParams = {
-				"image": req.soajs.inputmaskData.image,
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
-				"profile": regFile,
-				"links": list
-			};
-
-			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
-			req.soajs.log.debug("Calling create controller container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
-			deployer.createContainer(deployerConfig, dockerParams, function(error, data) {
-				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-
-				req.soajs.log.debug("Controller Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
-				deployer.start(deployerConfig, data.Id, function(error) {
-					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-
-					req.soajs.log.debug("Controller Container started, saving information in core_provision");
-					registerNewHost(data, deployerConfig);
-				});
-			});
-		});
-
-		function registerNewHost(data, deployerConfig) {
-			//get the ip of the host from hosts
-			//insert into docker collection
-			var document = {
-				"cid": data.Id,
-				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
-				"hostname": data.Config.Hostname,
-				"deployer": deployerConfig
-			};
-			mongo.insert("docker", document, function(error) {
-				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-				//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname}));
-				return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname}));
-			});
-		}
-	},
-
-	"deployNginx": function(config, mongo, req, res) {
-		//from envCode, load env, get port and domain
-		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
-			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-
-			var dockerParams = {
-				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
-				"image": req.soajs.inputmaskData.image,
+				"image": config.images.nginx,
 				"port": envRecord.port,
 				"variables": [
-					"SOAJS_NX_NBCONTROLLER=" + req.soajs.inputmaskData.containerNames.length,
+					"SOAJS_NX_NBCONTROLLER=" + links.length,
 					"SOAJS_NX_APIPORT=" + envRecord.port,
 					"SOAJS_NX_APIDOMAIN=api." + envRecord.services.config.session.cookie.domain //mydomain.com
 				],
-				"links": req.soajs.inputmaskData.containerNames
+				"links": links
 			};
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
@@ -90,11 +97,93 @@ module.exports = {
 				deployer.start(deployerConfig, data.Id, function(error) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
-					req.soajs.log.debug("Nginx Container started...");
-					return res.json(req.soajs.buildResponse(null, true));
+					req.soajs.log.debug("Nginx Container started. Saving nginx container information in docker collection.");
+					var document = {
+						"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+						"cid": data.Id,
+						"hostname": "nginx_" + req.soajs.inputmaskData.envCode.toLowerCase(),
+						"deployer": deployerConfig
+					};
+					mongo.insert("docker", document, function(error) {
+						if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+						return res.json(req.soajs.buildResponse(null, true));
+					});
 				});
 			});
+
 		});
+	}
+}
+
+module.exports = {
+
+	"deployController": function(config, mongo, req, res) {
+		//from profile name, construct profile path and equivalently soajsData01....
+		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
+			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+
+			//fetch how many servers are in the profile
+			var list = [];
+			var regFile = envRecord.profile;
+			var profile = require(regFile);
+
+			//todo: this is hardcoded for now, needs to become dynamic
+			for(var i = 0; i < profile.servers.length; i++) {
+				list.push("soajsData:dataProxy" + pad(i + 1));
+			}
+
+			var dockerParams = {
+				"image": config.images.controller,
+				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+				"profile": regFile,
+				"links": list
+			};
+
+			deployControllers(0, req.soajs.inputmaskData.number, envRecord, dockerParams, function() {
+				deployNginx(config, mongo, req, res);
+			});
+		});
+
+		function deployControllers(counter, max, envRecord, dockerParams, cb) {
+			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+			req.soajs.log.debug("Calling create controller container:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
+			deployer.createContainer(deployerConfig, dockerParams, function(error, data) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+				req.soajs.log.debug("Controller Container Created, starting container:", JSON.stringify(deployerConfig), JSON.stringify(data));
+				deployer.start(deployerConfig, data.Id, function(error) {
+					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+					req.soajs.log.debug("Controller Container started, saving information in core_provision");
+					registerNewHost(data, deployerConfig, function() {
+						counter++;
+						if(counter === max) {
+							return cb();
+						}
+						else {
+							deployControllers(counter, max, envRecord, dockerParams, cb);
+						}
+					});
+				});
+			});
+		}
+
+		function registerNewHost(data, deployerConfig, cb) {
+			//get the ip of the host from hosts
+			//insert into docker collection
+			var document = {
+				"cid": data.Id,
+				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+				"hostname": data.Config.Hostname,
+				"running": true,
+				"type": "controller",
+				"deployer": deployerConfig
+			};
+			mongo.insert("docker", document, function(error) {
+				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+				return cb();
+			});
+		}
 	},
 
 	"deployService": function(config, mongo, req, res) {
@@ -104,7 +193,7 @@ module.exports = {
 			if(err || !envRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 			//build the regFile path
-			var regFile = req.soajs.inputmaskData.profile;
+			var regFile = envRecord.profile;
 
 			//fetch how many servers are in the profile
 			var links = [];
@@ -155,6 +244,8 @@ module.exports = {
 				"cid": data.Id,
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
 				"hostname": data.Config.Hostname,
+				"type": "service",
+				"running": true,
 				"deployer": deployerConfig
 			};
 			mongo.insert("docker", document, function(error) {
@@ -194,9 +285,13 @@ module.exports = {
 			'hostname': req.soajs.inputmaskData.hostname
 		};
 
+		var rebuildNginx = false;
 		mongo.findOne('docker', dockerColCriteria, function(error, response) {
 			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
+			if(response.type === 'controller'){
+				rebuildNginx = true;
+			}
 			var deployerConfig = response.deployer;
 			deployer.remove(deployerConfig, response.cid, function(error) {
 				if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
@@ -219,7 +314,15 @@ module.exports = {
 			};
 			mongo.remove(colName, hostCriteria, function(err) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-				return res.jsonp(req.soajs.buildResponse(null, "host delete successfull."));
+
+				if(rebuildNginx){
+					req.soajs.log.debug("Deleted controller container, rebuilding Nginx ....");
+					req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.env.toUpperCase();
+					deployNginx(config, mongo, req, res);
+				}
+				else{
+					return res.jsonp(req.soajs.buildResponse(null, true));
+				}
 			});
 		}
 	},
@@ -242,10 +345,10 @@ module.exports = {
 				'env': req.soajs.inputmaskData.env.toLowerCase(),
 				"name": req.soajs.inputmaskData.serviceName
 			};
-			if(req.soajs.inputmaskData.ip){
+			if(req.soajs.inputmaskData.ip) {
 				condition.ip = req.soajs.inputmaskData.serviceHost;
 			}
-			else{
+			else {
 				condition.hostname = req.soajs.inputmaskData.hostname;
 			}
 			mongo.findOne(colName, condition, function(error, record) {
@@ -271,10 +374,10 @@ module.exports = {
 				'env': req.soajs.inputmaskData.env.toLowerCase(),
 				"name": req.soajs.inputmaskData.serviceName
 			};
-			if(req.soajs.inputmaskData.ip){
+			if(req.soajs.inputmaskData.ip) {
 				condition.ip = req.soajs.inputmaskData.serviceHost;
 			}
-			else{
+			else {
 				condition.hostname = req.soajs.inputmaskData.hostname;
 			}
 			mongo.findOne(colName, condition, function(error, record) {
@@ -294,22 +397,50 @@ module.exports = {
 
 			switch(req.soajs.inputmaskData.operation) {
 				case 'startHost':
-					mongo.findOne("docker", criteria, function(error, response) {
-						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-						var deployerConfig = response.deployer;
-						deployer.start(deployerConfig, response.cid, function(error) {
+					criteria.running = false;
+					mongo.findOne("docker", criteria, function(error, containerRecord) {
+						if(error || !containerRecord) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+						var deployerConfig = containerRecord.deployer;
+						deployer.start(deployerConfig, containerRecord.cid, function(error) {
 							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-							return res.jsonp(req.soajs.buildResponse(null, true));
+
+							containerRecord.running = true;
+							mongo.save("docker", containerRecord, function(error){
+								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+
+								if(containerRecord.type ==='controller'){
+									req.soajs.log.debug("controller container started, rebuilding Nginx ...");
+									req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.env.toUpperCase();
+									deployNginx(config, mongo, req, res);
+								}
+								else{
+									return res.jsonp(req.soajs.buildResponse(null, true));
+								}
+							});
 						});
 					});
 					break;
 				case 'stopHost':
-					mongo.findOne("docker", criteria, function(error, response) {
-						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-						var deployerConfig = response.deployer;
-						deployer.stop(deployerConfig, response.cid, function(error) {
+					criteria.running = true;
+					mongo.findOne("docker", criteria, function(error, containerRecord) {
+						if(error || !containerRecord) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+						var deployerConfig = containerRecord.deployer;
+						deployer.stop(deployerConfig, containerRecord.cid, function(error) {
 							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-							return res.jsonp(req.soajs.buildResponse(null, true));
+
+							containerRecord.running = false;
+							mongo.save("docker", containerRecord, function(error){
+								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
+
+								if(containerRecord.type === 'controller'){
+									req.soajs.log.debug("controller container stopped, rebuilding Nginx ...");
+									req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.env.toUpperCase();
+									deployNginx(config, mongo, req, res);
+								}
+								else{
+									return res.jsonp(req.soajs.buildResponse(null, true));
+								}
+							});
 						});
 					});
 					break;
