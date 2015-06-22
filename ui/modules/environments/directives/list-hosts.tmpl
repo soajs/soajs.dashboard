@@ -14,7 +14,7 @@
 <br/>
 <div>
     <div ng-show="!row.hosts">
-        <div style="padding: 10px 0px 25px 5px;">
+        <div id="non-deployed-{{row['code']}}" style="padding: 10px 0px 25px 5px;">
             <alert type="warning">This Environment has not been deployed yet.</alert>
             <input type="button" value="Deploy Environment" class="btn btn-primary" ng-click="deployEnvironment(row['code'])" style="float:none; top:0; display:block; margin:20px auto 0;"/>
         </div>

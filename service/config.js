@@ -987,6 +987,14 @@ module.exports = {
 					"required": true
 				}
 			},
+			'hostname': {
+				'source': ['query.hostname'],
+				'required': true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
 			'ip': {
 				'source': ['query.ip'],
 				'required': true,
@@ -1051,7 +1059,14 @@ module.exports = {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
 			},
-			commonFields: ['envCode', 'profile']
+			commonFields: ['envCode', 'profile'],
+			"image": {
+				"required": true,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 		"/hosts/deployNginx": {
 			"_apiInfo": {
@@ -1069,6 +1084,13 @@ module.exports = {
 						"type": "string",
 						"required": true
 					}
+				}
+			},
+			"image": {
+				"required": true,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
