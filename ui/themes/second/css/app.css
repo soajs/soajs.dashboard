@@ -395,6 +395,12 @@ em {
     display: block;
 }
 
+.large-Modal .modal-dialog{
+    width:80%;
+}
+
+pre{ padding:0; }
+
 /**
     THEME ENDS HERE
     CUSTOM CSS STARTS HERE

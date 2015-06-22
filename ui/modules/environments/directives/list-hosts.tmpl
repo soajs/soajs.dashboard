@@ -8,6 +8,16 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="logBox.html">
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body"><pre><code class="sh">{{data}}</code></pre></div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>
+</script>
+
 <div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
     <alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
 </div>

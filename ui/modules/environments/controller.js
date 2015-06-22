@@ -78,6 +78,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 									$scope.formEnvironment.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, "\t");
 								}
 							}
+
+							for(var driver in $scope.formEnvironment.deployer){
+								if(driver === 'selected') continue;
+								if(JSON.stringify($scope.formEnvironment.deployer[driver]) === "{}"){
+									delete $scope.formEnvironment.deployer[driver];
+								}
+								else {
+									$scope.formEnvironment.deployer[driver] = JSON.stringify($scope.formEnvironment.deployer[driver], null, 2);
+								}
+							}
 							break;
 						}
 					}
@@ -138,20 +148,47 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 			}
 		}
 
-		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
-			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
-			"data": postData
-		}, function(error) {
-			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
+		if(!postData.deployer.unix && !postData.deployer.boot2docker){
+			$timeout(function(){
+				alert("Provide a configuration for at least one platform driver to proceed.");
+			},100);
+		}
+		else{
+			try{
+				if(postData.deployer.unix){
+					postData.deployer.unix = JSON.parse(postData.deployer.unix);
+				}
 			}
-			else {
-				$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
+			catch(e){
+				$scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Unix Driver");
+				return;
 			}
-		});
+
+			try{
+				if(postData.deployer.boot2docker){
+					postData.deployer.boot2docker = JSON.parse(postData.deployer.boot2docker);
+				}
+			}
+			catch(e){
+				$scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Boot2docker Driver");
+				return;
+			}
+
+			postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "send",
+				"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
+				"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
+				"data": postData
+			}, function(error) {
+				if(error) {
+					$scope.$parent.displayAlert('danger', error.message);
+				}
+				else {
+					$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
+				}
+			});
+		}
 	};
 
 	$scope.UpdateTenantSecurity = function() {

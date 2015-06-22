@@ -207,6 +207,19 @@ module.exports = {
 					"type": "string",
 					"pattern": "^(/[^/]+)+\/(single|replica3|replica5)\.js$"
 				}
+			},
+			"deployer": {
+				"required": true,
+				"source": ['body.deployer'],
+				"validation": {
+					"type": "object",
+					"properties": {
+						"selected": {"required": true, "type": "string", "enum": ['unix', 'boot2docker', 'joyent', 'aws', 'gCloud', 'azure']},
+						"additionalProperties": {
+							"type": "object"
+						}
+					}
+				}
 			}
 		},
 		"/environment/list": {
@@ -221,7 +234,7 @@ module.exports = {
 				"l": "Add Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['description', 'services'],
+			"commonFields": ['description', 'services', 'deployer'],
 			"code": {
 				"source": ['body.code'],
 				"required": true,
@@ -244,7 +257,7 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services']
+			"commonFields": ['id', 'description', 'services', 'deployer']
 		},
 		"/environment/key/update": {
 			_apiInfo: {

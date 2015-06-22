@@ -26,6 +26,49 @@
                         <tr class="form-group">
                             <td class="">
                                 <hr/>
+                                <h3>Platforms</h3>
+                                <div class="grouped">
+                                    <tabset>
+                                        <tab heading="Unix">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.unix" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Boot2docker">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.boot2docker" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Joyent">
+                                            <textarea rows="6" disabled="" placeholder="Coming Soon..." ng-model="formEnvironment.deployer.joyent" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Amazon Web Services">
+                                            <textarea rows="6" disabled="" placeholder="Coming Soon..." ng-model="formEnvironment.deployer.aws" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Google Cloud">
+                                            <textarea rows="6" disabled="" placeholder="Coming Soon..." ng-model="formEnvironment.deployer.gCloud" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Microsoft Azure">
+                                            <textarea rows="6" disabled="" placeholder="Coming Soon..." ng-model="formEnvironment.deployer.azure" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                    </tabset>
+                                    <b>Driver to Use:</b>&nbsp;
+                                    <select ng-model="formEnvironment.deployer.selected">
+                                        <option value="unix" ng-selected="formEnvironment.deployer.selected === 'unix'">Unix</option>
+                                        <option value="boot2docker" ng-selected="formEnvironment.deployer.selected === 'boot2docker'">Boot2docker</option>
+                                        <!--<option value="joyent">Joyent</option>-->
+                                        <!--<option value="aws">Amazon Web Services</option>-->
+                                        <!--<option value="gCloud">Google Cloud</option>-->
+                                        <!--<option value="azure">Microsoft Azure</option>-->
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <hr/>
                                 <h3>Service Config</h3>
                                 <div class="grouped">
                                     <tabset>

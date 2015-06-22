@@ -621,8 +621,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				"env": env
 			}
 		}, function(error, response) {
-			console.log(error);
-			console.log(response);
 			if(error) {
 				serviceInfo.waitMessage.type = 'danger';
 				serviceInfo.waitMessage.message = "error executing get Host Info Operation for " +
@@ -637,13 +635,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 			else {
 				$modal.open({
-					templateUrl: "serviceInfoBox.html",
+					templateUrl: "logBox.html",
 					size: 'lg',
 					backdrop: false,
 					keyboard: false,
+					windowClass: 'large-Modal',
 					controller: function($scope, $modalInstance) {
 						$scope.title = "Host Information of " + oneHost.name;
-						$scope.data = JSON.stringify(response, null, 2);
+						$scope.data = remove_special(response.data);
+
 						setTimeout(function() {highlightMyCode()}, 500);
 						$scope.ok = function() {
 							$modalInstance.dismiss('ok');
@@ -652,6 +652,31 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				});
 			}
 		});
+	}
+
+	function remove_special(str) {
+		var rExps=[ /[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
+			/[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
+			/[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
+			/[\xD2-\xD4]/g, /[\xF2-\xF4]/g,
+			/[\xD9-\xDB]/g, /[\xF9-\xFB]/g,
+			/\xD1/,/\xF1/g,
+			"/[\u00a0|\u1680|[\u2000-\u2009]|u200a|\u200b|\u2028|\u2029|\u202f|\u205f|\u3000|\xa0]/g",
+			/\uFFFD/g,
+			/\u000b/g,'/[\u180e|\u000c]/g',
+			/\u2013/g, /\u2014/g,
+			/\xa9/g,/\xae/g,/\xb7/g,/\u2018/g,/\u2019/g,/\u201c/g,/\u201d/g,/\u2026/g];
+		var repChar=['A','a','E','e','I','i','O','o','U','u','N','n',' ','','\t','','-','--','(c)','(r)','*',"'","'",'"','"','...'];
+		for(var i=0; i<rExps.length; i++) {
+			str=str.replace(rExps[i],repChar[i]);
+		}
+		for (var x = 0; x < str.length; x++) {
+			var charcode = str.charCodeAt(x);
+			if ((charcode < 32 || charcode > 126) && charcode !=10 && charcode != 13) {
+				str = str.replace(str.charAt(x), "");
+			}
+		}
+		return str;
 	}
 
 	function createHost(currentScope, env, services) {

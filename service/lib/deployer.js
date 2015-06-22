@@ -128,15 +128,15 @@ var deployer = {
 					var chunk;
 					stream.setEncoding('utf8');
 					stream.on('readable', function() {
-						while((chunk = stream.read()) != null) {
-							data += chunk.toString();
+						var handle = this;
+						while((chunk = handle.read()) != null) {
+							data += chunk.toString("utf8");
 						}
 					});
+
 					stream.on('end', function() {
 						stream.destroy();
-						console.log('hi final time.');
-						var out = req.soajs.buildResponse(null, data.toString());
-						console.log(out);
+						var out = req.soajs.buildResponse(null, {'data': data });
 						return res.json(out);
 					})
 				}

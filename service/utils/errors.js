@@ -8,6 +8,7 @@ var errors = {
 	"404": "Unable to remove environment record",
 	"405": "Invalid environment id provided",
 	"406": "Unable to update tenant key security information",
+	"407": "Invalid or no Platform Driver configuration provided!",
 
 	"409": "Invalid product id provided",
 	"410": "Unable to add the product record",

@@ -2,13 +2,13 @@
 <div ng-if="row.services">
     <table width="99%" align="center">
         <tr>
-            <td width="50%" valign="top">
+            <td width="60%" valign="top">
                 <fieldset>
                     <label><h3>Service Configuration</h3></label>
 
                     <div class="grid">
                         <table width="100%">
-                            <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.config track by key" ng-if="key!='agent' ">
+                            <tr ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.config track by key" ng-if="key!='agent' ">
                                 <td width="15%" style="min-width:75px"><b>{{key|label}}</b></td>
                                 <td ng-bind-html="prop|object"></td>
                             </tr>
@@ -16,14 +16,26 @@
                     </div>
                 </fieldset>
             </td>
-            <td width="20%">&nbsp;</td>
+            <td width="10%">&nbsp;</td>
             <td width="30%" valign="top">
+                <fieldset>
+                    <h3>Platforms</h3>
+                    <div class='grid'>
+                        <table width="100%">
+                            <tr ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.deployer track by key">
+                                <td width="35%" ng-if="key!=='selected'" valign="top"><b>{{key|label}}</b></td>
+                                <td ng-if="key!=='selected'" ng-bind-html="prop|object"></td>
+                            </tr>
+                        </table>
+                        <b>Selected Driver:</b>&nbsp;{{row.deployer.selected}}
+                    </div>
+                </fieldset>
                 <fieldset>
                     <label><h3>Controller</h3></label>
 
                     <div class='grid'>
                         <table width="100%">
-                            <tr ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.controller track by key">
+                            <tr ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.services.controller track by key">
                                 <td><b>{{key|label}}</b></td>
                                 <td align="right">{{prop}}</td>
                             </tr>

@@ -25,9 +25,14 @@ module.exports = {
 				break;
 		}
 
+		if(!req.soajs.inputmaskData.deployer.unix && !req.soajs.inputmaskData.deployer.boot2docker){
+			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
+		}
+
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
+			"deployer": req.soajs.inputmaskData.deployer,
 			"description": req.soajs.inputmaskData.description,
 			"services": req.soajs.inputmaskData.services,
 			"dbs": {
@@ -88,9 +93,15 @@ module.exports = {
 					delete req.soajs.inputmaskData.services.config.session.proxy;
 					break;
 			}
+
+			if(!req.soajs.inputmaskData.deployer.unix && !req.soajs.inputmaskData.deployer.boot2docker){
+				return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
+			}
+
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
 			var s = {
 				'$set': {
+					"deployer": req.soajs.inputmaskData.deployer,
 					"description": req.soajs.inputmaskData.description,
 					"services": req.soajs.inputmaskData.services
 				}
