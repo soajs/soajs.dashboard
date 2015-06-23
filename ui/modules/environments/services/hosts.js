@@ -182,6 +182,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 		function updateServiceStatus(healthyCheck) {
 			currentScope.grid.rows.forEach(function(oneEnvironmentRow) {
+				if(!oneEnvironmentRow.hosts){ oneEnvironmentRow.hosts = {}; }
 				if(oneEnvironmentRow.code === env) {
 					var count = 0;
 					var healthy = oneEnvironmentRow.hosts[oneHost.name].healthy;
