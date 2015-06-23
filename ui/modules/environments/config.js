@@ -2,6 +2,87 @@
 var environmentsConfig = {
 	gcImage: 'local/soajsgcs',
 	form: {
+		template: {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'code',
+					'label': 'Environment Code',
+					'type': 'select',
+					'value': [
+						{'v': 'DEV', 'l': 'DEV'},
+						{'v': 'CAT', 'l': 'CAT'},
+						{'v': 'STG', 'l': 'STG'},
+						{'v': 'PROD', 'l': 'PROD'}
+					],
+					'required': true
+				},
+				{
+					'name': 'description',
+					'label': 'Environment Description',
+					'type': 'textarea',
+					'rows': '3',
+					'placeholder': 'My Environment Description...',
+					'value': '',
+					'required': true
+				},
+				{
+					'name': 'domain',
+					'label': 'Environment Domain',
+					'type': 'text',
+					'placeholder': 'mydomain.com',
+					'value': '',
+					'required': true
+				},
+				{
+					'name': 'port',
+					'label': 'Environment Gateway Port',
+					'type': 'text',
+					'placeholder': '8080',
+					'value': '',
+					'required': true
+				},
+				{
+					'name': 'profile',
+					'label': 'Profile to Use',
+					'type': 'select',
+					'value': [
+						{'v': 'single', 'l': 'single', 'selected': true},
+						{'v': 'replica3', 'l': 'replica3'},
+						{'v': 'replica5', 'l': 'replica5'}
+					],
+					'required': false
+				},
+				{
+					'name': 'platformDriver',
+					'label': 'Platform Driver',
+					'type': 'select',
+					'value': [
+						{'v': 'unix', 'l': 'Unix', 'selected': true},
+						{'v': 'boot2docker', 'l': 'Boot2docker'}
+					],
+					'required': false
+				},
+				{
+					'name': 'tKeyPass',
+					'label': 'Tenant Key Security Password',
+					'type': 'text',
+					'value': '',
+					'placeholder': 'My Tenant Key AES256 Password...',
+					'required': false
+				},
+				{
+					'name': 'sessionCookiePass',
+					'label': 'Session & Cookie encryption Password',
+					'type': 'text',
+					'value': '',
+					'placeholder': "My Password, don't tell anyone...",
+					'required': false
+				}
+			]
+		},
 		database: {
 			'name': '',
 			'label': '',
@@ -166,7 +247,7 @@ var environmentsConfig = {
 				}
 			]
 		},
-		host:{
+		host: {
 			'name': '',
 			'label': '',
 			'actions': {},
@@ -195,7 +276,7 @@ var environmentsConfig = {
 				}
 			]
 		},
-		"deploy":{
+		"deploy": {
 			'name': '',
 			'label': '',
 			'actions': {},

@@ -218,6 +218,13 @@ module.exports = {
 						}
 					}
 				}
+			},
+			"port": {
+				"required": true,
+				"source": ["body.port"],
+				"validation":{
+					"type": "integer"
+				}
 			}
 		},
 		"/environment/list": {
@@ -232,7 +239,7 @@ module.exports = {
 				"l": "Add Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['description', 'services', 'deployer'],
+			"commonFields": ['description', 'services', 'deployer', 'port'],
 			"code": {
 				"source": ['body.code'],
 				"required": true,
@@ -263,7 +270,7 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services', 'deployer'],
+			"commonFields": ['id', 'description', 'services', 'deployer', 'port'],
 			"profile": {
 				"required": true,
 				"source": ['body.profile'],
