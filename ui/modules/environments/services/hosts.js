@@ -512,17 +512,17 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 												currentScope.grid.rows[e].controllers[c].splice(c, 1);
 											}
 										}
+										currentScope.grid.rows[e].controllers.forEach(function(oneController) {
+											if(oneController.color === 'green') {
+												currentScope.reloadRegistry(env, oneController, function() {
+													currentScope.executeAwarenessTest(env, oneController);
+												});
+											}
+										});
 									}
-									currentScope.grid.rows[e].controllers.forEach(function(oneController) {
-										if(oneController.color === 'green') {
-											currentScope.reloadRegistry(env, oneController, function() {
-												currentScope.executeAwarenessTest(env, oneController);
-											});
-										}
-									});
 								}
 							}
-							else{
+							else {
 								delete currentScope.grid.rows[e].hosts;
 							}
 						}
@@ -728,12 +728,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						});
 
 						gcServices.forEach(function(oneGCService) {
-							services.forEach(function(oneService) {
-								if(oneService.name === oneGCService.name && oneService.image && oneService.image !== '') {
-									servicesList.push({'v': oneGCService.name, 'l': oneGCService.name});
-									postServiceList.push({"name": oneGCService.name, "gcName": oneGCService.name, "gcVersion": oneGCService.v, "port": oneService.port});
-								}
-							});
+							servicesList.push({'v': oneGCService.name, 'l': oneGCService.name});
+							postServiceList.push({"name": oneGCService.name, "gcName": oneGCService.name, "gcVersion": oneGCService.v, "port": oneGCService.genericService.config.servicePort});
 						});
 
 						//push controller

@@ -145,7 +145,7 @@ module.exports = {
 
 	"list": function(config, mongo, req, res) {
 
-		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1};
+		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1, "genericService.config.servicePort": 1};
 		if(req.soajs.inputmaskData.port) {
 			fields['genericService.config.servicePort'] = 1;
 		}
