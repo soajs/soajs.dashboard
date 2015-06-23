@@ -118,7 +118,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 	};
 
 	$scope.addEnvironment = function() {
-		//todo: fill in the environment code from db
 		var configuration = environmentsConfig.form.template;
 		$scope.grid.rows.forEach(function(oneEnv){
 			for(var i =0; i < configuration.entries[0].value.length; i++){
@@ -310,8 +309,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 							"message": ""
 						}
 					};
-					oneEnvRecord.hostInfo.waitMessage.type = 'info';
-					oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
+					//oneEnvRecord.hostInfo.waitMessage.type = 'info';
+					//oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
 				}
 			});
 		}

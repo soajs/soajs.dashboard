@@ -19,36 +19,115 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 				else {
 					currentScope.hostList = response;
-					for(var i = 0; i < response.length; i++) {
-						if(response[i].name === 'controller') {
-							controllers.push({'name': 'controller', 'hostname': response[i].hostname, 'ip': response[i].ip, 'color': 'red', 'port': 4000});
+					if(response && response.length > 0){
+						for(var i = 0; i < currentScope.grid.rows.length; i++) {
+							if(currentScope.grid.rows[i]['code'] === env) {
+								currentScope.grid.rows[i].hosts = {
+									'controller': {
+										'color': 'red',
+										'heartbeat': false,
+										'port': '4000',
+										'ips': []
+									}
+								};
+
+								for(var j = 0; j < response.length; j++) {
+									if(response[j].name === 'controller') {
+										controllers.push({
+											'name': 'controller',
+											'hostname': response[j].hostname,
+											'ip': response[j].ip,
+											'cid': response[j].cid,
+											'color': 'red',
+											'port': 4000
+										});
+
+									}
+								}
+								console.log(	currentScope.grid.rows );
+								controllers.forEach(function(oneController) {
+									invokeHeartbeat(oneController);
+									currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
+								});
+							}
 						}
 					}
-					controllers.forEach(function(oneController) {
-						invokeHostsAwareness(oneController.hostname);
-					});
 				}
 			});
 		}
 
-		function invokeHostsAwareness(defaultControllerHost) {
+		function updateParent() {
+			for(var i = 0; i < currentScope.grid.rows.length; i++) {
+				if(currentScope.grid.rows[i]['code'] === env) {
+					var color = 'red';
+					var healthy = false;
+					var count = 0;
+					currentScope.grid.rows[i].hosts.controller.ips.forEach(function(oneHost) {
+						if(oneHost.heartbeat) {
+							count++;
+						}
+					});
+
+					if(count === currentScope.grid.rows[i].hosts.controller.ips.length) {
+						color = 'green';
+						healthy = true;
+					}
+					else if(count > 0) {
+						healthy = true;
+						color = 'yellow';
+					}
+					currentScope.grid.rows[i].hosts.controller.color = color;
+					currentScope.grid.rows[i].hosts.controller.healthy = healthy;
+				}
+			}
+		}
+
+		function invokeHeartbeat(defaultControllerHost) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/hosts/maintenanceOperation",
 				"data": {
 					"serviceName": "controller",
-					"operation": "awarenessStat",
-					"hostname": defaultControllerHost,
+					"operation": "heartbeat",
+					"serviceHost": defaultControllerHost.ip,
+					'hostname': defaultControllerHost.hostname,
 					"servicePort": 4000,
 					"env": env
 				}
 			}, function(error, response) {
-				if(error || !response || !response.result || !response.data) {
-					currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
-					console.log(error.message);
+				if(error || !response || !response.result) {
+					currentScope.generateNewMsg(env, 'danger', 'Controllers ' + defaultControllerHost.hostname + ' not healthy.');
+					if(error) {
+						console.log(error.message);
+					}
+					defaultControllerHost.heartbeat = false;
+					defaultControllerHost.color = 'red';
+					updateParent();
 				}
 				else {
-					propulateServices(response.data);
+					defaultControllerHost.heartbeat = true;
+					defaultControllerHost.color = 'green';
+					updateParent();
+
+					getSendDataFromServer(currentScope, ngDataApi, {
+						"method": "send",
+						"routeName": "/dashboard/hosts/maintenanceOperation",
+						"data": {
+							"serviceName": "controller",
+							"operation": "awarenessStat",
+							"hostname": defaultControllerHost.hostname,
+							"servicePort": 4000,
+							"env": env
+						}
+					}, function(error, response) {
+						if(error || !response || !response.result || !response.data) {
+							currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
+							console.log(error.message);
+						}
+						else {
+							propulateServices(response.data);
+						}
+					});
 				}
 			});
 		}
@@ -57,53 +136,25 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			for(var i = 0; i < currentScope.grid.rows.length; i++) {
 				if(currentScope.grid.rows[i]['code'] === env) {
 
-					currentScope.grid.rows[i].controllers = controllers;
 					var renderedHosts = {};
 					var services = Object.keys(regServices);
 					services.forEach(function(serviceName) {
 						var oneService = regServices[serviceName];
 						if(oneService.hosts && Array.isArray(oneService.hosts) && oneService.hosts.length > 0) {
-							renderedHosts[serviceName] = {
-								'name': serviceName,
-								'port': regServices[serviceName].port,
-								'ips': [],
-								'color': 'red'
-							};
-							if(serviceName === 'controller') {
-								renderedHosts[serviceName].heartbeat = false;
-							}
-							else {
-								renderedHosts[serviceName].healthy = false;
+
+							if(serviceName !== 'controller') {
+								renderedHosts[serviceName] = {
+									'name': serviceName,
+									'port': regServices[serviceName].port,
+									'ips': [],
+									'color': 'red',
+									'healthy': false
+								};
 							}
 
 							regServices[serviceName].hosts.forEach(function(oneHostIP) {
-								var oneHost;
-								if(serviceName === 'controller') {
-									oneHost = {
-										'ip': oneHostIP,
-										'name': serviceName,
-										'heartbeat': false,
-										'color': 'red',
-										'port': regServices[serviceName].port
-									};
-									currentScope.hostList.forEach(function(origHostRec) {
-										if(origHostRec.name === oneHost.name) {
-											oneHost.hostname = origHostRec.hostname;
-											oneHost.cid = origHostRec.cid;
-										}
-									});
-									controllers.forEach(function(oneCtrl) {
-										if(oneCtrl.ip == oneHostIP) {
-											oneHost.hostname = oneCtrl.hostname;
-										}
-									});
-
-									$timeout(function() {
-										currentScope.executeHeartbeatTest(env, oneHost);
-									}, 2000);
-								}
-								else {
-									oneHost = {
+								if(serviceName !== 'controller') {
+									var oneHost = {
 										'controllers': controllers,
 										'ip': oneHostIP,
 										'name': serviceName,
@@ -120,13 +171,21 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 											oneHost.cid = origHostRec.cid;
 										}
 									});
+									renderedHosts[serviceName].ips.push(oneHost);
 								}
-								renderedHosts[serviceName].ips.push(oneHost);
 							});
 						}
 					});
-
-					currentScope.grid.rows[i].hosts = renderedHosts;
+					if(Object.keys(renderedHosts).length > 0){
+						for(var sN in renderedHosts) {
+							currentScope.grid.rows[i].hosts[sN] = renderedHosts[sN];
+							renderedHosts[sN].ips.forEach(function(oneHost) {
+								$timeout(function() {
+									executeHeartbeatTest(currentScope, env, oneHost);
+								}, 200);
+							});
+						}
+					}
 					break;
 				}
 			}
@@ -182,7 +241,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 		function updateServiceStatus(healthyCheck) {
 			currentScope.grid.rows.forEach(function(oneEnvironmentRow) {
-				if(!oneEnvironmentRow.hosts){ oneEnvironmentRow.hosts = {}; }
+				if(!oneEnvironmentRow.hosts) { oneEnvironmentRow.hosts = {}; }
 				if(oneEnvironmentRow.code === env) {
 					var count = 0;
 					var healthy = oneEnvironmentRow.hosts[oneHost.name].healthy;
@@ -502,32 +561,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									"ip": currentScope.grid.rows[e].hosts.controller.ips[0].ip,
 									"hostname": currentScope.grid.rows[e].hosts.controller.ips[0].hostname
 								};
-								reloadRegistry(currentScope, env, oneCtrl, function() {
-									listHosts(currentScope, env);
-								});
-
-								if(serviceName === 'controller') {
-									if(currentScope.grid.rows[e].controllers[c].length > 0) {
-										for(var c = 0; c < currentScope.grid.rows[e].controllers.length; c++) {
-											if(currentScope.grid.rows[e].controllers[c].ip === oneHost.ip) {
-												currentScope.grid.rows[e].controllers[c].splice(c, 1);
-											}
-										}
-										currentScope.grid.rows[e].controllers.forEach(function(oneController) {
-											if(oneController.color === 'green') {
-												currentScope.reloadRegistry(env, oneController, function() {
-													currentScope.executeAwarenessTest(env, oneController);
-												});
-											}
-										});
-									}
-								}
 							}
 							else {
 								delete currentScope.grid.rows[e].hosts;
 							}
 						}
 					}
+				}
+				if(oneHost.name === 'controller') {
+					listHosts(currentScope, env);
 				}
 				currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
 			}
@@ -568,7 +610,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 				if(serviceName === 'controller') {
 					oneHost.heartbeat = false;
-					currentScope.executeHeartbeatTest(env, oneHost);
+					//currentScope.executeHeartbeatTest(env, oneHost);
 				}
 				else {
 					oneHost.healthy = false;
@@ -614,7 +656,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				oneHost.color = "green";
 				if(serviceName === 'controller') {
 					oneHost.heartbeat = true;
-					currentScope.executeHeartbeatTest(env, oneHost);
+					currentScope.listHosts(env);
 				}
 				else {
 					oneHost.healthy = true;
@@ -789,70 +831,33 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							]
 						};
 						buildFormWithModal(currentScope, $modal, options);
-
 					}
 				});
 			}
 		});
 
 		function newController(formData, ele, max) {
-			var params = {
-				'envCode': env,
-				"number": max
-			};
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "send",
+				"routeName": "/dashboard/hosts/deployController",
+				"data": {
+					'envCode': env,
+					"number": max
+				}
+			}, function(error, response) {
+				if(error) {
+					currentScope.generateNewMsg(env, 'danger', error.message);
+				}
+				else {
+					overlay.hide();
+					currentScope.modalInstance.close();
+					currentScope.form.formData = {};
 
-			doDeploy(0, max, function() {
-				overlay.hide();
-				currentScope.modalInstance.close();
-				currentScope.form.formData = {};
-
-				var oneCtrl = {
-					"name": "controller",
-					"port": services.controller.port,
-					"ip": services.controller.ips[0].ip,
-					"hostname": services.controller.ips[0].hostname
-				};
-				reloadRegistry(currentScope, env, oneCtrl, function() {
-					listHosts(currentScope, env);
-				});
+					$timeout(function(){
+						listHosts(currentScope, env);
+					}, 2000);
+				}
 			});
-
-			function doDeploy(counter, max, cb) {
-
-				getSendDataFromServer(currentScope, ngDataApi, {
-					"method": "send",
-					"routeName": "/dashboard/hosts/deployController",
-					"data": params
-				}, function(error, response) {
-					if(error) {
-						currentScope.generateNewMsg(env, 'danger', error.message);
-					}
-					else {
-						currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
-
-						var hosttmpl = {
-							'name': 'controller',
-							'heartbeat': false,
-							'color': 'red',
-							'port': services.controller.port,
-							'hostname': response.hostname
-						};
-						services.controller.ips.push(hosttmpl);
-
-						counter++;
-						var percentage = Math.ceil((counter * 100) / max);
-						ele.html('<progressbar class="progress-striped active" value="0" max="' + max + '" type="info">' + percentage + '%</progressbar>');
-						$compile(ele.contents())(currentScope);
-
-						if(counter === max) {
-							return cb();
-						}
-						else {
-							doDeploy(counter, max, cb);
-						}
-					}
-				});
-			}
 		}
 
 		function newService(formData, ele, max) {

@@ -52,14 +52,14 @@
                             <thead>
                                 <tr>
                                     <th colspan="2" class="host-ip">Hostname</th>
-                                    <th class="host-ip">Port</th>
+                                    <th class="host-ip">IP:Port</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
                                     <td><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
-                                    <td><span class="{{oneIp.color}}">{{serviceInfo.port}}</span></td>
+                                    <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3">
