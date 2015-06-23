@@ -79,14 +79,6 @@
                                             <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
                                         </a>
 
-                                        <a href="" ng-show="oneIp.heartbeat && oneIp.cid" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                            <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
-                                        </a>
-
-                                        <a href="" ng-show="!oneIp.heartbeat && oneIp.cid" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                            <span class="icon icon-play3" title="Start Selected Host"></span>&nbsp;
-                                        </a>
-
                                         <a href="" ng-show="oneIp.heartbeat && oneIp.cid" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
                                             <span class="icon icon-info" title="Get Host Info"></span>&nbsp;
                                         </a>
@@ -134,14 +126,6 @@
 
                                                 <a href="" ng-show="!oneIp.healthy && oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                                     <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
-                                                </a>
-
-                                                <a href="" ng-show="oneIp.healthy && oneIp.cid" ng-confirm-click="Are you sure you want to stop this host?" ng-click="stopHost(row['code'], serviceName, oneIp, serviceInfo)">
-                                                    <span class="icon icon-stop2" title="Stop Selected Host"></span>&nbsp;
-                                                </a>
-
-                                                <a href="" ng-show="!oneIp.healthy && oneIp.cid" ng-click="startHost(row['code'], serviceName, oneIp, serviceInfo)" title="Start Selected Host">
-                                                    <span class="icon icon-play3"></span>&nbsp;
                                                 </a>
 
                                                 <a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(row['code'], serviceName, oneIp, serviceInfo)">
