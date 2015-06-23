@@ -287,7 +287,7 @@ module.exports = {
 
 		var rebuildNginx = false;
 		mongo.findOne('docker', dockerColCriteria, function(error, response) {
-			if(error) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+			if(error || !response) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 			if(response.type === 'controller'){
 				rebuildNginx = true;

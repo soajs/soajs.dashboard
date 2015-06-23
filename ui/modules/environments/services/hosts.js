@@ -44,11 +44,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 									}
 								}
-								console.log(	currentScope.grid.rows );
 								controllers.forEach(function(oneController) {
 									invokeHeartbeat(oneController);
 									currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
 								});
+								break;
 							}
 						}
 					}
@@ -176,6 +176,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							});
 						}
 					});
+
 					if(Object.keys(renderedHosts).length > 0){
 						for(var sN in renderedHosts) {
 							currentScope.grid.rows[i].hosts[sN] = renderedHosts[sN];
