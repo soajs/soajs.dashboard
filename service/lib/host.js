@@ -115,6 +115,9 @@ function deployNginx(config, mongo, req, res) {
 	}
 }
 
+//todo: remove zombie containers
+//todo: when deploying env for first time, loop and turn off all old containers
+
 module.exports = {
 
 	"deployController": function(config, mongo, req, res) {
@@ -396,58 +399,6 @@ module.exports = {
 			};
 
 			switch(req.soajs.inputmaskData.operation) {
-				case 'startHost':
-					criteria.running = false;
-					mongo.findOne("docker", criteria, function(error, containerRecord) {
-						if(error || !containerRecord) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-						var deployerConfig = containerRecord.deployer;
-						deployer.start(deployerConfig, containerRecord.cid, function(error, data) {
-							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-							containerRecord.running = true;
-							mongo.update(colName, {"env": req.soajs.inputmaskData.env.toLowerCase(), "hostname": req.soajs.inputmaskData.hostname}, {"$set": {"ip": data.NetworkSettings.IPAddress }}, function(error){
-								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-								mongo.save("docker", containerRecord, function(error){
-									if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-									if(containerRecord.type ==='controller'){
-										req.soajs.log.debug("controller container started, rebuilding Nginx ...");
-										req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.env.toUpperCase();
-										deployNginx(config, mongo, req, res);
-									}
-									else{
-										return res.jsonp(req.soajs.buildResponse(null, true));
-									}
-								});
-							});
-						});
-					});
-					break;
-				case 'stopHost':
-					criteria.running = true;
-					mongo.findOne("docker", criteria, function(error, containerRecord) {
-						if(error || !containerRecord) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-						var deployerConfig = containerRecord.deployer;
-						deployer.stop(deployerConfig, containerRecord.cid, function(error) {
-							if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-							containerRecord.running = false;
-							mongo.save("docker", containerRecord, function(error){
-								if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
-
-								if(containerRecord.type === 'controller'){
-									req.soajs.log.debug("controller container stopped, rebuilding Nginx ...");
-									req.soajs.inputmaskData.envCode = req.soajs.inputmaskData.env.toUpperCase();
-									deployNginx(config, mongo, req, res);
-								}
-								else{
-									return res.jsonp(req.soajs.buildResponse(null, true));
-								}
-							});
-						});
-					});
-					break;
 				case 'infoHost':
 					mongo.findOne("docker", criteria, function(error, response) {
 						if(error) { return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]})); }
