@@ -75,7 +75,7 @@
                                             <span class="icon icon-undo"></span>&nbsp;
                                         </a>
 
-                                        <a href="" ng-show="!oneIp.heartbeat && oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                        <a href="" ng-show="oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                             <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
                                         </a>
 
@@ -124,7 +124,7 @@
                                                     <span class="icon icon-download3"></span>&nbsp;
                                                 </a>
 
-                                                <a href="" ng-show="!oneIp.healthy && oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
+                                                <a href="" ng-show="oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(row['code'], serviceName, oneIp)">
                                                     <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
                                                 </a>
 

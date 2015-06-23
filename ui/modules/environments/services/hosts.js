@@ -207,9 +207,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		}, function(error, heartbeatResponse) {
 			if(error) {
-				console.log("error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip);
 				updateServiceStatus(false);
-				currentScope.generateNewMsg(env, 'danger', "error executing heartbeat test for " + oneHost.name + " on ip: " + oneHost.ip + " @ " + new Date().toISOString());
+				currentScope.generateNewMsg(env, 'danger', "error executing heartbeat test for " + oneHost.name + " on hostname: " + oneHost.hostname + " @ " + new Date().toISOString());
 				currentScope.updateServicesControllers(env, oneHost);
 			}
 			else {
@@ -229,8 +228,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				if(oneHost.name === 'controller') {
 					currentScope.generateNewMsg(env, 'success', "Service " +
 					                                            oneHost.name +
-					                                            " on address: " +
-					                                            oneHost.ip +
+					                                            " on hostname: " +
+					                                            oneHost.hostname +
 					                                            ":" +
 					                                            oneHost.port +
 					                                            " is healthy @ " +
@@ -242,7 +241,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 		function updateServiceStatus(healthyCheck) {
 			currentScope.grid.rows.forEach(function(oneEnvironmentRow) {
-				if(!oneEnvironmentRow.hosts) { oneEnvironmentRow.hosts = {}; }
 				if(oneEnvironmentRow.code === env) {
 					var count = 0;
 					var healthy = oneEnvironmentRow.hosts[oneHost.name].healthy;
@@ -261,16 +259,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								if(oneHost.name === 'controller') {
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
-									setTimeout(function() {
-										currentScope.executeAwarenessTest(env, oneHost);
-									}, 4000);
 								}
 								else {
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
 									oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
 									waitMessage = {
 										type: "success",
-										message: "Service " + oneHost.name + " on address: " + oneHost.ip + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
+										message: "Service " + oneHost.name + " on hostname: " + oneHost.hostname + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
 										close: function(entry) {
 											entry.waitMessage.type = '';
 											entry.waitMessage.message = '';
@@ -577,104 +572,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		});
 	}
 
-	function stopHost(currentScope, env, serviceName, oneHost, serviceInfo) {
-		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/hosts/maintenanceOperation",
-			"data": {
-				"serviceName": oneHost.name,
-				"operation": "stopHost",
-				"serviceHost": oneHost.ip,
-				"servicePort": oneHost.port,
-				"hostname": oneHost.hostname,
-				"env": env
-			}
-		}, function(error, response) {
-			serviceInfo.waitMessage = {};
-			if(error || !response) {
-				serviceInfo.waitMessage.type = 'danger';
-				serviceInfo.waitMessage.message = "error executing Stop Host Operation for " +
-				                                  oneHost.name +
-				                                  " on ip: " +
-				                                  oneHost.ip +
-				                                  ":" +
-				                                  oneHost.port +
-				                                  " @ " +
-				                                  new Date().toISOString();
-				currentScope.closeWaitMessage(serviceInfo);
-			}
-			else {
-				oneHost.color = "red";
-				serviceInfo.waitMessage.type = 'success';
-				serviceInfo.waitMessage.message = "Host " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " has been stopped @ " + new Date().toISOString();
-				currentScope.closeWaitMessage(serviceInfo);
-
-				if(serviceName === 'controller') {
-					oneHost.heartbeat = false;
-					//currentScope.executeHeartbeatTest(env, oneHost);
-				}
-				else {
-					oneHost.healthy = false;
-					serviceInfo.healthy = false;
-					serviceInfo.color = (serviceInfo.ips.length === 1) ? "red" : "yellow";
-				}
-			}
-		});
-	}
-
-	function startHost(currentScope, env, serviceName, oneHost, serviceInfo) {
-		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
-			"routeName": "/dashboard/hosts/maintenanceOperation",
-			"data": {
-				"serviceName": oneHost.name,
-				"operation": "startHost",
-				"serviceHost": oneHost.ip,
-				"servicePort": oneHost.port,
-				"hostname": oneHost.hostname,
-				"env": env
-			}
-		}, function(error, response) {
-			serviceInfo.waitMessage = {};
-
-			if(error || !response) {
-				serviceInfo.waitMessage.type = 'danger';
-				serviceInfo.waitMessage.message = "error executing Start Host Operation for " +
-				                                  oneHost.name +
-				                                  " on ip: " +
-				                                  oneHost.ip +
-				                                  ":" +
-				                                  oneHost.port +
-				                                  " @ " +
-				                                  new Date().toISOString();
-				currentScope.closeWaitMessage(serviceInfo);
-			}
-			else {
-				serviceInfo.waitMessage.type = 'success';
-				serviceInfo.waitMessage.message = "Host " + oneHost.name + " on ip: " + oneHost.ip + ":" + oneHost.port + " has started @ " + new Date().toISOString();
-				currentScope.closeWaitMessage(serviceInfo);
-
-				oneHost.color = "green";
-				if(serviceName === 'controller') {
-					oneHost.heartbeat = true;
-					currentScope.listHosts(env);
-				}
-				else {
-					oneHost.healthy = true;
-					serviceInfo.healthy = true;
-
-					var color = "green";
-					serviceInfo.ips.forEach(function(oneIp) {
-						if(!oneIp.healthy) {
-							color = "yellow";
-						}
-					});
-					serviceInfo.color = color;
-				}
-			}
-		});
-	}
-
 	function infoHost(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -961,8 +858,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		'reloadRegistry': reloadRegistry,
 		'loadProvisioning': loadProvisioning,
 		'removeHost': removeHost,
-		'stopHost': stopHost,
-		'startHost': startHost,
 		'infoHost': infoHost,
 		'createHost': createHost,
 		'updateServicesControllers': updateServicesControllers
