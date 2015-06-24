@@ -41,10 +41,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		if(!context) {
 			context = $scope;
 		}
-		$timeout(function() {
-			context.waitMessage.message = '';
-			context.waitMessage.type = '';
-		}, 7000);
+		context.waitMessage.message = '';
+		context.waitMessage.type = '';
 	};
 
 	$scope.expand = function(row) {
