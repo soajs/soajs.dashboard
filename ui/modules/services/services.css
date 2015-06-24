@@ -1,0 +1,28 @@
+fieldset.serviceAPIs tr td input[type='text']{
+    width:90%;
+}
+
+fieldset.serviceAPIs #apiMain-wrapper ul{
+    padding:0;
+}
+fieldset.serviceAPIs #apiMain-wrapper ul li{
+    float:left;
+    list-style-type:none;
+    margin-right:10px;
+}
+
+fieldset.serviceAPIs #apiMain-wrapper ul li input{
+    margin-right:5px;
+}
+
+fieldset.serviceAPIs table tr{
+    float:left;
+    width:25%;
+    height:90px;
+    border-bottom:solid 1px #ccc;
+}
+
+fieldset.serviceAPIs table tr td{
+    width:100%;
+    display:block;
+}

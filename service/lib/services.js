@@ -45,7 +45,8 @@ module.exports = {
 				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
 				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
 				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null,
-				"image": req.soajs.inputmaskData.image
+				"image": req.soajs.inputmaskData.image,
+				"apis": req.soajs.inputmaskData.apis
 			}
 		};
 		mongo.update(colName, {'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
@@ -67,7 +68,8 @@ module.exports = {
 				'port': req.soajs.inputmaskData.port,
 				'requestTimeout': req.soajs.inputmaskData.requestTimeout || 30,
 				'requestTimeoutRenewal': req.soajs.inputmaskData.requestTimeoutRenewal || 5,
-				'image': req.soajs.inputmaskData.image
+				'image': req.soajs.inputmaskData.image,
+				"apis": req.soajs.inputmaskData.apis
 			};
 
 			mongo.insert(colName, doc, function(error){

@@ -219,11 +219,52 @@ module.exports = {
 					}
 				}
 			},
+
 			"port": {
 				"required": true,
 				"source": ["body.port"],
 				"validation":{
 					"type": "integer"
+				}
+			},
+			"extKeyRequired": {
+				"source": ['body.extKeyRequired'],
+				"required": true,
+				"validation": {"type": "boolean"}
+			},
+			"requestTimeout": {
+				"source": ['body.requestTimeout'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"requestTimeoutRenewal": {
+				"source": ['body.requestTimeoutRenewal'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"image": {
+				"required": true,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			},
+			'apis': {
+				"required": true,
+				"source": ['body.apis'],
+				"validation": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type":"object",
+						"required": true,
+						"properties": {
+							"l": {"type":"string", "required": true},
+							"v": {"type":"string", "required": true},
+							"group": {"type":"string", "required": true},
+							"groupMain": {"type":"boolean", "required": false}
+						}
+					}
 				}
 			}
 		},
@@ -933,32 +974,10 @@ module.exports = {
 				"l": "Update Service",
 				"group": "Services"
 			},
-			"commonFields": ['port'],
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
 			'name': {
 				'source': ['query.name'],
 				'required': true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"extKeyRequired": {
-				"source": ['body.extKeyRequired'],
-				"required": true,
-				"validation": {"type": "boolean"}
-			},
-			"requestTimeout": {
-				"source": ['body.requestTimeout'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"requestTimeoutRenewal": {
-				"source": ['body.requestTimeoutRenewal'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"image": {
-				"required": true,
-				"source": ["body.image"],
 				"validation": {
 					"type": "string"
 				}
@@ -969,32 +988,10 @@ module.exports = {
 				"l": "Create Custom Service",
 				"group": "Services"
 			},
-			"commonFields": ['port'],
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
 			'name': {
 				'source': ['body.name'],
 				'required': true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"extKeyRequired": {
-				"source": ['body.extKeyRequired'],
-				"required": true,
-				"validation": {"type": "boolean"}
-			},
-			"requestTimeout": {
-				"source": ['body.requestTimeout'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"requestTimeoutRenewal": {
-				"source": ['body.requestTimeoutRenewal'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"image": {
-				"required": true,
-				"source": ["body.image"],
 				"validation": {
 					"type": "string"
 				}

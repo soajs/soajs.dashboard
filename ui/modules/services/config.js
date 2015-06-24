@@ -1,5 +1,37 @@
 var servicesConfig = {
 	form:{
+		"oneApi": [
+			{
+				'name': 'apiV%count%',
+				'label': 'API Route',
+				'type': 'text',
+				'value': '',
+				'placeholder': '/routeName',
+				'required': true
+			},
+			{
+				'name': 'apiL%count%',
+				'label': 'API Label',
+				'type': 'text',
+				'value': '',
+				'placeholder': 'My API Route',
+				'required': true
+			},
+			{
+				'name': 'apiG%count%',
+				'label': 'API Group',
+				'type': 'text',
+				'value': '',
+				'placeholder': 'My API Group',
+				'required': true
+			},
+			{
+				'name': 'apiMain%count%',
+				'label': 'Default Group API',
+				'type': 'radio',
+				'value': [{'v': false, "selected": true}, {'v': true}]
+			}
+		],
 		serviceAdd: {
 			'entries': [
 				{
@@ -51,6 +83,45 @@ var servicesConfig = {
 					"value": "",
 					"required": true,
 					"tooltip": "Provide the container image name for this service."
+				},
+				{
+					"name": "apis",
+					"label": "Service APIs",
+					"type": "group",
+					'collapsed': false,
+					"class": "serviceAPIs",
+					"entries": [
+						{
+							'name': 'apiV0',
+							'label': 'API Route',
+							'type': 'text',
+							'value': '',
+							'placeholder': '/routeName',
+							'required': true
+						},
+						{
+							'name': 'apiL0',
+							'label': 'API Label',
+							'type': 'text',
+							'value': '',
+							'placeholder': 'My API Route',
+							'required': true
+						},
+						{
+							'name': 'apiG0',
+							'label': 'API Group',
+							'type': 'text',
+							'value': '',
+							'placeholder': 'My API Group',
+							'required': true
+						},
+						{
+							'name': 'apiMain0',
+							'label': 'Default Group API',
+							'type': 'radio',
+							'value': [{'v': false, "selected": true}, {'v': true}]
+						}
+					]
 				}
 			]
 		},
@@ -105,6 +176,14 @@ var servicesConfig = {
 					"value": "",
 					"required": true,
 					"tooltip": "Provide the container image name for this service."
+				},
+				{
+					"name": "apis",
+					"label": "Service APIs",
+					"type": "group",
+					'collapsed': false,
+					"class": "serviceAPIs",
+					"entries": []
 				}
 			]
 		}
