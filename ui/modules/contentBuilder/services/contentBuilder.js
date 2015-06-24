@@ -260,6 +260,13 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function saveContentSchema(currentScope, cb) {
+		currentScope.config.genericService.config.serviceName = "gc_" + currentScope.config.name;
+
+		for(var env in currentScope.config.soajsService.db.config){
+			var dbName = Object.keys(currentScope.config.soajsService.db.config)[0];
+			currentScope.config.soajsService.db.config['gc_'+dbName] = currentScope.config.soajsService.db.config[dbName];
+			delete currentScope.config.soajsService.db.config[dbName];
+		}
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/cb/add",

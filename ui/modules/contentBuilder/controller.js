@@ -100,7 +100,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 			$window.alert("Enter a name for your service!");
 		}
 
-		if(Object.keys($scope.config.dbtoUse).length !== $scope.envList.length && Object.keys($scope.config.clustertoUse).length !== $scope.envList.length) {
+		if(Object.keys($scope.config.dbtoUse).length === 0 && Object.keys($scope.config.clustertoUse).length === 0) {
 			$window.alert("Please choose either to create a new database or use an existing one for every environment.");
 		}
 		else {
