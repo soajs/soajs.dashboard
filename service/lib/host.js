@@ -232,7 +232,7 @@ module.exports = {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
 				req.soajs.log.debug("Service Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
-				deployer.start(deployerConfig, data.Id, function(error) {
+				deployer.start(deployerConfig, data.Id, function(error, data) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
 					req.soajs.log.debug("Service Container started, saving information in core_provision");
@@ -257,7 +257,7 @@ module.exports = {
 				mongo.find(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller"}, function(error, controllers) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 					//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname, "controllers": controllers}));
-					return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname, "controllers": controllers}));
+					return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname, "ip": data.NetworkSettings.IPAddress, "controllers": controllers}));
 				});
 			});
 		}

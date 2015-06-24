@@ -353,10 +353,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		envHosts.createHost($scope, env, services);
 	};
 
-	$scope.updateServicesControllers = function(env, oneCtrl) {
-		envHosts.updateServicesControllers($scope, env, oneCtrl);
-	};
-
 	$scope.removeEnvironment = function(row) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",

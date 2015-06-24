@@ -171,7 +171,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 											oneHost.cid = origHostRec.cid;
 										}
 									});
-									renderedHosts[serviceName].ips.push(oneHost);
+									if(oneHost.hostname && oneHost.cid && oneHost.ip){
+										renderedHosts[serviceName].ips.push(oneHost);
+									}
 								}
 							});
 						}
@@ -209,7 +211,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			if(error) {
 				updateServiceStatus(false);
 				currentScope.generateNewMsg(env, 'danger', "error executing heartbeat test for " + oneHost.name + " on hostname: " + oneHost.hostname + " @ " + new Date().toISOString());
-				currentScope.updateServicesControllers(env, oneHost);
+				updateServicesControllers(currentScope, env, oneHost);
 			}
 			else {
 				if(heartbeatResponse.result) {
@@ -429,6 +431,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		}
 	}
 
+	//ok from down here
 	function reloadRegistry(currentScope, env, oneHost, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -699,21 +702,16 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									'action': function(formData) {
 										var text = "<h2>Deploying new Host for " + formData.service + "</h2>";
 										text += "<p>Do not refresh this page, this will take a few minutes...</p>";
-										text += "<div id='progress_newHost_" + env + "' style='padding:10px;'></div>";
 										jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
 										jQuery("#overlay .content").css("width", "40%").css("left", "30%");
 										overlay.show();
 
 										var max = formData.number;
-										var ele = angular.element(document.getElementById("progress_newHost_" + env));
-										ele.html('<progressbar class="progress-striped active" value="0" max="' + max + '" type="info">0%</progressbar>');
-										$compile(ele.contents())(currentScope);
-
 										if(formData.service === 'controller') {
-											newController(formData, ele, max);
+											newController(formData, max);
 										}
 										else {
-											newService(formData, ele, max);
+											newService(formData, max);
 										}
 									}
 								},
@@ -734,7 +732,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 
-		function newController(formData, ele, max) {
+		function newController(formData, max) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/hosts/deployController",
@@ -758,7 +756,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			});
 		}
 
-		function newService(formData, ele, max) {
+		function newService(formData, max) {
 			doDeploy(0, max, function() {
 				overlay.hide();
 				currentScope.modalInstance.close();
@@ -795,7 +793,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 					else {
 						currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
-
 						if(!services[formData.service]) {
 							services[formData.service] = {
 								'name': formData.service,
@@ -810,6 +807,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							'port': port,
 							'cid': response.cid,
 							'hostname': response.hostname,
+							'ip': response.ip,
 							'name': formData.service,
 							'downCount': 'N/A',
 							'downSince': 'N/A',
@@ -832,13 +830,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 						$timeout(function() {
 							currentScope.executeHeartbeatTest(env, hosttmpl);
-						}, 1000);
+						}, 2000);
 
 						counter++;
-						var percentage = Math.ceil((counter * 100) / max);
-						ele.html('<progressbar class="progress-striped active" value="0" max="' + max + '" type="info">' + percentage + '%</progressbar>');
-						$compile(ele.contents())(currentScope);
-
 						if(counter === max) {
 							return cb();
 						}
@@ -859,8 +853,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		'loadProvisioning': loadProvisioning,
 		'removeHost': removeHost,
 		'infoHost': infoHost,
-		'createHost': createHost,
-		'updateServicesControllers': updateServicesControllers
+		'createHost': createHost
 	};
 
 }]);
