@@ -2,7 +2,7 @@
     <legend><a href="" ng-click="form.showHide(entry)"><span class="icon icon-{{entry.icon}}"></span></a>{{entry.label}}</legend>
     <div id="{{entry.name}}" ng-show="!entry.collapsed">
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr ng-repeat="entry in entry.entries" class="form-group" ng-switch="entry.type">
+            <tr ng-repeat="entry in entry.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
                 <td ng-switch-when="textarea">
                     <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
                 </td>

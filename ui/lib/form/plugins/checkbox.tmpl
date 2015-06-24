@@ -2,7 +2,7 @@
 <ul>
 <li ng-repeat="dv in entry.value">
     <input type="checkbox" id="{{entry.name+'_'+$index}}" name="{{entry.name}}" ng-checked="dv.selected" tooltip="{{entry.tooltip}}"
-           ng-click="form.toggleSelection(entry.name, dv.v); form.call(entry.onAction, entry.name , form.formData[entry.name] )"/>
+           ng-click="form.toggleSelection(entry.name, dv.v); form.call(entry.onAction, entry.name , form.formData[entry.name], form )"/>
     {{dv.l}}
 </li>
 </ul>

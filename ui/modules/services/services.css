@@ -17,7 +17,7 @@ fieldset.serviceAPIs #apiMain-wrapper ul li input{
 
 fieldset.serviceAPIs table tr{
     float:left;
-    width:25%;
+    width:24%;
     height:90px;
     border-bottom:solid 1px #ccc;
 }
@@ -25,4 +25,8 @@ fieldset.serviceAPIs table tr{
 fieldset.serviceAPIs table tr td{
     width:100%;
     display:block;
+}
+
+fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"]{
+    width:4%;
 }

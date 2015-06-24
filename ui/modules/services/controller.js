@@ -28,12 +28,13 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 		formConfig.entries.forEach(function(oneEntry) {
 			if(oneEntry.name === 'apis') {
-				if(service.apis && service.apis.length > 0){
+				if(service.apis && service.apis.length > 0) {
 					for(var i = 0; i < service.apis.length; i++) {
 						var clone = angular.copy(servicesConfig.form.oneApi);
 
 						clone.forEach(function(oneField) {
 							oneField.name = oneField.name.replace("%count%", count);
+
 							if(oneField.name === 'apiV' + count) {
 								oneField.value = service.apis[i].v;
 							}
@@ -49,6 +50,9 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 										oneV.selected = true;
 									}
 								});
+							}
+							if(oneField.type === 'html') {
+								oneField.value = oneField.value.replace("%count%", count);
 							}
 							oneEntry.entries.push(oneField);
 						});

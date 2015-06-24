@@ -1,4 +1,4 @@
-function buildFormWithModal($scope, $modal, opts) {
+function buildFormWithModal($scope, $modal, opts, cb) {
 	var formConfig = angular.copy(opts.form);
 	formConfig.name = opts.name;
 	formConfig.label = opts.label;
@@ -27,6 +27,9 @@ function buildFormWithModal($scope, $modal, opts) {
 				controller: function($scope, $modalInstance) {
 					$scope.form = formContext.form;
 					formContext.modalInstance = $modalInstance;
+					formContext.modalScope = $scope;
+
+					if(cb && typeof(cb) === 'function'){ cb(); }
 				}
 			});
 		};
@@ -174,10 +177,10 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 	};
-	context.form.call = function(action, id, data) {
+	context.form.call = function(action, id, data, form) {
 		if(action) {
 			if(typeof(action) == 'function') {
-				action(id, data);
+				action(id, data, form);
 			}
 		}
 	};
