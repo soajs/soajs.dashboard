@@ -24,7 +24,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 	$scope.editService = function(service) {
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
-
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -39,7 +38,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 					'action': function(formData) {
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
-							'requestTimeoutRenewal': formData.requestTimeoutRenewal
+							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
+							"image": formData.image
 						};
 						var extKeyRequired;
 						if(Array.isArray(formData.extKeyRequired)) {
@@ -86,8 +86,71 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		};
 
 		buildFormWithModal($scope, $modal, options);
+	};
 
+	$scope.addService = function(){
+		var formConfig = angular.copy(servicesConfig.form.serviceAdd);
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'addService',
+			label: 'Add New Service',
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'name': formData.name,
+							'requestTimeout': formData.requestTimeout,
+							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
+							"image": formData.image
+						};
+						var extKeyRequired;
+						if(Array.isArray(formData.extKeyRequired)) {
+							extKeyRequired = formData.extKeyRequired[0];
+							postData.extKeyRequired = extKeyRequired;
+						}
+						else {
+							extKeyRequired = formData.extKeyRequired;
+						}
+						if(extKeyRequired === 'true') {
+							postData.extKeyRequired = true;
+						} else if(extKeyRequired === 'false') {
+							postData.extKeyRequired = false;
+						}
 
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/services/create",
+							"data": postData
+						}, function(error) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Service Created Successfully.');
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listServices();
+							}
+						});
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
 	};
 
 	$scope.listServices = function() {
