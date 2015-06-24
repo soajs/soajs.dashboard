@@ -185,7 +185,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 				}
 				buildGrid($scope, options);
 				var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv.toUpperCase()));
-				el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">Add New Entry</a><br/><br/><nglist></nglist>");
+				el.html("<br/><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">Add New Entry</a><br/><br/><nglist></nglist>");
 				$compile(el.contents())($scope);
 			}
 		});
