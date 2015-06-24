@@ -44,10 +44,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 									}
 								}
-								controllers.forEach(function(oneController) {
-									invokeHeartbeat(oneController);
-									currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
-								});
+								if(controllers.length > 0){
+									controllers.forEach(function(oneController) {
+										invokeHeartbeat(oneController);
+										currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
+									});
+								}
+								else{
+									delete currentScope.grid.rows[i].hosts.controller;
+								}
 								break;
 							}
 						}
@@ -171,7 +176,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 											oneHost.cid = origHostRec.cid;
 										}
 									});
-									if(oneHost.hostname && oneHost.cid && oneHost.ip){
+									if(oneHost.hostname && oneHost.ip){
 										renderedHosts[serviceName].ips.push(oneHost);
 									}
 								}
@@ -566,9 +571,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							}
 						}
 					}
-				}
-				if(oneHost.name === 'controller') {
-					listHosts(currentScope, env);
 				}
 				currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
 			}
