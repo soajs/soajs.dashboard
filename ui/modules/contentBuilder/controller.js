@@ -27,6 +27,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	 */
 	$scope.prepareAddForm = function() {
 		$scope.steps = [true, false, false, false];
+		$scope.editMode = false;
 		cbHelper.getEmptySchema($scope);
 		//load the environments and show their databases
 		cbHelper.getEnvironments($scope);
@@ -38,7 +39,8 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 
 	$scope.prepareUpdateForm = function() {
 		$scope.steps = [true, false, false, false];
-
+		$scope.editMode = true;
+		$localStorage.cbSchema = null;
 		//get the content schema from the database
 		cbHelper.loadExistingSchema($scope, $routeParams, function() {
 			//load the environments and show their databases
