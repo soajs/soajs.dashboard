@@ -933,6 +933,7 @@ module.exports = {
 				"l": "Update Service",
 				"group": "Services"
 			},
+			"commonFields": ['port'],
 			'name': {
 				'source': ['query.name'],
 				'required': true,
@@ -956,7 +957,7 @@ module.exports = {
 				"validation": {"type": "integer", "min": 0}
 			},
 			"image": {
-				"required": false,
+				"required": true,
 				"source": ["body.image"],
 				"validation": {
 					"type": "string"
@@ -968,6 +969,7 @@ module.exports = {
 				"l": "Create Custom Service",
 				"group": "Services"
 			},
+			"commonFields": ['port'],
 			'name': {
 				'source': ['body.name'],
 				'required': true,
@@ -975,12 +977,26 @@ module.exports = {
 					"type": "string"
 				}
 			},
-			'folder': {
-				'source': ['body.folder'],
-				'required': true,
+			"extKeyRequired": {
+				"source": ['body.extKeyRequired'],
+				"required": true,
+				"validation": {"type": "boolean"}
+			},
+			"requestTimeout": {
+				"source": ['body.requestTimeout'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"requestTimeoutRenewal": {
+				"source": ['body.requestTimeoutRenewal'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"image": {
+				"required": true,
+				"source": ["body.image"],
 				"validation": {
-					"type": "string",
-					"pattern": "^(/[^/]+)+$"
+					"type": "string"
 				}
 			}
 		},

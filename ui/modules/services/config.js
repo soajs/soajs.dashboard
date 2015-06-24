@@ -11,11 +11,19 @@ var servicesConfig = {
 					'required': true
 				},
 				{
+					'name': 'port',
+					'label': 'Service Port',
+					'type': 'number',
+					'value': '',
+					'tooltip': 'Enter the Service port number',
+					'required': true
+				},
+				{
 					'name': 'requestTimeout',
 					'label': 'Request Timeout',
 					'type': 'number',
 					'placeholder': '30',
-					'value': '',
+					'value': 30,
 					'tooltip': 'Maximum timeout value for a request to this service',
 					'required': true
 				},
@@ -24,7 +32,7 @@ var servicesConfig = {
 					'label': 'Request Timeout Renewal',
 					'type': 'number',
 					'placeholder': '5',
-					'value': '',
+					'value': 5,
 					'tooltip': 'In case of a timeout, set the number of trial attempts',
 					'required': true
 				},
@@ -32,7 +40,7 @@ var servicesConfig = {
 					'name': 'extKeyRequired',
 					'label': 'External Key Required',
 					'type': 'radio',
-					'value': [{'v': false}, {'v': true}],
+					'value': [{'v': false, "selected": true}, {'v': true}],
 					'tooltip': 'If this service requires an external key; ie if it is multi-tenant',
 					'required': true
 				},
@@ -54,6 +62,14 @@ var servicesConfig = {
 					'type': 'readonly',
 					'value': '',
 					'tooltip': 'Service Name',
+					'required': true
+				},
+				{
+					'name': 'port',
+					'label': 'Service Port',
+					'type': 'number',
+					'value': '',
+					'tooltip': 'Enter the Service port number',
 					'required': true
 				},
 				{

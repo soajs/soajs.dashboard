@@ -39,7 +39,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
-							"image": formData.image
+							"image": formData.image,
+							"port": formData.port
 						};
 						var extKeyRequired;
 						if(Array.isArray(formData.extKeyRequired)) {
@@ -105,7 +106,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							'name': formData.name,
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
-							"image": formData.image
+							"image": formData.image,
+							"port": formData.port
 						};
 						var extKeyRequired;
 						if(Array.isArray(formData.extKeyRequired)) {
