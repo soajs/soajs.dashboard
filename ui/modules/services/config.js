@@ -34,7 +34,7 @@ var servicesConfig = {
 			{
 				"type": "html",
 				"name": "removeAPI%count%",
-				"value": "<span class='icon icon-cross' title='Remove API'></span>",
+				"value": "<span class='red'><span class='icon icon-cross' title='Remove API'></span></span>",
 				"onAction" : function(id, data, form) {
 					var number = id.replace("removeAPI", "");
 
@@ -161,7 +161,39 @@ var servicesConfig = {
 						{
 							"type": "html",
 							"name": "removeAPI0",
-							"value": "<a href='' ng-click='form.removeAPI(0);'><span class='icon icon-cross' title='Remove API'></span></a>"
+							"value": "<span class='red'><span class='icon icon-cross' title='Remove API'></span></span>",
+							"onAction" : function(id, data, form) {
+								var number = id.replace("removeAPI", "");
+
+								delete form.formData['apiV'+number];
+								delete form.formData['apiL'+number];
+								delete form.formData['apiG'+number];
+								delete form.formData['apiMain'+number];
+
+								form.entries.forEach(function(oneEntry) {
+									if(oneEntry.type === 'group') {
+
+										for(var i = 0; i < oneEntry.entries.length; i++) {
+											if(oneEntry.entries[i].name === 'apiV' + number) {
+												oneEntry.entries.splice(i, 1);
+											}
+											if(oneEntry.entries[i].name === 'apiL' + number) {
+												oneEntry.entries.splice(i, 1);
+											}
+											if(oneEntry.entries[i].name === 'apiG' + number) {
+												oneEntry.entries.splice(i, 1);
+											}
+											if(oneEntry.entries[i].name === 'apiMain' + number) {
+												oneEntry.entries.splice(i, 1);
+											}
+
+											if(oneEntry.entries[i].name === 'removeAPI' + number) {
+												oneEntry.entries.splice(i, 1);
+											}
+										}
+									}
+								});
+							}
 						}
 					]
 				}

@@ -30,3 +30,9 @@ fieldset.serviceAPIs table tr td{
 fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"]{
     width:4%;
 }
+
+.red{
+    border-color: #ebccd1;
+    color: #a94442;
+    cursor:pointer;
+}
