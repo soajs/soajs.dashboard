@@ -19,7 +19,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 				else {
 					currentScope.hostList = response;
-					if(response && response.length > 0){
+					if(response && response.length > 0) {
 						for(var i = 0; i < currentScope.grid.rows.length; i++) {
 							if(currentScope.grid.rows[i]['code'] === env) {
 								currentScope.grid.rows[i].hosts = {
@@ -44,13 +44,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 									}
 								}
-								if(controllers.length > 0){
+								if(controllers.length > 0) {
 									controllers.forEach(function(oneController) {
 										invokeHeartbeat(oneController);
 										currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
 									});
 								}
-								else{
+								else {
 									delete currentScope.grid.rows[i].hosts.controller;
 								}
 								break;
@@ -176,7 +176,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 											oneHost.cid = origHostRec.cid;
 										}
 									});
-									if(oneHost.hostname && oneHost.ip){
+									if(oneHost.hostname && oneHost.ip) {
 										renderedHosts[serviceName].ips.push(oneHost);
 									}
 								}
@@ -184,7 +184,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 
-					if(Object.keys(renderedHosts).length > 0){
+					if(Object.keys(renderedHosts).length > 0) {
 						for(var sN in renderedHosts) {
 							currentScope.grid.rows[i].hosts[sN] = renderedHosts[sN];
 							renderedHosts[sN].ips.forEach(function(oneHost) {
@@ -667,7 +667,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 					else {
 						services.forEach(function(oneService) {
-							if(oneService.image && oneService.image !== '') {
+							if(oneService.image && oneService.image !== '' && oneService.image !== environmentsConfig.gcImage) {
 								servicesList.push({'v': oneService.name, 'l': oneService.name});
 								postServiceList.push({"name": oneService.name, "image": oneService.image, "port": oneService.port});
 							}
@@ -751,7 +751,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					currentScope.modalInstance.close();
 					currentScope.form.formData = {};
 
-					$timeout(function(){
+					$timeout(function() {
 						listHosts(currentScope, env);
 					}, 2000);
 				}
