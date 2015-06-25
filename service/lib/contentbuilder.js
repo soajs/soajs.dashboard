@@ -15,7 +15,7 @@ function mapPostedConfig(config) {
 	var commonFields = config.genericService.config.schema.commonFields;
 	for(var i in commonFields) {
 		if(commonFields.hasOwnProperty(i)) {
-			if(commonFields[i].req) {
+			if(commonFields[i].hasOwnProperty('req')) {
 				commonFields[i].required = commonFields[i].req;
 				delete commonFields[i].req;
 			}
