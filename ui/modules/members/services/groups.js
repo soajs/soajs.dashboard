@@ -229,7 +229,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 					sel = ((response[x].groups) && response[x].groups.indexOf(data.code) > -1);
 					value.push({
 						'v': response[x].username,
-						'lb': response[x].username + '(' + response[x].firstName + ' ' + response[x].lastName + ')',
+						'l': response[x].username + '(' + response[x].firstName + ' ' + response[x].lastName + ')',
 						'selected': sel
 					});
 				}
