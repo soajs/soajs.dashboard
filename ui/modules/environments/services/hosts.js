@@ -558,18 +558,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								}
 							}
 
-							if(currentScope.grid.rows[e].hosts.controller.ips.length > 0) {
-								var oneCtrl = {
-									"name": "controller",
-									"port": currentScope.grid.rows[e].hosts.controller.port,
-									"ip": currentScope.grid.rows[e].hosts.controller.ips[0].ip,
-									"hostname": currentScope.grid.rows[e].hosts.controller.ips[0].hostname
-								};
-							}
-							else {
+							if(currentScope.grid.rows[e].hosts.controller.ips.length === 0) {
 								delete currentScope.grid.rows[e].hosts;
 							}
 						}
+
+						currentScope.grid.rows[e].hosts.controller.ips.forEach(function(oneCtrl){
+							reloadRegistry(currentScope, env, oneCtrl, function(){});
+						});
 					}
 				}
 				currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
@@ -763,6 +759,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				overlay.hide();
 				currentScope.modalInstance.close();
 				currentScope.form.formData = {};
+
+				for(var e = 0; e < currentScope.grid.rows.length; e++) {
+					if(currentScope.grid.rows[e].code === env){
+						currentScope.grid.rows[e].hosts.controller.ips.forEach(function(oneCtrl){
+							reloadRegistry(currentScope, env, oneCtrl, function(){});
+						});
+					}
+				}
 			});
 
 			function doDeploy(counter, max, cb) {
