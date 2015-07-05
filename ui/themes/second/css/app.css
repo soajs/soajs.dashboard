@@ -173,7 +173,7 @@ em {
     margin-top: 35px;
     background-color: #515E67;
     float: left;
-    width: 13%;
+    width: 14%;
     min-height: 525px;
     position: relative;
     border-bottom: solid 1px white;
@@ -231,7 +231,7 @@ em {
 }
 
 #page .wrapper {
-    width: 87%;
+    width: 86%;
     float: left;
     min-height: 560px;
     background-color: #e5eaee;

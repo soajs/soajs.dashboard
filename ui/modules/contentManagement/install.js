@@ -11,6 +11,7 @@ var cmNav =[
 		'tplPath': 'modules/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',
 		'mainMenu': true,
+		'contentMenu': true,
 		'tracker': true,
 		'scripts': ['modules/contentManagement/config.js', 'modules/contentManagement/controller.js'],
 		'ancestor': ['Home']
