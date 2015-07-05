@@ -141,7 +141,8 @@ module.exports = {
 				"profile": regFile,
 				"links": list,
 				"variables": [
-					"SOAJS_SRV_AUTOREGISTER=false"
+					"SOAJS_SRV_AUTOREGISTER=false",
+					"NODE_ENV=production"
 				]
 			};
 
@@ -240,6 +241,7 @@ module.exports = {
 			}
 
 			dockerParams.variables.push("SOAJS_SRV_AUTOREGISTER=false");
+			dockerParams.variables.push("NODE_ENV=production");
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
 			req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
