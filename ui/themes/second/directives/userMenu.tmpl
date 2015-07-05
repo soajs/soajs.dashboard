@@ -3,15 +3,24 @@
         <div ng-show="enableInterface">
             <ul>
                 <li>Welcome {{userFirstName}} {{userLastName}}</li>
-                <li ng-repeat="link in userMenu.links">
-                    <a href="{{link.url}}" ng-class="{active: link.url === userMenu.selectedMenu}" class="userMenu{{$index}}" id="userMenu-{{link.id}}">
-                        <span class="icon icon-{{link.icon}}"></span>{{link.label}}
-                    </a>
-                </li>
-                <li>
-                    <a href="" ng-click="logoutUser()" class="userMenu-logout" id="userMenu-logout">
-                        <span class="icon icon-switch"></span>Logout
-                    </a>
+                <li><span class="icon icon-menu myMenu"></span>
+                    <ul class="userMenu">
+                        <li ng-repeat="link in userMenu.links">
+                            <a href="{{link.url}}" ng-class="{active: link.url === userMenu.selectedMenu}" class="userMenu{{$index}}" id="userMenu-{{link.id}}">
+                                <span class="icon icon-{{link.icon}}"></span>{{link.label}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#/help" ng-class="{active: '#/help' === userMenu.selectedMenu}" class="userMenu-help" id="userMenu-help">
+                                <span class="icon icon-question"></span>Help
+                            </a>
+                        </li>
+                        <li class="logout">
+                            <a href="" ng-click="logoutUser()" class="userMenu-logout" id="userMenu-logout">
+                                <span class="icon icon-switch"></span>Logout
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

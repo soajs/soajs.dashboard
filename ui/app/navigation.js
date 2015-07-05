@@ -13,7 +13,8 @@ var navigation = [
 		'tplPath': 'modules/dashboard/directives/dashboard.tmpl',
 		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
 		'icon': 'home',
-		'mainMenu': true,
+		//'userMenu': true,
+		//'mainMenu': true,
 		'tracker': true
 	},
 	{
@@ -24,17 +25,17 @@ var navigation = [
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
 		'footerMenu': true
 	},
-	{
-		'id': 'help',
-		'label': 'Help',
-		'url': '#/help',
-		'guestMenu': true,
-		'userMenu': true,
-		'private': true,
-		'icon': 'question',
-		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
-		'tplPath': 'modules/dashboard/directives/help.tmpl'
-	},
+	//{
+	//	'id': 'help',
+	//	'label': 'Help',
+	//	'url': '#/help',
+	//	'guestMenu': true,
+	//	'userMenu': true,
+	//	'private': true,
+	//	'icon': 'question',
+	//	'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
+	//	'tplPath': 'modules/dashboard/directives/help.tmpl'
+	//},
 	{
 		'id': 'help2',
 		'label': 'Help',

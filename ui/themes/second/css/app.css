@@ -54,6 +54,7 @@ em {
     font-weight: bold;
     font-size: 36px;
     text-transform: uppercase;
+    cursor:pointer;
 }
 
 #header #logo img {
@@ -76,6 +77,8 @@ em {
     height: 20px;
     min-width: 15%;
     font-weight: bold;
+    position: relative;
+    z-index: 10;
 }
 
 #header #userMenu ul {
@@ -88,6 +91,7 @@ em {
     float: left;
     margin-right: 10px;
     color: #bfc0c1;
+    position:relative;
 }
 
 #header #userMenu ul li a {
@@ -98,6 +102,54 @@ em {
 #header #userMenu ul li a:hover {
     color: white;
     text-decoration: none;
+}
+
+#header #userMenu li .myMenu{
+    font-size: 22px;
+    left: 22px;
+    position: relative;
+    cursor:pointer;
+}
+
+#header #userMenu li .userMenu{
+    display:none;
+    cursor:pointer;
+    position:absolute;
+    background:#424951;
+    right: -25px;
+    top: 20px;
+    padding-top:15px;
+    font-size: 14px;
+}
+#header #userMenu li:hover{ color:white; }
+#header #userMenu li:hover > .userMenu{
+    display:block;
+}
+
+#header #userMenu li .userMenu li{
+    float: none;
+    margin: 0;
+    padding:0;
+    border:solid 1px white;
+    border-top:none;
+    border-bottom:none;
+}
+
+#header #userMenu li .userMenu li.logout{ border-bottom: solid 1px white; }
+
+#header #userMenu li .userMenu li a{
+    padding: 10px 25px 5px 10px;
+    white-space: nowrap;
+    border-top: 1px solid #606d76;
+    border-bottom: 1px solid #4f5762;
+}
+
+#header #userMenu li .userMenu li a.userMenu0{
+    border-top:none;
+}
+
+#header #userMenu li .userMenu li a:hover{
+    background-color:black;
 }
 
 #page {
@@ -383,8 +435,7 @@ em {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#header #userMenu ul li a#guestMenu-login,
-#header #userMenu ul li a#userMenu-logout {
+#header #userMenu ul li a#guestMenu-login{
     padding-left: 28px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
