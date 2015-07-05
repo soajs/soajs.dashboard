@@ -139,7 +139,10 @@ module.exports = {
 				"image": config.images.controller,
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
 				"profile": regFile,
-				"links": list
+				"links": list,
+				"variables": [
+					"SOAJS_SRV_AUTOREGISTER=false"
+				]
 			};
 
 			deployControllers(0, req.soajs.inputmaskData.number, envRecord, dockerParams, function() {
@@ -154,7 +157,7 @@ module.exports = {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
 				req.soajs.log.debug("Controller Container Created, starting container:", JSON.stringify(deployerConfig), JSON.stringify(data));
-				deployer.start(deployerConfig, data.Id, function(error) {
+				deployer.start(deployerConfig, data.Id, function(error, data) {
 					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
 					req.soajs.log.debug("Controller Container started, saving information in core_provision");
@@ -184,12 +187,23 @@ module.exports = {
 			};
 			mongo.insert("docker", document, function(error) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
-				return cb();
+
+				var newHost = {
+					"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+					"name": "controller",
+					"ip": data.NetworkSettings.IPAddress,
+					"hostname": data.Config.Hostname
+				};
+				mongo.insert(colName, newHost, function(error){
+					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+					return cb();
+				});
 			});
 		}
 	},
 
 	"deployService": function(config, mongo, req, res) {
+		var serviceName;
 		//from profile name, construct profile path and equivalently soajsData01....
 		//if gc info, check if gc exists before proceeding
 		mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function(err, envRecord) {
@@ -211,10 +225,12 @@ module.exports = {
 				"env": req.soajs.inputmaskData.envCode.toLowerCase(),
 				"profile": regFile,
 				"links": links,
-				"image": req.soajs.inputmaskData.image
+				"image": req.soajs.inputmaskData.image,
+				"variables": []
 			};
 
-			var serviceName;
+			serviceName = req.soajs.inputmaskData.name;
+
 			if(req.soajs.inputmaskData.gcName) {
 				dockerParams.variables = [
 					"SOAJS_GC_NAME=" + req.soajs.inputmaskData.gcName,
@@ -222,9 +238,8 @@ module.exports = {
 				];
 				serviceName = req.soajs.inputmaskData.gcName;
 			}
-			else {
-				serviceName = req.soajs.inputmaskData.name;
-			}
+
+			dockerParams.variables.push("SOAJS_SRV_AUTOREGISTER=false");
 
 			var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
 			req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
@@ -254,10 +269,20 @@ module.exports = {
 			mongo.insert("docker", document, function(error) {
 				if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
 
-				mongo.find(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller"}, function(error, controllers) {
-					if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
-					//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname, "controllers": controllers}));
-					return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname, "ip": data.NetworkSettings.IPAddress, "controllers": controllers}));
+				var newHost = {
+					"env": req.soajs.inputmaskData.envCode.toLowerCase(),
+					"name": serviceName,
+					"ip": data.NetworkSettings.IPAddress,
+					"hostname": data.Config.Hostname
+				};
+				mongo.insert(colName, newHost, function(error){
+					if(error) { return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]})); }
+
+					mongo.find(colName, {"env": req.soajs.inputmaskData.envCode.toLowerCase(), "name": "controller"}, function(error, controllers) {
+						if(error) { return res.json(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+						//return res.json(req.soajs.buildResponse(null, {"ip": hostRecord.ip, 'hostname': data.Config.Hostname, "controllers": controllers}));
+						return res.json(req.soajs.buildResponse(null, {'cid': data.Id, 'hostname': data.Config.Hostname, "ip": data.NetworkSettings.IPAddress, "controllers": controllers}));
+					});
 				});
 			});
 		}
