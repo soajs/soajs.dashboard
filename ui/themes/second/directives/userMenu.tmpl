@@ -1,7 +1,7 @@
 <div id="userMenu">
     <div ng-controller="welcomeCtrl">
         <div ng-show="enableInterface">
-            <ul>
+            <ul style="margin-left:40px;">
                 <li>Welcome {{userFirstName}} {{userLastName}}</li>
                 <li><span class="icon icon-menu myMenu"></span>
                     <ul class="userMenu">
@@ -28,7 +28,7 @@
             <ul>
                 <li ng-repeat="link in guestMenu.links">
                     <a href="{{link.url}}" ng-class="{active: link.url === guestMenu.selectedMenu}" class="guestMenu{{$index}}" id="guestMenu-{{link.id}}">
-                        <span class="icon icon-{{link.icon}}"></span>{{link.label}}
+                        <span ng-if="link.icon" class="icon icon-{{link.icon}}"></span>{{link.label}}
                     </a>
                 </li>
             </ul>
