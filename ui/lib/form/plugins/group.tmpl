@@ -39,9 +39,22 @@
                     <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
                 </td>
 
-                <td ng-switch-when="group">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
+                <td ng-switch-when="document">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
                 </td>
+
+                <td ng-switch-when="audio">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="video">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="image">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
+                </td>
+
                 <td ng-switch-default="">
                     <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
                 </td>

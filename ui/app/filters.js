@@ -118,6 +118,15 @@ soajsApp.filter('object', ['$sce', function($sce) {
 	};
 }]);
 
+soajsApp.filter('range', function() {
+	return function(input, total) {
+		total = parseInt(total);
+		for (var i=0; i<total; i++)
+			input.push(i);
+		return input;
+	};
+});
+
 function highlightMyCode() {
 	hljs.configure({"tabReplace": "    "});
 	jQuery('pre code').each(function(i, block) {
