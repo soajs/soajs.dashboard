@@ -1,9 +1,9 @@
 <section ng-controller="environmentCtrl" ng-show="grid.rows">
-    <span ng-if="access.addEnvironment"><a href="#/environments/environment" class="btn btn-primary">Add New Environment</a><br/><br/></span>
+    <span ng-if="access.addEnvironment"><a href="" ng-click="addEnvironment()" class="btn btn-primary">Add New Environment</a><br/><br/></span>
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
-            <div class="header">{{row['code']}}</div>
+            <div class="header">{{row['code']}} / Profile : [{{row.profileLabel}}] / Platform : [{{row.selectedDeployer}}] / Domain: <a href="http://api.{{row.services.config.session.cookie.domain}}:{{row.port}}" target="_blank">api.{{row.services.config.session.cookie.domain}}:{{row.port}}</a></div>
             <div class="body">
                 <div class="description">
                     <a ng-click="expand(row)" href="" ng-hide="row.showOptions===true">
@@ -25,7 +25,7 @@
                     <tab heading="Mongo Cluster" ng-if="access.clusters.list">
                         <div ng-include="'modules/environments/directives/list-clusters.tmpl'"></div>
                     </tab>
-                    <tab heading="Services Hosts" ng-if="access.listHosts">
+                    <tab heading="Services Hosts" ng-if="access.listHosts" ng-click="listHosts(row.code)">
                         <div ng-include="'modules/environments/directives/list-hosts.tmpl'"></div>
                     </tab>
                 </tabset>

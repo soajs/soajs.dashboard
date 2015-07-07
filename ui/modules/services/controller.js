@@ -1,7 +1,7 @@
 "use strict";
 
 var servicesApp = soajsApp.components;
-servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $compile, ngDataApi) {
+servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', function($scope, $timeout, $modal, $compile, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -23,8 +23,44 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	};
 
 	$scope.editService = function(service) {
+		var count = 0;
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
 
+		formConfig.entries.forEach(function(oneEntry) {
+			if(oneEntry.name === 'apis') {
+				if(service.apis && service.apis.length > 0) {
+					for(var i = 0; i < service.apis.length; i++) {
+						var clone = angular.copy(servicesConfig.form.oneApi);
+
+						clone.forEach(function(oneField) {
+							oneField.name = oneField.name.replace("%count%", count);
+
+							if(oneField.name === 'apiV' + count) {
+								oneField.value = service.apis[i].v;
+							}
+							if(oneField.name === 'apiL' + count) {
+								oneField.value = service.apis[i].l;
+							}
+							if(oneField.name === 'apiG' + count) {
+								oneField.value = service.apis[i].group;
+							}
+							if(oneField.name === 'apiMain' + count) {
+								oneField.value.forEach(function(oneV) {
+									if(oneV.v === service.apis[i].groupMain) {
+										oneV.selected = true;
+									}
+								});
+							}
+							if(oneField.type === 'html') {
+								oneField.value = oneField.value.replace("%count%", count);
+							}
+							oneEntry.entries.push(oneField);
+						});
+						count++;
+					}
+				}
+			}
+		});
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -33,13 +69,32 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			'data': service,
 			actions: [
 				{
+					'type': 'button',
+					'label': 'Add New API',
+					'btn': 'success',
+					'action': function() {
+						$scope.form.entries.forEach(function(oneEntry) {
+							if(oneEntry.name === 'apis') {
+								var clone = angular.copy(servicesConfig.form.oneApi);
+								for(var i = 0; i < clone.length; i++) {
+									clone[i].name = clone[i].name.replace("%count%", count);
+								}
+								oneEntry.entries = oneEntry.entries.concat(clone);
+								count++;
+							}
+						});
+					}
+				},
+				{
 					'type': 'submit',
 					'label': 'Submit',
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
-							'requestTimeoutRenewal': formData.requestTimeoutRenewal
+							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
+							"image": formData.image,
+							"port": formData.port
 						};
 						var extKeyRequired;
 						if(Array.isArray(formData.extKeyRequired)) {
@@ -55,22 +110,43 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							postData.extKeyRequired = false;
 						}
 
-						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/services/update",
-							"params": {"name": service.name},
-							"data": postData
-						}, function(error) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
+						postData.apis = [];
+						for(var i = 0; i < count; i++) {
+							var tmpObj = {
+								l: formData['apiL' + i],
+								v: formData['apiV' + i],
+								group: formData['apiG' + i],
+								groupMain: (formData['apiMain' + i] && formData['apiMain' + i] === 'true')
+							};
+							if(!tmpObj.groupMain) { delete tmpObj.groupMain; }
+							if(tmpObj.l && tmpObj.v && tmpObj.l !== '' && tmpObj.v !== '') {
+								postData.apis.push(tmpObj);
 							}
-							else {
-								$scope.$parent.displayAlert('success', 'Service Data Updated Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listServices();
-							}
-						});
+						}
+
+						if(postData.apis.length === 0) {
+							$timeout(function() {
+								alert("You need to provide at least One API for this service!");
+							}, 10);
+						}
+						else {
+							getSendDataFromServer($scope, ngDataApi, {
+								"method": "send",
+								"routeName": "/dashboard/services/update",
+								"params": {"name": service.name},
+								"data": postData
+							}, function(error) {
+								if(error) {
+									$scope.form.displayAlert('danger', error.message);
+								}
+								else {
+									$scope.$parent.displayAlert('success', 'Service Data Updated Successfully.');
+									$scope.modalInstance.close();
+									$scope.form.formData = {};
+									$scope.listServices();
+								}
+							});
+						}
 					}
 				},
 				{
@@ -86,8 +162,111 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		};
 
 		buildFormWithModal($scope, $modal, options);
+	};
 
+	$scope.addService = function() {
+		var count = 1;
+		var formConfig = angular.copy(servicesConfig.form.serviceAdd);
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'addService',
+			label: 'Add New Service',
+			actions: [
+				{
+					'type': 'button',
+					'label': 'Add New API',
+					'btn': 'success',
+					'action': function() {
+						$scope.form.entries.forEach(function(oneEntry) {
+							if(oneEntry.name === 'apis') {
+								var clone = angular.copy(servicesConfig.form.oneApi);
+								for(var i = 0; i < clone.length; i++) {
+									clone[i].name = clone[i].name.replace("%count%", count);
+								}
+								oneEntry.entries = oneEntry.entries.concat(clone);
+								count++;
+							}
+						});
+					}
+				},
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						var postData = {
+							'name': formData.name,
+							'requestTimeout': formData.requestTimeout,
+							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
+							"image": formData.image,
+							"port": formData.port
+						};
+						var extKeyRequired;
+						if(Array.isArray(formData.extKeyRequired)) {
+							extKeyRequired = formData.extKeyRequired[0];
+							postData.extKeyRequired = extKeyRequired;
+						}
+						else {
+							extKeyRequired = formData.extKeyRequired;
+						}
+						if(extKeyRequired === 'true') {
+							postData.extKeyRequired = true;
+						} else if(extKeyRequired === 'false') {
+							postData.extKeyRequired = false;
+						}
 
+						postData.apis = [];
+						for(var i = 0; i < count; i++) {
+							var tmpObj = {
+								l: formData['apiL' + i],
+								v: formData['apiV' + i],
+								group: formData['apiG' + i],
+								groupMain: (formData['apiMain' + i] && formData['apiMain' + i] === 'true')
+							};
+							if(!tmpObj.groupMain) { delete tmpObj.groupMain; }
+							if(tmpObj.l && tmpObj.v && tmpObj.l !== '' && tmpObj.v !== '') {
+								postData.apis.push(tmpObj);
+							}
+						}
+
+						if(postData.apis.length === 0) {
+							$timeout(function() {
+								alert("You need to provide at least One API for this service!");
+							}, 10);
+						}
+						else {
+							getSendDataFromServer($scope, ngDataApi, {
+								"method": "send",
+								"routeName": "/dashboard/services/create",
+								"data": postData
+							}, function(error) {
+								if(error) {
+									$scope.form.displayAlert('danger', error.message);
+								}
+								else {
+									$scope.$parent.displayAlert('success', 'Service Created Successfully.');
+									$scope.modalInstance.close();
+									$scope.form.formData = {};
+									$scope.listServices();
+								}
+							});
+						}
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
 	};
 
 	$scope.listServices = function() {
@@ -145,6 +324,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	};
 
 	if($scope.access.listServices) {
+		injectFiles.injectCss("modules/services/services.css");
 		$scope.listServices();
 	}
 

@@ -11,6 +11,12 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
+	"profiles": "/opt/soajs/FILES/profiles/",
+	"images":{
+		"nginx": 'local/nginxapi',
+		"controller": "local/controller"
+	},
+
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
@@ -200,14 +206,6 @@ module.exports = {
 					"type": "object"
 				}
 			},
-			"profile": {
-				"required": true,
-				"source": ['body.profile'],
-				"validation": {
-					"type": "string",
-					"pattern": "^(/[^/]+)+\/(single|replica3|replica5)\.js$"
-				}
-			},
 			"deployer": {
 				"required": true,
 				"source": ['body.deployer'],
@@ -217,6 +215,54 @@ module.exports = {
 						"selected": {"required": true, "type": "string", "enum": ['unix', 'boot2docker', 'joyent', 'aws', 'gCloud', 'azure']},
 						"additionalProperties": {
 							"type": "object"
+						}
+					}
+				}
+			},
+
+			"port": {
+				"required": true,
+				"source": ["body.port"],
+				"validation":{
+					"type": "integer"
+				}
+			},
+			"extKeyRequired": {
+				"source": ['body.extKeyRequired'],
+				"required": true,
+				"validation": {"type": "boolean"}
+			},
+			"requestTimeout": {
+				"source": ['body.requestTimeout'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"requestTimeoutRenewal": {
+				"source": ['body.requestTimeoutRenewal'],
+				"required": true,
+				"validation": {"type": "integer", "min": 0}
+			},
+			"image": {
+				"required": true,
+				"source": ["body.image"],
+				"validation": {
+					"type": "string"
+				}
+			},
+			'apis': {
+				"required": true,
+				"source": ['body.apis'],
+				"validation": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type":"object",
+						"required": true,
+						"properties": {
+							"l": {"type":"string", "required": true},
+							"v": {"type":"string", "required": true},
+							"group": {"type":"string", "required": true},
+							"groupMain": {"type":"boolean", "required": false}
 						}
 					}
 				}
@@ -234,7 +280,7 @@ module.exports = {
 				"l": "Add Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['description', 'services', 'deployer'],
+			"commonFields": ['description', 'services', 'deployer', 'port'],
 			"code": {
 				"source": ['body.code'],
 				"required": true,
@@ -242,6 +288,14 @@ module.exports = {
 					"type": "string",
 					"format": "alphanumeric",
 					"maxLength": 4
+				}
+			},
+			"profile": {
+				"required": true,
+				"source": ['body.profile'],
+				"validation": {
+					"type":"string",
+					"enum": ['single','replica3','replica5']
 				}
 			}
 		},
@@ -257,7 +311,15 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services', 'deployer']
+			"commonFields": ['id', 'description', 'services', 'deployer', 'port'],
+			"profile": {
+				"required": true,
+				"source": ['body.profile'],
+				"validation": {
+					"type":"string",
+					"enum": ['single','replica3','replica5']
+				}
+			}
 		},
 		"/environment/key/update": {
 			_apiInfo: {
@@ -912,31 +974,10 @@ module.exports = {
 				"l": "Update Service",
 				"group": "Services"
 			},
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
 			'name': {
 				'source': ['query.name'],
 				'required': true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"extKeyRequired": {
-				"source": ['body.extKeyRequired'],
-				"required": true,
-				"validation": {"type": "boolean"}
-			},
-			"requestTimeout": {
-				"source": ['body.requestTimeout'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"requestTimeoutRenewal": {
-				"source": ['body.requestTimeoutRenewal'],
-				"required": true,
-				"validation": {"type": "integer", "min": 0}
-			},
-			"image": {
-				"required": false,
-				"source": ["body.image"],
 				"validation": {
 					"type": "string"
 				}
@@ -947,19 +988,12 @@ module.exports = {
 				"l": "Create Custom Service",
 				"group": "Services"
 			},
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
 			'name': {
 				'source': ['body.name'],
 				'required': true,
 				"validation": {
 					"type": "string"
-				}
-			},
-			'folder': {
-				'source': ['body.folder'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"pattern": "^(/[^/]+)+$"
 				}
 			}
 		},
@@ -1027,7 +1061,7 @@ module.exports = {
 				"source": ['body.operation'],
 				"validation": {
 					"type": "string",
-					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'startHost', 'stopHost']
+					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost']
 				}
 			},
 			"serviceName": {
@@ -1072,38 +1106,13 @@ module.exports = {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
 			},
-			commonFields: ['envCode', 'profile'],
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/deployNginx": {
-			"_apiInfo": {
-				"l": "Deploy New Nginx",
-				"group": "Hosts"
-			},
 			"commonFields": ['envCode'],
-			"containerNames": {
+			"number": {
 				"required": true,
-				"source": ['body.containerNames'],
+				"source": ["body.number"],
 				"validation": {
-					"type": "array",
-					"minItems": 1,
-					"items": {
-						"type": "string",
-						"required": true
-					}
-				}
-			},
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
+					"type": "number",
+					"minimum": 1
 				}
 			}
 		},
@@ -1112,7 +1121,7 @@ module.exports = {
 				"l": "Deploy New Service",
 				"group": "Hosts"
 			},
-			"commonFields": ['envCode', 'profile'],
+			"commonFields": ['envCode'],
 			"image": {
 				"required": true,
 				"source": ["body.image"],

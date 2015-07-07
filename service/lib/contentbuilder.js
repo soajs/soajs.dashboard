@@ -15,7 +15,7 @@ function mapPostedConfig(config) {
 	var commonFields = config.genericService.config.schema.commonFields;
 	for(var i in commonFields) {
 		if(commonFields.hasOwnProperty(i)) {
-			if(commonFields[i].req) {
+			if(commonFields[i].hasOwnProperty('req')) {
 				commonFields[i].required = commonFields[i].req;
 				delete commonFields[i].req;
 			}
@@ -145,7 +145,7 @@ module.exports = {
 
 	"list": function(config, mongo, req, res) {
 
-		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1};
+		var fields = {"id": 1, "name": 1, "ts": 1, "author": 1, "modified": 1, "v": 1, "genericService.config.servicePort": 1};
 		if(req.soajs.inputmaskData.port) {
 			fields['genericService.config.servicePort'] = 1;
 		}

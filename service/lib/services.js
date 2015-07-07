@@ -45,7 +45,8 @@ module.exports = {
 				"extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
 				"requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
 				"requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null,
-				"image": req.soajs.inputmaskData.image
+				"image": req.soajs.inputmaskData.image,
+				"apis": req.soajs.inputmaskData.apis
 			}
 		};
 		mongo.update(colName, {'name': req.soajs.inputmaskData.name}, set, {'upsert': false, 'safe': true}, function(err, data) {
@@ -61,21 +62,20 @@ module.exports = {
 
 			if(record) { return res.jsonp(req.soajs.buildResponse({"code": 614, "msg": config.errors[614]})); }
 
-			//todo: call docker create image api here
-			//todo: insert new record in services after api response
-			//var doc = {
-			//	'name': req.soajs.inputmaskData.name,
-			//	'extKeyRequired': configjs.extKeyRequired || false,
-			//	'port': configjs.port,
-			//	'requestTimeout': configjs.requestTimeout || 30,
-			//	'requestTimeoutRenewal': configjs.requestTimeoutRenewal || 5,
-			//	'apis': schema(configjs.apiList),
-			//	'image': dockerResponse.image
-			//};
-			//mongo.insert(colName, doc, function(error){
-			//	if(error){ return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600] })); }
-			return res.jsonp(req.soajs.buildResponse(null, "service created successfully"));
-			//});
+			var doc = {
+				'name': req.soajs.inputmaskData.name,
+				'extKeyRequired': req.soajs.inputmaskData.extKeyRequired || false,
+				'port': req.soajs.inputmaskData.port,
+				'requestTimeout': req.soajs.inputmaskData.requestTimeout || 30,
+				'requestTimeoutRenewal': req.soajs.inputmaskData.requestTimeoutRenewal || 5,
+				'image': req.soajs.inputmaskData.image,
+				"apis": req.soajs.inputmaskData.apis
+			};
+
+			mongo.insert(colName, doc, function(error){
+				if(error){ return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600] })); }
+				return res.jsonp(req.soajs.buildResponse(null, "service created successfully"));
+			});
 		});
 	}
 };

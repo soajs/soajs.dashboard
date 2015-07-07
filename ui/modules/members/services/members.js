@@ -89,7 +89,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			else {
 				var grps = [];
 				for(var x = 0; x < response.length; x++) {
-					grps.push({'v': response[x].code, 'lb': response[x].name, 'selected': false});
+					grps.push({'v': response[x].code, 'l': response[x].name, 'selected': false});
 				}
 				config.entries.push({
 					'name': 'groups',
@@ -178,7 +178,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				var sel = false;
 				for(var x = 0; x < response.length; x++) {
 					sel = datagroups.indexOf(response[x].code) > -1;
-					grps.push({'v': response[x].code, 'lb': response[x].name, 'selected': sel});
+					grps.push({'v': response[x].code, 'l': response[x].name, 'selected': sel});
 				}
 				config.entries.push({
 					'name': 'groups',

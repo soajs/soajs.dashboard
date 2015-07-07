@@ -25,6 +25,24 @@
                         </tr>
                         <tr class="form-group">
                             <td class="">
+                                <label>Port</label>
+								<input type="text" ng-model="formEnvironment.port" class="form-control" />
+                                <em style="margin:0">Environment Gateway Port for Nginx.</em>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <label>Profile To Use</label>
+                                <select ng-model="formEnvironment.profile">
+                                    <option value="single" ng-selected="formEnvironment.profile === 'single'">Single</option>
+                                    <option value="replica3" ng-selected="formEnvironment.profile === 'replica3'">Replica 3</option>
+                                    <option value="replica5" ng-selected="formEnvironment.profile === 'replica5'">Replica 5</option>
+                                </select><br />
+                                <em style="margin:0">Pick a Database Profile to use.</em>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
                                 <hr/>
                                 <h3>Platforms</h3>
                                 <div class="grouped">

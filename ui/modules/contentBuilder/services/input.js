@@ -88,7 +88,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 	function buildIMFV(currentScope, formData, machineName) {
 		if(formData.imfv) {
 			var imfv = {
-				"req": (formData.required === 'true'),
+				"req": ((formData.required === 'true') || formData.required[0] === true),
 				"source": ["body." + machineName],
 				"validation": JSON.parse(formData.imfv)
 			};
@@ -349,13 +349,13 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				data = {
 					"name": fieldName,
 					"label": fieldName,
-					"required": fieldInfo.req,
+					"required": fieldInfo.required || fieldInfo.req,
 					"imfv": JSON.stringify(fieldInfo.validation, null, 2),
 					"defaultValue": ""
 				};
 				if(formInfo && Object.keys(formInfo).length > 0) {
 					data['label'] = formInfo.label;
-					data['type'] = formInfo._type;
+					data['type'] = formInfo.type || formInfo._type;
 					data['placeholder'] = formInfo.placeholder;
 					data['tooltip'] = formInfo.tooltip;
 					data['limit'] = formInfo.limit;

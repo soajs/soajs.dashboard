@@ -8,7 +8,7 @@
         </div>
         <div ng-show="form.msgs.header" class="header-msg" ng-bind-html="form.msgs.header|toTrustedHtml"></div>
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr ng-repeat="entry in form.entries" class="form-group" ng-switch="entry.type">
+            <tr ng-repeat="entry in form.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
                 <td ng-switch-when="textarea">
                     <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
                 </td>

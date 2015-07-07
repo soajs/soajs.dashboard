@@ -32,9 +32,11 @@ module.exports = {
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
 		var record = {
 			"code": req.soajs.inputmaskData.code,
+			"profile": config.profiles + req.soajs.inputmaskData.profile + ".js",
 			"deployer": req.soajs.inputmaskData.deployer,
 			"description": req.soajs.inputmaskData.description,
 			"services": req.soajs.inputmaskData.services,
+			"port": req.soajs.inputmaskData.port,
 			"dbs": {
 				"clusters": {},
 				"config": {},
@@ -47,9 +49,9 @@ module.exports = {
 
 			if(count > 0) { return res.jsonp(req.soajs.buildResponse({"code": 403, "msg": config.errors[403]})); }
 
-			mongo.insert(colName, record, function(err) {
+			mongo.insert(colName, record, function(err, data) {
 				if(err) { return res.jsonp(req.soajs.buildResponse({"code": 400, "msg": config.errors[400]})); }
-				return res.jsonp(req.soajs.buildResponse(null, "environment add successful"));
+				return res.jsonp(req.soajs.buildResponse(null, data));
 			});
 		});
 	},
@@ -101,9 +103,11 @@ module.exports = {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
 			var s = {
 				'$set': {
+					"port": req.soajs.inputmaskData.port,
 					"deployer": req.soajs.inputmaskData.deployer,
 					"description": req.soajs.inputmaskData.description,
-					"services": req.soajs.inputmaskData.services
+					"services": req.soajs.inputmaskData.services,
+					"profile": config.profiles + req.soajs.inputmaskData.profile + ".js"
 				}
 			};
 			mongo.update(colName, {"_id": req.soajs.inputmaskData.id}, s, {'upsert': false, 'safe': true}, function(err, data) {

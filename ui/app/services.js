@@ -183,3 +183,15 @@ soajsApp.service('checkApiHasAccess', function(){
 	}
 
 });
+
+soajsApp.service("injectFiles", function(){
+
+	function injectCss(filePath){
+		var csstag = "<link rel='stylesheet' type='text/css' href='"+filePath+"' />";
+		jQuery("head").append(csstag);
+	}
+
+	return {
+		'injectCss': injectCss
+	}
+});

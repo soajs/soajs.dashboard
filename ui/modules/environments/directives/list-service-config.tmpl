@@ -23,11 +23,11 @@
                     <div class='grid'>
                         <table width="100%">
                             <tr ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat="(key, prop) in row.deployer track by key">
-                                <td width="35%" ng-if="key!=='selected'" valign="top"><b>{{key|label}}</b></td>
-                                <td ng-if="key!=='selected'" ng-bind-html="prop|object"></td>
+                                <td width="35%" valign="top"><b>{{key|label}}</b></td>
+                                <td ng-bind-html="prop|object"></td>
                             </tr>
                         </table>
-                        <b>Selected Driver:</b>&nbsp;{{row.deployer.selected}}
+                        <b>Selected Driver:</b>&nbsp;{{row.selectedDeployer}}
                     </div>
                 </fieldset>
                 <fieldset>

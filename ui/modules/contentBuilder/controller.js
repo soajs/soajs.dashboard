@@ -27,6 +27,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	 */
 	$scope.prepareAddForm = function() {
 		$scope.steps = [true, false, false, false];
+		$scope.editMode = false;
 		cbHelper.getEmptySchema($scope);
 		//load the environments and show their databases
 		cbHelper.getEnvironments($scope);
@@ -38,7 +39,8 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 
 	$scope.prepareUpdateForm = function() {
 		$scope.steps = [true, false, false, false];
-
+		$scope.editMode = true;
+		$localStorage.cbSchema = null;
 		//get the content schema from the database
 		cbHelper.loadExistingSchema($scope, $routeParams, function() {
 			//load the environments and show their databases
@@ -100,7 +102,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 			$window.alert("Enter a name for your service!");
 		}
 
-		if(Object.keys($scope.config.dbtoUse).length !== $scope.envList.length && Object.keys($scope.config.clustertoUse).length !== $scope.envList.length) {
+		if(Object.keys($scope.config.dbtoUse).length === 0 && Object.keys($scope.config.clustertoUse).length === 0) {
 			$window.alert("Please choose either to create a new database or use an existing one for every environment.");
 		}
 		else {

@@ -27,7 +27,13 @@ var lib = {
 	"container": function(dockerInfo, action, cid, opts, cb) {
 		var deployer = lib.getDeployer(dockerInfo);
 		var container = deployer.getContainer(cid);
-		container[action](opts || null, cb);
+		container[action](opts || null, function(error, response){
+			if(error){ return cb(error); }
+			if(action === 'start'){
+				container.inspect(cb);
+			}
+			else return cb(null, response);
+		});
 	},
 
 	"generateUniqueId": function(len, cb) {
@@ -73,7 +79,7 @@ var deployer = {
 			var port = null;
 			if(params.port) {
 				port = {};
-				port[params.port + "/tcp"] = [{"HostPort": params.port}];
+				port["" + params.port + "/tcp"] = [{"HostPort": ""+params.port}];
 			}
 
 			var deployer = lib.getDeployer(deployerConfig);

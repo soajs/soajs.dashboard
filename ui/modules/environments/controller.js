@@ -20,8 +20,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 	};
 
 	$scope.generateNewMsg = function(env, type, msg) {
-		$scope.grid.rows.forEach(function(oneEnvRecord){
-			if(oneEnvRecord.code === env){
+		$scope.grid.rows.forEach(function(oneEnvRecord) {
+			if(oneEnvRecord.code === env) {
 				oneEnvRecord.hostInfo = {
 					waitMessage: {
 						"type": type,
@@ -41,10 +41,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		if(!context) {
 			context = $scope;
 		}
-		$timeout(function() {
-			context.waitMessage.message = '';
-			context.waitMessage.type = '';
-		}, 7000);
+		context.waitMessage.message = '';
+		context.waitMessage.type = '';
 	};
 
 	$scope.expand = function(row) {
@@ -79,15 +77,19 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 								}
 							}
 
-							for(var driver in $scope.formEnvironment.deployer){
+							for(var driver in $scope.formEnvironment.deployer) {
 								if(driver === 'selected') continue;
-								if(JSON.stringify($scope.formEnvironment.deployer[driver]) === "{}"){
+								if(JSON.stringify($scope.formEnvironment.deployer[driver]) === "{}") {
 									delete $scope.formEnvironment.deployer[driver];
 								}
 								else {
 									$scope.formEnvironment.deployer[driver] = JSON.stringify($scope.formEnvironment.deployer[driver], null, 2);
 								}
 							}
+
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile.split("/");
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile[$scope.formEnvironment.profile.length - 1];
+							$scope.formEnvironment.profile = $scope.formEnvironment.profile.replace(".js", "");
 							break;
 						}
 					}
@@ -102,12 +104,87 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 							$scope.grid.rows[0].showOptions = true;
 						}
 						$scope.grid.rows.forEach(function(env){
-							$scope.listHosts(env.code);
+							env.profileLabel = env.profile.split("/");
+							env.profileLabel = env.profileLabel[env.profileLabel.length -1].replace(".js","");
+							env.selectedDeployer = env.deployer.selected;
+							delete env.deployer.selected;
 						});
 					}
 				}
 			}
 		});
+	};
+
+	$scope.addEnvironment = function() {
+		var configuration = environmentsConfig.form.template;
+		$scope.grid.rows.forEach(function(oneEnv){
+			for(var i =0; i < configuration.entries[0].value.length; i++){
+				if(configuration.entries[0].value[i].v === oneEnv.code){
+					configuration.entries[0].value.splice(i, 1);
+				}
+			}
+		});
+		var options = {
+			timeout: $timeout,
+			form: configuration,
+			name: 'addEnvironment',
+			label: 'Add New Environment',
+			actions: [
+				{
+					'type': 'submit',
+					'label': 'Submit',
+					'btn': 'primary',
+					'action': function(formData) {
+						var tmpl = angular.copy(env_template);
+						tmpl.code = formData.code;
+						tmpl.port = parseInt(formData.port);
+						tmpl.description = formData.description;
+						tmpl.profile = formData.profile[0];
+						tmpl.deployer.selected = formData.platformDriver[0];
+						tmpl.services.config.key.password = formData.tKeyPass;
+						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
+						tmpl.services.config.session.secret = formData.sessionCookiePass;
+						tmpl.services.config.session.cookie.domain = formData.domain;
+
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "send",
+							"routeName": "/dashboard/environment/add",
+							"data": tmpl
+						}, function(error, data) {
+							if(error) {
+								$scope.form.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', 'Environment Created Successfully.');
+								$scope.modalInstance.close('ok');
+								$scope.form.formData = {};
+								$scope.updateEnvironment(data[0]);
+							}
+						});
+					}
+				},
+				{
+					'type': 'button',
+					'label': 'Advanced Mode',
+					'btn': 'success',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.$parent.go("/environments/environment/");
+					}
+				},
+				{
+					'type': 'reset',
+					'label': 'Cancel',
+					'btn': 'danger',
+					'action': function() {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
 	};
 
 	$scope.updateEnvironment = function(data) {
@@ -148,28 +225,28 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 			}
 		}
 
-		if(!postData.deployer.unix && !postData.deployer.boot2docker){
-			$timeout(function(){
+		if(!postData.deployer.unix && !postData.deployer.boot2docker) {
+			$timeout(function() {
 				alert("Provide a configuration for at least one platform driver to proceed.");
-			},100);
+			}, 100);
 		}
-		else{
-			try{
-				if(postData.deployer.unix){
+		else {
+			try {
+				if(postData.deployer.unix) {
 					postData.deployer.unix = JSON.parse(postData.deployer.unix);
 				}
 			}
-			catch(e){
+			catch(e) {
 				$scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Unix Driver");
 				return;
 			}
 
-			try{
-				if(postData.deployer.boot2docker){
+			try {
+				if(postData.deployer.boot2docker) {
 					postData.deployer.boot2docker = JSON.parse(postData.deployer.boot2docker);
 				}
 			}
-			catch(e){
+			catch(e) {
 				$scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Boot2docker Driver");
 				return;
 			}
@@ -216,22 +293,22 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		});
 	};
 
-	$scope.deployEnvironment = function(envCode){
+	$scope.deployEnvironment = function(envCode) {
 		deploySrv.deployEnvironment($scope, envCode);
 	};
 
 	$scope.listHosts = function(env, noPopulate) {
-		if($scope.grid.rows){
-			$scope.grid.rows.forEach(function(oneEnvRecord){
-				if(oneEnvRecord.code === env){
+		if($scope.grid.rows) {
+			$scope.grid.rows.forEach(function(oneEnvRecord) {
+				if(oneEnvRecord.code === env) {
 					oneEnvRecord.hostInfo = {
 						waitMessage: {
 							"type": "",
 							"message": ""
 						}
 					};
-					oneEnvRecord.hostInfo.waitMessage.type = 'info';
-					oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
+					//oneEnvRecord.hostInfo.waitMessage.type = 'info';
+					//oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
 				}
 			});
 		}
@@ -272,10 +349,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 
 	$scope.createHost = function(env, services) {
 		envHosts.createHost($scope, env, services);
-	};
-
-	$scope.updateServicesControllers = function(env, oneCtrl) {
-		envHosts.updateServicesControllers($scope, env, oneCtrl);
 	};
 
 	$scope.removeEnvironment = function(row) {
