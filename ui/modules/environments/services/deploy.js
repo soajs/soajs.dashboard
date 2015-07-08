@@ -3,9 +3,17 @@ var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
 	function deployEnvironment(currentScope, envCode) {
+		var formConfig = angular.copy(environmentsConfig.form.deploy);
+		formConfig.entries[2].value = formConfig.entries[2].value.replace("%envName%", envCode);
+
+		for(var i = 0; i < currentScope.grid.rows.length; i++) {
+			if (currentScope.grid.rows[i]['code'] === envCode) {
+				formConfig.entries[2].value = formConfig.entries[2].value.replace("%profilePathToUse%", currentScope.grid.rows[i].profile);
+			}
+		}
 		var options = {
 			timeout: $timeout,
-			form: angular.copy(environmentsConfig.form.deploy),
+			form: formConfig,
 			name: 'deployEnv',
 			label: 'Deploy Environment ' + envCode,
 			actions: [
@@ -21,7 +29,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						}
 						else {
 							currentScope.modalInstance.dismiss("ok");
-							//todo: bish3a, zabbita
 							var text = "<h2>Deploying new " + envCode + " Environment</h2>";
 							text += "<p>Deploying " + formData.controllers + " new controllers for environment " + envCode + ".</p>";
 							text += "<p>Do not refresh this page, this will take a few minutes...</p>";
@@ -51,6 +58,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'envCode': envCode,
 				"number": formData.controllers
 			};
+
+			if(formData.variables && formData.variables !== ''){
+				params.variables = formData.variables.split(",");
+				for(var i =0; i < params.variables.length; i++){
+					params.variables[i] = params.variables[i].trim();
+				}
+			}
 
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",

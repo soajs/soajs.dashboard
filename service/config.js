@@ -1147,6 +1147,15 @@ module.exports = {
 					"type": "number",
 					"minimum": 1
 				}
+			},
+			"variables":{
+				"required": false,
+				"source": ['body.variables'],
+				"validation":{
+					"type": "array",
+					"minItems": 1,
+					"items": {"type": "string"}
+				}
 			}
 		},
 		"/hosts/deployService": {
@@ -1182,6 +1191,15 @@ module.exports = {
 				"validation": {
 					"type": "integer",
 					"minimum": 1
+				}
+			},
+			"variables":{
+				"required": false,
+				"source": ['body.variables'],
+				"validation":{
+					"type": "array",
+					"minItems": 1,
+					"items": {"type": "string"}
 				}
 			}
 		},

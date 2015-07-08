@@ -252,18 +252,6 @@ var environmentsConfig = {
 			'label': '',
 			'actions': {},
 			'entries': [
-				//{
-				//	'name': 'profile',
-				//	'label': 'Profile to Use',
-				//	'type': 'select',
-				//	'value': [
-				//		{'v': 'single', 'l': 'Single'},
-				//		{'v': 'replica3', 'l': 'Replica of 3'},
-				//		{'v': 'replica5', 'l': 'Replica of 5'}
-				//	],
-				//	'required': true,
-				//	'fieldMsg': "Select which profile to use."
-				//},
 				{
 					'name': 'number',
 					'label': 'Host(s) Number',
@@ -273,6 +261,19 @@ var environmentsConfig = {
 					'tooltip': 'Enter How Many Host(s)',
 					'fieldMsg': 'Enter How Many Host(s) you would like to add for this service.',
 					'required': true
+				},
+				{
+					'name': 'variables',
+					"label": "Environment Variables",
+					"type": "textarea",
+					"required": false,
+					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
+				},
+				{
+					"name": "defaultENVVAR",
+					"type": "html",
+					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
 				}
 			]
 		},
@@ -281,18 +282,6 @@ var environmentsConfig = {
 			'label': '',
 			'actions': {},
 			'entries': [
-				//{
-				//	'name': 'profile',
-				//	'label': 'Profile to Use',
-				//	'type': 'select',
-				//	'value': [
-				//		{'v': 'single', 'l': 'Single'},
-				//		{'v': 'replica3', 'l': 'Replica of 3'},
-				//		{'v': 'replica5', 'l': 'Replica of 5'}
-				//	],
-				//	'required': true,
-				//	'fieldMsg': "Select which profile to use."
-				//},
 				{
 					'name': 'controllers',
 					'label': 'Controller(s)',
@@ -302,6 +291,19 @@ var environmentsConfig = {
 					'tooltip': 'Choose how many controllers to deploy',
 					'fieldMsg': 'Choose how many controllers you want to deploy',
 					'required': true
+				},
+				{
+					'name': 'variables',
+					"label": "Environment Variables",
+					"type": "textarea",
+					"required": false,
+					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
+				},
+				{
+					"name": "defaultENVVAR",
+					"type": "html",
+					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
 				}
 			]
 		}
