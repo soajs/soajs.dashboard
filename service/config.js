@@ -13,8 +13,8 @@ module.exports = {
 
 	"profiles": "/opt/soajs/FILES/profiles/",
 	"images":{
-		"nginx": 'local/nginxapi',
-		"controller": "local/controller"
+		"nginx": 'soajsorg/nginxapi',
+		"controller": "soajsorg/controller"
 	},
 
 	"hasher": {

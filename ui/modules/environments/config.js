@@ -1,6 +1,6 @@
 "use strict";
 var environmentsConfig = {
-	gcImage: 'local/gcs',
+	gcImage: 'soajsorg/gcs',
 	form: {
 		template: {
 			'name': '',

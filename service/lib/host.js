@@ -2,7 +2,7 @@
 var fs = require("fs");
 var request = require("request");
 var colName = "hosts";
-var deployer = require("./deployer.js");
+var deployer = require("../utils/deployer.js");
 
 function pad(d) {
 	return (d < 10) ? '0' + d.toString() : d.toString();
