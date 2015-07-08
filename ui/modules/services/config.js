@@ -199,6 +199,27 @@ var servicesConfig = {
 				}
 			]
 		},
+		serviceCustomAdd: {
+			'entries': [
+				{
+					'name': 'name',
+					'label': 'Service Name',
+					'type': 'text',
+					'value': '',
+					'tooltip': 'Enter the Service name you want to create',
+					'required': true
+				},
+				{
+					'name': 'upload',
+					'label': 'Service File',
+					'type': 'document',
+					'tooltip': 'Upload Service File',
+					'required': false,
+					"limit": 1,
+					'fieldMsg': "Compress your Service's folder into a ZIP file and upload it using this form."
+				}
+			]
+		},
 		serviceEdit:{
 			'entries': [
 				{

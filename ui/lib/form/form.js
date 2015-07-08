@@ -113,13 +113,15 @@ function buildForm(context, modal, configuration, cb) {
                     }
                 });
 
-                if(['document','audio','image','video'].indexOf(oneEntry.type) !== -1){
-                    if(oneEntry.limit === undefined){ oneEntry.limit = 0; }
-                    else if(oneEntry.limit === 0){
+                if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
+                    if (oneEntry.limit === undefined) {
+                        oneEntry.limit = 0;
+                    }
+                    else if (oneEntry.limit === 0) {
                         oneEntry.addMore = true;
                     }
 
-                    if(oneEntry.limit < oneEntry.value.length){
+                    if (oneEntry.limit < oneEntry.value.length) {
                         oneEntry.limit = oneEntry.value.length;
                     }
                 }
@@ -236,17 +238,13 @@ function buildForm(context, modal, configuration, cb) {
     }
 
     context.form.showHide = function (oneEntry) {
-        var name = oneEntry.name;
-
         if (oneEntry.collapsed) {
             oneEntry.collapsed = false;
             oneEntry.icon = "minus";
-            //jQuery('#' + name).slideDown(1000);
         }
         else {
             oneEntry.collapsed = true;
             oneEntry.icon = "plus";
-            //jQuery('#' + name).slideUp(1000);
         }
     };
 
@@ -259,7 +257,7 @@ function buildForm(context, modal, configuration, cb) {
         input.addMore = true;
     };
 
-    context.form.removeFile = function(entry, i){
+    context.form.removeFile = function (entry, i) {
         getSendDataFromServer(context, configuration.ngDataApi, {
             "method": "send",
             "routeName": entry.removeFileUrl,
@@ -275,6 +273,37 @@ function buildForm(context, modal, configuration, cb) {
                 //remove the html input
                 entry.value.splice(i, 1);
             }
+        });
+    };
+
+    context.form.uploadFileToUrl = function (Upload, file, uploadUrl, opts, progress, cb) {
+
+        var options = {
+            url: apiConfiguration.domain + uploadUrl,
+            fields: opts.data,
+            file: file,
+            headers: {
+                key: apiConfiguration.key
+            }
+        };
+        if (opts.headers) {
+            for (var i in opts.headers) {
+                options.headers[i] = opts.headers[i];
+            }
+        }
+
+        Upload.upload(options).progress(function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            progress.value = progressPercentage;
+        }).success(function (response, status, headers, config) {
+            if (!response.result) {
+                return cb(new Error(response.errors.details[0].message));
+            }
+            else {
+                return cb(null, response);
+            }
+        }).error(function (data, status, header, config) {
+            return cb(new Error("Error Occured while uploading file: " + file));
         });
     };
 }
@@ -300,26 +329,4 @@ soajsApp.directive('fileModel', ['$parse', function ($parse) {
             });
         }
     };
-}]);
-
-soajsApp.service('fileUpload', ['$http', function ($http) {
-    this.uploadFileToUrl = function (file, uploadUrl, opts, cb) {
-        var fd = new FormData();
-        fd.append('file', file);
-
-        var options = {
-            transformRequest: angular.identity,
-            headers: {
-                'key': apiConfiguration.key,
-                'Content-Type': undefined
-            },
-            data: opts.data || null
-        };
-
-        $http.post(apiConfiguration.domain + uploadUrl, fd, options).success(function (response, status, headers, config) {
-            return cb(response, status, headers, config);
-        }).error(function (response, status, headers, config) {
-            return cb(response, status, headers, config);
-        });
-    }
 }]);

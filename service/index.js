@@ -315,6 +315,10 @@ service.init(function() {
 		checkForMongo(req);
 		services.create(config, mongo, req, res);
 	});
+	service.post("/services/upload", function(req, res) {
+		checkForMongo(req);
+		services.upload(config, mongo, req, res);
+	});
 
 	/**
 	 * Settings features

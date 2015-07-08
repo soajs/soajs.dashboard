@@ -95,6 +95,7 @@ var errors = {
 	"613": "Invalid Operation! either deploy a service by providing its image or its GC information.",
 	"614": "Service exists!",
 	"615": "Error adding service host!",
+	"616": "Error Uploading File.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",

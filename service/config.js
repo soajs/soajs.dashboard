@@ -21,7 +21,26 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
+
 	"expDateTTL": 86400000,
+
+	"builder": {
+		"FILES": "/opt/FILES/",
+		"workingDir": "/opt/tmp/",
+		"uploadDir": __dirname + "/uploads/",
+		"imagePrefix": "local/",
+		"certificates": __dirname + '/certs',
+		"dockerTmpl": {
+			"from": 'FROM soajsorg/soajs',
+			"maintainer": 'MAINTAINER SOAJS Team <team@soajs.org>',
+			"body": [
+				'ADD ./FILES /opt/soajs/FILES/',
+				'ENV NODE_ENV=production',
+				'RUN cd /opt/soajs/FILES && cd ./#SERVICEFOLDERNAME# && npm install && cd ../ && mv ./#SERVICEFOLDERNAME# /opt/soajs/node_modules/ && chmod +x /opt/soajs/FILES/runService.sh',
+				'EXPOSE #SERVICEPORT#',
+				'CMD ["/opt/soajs/FILES/runService.sh", "/opt/soajs/node_modules/#SERVICEFOLDERNAME#/index.js"]']
+		}
+	},
 
 	"errors": require("./utils/errors"),
 	"schema": {
@@ -985,7 +1004,7 @@ module.exports = {
 		},
 		"/services/create": {
 			_apiInfo: {
-				"l": "Create Custom Service",
+				"l": "Add New Service",
 				"group": "Services"
 			},
 			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
@@ -995,6 +1014,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			}
+		},
+
+		"/services/upload": {
+			_apiInfo: {
+				"l": "Create Custom Service",
+				"group": "Services"
 			}
 		},
 
