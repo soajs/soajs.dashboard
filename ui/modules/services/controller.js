@@ -94,7 +94,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             'requestTimeout': formData.requestTimeout,
                             'requestTimeoutRenewal': formData.requestTimeoutRenewal,
                             "image": formData.image,
-                            "port": formData.port
+                            "port": formData.port,
+                            "awareness": formData.awareness
                         };
                         var extKeyRequired;
                         if (Array.isArray(formData.extKeyRequired)) {
@@ -108,6 +109,20 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             postData.extKeyRequired = true;
                         } else if (extKeyRequired === 'false') {
                             postData.extKeyRequired = false;
+                        }
+
+                        var awareness;
+                        if (Array.isArray(formData.awareness)) {
+                            awareness = formData.awareness[0];
+                            postData.awareness = awareness;
+                        }
+                        else {
+                            awareness = formData.awareness;
+                        }
+                        if (awareness === 'true') {
+                            postData.awareness = true;
+                        } else if (awareness === 'false') {
+                            postData.awareness = false;
                         }
 
                         postData.apis = [];
@@ -202,7 +217,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             'requestTimeout': formData.requestTimeout,
                             'requestTimeoutRenewal': formData.requestTimeoutRenewal,
                             "image": formData.image,
-                            "port": formData.port
+                            "port": formData.port,
+                            "awareness": formData.awareness
                         };
                         var extKeyRequired;
                         if(Array.isArray(formData.extKeyRequired)) {
@@ -216,6 +232,20 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             postData.extKeyRequired = true;
                         } else if(extKeyRequired === 'false') {
                             postData.extKeyRequired = false;
+                        }
+
+                        var awareness;
+                        if (Array.isArray(formData.awareness)) {
+                            awareness = formData.awareness[0];
+                            postData.awareness = awareness;
+                        }
+                        else {
+                            awareness = formData.awareness;
+                        }
+                        if (awareness === 'true') {
+                            postData.awareness = true;
+                        } else if (awareness === 'false') {
+                            postData.awareness = false;
                         }
 
                         postData.apis = [];

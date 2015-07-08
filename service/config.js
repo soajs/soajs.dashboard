@@ -285,6 +285,13 @@ module.exports = {
 						}
 					}
 				}
+			},
+			"awareness": {
+				"required": true,
+				"source": ["body.awareness"],
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/environment/list": {
@@ -993,7 +1000,7 @@ module.exports = {
 				"l": "Update Service",
 				"group": "Services"
 			},
-			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image', 'awareness'],
 			'name': {
 				'source': ['query.name'],
 				'required': true,
@@ -1007,7 +1014,7 @@ module.exports = {
 				"l": "Add New Service",
 				"group": "Services"
 			},
-			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image'],
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image', 'awareness'],
 			'name': {
 				'source': ['body.name'],
 				'required': true,

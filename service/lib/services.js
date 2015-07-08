@@ -51,7 +51,8 @@ module.exports = {
                 "requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
                 "requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null,
                 "image": req.soajs.inputmaskData.image,
-                "apis": req.soajs.inputmaskData.apis
+                "apis": req.soajs.inputmaskData.apis,
+                "awareness": req.soajs.inputmaskData.awareness
             }
         };
         mongo.update(colName, {'name': req.soajs.inputmaskData.name}, set, {
@@ -85,7 +86,8 @@ module.exports = {
                 'requestTimeout': req.soajs.inputmaskData.requestTimeout || 30,
                 'requestTimeoutRenewal': req.soajs.inputmaskData.requestTimeoutRenewal || 5,
                 'image': req.soajs.inputmaskData.image,
-                "apis": req.soajs.inputmaskData.apis
+                "apis": req.soajs.inputmaskData.apis,
+                "awareness": req.soajs.inputmaskData.awareness
             };
 
             mongo.insert(colName, doc, function (error) {

@@ -21,6 +21,7 @@
                 <b>External&nbsp;Key&nbsp;Required</b>:<span>{{service['extKeyRequired']}}</span>
                 <b>Request Timeout</b>:<span>{{service['requestTimeout']}}</span>
                 <b>Request Timeout Renewal</b>:<span>{{service['requestTimeoutRenewal']}}</span>
+                <b>Awareness</b>:<span>{{service['awareness'] || false}}</span>
             </div>
             <div class="entryAction">
                 <a href="" ng-click="editService(service);" ng-if="access.update">

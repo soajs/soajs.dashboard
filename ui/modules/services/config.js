@@ -114,6 +114,14 @@ var servicesConfig = {
 					'required': true
 				},
 				{
+					'name': 'awareness',
+					'label': 'Awareness',
+					'type': 'radio',
+					'value': [{'v': false, "selected": true}, {'v': true}],
+					'tooltip': 'If this service needs to be aware of the location of SOAJS controllers',
+					'required': true
+				},
+				{
 					'name': "image",
 					"label": "Service Image",
 					"type": "text",
@@ -262,6 +270,14 @@ var servicesConfig = {
 					'type': 'radio',
 					'value': [{'v': false}, {'v': true}],
 					'tooltip': 'If this service requires an external key; ie if it is multi-tenant',
+					'required': true
+				},
+				{
+					'name': 'awareness',
+					'label': 'Awareness',
+					'type': 'radio',
+					'value': [{'v': false}, {'v': true}],
+					'tooltip': 'If this service needs to be aware of the location of SOAJS controllers',
 					'required': true
 				},
 				{
