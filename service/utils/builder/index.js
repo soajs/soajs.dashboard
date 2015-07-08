@@ -34,10 +34,10 @@ var lib = {
         }
     },
     getDocker: function (dockerInfo, config) {
-        if(dockerInfo.socketPath){
-            var docker = new Docker({socketPath : dockerInfo.socketPath});
+        if (dockerInfo.socketPath) {
+            var docker = new Docker({socketPath: dockerInfo.socketPath});
         }
-        else{
+        else {
             var docker = new Docker({
                 host: dockerInfo.host,
                 port: dockerInfo.port,
@@ -207,9 +207,15 @@ var lib = {
                                 "tpl": param.dockerTpl
                             }, function (err) {
                                 if (err) return cb(err.message);
-                                lib.writeScripts({"loc": rootFolder + "FILES/", "config": param.config}, function (err) {
+                                lib.writeScripts({
+                                    "loc": rootFolder + "FILES/",
+                                    "config": param.config
+                                }, function (err) {
                                     if (err) return cb(err.message);
-                                    lib.writeProfiles({"loc": rootFolder + "FILES/", "config": param.config}, function (err) {
+                                    lib.writeProfiles({
+                                        "loc": rootFolder + "FILES/",
+                                        "config": param.config
+                                    }, function (err) {
                                         if (err) return cb(err.message);
                                         handleServiceFiles(path, rootFolder, serviceInfo);
                                     });
@@ -324,11 +330,11 @@ module.exports = function (config, req, dockerInfo, maintenanceInc, cb) {
         fs.createReadStream(files[fileName].path)
             .pipe(unzip.Extract({"path": config.builder.uploadDir + srvTmpFolderName}))
             .on('close', function () {
-                createService(fileName, srvTmpFolderName, files);
+                createServiceImage(fileName, srvTmpFolderName, files);
             });
     });
 
-    function createService(fileName, srvTmpFolderName, files) {
+    function createServiceImage(fileName, srvTmpFolderName, files) {
         var params = {
             config: config,
             dockerInfo: dockerInfo,
