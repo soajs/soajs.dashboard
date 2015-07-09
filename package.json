@@ -38,6 +38,13 @@
     "soajs": "0.1.*",
     "dockerode": "*",
     "object-hash": "*",
-    "bcrypt": "*"
+    "bcrypt": "*",
+    "request" :"*",
+    "ncp": "*",
+    "rimraf": "*",
+    "mkdirp": "*",
+    "archiver": "*",
+    "formidable": "*",
+    "unzip": "*"
   }
 }
