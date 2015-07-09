@@ -14,8 +14,8 @@ function validateId(mongo, req, cb) {
 function mapPostedConfig(config) {
 	var commonFields = config.genericService.config.schema.commonFields;
 	for(var i in commonFields) {
-		if(commonFields.hasOwnProperty(i)) {
-			if(commonFields[i].hasOwnProperty('req')) {
+		if(Object.hasOwnProperty.call(commonFields, i)) {
+			if(Object.hasOwnProperty.call(commonFields[i], 'req')) {
 				commonFields[i].required = commonFields[i].req;
 				delete commonFields[i].req;
 			}
@@ -27,7 +27,7 @@ function mapPostedConfig(config) {
 
 		for(var j = 0; j < formConfig.length; j++) {
 			for(var field in formConfig[j]) {
-				if(formConfig[j].hasOwnProperty(field)) {
+				if(Object.hasOwnProperty.call(formConfig[j],field)) {
 					if(field === 'req') {
 						formConfig[j].required = formConfig[j]['req'];
 						delete formConfig[j]['req'];

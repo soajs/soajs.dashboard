@@ -8,7 +8,7 @@ function extractAPIsList(schema) {
     var excluded = ['commonFields'];
     var apiList = [];
     for (var route in schema) {
-        if (schema.hasOwnProperty(route)) {
+        if (Object.hasOwnProperty.call(schema, route)) {
             if (excluded.indexOf(route) !== -1) {
                 continue;
             }

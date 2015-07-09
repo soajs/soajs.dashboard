@@ -36,7 +36,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 		if(params.headers) {
 			for(var h in params.headers) {
-				if(params.headers.hasOwnProperty(h)) {
+				if(Object.hasOwnProperty.call(params.headers, h)) {
 					options.headers[h] = params.headers[h];
 				}
 			}
