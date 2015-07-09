@@ -582,13 +582,17 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
-    function infoHost(currentScope, env, serviceName, oneHost, serviceInfo) {
+    function infoHost(currentScope, env, serviceName, oneHost, serviceIno){
+
+    }
+
+    function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "send",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
-                "operation": "infoHost",
+                "operation": "hostLogs",
                 "serviceHost": oneHost.ip,
                 "servicePort": oneHost.port,
                 "hostname": oneHost.hostname,
@@ -904,6 +908,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'reloadRegistry': reloadRegistry,
         'loadProvisioning': loadProvisioning,
         'removeHost': removeHost,
+        'hostLogs': hostLogs,
         'infoHost': infoHost,
         'createHost': createHost
     };

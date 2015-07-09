@@ -343,6 +343,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
 	};
 
+	$scope.hostLogs = function(env, serviceName, oneHost, serviceInfo) {
+		envHosts.hostLogs($scope, env, serviceName, oneHost, serviceInfo);
+	};
+
 	$scope.infoHost = function(env, serviceName, oneHost, serviceInfo) {
 		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
 	};
