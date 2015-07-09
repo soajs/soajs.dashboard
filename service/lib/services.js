@@ -1,8 +1,10 @@
 'use strict';
 var colName = 'services';
 var fs = require('fs');
-//var formidable = require('formidable');
-var request = require("request");
+var formidable = require('formidable');
+var util = require('util');
+var unzip = require('unzip');
+var shelljs = require('shelljs');
 
 function extractAPIsList(schema) {
     var excluded = ['commonFields'];
@@ -100,37 +102,40 @@ module.exports = {
     },
 
     "upload": function (config, mongo, req, res) {
-        //req.soajs.awareness.getHost('controller', function (host) {
-        //    var adminUserRequest = {
-        //        'uri': 'http://' + host + ':' + req.soajs.registry.services.controller.port + '/buildImages/uploadCustomService',
-        //        'headers': req.headers,
-        //        'method': 'post',
-        //        'timeout': 120000
-        //    };
-        //    req.pipe(request(adminUserRequest)).pipe(res);
-        //});
 
-        mongo.findOne("environment", {"code": "DASHBOARD"}, function (error, envRecord) {
-            if (error) {
-                return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+        var form = new formidable.IncomingForm();
+        form.encoding = 'utf-8';
+        form.uploadDir = config.uploadDir;
+        form.keepExtensions = true;
+
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                return res.jsonp(req.soajs.buildResponse({code: 616, msg: config.errors[616]}));
             }
 
-            var builder = require("../utils/builder/index");
-            builder(config, req, envRecord.deployer[envRecord.deployer.selected], envRecord.services.config.ports.maintenanceInc, function(error, data){
-                if(error){
-                    var code = 616;
-                    var msg;
-                    if(!isNaN(error)){
-                        code = error;
-                        msg = "Error Creating Image from service file.";
-                    }
-                    else{
-                        msg = error.message;
-                    }
-                    return res.json(req.soajs.buildResponse({'code': code, 'msg': msg }));
-                }
-                return res.json(req.soajs.buildResponse(null, data));
-            });
+            var fileName = Object.keys(files)[0];
+            if (!files || Object.keys(files).length === 0) {
+                fs.unlinkSync(files[fileName].path);
+                return res.jsonp(req.soajs.buildResponse({code: 616, msg: config.errors[616]}));
+            }
+
+            if (files && fileName && files[fileName].type !== 'application/zip' && files[fileName].name.indexOf(".zip") === -1) {
+                fs.unlinkSync(files[fileName].path);
+                return res.jsonp(req.soajs.buildResponse({code: 616, msg: config.errors[616]}));
+            }
+
+            var srvTmpFolderName = fields.name;
+            srvTmpFolderName = srvTmpFolderName.replace(/\s/g, '_').replace(/\W/gi, '-').toLowerCase();
+            fs.createReadStream(files[fileName].path)
+                .pipe(unzip.Extract({"path": config.uploadDir}))
+                .on('close', function () {
+                    //move the service to where it should be located eventually
+                    shelljs.cp('-Rf', config.uploadDir + files[fileName].name.replace('.zip', '') + '/*', config.workingDir + srvTmpFolderName);
+                    shelljs.rm('-rf', config.uploadDir + files[fileName].name.replace('.zip', ''));
+                    shelljs.rm('-f', files[fileName].path);
+
+                    return res.jsonp(req.soajs.buildResponse(null, true));
+                });
         });
     }
 };

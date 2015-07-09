@@ -24,23 +24,8 @@ module.exports = {
 
 	"expDateTTL": 86400000,
 
-	"builder": {
-		"FILES": "/opt/FILES/",
-		"workingDir": "/opt/tmp/",
-		"uploadDir": "/opt/uploads/",
-		"imagePrefix": "local/",
-		"certificates": __dirname + '/certs',
-		"dockerTmpl": {
-			"from": 'FROM soajsorg/soajs',
-			"maintainer": 'MAINTAINER SOAJS Team <team@soajs.org>',
-			"body": [
-				'ADD ./FILES /opt/soajs/FILES/',
-				'ENV NODE_ENV=production',
-				'RUN cd /opt/soajs/FILES && cd ./#SERVICEFOLDERNAME# && npm install && cd ../ && mv ./#SERVICEFOLDERNAME# /opt/soajs/node_modules/ && chmod +x /opt/soajs/FILES/runService.sh',
-				'EXPOSE #SERVICEPORT#',
-				'CMD ["/opt/soajs/FILES/runService.sh", "/opt/soajs/node_modules/#SERVICEFOLDERNAME#/index.js"]']
-		}
-	},
+	"uploadDir": "/Users/mikehajj/soajs/uploads/",
+	"workingDir": "/Users/mikehajj/soajs/services/",
 
 	"errors": require("./utils/errors"),
 	"schema": {

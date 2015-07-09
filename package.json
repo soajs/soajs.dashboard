@@ -40,11 +40,8 @@
     "object-hash": "*",
     "bcrypt": "*",
     "request" :"*",
-    "ncp": "*",
-    "rimraf": "*",
-    "mkdirp": "*",
-    "archiver": "*",
     "formidable": "*",
-    "unzip": "*"
+    "unzip": "*",
+    "shelljs": "*"
   }
 }
