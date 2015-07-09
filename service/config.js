@@ -27,7 +27,7 @@ module.exports = {
 	"builder": {
 		"FILES": "/opt/FILES/",
 		"workingDir": "/opt/tmp/",
-		"uploadDir": __dirname + "/uploads/",
+		"uploadDir": "/opt/uploads/",
 		"imagePrefix": "local/",
 		"certificates": __dirname + '/certs',
 		"dockerTmpl": {
