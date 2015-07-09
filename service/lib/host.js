@@ -506,19 +506,6 @@ module.exports = {
             };
 
             switch (req.soajs.inputmaskData.operation) {
-                case 'infoHost':
-                    //var shelljs = require("shelljs");
-                    //shelljs.pushd("/opt/");
-                    //shelljs.exec("npm list", function (code, output) {
-                    //    if (code === 0) {
-                    //        return res.jsonp(req.soajs.buildResponse(null, output));
-                    //    }
-                    //    else{
-                    //        return res.jsonp(req.soajs.buildResponse({"code": '', "msg": '' }));
-                    //    }
-                    //});
-                    return res.jsonp(req.soajs.buildResponse(null, true));
-                    break;
                 case 'hostLogs':
                     mongo.findOne("docker", criteria, function (error, response) {
                         if (error) {
