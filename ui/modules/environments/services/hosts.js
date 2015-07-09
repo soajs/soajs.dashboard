@@ -583,16 +583,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function infoHost(currentScope, env, serviceName, oneHost, serviceIno){
-
-    }
-
-    function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "send",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
-                "operation": "hostLogs",
+                "operation": "hostInfo",
                 "serviceHost": oneHost.ip,
                 "servicePort": oneHost.port,
                 "hostname": oneHost.hostname,
@@ -620,6 +616,54 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     windowClass: 'large-Modal',
                     controller: function ($scope, $modalInstance) {
                         $scope.title = "Host Information of " + oneHost.name;
+                        $scope.data = remove_special(response.data);
+
+                        setTimeout(function () {
+                            highlightMyCode()
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "hostLogs",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, response) {
+            if (error) {
+                serviceInfo.waitMessage.type = 'danger';
+                serviceInfo.waitMessage.message = "error executing get Host Logs Operation for " +
+                    oneHost.name +
+                    " on ip: " +
+                    oneHost.ip +
+                    ":" +
+                    oneHost.port +
+                    " @ " +
+                    new Date().toISOString();
+                currentScope.closeWaitMessage(serviceInfo);
+            }
+            else {
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: false,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + oneHost.name;
                         $scope.data = remove_special(response.data);
 
                         setTimeout(function () {
