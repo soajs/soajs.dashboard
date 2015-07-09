@@ -3541,6 +3541,35 @@ describe("DASHBOARD UNIT TSTNS", function() {
 	});
 
 	describe("hosts tests", function() {
+		before(function(done){
+			mongo.remove('hosts', {}, function(error){
+				assert.ifError(error);
+				var docs = [
+					{
+						"env": "dev",
+						"name": "controller",
+						"ip": "127.0.0.1",
+						'hostname': 'controller_dev'
+					},
+					{
+						"env": "dev",
+						"name": "dashboard",
+						"ip": "127.0.0.1",
+						'hostname': 'dashboard_dev'
+					},
+					{
+						"env": "dev",
+						"name": "urac",
+						"ip": "127.0.0.1",
+						'hostname': 'urac_dev'
+					}
+				];
+				mongo.insert('hosts', docs, function(error){
+					assert.ifError(error);
+					done();
+				});
+			});
+		});
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function() {
 
