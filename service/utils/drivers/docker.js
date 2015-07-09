@@ -7,11 +7,12 @@ var lib = {
     "getDeployer": function (deployerConfig) {
         var config = utils.cloneObj(deployerConfig);
         delete config.driver;
+        var docker;
         if (config.socketPath) {
-            var docker = new Docker({socketPath: config.socketPath});
+            docker = new Docker({socketPath: config.socketPath});
         }
         else {
-            var docker = new Docker({
+            docker = new Docker({
                 host: config.host,
                 port: config.port,
                 ca: fs.readFileSync(__dirname + '/../certs/ca.pem'),
@@ -88,7 +89,7 @@ var deployer = {
                         stream.destroy();
                         var out = req.soajs.buildResponse(null, {'data': data});
                         return res.json(out);
-                    })
+                    });
                 }
             });
     }

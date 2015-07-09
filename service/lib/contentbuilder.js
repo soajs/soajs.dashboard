@@ -61,17 +61,19 @@ function compareIMFV(oldIMFV, newIMFV) {
 
 function compareAPISFields(oldAPIs, newAPIs) {
 	for(var route in newAPIs) {
-		if(route === 'commonFields') {
-			continue;
-		}
-		var oldFields = oldAPIs[route].commonFields;
-		var newFields = newAPIs[route].commonFields;
+		if(Object.hasOwnProperty.call(newAPIs, route)){
+			if(route === 'commonFields') {
+				continue;
+			}
+			var oldFields = oldAPIs[route].commonFields;
+			var newFields = newAPIs[route].commonFields;
 
-		if(oldAPIs[route]) {
-			//compare fields
-			if(oldFields && newFields) {
-				if(oldFields.length !== newFields.length || !oldFields.every(function(u, i) { return u === newFields[i]; })) {
-					return true;
+			if(oldAPIs[route]) {
+				//compare fields
+				if(oldFields && newFields) {
+					if(oldFields.length !== newFields.length || !oldFields.every(function(u, i) { return u === newFields[i]; })) {
+						return true;
+					}
 				}
 			}
 		}
@@ -91,10 +93,12 @@ function compareAPIs(oldAPIs, newAPIs) {
 			}
 			else {
 				for(var wfStep in newAPIs[route].workflow) {
-					var hash1 = objecthash(oldAPIs[route].workflow[wfStep]);
-					var hash2 = objecthash(newAPIs[route].workflow[wfStep]);
-					if(hash1 !== hash2) {
-						return true;
+					if(Object.hasOwnProperty.call(newAPIs[route].workflow, wfStep)){
+						var hash1 = objecthash(oldAPIs[route].workflow[wfStep]);
+						var hash2 = objecthash(newAPIs[route].workflow[wfStep]);
+						if(hash1 !== hash2) {
+							return true;
+						}
 					}
 				}
 			}
@@ -104,13 +108,14 @@ function compareAPIs(oldAPIs, newAPIs) {
 }
 
 function compareUI(oldUI, newUI) {
+	var columnHash1, columnHash2;
 
 	if(oldUI.list.columns.length !== newUI.list.columns.length) {
 		return true;
 	}
 	for(var column = 0; column < newUI.list.columns.length; column++) {
-		var columnHash1 = objecthash(newUI.list.columns[column]);
-		var columnHash2 = objecthash(oldUI.list.columns[column]);
+		columnHash1 = objecthash(newUI.list.columns[column]);
+		columnHash2 = objecthash(oldUI.list.columns[column]);
 		if(columnHash1 !== columnHash2) {
 			return true;
 		}
@@ -120,8 +125,8 @@ function compareUI(oldUI, newUI) {
 		return true;
 	}
 	for(var field = 0; field < newUI.form.add.length; field++) {
-		var columnHash1 = objecthash(newUI.form.add[field]);
-		var columnHash2 = objecthash(oldUI.form.add[field]);
+		columnHash1 = objecthash(newUI.form.add[field]);
+		columnHash2 = objecthash(oldUI.form.add[field]);
 		if(columnHash1 !== columnHash2) {
 			return true;
 		}
@@ -132,8 +137,8 @@ function compareUI(oldUI, newUI) {
 	}
 	field = 0;
 	for(field; field < newUI.form.update.length; field++) {
-		var columnHash1 = objecthash(newUI.form.update[field]);
-		var columnHash2 = objecthash(oldUI.form.update[field]);
+		columnHash1 = objecthash(newUI.form.update[field]);
+		columnHash2 = objecthash(oldUI.form.update[field]);
 		if(columnHash1 !== columnHash2) {
 			return true;
 		}
@@ -207,7 +212,7 @@ module.exports = {
 			mongo.insert(collectionName, record, true, function(error) {
 				if(error) { return res.jsonp(req.soajs.buildResponse({'code': 600, 'msg': config.errors['600']})); }
 				return res.jsonp(req.soajs.buildResponse(null, true));
-			})
+			});
 		});
 	},
 

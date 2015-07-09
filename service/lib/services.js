@@ -130,7 +130,7 @@ module.exports = {
                     return res.json(req.soajs.buildResponse({'code': code, 'msg': msg }));
                 }
                 return res.json(req.soajs.buildResponse(null, data));
-            })
+            });
         });
     }
 };

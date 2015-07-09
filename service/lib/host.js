@@ -22,7 +22,7 @@ function deployNginx(config, mongo, req, res) {
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
 
 			if(oldNginx) {
-				removeOldNginx(oldNginx, envRecord)
+				removeOldNginx(oldNginx, envRecord);
 			}
 			else {
 				req.soajs.log.debug("NO old Nginx container found, building new nginx...");

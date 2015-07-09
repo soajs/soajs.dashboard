@@ -34,11 +34,12 @@ var lib = {
         }
     },
     getDocker: function (dockerInfo, config) {
+        var docker;
         if (dockerInfo.socketPath) {
-            var docker = new Docker({socketPath: dockerInfo.socketPath});
+            docker = new Docker({socketPath: dockerInfo.socketPath});
         }
         else {
-            var docker = new Docker({
+            docker = new Docker({
                 host: dockerInfo.host,
                 port: dockerInfo.port,
                 ca: fs.readFileSync(config.builder.certificates + '/ca.pem'),
