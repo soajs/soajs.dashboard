@@ -29,7 +29,7 @@ describe("importing sample data", function () {
                 require("./soajs.dashboard.locked.test.js");
                 require("./soajs.dashboard.test.js");
                 require("./soajs.contentbuilder.test.js");
-                require("./soajs.deploy.test.js");
+                //require("./soajs.deploy.test.js");
                 done();
             }, 1000);
         }, 1000);

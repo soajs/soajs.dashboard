@@ -71,6 +71,19 @@ describe("DASHBOARD Deploy UNIT TSTNS", function() {
 			"code": "DEV",
 			"description": 'this is a dummy description',
 			"port": 8080,
+			"profile": "/opt/soajs/FILES/profiles/single.js",
+			"deployer": {
+				"selected": "boot2docker",
+				"unix": {
+					'socketPath': '/var/run/docker.sock',
+					'driver': 'docker'
+				},
+				"boot2docker": {
+					'host': '192.168.59.103',
+					'port': 2376,
+					'driver': 'docker'
+				}
+			},
 			"dbs": {
 				"clusters": {
 					"cluster1": {
@@ -206,25 +219,10 @@ describe("DASHBOARD Deploy UNIT TSTNS", function() {
 			var params = {
 				"form": {
 					'envCode': 'DEV',
-					'profile': __dirname + '/../profiles/replica3.js',
-					'nodesNumber': 3
+					'number': 3
 				}
 			};
 			executeMyRequest(params, 'hosts/deployController', 'post', function(body) {
-				assert.ok(body.result);
-				console.log(body.data);
-				done();
-			});
-		});
-
-		it("success - calls deployNginx", function(done) {
-			var params = {
-				"form": {
-					'envCode': 'DEV',
-					'containerNames': ['controllerProxy01', 'controllerProxy02', 'controllerProxy03']
-				}
-			};
-			executeMyRequest(params, 'hosts/deployNginx', 'post', function(body) {
 				assert.ok(body.result);
 				console.log(body.data);
 				done();
@@ -242,7 +240,6 @@ describe("DASHBOARD Deploy UNIT TSTNS", function() {
 			var params = {
 				"form": {
 					'envCode': 'DEV',
-					'profile': __dirname + '/../profiles/replica3.js',
 					'image': 'soajsorg/dashboard'
 				}
 			};
@@ -482,8 +479,8 @@ describe("DASHBOARD Deploy UNIT TSTNS", function() {
 		it("success - calls deployService via gc", function(done) {
 			var params = {
 				"form": {
+					'image': 'soajsorg/gcs',
 					'envCode': 'DEV',
-					'profile': __dirname + '/../profiles/replica3.js',
 					'gcName': 'pages',
 					'gcVersion': 1
 				}

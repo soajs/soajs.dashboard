@@ -71,6 +71,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 		var validEnvRecord = {
 			"code": "DEV",
 			"description": 'this is a dummy description',
+			"profile": "single",
+			"port": 80,
+			"deployer": {
+				"selected": "unix",
+				"unix": {
+					'socketPath': '/var/run/docker.sock',
+					'driver': 'docker'
+				}
+			},
 			"dbs": {
 				"clusters": {
 					"cluster1": {
@@ -263,7 +272,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					}
 				};
 				executeMyRequest(params, 'environment/add', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
+					assert.equal(body.errors.details[0].code, 172);
 
 					done();
 				});
@@ -285,9 +294,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
+					delete envRecord.profile;
 					var tester = util.cloneObj(validEnvRecord);
 					tester.dbs = {clusters: {}, config: {}, databases: {}};
 					delete tester.services.config.session.proxy;
+					delete tester.profile;
 					assert.deepEqual(envRecord, tester);
 					done();
 				});
@@ -301,6 +312,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					qs: {"id": envId},
 					form: {
+						"profile":"single",
+						"port": 80,
+						"deployer":{
+							"selected": "unix",
+							"unix": {
+								'socketPath': '/var/run/docker.sock',
+								'driver': 'docker'
+							}
+						},
 						"description": 'this is a dummy updated description',
 						"services": data2.services
 					}
@@ -317,6 +337,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					qs: {"id": envId},
 					form: {
+						"profile":"single",
+						"port": 80,
+						"deployer":{
+							"selected": "unix",
+							"unix": {
+								'socketPath': '/var/run/docker.sock',
+								'driver': 'docker'
+							}
+						},
 						"description": 'this is a dummy updated description',
 						"services": data2.services
 					}
@@ -331,6 +360,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					qs: {"id": envId},
 					form: {
+						"profile":"single",
+						"port": 80,
+						"deployer":{
+							"selected": "unix",
+							"unix": {
+								'socketPath': '/var/run/docker.sock',
+								'driver': 'docker'
+							}
+						},
 						"description": 'this is a dummy updated description',
 						"services": validEnvRecord.services
 					}
@@ -350,7 +388,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
+					assert.deepEqual(body.errors.details[0].code,172);
 					done();
 				});
 			});
@@ -359,6 +397,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					qs: {"id": "aaaabbbbccc"},
 					form: {
+						"profile":"single",
+						"port": 80,
+						"deployer":{
+							"selected": "unix",
+							"unix": {
+								'socketPath': '/var/run/docker.sock',
+								'driver': 'docker'
+							}
+						},
 						"description": 'this is a dummy description',
 						"services": validEnvRecord.services
 					}
@@ -374,10 +421,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
+					delete envRecord.profile;
 					var tester = util.cloneObj(validEnvRecord);
 					tester.dbs = {clusters: {}, config: {}, databases: {}};
 					tester.description = "this is a dummy updated description";
 					delete tester.services.config.session.proxy;
+					delete tester.profile;
 					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
@@ -451,9 +500,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					body.data.forEach(function(oneEnv){
 						if(oneEnv.code === 'DEV'){
 							delete oneEnv._id;
+							delete oneEnv.profile;
 							var tester = util.cloneObj(validEnvRecord);
 							tester.dbs = {clusters: {}, config: {}, databases: {}};
 							delete tester.services.config.session.proxy;
+							delete tester.profile;
 							assert.deepEqual(oneEnv, tester);
 						}
 					});
@@ -3543,11 +3594,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 
-		describe("remove Hosts", function() {
+		describe.skip("remove Hosts", function() {
 			it('success - will remove host', function(done) {
-				executeMyRequest({qs: {'env': 'dev', 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
-					assert.ok(body.data);
-					done();
+				mongo.insert('docker', {'env': 'dev', 'hostname': hosts[0].hostname, 'cid': '1234abcd'}, function(error){
+					assert.ifError(error);
+					executeMyRequest({qs: {'env': 'dev', 'hostname': hosts[0].hostname, 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
+						console.log(JSON.stringify(body));
+						assert.ok(body.data);
+						done();
+					});
 				});
 			});
 		});
@@ -3567,7 +3622,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					}
 				};
 				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceHost"});
+					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: hostname"});
 					done();
 				});
 			});
@@ -3576,6 +3631,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'dashboard_dev',
 						'serviceName': 'dashboard',
 						'servicePort': 4003,
 						'operation': 'awarenessStat',
@@ -3592,6 +3648,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'controller_dev',
 						'serviceName': 'controller',
 						'servicePort': 4003,
 						'operation': 'loadProvision',
@@ -3608,6 +3665,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'dashboards_dev',
 						'serviceName': 'dashboard',
 						'servicePort': 4003,
 						'operation': 'heartbeat',
@@ -3624,6 +3682,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'invalidService_dev',
 						'serviceName': 'invalidService',
 						'servicePort': 4000,
 						'operation': 'heartbeat',
@@ -3640,6 +3699,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'controller_dev',
 						'serviceName': 'controller',
 						'servicePort': 4000,
 						'operation': 'heartbeat',
@@ -3649,6 +3709,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
 					assert.ok(body.data);
 
+					params.form.hostname = 'dashboard_dev';
 					params.form.serviceName = 'dashboard';
 					params.form.servicePort = 4003;
 					executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
@@ -3662,6 +3723,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'controller_dev',
 						'serviceName': 'controller',
 						'servicePort': 4000,
 						'operation': 'awarenessStat',
@@ -3678,6 +3740,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				var params = {
 					form: {
 						'env': 'dev',
+						'hostname': 'dashboard_dev',
 						'serviceName': 'dashboard',
 						'servicePort': 4003,
 						'operation': 'loadProvision',
@@ -3716,14 +3779,25 @@ describe("DASHBOARD UNIT TSTNS", function() {
 			});
 		});
 
-		describe("update servce test", function() {
+		describe("update service test", function() {
 			it("success - will update service", function(done) {
 				var params = {
 					qs: {"name": "dashboard"},
 					form: {
 						"extKeyRequired": true,
 						"requestTimeout": 40,
-						"requestTimeoutRenewal": 8
+						"requestTimeoutRenewal": 8,
+						"awareness": true,
+						"port": 4003,
+						"image": "soajsorg/dashboard",
+						"apis": [
+							{
+								"l": "List Environments",
+								"v": "/environment/list",
+								"group": "Environment",
+								"groupMain": true
+							}
+						]
 					}
 				};
 				executeMyRequest(params, 'services/update', 'post', function(body) {
@@ -3741,7 +3815,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					}
 				};
 				executeMyRequest(params, 'services/update', 'post', function(body) {
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: extKeyRequired"});
+					assert.deepEqual(body.errors.details[0].code, 172);
 					done();
 				});
 			});
@@ -3752,7 +3826,18 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					form: {
 						"extKeyRequired": true,
 						"requestTimeout": 40,
-						"requestTimeoutRenewal": 8
+						"requestTimeoutRenewal": 8,
+						"awareness": true,
+						"port": 4003,
+						"image": "soajsorg/dashboard",
+						"apis": [
+							{
+								"l": "List Environments",
+								"v": "/environment/list",
+								"group": "Environment",
+								"groupMain": true
+							}
+						]
 					}
 				};
 				executeMyRequest(params, 'services/update', 'post', function(body) {
@@ -3771,7 +3856,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
 						'extKeyRequired': true,
 						'port': 4003,
 						'requestTimeout': 40,
-						'requestTimeoutRenewal': 8
+						'requestTimeoutRenewal': 8,
+						"awareness": true,
+						"image": "soajsorg/dashboard"
 					});
 					done();
 				});
@@ -3783,7 +3870,18 @@ describe("DASHBOARD UNIT TSTNS", function() {
 					form: {
 						"extKeyRequired": true,
 						"requestTimeout": 30,
-						"requestTimeoutRenewal": 5
+						"requestTimeoutRenewal": 5,
+						"awareness": true,
+						"port": 4003,
+						"image": "soajsorg/dashboard",
+						"apis": [
+							{
+								"l": "List Environments",
+								"v": "/environment/list",
+								"group": "Environment",
+								"groupMain": true
+							}
+						]
 					}
 				};
 				executeMyRequest(params, 'services/update', 'post', function(body) {
@@ -4209,6 +4307,15 @@ describe("DASHBOARD UNIT TSTNS", function() {
 				delete record._id;
 				assert.deepEqual(record, {
 					"code": "DEV",
+					"port": 80,
+					"profile": "/opt/soajs/FILES/profiles/single.js",
+					"deployer":{
+						"selected": "unix",
+						"unix": {
+							"driver": "docker",
+							"socketPath": "/var/run/docker.sock"
+						}
+					},
 					"description": "this is a dummy description",
 					"services": {
 						"controller": {
