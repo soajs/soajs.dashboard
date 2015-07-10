@@ -354,10 +354,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                                     controller: function ($scope, $modalInstance) {
                                         $scope.title = "Custom Service Image Created";
                                         $scope.text = "<p>Image Created from uploaded service File and build Logs are displayed in the box below.<br />Scroll to the bottom to perform additional operations.<br /></p>";
-                                        $scope.data = response.data;
-                                        setTimeout(function () {
-                                            highlightMyCode()
-                                        }, 500);
 
                                         $scope.deploy = function () {
                                             $modalInstance.dismiss('deploy');

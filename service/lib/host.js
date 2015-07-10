@@ -88,6 +88,7 @@ function deployNginx(config, mongo, req, res) {
 
             var dockerParams = {
                 "env": req.soajs.inputmaskData.envCode.toLowerCase(),
+                "name": "nginxapi",
                 "image": config.images.nginx,
                 "port": envRecord.port,
                 "variables": [
@@ -154,13 +155,24 @@ module.exports = {
             }
 
             var dockerParams = {
-                "image": config.images.controller,
+                "image": config.images.services,
+                "name": "controller",
                 "env": req.soajs.inputmaskData.envCode.toLowerCase(),
                 "profile": regFile,
                 "links": list,
                 "variables": [
                     "SOAJS_SRV_AUTOREGISTER=false",
                     "NODE_ENV=production"
+                ],
+                "Binds": [
+                    config.workingDir + "controller:/opt/soajs/controller",
+                    config.profiles + ":/opt/soajs/FILES/profiles",
+                    "/var/run/docker.sock:/var/run/docker.sock"
+                ],
+                "Cmd": [
+                    'bash',
+                    '-c',
+                    'cd /opt/soajs/controller/; npm install; node .'
                 ]
             };
 
@@ -253,22 +265,35 @@ module.exports = {
                 links.push("soajsData:dataproxy" + pad(i + 1));
             }
 
+            serviceName = req.soajs.inputmaskData.name;
+            if (req.soajs.inputmaskData.gcName) {
+                serviceName = req.soajs.inputmaskData.gcName;
+            }
+
             var dockerParams = {
                 "env": req.soajs.inputmaskData.envCode.toLowerCase(),
+                "name": serviceName,
                 "profile": regFile,
                 "links": links,
-                "image": req.soajs.inputmaskData.image,
-                "variables": []
+                "image": config.images.services,
+                "variables": [],
+                "Binds": [
+                    config.workingDir + serviceName + ":/opt/soajs/" + serviceName,
+                    config.profiles + ":/opt/soajs/FILES/profiles",
+                    "/var/run/docker.sock:/var/run/docker.sock"
+                ],
+                "Cmd": [
+                    'bash',
+                    '-c',
+                    'cd /opt/soajs/' + serviceName + '/; npm install; node .'
+                ]
             };
-
-            serviceName = req.soajs.inputmaskData.name;
 
             if (req.soajs.inputmaskData.gcName) {
                 dockerParams.variables = [
                     "SOAJS_GC_NAME=" + req.soajs.inputmaskData.gcName,
                     "SOAJS_GC_VERSION=" + req.soajs.inputmaskData.gcVersion
                 ];
-                serviceName = req.soajs.inputmaskData.gcName;
             }
 
             dockerParams.variables.push("SOAJS_SRV_AUTOREGISTER=false");

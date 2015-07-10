@@ -583,51 +583,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function infoHost(currentScope, env, serviceName, oneHost, serviceInfo){
-        getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
-            "routeName": "/dashboard/hosts/maintenanceOperation",
-            "data": {
-                "serviceName": oneHost.name,
-                "operation": "infoHost",
-                "serviceHost": oneHost.ip,
-                "servicePort": oneHost.port,
-                "hostname": oneHost.hostname,
-                "env": env
-            }
-        }, function (error, response) {
-            if (error) {
-                serviceInfo.waitMessage.type = 'danger';
-                serviceInfo.waitMessage.message = "error executing get Host Info Operation for " +
-                    oneHost.name +
-                    " on ip: " +
-                    oneHost.ip +
-                    ":" +
-                    oneHost.port +
-                    " @ " +
-                    new Date().toISOString();
-                currentScope.closeWaitMessage(serviceInfo);
-            }
-            else {
-                $modal.open({
-                    templateUrl: "logBox.html",
-                    size: 'lg',
-                    backdrop: false,
-                    keyboard: false,
-                    windowClass: 'large-Modal',
-                    controller: function ($scope, $modalInstance) {
-                        $scope.title = "Host Information of " + oneHost.name;
-                        $scope.data = remove_special(response.data);
 
-                        setTimeout(function () {
-                            highlightMyCode()
-                        }, 500);
-                        $scope.ok = function () {
-                            $modalInstance.dismiss('ok');
-                        };
-                    }
-                });
-            }
-        });
     }
 
     function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
@@ -864,13 +820,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 for (var i = 0; i < postServiceList.length; i++) {
                     if (postServiceList[i].name === formData.service) {
                         if (postServiceList[i].image) {
-                            params.image = postServiceList[i].image;
                             params.name = formData.service;
                         }
                         else {
                             params.gcName = postServiceList[i].gcName;
                             params.gcVersion = postServiceList[i].gcVersion;
-                            params.image = environmentsConfig.gcImage;
                         }
                         port = postServiceList[i].port;
                     }

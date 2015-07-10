@@ -39,7 +39,6 @@
     "dockerode": "*",
     "object-hash": "*",
     "bcrypt": "*",
-    "request" :"*",
     "formidable": "*",
     "unzip": "*",
     "shelljs": "*"

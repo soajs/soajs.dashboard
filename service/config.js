@@ -11,10 +11,10 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
-	"profiles": "/opt/soajs/FILES/profiles/",
+	"profiles": "/Users/mikehajj/soajs/FILES/profiles/",
 	"images":{
 		"nginx": 'soajsorg/nginxapi',
-		"controller": "soajsorg/controller"
+		"services": "soajsorg/soajs"
 	},
 
 	"hasher": {
@@ -24,7 +24,7 @@ module.exports = {
 
 	"expDateTTL": 86400000,
 
-	"uploadDir": "/Users/mikehajj/soajs/uploads/",
+	"uploadDir": "/opt/soajs/uploads/",
 	"workingDir": "/Users/mikehajj/soajs/services/",
 
 	"errors": require("./utils/errors"),
@@ -1149,13 +1149,6 @@ module.exports = {
 				"group": "Hosts"
 			},
 			"commonFields": ['envCode'],
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
-				}
-			},
 			"name": {
 				"required": false,
 				"source": ['body.name'],

@@ -18,24 +18,18 @@ function getDeployer(config) {
 
 var deployer = {
     "createContainer": function (deployerConfig, params, cb) {
+        var name = params.name;
         var environment = params.env;
         var dockerImage = params.image;
-        var profile = params.profile; //"/opt/soajs/FILES/profiles/single.js";
-        var links = params.links; //["soajsData01:dataProxy01"]; || ["soajsData01:dataProxy01","soajsData02:dataProxy02","soajsData03:dataProxy03"];
+        var profile = params.profile;
+        var links = params.links;
 
         generateUniqueId(8, function (err, uid) {
             if (err) {
                 return cb(err);
             }
 
-            var index = dockerImage.lastIndexOf("/");
-            var containerName = "";
-            if (index !== -1) {
-                containerName = dockerImage.substr(index + 1);
-            } else {
-                containerName = dockerImage;
-            }
-            containerName = containerName + "_" + uid + "_" + environment;
+            var containerName = name + "_" + uid + "_" + environment;
 
             var env = [
                 "SOAJS_ENV=" + environment,
@@ -54,7 +48,7 @@ var deployer = {
             }
 
             var deployer = getDeployer(deployerConfig);
-            deployer.createContainer(deployerConfig, {
+            var options = {
                 Image: dockerImage,
                 name: containerName,
                 "Env": env,
@@ -65,7 +59,17 @@ var deployer = {
                     "PortBindings": port,
                     "PublishAllPorts": true
                 }
-            }, cb);
+            };
+            if (params.Cmd) {
+                options.Cmd = params.Cmd;
+            }
+            if (params.Binds) {
+                options.HostConfig.Binds = params.Binds;
+            }
+            if(params.Volumes){
+                options.Volumes = params.Volumes;
+            }
+            deployer.createContainer(deployerConfig, options, cb);
         });
     },
 
