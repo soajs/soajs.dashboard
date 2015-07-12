@@ -96,6 +96,7 @@ var errors = {
 	"614": "Service exists!",
 	"615": "Error adding service host!",
 	"616": "Error Uploading File.",
+	"617": "Error Registering Service.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",

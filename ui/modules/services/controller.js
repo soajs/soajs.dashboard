@@ -332,9 +332,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                         });
                         var soajsAuthCookie = $cookieStore.get('soajs_auth');
                         $scope.form.uploadFileToUrl(Upload, formData.upload_0, "/dashboard/services/upload", {
-                            "data": {
-                                "name": formData.name
-                            },
                             "headers": {
                                 "soajsauth": soajsAuthCookie
                             }

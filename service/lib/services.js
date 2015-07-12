@@ -125,8 +125,6 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({code: 616, msg: config.errors[616]}));
             }
 
-            var srvTmpFolderName = fields.name;
-            srvTmpFolderName = srvTmpFolderName.replace(/\s/g, '_').replace(/\W/gi, '-').toLowerCase();
             fs.createReadStream(files[fileName].path)
                 .pipe(unzip.Extract({"path": config.uploadDir}))
                 .on('close', function () {
@@ -137,7 +135,7 @@ module.exports = {
                     var configFile = tmpPath + "/config.js";
                     var packageFile = tmpPath + "/package.json";
 
-                    checkIFFile(configFile, validatorSchemas.config, function (error) {
+                    checkIFFile(configFile, validatorSchemas.config, function (error, loadedConfigFile) {
                         if (error) {
                             shelljs.rm('-rf', tmpPath);
                             shelljs.rm('-f', files[fileName].path);
@@ -151,11 +149,12 @@ module.exports = {
                                 return res.json(req.soajs.buildResponse({code: 618, msg: error.message}));
                             }
                             req.soajs.log.debug(packageFile + "is valid");
+
                             //move the service to where it should be located eventually
-                            req.soajs.log.debug("copying upload module:" + tmpPath + " to " + config.workingDir + srvTmpFolderName);
+                            req.soajs.log.debug("copying upload module:" + tmpPath + " to " + config.serviceDir + loadedConfigFile.serviceName);
                             ncp.limit = 16;
-                            ncp(tmpPath, config.workingDir + srvTmpFolderName, function(err){
-                                if(err){
+                            ncp(tmpPath, config.serviceDir + loadedConfigFile.serviceName, function (err) {
+                                if (err) {
                                     shelljs.rm('-rf', tmpPath);
                                     shelljs.rm('-f', files[fileName].path);
                                     return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
@@ -164,7 +163,29 @@ module.exports = {
                                 req.soajs.log.debug("cleaned up upload and tmp files");
                                 shelljs.rm('-rf', tmpPath);
                                 shelljs.rm('-f', files[fileName].path);
-                                return res.jsonp(req.soajs.buildResponse(null, true));
+
+                                var prefix = config.images.services.split("/")[0];
+                                var doc = {
+                                    '$set': {
+                                        'port': loadedConfigFile.servicePort,
+                                        'extKeyRequired': loadedConfigFile.extKeyRequired,
+                                        "awareness": loadedConfigFile.awareness || false,
+                                        "requestTimeout": loadedConfigFile.requestTimeout,
+                                        "requestTimeoutRenewal": loadedConfigFile.requestTimeoutRenewal,
+                                        "image": prefix + "/" + loadedConfigFile.serviceName,
+                                        "apis": extractAPIsList(loadedConfigFile.schema)
+                                    }
+                                };
+                                mongo.update("services", {'name' : loadedConfigFile.serviceName}, doc, {'upsert': true }, function (error) {
+                                    if (error) {
+                                        return res.jsonp(req.soajs.buildResponse({
+                                            'code': 617,
+                                            'msg': config.errors[617]
+                                        }));
+                                    }
+
+                                    return res.jsonp(req.soajs.buildResponse(null, true));
+                                });
                             });
                         });
                     });
@@ -200,10 +221,10 @@ module.exports = {
             if (require.resolve(filePath)) {
                 delete require.cache[require.resolve(filePath)];
             }
-            var packageJSON = require(filePath);
+            var loadedFile = require(filePath);
 
             //validate package.json
-            var check = validator.validate(packageJSON, schema);
+            var check = validator.validate(loadedFile, schema);
             if (!check.valid) {
                 check.errors.forEach(function (oneError) {
                     errMsgs.push(oneError.stack);
@@ -212,15 +233,56 @@ module.exports = {
             }
 
             if (filePath.indexOf("package.json") === -1) {
-                return cb(null, true);
+                mongo.findOne('services', {
+                    'port': loadedFile.servicePort,
+                    'name': {$ne: loadedFile.serviceName}
+                }, function (error, oneRecord) {
+                    if (error) {
+                        return cb(error);
+                    }
+
+                    if (oneRecord) {
+                        return cb(new Error("Another service with the same port exists"));
+                    }
+
+                    return cb(null, loadedFile);
+                });
             }
             else {
-                packageJSON.peerDependencies = {
-                    "soajs": packageJSON.dependencies.soajs
+                loadedFile.peerDependencies = {
+                    "soajs": loadedFile.dependencies.soajs
                 };
-                delete packageJSON.dependencies.soajs;
-                fs.writeFile(filePath, JSON.stringify(packageJSON), "utf8", cb);
+                delete loadedFile.dependencies.soajs;
+                fs.writeFile(filePath, JSON.stringify(loadedFile), "utf8", cb);
             }
+        }
+
+        function extractAPIsList(schema) {
+            var excluded = ['commonFields'];
+            var apiList = [];
+            for(var route in schema) {
+                if(Object.hasOwnProperty.call(schema, route)) {
+                    if(excluded.indexOf(route) !== -1) {
+                        continue;
+                    }
+
+                    var oneApi = {
+                        'l': schema[route]._apiInfo.l,
+                        'v': route
+                    };
+
+                    if(schema[route]._apiInfo.group) {
+                        oneApi.group = schema[route]._apiInfo.group;
+                    }
+
+                    if(schema[route]._apiInfo.groupMain) {
+                        oneApi.groupMain = schema[route]._apiInfo.groupMain;
+                    }
+
+                    apiList.push(oneApi);
+                }
+            }
+            return apiList;
         }
     }
 };

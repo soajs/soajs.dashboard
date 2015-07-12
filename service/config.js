@@ -25,7 +25,8 @@ module.exports = {
 	"expDateTTL": 86400000,
 
 	"uploadDir": "/opt/soajs/uploads/",
-	"workingDir": "/opt/soajs/services/",
+	"serviceDir": "/opt/soajs/services/",
+	"workingDir": "/Users/soajs/services/",
 
 	"errors": require("./utils/errors"),
 	"schema": {
