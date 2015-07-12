@@ -11,7 +11,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
-	"profiles": "/Users/mikehajj/soajs/FILES/profiles/",
+	"profiles": "/Users/soajs/FILES/profiles/",
 	"images":{
 		"nginx": 'soajsorg/nginxapi',
 		"services": "soajsorg/soajs"
@@ -25,7 +25,7 @@ module.exports = {
 	"expDateTTL": 86400000,
 
 	"uploadDir": "/opt/soajs/uploads/",
-	"workingDir": "/Users/mikehajj/soajs/services/",
+	"workingDir": "/Users/soajs/services/",
 
 	"errors": require("./utils/errors"),
 	"schema": {
