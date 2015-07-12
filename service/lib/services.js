@@ -4,6 +4,7 @@ var fs = require('fs');
 var formidable = require('formidable');
 var util = require('util');
 var unzip = require('unzip');
+var ncp = require('ncp').ncp;
 var shelljs = require('shelljs');
 
 function extractAPIsList(schema) {
@@ -129,13 +130,97 @@ module.exports = {
             fs.createReadStream(files[fileName].path)
                 .pipe(unzip.Extract({"path": config.uploadDir}))
                 .on('close', function () {
-                    //move the service to where it should be located eventually
-                    shelljs.cp('-Rf', config.uploadDir + files[fileName].name.replace('.zip', '') + '/*', config.workingDir + srvTmpFolderName);
-                    shelljs.rm('-rf', config.uploadDir + files[fileName].name.replace('.zip', ''));
-                    shelljs.rm('-f', files[fileName].path);
+                    var tmpFolder = files[fileName].name.replace('.zip', '');
+                    var tmpPath = config.uploadDir + tmpFolder;
 
-                    return res.jsonp(req.soajs.buildResponse(null, true));
+                    var validatorSchemas = require("../schemas/upload.js");
+                    var configFile = tmpPath + "/config.js";
+                    var packageFile = tmpPath + "/package.json";
+
+                    checkIFFile(configFile, validatorSchemas.config, function (error) {
+                        if (error) {
+                            shelljs.rm('-rf', tmpPath);
+                            shelljs.rm('-f', files[fileName].path);
+                            return res.json(req.soajs.buildResponse({code: 617, msg: error.message}));
+                        }
+                        req.soajs.log.debug(configFile + "is valid");
+                        checkIFFile(packageFile, validatorSchemas.package, function (error) {
+                            if (error) {
+                                shelljs.rm('-rf', tmpPath);
+                                shelljs.rm('-f', files[fileName].path);
+                                return res.json(req.soajs.buildResponse({code: 618, msg: error.message}));
+                            }
+                            req.soajs.log.debug(packageFile + "is valid");
+                            //move the service to where it should be located eventually
+                            req.soajs.log.debug("copying upload module:" + tmpPath + " to " + config.workingDir + srvTmpFolderName);
+                            ncp.limit = 16;
+                            ncp(tmpPath, config.workingDir + srvTmpFolderName, function(err){
+                                if(err){
+                                    shelljs.rm('-rf', tmpPath);
+                                    shelljs.rm('-f', files[fileName].path);
+                                    return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
+                                }
+
+                                req.soajs.log.debug("cleaned up upload and tmp files");
+                                shelljs.rm('-rf', tmpPath);
+                                shelljs.rm('-f', files[fileName].path);
+                                return res.jsonp(req.soajs.buildResponse(null, true));
+                            });
+                        });
+                    });
                 });
         });
+
+        function checkIFFile(moduleFile, schema, cb) {
+
+            fs.exists(moduleFile, function (exists) {
+                if (!exists) {
+                    return cb(new Error(moduleFile + " not Found!"));
+                }
+
+                fs.stat(moduleFile, function (err, stats) {
+                    if (err)
+                        return cb(new Error("Error reading" + moduleFile));
+                    else {
+                        if (!stats.isFile()) {
+                            return cb(new Error(moduleFile + " is not a file!"));
+                        }
+
+                        validateFile(moduleFile, schema, cb);
+                    }
+                });
+            });
+        }
+
+        function validateFile(filePath, schema, cb) {
+            var core = require("soajs/modules/soajs.core");
+            var validator = new core.validator.Validator();
+
+            var errMsgs = [];
+            if (require.resolve(filePath)) {
+                delete require.cache[require.resolve(filePath)];
+            }
+            var packageJSON = require(filePath);
+
+            //validate package.json
+            var check = validator.validate(packageJSON, schema);
+            if (!check.valid) {
+                check.errors.forEach(function (oneError) {
+                    errMsgs.push(oneError.stack);
+                });
+                return cb(new Error(errMsgs.join(" - ")));
+            }
+
+            if (filePath.indexOf("package.json") === -1) {
+                return cb(null, true);
+            }
+            else {
+                packageJSON.peerDependencies = {
+                    "soajs": packageJSON.dependencies.soajs
+                };
+                delete packageJSON.dependencies.soajs;
+                fs.writeFile(filePath, JSON.stringify(packageJSON), "utf8", cb);
+            }
+        }
     }
 };
