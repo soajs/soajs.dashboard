@@ -245,7 +245,7 @@ module.exports = {
     },
 
     "deployService": function (config, mongo, req, res) {
-        var serviceName;
+        var serviceName, serviceOrig;
         //from profile name, construct profile path and equivalently soajsData01....
         //if gc info, check if gc exists before proceeding
         mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function (err, envRecord) {
@@ -265,9 +265,10 @@ module.exports = {
                 links.push("soajsData:dataproxy" + pad(i + 1));
             }
 
-            serviceName = req.soajs.inputmaskData.name;
+            serviceOrig = serviceName = req.soajs.inputmaskData.name;
             if (req.soajs.inputmaskData.gcName) {
                 serviceName = req.soajs.inputmaskData.gcName;
+                serviceOrig = 'gcs';
             }
 
             var dockerParams = {
@@ -278,7 +279,7 @@ module.exports = {
                 "image": config.images.services,
                 "variables": [],
                 "Binds": [
-                    config.workingDir + serviceName + ":/opt/soajs/node_modules/" + serviceName,
+                    config.workingDir + serviceOrig + ":/opt/soajs/node_modules/" + serviceName,
                     config.profiles + ":/opt/soajs/FILES",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
