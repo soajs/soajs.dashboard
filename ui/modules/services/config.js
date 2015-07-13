@@ -273,14 +273,6 @@ var servicesConfig = {
 					'required': true
 				},
 				{
-					'name': "image",
-					"label": "Service Image",
-					"type": "text",
-					"value": "",
-					"required": true,
-					"tooltip": "Provide the container image name for this service."
-				},
-				{
 					"name": "apis",
 					"label": "Service APIs",
 					"type": "group",
