@@ -678,7 +678,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }
                     else {
                         services.forEach(function (oneService) {
-                            if (oneService.image && oneService.image !== '' && oneService.image !== environmentsConfig.gcImage) {
+                            var isGc = false;
+                            gcServices.forEach(function (oneGCService) {
+                                if(oneGCService.name === oneService.name){
+                                    isGc = true;
+                                }
+                            });
+                            if (!isGc) {
                                 servicesList.push({'v': oneService.name, 'l': oneService.name});
                                 postServiceList.push({
                                     "name": oneService.name,
