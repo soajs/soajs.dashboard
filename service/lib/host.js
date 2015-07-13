@@ -165,14 +165,14 @@ module.exports = {
                     "NODE_ENV=production"
                 ],
                 "Binds": [
-                    config.workingDir + "controller:/opt/soajs/controller",
+                    config.workingDir + "controller:/opt/soajs/node_modules/controller",
                     config.profiles + ":/opt/soajs/FILES/profiles",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [
                     'bash',
                     '-c',
-                    'cd /opt/soajs/controller/; npm install; node .'
+                    'cd /opt/soajs/node_modules/controller/; npm install; node .'
                 ]
             };
 
@@ -278,14 +278,14 @@ module.exports = {
                 "image": config.images.services,
                 "variables": [],
                 "Binds": [
-                    config.workingDir + serviceName + ":/opt/soajs/" + serviceName,
+                    config.workingDir + serviceName + ":/opt/soajs/node_modules/" + serviceName,
                     config.profiles + ":/opt/soajs/FILES/profiles",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [
                     'bash',
                     '-c',
-                    'cd /opt/soajs/' + serviceName + '/; npm install; node .'
+                    'cd /opt/soajs/node_modules/' + serviceName + '/; npm install; node .'
                 ]
             };
 

@@ -13,8 +13,8 @@ module.exports = {
 
 	"profiles": "/Users/soajs/FILES/profiles/",
 	"images":{
-		"nginx": 'soajsorg/nginxapi',
-		"services": "soajsorg/soajs"
+		"nginx": 'antoinehage/nginx',
+		"services": "antoinehage/soajs"
 	},
 
 	"hasher": {
