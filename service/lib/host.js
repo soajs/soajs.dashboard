@@ -166,7 +166,7 @@ module.exports = {
                 ],
                 "Binds": [
                     config.workingDir + "controller:/opt/soajs/node_modules/controller",
-                    config.profiles + ":/opt/soajs/FILES/profiles",
+                    config.profiles + ":/opt/soajs/FILES",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [
@@ -279,7 +279,7 @@ module.exports = {
                 "variables": [],
                 "Binds": [
                     config.workingDir + serviceName + ":/opt/soajs/node_modules/" + serviceName,
-                    config.profiles + ":/opt/soajs/FILES/profiles",
+                    config.profiles + ":/opt/soajs/FILES",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [

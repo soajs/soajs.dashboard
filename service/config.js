@@ -11,7 +11,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
-	"profiles": "/Users/soajs/FILES/profiles/",
+	"profiles": "/Users/soajs/FILES/",
 	"images":{
 		"nginx": 'antoinehage/nginx',
 		"services": "antoinehage/soajs"
