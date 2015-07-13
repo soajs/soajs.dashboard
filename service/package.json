@@ -35,12 +35,14 @@
     "shelljs": "*"
   },
   "dependencies": {
-    "soajs": "0.1.*",
     "dockerode": "*",
     "object-hash": "*",
     "bcrypt": "*",
     "formidable": "*",
     "unzip": "*",
     "shelljs": "*"
+  },
+  "peerDependencies": {
+    "soajs": "0.1.*"
   }
 }
