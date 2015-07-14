@@ -569,7 +569,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             }
                         }
 
-                        if(currentScope.grid.rows[e] && currentScope.grid.rows[e].hosts){
+                        if (currentScope.grid.rows[e] && currentScope.grid.rows[e].hosts) {
                             currentScope.grid.rows[e].hosts.controller.ips.forEach(function (oneCtrl) {
                                 reloadRegistry(currentScope, env, oneCtrl, function () {
                                 });
@@ -582,7 +582,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
-    function infoHost(currentScope, env, serviceName, oneHost, serviceInfo){
+    function infoHost(currentScope, env, serviceName, oneHost, serviceInfo) {
 
     }
 
@@ -669,103 +669,85 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve the list of services');
             }
             else {
-                getSendDataFromServer(currentScope, ngDataApi, {
-                    "method": "get",
-                    "routeName": "/dashboard/cb/list"
-                }, function (error, gcServices) {
-                    if (error || !gcServices) {
-                        currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve the list of generic content services');
-                    }
-                    else {
-                        services.forEach(function (oneService) {
-                            var isGc = false;
-                            gcServices.forEach(function (oneGCService) {
-                                if(oneGCService.name === oneService.name){
-                                    isGc = true;
-                                }
-                            });
-                            if (!isGc) {
-                                servicesList.push({'v': oneService.name, 'l': oneService.name});
-                                postServiceList.push({
-                                    "name": oneService.name,
-                                    "image": oneService.image,
-                                    "port": oneService.port
-                                });
-                            }
-                        });
-
-                        gcServices.forEach(function (oneGCService) {
-                            servicesList.push({'v': oneGCService.name, 'l': oneGCService.name});
-                            postServiceList.push({
-                                "name": oneGCService.name,
-                                "gcName": oneGCService.name,
-                                "gcVersion": oneGCService.v,
-                                "port": oneGCService.genericService.config.servicePort
-                            });
-                        });
-
-                        //push controller
-                        servicesList.unshift({"v": "controller", "l": "controller"});
-
-                        var entry = {
-                            'name': 'service',
-                            'label': 'Service Name',
-                            'type': 'select',
-                            'value': servicesList,
-                            'fieldMsg': 'Select the service from the list above.',
-                            'required': true
+                services.forEach(function (oneService) {
+                    servicesList.push({'v': oneService.name, 'l': oneService.name});
+                    var servObj = {
+                        "name": oneService.name,
+                        "image": oneService.image,
+                        "port": oneService.port
+                    };
+                    if(oneService.gcId){
+                        servObj = {
+                            "name": oneService.name,
+                            "gcName": oneService.name,
+                            "gcVersion": oneService.gcV,
+                            "image": oneService.image,
+                            "port": oneService.port
                         };
-                        var hostForm = angular.copy(environmentsConfig.form.host);
-                        hostForm.entries.unshift(entry);
+                    }
+                    postServiceList.push(servObj);
+                });
 
-                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
+                //push controller
+                servicesList.unshift({"v": "controller", "l": "controller"});
 
-                        for(var i = 0; i < currentScope.grid.rows.length; i++) {
-                            if (currentScope.grid.rows[i]['code'] === env) {
-                                hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.grid.rows[i].profile);
+                var entry = {
+                    'name': 'service',
+                    'label': 'Service Name',
+                    'type': 'select',
+                    'value': servicesList,
+                    'fieldMsg': 'Select the service from the list above.',
+                    'required': true
+                };
+                var hostForm = angular.copy(environmentsConfig.form.host);
+                hostForm.entries.unshift(entry);
+
+                hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
+
+                for (var i = 0; i < currentScope.grid.rows.length; i++) {
+                    if (currentScope.grid.rows[i]['code'] === env) {
+                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.grid.rows[i].profile);
+                    }
+                }
+
+                var options = {
+                    timeout: $timeout,
+                    form: hostForm,
+                    name: 'createHost',
+                    label: 'Create New Service Host',
+                    actions: [
+                        {
+                            'type': 'submit',
+                            'label': 'Submit',
+                            'btn': 'primary',
+                            'action': function (formData) {
+                                var text = "<h2>Deploying new Host for " + formData.service + "</h2>";
+                                text += "<p>Do not refresh this page, this will take a few minutes...</p>";
+                                jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+                                jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+                                overlay.show();
+
+                                var max = formData.number;
+                                if (formData.service === 'controller') {
+                                    newController(formData, max);
+                                }
+                                else {
+                                    newService(formData, max);
+                                }
+                            }
+                        },
+                        {
+                            'type': 'reset',
+                            'label': 'Cancel',
+                            'btn': 'danger',
+                            'action': function () {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.form.formData = {};
                             }
                         }
-
-                        var options = {
-                            timeout: $timeout,
-                            form: hostForm,
-                            name: 'createHost',
-                            label: 'Create New Service Host',
-                            actions: [
-                                {
-                                    'type': 'submit',
-                                    'label': 'Submit',
-                                    'btn': 'primary',
-                                    'action': function (formData) {
-                                        var text = "<h2>Deploying new Host for " + formData.service + "</h2>";
-                                        text += "<p>Do not refresh this page, this will take a few minutes...</p>";
-                                        jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                        jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                        overlay.show();
-
-                                        var max = formData.number;
-                                        if (formData.service === 'controller') {
-                                            newController(formData, max);
-                                        }
-                                        else {
-                                            newService(formData, max);
-                                        }
-                                    }
-                                },
-                                {
-                                    'type': 'reset',
-                                    'label': 'Cancel',
-                                    'btn': 'danger',
-                                    'action': function () {
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                }
-                            ]
-                        };
-                        buildFormWithModal(currentScope, $modal, options);
-                    }
-                });
+                    ]
+                };
+                buildFormWithModal(currentScope, $modal, options);
             }
         });
 
@@ -825,12 +807,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 var port;
                 for (var i = 0; i < postServiceList.length; i++) {
                     if (postServiceList[i].name === formData.service) {
-                        if (postServiceList[i].image) {
-                            params.name = formData.service;
-                        }
-                        else {
+                        if (postServiceList[i].gcName) {
                             params.gcName = postServiceList[i].gcName;
                             params.gcVersion = postServiceList[i].gcVersion;
+                        }
+                        else {
+                            params.name = formData.service;
                         }
                         port = postServiceList[i].port;
                     }
@@ -843,6 +825,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }
                 }
 
+                console.log(params);
                 getSendDataFromServer(currentScope, ngDataApi, {
                     "method": "send",
                     "routeName": "/dashboard/hosts/deployService",

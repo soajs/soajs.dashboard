@@ -176,7 +176,7 @@ function extractAPIsList(schema) {
     return apiList;
 }
 
-function checkIfGCisAService(config, mongo, condition, GCDBRecord, req, cb) {
+function checkIfGCisAService(config, mongo, condition, GCDBRecord, version, req, cb) {
     mongo.findOne('services', condition, function (error, oneRecord) {
         if (error) {
             return cb({'code': 600, 'msg': config.errors['600']});
@@ -195,6 +195,7 @@ function checkIfGCisAService(config, mongo, condition, GCDBRecord, req, cb) {
                 "requestTimeout": req.soajs.inputmaskData.config.genericService.config.requestTimeout,
                 "requestTimeoutRenewal": req.soajs.inputmaskData.config.genericService.config.requestTimeoutRenewal,
                 "image": prefix + "/gcs",
+                "gcV": version,
                 "apis": extractAPIsList(req.soajs.inputmaskData.config.genericService.config.schema)
             }
         };
@@ -308,7 +309,7 @@ module.exports = {
                         {'port': req.soajs.inputmaskData.config.genericService.config.servicePort},
                         {'name': req.soajs.inputmaskData.config.genericService.config.serviceName}
                     ]
-                }, dbRecord[0], req, function (error) {
+                }, dbRecord[0], 1, req, function (error) {
                     if (error) {
                         mongo.remove(collectionName, {'name': record.name}, function(err){
                             req.soajs.log.error(err);
@@ -344,6 +345,7 @@ module.exports = {
                 var oldIMFV = oldServiceConfig.genericService.config.schema.commonFields;
                 var newIMFV = req.soajs.inputmaskData.config.genericService.config.schema.commonFields;
                 var newVersion = compareIMFV(oldIMFV, newIMFV);
+                var gcV = oldServiceConfig.v;
                 if (!newVersion) {
                     //check if apis inputs have changed
                     var oldAPIFields = oldServiceConfig.genericService.config.schema;
@@ -362,6 +364,9 @@ module.exports = {
                         }
                     }
                 }
+                else{
+                    gcV++;
+                }
 
                 checkIfGCisAService(config, mongo, {
                     '$and': [
@@ -375,7 +380,7 @@ module.exports = {
                             'gcId': {'$ne': req.soajs.inputmaskData.id.toString() }
                         }
                     ]
-                }, oldServiceConfig, req, function (error) {
+                }, oldServiceConfig, gcV, req, function (error) {
                     if (error) {
                         return res.jsonp(req.soajs.buildResponse(error));
                     }

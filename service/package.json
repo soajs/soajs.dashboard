@@ -35,6 +35,7 @@
     "shelljs": "*"
   },
   "dependencies": {
+    "ncp": "*",
     "dockerode": "*",
     "object-hash": "*",
     "bcrypt": "*",
