@@ -101,7 +101,8 @@ var errors = {
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
 	"702": "Content Schema doesn't exists",
-	"703": "Invalid or no Content Service with this name and version"
+	"703": "Invalid or no Content Service with this name and version",
+	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port."
 };
 
 
