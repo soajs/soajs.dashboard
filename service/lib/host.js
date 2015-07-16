@@ -161,7 +161,7 @@ module.exports = {
                 "profile": regFile,
                 "links": list,
                 "variables": [
-                    "SOAJS_SRV_AUTOREGISTER=false",
+                    "SOAJS_SRV_AUTOREGISTERHOST=false",
                     "NODE_ENV=production"
                 ],
                 "Binds": [
@@ -297,7 +297,7 @@ module.exports = {
                 ];
             }
 
-            dockerParams.variables.push("SOAJS_SRV_AUTOREGISTER=false");
+            dockerParams.variables.push("SOAJS_SRV_AUTOREGISTERHOST=false");
             dockerParams.variables.push("NODE_ENV=production");
 
             if (req.soajs.inputmaskData.variables && req.soajs.inputmaskData.variables.length > 0) {
