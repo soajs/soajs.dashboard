@@ -26,7 +26,7 @@ module.exports = {
 
 	"uploadDir": "/opt/soajs/uploads/",
 	"serviceDir": "/opt/soajs/services/",
-	"workingDir": "/Users/soajs/services/",
+	"workingDir": "/Users/soajs/open_source/services/",
 
 	"errors": require("./utils/errors"),
 	"schema": {

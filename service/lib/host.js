@@ -99,7 +99,13 @@ function deployNginx(config, mongo, req, res) {
                 "links": links
             };
 
-            var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+            var deployerConfig = envRecord.deployer[envRecord.deployer.type];
+            var driver = deployerConfig.selected.split(".");
+            deployerConfig = deployerConfig[driver[0]][driver[1]];
+            deployerConfig.driver = {
+                'type': envRecord.deployer.type,
+                'driver': driver[0]
+            };
             req.soajs.log.debug("Calling create nginx container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
             deployer.createContainer(deployerConfig, dockerParams, function (error, data) {
                 if (error) {
@@ -138,10 +144,17 @@ function deployNginx(config, mongo, req, res) {
 module.exports = {
 
     "deployController": function (config, mongo, req, res) {
+        if(req.soajs.inputmaskData.envCode.toLowerCase() === 'dashboard'){
+            return res.jsonp(req.soajs.buildResponse({"code": 750, "msg": config.errors[750] }));
+        }
         //from profile name, construct profile path and equivalently soajsData01....
         mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function (err, envRecord) {
             if (err || !envRecord) {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+            }
+
+            if(envRecord.deployer.type === 'manual'){
+                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618] }));
             }
 
             //fetch how many servers are in the profile
@@ -185,7 +198,13 @@ module.exports = {
         });
 
         function deployControllers(counter, max, envRecord, dockerParams, cb) {
-            var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+            var deployerConfig = envRecord.deployer[envRecord.deployer.type];
+            var driver = deployerConfig.selected.split(".");
+            deployerConfig = deployerConfig[driver[0]][driver[1]];
+            deployerConfig.driver = {
+                'type': envRecord.deployer.type,
+                'driver': driver[0]
+            };
             req.soajs.log.debug("Calling create controller container:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
             deployer.createContainer(deployerConfig, dockerParams, function (error, data) {
                 if (error) {
@@ -253,6 +272,10 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
             }
 
+            if(envRecord.deployer.type === 'manual'){
+                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618] }));
+            }
+
             //build the regFile path
             var regFile = envRecord.profile;
 
@@ -304,7 +327,13 @@ module.exports = {
                 dockerParams.variables = dockerParams.variables.concat(req.soajs.inputmaskData.variables);
             }
 
-            var deployerConfig = envRecord.deployer[envRecord.deployer.selected];
+            var deployerConfig = envRecord.deployer[envRecord.deployer.type];
+            var driver = deployerConfig.selected.split(".");
+            deployerConfig = deployerConfig[driver[0]][driver[1]];
+            deployerConfig.driver = {
+                'type': envRecord.deployer.type,
+                'driver': driver[0]
+            };
             req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
             deployer.createContainer(deployerConfig, dockerParams, function (error, data) {
                 if (error) {
@@ -399,31 +428,47 @@ module.exports = {
         };
 
         var rebuildNginx = false;
-        mongo.findOne('docker', dockerColCriteria, function (error, response) {
-            if (error || !response) {
+        mongo.findOne("environment", {code: req.soajs.inputmaskData.env.toUpperCase()}, function (err, envRecord) {
+            if (err || !envRecord) {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
             }
 
-            if (response.type === 'controller') {
-                rebuildNginx = true;
+            if(envRecord.deployer.type === 'manual'){
+                removeFromHosts();
             }
-            var deployerConfig = response.deployer;
-            deployer.remove(deployerConfig, response.cid, function (error) {
-                if (error) {
+            else{
+                removeDockerRecord();
+            }
+        });
+
+        function removeDockerRecord(){
+            mongo.findOne('docker', dockerColCriteria, function (error, response) {
+                if (error || !response) {
                     return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
                 }
 
-                else {
-                    mongo.remove('docker', {'_id': response._id}, function (err) {
-                        if (err) {
-                            return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
-                        }
-
-                        removeFromHosts();
-                    });
+                if (response.type === 'controller') {
+                    rebuildNginx = true;
                 }
+
+                var deployerConfig = response.deployer;
+                deployer.remove(deployerConfig, response.cid, function (error) {
+                    if (error) {
+                        return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+                    }
+
+                    else {
+                        mongo.remove('docker', {'_id': response._id}, function (err) {
+                            if (err) {
+                                return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+                            }
+
+                            removeFromHosts();
+                        });
+                    }
+                });
             });
-        });
+        }
 
         function removeFromHosts() {
             var hostCriteria = {
@@ -461,28 +506,7 @@ module.exports = {
 
         //check that the given service has the given port in services collection
         if (req.soajs.inputmaskData.serviceName === 'controller') {
-            //check that the given service has the given host in hosts collection
-            var condition = {
-                'env': req.soajs.inputmaskData.env.toLowerCase(),
-                "name": req.soajs.inputmaskData.serviceName
-            };
-            if (req.soajs.inputmaskData.ip) {
-                condition.ip = req.soajs.inputmaskData.serviceHost;
-            }
-            else {
-                condition.hostname = req.soajs.inputmaskData.hostname;
-            }
-            mongo.findOne(colName, condition, function (error, record) {
-                if (error) {
-                    return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
-                }
-                if (!record) {
-                    return res.jsonp(req.soajs.buildResponse({"code": 605, "msg": config.errors[605]}));
-                }
-
-                //perform maintenance operation
-                doMaintenance(record);
-            });
+            checkServiceHost();
         }
         else {
             mongo.findOne('services', {
@@ -531,30 +555,40 @@ module.exports = {
                 "hostname": req.soajs.inputmaskData.hostname
             };
 
-            switch (req.soajs.inputmaskData.operation) {
-                case 'hostLogs':
-                    mongo.findOne("docker", criteria, function (error, response) {
-                        if (error) {
-                            return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
-                        }
-                        var deployerConfig = response.deployer;
-                        deployer.info(deployerConfig, response.cid, req, res);
-                    });
-                    break;
-                default:
-                    req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
-                    var maintenanceURL = "http://" + oneHost.ip + ":" + req.soajs.inputmaskData.servicePort;
-                    maintenanceURL += "/" + req.soajs.inputmaskData.operation;
-                    request.get(maintenanceURL, function (error, response, body) {
-                        if (error) {
-                            return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
-                        }
-                        else {
-                            return res.jsonp(req.soajs.buildResponse(null, JSON.parse(body)));
-                        }
-                    });
-                    break;
-            }
+            mongo.findOne('environment', { 'code': req.soajs.inputmaskData.env.toUpperCase() }, function(err, envRecord){
+                if (err || !envRecord) {
+                    return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+                }
+
+                if(req.soajs.inputmaskData.operation === 'hostsLogs' && envRecord.deployer.type === 'manual'){
+                    return res.jsonp(req.soajs.buildResponse({"code": 619, "msg": config.errors[619]}));
+                }
+
+                switch (req.soajs.inputmaskData.operation) {
+                    case 'hostLogs':
+                        mongo.findOne("docker", criteria, function (error, response) {
+                            if (error) {
+                                return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
+                            }
+                            var deployerConfig = response.deployer;
+                            deployer.info(deployerConfig, response.cid, req, res);
+                        });
+                        break;
+                    default:
+                        req.soajs.inputmaskData.servicePort = req.soajs.inputmaskData.servicePort + 1000;
+                        var maintenanceURL = "http://" + oneHost.ip + ":" + req.soajs.inputmaskData.servicePort;
+                        maintenanceURL += "/" + req.soajs.inputmaskData.operation;
+                        request.get(maintenanceURL, function (error, response, body) {
+                            if (error) {
+                                return res.jsonp(req.soajs.buildResponse({"code": 603, "msg": config.errors[603]}));
+                            }
+                            else {
+                                return res.jsonp(req.soajs.buildResponse(null, JSON.parse(body)));
+                            }
+                        });
+                        break;
+                }
+            });
         }
     }
 };

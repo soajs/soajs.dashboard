@@ -97,12 +97,16 @@ var errors = {
 	"615": "Error adding service host!",
 	"616": "Error Uploading File.",
 	"617": "Error Registering Service.",
+	"618": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section.",
+	"619": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation.",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
 	"702": "Content Schema doesn't exists",
 	"703": "Invalid or no Content Service with this name and version",
-	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port."
+	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port.",
+
+	"750": "Invalid Request."
 };
 
 

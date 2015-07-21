@@ -34,7 +34,7 @@
             <alert type="{{row.hostInfo.waitMessage.type}}" close="closeWaitMessage(row.hostInfo)" >{{row.hostInfo.waitMessage.message}}</alert>
         </div>
 
-        <input type="button" value="Add new Hosts" ng-click="createHost(row['code'], row.hosts);" class="btn btn-primary" style="float:left !important;"/>
+        <input ng-if="row.deployer.type !== 'manual'" type="button" value="Add new Hosts" ng-click="createHost(row['code'], row.hosts);" class="btn btn-primary" style="float:left !important;"/>
         <a href="" ng-click="listHosts(row['code'])" class="btn btn-primary">
             <span class="icon icon-undo" tooltip="Refresh List"></span>Refresh
         </a>

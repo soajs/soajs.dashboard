@@ -15,12 +15,11 @@ var lib = {
             docker = new Docker({
                 host: config.host,
                 port: config.port,
-                ca: fs.readFileSync(__dirname + '/../certs/ca.pem'),
-                cert: fs.readFileSync(__dirname + '/../certs/cert.pem'),
-                key: fs.readFileSync(__dirname + '/../certs/key.pem')
+                ca: fs.readFileSync(__dirname + '/../../../certs/ca.pem'),
+                cert: fs.readFileSync(__dirname + '/../../../certs/cert.pem'),
+                key: fs.readFileSync(__dirname + '/../../../certs/key.pem')
             });
         }
-
         return docker;
     },
 
