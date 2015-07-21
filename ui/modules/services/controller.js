@@ -206,7 +206,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             keyboard: false,
                             controller: function ($scope, $modalInstance) {
                                 $scope.title = "Creating Service";
-                                $scope.text = "<p>Creating a new Image from uploaded service File.<br />Do not refresh this page, this will take a few minutes...</p>";
+                                $scope.text = "<p>Uploading service please wait, do not refresh this page, this will take a few minutes...</p>";
                                 $scope.progress = progress;
                             }
                         });
@@ -229,8 +229,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                                     backdrop: false,
                                     keyboard: false,
                                     controller: function ($scope, $modalInstance) {
-                                        $scope.title = "Custom Service Image Created";
-                                        $scope.text = "<p>Image Created from uploaded service File and build Logs are displayed in the box below.<br />Scroll to the bottom to perform additional operations.<br /></p>";
+                                        $scope.title = "Custom Service Uploaded";
+                                        $scope.text = "<p>New Service Created from uploaded ZIP File and registered.<br />Proceed to environments to deploy your service.<br /></p>";
                                         $scope.data = true;
                                         $scope.deploy = function () {
                                             $modalInstance.dismiss('deploy');
