@@ -217,9 +217,40 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"selected": {"required": true, "type": "string", "enum": ['unix', 'boot2docker', 'joyent', 'aws', 'gCloud', 'azure']},
-						"additionalProperties": {
-							"type": "object"
+						"type": {"required": true, "type": "string", "enum": ['manual', 'cloud', 'container']},
+						"cloud": {
+							"type": "object",
+							"required": false,
+							"properties" : {}
+						},
+						"container": {
+							"type": "object",
+							"required": false,
+							"properties": {
+								"selected": {"type":"string", "required": true },
+								"docker": {
+									"type": "object",
+									"required": false,
+									"properties": {
+										"boot2docker": {
+											"type": "object",
+											"required": false
+										},
+										"joyent": {
+											"type": "object",
+											"required": false
+										},
+										"socket": {
+											"type": "object",
+											"required": false
+										}
+									}
+								},
+								"coreos": {
+									"type": "object",
+									"required": false
+								}
+							}
 						}
 					}
 				}

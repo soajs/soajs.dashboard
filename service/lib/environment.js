@@ -25,8 +25,13 @@ module.exports = {
 				break;
 		}
 
-		if(!req.soajs.inputmaskData.deployer.unix && !req.soajs.inputmaskData.deployer.boot2docker){
-			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
+		var type = req.soajs.inputmaskData.deployer.type;
+		if(type !== 'manual'){
+			var driver = req.soajs.inputmaskData.deployer[type].selected.split(".");
+            console.log(type, driver, req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]]);
+			if(!req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]] || JSON.stringify(req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]]) === '{}'){
+				return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
+			}
 		}
 
 		req.soajs.inputmaskData.code = req.soajs.inputmaskData.code.toUpperCase();
@@ -96,9 +101,14 @@ module.exports = {
 					break;
 			}
 
-			if(!req.soajs.inputmaskData.deployer.unix && !req.soajs.inputmaskData.deployer.boot2docker){
-				return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
-			}
+            var type = req.soajs.inputmaskData.deployer.type;
+            if(type !== 'manual'){
+                var driver = req.soajs.inputmaskData.deployer[type].selected.split(".");
+                console.log(type, driver, req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]]);
+                if(!req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]] || JSON.stringify(req.soajs.inputmaskData.deployer[type][driver[0]][driver[1]]) === '{}'){
+                    return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407] })) ;
+                }
+            }
 
 			if(err) { return res.jsonp(req.soajs.buildResponse({"code": 405, "msg": config.errors[405]})); }
 			var s = {
