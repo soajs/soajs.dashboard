@@ -5,20 +5,25 @@ var env_template = {
 	"profile": "",
 	"description": "",
 	"deployer": {
-		"selected": "",
-		"unix": {
-			'socketPath': '/var/run/docker.sock',
-			'driver': 'docker'
+		"type": "",
+		"container": {
+			"selected": "",
+			"docker": {
+				"socket": {
+					"socketPath": "/var/run/docker.sock"
+				},
+				"boot2docker": {
+					"host": "192.168.59.103",
+					"port": 2376
+				},
+				"joyent": {
+					"host": "us-east-1.docker.joyent.com",
+					"port": 2376
+				}
+			},
+			"coreos": {}
 		},
-		"boot2docker": {
-			'host': '192.168.59.103',
-			'port': 2376,
-			'driver': 'docker'
-		},
-		"Joyent": {},
-		"AWS": {},
-		"gCloud": {},
-		"azure": {}
+		"cloud": {}
 	},
 	"services": {
 		"controller": {

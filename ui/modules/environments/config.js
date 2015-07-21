@@ -59,8 +59,9 @@ var environmentsConfig = {
 					'label': 'Platform Driver',
 					'type': 'select',
 					'value': [
-						{'v': 'unix', 'l': 'Unix', 'selected': true},
-						{'v': 'boot2docker', 'l': 'Boot2docker'}
+						{'v': 'socket', 'l': 'Socket', 'selected': true},
+						{'v': 'boot2docker', 'l': 'Boot2docker'},
+						{'v': 'joyent', 'l': 'Joyent'}
 					],
 					'required': false
 				},

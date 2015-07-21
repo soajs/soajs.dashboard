@@ -160,12 +160,29 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                         tmpl.port = parseInt(formData.port);
                         tmpl.description = formData.description;
                         tmpl.profile = formData.profile[0];
-                        tmpl.deployer.selected = formData.platformDriver[0];
+
                         tmpl.services.config.key.password = formData.tKeyPass;
                         tmpl.services.config.cookie.secret = formData.sessionCookiePass;
                         tmpl.services.config.session.secret = formData.sessionCookiePass;
                         tmpl.services.config.session.cookie.domain = formData.domain;
 
+                        switch(formData.platformDriver[0]){
+                            case 'manual':
+                                tmpl.deployer.type = 'manual';
+                                break;
+                            case 'socket':
+                                tmpl.deployer.type = 'container';
+                                tmpl.deployer.container.selected = 'docker.socket';
+                                break;
+                            case 'boot2docker':
+                                tmpl.deployer.type = 'container';
+                                tmpl.deployer.container.selected = 'docker.boot2docker';
+                                break;
+                            case 'joyent':
+                                tmpl.deployer.type = 'container';
+                                tmpl.deployer.container.selected = 'docker.joyent';
+                                break;
+                        }
                         getSendDataFromServer($scope, ngDataApi, {
                             "method": "send",
                             "routeName": "/dashboard/environment/add",
