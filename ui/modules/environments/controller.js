@@ -115,6 +115,17 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		});
 	};
 
+	$scope.getDeploymentMode = function(deployer, value){
+		if(!deployer.ui){
+			deployer.ui= {};
+		}
+		deployer.ui[value] = (deployer.type === value);
+	};
+
+	$scope.getDeploymentDriver = function(deployer, value, technology, type){
+		deployer.ui[value] = (deployer[type].selected === technology + '.'+ value);
+	};
+
 	$scope.addEnvironment = function() {
 		var configuration = environmentsConfig.form.template;
 		$scope.grid.rows.forEach(function(oneEnv){

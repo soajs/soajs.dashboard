@@ -3,7 +3,7 @@
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
-            <div class="header">{{row['code']}} / Profile : {{row.profileLabel}} / Platform : {{row.deployer.type}} / Domain: <a href="http://api.{{row.services.config.session.cookie.domain}}:{{row.port}}" target="_blank">api.{{row.services.config.session.cookie.domain}}:{{row.port}}</a></div>
+            <div class="header">{{row['code']}} / Profile : {{row.profileLabel}} / Domain: <a href="http://api.{{row.services.config.session.cookie.domain}}:{{row.port}}" target="_blank">api.{{row.services.config.session.cookie.domain}}:{{row.port}}</a></div>
             <div class="body">
                 <div class="description">
                     <a ng-click="expand(row)" href="" ng-hide="row.showOptions===true">
@@ -18,6 +18,9 @@
                 <tabset ng-show="row.showOptions===true">
                     <tab heading="Service Configuration">
                         <div ng-include="'modules/environments/directives/list-service-config.tmpl'"></div>
+                    </tab>
+                    <tab heading="Deployment Platforms" ng-if="access.dbs.list">
+                        <div ng-include="'modules/environments/directives/list-deployment.tmpl'"></div>
                     </tab>
                     <tab heading="Database Configuration" ng-if="access.dbs.list">
                         <div ng-include="'modules/environments/directives/list-databases.tmpl'"></div>
