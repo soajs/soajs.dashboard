@@ -5,15 +5,12 @@
         </div>
         <div class="modal-body">
             <div ng-bind-html="text"></div>
-            <!--<pre ng-if="data"><code class="javascript">{{data}}</code></pre>-->
-            <!--<progressbar ng-if="!data" class="progress-striped active" value="progress.value" type="info">{{progress.value}}%</progressbar>-->
         </div>
         <div class="modal-footer" ng-if="data">
             <button class="btn btn-primary" ng-click="deploy()">Deploy</button>
             <button class="btn btn-danger" ng-click="ok()">Close</button>
         </div>
     </script>
-    <!--<input class="btn btn-primary" ng-click="addService()" value="Add New Service"/>&nbsp;-->
     <input class="btn btn-primary" ng-click="uploadService()" value="Create Custom Service"/><br /><br/>
     <div class="entryBoxes" ng-show="grid.rows">
         <div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox">
