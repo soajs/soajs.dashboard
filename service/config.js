@@ -18,7 +18,7 @@ module.exports = {
     "expDateTTL": 86400000,
     "ncpLimit": 16,
 
-    "workDir": process.env.SOAJS_ENV.WORKDIR || "/",
+    "workDir": process.env.SOAJS_ENV_WORKDIR || "/",
 
     "images": {
         "nginx": 'soajsorg/nginx',
