@@ -125,7 +125,7 @@ module.exports = {
                                     req.soajs.log.error(error);
                                     return res.jsonp(req.soajs.buildResponse({"code": 616, "msg": error.message}));
                                 }
-                                moveFiles(files, tmpPath, loadedConfigFile.serviceName, fileName, function () {
+                                moveFiles(files, tmpPath, loadedConfigFile.serviceName, fileName, function (serviceFolder) {
                                     var doc = {
                                         '$set': {
                                             'port': loadedConfigFile.servicePort,
@@ -133,7 +133,8 @@ module.exports = {
                                             "awareness": loadedConfigFile.awareness || false,
                                             "requestTimeout": loadedConfigFile.requestTimeout,
                                             "requestTimeoutRenewal": loadedConfigFile.requestTimeoutRenewal,
-                                            "apis": extractAPIsList(loadedConfigFile.schema)
+                                            "apis": extractAPIsList(loadedConfigFile.schema),
+                                            "custom": serviceFolder
                                         }
                                     };
                                     mongo.update("services", {'name': loadedConfigFile.serviceName}, doc, {'upsert': true}, function (error) {
@@ -182,7 +183,7 @@ module.exports = {
                 shelljs.rm('-rf', tmpPath);
                 shelljs.rm('-f', files[fileName].path);
 
-                return cb();
+                return cb(srvdest);
             });
         }
 

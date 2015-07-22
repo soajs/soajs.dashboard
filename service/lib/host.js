@@ -144,8 +144,8 @@ function deployNginx(config, mongo, req, res) {
 module.exports = {
 
     "deployController": function (config, mongo, req, res) {
-        if(req.soajs.inputmaskData.envCode.toLowerCase() === 'dashboard'){
-            return res.jsonp(req.soajs.buildResponse({"code": 750, "msg": config.errors[750] }));
+        if (req.soajs.inputmaskData.envCode.toLowerCase() === 'dashboard') {
+            return res.jsonp(req.soajs.buildResponse({"code": 750, "msg": config.errors[750]}));
         }
         //from profile name, construct profile path and equivalently soajsData01....
         mongo.findOne("environment", {code: req.soajs.inputmaskData.envCode.toUpperCase()}, function (err, envRecord) {
@@ -153,8 +153,8 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
             }
 
-            if(envRecord.deployer.type === 'manual'){
-                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618] }));
+            if (envRecord.deployer.type === 'manual') {
+                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618]}));
             }
 
             //fetch how many servers are in the profile
@@ -272,8 +272,8 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
             }
 
-            if(envRecord.deployer.type === 'manual'){
-                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618] }));
+            if (envRecord.deployer.type === 'manual') {
+                return res.jsonp(req.soajs.buildResponse({"code": 618, "msg": config.errors[618]}));
             }
 
             //build the regFile path
@@ -293,62 +293,72 @@ module.exports = {
                 serviceName = req.soajs.inputmaskData.gcName;
                 serviceOrig = 'gcs';
             }
+            var folderPath = config.workDir + "soajs/open_source/services/" + serviceOrig;
 
-            var dockerParams = {
-                "env": req.soajs.inputmaskData.envCode.toLowerCase(),
-                "name": serviceName,
-                "profile": regFile,
-                "links": links,
-                "image": config.images.services,
-                "variables": [],
-                "Binds": [
-                    config.workDir + "soajs/open_source/services/" + serviceOrig + ":/opt/soajs/node_modules/" + serviceName,
-                    config.workDir + "soajs/FILES:/opt/soajs/FILES",
-                    "/var/run/docker.sock:/var/run/docker.sock"
-                ],
-                "Cmd": [
-                    'bash',
-                    '-c',
-                    'cd /opt/soajs/node_modules/' + serviceName + '/; npm install; node .'
-                ]
-            };
-
-            if (req.soajs.inputmaskData.gcName) {
-                dockerParams.variables = [
-                    "SOAJS_GC_NAME=" + req.soajs.inputmaskData.gcName,
-                    "SOAJS_GC_VERSION=" + req.soajs.inputmaskData.gcVersion
-                ];
-            }
-
-            dockerParams.variables.push("SOAJS_SRV_AUTOREGISTERHOST=false");
-            dockerParams.variables.push("NODE_ENV=production");
-
-            if (req.soajs.inputmaskData.variables && req.soajs.inputmaskData.variables.length > 0) {
-                dockerParams.variables = dockerParams.variables.concat(req.soajs.inputmaskData.variables);
-            }
-
-            var deployerConfig = envRecord.deployer[envRecord.deployer.type];
-            var driver = deployerConfig.selected.split(".");
-            deployerConfig = deployerConfig[driver[0]][driver[1]];
-            deployerConfig.driver = {
-                'type': envRecord.deployer.type,
-                'driver': driver[0]
-            };
-            req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
-            deployer.createContainer(deployerConfig, dockerParams, function (error, data) {
-                if (error) {
-                    return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]}));
+            mongo.findOne("services", {"name": serviceName}, function (err, serviceRecord) {
+                if (err || !serviceRecord) {
+                    return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
                 }
 
-                req.soajs.log.debug("Service Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
-                deployer.start(deployerConfig, data.Id, function (error, data) {
+                if(serviceRecord.custom){ folderPath = serviceRecord.custom; }
+
+                var dockerParams = {
+                    "env": req.soajs.inputmaskData.envCode.toLowerCase(),
+                    "name": serviceName,
+                    "profile": regFile,
+                    "links": links,
+                    "image": config.images.services,
+                    "variables": [],
+                    "Binds": [
+                        folderPath + ":/opt/soajs/node_modules/" + serviceName,
+                        config.workDir + "soajs/FILES:/opt/soajs/FILES",
+                        "/var/run/docker.sock:/var/run/docker.sock"
+                    ],
+                    "Cmd": [
+                        'bash',
+                        '-c',
+                        'cd /opt/soajs/node_modules/' + serviceName + '/; npm install; node .'
+                    ]
+                };
+
+                if (req.soajs.inputmaskData.gcName) {
+                    dockerParams.variables = [
+                        "SOAJS_GC_NAME=" + req.soajs.inputmaskData.gcName,
+                        "SOAJS_GC_VERSION=" + req.soajs.inputmaskData.gcVersion,
+                        "SOAJS_ENV_WORKDIR=" + config.workDir
+                    ];
+                }
+
+                dockerParams.variables.push("SOAJS_SRV_AUTOREGISTERHOST=false");
+                dockerParams.variables.push("NODE_ENV=production");
+
+                if (req.soajs.inputmaskData.variables && req.soajs.inputmaskData.variables.length > 0) {
+                    dockerParams.variables = dockerParams.variables.concat(req.soajs.inputmaskData.variables);
+                }
+
+                var deployerConfig = envRecord.deployer[envRecord.deployer.type];
+                var driver = deployerConfig.selected.split(".");
+                deployerConfig = deployerConfig[driver[0]][driver[1]];
+                deployerConfig.driver = {
+                    'type': envRecord.deployer.type,
+                    'driver': driver[0]
+                };
+                req.soajs.log.debug("Calling create service container with params:", JSON.stringify(deployerConfig), JSON.stringify(dockerParams));
+                deployer.createContainer(deployerConfig, dockerParams, function (error, data) {
                     if (error) {
                         return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]}));
                     }
 
-                    req.soajs.log.debug("Service Container started, saving information in core_provision");
-                    //get the ip of the host from hosts
-                    registerHost(data, deployerConfig);
+                    req.soajs.log.debug("Service Container Created, starting container with params:", JSON.stringify(deployerConfig), JSON.stringify(data));
+                    deployer.start(deployerConfig, data.Id, function (error, data) {
+                        if (error) {
+                            return res.json(req.soajs.buildResponse({"code": 615, "msg": config.errors[615]}));
+                        }
+
+                        req.soajs.log.debug("Service Container started, saving information in core_provision");
+                        //get the ip of the host from hosts
+                        registerHost(data, deployerConfig);
+                    });
                 });
             });
         });
@@ -433,15 +443,15 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
             }
 
-            if(envRecord.deployer.type === 'manual'){
+            if (envRecord.deployer.type === 'manual') {
                 removeFromHosts();
             }
-            else{
+            else {
                 removeDockerRecord();
             }
         });
 
-        function removeDockerRecord(){
+        function removeDockerRecord() {
             mongo.findOne('docker', dockerColCriteria, function (error, response) {
                 if (error || !response) {
                     return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
@@ -555,12 +565,12 @@ module.exports = {
                 "hostname": req.soajs.inputmaskData.hostname
             };
 
-            mongo.findOne('environment', { 'code': req.soajs.inputmaskData.env.toUpperCase() }, function(err, envRecord){
+            mongo.findOne('environment', {'code': req.soajs.inputmaskData.env.toUpperCase()}, function (err, envRecord) {
                 if (err || !envRecord) {
                     return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
                 }
 
-                if(req.soajs.inputmaskData.operation === 'hostsLogs' && envRecord.deployer.type === 'manual'){
+                if (req.soajs.inputmaskData.operation === 'hostsLogs' && envRecord.deployer.type === 'manual') {
                     return res.jsonp(req.soajs.buildResponse({"code": 619, "msg": config.errors[619]}));
                 }
 
