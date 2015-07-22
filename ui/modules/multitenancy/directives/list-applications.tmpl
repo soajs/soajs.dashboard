@@ -10,7 +10,7 @@
             <a ng-click="closeKeys(row['_id'], application)" href="" ng-show="application.showKeys">
                 <span class="icon icon-minus" tooltip="Collapse Applications"></span>
             </a>
-            [{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
+            [{{application['package']}}] &nbsp; <span title="TTL" ng-if="application['_TTL']">( {{application['_TTL'] | TTL}} hours )</span>
             <span class="rightActions">
                 <a ng-if="access.tenant.application.delete" href="" ng-confirm-click="Are you sure you want to remove the selected application ?" ng-click="removeTenantApplication(row['_id'], application['appId']);">
                     <span class="icon icon-cross" tooltip="Remove Application"></span>
