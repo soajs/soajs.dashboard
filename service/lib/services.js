@@ -166,13 +166,16 @@ module.exports = {
                     return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
                 }
 
-                if(fs.existsSync(srvdest + "/ui")){
-                   shelljs.mv(srvdest + config.upload.uiFolderName + "*", uiDest);
+                if (fs.existsSync(srvdest + "/ui")) {
+                    shelljs.mv(srvdest + config.upload.uiFolderName + "*", uiDest);
+                    shelljs.rm('-rf', srvdest + "/ui");
                 }
 
-                if(fs.existsSync(srvdest + "/ui-dashboard")){
-                    var dashUIDest = config.upload.core_services + config.upload.dashboardFolderName + "modules/" + serviceName;
+                if (fs.existsSync(srvdest + "/ui-dashboard")) {
+                    var dashUIDest = config.directories.core_services + config.upload.dashboardFolderName + "modules/" + serviceName;
+                    console.log(srvdest + "/ui-dashboard/*", dashUIDest);
                     shelljs.mv(srvdest + "/ui-dashboard/*", dashUIDest);
+                    shelljs.rm('-rf', srvdest + "/ui-dashboard");
                 }
 
                 req.soajs.log.debug("cleaned up upload and tmp files");

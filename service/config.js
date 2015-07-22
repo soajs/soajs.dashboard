@@ -21,7 +21,7 @@ module.exports = {
     "directories": {
         "upload": process.env.SOAJS_UPLOAD_DIR || "/opt/soajs/",
         "core_services": process.env.SOAJS_WORK_DIR || "/Users/soajs/open_source",
-        "profiles": process.env.SOAJS_PROFILES_DIR || "/opt/soajs/FILES/"
+        "profiles": process.env.SOAJS_PROFILES_DIR || "/Users/soajs/FILES/"
     },
 
     "images": {
