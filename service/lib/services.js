@@ -179,8 +179,11 @@ module.exports = {
                         if(err){
                             req.soajs.log.error(err);
                         }
-                        //todo: inject install.js under index.html of dashboard ui
-                        shelljs.rm('-rf', srvdest + "/ui-dashboard");
+
+                        installModuleInDashboardUI(serviceName, function(err){
+                            if(err){ req.soajs.log.error(err); }
+                            shelljs.rm('-rf', srvdest + "/ui-dashboard");
+                        });
                     });
                 }
 
@@ -189,6 +192,19 @@ module.exports = {
                 shelljs.rm('-f', files[fileName].path);
 
                 return cb(srvdest);
+            });
+        }
+
+        function installModuleInDashboardUI(serviceName, cb){
+            var uiFile = config.workDir + "soajs/open_source" + config.upload.dashboardFolderName + "index.html";
+            fs.readFile(uiFile, 'utf8', function(err, data){
+               if(err){ return cb(err); }
+
+                data = data.split('<script src="app/controller.js"></script>');
+                data[0] += '<script src="modules/' + serviceName + '/install.js"></script>';
+                data = data.join('<script src="app/controller.js"></script>')
+
+                fs.writeFile(uiFile, data, cb);
             });
         }
 
