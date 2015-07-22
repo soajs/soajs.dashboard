@@ -18,11 +18,7 @@ module.exports = {
     "expDateTTL": 86400000,
     "ncpLimit": 16,
 
-    "directories": {
-        "upload": process.env.SOAJS_UPLOAD_DIR || "/opt/soajs/",
-        "core_services": process.env.SOAJS_WORK_DIR || "/Users/soajs/open_source",
-        "profiles": process.env.SOAJS_PROFILES_DIR || "/Users/soajs/FILES/"
-    },
+    "workDir": process.env.SOAJS_ENV.WORKDIR || "/",
 
     "images": {
         "nginx": 'soajsorg/nginx',
@@ -33,8 +29,8 @@ module.exports = {
         "dashboardFolderName": "/dashboard/",
         "servicesFolderName": "/services/",
         "uiFolderName": "/ui/",
-        "uploadFolderName": "uploads/",
-        "tenantFolderName": "tenants/"
+        "uploadFolderName": "/uploads/",
+        "tenantFolderName": "/tenants/"
     },
 
     "errors": require("./utils/errors"),

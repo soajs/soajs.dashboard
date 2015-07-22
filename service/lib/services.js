@@ -75,7 +75,7 @@ module.exports = {
 
         var form = new formidable.IncomingForm();
         form.encoding = 'utf-8';
-        form.uploadDir = config.directories.upload + config.upload.uploadFolderName;
+        form.uploadDir = config.workDir + "soajs" + config.upload.uploadFolderName;
         form.keepExtensions = true;
 
         form.parse(req, function (err, fields, files) {
@@ -95,10 +95,10 @@ module.exports = {
             }
 
             fs.createReadStream(files[fileName].path)
-                .pipe(unzip.Extract({"path": config.directories.upload + config.upload.uploadFolderName}))
+                .pipe(unzip.Extract({"path": config.workDir + "soajs" + config.upload.uploadFolderName}))
                 .on('close', function () {
                     var tmpFolder = files[fileName].name.replace('.zip', '');
-                    var tmpPath = config.directories.upload + config.upload.uploadFolderName + tmpFolder;
+                    var tmpPath = config.workDir + "soajs" + config.upload.uploadFolderName + tmpFolder;
 
                     var validatorSchemas = require("../schemas/upload.js");
                     var configFile = tmpPath + "/config.js";
@@ -120,7 +120,7 @@ module.exports = {
                             req.soajs.log.debug(packageFile + "is valid");
 
                             //move the service to where it should be located eventually
-                            validateBuildTenantDir(config.directories.upload + config.upload.tenantFolderName + req.soajs.tenant.code, loadedConfigFile.serviceName, function (error) {
+                            validateBuildTenantDir(config.workDir + "soajs" + config.upload.tenantFolderName + req.soajs.tenant.code, loadedConfigFile.serviceName, function (error) {
                                 if (error) {
                                     req.soajs.log.error(error);
                                     return res.jsonp(req.soajs.buildResponse({"code": 616, "msg": error.message}));
@@ -155,8 +155,8 @@ module.exports = {
 
         function moveFiles(files, tmpPath, serviceName, fileName, cb) {
             ncp.limit = config.ncpLimit;
-            var srvdest = config.directories.upload + config.upload.tenantFolderName + req.soajs.tenant.code + config.upload.servicesFolderName + serviceName;
-            var uiDest = config.directories.upload + config.upload.tenantFolderName + req.soajs.tenant.code + config.upload.uiFolderName + serviceName;
+            var srvdest = config.workDir + "soajs" + config.upload.tenantFolderName + req.soajs.tenant.code + config.upload.servicesFolderName + serviceName;
+            var uiDest = config.workDir + "soajs" + config.upload.tenantFolderName + req.soajs.tenant.code + config.upload.uiFolderName + serviceName;
             req.soajs.log.debug("copying upload module:" + tmpPath);
 
             ncp(tmpPath, srvdest, function (err) {
@@ -172,7 +172,7 @@ module.exports = {
                 }
 
                 if (fs.existsSync(srvdest + "/ui-dashboard")) {
-                    var dashUIDest = config.directories.core_services + config.upload.dashboardFolderName + "modules/" + serviceName;
+                    var dashUIDest = config.workDir + "soajs/open_services" + config.upload.dashboardFolderName + "modules/" + serviceName;
                     console.log(srvdest + "/ui-dashboard/*", dashUIDest);
                     shelljs.mv(srvdest + "/ui-dashboard/*", dashUIDest);
                     shelljs.rm('-rf', srvdest + "/ui-dashboard");

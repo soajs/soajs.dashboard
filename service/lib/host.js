@@ -178,8 +178,8 @@ module.exports = {
                     "NODE_ENV=production"
                 ],
                 "Binds": [
-                    config.directories.core_services + "controller:/opt/soajs/node_modules/controller",
-                    config.directories.profiles + ":/opt/soajs/FILES",
+                    config.workDir + "soajs/open_source/services/controller:/opt/soajs/node_modules/controller",
+                    config.workDir + "soajs/FILES:/opt/soajs/FILES",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [
@@ -302,8 +302,8 @@ module.exports = {
                 "image": config.images.services,
                 "variables": [],
                 "Binds": [
-                    config.directories.core_services + serviceOrig + ":/opt/soajs/node_modules/" + serviceName,
-                    config.directories.profiles + ":/opt/soajs/FILES",
+                    config.workDir + "soajs/open_source/services/" + serviceOrig + ":/opt/soajs/node_modules/" + serviceName,
+                    config.workDir + "soajs/FILES:/opt/soajs/FILES",
                     "/var/run/docker.sock:/var/run/docker.sock"
                 ],
                 "Cmd": [
