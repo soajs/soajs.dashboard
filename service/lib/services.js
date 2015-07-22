@@ -173,10 +173,15 @@ module.exports = {
                 }
 
                 if (fs.existsSync(srvdest + "/ui-dashboard")) {
-                    var dashUIDest = config.workDir + "soajs/open_services" + config.upload.dashboardFolderName + "modules/" + serviceName;
-                    console.log(srvdest + "/ui-dashboard/*", dashUIDest);
-                    shelljs.mv(srvdest + "/ui-dashboard/*", dashUIDest);
-                    shelljs.rm('-rf', srvdest + "/ui-dashboard");
+                    var dashUIDest = config.workDir + "soajs/open_source" + config.upload.dashboardFolderName + "modules/" + serviceName;
+                    shelljs.mkdir("-p", dashUIDest);
+                    ncp(srvdest + "/ui-dashboard/" + serviceName, dashUIDest, function(err){
+                        if(err){
+                            req.soajs.log.error(err);
+                        }
+                        //todo: inject install.js under index.html of dashboard ui
+                        shelljs.rm('-rf', srvdest + "/ui-dashboard");
+                    });
                 }
 
                 req.soajs.log.debug("cleaned up upload and tmp files");
