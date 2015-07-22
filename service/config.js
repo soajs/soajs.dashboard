@@ -23,8 +23,7 @@ module.exports = {
 		"services": "soajsorg/soajs"
 	},
 
-	"uploadDir": "/opt/soajs/uploads/",
-	"serviceDir": "/opt/soajs/tenants/",
+	"optDir": "/opt/soajs/",
 	"profiles": "/Users/soajs/FILES/",
 	"workingDir": "/Users/soajs/open_source/services/",
 

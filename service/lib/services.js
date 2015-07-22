@@ -75,7 +75,7 @@ module.exports = {
 
         var form = new formidable.IncomingForm();
         form.encoding = 'utf-8';
-        form.uploadDir = config.uploadDir;
+        form.uploadDir = config.optDir + "uploads";
         form.keepExtensions = true;
 
         form.parse(req, function (err, fields, files) {
@@ -95,10 +95,10 @@ module.exports = {
             }
 
             fs.createReadStream(files[fileName].path)
-                .pipe(unzip.Extract({"path": config.uploadDir}))
+                .pipe(unzip.Extract({"path": config.optDir + "uploads"}))
                 .on('close', function () {
                     var tmpFolder = files[fileName].name.replace('.zip', '');
-                    var tmpPath = config.uploadDir + tmpFolder;
+                    var tmpPath = config.optDir + "uploads" + "/" + tmpFolder;
 
                     var validatorSchemas = require("../schemas/upload.js");
                     var configFile = tmpPath + "/config.js";
@@ -120,27 +120,12 @@ module.exports = {
                             req.soajs.log.debug(packageFile + "is valid");
 
                             //move the service to where it should be located eventually
-                            var dest = config.serviceDir + req.soajs.tenant.code + "/" + loadedConfigFile.serviceName;
-                            req.soajs.log.debug("checking destination: " + dest);
-                            validateBuildTenantDir(dest, function(error){
-                                if(error){
+                            validateBuildTenantDir(config.optDir + "tenants/" + req.soajs.tenant.code, loadedConfigFile.serviceName, function (error) {
+                                if (error) {
                                     req.soajs.log.error(error);
-                                    return res.jsonp(req.soajs.buildResponse({"code": 616, "msg": error.message }));
+                                    return res.jsonp(req.soajs.buildResponse({"code": 616, "msg": error.message}));
                                 }
-
-                                req.soajs.log.debug("copying upload module:" + tmpPath + " to " + dest);
-                                ncp.limit = config.ncpLimit;
-                                ncp(tmpPath, dest, function (err) {
-                                    if (err) {
-                                        shelljs.rm('-rf', tmpPath);
-                                        shelljs.rm('-f', files[fileName].path);
-                                        return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
-                                    }
-
-                                    req.soajs.log.debug("cleaned up upload and tmp files");
-                                    shelljs.rm('-rf', tmpPath);
-                                    shelljs.rm('-f', files[fileName].path);
-
+                                moveFiles(files, tmpPath, loadedConfigFile.serviceName, fileName, function () {
                                     var doc = {
                                         '$set': {
                                             'port': loadedConfigFile.servicePort,
@@ -168,25 +153,67 @@ module.exports = {
                 });
         });
 
-        function validateBuildTenantDir(path, cb) {
-            fs.exists(path, function (exists) {
-                if (exists) {
-                    fs.stat(path, function (err, stats) {
-                        if (err) {
-                            return cb(err);
-                        }
-                        else if (!stats.isDirectory()) {
-                            return cb(new Error(path + " is not a directory."));
-                        }
+        function moveFiles(files, tmpPath, serviceName, fileName, cb) {
+            ncp.limit = config.ncpLimit;
+            var srvdest = config.optDir + "tenants/" + req.soajs.tenant.code + "/services/" + serviceName;
+            var uiDest = config.optDir + "tenants/" + req.soajs.tenant.code + "/ui/" + serviceName;
+            req.soajs.log.debug("copying upload module:" + tmpPath);
+
+            ncp(tmpPath, srvdest, function (err) {
+                if (err) {
+                    shelljs.rm('-rf', tmpPath);
+                    shelljs.rm('-f', files[fileName].path);
+                    return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
+                }
+
+                if(fs.existsSync(srvdest + "/ui")){
+                   shelljs.mv(srvdest + "/ui/*", uiDest);
+                }
+
+                if(fs.existsSync(srvdest + "/ui-dashboard")){
+                    var dashUIDest = config.workingDir.replace("/services/", "/dashboard/") + "modules/" + serviceName;
+                    shelljs.mv(srvdest + "/ui-dashboard/*", dashUIDest);
+                }
+
+                req.soajs.log.debug("cleaned up upload and tmp files");
+                shelljs.rm('-rf', tmpPath);
+                shelljs.rm('-f', files[fileName].path);
+
+                return cb();
+            });
+        }
+
+        function validateBuildTenantDir(path, serviceName, cb) {
+            var p1 = path + "/services/" + serviceName;
+            var p2 = path + "/ui/" + serviceName;
+
+            checkBuildPath(p1, function (error) {
+                if (error) {
+                    return cb(error);
+                }
+                checkBuildPath(p2, cb);
+            });
+
+            function checkBuildPath(path, cb) {
+                fs.exists(path, function (exists) {
+                    if (exists) {
+                        fs.stat(path, function (err, stats) {
+                            if (err) {
+                                return cb(err);
+                            }
+                            else if (!stats.isDirectory()) {
+                                return cb(new Error(path + " is not a directory."));
+                            }
+                            return cb(null, true);
+                        });
+                    }
+                    else {
+                        req.soajs.log.debug("destination: " + path + " not found. Creating Directory...");
+                        shelljs.mkdir("-p", path);
                         return cb(null, true);
-                    });
-                }
-                else {
-                    req.soajs.log.debug("destination: " + path + " not found. Creating Directory...");
-                    shelljs.mkdir("-p", path);
-                    return cb(null, true);
-                }
-            })
+                    }
+                });
+            }
         }
 
         function checkIFFile(moduleFile, schema, cb) {
