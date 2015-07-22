@@ -11,21 +11,21 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 
-	"profiles": "/Users/soajs/FILES/",
-	"images":{
-		"nginx": 'antoinehage/nginx',
-		"services": "antoinehage/soajs"
-	},
-
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-
 	"expDateTTL": 86400000,
+	"ncpLimit": 16,
+
+	"images":{
+		"nginx": 'soajsorg/nginx',
+		"services": "soajsorg/soajs"
+	},
 
 	"uploadDir": "/opt/soajs/uploads/",
-	"serviceDir": "/opt/soajs/services/",
+	"serviceDir": "/opt/soajs/tenants/",
+	"profiles": "/Users/soajs/FILES/",
 	"workingDir": "/Users/soajs/open_source/services/",
 
 	"errors": require("./utils/errors"),
@@ -277,13 +277,6 @@ module.exports = {
 				"source": ['body.requestTimeoutRenewal'],
 				"required": true,
 				"validation": {"type": "integer", "min": 0}
-			},
-			"image": {
-				"required": true,
-				"source": ["body.image"],
-				"validation": {
-					"type": "string"
-				}
 			},
 			'apis': {
 				"required": true,
@@ -1017,23 +1010,9 @@ module.exports = {
 				"l": "Update Service",
 				"group": "Services"
 			},
-			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image', 'awareness'],
+			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'awareness'],
 			'name': {
 				'source': ['query.name'],
-				'required': true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/services/create": {
-			_apiInfo: {
-				"l": "Add New Service",
-				"group": "Services"
-			},
-			"commonFields": ['port', 'apis', 'extKeyRequired', 'requestTimeout', 'requestTimeoutRenewal', 'image', 'awareness'],
-			'name': {
-				'source': ['body.name'],
 				'required': true,
 				"validation": {
 					"type": "string"

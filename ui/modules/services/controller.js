@@ -93,7 +93,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                         var postData = {
                             'requestTimeout': formData.requestTimeout,
                             'requestTimeoutRenewal': formData.requestTimeoutRenewal,
-                            "image": formData.image,
                             "port": formData.port,
                             "awareness": formData.awareness
                         };

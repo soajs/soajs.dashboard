@@ -311,10 +311,7 @@ service.init(function() {
 		checkForMongo(req);
 		services.update(config, mongo, req, res);
 	});
-	service.post("/services/create", function(req, res) {
-		checkForMongo(req);
-		services.create(config, mongo, req, res);
-	});
+
 	service.post("/services/upload", function(req, res) {
 		checkForMongo(req);
 		services.upload(config, mongo, req, res);

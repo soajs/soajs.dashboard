@@ -53,7 +53,6 @@ module.exports = {
                 "extKeyRequired": req.soajs.inputmaskData.extKeyRequired || false,
                 "requestTimeout": req.soajs.inputmaskData.requestTimeout || null,
                 "requestTimeoutRenewal": req.soajs.inputmaskData.requestTimeoutRenewal || null,
-                "image": req.soajs.inputmaskData.image,
                 "apis": req.soajs.inputmaskData.apis,
                 "awareness": req.soajs.inputmaskData.awareness
             }
@@ -69,36 +68,6 @@ module.exports = {
                 return res.jsonp(req.soajs.buildResponse({"code": 604, "msg": config.errors[604]}));
             }
             return res.jsonp(req.soajs.buildResponse(null, "service updated successfully."));
-        });
-    },
-
-    "create": function (config, mongo, req, res) {
-        mongo.findOne(colName, {"name": req.soajs.inputmaskData.name}, function (error, record) {
-            if (error) {
-                return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
-            }
-
-            if (record) {
-                return res.jsonp(req.soajs.buildResponse({"code": 614, "msg": config.errors[614]}));
-            }
-
-            var doc = {
-                'name': req.soajs.inputmaskData.name,
-                'extKeyRequired': req.soajs.inputmaskData.extKeyRequired || false,
-                'port': req.soajs.inputmaskData.port,
-                'requestTimeout': req.soajs.inputmaskData.requestTimeout || 30,
-                'requestTimeoutRenewal': req.soajs.inputmaskData.requestTimeoutRenewal || 5,
-                'image': req.soajs.inputmaskData.image,
-                "apis": req.soajs.inputmaskData.apis,
-                "awareness": req.soajs.inputmaskData.awareness
-            };
-
-            mongo.insert(colName, doc, function (error) {
-                if (error) {
-                    return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
-                }
-                return res.jsonp(req.soajs.buildResponse(null, "service created successfully"));
-            });
         });
     },
 
@@ -151,46 +120,74 @@ module.exports = {
                             req.soajs.log.debug(packageFile + "is valid");
 
                             //move the service to where it should be located eventually
-                            req.soajs.log.debug("copying upload module:" + tmpPath + " to " + config.serviceDir + loadedConfigFile.serviceName);
-                            ncp.limit = 16;
-                            ncp(tmpPath, config.serviceDir + loadedConfigFile.serviceName, function (err) {
-                                if (err) {
-                                    shelljs.rm('-rf', tmpPath);
-                                    shelljs.rm('-f', files[fileName].path);
-                                    return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
+                            var dest = config.serviceDir + req.soajs.tenant.code + "/" + loadedConfigFile.serviceName;
+                            req.soajs.log.debug("checking destination: " + dest);
+                            validateBuildTenantDir(dest, function(error){
+                                if(error){
+                                    req.soajs.log.error(error);
+                                    return res.jsonp(req.soajs.buildResponse({"code": 616, "msg": error.message }));
                                 }
 
-                                req.soajs.log.debug("cleaned up upload and tmp files");
-                                shelljs.rm('-rf', tmpPath);
-                                shelljs.rm('-f', files[fileName].path);
-
-                                var prefix = config.images.services.split("/")[0];
-                                var doc = {
-                                    '$set': {
-                                        'port': loadedConfigFile.servicePort,
-                                        'extKeyRequired': loadedConfigFile.extKeyRequired,
-                                        "awareness": loadedConfigFile.awareness || false,
-                                        "requestTimeout": loadedConfigFile.requestTimeout,
-                                        "requestTimeoutRenewal": loadedConfigFile.requestTimeoutRenewal,
-                                        "image": prefix + "/" + loadedConfigFile.serviceName,
-                                        "apis": extractAPIsList(loadedConfigFile.schema)
-                                    }
-                                };
-                                mongo.update("services", {'name' : loadedConfigFile.serviceName}, doc, {'upsert': true }, function (error) {
-                                    if (error) {
-                                        return res.jsonp(req.soajs.buildResponse({
-                                            'code': 617,
-                                            'msg': config.errors[617]
-                                        }));
+                                req.soajs.log.debug("copying upload module:" + tmpPath + " to " + dest);
+                                ncp.limit = config.ncpLimit;
+                                ncp(tmpPath, dest, function (err) {
+                                    if (err) {
+                                        shelljs.rm('-rf', tmpPath);
+                                        shelljs.rm('-f', files[fileName].path);
+                                        return res.json(req.soajs.buildResponse({code: 619, msg: err.message}));
                                     }
 
-                                    return res.jsonp(req.soajs.buildResponse(null, true));
+                                    req.soajs.log.debug("cleaned up upload and tmp files");
+                                    shelljs.rm('-rf', tmpPath);
+                                    shelljs.rm('-f', files[fileName].path);
+
+                                    var doc = {
+                                        '$set': {
+                                            'port': loadedConfigFile.servicePort,
+                                            'extKeyRequired': loadedConfigFile.extKeyRequired,
+                                            "awareness": loadedConfigFile.awareness || false,
+                                            "requestTimeout": loadedConfigFile.requestTimeout,
+                                            "requestTimeoutRenewal": loadedConfigFile.requestTimeoutRenewal,
+                                            "apis": extractAPIsList(loadedConfigFile.schema)
+                                        }
+                                    };
+                                    mongo.update("services", {'name': loadedConfigFile.serviceName}, doc, {'upsert': true}, function (error) {
+                                        if (error) {
+                                            return res.jsonp(req.soajs.buildResponse({
+                                                'code': 617,
+                                                'msg': config.errors[617]
+                                            }));
+                                        }
+
+                                        return res.jsonp(req.soajs.buildResponse(null, true));
+                                    });
                                 });
                             });
                         });
                     });
                 });
         });
+
+        function validateBuildTenantDir(path, cb) {
+            fs.exists(path, function (exists) {
+                if (exists) {
+                    fs.stat(path, function (err, stats) {
+                        if (err) {
+                            return cb(err);
+                        }
+                        else if (!stats.isDirectory()) {
+                            return cb(new Error(path + " is not a directory."));
+                        }
+                        return cb(null, true);
+                    });
+                }
+                else {
+                    req.soajs.log.debug("destination: " + path + " not found. Creating Directory...");
+                    shelljs.mkdir("-p", path);
+                    return cb(null, true);
+                }
+            })
+        }
 
         function checkIFFile(moduleFile, schema, cb) {
 
@@ -260,9 +257,9 @@ module.exports = {
         function extractAPIsList(schema) {
             var excluded = ['commonFields'];
             var apiList = [];
-            for(var route in schema) {
-                if(Object.hasOwnProperty.call(schema, route)) {
-                    if(excluded.indexOf(route) !== -1) {
+            for (var route in schema) {
+                if (Object.hasOwnProperty.call(schema, route)) {
+                    if (excluded.indexOf(route) !== -1) {
                         continue;
                     }
 
@@ -271,11 +268,11 @@ module.exports = {
                         'v': route
                     };
 
-                    if(schema[route]._apiInfo.group) {
+                    if (schema[route]._apiInfo.group) {
                         oneApi.group = schema[route]._apiInfo.group;
                     }
 
-                    if(schema[route]._apiInfo.groupMain) {
+                    if (schema[route]._apiInfo.groupMain) {
                         oneApi.groupMain = schema[route]._apiInfo.groupMain;
                     }
 

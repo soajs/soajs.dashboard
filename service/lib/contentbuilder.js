@@ -186,7 +186,6 @@ function checkIfGCisAService(config, mongo, condition, GCDBRecord, version, req,
             return cb({'code': 704, 'msg': config.errors['704']});
         }
 
-        var prefix = config.images.services.split("/")[0];
         var serviceGCDoc = {
             '$set': {
                 'port': req.soajs.inputmaskData.config.genericService.config.servicePort,
@@ -194,7 +193,6 @@ function checkIfGCisAService(config, mongo, condition, GCDBRecord, version, req,
                 "awareness": req.soajs.inputmaskData.config.genericService.config.awareness || false,
                 "requestTimeout": req.soajs.inputmaskData.config.genericService.config.requestTimeout,
                 "requestTimeoutRenewal": req.soajs.inputmaskData.config.genericService.config.requestTimeoutRenewal,
-                "image": prefix + "/gcs",
                 "gcV": version,
                 "apis": extractAPIsList(req.soajs.inputmaskData.config.genericService.config.schema)
             }
