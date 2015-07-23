@@ -13,7 +13,7 @@ var cmNav =[
 		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
-		'scripts': ['modules/contentManagement/config.js', 'modules/contentManagement/controller.js'],
+		'scripts': ['modules/contentManagement/config.js', 'modules/contentManagement/controller.js', 'modules/contentManagement/services/contentManagement.js'],
 		'ancestor': ['Home']
 	}
 ];

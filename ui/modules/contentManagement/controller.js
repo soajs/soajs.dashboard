@@ -1,28 +1,8 @@
 "use strict";
 var contentManagementApp = soajsApp.components;
-contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', function($scope, ngDataApi, $compile, $timeout, $modal) {
+contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'cmService', function($scope, ngDataApi, $compile, $timeout, $modal, cmService) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
-
-	getSendDataFromServer($scope, ngDataApi, {
-		"method": "get",
-		"routeName": "/dashboard/cb/list",
-		"params": {'port': true}
-	}, function(error, cbServices) {
-		if(error) {
-			$scope.$parent.displayAlert("danger", error.message);
-		}
-		else {
-			$scope.hp = true;//show main listing page
-			$scope.services = [];
-
-			cbServices.forEach(function(oneService) {
-				oneService.port = oneService.genericService.config.servicePort;
-				delete oneService.genericService;
-				$scope.services.push(oneService);
-			});
-		}
-	});
 
 	$scope.loadUIModule = function(oneService) {
 		$scope.hp = false;
@@ -389,4 +369,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 			$scope.listCMDataEntries();
 		});
 	};
+
+    cmService.loadServices($scope);
+
 }]);

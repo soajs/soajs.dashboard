@@ -860,7 +860,12 @@ module.exports = {
 
 		//if no acl for this package in urac, then get package acl from products collection
 		mongo.findOne("products", {'code': req.soajs.tenant.application.product, "packages.code": packageName}, function(error, productRecord) {
-			if(error || !productRecord) { return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]})); }
+            if(error || !productRecord) {
+                if(error){
+                    req.soajs.log.error(error);
+                }
+                return res.jsonp(req.soajs.buildResponse({"code": 600, "msg": config.errors[600]}));
+            }
 
 			productRecord.packages.forEach(function(onePackage) {
 				if(onePackage.code === packageName) {

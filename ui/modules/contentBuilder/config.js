@@ -96,7 +96,7 @@ var cbConfig = {
 					'value': 'This Type of inputs is entered by the User while filling the data record fields.'
 				},
 				{
-					'label': 'Basic Input Field Information',
+					'label': 'Input General Information',
 					'name': 'field',
 					'type': 'group',
 					'entries': [
@@ -122,7 +122,7 @@ var cbConfig = {
 				},
 				{
 					"name": "service",
-					"label": "Input IMFV validation",
+					"label": "Input IMFV Properties",
 					"type": "group",
 					"collapsed": true,
 					"entries": [
@@ -142,7 +142,7 @@ var cbConfig = {
 				},
 				{
 					'name': 'grid',
-					'label': 'UI Module Grid',
+					'label': 'Input Listing Properties',
 					'type': 'group',
 					'collapsed': true,
 					'entries': [
@@ -203,7 +203,7 @@ var cbConfig = {
 				},
 				{
 					'name': 'form',
-					'label': 'UI Module Form',
+					'label': 'Input Form Properties',
 					'type': 'group',
 					'collapsed': true,
 					'entries': [

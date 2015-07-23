@@ -39,10 +39,11 @@
         </div>
 
         <div ng-if="services.length === 0">
-            <div class="redFlag"> No Content Management Services where found.</div>
+            <div class="redFlag"> No Content Management Services are running.</div>
             <br/>
 
-            <p>Create New Service(s) in <a href="#/content-builder">Content Builder</a>.</p>
+            <p ng-if="noCB">Create New Services in <a href="#/content-builder">Content Builder</a></p>
+            <p ng-if="!noCB">No Content Management Services are deployed yet. Head to the <a href="#/environments">Environments</a> Section and deploy them.</p>
         </div>
     </tabset>
 </section>

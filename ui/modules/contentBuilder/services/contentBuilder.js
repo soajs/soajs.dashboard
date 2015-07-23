@@ -194,14 +194,16 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			else {
 				currentScope.envList = [];
 				response.forEach(function(oneEnvironment) {
-					if(Object.keys(oneEnvironment.dbs.clusters).length > 0) {
-						currentScope.nextStep = true;
+					if(oneEnvironment.code !== 'DASHBOARD'){
+						if(Object.keys(oneEnvironment.dbs.clusters).length > 0) {
+							currentScope.nextStep = true;
+						}
+						currentScope.envList.push({
+							'name': oneEnvironment.code,
+							'databases': oneEnvironment.dbs.databases,
+							'clusters': oneEnvironment.dbs.clusters
+						});
 					}
-					currentScope.envList.push({
-						'name': oneEnvironment.code,
-						'databases': oneEnvironment.dbs.databases,
-						'clusters': oneEnvironment.dbs.clusters
-					});
 				});
 				if(cb && typeof(cb) === 'function') { cb(); }
 			}
