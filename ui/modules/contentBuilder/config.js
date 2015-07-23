@@ -456,7 +456,6 @@ var cbConfig = {
 				'label': 'API Display Information',
 				'name': 'label',
 				'type': 'group',
-				'collapsed': true,
 				"entries": [
 					{
 						'name': 'label',
