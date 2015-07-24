@@ -200,11 +200,14 @@ module.exports = {
             fs.readFile(uiFile, 'utf8', function(err, data){
                if(err){ return cb(err); }
 
-                data = data.split('<script src="app/controller.js"></script>');
-                data[0] += '<script src="modules/' + serviceName + '/install.js"></script>';
-                data = data.join('<script src="app/controller.js"></script>')
+                if(data.indexOf("modules/" + serviceName + "/install.js") === -1){
+                    data = data.split('<script src="app/controller.js"></script>');
+                    data[0] += '<script src="modules/' + serviceName + '/install.js"></script>\n';
+                    data = data.join('<script src="app/controller.js"></script>');
 
-                fs.writeFile(uiFile, data, cb);
+                    fs.writeFile(uiFile, data, cb);
+                }
+                else{ return cb(null, true); }
             });
         }
 
