@@ -1,22 +1,6 @@
 <section ng-controller="ContentManagementCtrl">
     <script type="text/ng-template" id="infoBox.html">
-        <div class="modal-header">
-            <h3 class="modal-title">{{title}}</h3>
-        </div>
-        <div class="modal-body">
-            <div ng-bind-html="data|object"></div>
-            <hr/>
-            <div>
-                <p>
-                    <b>Author:</b>&nbsp;{{author}}<br />
-                    <b>Created On:</b>&nbsp;{{created|date}}<br />
-                    <span ng-if="modified"><b>Last Modified:</b>&nbsp;{{modified|date}}<br /></span>
-                </p>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-        </div>
+        <div ng-include="'/modules/contentManagement/directives/infoBox.tmpl'"></div>
     </script>
     <tabset>
         <div ng-if="services.length >0" class="entryBoxes entryBoxesGrid">

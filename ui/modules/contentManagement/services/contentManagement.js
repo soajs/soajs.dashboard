@@ -73,38 +73,31 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
         });
     }
 
-    //function downloadFile(currentScope, files, url, cb){
-    //    var soajsAuthCookie = $cookieStore.get('soajs_auth');
-    //    var counter = 0;
-    //    var err = [];
-    //
-    //    for (var fileName in files) {
-    //        if (files[fileName].ids && files[fileName].ids.length > 0) {
-    //            for (var i = 0; i < files[fileName].ids.length; i++) {
-    //                var options = {
-    //                    url: apiConfiguration.domain + url,
-    //                    method: 'get',
-    //                    headers: {
-    //                        "key": apiConfiguration.key,
-    //                        "soajsauth": soajsAuthCookie
-    //                    },
-    //                    params: {
-    //                        'env': currentScope.selectedEnv.toUpperCase(),
-    //                        'id': files[fileName].ids[i]
-    //                    }
-    //                };
-    //                console.log(options);
-    //                $http(options).success(function(response, status, headers, config) {
-    //                    console.log(response);
-    //                }).error(function(errData, status, headers, config) {
-    //                    //todo: print error
-    //                    console.log('error');
-    //                });
-    //
-    //            }
-    //        }
-    //    }
-    //}
+    function downloadFile(currentScope, oneFile) {
+        var soajsAuthCookie = $cookieStore.get('soajs_auth');
+        var options = {
+            url: apiConfiguration.domain + "/" + currentScope.selectedService.name + "/download",
+            method: 'get',
+            headers: {
+                "key": apiConfiguration.key,
+                "soajsauth": soajsAuthCookie,
+                "Accept": oneFile.contentType
+            },
+            params: {
+                'env': currentScope.selectedEnv.toUpperCase(),
+                'id': oneFile._id
+            }
+        };
+
+        $http(options).then(function(response){
+            openSaveAsDialog(oneFile.filename, response.data, oneFile.contentType);
+        });
+
+        function openSaveAsDialog(filename, content, mediaType) {
+            var blob = new Blob([content], {type: mediaType});
+            saveAs(blob, filename);
+        }
+    }
 
     function UploadFile(currentScope, files, apiData, url, cb) {
         var soajsAuthCookie = $cookieStore.get('soajs_auth');
@@ -164,7 +157,9 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         if (!formFiles[n]) {
                             formFiles[n] = [];
                         }
-                        formFiles[n].push(formData[formFields[i]]);
+                        if (!Array.isArray(formData[formFields[i]])) {
+                            formFiles[n].push(formData[formFields[i]]);
+                        }
                         delete formData[formFields[i]];
                     }
                 }
@@ -185,6 +180,6 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
         'loadServices': loadServices,
         'extractFilesFromPostedData': extractFilesFromPostedData,
         'UploadFile': UploadFile,
-        //'downloadFile': downloadFile
+        'downloadFile': downloadFile
     }
 }]);

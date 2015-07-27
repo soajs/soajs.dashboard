@@ -258,20 +258,6 @@ function buildForm(context, modal, configuration, cb) {
         input.addMore = true;
     };
 
-    context.form.downloadFile = function(url){
-        getSendDataFromServer(context, configuration.ngDataApi, {
-            "method": "get",
-            "routeName": url
-        }, function (error, response) {
-            if (error) {
-                context.form.displayAlert('danger', error.message);
-            }
-            else {
-                console.log(response);
-            }
-        });
-    };
-
     context.form.removeFile = function (entry, i) {
         getSendDataFromServer(context, configuration.ngDataApi, {
             "method": "get",
@@ -295,7 +281,6 @@ function buildForm(context, modal, configuration, cb) {
     };
 
     context.form.uploadFileToUrl = function (Upload, file, uploadUrl, opts, progress, cb) {
-
         var options = {
             url: apiConfiguration.domain + uploadUrl,
             fields: opts.data,

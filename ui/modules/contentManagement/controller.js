@@ -253,91 +253,138 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 	};
 
 	$scope.editCMDataEntry = function(data) {
-		var config = cmConfig.form.update;
-		config.entries = $scope.selectedService.schema.soajsUI.form.update;
+        getSendDataFromServer($scope, ngDataApi, {
+            "method": "get",
+            "routeName": "/" + $scope.selectedService.name + $scope.ui.links['get'],
+            "params": {
+                "id": data._id,
+                "env": $scope.selectedEnv.toUpperCase()
+            }
+        }, function(error, response) {
+            if (error) {
+                $scope.$parent.displayAlert('danger', error.message);
+            }
+            else {
+                var fields = Object.keys(response);
+                var data = {};
+                fields.forEach(function(oneField) {
+                    if(oneField === 'fields') {
+                        for(var content in response.fields) {
+                            data[content] = response.fields[content];
+                        }
+                    }
+                    else {
+                        data[oneField] = response[oneField];
+                    }
+                });
 
-        config.entries.forEach(function(oneFormField){
-           if(['audio','video','image','document'].indexOf(oneFormField.type) !== -1){
-               oneFormField.value = [];
-               oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
-
-               data[oneFormField.name].forEach(function(v){
-                   oneFormField.value.push({
-                       'f' : "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v,
-                       'v': v
-                   });
-               });
-           }
+                editAndSaveEntry(data);
+            }
         });
 
-		var options = {
-			timeout: $timeout,
-			form: config,
-			data: data,
-			name: 'updateEntry',
-			label: 'Update Entry',
-            ngDataApi: ngDataApi,
-			actions: [
-				{
-					'type': 'submit',
-					'label': 'Save Data',
-					'btn': 'primary',
-					'action': function(formData) {
-						var casting = ['select', 'radio'];
-						for(var input in formData) {
-							$scope.selectedService.schema.soajsUI.form.update.forEach(function(iSchema) {
-								if(iSchema.name === input) {
-									if(casting.indexOf(iSchema.type) !== -1 && Array.isArray(formData[input])) {
-										formData[input] = formData[input][0];
-									}
-								}
-							});
-						}
+        function editAndSaveEntry(data) {
 
-                        console.log(formData);
-                        return false;
-                        //todo: compare new files with existing
-                        //todo: if new files invoke upload file
+            var config = cmConfig.form.update;
+            config.entries = $scope.selectedService.schema.soajsUI.form.update;
 
-						getSendDataFromServer($scope, ngDataApi, {
-							//"url": $scope.selectedDomainAddress,
-							"method": "send",
-							"routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
-							"params": {
-								"id": data._id,
-								"env": $scope.selectedEnv.toUpperCase()
-							},
-							"data": formData
-						}, function(error) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Data Updated Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listCMDataEntries();
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': 'Cancel',
-					'btn': 'danger',
-					'action': function() {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-		buildFormWithModal($scope, $modal, options);
+            config.entries.forEach(function (oneFormField) {
+                if (['audio', 'video', 'image', 'document'].indexOf(oneFormField.type) !== -1) {
+                    oneFormField.value = [];
+                    oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
+
+                    data[oneFormField.name].forEach(function (v) {
+                        oneFormField.value.push({
+                            'f': "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v._id,
+                            'v': v._id,
+                            'n': v.filename
+                        });
+                    });
+                }
+            });
+
+            var options = {
+                timeout: $timeout,
+                form: config,
+                data: data,
+                name: 'updateEntry',
+                label: 'Update Entry',
+                ngDataApi: ngDataApi,
+                actions: [
+                    {
+                        'type': 'submit',
+                        'label': 'Save Data',
+                        'btn': 'primary',
+                        'action': function (formData) {
+                            var casting = ['select', 'radio'];
+                            for (var input in formData) {
+                                $scope.selectedService.schema.soajsUI.form.update.forEach(function (iSchema) {
+                                    if (iSchema.name === input) {
+                                        if (casting.indexOf(iSchema.type) !== -1 && Array.isArray(formData[input])) {
+                                            formData[input] = formData[input][0];
+                                        }
+                                    }
+                                });
+                            }
+
+                            var files = cmService.extractFilesFromPostedData($scope, config, formData);
+                            if (files === false) {
+                                $scope.form.displayAlert('danger', "Make sure you have filled all the files inputs.");
+                            }
+                            else {
+                                getSendDataFromServer($scope, ngDataApi, {
+                                    "method": "send",
+                                    "routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
+                                    "params": {
+                                        "id": data._id,
+                                        "env": $scope.selectedEnv.toUpperCase()
+                                    },
+                                    "data": formData
+                                }, function (error, response) {
+                                    if (error) {
+                                        $scope.form.displayAlert('danger', error.message);
+                                    }
+                                    else {
+                                        if (typeof(files) === 'object') {
+                                            cmService.UploadFile($scope, files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
+                                                if (error) {
+                                                    $scope.form.displayAlert('danger', error);
+                                                }
+                                                else {
+                                                    $scope.$parent.displayAlert('success', 'Data Updated Successfully.');
+                                                    $scope.modalInstance.close();
+                                                    $scope.form.formData = {};
+                                                    $scope.listCMDataEntries();
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            $scope.$parent.displayAlert('success', 'Data Updated Successfully.');
+                                            $scope.modalInstance.close();
+                                            $scope.form.formData = {};
+                                            $scope.listCMDataEntries();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    {
+                        'type': 'reset',
+                        'label': 'Cancel',
+                        'btn': 'danger',
+                        'action': function () {
+                            $scope.modalInstance.dismiss('cancel');
+                            $scope.form.formData = {};
+                        }
+                    }
+                ]
+            };
+            buildFormWithModal($scope, $modal, options);
+        }
 	};
 
 	$scope.viewCMDataEntry = function(data) {
 		getSendDataFromServer($scope, ngDataApi, {
-			//"url": $scope.selectedDomainAddress,
 			"method": "get",
 			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['get'],
 			"params": {
@@ -369,11 +416,13 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                             if (['audio', 'video', 'image', 'document'].indexOf(oneEntry.type) !== -1) {
                                 filesNames[oneEntry.name] = {
                                     'type': oneEntry.type,
-                                    'ids': $scope.data[oneEntry.name]
+                                    'info': $scope.data[oneEntry.name]
                                 }
                             }
                         });
-                        $scope.files = filesNames;
+                        if(Object.keys(filesNames).length > 0){
+                            $scope.files = filesNames;
+                        }
 
 						delete $scope.data['$$hashKey'];
 						delete $scope.data['_id'];
@@ -388,6 +437,10 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                         $scope.ok = function() {
 							$modalInstance.dismiss('ok');
 						};
+
+                        $scope.downloadFile = function(oneEntry){
+                          scope.downloadFile(oneEntry);
+                        };
 					}
 				});
 			}
@@ -432,6 +485,10 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 			$scope.listCMDataEntries();
 		});
 	};
+
+    $scope.downloadFile = function(oneEntry){
+        cmService.downloadFile($scope, oneEntry);
+    };
 
     cmService.loadServices($scope);
 

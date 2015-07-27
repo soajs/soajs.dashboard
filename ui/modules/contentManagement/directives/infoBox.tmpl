@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div ng-bind-html="data|object"></div>
+    <hr/>
+    <div ng-if="files" ng-repeat="(fieldName, info) in files">
+        <b>{{fieldName}}</b><br />
+        <ul >
+            <li ng-repeat="oneFile in info.info" ng-switch="info.type">
+                <div ng-switch-when="document">
+                    <a href="" ng-click="downloadFile(oneFile)" title="Click to Open File">{{oneFile.filename}}</a>
+                </div>
+                <div ng-switch-when="image">
+                    <a href="" ng-click="downloadFile(oneFile)" target="_blank" title="Click to Open Image">{{oneFile.filename}}</a>
+                </div>
+                <div ng-switch-when="audio">
+                    <a href="" ng-click="downloadFile(oneFile)" target="_blank" title="Click to Open Image">{{oneFile.filename}}</a>
+                </div>
+                <div ng-switch-when="video">
+                    <a href="" ng-click="downloadFile(oneFile)" target="_blank" title="Click to Open Image">{{oneFile.filename}}</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <p>
+            <b>Author:</b>&nbsp;{{author}}<br />
+            <b>Created On:</b>&nbsp;{{created|date}}<br />
+            <span ng-if="modified"><b>Last Modified:</b>&nbsp;{{modified|date}}<br /></span>
+        </p>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>
