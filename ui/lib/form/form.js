@@ -112,22 +112,24 @@ function buildForm(context, modal, configuration, cb) {
                         context.form.formData[oneEntry.name].push(oneValue.v);
                     }
                 });
-
-                if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
-                    if (oneEntry.limit === undefined) {
-                        oneEntry.limit = 0;
-                    }
-                    else if (oneEntry.limit === 0) {
-                        oneEntry.addMore = true;
-                    }
-
-                    if (oneEntry.limit < oneEntry.value.length) {
-                        oneEntry.limit = oneEntry.value.length;
-                    }
-                }
             }
             else {
                 context.form.formData[oneEntry.name] = oneEntry.value;
+            }
+        }
+
+        if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
+            if (oneEntry.limit === undefined) {
+                oneEntry.limit = 0;
+            }
+            else if (oneEntry.limit === 0) {
+                oneEntry.addMore = true;
+            }
+
+            if(oneEntry.value && Array.isArray(oneEntry.value) && oneEntry.value.length > 0){
+                if (oneEntry.limit < oneEntry.value.length) {
+                    oneEntry.limit = oneEntry.value.length;
+                }
             }
         }
 
@@ -164,6 +166,7 @@ function buildForm(context, modal, configuration, cb) {
                 rebuildData(context.form.entries[i]);
             }
         }
+        context.form.refData = configuration.data;
     }
 
     for (var i = 0; i < context.form.entries.length; i++) {
@@ -208,7 +211,6 @@ function buildForm(context, modal, configuration, cb) {
         var entries = context.form.entries;
         var data = context.form.formData;
         // for external keys, the form might be empty
-        //if(JSON.stringify(data) === '{}') { return false; }
         for (var i = 0; i < entries.length; i++) {
             var oneEntry = entries[i];
             if (oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
@@ -249,7 +251,6 @@ function buildForm(context, modal, configuration, cb) {
     };
 
     context.form.addNewInput = function (input) {
-        console.log(input.limit);
         if (input.limit === 0) {
             input.limit = 1;
         }
@@ -257,12 +258,27 @@ function buildForm(context, modal, configuration, cb) {
         input.addMore = true;
     };
 
+    context.form.downloadFile = function(url){
+        getSendDataFromServer(context, configuration.ngDataApi, {
+            "method": "get",
+            "routeName": url
+        }, function (error, response) {
+            if (error) {
+                context.form.displayAlert('danger', error.message);
+            }
+            else {
+                console.log(response);
+            }
+        });
+    };
+
     context.form.removeFile = function (entry, i) {
         getSendDataFromServer(context, configuration.ngDataApi, {
-            "method": "send",
-            "routeName": entry.removeFileUrl,
-            "data": {
-                "file": entry.value[i]
+            "method": "get",
+            "routeName": entry.removeFileUrl + entry.value[i].v,
+            "params": {
+                "n" : entry.name,
+                "refId" : context.form.refData._id
             }
         }, function (error) {
             if (error) {
@@ -271,6 +287,8 @@ function buildForm(context, modal, configuration, cb) {
             else {
                 context.form.displayAlert('success', 'File Removed Successfully.');
                 //remove the html input
+                var loc = context.form.formData[entry.name].indexOf(entry.value[i].v);
+                context.form.formData[entry.name].splice(loc, 1);
                 entry.value.splice(i, 1);
             }
         });

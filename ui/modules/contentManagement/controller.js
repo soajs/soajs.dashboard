@@ -174,6 +174,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 	$scope.addCMDataEntry = function() {
 		var config = cmConfig.form.add;
 		config.entries = $scope.selectedService.schema.soajsUI.form.add;
+
 		var options = {
 			timeout: $timeout,
 			form: config,
@@ -196,25 +197,45 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							});
 						}
 
-						getSendDataFromServer($scope, ngDataApi, {
-							//"url": $scope.selectedDomainAddress,
-							"method": "send",
-							"routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'],
-							"data": formData,
-							"params": {
-								"env": $scope.selectedEnv.toUpperCase()
-							}
-						}, function(error) {
-							if(error) {
-								$scope.form.displayAlert('danger', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', 'Data Added Successfully.');
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listCMDataEntries();
-							}
-						});
+                        var files = cmService.extractFilesFromPostedData($scope, config, formData);
+                        if(files === false){
+                            $scope.form.displayAlert('danger', "Make sure you have filled all the files inputs.");
+                        }
+                        else{
+                            getSendDataFromServer($scope, ngDataApi, {
+                                "method": "send",
+                                "routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'],
+                                "data": formData,
+                                "params": {
+                                    "env": $scope.selectedEnv.toUpperCase()
+                                }
+                            }, function(error, response) {
+                                if(error) {
+                                    $scope.form.displayAlert('danger', error.message);
+                                }
+                                else {
+                                    if(typeof(files) === 'object'){
+                                        cmService.UploadFile($scope, files, response, '/' + $scope.selectedService.name + "/upload", function(error){
+                                            if(error){
+                                                $scope.form.displayAlert('danger', error);
+                                            }
+                                            else{
+                                                $scope.$parent.displayAlert('success', 'Data Added Successfully.');
+                                                $scope.modalInstance.close();
+                                                $scope.form.formData = {};
+                                                $scope.listCMDataEntries();
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        $scope.$parent.displayAlert('success', 'Data Added Successfully.');
+                                        $scope.modalInstance.close();
+                                        $scope.form.formData = {};
+                                        $scope.listCMDataEntries();
+                                    }
+                                }
+                            });
+                        }
 					}
 				},
 				{
@@ -234,12 +255,28 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 	$scope.editCMDataEntry = function(data) {
 		var config = cmConfig.form.update;
 		config.entries = $scope.selectedService.schema.soajsUI.form.update;
+
+        config.entries.forEach(function(oneFormField){
+           if(['audio','video','image','document'].indexOf(oneFormField.type) !== -1){
+               oneFormField.value = [];
+               oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
+
+               data[oneFormField.name].forEach(function(v){
+                   oneFormField.value.push({
+                       'f' : "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v,
+                       'v': v
+                   });
+               });
+           }
+        });
+
 		var options = {
 			timeout: $timeout,
 			form: config,
 			data: data,
 			name: 'updateEntry',
 			label: 'Update Entry',
+            ngDataApi: ngDataApi,
 			actions: [
 				{
 					'type': 'submit',
@@ -256,6 +293,11 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 								}
 							});
 						}
+
+                        console.log(formData);
+                        return false;
+                        //todo: compare new files with existing
+                        //todo: if new files invoke upload file
 
 						getSendDataFromServer($scope, ngDataApi, {
 							//"url": $scope.selectedDomainAddress,
@@ -307,6 +349,8 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+                var config = $scope.selectedService.schema.soajsUI.form.add;
+                var scope = $scope;
 				$modal.open({
 					templateUrl: "infoBox.html",
 					size: 'lg',
@@ -315,14 +359,33 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 					controller: function($scope, $modalInstance) {
 						$scope.title = "View Entry";
 						$scope.data = angular.copy(repsonse);
+                        $scope.author = $scope.data.author;
+                        $scope.created = $scope.data.created;
+                        $scope.modified = $scope.data.modified;
+
+                        //download files
+                        var filesNames = {};
+                        config.forEach(function (oneEntry) {
+                            if (['audio', 'video', 'image', 'document'].indexOf(oneEntry.type) !== -1) {
+                                filesNames[oneEntry.name] = {
+                                    'type': oneEntry.type,
+                                    'ids': $scope.data[oneEntry.name]
+                                }
+                            }
+                        });
+                        $scope.files = filesNames;
+
 						delete $scope.data['$$hashKey'];
 						delete $scope.data['_id'];
-						for(var i in $scope.data) {
-							if(i === 'created' || i === 'modified') {
-								$scope.data[i] = new Date($scope.data[i]).toISOString();
-							}
-						}
-						$scope.ok = function() {
+						delete $scope.data['soajsauth'];
+						delete $scope.data['author'];
+						delete $scope.data['created'];
+						delete $scope.data['modified'];
+                        for(var f in filesNames){
+                            delete $scope.data[f];
+                        }
+
+                        $scope.ok = function() {
 							$modalInstance.dismiss('ok');
 						};
 					}
