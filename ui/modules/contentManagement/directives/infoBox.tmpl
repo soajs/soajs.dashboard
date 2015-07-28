@@ -5,7 +5,7 @@
     <div ng-bind-html="data|object"></div>
     <hr/>
     <div ng-if="files" ng-repeat="(fieldName, info) in files">
-        <b>{{fieldName}}</b><br/>
+        <b ng-if="info.info.length > 0">{{fieldName}}</b><br/>
         <ul>
             <li ng-repeat="oneFile in info.info" ng-switch="info.type">
                 <div ng-switch-when="document">
