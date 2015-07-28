@@ -3,15 +3,18 @@
 <div ng-repeat="i in [] | range: (entry.limit> 0)? entry.limit : 1" class="table c-both w100" ng-class-odd="'file-odd'" ng-class-even="'file-even'">
     <div ng-if="entry.value[i]">
         <b>{{entry.value[i].n}}</b>&nbsp;
+        <a href="" ng-click="entry.method(entry.value[i],'document')" target="_blank">
+            <span class="icon icon-download3" title="Download {{entry.value[i].n}}"></span>
+        </a>
         <a href="" ng-confirm-click="Are you sure you want to remove this file ?" ng-click="form.removeFile(entry, i)"
            target="_blank" title="Remove File">
             <span class="icon icon-cross" title="Remove File"></span>
         </a>
         <br />
-        <audio controls>
-            <source src="{{entry.value[i].f}}" type="audio/mp3">
-            Your browser does not support the audio tag.
-        </audio>
+        <!--<audio controls>-->
+            <!--<source src="{{entry.value[i].f}}" type="audio/mp3">-->
+            <!--Your browser does not support the audio tag.-->
+        <!--</audio>-->
     </div>
     <input type="file" class="form-control" id="{{entry.name}}_{{i}}" name="{{entry.name}}_{{i}}"
            file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple"/>

@@ -33,6 +33,12 @@ soajsApp.filter('fulldate', function() {
 	};
 });
 
+soajsApp.filter('toTrustedSrc', ['$sce', function($sce) {
+	return function(src) {
+        return $sce.trustAsResourceUrl(src);
+	};
+}]);
+
 soajsApp.filter('toTrustedHtml', ['$sce', function($sce) {
 	return function(text) {
 		return $sce.trustAsHtml(text);

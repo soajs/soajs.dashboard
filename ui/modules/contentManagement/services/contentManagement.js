@@ -73,7 +73,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
         });
     }
 
-    function downloadFile(currentScope, oneFile) {
+    function downloadFile(currentScope, oneFile, mediaType) {
         var soajsAuthCookie = $cookieStore.get('soajs_auth');
         var options = {
             url: apiConfiguration.domain + "/" + currentScope.selectedService.name + "/download",
@@ -90,8 +90,24 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             }
         };
         $http(options).success(function(data){
-            //todo: use blob to and url.createObjectURL, then create a tag element and fill it or open a download window popup.
-            openSaveAsDialog(oneFile.filename || oneFile.n, data, oneFile.contentType || oneFile.ct);
+            switch(mediaType){
+                case 'image':
+                    var ext = (oneFile.filename || oneFile.n);
+                    ext = ext.split('.')[1];
+                    var blob = new Blob([data], { type: "image/" + ext });
+                    var URL = window.URL || window.webkitURL;
+                    oneFile.src = URL.createObjectURL(blob);
+                    break;
+                case 'audio':
+                    //todo: figure out how to bypass angular issue with blob as src
+                    break;
+                case 'video':
+                    //todo: figure out how to bypass angular issue with blob as src
+                    break;
+                default:
+                    openSaveAsDialog(oneFile.filename || oneFile.n, data, oneFile.contentType || oneFile.ct);
+                    break;
+            }
         });
 
         function openSaveAsDialog(filename, content, mediaType) {
@@ -148,6 +164,12 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                             }
                         });
                     }
+                    else{
+                        counter++;
+                        if (counter === Object.keys(files).length) {
+                            return (err.length > 0) ? cb(err) : cb(null, true);
+                        }
+                    }
                 }
             }
         }
@@ -170,7 +192,8 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                             formFiles[n] = [];
                         }
                         if (!Array.isArray(formData[formFields[i]])) {
-                            var position = formFields[i].split("_")[1];
+                            var position = formFields[i].split("_");
+                            position = position[position.length -1];
                             formFiles[n][position]=formData[formFields[i]];
                         }
                         delete formData[formFields[i]];

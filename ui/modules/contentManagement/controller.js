@@ -283,7 +283,6 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
         });
 
         function editAndSaveEntry(data) {
-            console.log(data);
             var config = cmConfig.form.update;
             config.entries = $scope.selectedService.schema.soajsUI.form.update;
 
@@ -292,16 +291,17 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     oneFormField.value = [];
                     oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
                     oneFormField.method= $scope.downloadFile;
-                    console.log(oneFormField.name);
-                    data[oneFormField.name].forEach(function (v) {
-                        oneFormField.value.push({
-                            'f': "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v._id,
-                            'v': v._id,
-                            'n': v.filename,
-                            'p': v.metadata.position,
-                            'ct': v.contentType
+                    if(data[oneFormField.name]){
+                        data[oneFormField.name].forEach(function (v) {
+                            oneFormField.value.push({
+                                'f': "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v._id,
+                                'v': v._id,
+                                'n': v.filename,
+                                'p': v.metadata.position,
+                                'ct': v.contentType
+                            });
                         });
-                    });
+                    }
                 }
             });
 
@@ -441,8 +441,8 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 							$modalInstance.dismiss('ok');
 						};
 
-                        $scope.downloadFile = function(oneEntry){
-                          scope.downloadFile(oneEntry);
+                        $scope.downloadFile = function(oneEntry, mediaType){
+                          scope.downloadFile(oneEntry, mediaType);
                         };
 					}
 				});
@@ -489,8 +489,8 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 		});
 	};
 
-    $scope.downloadFile = function(oneEntry){
-        cmService.downloadFile($scope, oneEntry);
+    $scope.downloadFile = function(oneEntry, mediaType){
+        cmService.downloadFile($scope, oneEntry, mediaType);
     };
 
     cmService.loadServices($scope);

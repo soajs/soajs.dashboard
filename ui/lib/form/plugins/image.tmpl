@@ -7,9 +7,10 @@
            target="_blank" title="Remove Image">
             <span class="icon icon-cross" title="Remove Image"></span>
         </a><br />
-        <a href="" ng-click="entry.method(entry.value[i])" target="_blank" title="Click to Open Image">
-            <img ng-src="{{entry.value[i].f}}" width="100" />
+        <a href="" ng-click="entry.method(entry.value[i], 'document')" target="_blank" title="Click to Open Image">
+            <img ng-src="{{entry.value[i].src}}" width="100" />
         </a>
+        <div ng-init="entry.method(entry.value[i], 'image')"></div>
     </div>
     <input type="file" class="form-control" id="{{entry.name}}_{{i}}" name="{{entry.name}}_{{i}}"
            file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple"/>
