@@ -283,7 +283,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
         });
 
         function editAndSaveEntry(data) {
-
+            console.log(data);
             var config = cmConfig.form.update;
             config.entries = $scope.selectedService.schema.soajsUI.form.update;
 
@@ -292,7 +292,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     oneFormField.value = [];
                     oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
                     oneFormField.method= $scope.downloadFile;
-
+                    console.log(oneFormField.name);
                     data[oneFormField.name].forEach(function (v) {
                         oneFormField.value.push({
                             'f': "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v._id,
@@ -419,7 +419,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                             if (['audio', 'video', 'image', 'document'].indexOf(oneEntry.type) !== -1) {
                                 filesNames[oneEntry.name] = {
                                     'type': oneEntry.type,
-                                    'info': $scope.data[oneEntry.name]
+                                    'info': $scope.data.fields[oneEntry.name]
                                 }
                             }
                         });
@@ -434,7 +434,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 						delete $scope.data['created'];
 						delete $scope.data['modified'];
                         for(var f in filesNames){
-                            delete $scope.data[f];
+                            delete $scope.data.fields[f];
                         }
 
                         $scope.ok = function() {

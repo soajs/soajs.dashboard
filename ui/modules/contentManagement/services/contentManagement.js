@@ -130,7 +130,8 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                 "env": currentScope.selectedEnv.toUpperCase(),
                                 'field': fileName,
                                 'position': i,
-                                'action': method
+                                'action': method,
+                                'media': fileName
                             }
                         }, progress, function (error, response) {
                             if (error) {
