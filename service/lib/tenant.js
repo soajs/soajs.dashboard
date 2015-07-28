@@ -187,7 +187,10 @@ module.exports = {
 				if(err || !data) { return res.jsonp(req.soajs.buildResponse({"code": 420, "msg": config.errors[420]})); }
 
 				createAdminUser(record, data, function(error, response, body) {
-					if(error || !body.result) { return res.jsonp(req.soajs.buildResponse({"code": 606, "msg": config.errors[606]})); }
+					if(error || !body.result) {
+                        //todo: if user already exists, then do not return error.
+                        return res.jsonp(req.soajs.buildResponse({"code": 606, "msg": config.errors[606]}));
+                    }
 
 					createAdminGroup(record, data, function(error, response, body) {
 						if(error || !body.result) { return res.jsonp(req.soajs.buildResponse({"code": 607, "msg": config.errors[607]})); }

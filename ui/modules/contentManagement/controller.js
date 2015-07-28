@@ -215,7 +215,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                 }
                                 else {
                                     if(typeof(files) === 'object'){
-                                        cmService.UploadFile($scope, files, response, '/' + $scope.selectedService.name + "/upload", function(error){
+                                        cmService.UploadFile($scope, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function(error){
                                             if(error){
                                                 $scope.form.displayAlert('danger', error);
                                             }
@@ -291,12 +291,15 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 if (['audio', 'video', 'image', 'document'].indexOf(oneFormField.type) !== -1) {
                     oneFormField.value = [];
                     oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
+                    oneFormField.method= $scope.downloadFile;
 
                     data[oneFormField.name].forEach(function (v) {
                         oneFormField.value.push({
                             'f': "/" + $scope.selectedService.name + "/download/?env=" + $scope.selectedEnv.toUpperCase() + "&id=" + v._id,
                             'v': v._id,
-                            'n': v.filename
+                            'n': v.filename,
+                            'p': v.metadata.position,
+                            'ct': v.contentType
                         });
                     });
                 }
@@ -345,7 +348,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                     }
                                     else {
                                         if (typeof(files) === 'object') {
-                                            cmService.UploadFile($scope, files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
+                                            cmService.UploadFile($scope, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
                                                 if (error) {
                                                     $scope.form.displayAlert('danger', error);
                                                 }

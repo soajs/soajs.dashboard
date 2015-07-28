@@ -3,7 +3,7 @@
 <div ng-repeat="i in [] | range: (entry.limit> 0)? entry.limit : 1" class="table c-both w100" ng-class-odd="'file-odd'" ng-class-even="'file-even'">
     <div ng-if="entry.value[i]" class="f-left file-actions">
         <b>{{entry.value[i].n}}</b>&nbsp;
-        <a href="" ng-click="form.downloadFile(entry.value[i].f)" title="Click to Open File">
+        <a href="" ng-click="entry.method(entry.value[i])" title="Click to Open File">
             <span class="icon icon-file-text" title="Click to Open File"></span>
         </a>&nbsp;
         <a href="" ng-confirm-click="Are you sure you want to remove this file ?" ng-click="form.removeFile(entry, i)"
