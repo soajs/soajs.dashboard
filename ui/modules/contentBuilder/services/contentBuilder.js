@@ -92,7 +92,11 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 									}
 								}
 							}
+                            var files = [];
 							for(var i = 0; i < $scope.data.soajsUI.form.add.length; i++) {
+                                if($scope.data.soajsUI.form.add[i].limit !== undefined){
+                                    files.push(angular.copy($scope.data.soajsUI.form.add[i]));
+                                }
 								$scope.data.soajsUI.form.add[i].print = JSON.stringify($scope.data.soajsUI.form.add[i], null, 2);
 							}
 
@@ -100,6 +104,8 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 								$scope.data.soajsUI.form.update[i].print = JSON.stringify($scope.data.soajsUI.form.update[i], null, 2);
 							}
 
+                            $scope.data.genericService.config.maxFileUpload = parseInt($scope.data.genericService.config.maxFileUpload);
+                            $scope.data.files = files;
 							setTimeout(function() {highlightMyCode()}, 500);
 							$scope.ok = function() {
 								$modalInstance.dismiss('ok');
@@ -241,6 +247,10 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			if(Object.keys(currentScope.config.genericService.config.errors).length > 0) {
 				data['errors'] = JSON.stringify(currentScope.config.genericService.config.errors, null, 2);
 			}
+
+            if(currentScope.config.genericService.config.maxFileUpload) {
+                data['maxFileUpload'] = currentScope.config.genericService.config.maxFileUpload;
+            }
 
 			data['extKeyRequired'] = (currentScope.config.genericService.config.extKeyRequired);
 			data['awareness'] = (currentScope.config.genericService.config.awareness);

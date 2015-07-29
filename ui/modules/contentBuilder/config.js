@@ -343,6 +343,23 @@ var cbConfig = {
 					"required": false,
 					'fieldMsg': "In case of timeout, how many attempts should be repeated before giving up"
 				},
+                {
+                    "name": "maxFileUpload",
+                    "label": "Maximum Upload File Limit",
+                    "type": "select",
+                    "tooltip": "If the service supports file uploads, specify the maximum upload limit allowed",
+                    "value": [
+                        { 'v' : '500', 'l': '500kb', 'selected': true },
+                        { 'v' : '1024', 'l': '1M' },
+                        { 'v' : '2048', 'l': '2M' },
+                        { 'v' : '4096', 'l': '4M' },
+                        { 'v' : '6144', 'l': '6M' },
+                        { 'v' : '8192', 'l': '8M' },
+                        { 'v' : '10240', 'l': '10M' }
+                    ],
+                    "required": false,
+                    'fieldMsg': "Pick the Maximum upload limit allowed for files."
+                },
 				{
 					"name": "collection",
 					"label": "Default Collection",

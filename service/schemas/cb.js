@@ -11,6 +11,7 @@ var genericService = {
 				"requestTimeoutRenewal": {"type": "integer", "max": 10},
 				"extKeyRequired": {"type": "boolean"},
 				"awareness": {"type": "boolean"},
+                "maxFileUpload": { "type": "string" },
 				"errors": {
 					"type": "object",
 					"patternProperties": {

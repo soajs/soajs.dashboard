@@ -206,6 +206,9 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 					$scope.config.genericService.config.requestTimeout = formData['requestTimeout'];
 					$scope.config.genericService.config.requestTimeoutRenewal = formData['requestTimeoutRenewal'];
 
+                    if(formData['maxFileUpload']) {
+                        $scope.config.genericService.config.maxFileUpload = formData['maxFileUpload'];
+                    }
 					if(formData['awareness']) {
 						$scope.config.genericService.config.awareness = (formData['awareness'] && formData['awareness'] === 'true');
 					}
