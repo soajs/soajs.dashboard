@@ -1,6 +1,6 @@
 "use strict";
 var contentManagementApp = soajsApp.components;
-contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'cmService', function ($scope, ngDataApi, $compile, $timeout, $modal, cmService) {
+contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmService) {
     $scope.$parent.isUserLoggedIn();
     $scope.access = {};
 
@@ -421,12 +421,30 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                             if (['audio', 'video', 'image', 'document'].indexOf(oneEntry.type) !== -1) {
                                 filesNames[oneEntry.name] = {
                                     'type': oneEntry.type,
+                                    'label': oneEntry.label,
                                     'info': $scope.data.fields[oneEntry.name]
                                 }
                             }
                         });
                         if (Object.keys(filesNames).length > 0) {
                             $scope.files = filesNames;
+
+                            for(var fName in $scope.files){
+                                if($scope.files[fName].info && $scope.files[fName].info.length > 0){
+                                    $scope.files[fName].info.forEach(function(oneFile){
+                                        var length = Math.ceil(oneFile.length / 1024);
+                                        if(length > 1000){
+                                            oneFile.length = length + ' MB';
+                                        }
+                                        else if(length > 1){
+                                            oneFile.length = length + ' KB';
+                                        }
+                                        else{
+                                            oneFile.length += ' bytes';
+                                        }
+                                    });
+                                }
+                            }
                         }
 
                         delete $scope.data['$$hashKey'];
@@ -496,5 +514,5 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
     };
 
     cmService.loadServices($scope);
-
+    injectFiles.injectCss("modules/contentManagement/contentManagement.css");
 }]);
