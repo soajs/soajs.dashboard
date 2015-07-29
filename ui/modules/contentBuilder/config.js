@@ -89,6 +89,46 @@ var cbConfig = {
 					'fieldMsg': 'Should the grid sort the records based on this input in descending order?'
 				}
 			],
+            fileUI:[
+                {
+                    'type': 'html',
+                    'name': 'html-ignore',
+                    'value': 'This Type of inputs represents documents and media files and is streamed back and forth from the service.'
+                },
+                {
+                    'name': 'label',
+                    'label': 'Input Label',
+                    'type': 'text',
+                    'placeholder': 'Title...',
+                    'value': '',
+                    'tooltip': 'Enter the input label as it should display in the UI',
+                    'required': true,
+                    'fieldMsg': 'Enter a name for this input.'
+                },
+                {
+                    "name": "type",
+                    "label": "UI Type",
+                    "type": "select",
+                    "value": [
+                        {"v": "audio", "l": "Audio Track"},
+                        {"v": "video", "l": "Video Track"},
+                        {"v": "image", "l": "Image"},
+                        {"v": "document", "l": "Document"}
+                    ],
+                    "required": true,
+                    "fieldMsg": "Pick the type of the input, to be rendered when add/update form opens in UI Module."
+                },
+                {
+                    "name": "limit",
+                    "label": "Limit",
+                    "type": "number",
+                    "placholder": "0",
+                    "tooltip": "Enter the max number of files that can be attached to one entry. 0 means unlimited.",
+                    "value": 1,
+                    "required": false,
+                    "fieldMsg": "The value of this field applies only to files and defines the maximum limit of files that can be added to one data record."
+                }
+            ],
 			user: [
 				{
 					'type': 'html',
@@ -220,10 +260,6 @@ var cbConfig = {
 								{"v": "password", "l": "Password"},
 								{"v": "textarea", "l": "Text Box"},
 								{"v": "editor", "l": "Advanced Editor"},
-								{"v": "audio", "l": "Audio Track"},
-								{"v": "video", "l": "Video Track"},
-								{"v": "image", "l": "Image"},
-								{"v": "document", "l": "Document"},
 								{"v": "radio", "l": "list (one value)"},
 								{"v": "checkbox", "l": "list (multiple values)"},
 								{"v": "select", "l": "list (drop down menu)"},
@@ -233,18 +269,11 @@ var cbConfig = {
 							"fieldMsg": "Pick the type of the input, to be rendered when add/update form opens in UI Module.",
 							'onAction': function(id, data){
 								var arr1 = ['radio','checkbox','select','multi-select'];
-								var arr2 = ['audio','video','image','document'];
 								if(arr1.indexOf(data)!== -1){
-									jQuery(".wizardForm #limit-wrapper").slideUp();
 									jQuery(".wizardForm #defaultValue-wrapper").slideDown();
-								}
-								else if(arr2.indexOf(data) !== -1){
-									jQuery(".wizardForm #defaultValue-wrapper").slideUp();
-									jQuery(".wizardForm #limit-wrapper").slideDown();
 								}
 								else{
 									jQuery(".wizardForm #defaultValue-wrapper").slideUp();
-									jQuery(".wizardForm #limit-wrapper").slideUp();
 								}
 							}
 						},
@@ -277,16 +306,6 @@ var cbConfig = {
 							"value": "",
 							"required": false,
 							"fieldMsg": "The value of this field shows up in a tooltip message when the mouse is over the input."
-						},
-						{
-							"name": "limit",
-							"label": "Limit",
-							"type": "number",
-							"placholder": "0",
-							"tooltip": "Enter the max number of files that can be attached to one entry. 0 means unlimited.",
-							"value": "",
-							"required": false,
-							"fieldMsg": "The value of this field applies only to files and defines the maximum limit of files that can be added to one data record."
 						}
 					]
 				}

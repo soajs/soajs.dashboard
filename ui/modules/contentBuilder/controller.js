@@ -153,6 +153,30 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 		cbInputHelper.addInput($scope);
 	};
 
+    $scope.getInputType = function(requestedType, info, name){
+        if(requestedType === 'fileUI'){
+            if(name.limit!== undefined){
+                return true;
+            }
+        }
+
+        else if(requestedType === 'computedUI'){
+            if(!info.genericService.config.schema.commonFields[name]){
+                var found = false;
+                info.soajsUI.form.add.forEach(function(onefield){
+                    if(onefield.name === name && !onefield.limit){
+                        found = true;
+                        return true;
+                    }
+                });
+                if(!found){
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
 	$scope.updateInput = function(type, fieldName, fieldInfo) {
 		cbInputHelper.editInput($scope, type, fieldName, fieldInfo);
 	};

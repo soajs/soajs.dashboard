@@ -874,6 +874,7 @@ fieldset .grid table {
     min-width: 100px;
 }
 
+.dbBoxGreen,
 .dbBoxRed,
 .dbBox {
     padding: 5px;
@@ -883,6 +884,7 @@ fieldset .grid table {
     margin: 5px;
 }
 
+.dbBoxGreen .head,
 .dbBoxRed .head,
 .dbBox .head {
     padding: 5px 5px 5px 10px;
@@ -897,6 +899,12 @@ fieldset .grid table {
     border: solid 1px #d43f3a;
 }
 
+.dbBoxGreen .head {
+    background: #CEDBAF;
+    border: solid 1px #9EBC5D;
+}
+
+.dbBoxGreen .rightActions,
 .dbBoxRed .rightActions,
 .dbBox .rightActions {
     position: absolute;
@@ -904,12 +912,14 @@ fieldset .grid table {
     right: 5px;
 }
 
+.dbBoxGreen .head h4,
 .dbBoxRed .head h4,
 .dbBox .head h4 {
     margin-top: 0;
     margin-bottom: 0;
 }
 
+.dbBoxGreen .info,
 .dbBoxRed .info,
 .dbBox .info {
     display: table;
@@ -924,6 +934,7 @@ fieldset .grid table {
     min-height: 10px;
 }
 
+.dbBoxGreen .info2,
 .dbBoxRed .info2,
 .dbBox .info2 {
     display: table;
@@ -1184,7 +1195,7 @@ div.entryBox .body .btn-primary.noFloat {
     margin-right: 20px;
 }
 
-.wizardForm #defaultValue-wrapper, .wizardForm #limit-wrapper, .wizardForm #codeValues-wrapper,
+.wizardForm #defaultValue-wrapper, .wizardForm #codeValues-wrapper,
 .wizardForm #filter-wrapper, .wizardForm #sorting-wrapper, .wizardForm #sortDirection-wrapper {
     display: none;
 }

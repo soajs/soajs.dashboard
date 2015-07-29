@@ -59,7 +59,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				'tooltip': formData.tooltip || '',
 				'req': (formData.required === 'true'),
 				'value': populateValue(formType, formData.defaultValue),
-				'limit': formData.limit
+				'limit': parseInt(formData.limit)
 			};
 
 			var found = false;
@@ -172,6 +172,15 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					buildForm($scope.input.computedUI, null, op);
 				};
 
+                $scope.fileInputUI = function() {
+                    var op = angular.copy(options);
+                    op.label = "Add New File Input";
+                    op.entries = angular.copy(cbConfig.form.step2.fileUI);
+                    $scope.input = {};
+                    $scope.input.fileUI = angular.extend($scope);
+                    buildForm($scope.input.fileUI, null, op);
+                };
+
 				$scope.done = function() {
 					var inputType = Object.keys($scope.input)[0];
 					var formData = $scope.input[inputType].form.formData;
@@ -195,6 +204,10 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 								buildListinUI(currentScope, formData, machineName);
 							}
 
+                            if(inputType === 'fileUI'){
+                                buildFormUI(currentScope, formData, machineName);
+                            }
+
 							currentScope.validateStep2();
 							$modalInstance.close();
 						}
@@ -216,10 +229,12 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				if(apiRoute === 'commonFields') {
 					continue;
 				}
-				var position = currentScope.config.genericService.config.schema[apiRoute].commonFields.indexOf(fieldName);
-				if(position !== -1) {
-					currentScope.config.genericService.config.schema[apiRoute].commonFields.splice(position, 1);
-				}
+                if(currentScope.config.genericService.config.schema[apiRoute].commonFields){
+                    var position = currentScope.config.genericService.config.schema[apiRoute].commonFields.indexOf(fieldName);
+                    if(position !== -1) {
+                        currentScope.config.genericService.config.schema[apiRoute].commonFields.splice(position, 1);
+                    }
+                }
 			}
 		}
 
@@ -267,18 +282,11 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					$scope.input.user = angular.extend($scope);
 					buildForm($scope.input.user, null, op, function() {
 						var arr1 = ['radio', 'checkbox', 'select', 'multi-select'];
-						var arr2 = ['audio', 'video', 'image', 'document'];
 						if(arr1.indexOf(data['type']) !== -1) {
-							jQuery(".wizardForm #limit-wrapper").slideUp();
 							jQuery(".wizardForm #defaultValue-wrapper").slideDown();
-						}
-						else if(arr2.indexOf(data['type']) !== -1) {
-							jQuery(".wizardForm #defaultValue-wrapper").slideUp();
-							jQuery(".wizardForm #limit-wrapper").slideDown();
 						}
 						else {
 							jQuery(".wizardForm #defaultValue-wrapper").slideUp();
-							jQuery(".wizardForm #limit-wrapper").slideUp();
 						}
 					});
 				};
@@ -291,6 +299,15 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					$scope.input.computedUI = angular.extend($scope);
 					buildForm($scope.input.computedUI, null, op);
 				};
+
+                $scope.fileInputUI = function() {
+                    var op = angular.copy(options);
+                    op.label = "Update File Input";
+                    op.entries = angular.copy(cbConfig.form.step2.fileUI);
+                    $scope.input = {};
+                    $scope.input.fileUI = angular.extend($scope);
+                    buildForm($scope.input.fileUI, null, op);
+                };
 
 				$scope.done = function() {
 					var formData = $scope.input[inputType].form.formData;
@@ -324,6 +341,9 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				if(inputType === 'user') {
 					$scope.userInput();
 				}
+                else if(inputType === 'fileUI'){
+                    $scope.fileInputUI();
+                }
 				else {
 					$scope.computedInputUI();
 				}
@@ -358,10 +378,25 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					data['type'] = formInfo.type || formInfo._type;
 					data['placeholder'] = formInfo.placeholder;
 					data['tooltip'] = formInfo.tooltip;
-					data['limit'] = formInfo.limit;
 					data['defaultValue'] = rebuildDefaultValue(formInfo.type, formInfo.value);
 				}
 			}
+            else if(inputType === 'fileUI'){
+                var formInfo = undefined;
+                currentScope.config.soajsUI.form.add.forEach(function(formField) {
+                    if(formField.name === fieldName) {
+                        formInfo = formField;
+                    }
+                });
+                data = {
+                    'label': fieldName
+                };
+                if(formInfo && Object.keys(formInfo).length > 0) {
+                    data['label'] = formInfo.label;
+                    data['type'] = formInfo.type || formInfo._type;
+                    data['limit'] = parseInt(formInfo.limit);
+                }
+            }
 			else {
 				data = {
 					'label': fieldName

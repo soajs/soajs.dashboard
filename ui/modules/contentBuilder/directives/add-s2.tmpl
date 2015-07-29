@@ -8,6 +8,9 @@
                 <tab heading="Computed UI Input" ng-click="computedInputUI()"><br/>
                     <ngform></ngform>
                 </tab>
+                <tab heading="File Input" ng-click="fileInputUI()"><br/>
+                    <ngform></ngform>
+                </tab>
             </tabset>
         </div>
         <div class="modal-footer">
@@ -53,7 +56,24 @@
                     </div>
                 </div>
 
-                <div class="dbBoxRed w20i" ng-repeat="columns in config.soajsUI.list.columns" ng-if="!config.genericService.config.schema.commonFields[columns.name]">
+                <div class="dbBoxGreen w20i" ng-repeat="formField in config.soajsUI.form.add" ng-if="getInputType('fileUI', config, formField)">
+                    <div class="head">
+                        <b>Provided by <span class="icon icon-user"></span></b>
+                        <span class="rightActions">
+                            <a href="" ng-click="updateInput('fileUI', formField.name, formField);">
+                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(formField.name);">
+                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>Label:</b>&nbsp;{{formField.label}}<br/>
+                    </div>
+                </div>
+
+                <div class="dbBoxRed w20i" ng-repeat="columns in config.soajsUI.list.columns" ng-if="getInputType('computedUI', config, columns.name)">
                     <div class="head">
                         <b>Provided by <span class="icon icon-laptop"></span></b>
                         <span class="rightActions">
@@ -67,23 +87,6 @@
                     </div>
                     <div class="info">
                         <b>Label:</b>&nbsp;{{columns.label}}<br/>
-                    </div>
-                </div>
-
-                <div class="dbBoxRed w20i" ng-repeat="formField in config.soajsUI.form.add" ng-if="!config.genericService.config.schema.commonFields[formField.name]">
-                    <div class="head">
-                        <b>Provided by <span class="icon icon-laptop"></span></b>
-                        <span class="rightActions">
-                            <a href="" ng-click="updateInput('user', formField.name, formField);">
-                                <span class="icon icon-pencil" tooltip="Update Input"></span>
-                            </a>
-                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(formField.name);">
-                                <span class="icon icon-cross" tooltip="Remove Input"></span>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="info">
-                        <b>Label:</b>&nbsp;{{formField.label}}<br/>
                     </div>
                 </div>
 
