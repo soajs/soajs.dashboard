@@ -44,7 +44,7 @@ em {
 #header {
     height: 80px;
     background: #424951;
-    min-width: 1285px;
+    min-width: 1300px;
 }
 
 #header #logo {
@@ -154,7 +154,7 @@ em {
 
 #page {
     width: 100%;
-    min-width: 1285px;
+    min-width: 1300px;
     display: table;
     clear: both;
     position: relative;
@@ -303,7 +303,7 @@ em {
     min-height: 80px;
     background: #404449;
     color: #e5eaee;
-    min-width: 1285px;
+    min-width: 1300px;
 }
 
 #footer .separator {
@@ -1008,18 +1008,18 @@ form tr .grouped input[type="text"] {
 }
 
 .grid table.serviceApis {
-    min-width: 480px;
-    width: 480px;
-    display: block;
+    width: 49%;
+    min-width: 49%;
+    /*display: block;*/
     float: left;
 }
 
 .serviceApis .routeApi {
-    width: 230px;
+    width: 49%;
 }
 
 .serviceApis .labelApi {
-    width: 250px;
+    width: 51%;
 }
 
 .red {
