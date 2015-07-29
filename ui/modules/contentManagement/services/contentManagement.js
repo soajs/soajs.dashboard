@@ -1,6 +1,6 @@
 "use strict";
 var cmService = soajsApp.components;
-cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', function (ngDataApi, $cookieStore, $http, Upload) {
+cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', '$compile', function (ngDataApi, $cookieStore, $http, Upload, $compile) {
 
     function loadServices(currentScope) {
         getSendDataFromServer(currentScope, ngDataApi, {
@@ -99,10 +99,34 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                     oneFile.src = URL.createObjectURL(blob);
                     break;
                 case 'audio':
-                    //todo: figure out how to bypass angular issue with blob as src
+                    var ext = (oneFile.filename || oneFile.n);
+                    ext = ext.split('.')[1];
+                    oneFile.mediaType = mediaType +"/" + ext;
+
+                    var blob = new Blob([data], { type: oneFile.mediaType });
+                    var URL = window.URL || window.webkitURL;
+                    oneFile.src = URL.createObjectURL(blob);
+
+                    oneFile.print = '<audio controls><source src="'+oneFile.src+'" ng-src="'+oneFile.src+'" type="'+oneFile.mediaType+'">Your browser does not support the audio tag.</audio>';
+
+                    var e = angular.element(document.getElementById('aud_'+oneFile.id));
+                    e.html = oneFile.print;
+                    $compile(e.contents())(currentScope);
                     break;
                 case 'video':
-                    //todo: figure out how to bypass angular issue with blob as src
+                    var ext = (oneFile.filename || oneFile.n);
+                    ext = ext.split('.')[1];
+                    oneFile.mediaType = mediaType +"/" + ext;
+
+                    var blob = new Blob([data], { type: oneFile.mediaType });
+                    var URL = window.URL || window.webkitURL;
+                    oneFile.src = URL.createObjectURL(blob);
+
+                    oneFile.print = '<video width="240" height="180" controls><source src="'+oneFile.src+'" type="'+oneFile.mediaType+'">Your browser does not support the video tag.</video>';
+
+                    var e = angular.element(document.getElementById('vid_'+oneFile.id));
+                    e.html = oneFile.print;
+                    $compile(e.contents())(currentScope);
                     break;
                 default:
                     openSaveAsDialog(oneFile.filename || oneFile.n, data, oneFile.contentType || oneFile.ct);
@@ -130,8 +154,18 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             "soajsauth": soajsAuthCookie
         };
 
-        var counter = 0;
+        var max= 0, counter = 0;
         var err = [];
+        for (var fileName in files) {
+            if (files[fileName] && files[fileName].length > 0) {
+                for (var i = 0; i < files[fileName].length; i++) {
+                    if (files[fileName][i]) {
+                        max++;
+                    }
+                }
+            }
+        }
+
         for (var fileName in files) {
             if (files[fileName] && files[fileName].length > 0) {
                 for (var i = 0; i < files[fileName].length; i++) {
@@ -159,16 +193,10 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                 }
                             }
                             counter++;
-                            if (counter === Object.keys(files).length) {
+                            if (counter === max) {
                                 return (err.length > 0) ? cb(err) : cb(null, true);
                             }
                         });
-                    }
-                    else{
-                        counter++;
-                        if (counter === Object.keys(files).length) {
-                            return (err.length > 0) ? cb(err) : cb(null, true);
-                        }
                     }
                 }
             }

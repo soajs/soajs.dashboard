@@ -15,14 +15,18 @@
                     {{oneFile.filename}}
                     <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Open Image">
                         <div ng-init="downloadFile(oneFile, 'image')"></div>
-                        <img ng-src="{{oneFile.src}}" width="100" />
+                        <img ng-src="{{oneFile.src}}" width="100"/>
                     </a>
                 </div>
                 <div ng-switch-when="audio">
-                    <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Audio Track">{{oneFile.filename}}</a>
+                    <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank"
+                       title="Click to Download Audio Track">{{oneFile.filename}}</a>
+                    <div ng-init="downloadFile(oneFile, 'audio')" id="aud_{{oneFile.id}}" ng-bind-html="oneFile.print | toTrustedHtml"></div>
                 </div>
                 <div ng-switch-when="video">
-                    <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Video">{{oneFile.filename}}</a>
+                    <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank"
+                       title="Click to Download Video">{{oneFile.filename}}</a>
+                    <div ng-init="downloadFile(oneFile, 'video')" id="vid_{{oneFile.id}}" ng-bind-html="oneFile.print | toTrustedHtml"></div>
                 </div>
             </li>
         </ul>
