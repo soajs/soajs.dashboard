@@ -13,7 +13,8 @@
             <tr ng-repeat="entry in data.soajsUI.list.columns" ng-class-odd="'odd'" ng-class-even="'even'">
                 <td>{{entry.label}}</td>
                 <td>{{entry.field}}</td>
-                <td>{{entry.filter || 'N/A'}}</td>
+                <td ng-if="entry.filter.length > 0">{{entry.filter}}</td>
+                <td ng-if="entry.filter.length === 0">N/A</td>
             </tr>
         </tbody>
     </table>
