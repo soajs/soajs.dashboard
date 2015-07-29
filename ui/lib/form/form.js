@@ -98,6 +98,7 @@ function buildForm(context, modal, configuration, cb) {
                 }
                 else {
                     fieldEntry.value = configuration.data[inputName];
+                    context.form.formData[inputName] = configuration.data[inputName];
                 }
             }
         });
