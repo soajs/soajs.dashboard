@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -44,6 +44,6 @@
     "shelljs": "*"
   },
   "peerDependencies": {
-    "soajs": "0.1.*"
+    "soajs": "0.2.*"
   }
 }
