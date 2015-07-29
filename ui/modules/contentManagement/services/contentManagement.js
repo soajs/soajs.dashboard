@@ -74,87 +74,73 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
     }
 
     function downloadFile(currentScope, oneFile, mediaType) {
-        var soajsAuthCookie = $cookieStore.get('soajs_auth');
         var options = {
-            url: apiConfiguration.domain + "/" + currentScope.selectedService.name + "/download",
+            routeName: "/" + currentScope.selectedService.name + "/download",
             method: 'get',
             headers: {
-                "key": apiConfiguration.key,
-                "soajsauth": soajsAuthCookie,
-                "Accept": oneFile.contentType || oneFile.ct
+                "Accept": oneFile.contentType
             },
             responseType: 'arraybuffer',
             params: {
                 'env': currentScope.selectedEnv.toUpperCase(),
-                'id': oneFile._id || oneFile.v
+                'id': oneFile._id
             }
         };
-        $http(options).success(function(data){
-            switch(mediaType){
-                case 'image':
-                    var ext = (oneFile.filename || oneFile.n);
-                    ext = ext.split('.')[1];
-                    var blob = new Blob([data], { type: "image/" + ext });
-                    var URL = window.URL || window.webkitURL;
-                    oneFile.src = URL.createObjectURL(blob);
-                    break;
-                case 'audio':
-                    var ext = (oneFile.filename || oneFile.n);
-                    ext = ext.split('.')[1];
-                    oneFile.mediaType = mediaType +"/" + ext;
+        getSendDataFromServer(currentScope, ngDataApi, options, function(error, data){
+            if(error){
+                currentScope.$parent.displayAlert("danger", error.message);
+            }
+            else{
+                switch (mediaType) {
+                    case 'image':
+                        var ext = (oneFile.filename);
+                        ext = ext.split('.')[1];
+                        var blob = new Blob([data], {type: "image/" + ext});
+                        var URL = window.URL || window.webkitURL;
+                        oneFile.src = URL.createObjectURL(blob);
+                        break;
+                    case 'audio':
+                        var ext = (oneFile.filename);
+                        ext = ext.split('.')[1];
+                        oneFile.mediaType = mediaType + "/" + ext;
 
-                    var blob = new Blob([data], { type: oneFile.mediaType });
-                    var URL = window.URL || window.webkitURL;
-                    oneFile.src = URL.createObjectURL(blob);
+                        var blob = new Blob([data], {type: oneFile.mediaType});
+                        var URL = window.URL || window.webkitURL;
+                        oneFile.src = URL.createObjectURL(blob);
 
-                    oneFile.print = '<audio controls><source src="'+oneFile.src+'" ng-src="'+oneFile.src+'" type="'+oneFile.mediaType+'">Your browser does not support the audio tag.</audio>';
+                        oneFile.print = '<audio controls><source src="' + oneFile.src + '" ng-src="' + oneFile.src + '" type="' + oneFile.mediaType + '">Your browser does not support the audio tag.</audio>';
 
-                    var e = angular.element(document.getElementById('aud_'+oneFile.id));
-                    e.html = oneFile.print;
-                    $compile(e.contents())(currentScope);
-                    break;
-                case 'video':
-                    var ext = (oneFile.filename || oneFile.n);
-                    ext = ext.split('.')[1];
-                    oneFile.mediaType = mediaType +"/" + ext;
+                        var e = angular.element(document.getElementById('aud_' + oneFile.id));
+                        e.html = oneFile.print;
+                        $compile(e.contents())(currentScope);
+                        break;
+                    case 'video':
+                        var ext = (oneFile.filename);
+                        ext = ext.split('.')[1];
+                        oneFile.mediaType = mediaType + "/" + ext;
 
-                    var blob = new Blob([data], { type: oneFile.mediaType });
-                    var URL = window.URL || window.webkitURL;
-                    oneFile.src = URL.createObjectURL(blob);
+                        var blob = new Blob([data], {type: oneFile.mediaType});
+                        var URL = window.URL || window.webkitURL;
+                        oneFile.src = URL.createObjectURL(blob);
 
-                    oneFile.print = '<video width="240" height="180" controls><source src="'+oneFile.src+'" type="'+oneFile.mediaType+'">Your browser does not support the video tag.</video>';
+                        oneFile.print = '<video width="240" height="180" controls><source src="' + oneFile.src + '" type="' + oneFile.mediaType + '">Your browser does not support the video tag.</video>';
 
-                    var e = angular.element(document.getElementById('vid_'+oneFile.id));
-                    e.html = oneFile.print;
-                    $compile(e.contents())(currentScope);
-                    break;
-                default:
-                    openSaveAsDialog(oneFile.filename || oneFile.n, data, oneFile.contentType || oneFile.ct);
-                    break;
+                        var e = angular.element(document.getElementById('vid_' + oneFile.id));
+                        e.html = oneFile.print;
+                        $compile(e.contents())(currentScope);
+                        break;
+                    default:
+                        openSaveAsDialog(oneFile.filename, data, oneFile.contentType);
+                        break;
+                }
             }
         });
-
-        function openSaveAsDialog(filename, content, mediaType) {
-            var blob = new Blob([content], {type: mediaType});
-            var URL = window.URL || window.webkitURL;
-            var objectUrl = URL.createObjectURL(blob);
-
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            a.style = "display: none";
-            a.href = objectUrl;
-            a.download = filename;
-            a.click();
-        }
     }
 
     function UploadFile(currentScope, method, files, apiData, url, cb) {
         var soajsAuthCookie = $cookieStore.get('soajs_auth');
-        var headers = {
-            "soajsauth": soajsAuthCookie
-        };
 
-        var max= 0, counter = 0;
+        var max = 0, counter = 0;
         var err = [];
         for (var fileName in files) {
             if (files[fileName] && files[fileName].length > 0) {
@@ -172,31 +158,37 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                     var progress = {
                         value: 0
                     };
-                    if(files[fileName][i]) {
-                        currentScope.form.uploadFileToUrl(Upload, files[fileName][i], url, {
-                            "headers": headers,
-                            "data": {
-                                "nid": apiData[0]._id,
-                                "env": currentScope.selectedEnv.toUpperCase(),
-                                'field': fileName,
-                                'position': i,
-                                'action': method,
-                                'media': fileName
-                            }
-                        }, progress, function (error, response) {
-                            if (error) {
-                                err.push(error);
-                            }
-                            else {
-                                if (!response.result) {
-                                    err = err.concat(response.errors.details);
+                    if (files[fileName][i]) {
+                        currentScope.form.uploadFileToUrl(Upload, {
+                                'file': files[fileName][i],
+                                'uploadUrl': url,
+                                'headers': {
+                                    "soajsauth": soajsAuthCookie
+                                },
+                                'progress': progress,
+                                "data": {
+                                    "nid": apiData[0]._id,
+                                    "env": currentScope.selectedEnv.toUpperCase(),
+                                    'field': fileName,
+                                    'position': i,
+                                    'action': method,
+                                    'media': fileName
                                 }
-                            }
-                            counter++;
-                            if (counter === max) {
-                                return (err.length > 0) ? cb(err) : cb(null, true);
-                            }
-                        });
+                            },
+                            function (error, response) {
+                                if (error) {
+                                    err.push(error);
+                                }
+                                else {
+                                    if (!response.result) {
+                                        err = err.concat(response.errors.details);
+                                    }
+                                }
+                                counter++;
+                                if (counter === max) {
+                                    return (err.length > 0) ? cb(err) : cb(null, true);
+                                }
+                            });
                     }
                 }
             }
@@ -221,8 +213,8 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         }
                         if (!Array.isArray(formData[formFields[i]])) {
                             var position = formFields[i].split("_");
-                            position = position[position.length -1];
-                            formFiles[n][position]=formData[formFields[i]];
+                            position = position[position.length - 1];
+                            formFiles[n][position] = formData[formFields[i]];
                         }
                         delete formData[formFields[i]];
                     }

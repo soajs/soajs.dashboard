@@ -210,11 +210,14 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             }
                         });
                         var soajsAuthCookie = $cookieStore.get('soajs_auth');
-                        $scope.form.uploadFileToUrl(Upload, formData.upload_0, "/dashboard/services/upload", {
-                            "headers": {
+                        $scope.form.uploadFileToUrl(Upload, {
+                            'file': formData.upload_0,
+                            'uploadUrl': "/dashboard/services/upload",
+                            'headers': {
                                 "soajsauth": soajsAuthCookie
-                            }
-                        }, progress, function (error, response) {
+                            },
+                            'progress': progress
+                        }, function (error, response) {
                             if (error) {
                                 $scope.$parent.displayAlert('danger', error.message);
                                 mdm.close();

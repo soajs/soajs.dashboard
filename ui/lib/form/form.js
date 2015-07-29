@@ -258,14 +258,34 @@ function buildForm(context, modal, configuration, cb) {
         input.addMore = true;
     };
 
+    context.form.downloadFile = function(config, mediaType){
+        var options = {
+            routeName: config.routeName,
+            method: 'get',
+            headers: config.headers,
+            responseType: 'arraybuffer',
+            params: config.params
+        };
+        getSendDataFromServer(context, configuration.ngDataApi, options, function(error, data){
+            switch (mediaType) {
+                case 'image':
+                    var ext = (config.filename);
+                    ext = ext.split('.')[1];
+                    var blob = new Blob([data], {type: "image/" + ext});
+                    var URL = window.URL || window.webkitURL;
+                    config.src = URL.createObjectURL(blob);
+                    break;
+                default:
+                    openSaveAsDialog(config.filename, data, config.contentType);
+                    break;
+            }
+        });
+    };
+
     context.form.removeFile = function (entry, i) {
         getSendDataFromServer(context, configuration.ngDataApi, {
             "method": "get",
-            "routeName": entry.removeFileUrl + entry.value[i].v,
-            "params": {
-                "n" : entry.name,
-                "refId" : context.form.refData._id
-            }
+            "routeName": entry.removeFileUrl + entry.value[i]._id
         }, function (error) {
             if (error) {
                 context.form.displayAlert('danger', error.message);
@@ -280,24 +300,24 @@ function buildForm(context, modal, configuration, cb) {
         });
     };
 
-    context.form.uploadFileToUrl = function (Upload, file, uploadUrl, opts, progress, cb) {
+    context.form.uploadFileToUrl = function (Upload, config, cb) {
         var options = {
-            url: apiConfiguration.domain + uploadUrl,
-            fields: opts.data,
-            file: file,
+            url: apiConfiguration.domain + config.uploadUrl,
+            fields: config.data || null,
+            file: config.file,
             headers: {
                 key: apiConfiguration.key
             }
         };
-        if (opts.headers) {
-            for (var i in opts.headers) {
-                options.headers[i] = opts.headers[i];
+        if (config.headers) {
+            for (var i in config.headers) {
+                options.headers[i] = config.headers[i];
             }
         }
 
         Upload.upload(options).progress(function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            progress.value = progressPercentage;
+            config.progress.value = progressPercentage;
         }).success(function (response, status, headers, config) {
             if (!response.result) {
                 return cb(new Error(response.errors.details[0].message));
@@ -306,7 +326,7 @@ function buildForm(context, modal, configuration, cb) {
                 return cb(null, response);
             }
         }).error(function (data, status, header, config) {
-            return cb(new Error("Error Occured while uploading file: " + file));
+            return cb(new Error("Error Occured while uploading file: " + config.file));
         });
     };
 }

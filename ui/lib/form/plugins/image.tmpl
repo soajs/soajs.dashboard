@@ -1,16 +1,15 @@
 <label>{{entry.label}}</label>
 
 <div ng-repeat="i in [] | range: (entry.limit> 0)? entry.limit : 1" class="table c-both w100" ng-class-odd="'file-odd'" ng-class-even="'file-even'">
-    <div ng-if="entry.value[i]" class="file-actions2">
-        <b>{{entry.value[i].n}}</b>&nbsp;
+    <div ng-if="entry.value[i]" class="f-left file-actions">
+        <b>{{entry.value[i].filename}}</b>&nbsp;
+        <a href="" ng-click="entry.method(entry.value[i], 'document')" target="_blank" title="Click to Download {{entry.value[i].filename}}">
+            <span class="icon icon-download3" title="Download {{entry.value[i].filename}}"></span>
+        </a>&nbsp;
         <a href="" ng-confirm-click="Are you sure you want to remove this image ?" ng-click="form.removeFile(entry, i)"
            target="_blank" title="Remove Image">
             <span class="icon icon-cross" title="Remove Image"></span>
-        </a><br />
-        <a href="" ng-click="entry.method(entry.value[i], 'document')" target="_blank" title="Click to Open Image">
-            <img ng-src="{{entry.value[i].src}}" width="100" />
-        </a>
-        <div ng-init="entry.method(entry.value[i], 'image')"></div>
+        </a>&nbsp;
     </div>
     <input type="file" class="form-control" id="{{entry.name}}_{{i}}" name="{{entry.name}}_{{i}}"
            file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple"/>

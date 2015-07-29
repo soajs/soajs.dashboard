@@ -43,6 +43,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.method = options.method;
 	}
 
+    if(options.responseType){
+        apiOptions.responseType = options.responseType;
+    }
+
 	if(options.headers) {
 		for(var i in options.headers) {
 			if(options.headers.hasOwnProperty(i)) {
@@ -158,4 +162,20 @@ function getTimeAgo(date) {
 		return interval + " minutes";
 	}
 	return Math.floor(seconds) + " seconds";
+}
+
+/**
+ * creates a blob out of buffer data, and opens a dialog download box
+ */
+function openSaveAsDialog(filename, content, mediaType) {
+    var blob = new Blob([content], {type: mediaType});
+    var URL = window.URL || window.webkitURL;
+    var objectUrl = URL.createObjectURL(blob);
+
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = objectUrl;
+    a.download = filename;
+    a.click();
 }
