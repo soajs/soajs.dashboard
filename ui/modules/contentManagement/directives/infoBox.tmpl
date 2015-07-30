@@ -25,7 +25,7 @@
                     </div>
                     <div ng-switch-when="video">
                         <div ng-init="downloadFile(oneFile, 'video')" id="vid_{{oneFile.id}}" ng-bind-html="oneFile.print | toTrustedHtml"></div>
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Video">{{oneFile.filename}}</a>{{oneFile.filename}}&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Video">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                 </li>
             </ul>

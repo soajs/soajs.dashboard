@@ -86,22 +86,24 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                 'id': oneFile._id
             }
         };
-        getSendDataFromServer(currentScope, ngDataApi, options, function(error, data){
-            if(error){
+        getSendDataFromServer(currentScope, ngDataApi, options, function (error, data) {
+            if (error) {
                 currentScope.$parent.displayAlert("danger", error.message);
             }
-            else{
+            else {
                 switch (mediaType) {
                     case 'image':
                         var ext = (oneFile.filename);
-                        ext = ext.split('.')[1];
+                        ext = ext.split('.');
+                        ext = ext[ext.length - 1];
                         var blob = new Blob([data], {type: "image/" + ext});
                         var URL = window.URL || window.webkitURL;
                         oneFile.src = URL.createObjectURL(blob);
                         break;
                     case 'audio':
                         var ext = (oneFile.filename);
-                        ext = ext.split('.')[1];
+                        ext = ext.split('.');
+                        ext = ext[ext.length - 1];
                         oneFile.mediaType = mediaType + "/" + ext;
 
                         var blob = new Blob([data], {type: oneFile.mediaType});
@@ -116,7 +118,8 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         break;
                     case 'video':
                         var ext = (oneFile.filename);
-                        ext = ext.split('.')[1];
+                        ext = ext.split('.');
+                        ext = ext[ext.length - 1];
                         oneFile.mediaType = mediaType + "/" + ext;
 
                         var blob = new Blob([data], {type: oneFile.mediaType});
