@@ -270,9 +270,7 @@ function buildForm(context, modal, configuration, cb) {
         getSendDataFromServer(context, configuration.ngDataApi, options, function(error, data){
             switch (mediaType) {
                 case 'image':
-                    var ext = (config.filename);
-                    ext = ext.split('.')[1];
-                    var blob = new Blob([data], {type: "image/" + ext});
+                    var blob = new Blob([data], {type: config.metadata.mime});
                     var URL = window.URL || window.webkitURL;
                     config.src = URL.createObjectURL(blob);
                     break;
@@ -304,7 +302,7 @@ function buildForm(context, modal, configuration, cb) {
     context.form.uploadFileToUrl = function (Upload, config, cb) {
         var options = {
             url: apiConfiguration.domain + config.uploadUrl,
-            fields: config.data || null,
+            params: config.data || null,
             file: config.file,
             headers: {
                 key: apiConfiguration.key
