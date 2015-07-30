@@ -30,7 +30,20 @@
 
             <div ng-init="getDeploymentMode(row.deployer, 'cloud');"></div>
             <accordion-group heading="Cloud Deployment" is-open="row.deployer.ui.cloud" ng-click="row.deployer.ui.cloud = true;">
-                <div class="redFlag">Coming Soon...</div>
+                <fieldset class="f-left w20">
+                    <legend>Amazon Web Services:</legend>
+                    <div class="redFlag">Coming Soon...</div>
+                </fieldset>
+                <div class="w10 f-left">&nbsp;</div>
+                <fieldset class="f-left w20">
+                    <legend>Google Cloud:</legend>
+                    <div class="redFlag">Coming Soon...</div>
+                </fieldset>
+                <div class="w10 f-left">&nbsp;</div>
+                <fieldset class="f-left w20">
+                    <legend>Microsoft Azure:</legend>
+                    <div class="redFlag">Coming Soon...</div>
+                </fieldset>
             </accordion-group>
         </accordion>
 
