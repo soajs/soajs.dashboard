@@ -41,7 +41,8 @@
     "bcrypt": "*",
     "formidable": "*",
     "unzip": "*",
-    "shelljs": "*"
+    "mkdirp": "*",
+    "rimraf": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"

@@ -64,7 +64,7 @@ function executeMyRequest(params, apiPath, method, cb) {
     }
 }
 
-describe("DASHBOARD UNIT TSTNS", function() {
+describe("DASHBOARD UNIT Tests", function() {
     var expDateValue = new Date().toISOString();
     var envId;
     describe("environment tests", function() {
@@ -4305,7 +4305,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 assert.deepEqual(record, {
                     "code": "DEV",
                     "port": 8080,
-                    "profile": '/soajs/FILES/profiles/single.js',
+                    "profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
                     "deployer": {
                         "type": "manual", //available options: container | manual | cloud (chef | puppet)
                         "container": {
