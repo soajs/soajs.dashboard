@@ -70,6 +70,24 @@ describe("DASHBOARD UNIT TSTNS", function() {
     describe("environment tests", function() {
         var validEnvRecord = {
             "code": "DEV",
+            "port": 8080,
+            "profile": "single",
+            "deployer": {
+                "type": "manual", //available options: container | manual | cloud (chef | puppet)
+                "container": {
+                    "selected": "docker.socket",
+                    "docker": {
+                        "selected": "socket",
+                        "socket": {
+                            'socketPath': '/var/run/docker.sock'
+                        },
+                        "boot2docker": {},
+                        "joyent": {}
+                    },
+                    "coreos": {}
+                },
+                "cloud": {}
+            },
             "description": 'this is a dummy description',
             "dbs": {
                 "clusters": {
@@ -263,7 +281,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
                     }
                 };
                 executeMyRequest(params, 'environment/add', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: profile, services, deployer, port"});
 
                     done();
                 });
@@ -285,9 +303,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
                     assert.ifError(error);
                     envId = envRecord._id.toString();
                     delete envRecord._id;
+                    delete envRecord.profile;
+
                     var tester = util.cloneObj(validEnvRecord);
                     tester.dbs = {clusters: {}, config: {}, databases: {}};
                     delete tester.services.config.session.proxy;
+                    delete tester.profile;
                     assert.deepEqual(envRecord, tester);
                     done();
                 });
@@ -301,6 +322,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+                        "profile": data2.profile,
+                        "port": data2.port,
+                        "deployer": data2.deployer,
                         "description": 'this is a dummy updated description',
                         "services": data2.services
                     }
@@ -317,6 +341,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+                        "profile": data2.profile,
+                        "port": data2.port,
+                        "deployer": data2.deployer,
                         "description": 'this is a dummy updated description',
                         "services": data2.services
                     }
@@ -331,6 +358,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+                        "profile": validEnvRecord.profile,
+                        "port": validEnvRecord.port,
+                        "deployer": validEnvRecord.deployer,
                         "description": 'this is a dummy updated description',
                         "services": validEnvRecord.services
                     }
@@ -350,7 +380,7 @@ describe("DASHBOARD UNIT TSTNS", function() {
                     }
                 };
                 executeMyRequest(params, 'environment/update', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: services"});
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: profile, services, deployer, port"});
                     done();
                 });
             });
@@ -359,6 +389,9 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 var params = {
                     qs: {"id": "aaaabbbbccc"},
                     form: {
+                        "profile": validEnvRecord.profile,
+                        "port": validEnvRecord.port,
+                        "deployer": validEnvRecord.deployer,
                         "description": 'this is a dummy description',
                         "services": validEnvRecord.services
                     }
@@ -374,10 +407,12 @@ describe("DASHBOARD UNIT TSTNS", function() {
                     assert.ifError(error);
                     envId = envRecord._id.toString();
                     delete envRecord._id;
+                    delete envRecord.profile;
                     var tester = util.cloneObj(validEnvRecord);
                     tester.dbs = {clusters: {}, config: {}, databases: {}};
                     tester.description = "this is a dummy updated description";
                     delete tester.services.config.session.proxy;
+                    delete tester.profile;
                     assert.deepEqual(envRecord.services, tester.services);
                     done();
                 });
@@ -451,9 +486,11 @@ describe("DASHBOARD UNIT TSTNS", function() {
                     body.data.forEach(function(oneEnv){
                         if(oneEnv.code === 'DEV'){
                             delete oneEnv._id;
+                            delete oneEnv.profile;
                             var tester = util.cloneObj(validEnvRecord);
                             tester.dbs = {clusters: {}, config: {}, databases: {}};
                             delete tester.services.config.session.proxy;
+                            delete tester.profile;
                             assert.deepEqual(oneEnv, tester);
                         }
                     });
@@ -3489,312 +3526,6 @@ describe("DASHBOARD UNIT TSTNS", function() {
         });
     });
 
-    describe("hosts tests", function() {
-        var hosts = [], hostsCount = 0;
-        describe("list Hosts", function() {
-
-            it("success - will get hosts list", function(done) {
-                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-                    assert.ok(body.data);
-                    hostsCount = body.data.length;
-                    done();
-                });
-            });
-
-            it("mongo - empty the hosts", function(done) {
-                mongo.find('hosts', {}, function(error, dbHosts) {
-                    assert.ifError(error);
-                    assert.ok(dbHosts);
-                    hosts = dbHosts;
-                    mongo.remove('hosts', {}, function(error) {
-                        assert.ifError(error);
-                        done();
-                    });
-                });
-            });
-
-            it("success - will get an empty list", function(done) {
-                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-                    console.log(body.data);
-                    console.log("=========");
-                    assert.ok(body.data);
-                    assert.equal(body.data.length, 0);
-                    done();
-                });
-            });
-
-            it("mongo - fill the hosts", function(done) {
-                mongo.remove('hosts', {}, function(error) {
-                    assert.ifError(error);
-                    mongo.insert('hosts', hosts, function(error) {
-                        assert.ifError(error);
-                        done();
-                    });
-                });
-            });
-
-            it("success - will get hosts list", function(done) {
-                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
-                    assert.ok(body.data);
-                    assert.ok(body.data.length > 0);
-                    assert.equal(body.data.length, hostsCount);
-                    done();
-                });
-            });
-        });
-
-        describe("remove Hosts", function() {
-            it('success - will remove host', function(done) {
-                executeMyRequest({qs: {'env': 'dev', 'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-
-        describe("maintenance operation Hosts", function() {
-            //afterEach(function(done){
-            //	setTimeout(function(){ done(); }, 1000);
-            //});
-
-            it("fail - missing params", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4000,
-                        'operation': 'heartbeat'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceHost"});
-                    done();
-                });
-            });
-
-            it("fail - error calling awareness on service", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'dashboard',
-                        'servicePort': 4003,
-                        'operation': 'awarenessStat',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
-                    done();
-                });
-            });
-
-            it("fail - error calling load provision on controller", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4003,
-                        'operation': 'loadProvision',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
-                    done();
-                });
-            });
-
-            it("fail - host not found", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'dashboard',
-                        'servicePort': 4003,
-                        'operation': 'heartbeat',
-                        'serviceHost': '128.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
-                    done();
-                });
-            });
-
-            it("fail - service not found", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'invalidService',
-                        'servicePort': 4000,
-                        'operation': 'heartbeat',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 604, "message": "Service not found."});
-                    done();
-                });
-            });
-
-            it("success - heartbeat controller and service", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4000,
-                        'operation': 'heartbeat',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.ok(body.data);
-
-                    params.form.serviceName = 'dashboard';
-                    params.form.servicePort = 4003;
-                    executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                        assert.ok(body.data);
-                        done();
-                    });
-                });
-            });
-
-            it("success - awareness on controller", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4000,
-                        'operation': 'awarenessStat',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-
-            it("success - load provision service", function(done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'dashboard',
-                        'servicePort': 4003,
-                        'operation': 'loadProvision',
-                        'serviceHost': '127.0.0.1'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-
-        });
-    });
-
-    describe("services tests", function() {
-
-        describe("list services test", function() {
-            it("success - will get services list", function(done) {
-                executeMyRequest({}, 'services/list', 'post', function(body) {
-                    assert.ok(body.data);
-                    assert.ok(body.data.length > 0);
-                    done();
-                });
-            });
-            it("success - will get services list specific services", function(done) {
-                var params = {
-                    form: {
-                        "serviceNames": ['urac']
-                    }
-                };
-                executeMyRequest(params, 'services/list', 'post', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-
-        describe("update servce test", function() {
-            it("success - will update service", function(done) {
-                var params = {
-                    qs: {"name": "dashboard"},
-                    form: {
-                        "extKeyRequired": true,
-                        "requestTimeout": 40,
-                        "requestTimeoutRenewal": 8
-                    }
-                };
-                executeMyRequest(params, 'services/update', 'post', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-
-            it('fail - missing params', function(done) {
-                var params = {
-                    qs: {"name": "dashboard"},
-                    form: {
-                        "requestTimeout": 40,
-                        "requestTimeoutRenewal": 8
-                    }
-                };
-                executeMyRequest(params, 'services/update', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: extKeyRequired"});
-                    done();
-                });
-            });
-
-            it('fail - invalid service name provided', function(done) {
-                var params = {
-                    qs: {"name": "undefined"},
-                    form: {
-                        "extKeyRequired": true,
-                        "requestTimeout": 40,
-                        "requestTimeoutRenewal": 8
-                    }
-                };
-                executeMyRequest(params, 'services/update', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 604, "message": errorCodes[604]});
-                    done();
-                });
-            });
-
-            it('mongo test', function(done) {
-                mongo.findOne('services', {'name': 'dashboard'}, function(error, serviceRecord) {
-                    assert.ifError(error);
-                    delete serviceRecord._id;
-                    delete serviceRecord.apis;
-                    assert.deepEqual(serviceRecord, {
-                        'name': 'dashboard',
-                        'extKeyRequired': true,
-                        'port': 4003,
-                        'requestTimeout': 40,
-                        'requestTimeoutRenewal': 8
-                    });
-                    done();
-                });
-            });
-
-            it("success - will update service", function(done) {
-                var params = {
-                    qs: {"name": "dashboard"},
-                    form: {
-                        "extKeyRequired": true,
-                        "requestTimeout": 30,
-                        "requestTimeoutRenewal": 5
-                    }
-                };
-                executeMyRequest(params, 'services/update', 'post', function(body) {
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-
-    });
-
     describe("testing get tenant permissions for logged in users", function() {
         var soajsauth;
 
@@ -4201,6 +3932,354 @@ describe("DASHBOARD UNIT TSTNS", function() {
         });
     });
 
+    describe("hosts tests", function() {
+        var hosts = [], hostsCount = 0;
+        describe("list Hosts", function() {
+
+            it("success - will get hosts list", function(done) {
+                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+                    assert.ok(body.data);
+                    hostsCount = body.data.length;
+                    done();
+                });
+            });
+
+            it("mongo - empty the hosts", function(done) {
+                mongo.find('hosts', {}, function(error, dbHosts) {
+                    assert.ifError(error);
+                    assert.ok(dbHosts);
+                    dbHosts.forEach(function(oneHost){
+                       oneHost.hostname = oneHost.name;
+                    });
+                    hosts = dbHosts;
+                    mongo.remove('hosts', {}, function(error) {
+                        assert.ifError(error);
+                        done();
+                    });
+                });
+            });
+
+            it("success - will get an empty list", function(done) {
+                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+                    console.log(body.data);
+                    console.log("=========");
+                    assert.ok(body.data);
+                    assert.equal(body.data.length, 0);
+                    done();
+                });
+            });
+
+            it("mongo - fill the hosts", function(done) {
+                mongo.remove('hosts', {}, function(error) {
+                    assert.ifError(error);
+                    mongo.insert('hosts', hosts, function(error) {
+                        assert.ifError(error);
+                        done();
+                    });
+                });
+            });
+
+            it("success - will get hosts list", function(done) {
+                executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
+                    assert.ok(body.data);
+                    assert.ok(body.data.length > 0);
+                    assert.equal(body.data.length, hostsCount);
+                    done();
+                });
+            });
+        });
+
+        describe("maintenance operation Hosts", function() {
+            //afterEach(function(done){
+            //	setTimeout(function(){ done(); }, 1000);
+            //});
+
+            it("fail - missing params", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'servicePort': 4000,
+                        'operation': 'heartbeat'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: hostname"});
+                    done();
+                });
+            });
+
+            it("fail - error calling awareness on service", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'dashboard',
+                        'hostname': 'dashboard',
+                        'servicePort': 4003,
+                        'operation': 'awarenessStat',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
+                    done();
+                });
+            });
+
+            it("fail - error calling load provision on controller", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'servicePort': 4003,
+                        'hostname': 'controller',
+                        'operation': 'loadProvision',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 602, "message": "Invalid maintenance operation requested."});
+                    done();
+                });
+            });
+
+            it("fail - host not found", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'dashboard',
+                        'servicePort': 4003,
+                        'hostname': 'dashboard2',
+                        'operation': 'heartbeat',
+                        'serviceHost': '128.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+                    done();
+                });
+            });
+
+            it("fail - service not found", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'invalidService',
+                        'servicePort': 4000,
+                        'hostname': 'invalidService',
+                        'operation': 'heartbeat',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 604, "message": "Service not found."});
+                    done();
+                });
+            });
+
+            it("success - heartbeat controller and service", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'servicePort': 4000,
+                        'operation': 'heartbeat',
+                        'hostname': 'controller',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.ok(body.data);
+
+                    params.form.serviceName = 'dashboard';
+                    params.form.hostname= 'dashboard';
+                    params.form.servicePort = 4003;
+                    executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+            });
+
+            it("success - awareness on controller", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'hostname': 'controller',
+                        'servicePort': 4000,
+                        'operation': 'awarenessStat',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("success - load provision service", function(done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'dashboard',
+                        'hostname': 'dashboard',
+                        'servicePort': 4003,
+                        'operation': 'loadProvision',
+                        'serviceHost': '127.0.0.1'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+        });
+
+        describe("remove Hosts", function() {
+            it('success - will remove host', function(done) {
+                executeMyRequest({qs: {'env': 'dev', 'hostname': hosts[0].hostname,'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+        });
+    });
+
+    describe("services tests", function() {
+
+        describe("list services test", function() {
+            it("success - will get services list", function(done) {
+                executeMyRequest({}, 'services/list', 'post', function(body) {
+                    assert.ok(body.data);
+                    assert.ok(body.data.length > 0);
+                    done();
+                });
+            });
+            it("success - will get services list specific services", function(done) {
+                var params = {
+                    form: {
+                        "serviceNames": ['urac']
+                    }
+                };
+                executeMyRequest(params, 'services/list', 'post', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+        });
+
+        describe("update servce test", function() {
+            it("success - will update service", function(done) {
+                var params = {
+                    qs: {"name": "dashboard"},
+                    form: {
+                        "awareness": true,
+                        "port": 4003,
+                        "apis": [
+                            {
+                                "l": "Update Service",
+                                "group": "Services",
+                                'v': '/services/update',
+                                'groupMain': true
+                            }
+                        ],
+                        "extKeyRequired": true,
+                        "requestTimeout": 40,
+                        "requestTimeoutRenewal": 8
+                    }
+                };
+                executeMyRequest(params, 'services/update', 'post', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it('fail - missing params', function(done) {
+                var params = {
+                    qs: {"name": "dashboard"},
+                    form: {
+                        "requestTimeout": 40,
+                        "requestTimeoutRenewal": 8
+                    }
+                };
+                executeMyRequest(params, 'services/update', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: port, apis, extKeyRequired, awareness"});
+                    done();
+                });
+            });
+
+            it('fail - invalid service name provided', function(done) {
+                var params = {
+                    qs: {"name": "undefined"},
+                    form: {
+                        "awareness": true,
+                        "port": 4003,
+                        "apis": [
+                            {
+                                "l": "Update Service",
+                                "group": "Services",
+                                'v': '/services/update',
+                                'groupMain': true
+                            }
+                        ],
+                        "extKeyRequired": true,
+                        "requestTimeout": 40,
+                        "requestTimeoutRenewal": 8
+                    }
+                };
+                executeMyRequest(params, 'services/update', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 604, "message": errorCodes[604]});
+                    done();
+                });
+            });
+
+            it('mongo test', function(done) {
+                mongo.findOne('services', {'name': 'dashboard'}, function(error, serviceRecord) {
+                    assert.ifError(error);
+                    delete serviceRecord._id;
+                    delete serviceRecord.apis;
+                    assert.deepEqual(serviceRecord, {
+                        'name': 'dashboard',
+                        'awareness': true,
+                        'extKeyRequired': true,
+                        'port': 4003,
+                        'requestTimeout': 40,
+                        'requestTimeoutRenewal': 8
+                    });
+                    done();
+                });
+            });
+
+            it("success - will update service", function(done) {
+                var params = {
+                    qs: {"name": "dashboard"},
+                    form: {
+                        "awareness": true,
+                        "port": 4003,
+                        "apis": [
+                            {
+                                "l": "Update Service",
+                                "group": "Services",
+                                'v': '/services/update',
+                                'groupMain': true
+                            }
+                        ],
+                        "extKeyRequired": true,
+                        "requestTimeout": 30,
+                        "requestTimeoutRenewal": 5
+                    }
+                };
+                executeMyRequest(params, 'services/update', 'post', function(body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+        });
+
+    });
+
     describe('mongo check db', function() {
         it('asserting environment record', function(done) {
             mongo.findOne('environment', {"code": "DEV"}, function(error, record) {
@@ -4209,6 +4288,24 @@ describe("DASHBOARD UNIT TSTNS", function() {
                 delete record._id;
                 assert.deepEqual(record, {
                     "code": "DEV",
+                    "port": 8080,
+                    "profile": '/soajs/FILES/profiles/single.js',
+                    "deployer": {
+                        "type": "manual", //available options: container | manual | cloud (chef | puppet)
+                        "container": {
+                            "selected": "docker.socket",
+                            "docker": {
+                                "selected": "socket",
+                                "socket": {
+                                    'socketPath': '/var/run/docker.sock'
+                                },
+                                "boot2docker": {},
+                                "joyent": {}
+                            },
+                            "coreos": {}
+                        },
+                        "cloud": {}
+                    },
                     "description": "this is a dummy description",
                     "services": {
                         "controller": {

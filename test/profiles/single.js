@@ -5,7 +5,7 @@ module.exports = {
     "prefix": "",
     "servers": [
         {
-            "host": "dataProxy01",
+            "host": "127.0.0.1",
             "port": 27017
         }
     ],
