@@ -38,9 +38,14 @@ var environmentsConfig = {
 				{
 					'name': 'port',
 					'label': 'Environment Gateway Port',
-					'type': 'text',
-					'placeholder': '8080',
-					'value': '',
+					'type': 'select',
+					'value': [
+                        {'v': 80, 'l': '80', 'selected': true},
+                        {'v': 8080, 'l': '8080'},
+                        {'v': 8081, 'l': '8081'},
+                        {'v': 8082, 'l': '8082'},
+                        {'v': 8083, 'l': '8083'}
+                    ],
 					'required': true
 				},
 				{

@@ -237,6 +237,7 @@ module.exports = {
                                     "type": "object",
                                     "required": false,
                                     "properties": {
+                                        "selected": {"type": "string", "required": true},
                                         "boot2docker": {
                                             "type": "object",
                                             "required": false

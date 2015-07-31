@@ -26,7 +26,13 @@
                         <tr class="form-group">
                             <td class="">
                                 <label>Port</label>
-								<input type="text" ng-model="formEnvironment.port" class="form-control" />
+                                <select ng-model="formEnvironment.port">
+                                    <option value="80" ng-selected="formEnvironment.port === '80'">80</option>
+                                    <option value="8080" ng-selected="formEnvironment.port === '8080'">8080</option>
+                                    <option value="8081" ng-selected="formEnvironment.port === '8081'">8081</option>
+                                    <option value="8082" ng-selected="formEnvironment.port === '8082'">8082</option>
+                                    <option value="8083" ng-selected="formEnvironment.port === '8083'">8083</option>
+                                </select><br />
                                 <em style="margin:0">Environment Gateway Port for Nginx.</em>
                             </td>
                         </tr>
@@ -47,10 +53,11 @@
                                 <h3>Platforms</h3>
                                 <div class="grouped">
                                     <b>Driver to Use:</b>&nbsp;
-                                    <select ng-model="formEnvironment.deployer.selected" class="form-control" style="width:300px; min-width:300px;">
-                                        <option value="docker.socket" ng-selected="formEnvironment.deployer.container.selected === 'docker.socket'">Container &raquo; Socket</option>
-                                        <option value="docker.boot2docker" ng-selected="formEnvironment.deployer.container.selected === 'docker.boot2docker'">Container &raquo; Boot2docker</option>
-                                        <option value="docker.joyent" ng-selected="formEnvironment.deployer.container.selected === 'docker.joyent'">Container &raquo; Joyent</option>
+                                    <select ng-model="formEnvironment.deployer.type" class="form-control" style="width:300px; min-width:300px;">
+                                        <option value="manual" ng-selected="formEnvironment.deployer.type === 'manual'">Manual</option>
+                                        <option value="container.docker.socket" ng-selected="formEnvironment.deployer.container.selected === 'docker.socket'">Container &raquo; Socket</option>
+                                        <option value="container.docker.boot2docker" ng-selected="formEnvironment.deployer.container.selected === 'docker.boot2docker'">Container &raquo; Boot2docker</option>
+                                        <option value="container.docker.joyent" ng-selected="formEnvironment.deployer.container.selected === 'docker.joyent'">Container &raquo; Joyent</option>
                                     </select><br/><br/>
                                     <tabset>
                                         <tab heading="Container">

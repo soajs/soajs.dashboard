@@ -90,7 +90,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                             if ($scope.formEnvironment.deployer.cloud) {
                                 for (var driver in $scope.formEnvironment.deployer.cloud) {
                                     $scope.formEnvironment.deployer.cloud[driver] = JSON.stringify($scope.formEnvironment.deployer.cloud[driver], null, 2);
-                                    if($scope.formEnvironment.deployer.cloud[driver] === '{}'){
+                                    if ($scope.formEnvironment.deployer.cloud[driver] === '{}') {
                                         delete $scope.formEnvironment.deployer.cloud[driver];
                                     }
                                 }
@@ -157,7 +157,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                     'action': function (formData) {
                         var tmpl = angular.copy(env_template);
                         tmpl.code = formData.code;
-                        tmpl.port = parseInt(formData.port);
+                        tmpl.port = parseInt(formData.port[0]);
                         tmpl.description = formData.description;
                         tmpl.profile = formData.profile[0];
 
@@ -166,7 +166,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                         tmpl.services.config.session.secret = formData.sessionCookiePass;
                         tmpl.services.config.session.cookie.domain = formData.domain;
 
-                        switch(formData.platformDriver[0]){
+                        switch (formData.platformDriver[0]) {
                             case 'manual':
                                 tmpl.deployer.type = 'manual';
                                 break;
@@ -269,27 +269,42 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
         }
         else {
             try {
-                var driver = postData.deployer.selected.split(".")[0];
-
-                if (postData.deployer.container && postData.deployer.container[driver]) {
-                    postData.deployer.container.selected = postData.deployer.selected;
-                    for (var driver in postData.deployer.container.docker) {
-                        postData.deployer.container.docker[driver] = JSON.parse(postData.deployer.container.docker[driver]);
+                var type = postData.deployer.type;
+                var subType, driver;
+                if (type.indexOf(".") !== -1) {
+                    type = type.split(".");
+                    subType = type[1];
+                    driver = type[2];
+                    type = type[0];
+                    postData.deployer.type = type;
+                    postData.deployer[type].selected = subType + '.' + driver;
+                }
+                if (type === 'container') {
+                    if(subType === 'docker') {
+                        postData.deployer.container.docker.selected = driver;
+                    }
+                    if(subType === 'coreos') {
+                        postData.deployer.container.coreos.selected = driver;
+                    }
+                    for (var supported in postData.deployer.container.docker) {
+                        if(supported === 'selected'){ continue; }
+                        postData.deployer.container.docker[supported] = JSON.parse(postData.deployer.container.docker[supported]);
                     }
 
-                    for (var driver in postData.deployer.container.coreos) {
-                        postData.deployer.container.coreos[driver] = JSON.parse(postData.deployer.container.coreos[driver]);
+
+                    for (var supported in postData.deployer.container.coreos) {
+                        if(supported === 'selected'){ continue; }
+                        postData.deployer.container.coreos[supported] = JSON.parse(postData.deployer.container.coreos[supported]);
                     }
+
                 }
 
-                if (postData.deployer.cloud && postData.deployer.cloud[driver]) {
-                    postData.deployer.cloud.selected = postData.deployer.selected;
-                    for (var driver in postData.deployer.cloud) {
-                        if(driver === 'selected') continue;
-                        postData.deployer.cloud[driver] = JSON.parse(postData.deployer.cloud[driver]);
+                if (type === 'cloud') {
+                    for (var supported in postData.deployer.cloud) {
+                        if (supported === 'selected') continue;
+                        postData.deployer.cloud[supported] = JSON.parse(postData.deployer.cloud[supported]);
                     }
                 }
-                delete postData.deployer.selected;
             }
             catch (e) {
                 console.log(postData.deployer);
@@ -297,7 +312,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                 $scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Deployer Configuration");
                 return;
             }
-
+            postData.port = parseInt(postData.port);
             postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
             getSendDataFromServer($scope, ngDataApi, {
                 "method": "send",
