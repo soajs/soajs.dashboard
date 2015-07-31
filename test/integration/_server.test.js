@@ -28,6 +28,7 @@ describe("importing sample data", function () {
             setTimeout(function () {
                 require("./soajs.dashboard.locked.test.js");
                 require("./soajs.dashboard.test.js");
+                require("./soajs.contentbuilder.test.js");
                 done();
             }, 1000);
         }, 1000);
