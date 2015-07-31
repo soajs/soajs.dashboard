@@ -4137,6 +4137,22 @@ describe("DASHBOARD UNIT TSTNS", function() {
 
         });
 
+        describe("deployment manual tests", function(){
+            it("deploy controller", function(done){
+                executeMyRequest({'qs': {}, form: { 'envCode': 'DEV', 'number': 1 } }, 'hosts/deployController', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 618, "message": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."});
+                    done();
+                });
+            });
+
+            it("deploy service", function(done){
+                executeMyRequest({'form': {'envCode': 'DEV' } }, 'hosts/deployService', 'post', function(body) {
+                    assert.deepEqual(body.errors.details[0], {"code": 618, "message": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."});
+                    done();
+                });
+            });
+        });
+
         describe("remove Hosts", function() {
             it('success - will remove host', function(done) {
                 executeMyRequest({qs: {'env': 'dev', 'hostname': hosts[0].hostname,'name': hosts[0].name, 'ip': hosts[0].ip}}, 'hosts/delete', 'get', function(body) {
