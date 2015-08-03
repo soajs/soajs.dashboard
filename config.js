@@ -232,12 +232,12 @@ module.exports = {
                             "type": "object",
                             "required": false,
                             "properties": {
-                                "selected": {"type": "string", "required": true},
+                                "selected": {"type": "string", "required": false},
                                 "docker": {
                                     "type": "object",
                                     "required": false,
                                     "properties": {
-                                        "selected": {"type": "string", "required": true},
+                                        "selected": {"type": "string", "required": false},
                                         "boot2docker": {
                                             "type": "object",
                                             "required": false

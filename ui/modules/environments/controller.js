@@ -277,7 +277,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                     driver = type[2];
                     type = type[0];
                     postData.deployer.type = type;
-                    postData.deployer[type].selected = subType + '.' + driver;
+                    if(type !== 'manual'){
+                        postData.deployer[type].selected = subType + '.' + driver;
+                    }
                 }
                 if (type === 'container') {
                     if(subType === 'docker') {
@@ -286,28 +288,25 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                     if(subType === 'coreos') {
                         postData.deployer.container.coreos.selected = driver;
                     }
-                    for (var supported in postData.deployer.container.docker) {
-                        if(supported === 'selected'){ continue; }
-                        postData.deployer.container.docker[supported] = JSON.parse(postData.deployer.container.docker[supported]);
-                    }
-
-
-                    for (var supported in postData.deployer.container.coreos) {
-                        if(supported === 'selected'){ continue; }
-                        postData.deployer.container.coreos[supported] = JSON.parse(postData.deployer.container.coreos[supported]);
-                    }
-
                 }
 
-                if (type === 'cloud') {
-                    for (var supported in postData.deployer.cloud) {
-                        if (supported === 'selected') continue;
-                        postData.deployer.cloud[supported] = JSON.parse(postData.deployer.cloud[supported]);
-                    }
+                for (var supported in postData.deployer.container.docker) {
+                    if(supported === 'selected'){ continue; }
+                    postData.deployer.container.docker[supported] = JSON.parse(postData.deployer.container.docker[supported]);
+                }
+
+
+                for (var supported in postData.deployer.container.coreos) {
+                    if(supported === 'selected'){ continue; }
+                    postData.deployer.container.coreos[supported] = JSON.parse(postData.deployer.container.coreos[supported]);
+                }
+
+                for (var supported in postData.deployer.cloud) {
+                    if (supported === 'selected') continue;
+                    postData.deployer.cloud[supported] = JSON.parse(postData.deployer.cloud[supported]);
                 }
             }
             catch (e) {
-                console.log(postData.deployer);
                 console.log(e);
                 $scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Deployer Configuration");
                 return;
