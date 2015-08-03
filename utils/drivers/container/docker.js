@@ -12,13 +12,17 @@ var lib = {
             docker = new Docker({socketPath: config.socketPath});
         }
         else {
-            docker = new Docker({
+            var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || __dirname + '/../../../';
+            var dockerConfig = {
                 host: config.host,
-                port: config.port,
-                ca: fs.readFileSync(__dirname + '/../../../certs/ca.pem'),
-                cert: fs.readFileSync(__dirname + '/../../../certs/cert.pem'),
-                key: fs.readFileSync(__dirname + '/../../../certs/key.pem')
-            });
+                port: config.port
+            };
+            if (fs.existsSync(certsFolderLocation + "certs")) {
+                dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
+                dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
+                dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
+            }
+            docker = new Docker(dockerConfig);
         }
         return docker;
     },
@@ -50,10 +54,6 @@ var deployer = {
 
     "start": function (deployerConfig, cid, cb) {
         lib.container(deployerConfig, "start", cid, null, cb);
-    },
-
-    "stop": function (deployerConfig, cid, cb) {
-        lib.container(deployerConfig, "stop", cid, null, cb);
     },
 
     "remove": function (deployerConfig, cid, cb) {

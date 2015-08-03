@@ -75,13 +75,16 @@ describe("DASHBOARD UNIT Tests", function() {
             "deployer": {
                 "type": "manual", //available options: container | manual | cloud (chef | puppet)
                 "container": {
-                    "selected": "docker.socket",
+                    "selected": "docker.boot2docker",
                     "docker": {
-                        "selected": "socket",
+                        "selected": "boot2docker",
                         "socket": {
                             'socketPath': '/var/run/docker.sock'
                         },
-                        "boot2docker": {},
+                        "boot2docker": {
+                            'host': 'localhost',
+                            'port': 5354
+                        },
                         "joyent": {}
                     },
                     "coreos": {}
@@ -4135,6 +4138,23 @@ describe("DASHBOARD UNIT Tests", function() {
                 });
             });
 
+            it("fail - getting service logs", function (done) {
+                var params = {
+                    "form": {
+                        "serviceName": "dashboard",
+                        "servicePort": 4003,
+                        "hostname": "dashboard",
+                        "operation": "hostLogs",
+                        "env": "dev"
+                    }
+                };
+                executeMyRequest(params, "hosts/maintenanceOperation", "post", function (body) {
+                    assert.ok(!body.result);
+                    assert.deepEqual(body.errors.details[0], {"code": 619, "message": errorCodes[619]});
+                    done();
+                });
+            });
+
         });
 
         describe("deployment manual tests", function(){
@@ -4309,13 +4329,16 @@ describe("DASHBOARD UNIT Tests", function() {
                     "deployer": {
                         "type": "manual", //available options: container | manual | cloud (chef | puppet)
                         "container": {
-                            "selected": "docker.socket",
+                            "selected": "docker.boot2docker",
                             "docker": {
-                                "selected": "socket",
+                                "selected": "boot2docker",
                                 "socket": {
                                     'socketPath': '/var/run/docker.sock'
                                 },
-                                "boot2docker": {},
+                                "boot2docker": {
+                                    'host': 'localhost',
+                                    'port': 5354
+                                },
                                 "joyent": {}
                             },
                             "coreos": {}

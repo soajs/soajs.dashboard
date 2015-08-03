@@ -31,6 +31,7 @@ describe("importing sample data", function () {
                 require("./soajs.dashboard.test.js");
                 require("./soajs.contentbuilder.test.js");
                 require("./soajs.uploadService.test.js");
+                require("./soajs.hostsdeploy.test.js");
                 done();
             }, 1000);
         }, 1000);

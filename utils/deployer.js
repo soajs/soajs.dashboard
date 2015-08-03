@@ -78,11 +78,6 @@ var deployer = {
         deployer.start(deployerConfig, cid, cb);
     },
 
-    "stop": function (deployerConfig, cid, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.stop(deployerConfig, cid, cb);
-    },
-
     "remove": function (deployerConfig, cid, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.remove(deployerConfig, cid, cb);
