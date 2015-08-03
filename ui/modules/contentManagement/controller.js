@@ -36,17 +36,21 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 oneService.schema = cbConfig;
                 for (var apiRoute in oneService.schema.soajsService.apis) {
                     if (oneService.schema.soajsService.apis.hasOwnProperty(apiRoute)) {
+                        var APILabel = oneService.schema.genericService.config.schema[apiRoute]._apiInfo;
                         switch (oneService.schema.soajsService.apis[apiRoute].type) {
                             case 'add':
                                 if ($scope.access.addEntry) {
                                     $scope.ui.add = true;
-                                    $scope.ui.links['add'] = apiRoute;
+                                    $scope.ui.links['add'] = {
+                                        'l': APILabel.l,
+                                        'v': apiRoute
+                                    };
                                 }
                                 break;
                             case 'update':
                                 if ($scope.access.updateEntry) {
                                     $scope.ui.left.push({
-                                        'label': 'Edit',
+                                        'label': APILabel.l,
                                         'icon': 'pencil2',
                                         'handler': 'editCMDataEntry'
                                     });
@@ -56,7 +60,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                             case 'get':
                                 if ($scope.access.getEntry) {
                                     $scope.ui.left.push({
-                                        'label': 'View',
+                                        'label': APILabel.l,
                                         'icon': 'search',
                                         'handler': 'viewCMDataEntry'
                                     });
@@ -66,13 +70,13 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                             case 'delete':
                                 if ($scope.access.deleteEntry) {
                                     $scope.ui.left.push({
-                                        'label': 'Delete',
+                                        'label': APILabel.l,
                                         'icon': 'cross',
                                         'handler': 'deleteCMDataEntry',
                                         'msg': "Are you sure you want to delete the selected entry?"
                                     });
                                     $scope.ui.top.push({
-                                        'label': 'Delete',
+                                        'label': APILabel.l,
                                         'msg': "Are you sure you want to delete the selected entry(s)?",
                                         'handler': 'deleteCMDataEntries'
                                     });
@@ -165,7 +169,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 }
                 buildGrid($scope, options);
                 var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv.toUpperCase()));
-                el.html("<br/><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">Add New Entry</a><br/><br/><nglist></nglist>");
+                el.html("<br/><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">" + $scope.ui.links['add'].l + "</a><br/><br/><nglist></nglist>");
                 $compile(el.contents())($scope);
             }
         });
@@ -204,7 +208,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                         else {
                             getSendDataFromServer($scope, ngDataApi, {
                                 "method": "send",
-                                "routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'],
+                                "routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'].v,
                                 "data": formData,
                                 "params": {
                                     "env": $scope.selectedEnv.toUpperCase()
