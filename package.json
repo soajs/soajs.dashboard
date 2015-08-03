@@ -32,7 +32,8 @@
     "jshint": "*",
     "lodash": "*",
     "mocha": "*",
-    "shelljs": "*"
+    "shelljs": "*",
+    "docker-mock": "*"
   },
   "dependencies": {
     "ncp": "*",
