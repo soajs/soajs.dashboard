@@ -156,7 +156,9 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
     $scope.getInputType = function(requestedType, info, name){
         if(requestedType === 'fileUI'){
             if(name.limit!== undefined){
-                return true;
+                if(info && info.genericService && info.genericService.config && info.genericService.config.schema && !info.genericService.config.schema.commonFields[name.name]){
+                    return true;
+                }
             }
         }
 
