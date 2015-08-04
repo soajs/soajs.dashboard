@@ -219,7 +219,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                 }
                                 else {
                                     if (typeof(files) === 'object' && Object.keys(files).length > 0) {
-                                        cmService.UploadFile($scope, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
+                                        cmService.UploadFile($scope, config, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
                                             if (error) {
                                                 $scope.form.displayAlert('danger', error);
                                             }
@@ -354,7 +354,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                     }
                                     else {
                                         if (typeof(files) === 'object' && Object.keys(files).length > 0) {
-                                            cmService.UploadFile($scope, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
+                                            cmService.UploadFile($scope, config, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
                                                 if (error) {
                                                     $scope.form.displayAlert('danger', error);
                                                 }

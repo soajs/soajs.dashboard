@@ -131,7 +131,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
         });
     }
 
-    function UploadFile(currentScope, method, files, apiData, url, cb) {
+    function UploadFile(currentScope, config, method, files, apiData, url, cb) {
         var soajsAuthCookie = $cookieStore.get('soajs_auth');
 
         var max = 0, counter = 0;
@@ -153,6 +153,13 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         value: 0
                     };
                     if (files[fileName][i]) {
+                        var media;
+                        config.entries.forEach(function (oneEntry) {
+                            if(oneEntry.name === fileName){
+                                media = oneEntry.type;
+                            }
+                        });
+
                         currentScope.form.uploadFileToUrl(Upload, {
                                 'file': files[fileName][i],
                                 'uploadUrl': url,
@@ -166,7 +173,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                     'field': fileName,
                                     'position': i,
                                     'action': method,
-                                    'media': fileName
+                                    'media': media
                                 }
                             },
                             function (error, response) {
