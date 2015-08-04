@@ -106,8 +106,7 @@ describe("Upload Service Tests", function () {
         };
         executeMyRequest(params, "services/upload", "post", function (body) {
             assert.ok(!body.result);
-            assert.deepEqual(body.errors.details[0],
-                {"code": 620, "message": errorCodes[620] + __dirname + "/soajs"});
+            assert.equal(body.errors.details[0].code, 620);
             done();
         });
     });
