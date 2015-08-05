@@ -1,0 +1,6 @@
+<label>{{entry.label}}</label>
+<select name="{{entry.name}}" id="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" ng-change="form.call(entry.onAction, entry.name , form.formData[entry.name], form )" class="form-control">
+<option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
+</select>
+
+<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

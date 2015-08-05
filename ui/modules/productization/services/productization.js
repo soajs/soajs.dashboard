@@ -5,8 +5,11 @@ productizationService.service('aclHelpers', function(){
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		var result = {} ;
 		var apiDefaultGroupName = 'General' ;
-
-		for(var i=0; i<apisArray.length; i++){
+		var len = apisArray.length;
+		if (len ==0 ){
+			return result;
+		}
+		for(var i=0; i<len; i++){
 			if(apisArray[i][apiGroupName]){
 				apiDefaultGroupName = apisArray[i][apiGroupName];
 			}

@@ -12,7 +12,8 @@ function getRandomString(len, charSet) {
 
 function buildGrid($scope, opts) {
 	var gridConfig = opts.grid;
-	gridConfig.defaultSortField = opts.defaultSortField;
+	gridConfig.defaultSortField = opts.defaultSortField || opts.grid.defaultSortField;
+	gridConfig.defaultSortASC = opts.defaultSortASC || opts.grid.defaultSortASC;
 	gridConfig.rows = opts.data;
 	if(opts.gridId)
 	{
@@ -46,19 +47,6 @@ function buildGrid($scope, opts) {
 	constructGrid($scope, gridConfig);
 	
 	function constructGrid(context, configuration) {
-		context.grid = {};
-		/*
-		var gridId = null;
-		if(configuration.gridId){
-			gridId = configuration.gridId;
-		}
-		else{
-			gridId= getRandomString(12);
-		}
-		context.grid[gridId] = {
-			myGridId: gridId
-		}
-		*/  
 		context.grid = {
 			//thisGridId: gridId,	
 			themeToUse: themeToUse,
@@ -68,7 +56,7 @@ function buildGrid($scope, opts) {
 			original: configuration.rows,
 			rows: configuration.rows,
 			sortField: configuration.defaultSortField,
-			reverse: false,
+			reverse: configuration.defaultSortASC || false,
 			recordsPerPageArray: configuration.recordsPerPageArray,
 			search: (configuration.search === false) ? false : true
 		};
@@ -93,9 +81,11 @@ function buildGrid($scope, opts) {
 				var filtered = [];
 				for(var i = 0; i < context.grid.rows.length; i++) {
 					for(var j = 0; j < context.grid.columns.length; j++) {
-						if(context.grid.rows[i][context.grid.columns[j].field] && context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
-							filtered.push(context.grid.rows[i]);
-							break;
+						if(context.grid.rows[i][context.grid.columns[j].field] && typeof(context.grid.rows[i][context.grid.columns[j].field])=='string') {
+							if(context.grid.rows[i][context.grid.columns[j].field].indexOf(query) !== -1) {
+								filtered.push(context.grid.rows[i]);
+								break;
+							}
 						}
 					}
 				}

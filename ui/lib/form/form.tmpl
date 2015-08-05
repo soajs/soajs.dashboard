@@ -1,92 +1,76 @@
-<form name="{{form.name}}" class="css-form" novalidate>
-    <div ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
-    <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span></div>
+<form id="{{form.id}}" name="{{form.name}}" class="css-form" novalidate>
+    <div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
+        <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span>
+    </div>
     <div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
         <div ng-show="form.modal">
-            <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+            <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="form.closeAlert($index)">{{alert.msg}}</alert>
         </div>
         <div ng-show="form.msgs.header" class="header-msg" ng-bind-html="form.msgs.header|toTrustedHtml"></div>
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr ng-repeat="entry in form.entries" class="form-group" ng-switch="entry.type">
+            <tr ng-repeat="entry in form.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
                 <td ng-switch-when="textarea">
-                    <label>{{entry.label}}</label>
-                        <textarea id="id{{entry.name}}" name="{{entry.name}}" rows="{{entry.rows}}" ng-model="form.formData[entry.name]" class="form-control" placeholder="{{entry.placeholder}}"
-                                  tooltip="{{entry.tooltip}}" ng-required="entry.required">{{entry.value}}</textarea>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
+                </td>
 
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                <td ng-switch-when="editor">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
                 </td>
 				
 				<td ng-switch-when="html" class="typeHtml">
-                    <label>{{entry.label}}</label>
-                    <div id="id{{entry.name}}" class="staticValue" ng-bind-html="entry.value|toTrustedHtml"></div>
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
                 </td>
                 
                 <td ng-switch-when="radio">
-                    <label>{{entry.label}}</label>
-                    <ul>
-                        <li ng-repeat="dv in entry.value">
-                            <input type="radio" name="{{entry.name}}" ng-model="form.formData[entry.name]" value="{{dv.v}}" tooltip="{{entry.tooltip}}"
-                                   ng-checked="dv.selected"/>
-                            {{dv.v}}
-                        </li>
-                    </ul>
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
                 </td>
 
                 <td ng-switch-when="select" class="form-select">
-                    <label>{{entry.label}}</label>
-                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" id="fm{{entry.name}}" ng-change="form.call(entry.onAction, 'fm'+entry.name , form.formData[entry.name] )">
-                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.l}}</option>
-                    </select>
-
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
                 </td>
 
                 <td ng-switch-when="checkbox" class="form-checkbox">
-                    <label>{{entry.label}}</label>
-                    <ul>
-                        <li ng-repeat="dv in entry.value">
-                            <input type="checkbox" name="{{entry.name}}" ng-checked="dv.selected" tooltip="{{entry.tooltip}}"
-                                   ng-click="form.toggleSelection(entry.name, dv.v)"/>
-                            {{dv.lb}}
-                        </li>
-                    </ul>
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
                 </td>
 
                 <td ng-switch-when="multi-select">
-                    <label>{{entry.label}}</label>
-                    <select name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-model="form.formData[entry.name]" multiple="multiple">
-                        <option ng-repeat="dv in entry.value" value="{{dv.v}}" ng-selected="dv.selected === true">{{dv.v}}</option>
-                    </select>
-
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/multi-select.tmpl'"></div>
                 </td>
 
                 <td ng-switch-when="readonly">
-                    <label>{{entry.label}}</label>
-                    <input class="form-control" name="{{entry.name}}" type="{{entry.type}}" value="{{entry.value}}" disabled="disabled" readonly=""/>
-
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/readonly.tmpl'"></div>
                 </td>
 
                 <td ng-switch-when="date-picker">
-                    <label>{{entry.label}}</label>
-                    <p class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="MMMM-dd-yyyy" ng-model="form.formData[entry.name]" name="{{entry.name}}" tooltip="{{entry.tooltip}}" ng-required="entry.required" is-open="entry.opened"/>
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="entry.openDate($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
-                      </span>
-                    </p>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="group">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="document">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="audio">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="video">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="image">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
+                </td>
+
+                <td ng-switch-when="number">
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/number.tmpl'"></div>
                 </td>
 
                 <td ng-switch-default="">
-                    <label>{{entry.label}}</label>
-                    <input class="form-control" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
-                           tooltip="{{entry.tooltip}}" ng-required="entry.required"/>
-
-                    <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
                 </td>
             </tr>
         </table>

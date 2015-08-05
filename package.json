@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -32,11 +32,20 @@
     "jshint": "*",
     "lodash": "*",
     "mocha": "*",
-    "shelljs": "*"
+    "shelljs": "*",
+    "docker-mock": "*"
   },
   "dependencies": {
-    "soajs": "0.1.*",
+    "ncp": "*",
+    "dockerode": "*",
+    "object-hash": "*",
     "bcrypt": "*",
-    "request" :"*"
+    "formidable": "*",
+    "unzip": "*",
+    "mkdirp": "*",
+    "rimraf": "*"
+  },
+  "peerDependencies": {
+    "soajs": "0.2.*"
   }
 }

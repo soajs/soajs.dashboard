@@ -1,7 +1,7 @@
 "use strict";
 var assert = require('assert');
 var helper = require("../helper.js");
-var hasher = new (helper.requireModule('./service/hasher'))({
+var hasher = new (helper.requireModule('./utils/hasher'))({
 	hashIterations: 1024,
 	seedLength: 32
 });

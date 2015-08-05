@@ -1,6 +1,93 @@
 "use strict";
 var environmentsConfig = {
 	form: {
+		template: {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'code',
+					'label': 'Environment Code',
+					'type': 'select',
+					'value': [
+						{'v': 'DEV', 'l': 'DEV'},
+						{'v': 'CAT', 'l': 'CAT'},
+						{'v': 'STG', 'l': 'STG'},
+						{'v': 'PROD', 'l': 'PROD'}
+					],
+					'required': true
+				},
+				{
+					'name': 'description',
+					'label': 'Environment Description',
+					'type': 'textarea',
+					'rows': '3',
+					'placeholder': 'My Environment Description...',
+					'value': '',
+					'required': true
+				},
+				{
+					'name': 'domain',
+					'label': 'Environment Domain',
+					'type': 'text',
+					'placeholder': 'mydomain.com',
+					'value': '',
+					'required': true
+				},
+				{
+					'name': 'port',
+					'label': 'Environment Gateway Port',
+					'type': 'select',
+					'value': [
+                        {'v': 80, 'l': '80', 'selected': true},
+                        {'v': 8080, 'l': '8080'},
+                        {'v': 8081, 'l': '8081'},
+                        {'v': 8082, 'l': '8082'},
+                        {'v': 8083, 'l': '8083'}
+                    ],
+					'required': true
+				},
+				{
+					'name': 'profile',
+					'label': 'Profile to Use',
+					'type': 'select',
+					'value': [
+						{'v': 'single', 'l': 'single', 'selected': true},
+						{'v': 'replica3', 'l': 'replica3'},
+						{'v': 'replica5', 'l': 'replica5'}
+					],
+					'required': false
+				},
+				{
+					'name': 'platformDriver',
+					'label': 'Platform Driver',
+					'type': 'select',
+					'value': [
+						{'v': 'socket', 'l': 'Socket', 'selected': true},
+						{'v': 'boot2docker', 'l': 'Boot2docker'},
+						{'v': 'joyent', 'l': 'Joyent'}
+					],
+					'required': false
+				},
+				{
+					'name': 'tKeyPass',
+					'label': 'Tenant Key Security Password',
+					'type': 'text',
+					'value': '',
+					'placeholder': 'My Tenant Key AES256 Password...',
+					'required': false
+				},
+				{
+					'name': 'sessionCookiePass',
+					'label': 'Session & Cookie encryption Password',
+					'type': 'text',
+					'value': '',
+					'placeholder': "My Password, don't tell anyone...",
+					'required': false
+				}
+			]
+		},
 		database: {
 			'name': '',
 			'label': '',
@@ -162,6 +249,66 @@ var environmentsConfig = {
 					'value': '',
 					'tooltip': 'Enter the Extra Parameters of the cluster',
 					'required': true
+				}
+			]
+		},
+		host: {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'number',
+					'label': 'Host(s) Number',
+					'type': 'number',
+					'placeholder': '1',
+					'value': 1,
+					'tooltip': 'Enter How Many Host(s)',
+					'fieldMsg': 'Enter How Many Host(s) you would like to add for this service.',
+					'required': true
+				},
+				{
+					'name': 'variables',
+					"label": "Environment Variables",
+					"type": "textarea",
+					"required": false,
+					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
+				},
+				{
+					"name": "defaultENVVAR",
+					"type": "html",
+					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+				}
+			]
+		},
+		"deploy": {
+			'name': '',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'controllers',
+					'label': 'Controller(s)',
+					'type': 'number',
+					'placeholder': '1',
+					'value': '',
+					'tooltip': 'Choose how many controllers to deploy',
+					'fieldMsg': 'Choose how many controllers you want to deploy',
+					'required': true
+				},
+				{
+					'name': 'variables',
+					"label": "Environment Variables",
+					"type": "textarea",
+					"required": false,
+					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
+				},
+				{
+					"name": "defaultENVVAR",
+					"type": "html",
+					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
 				}
 			]
 		}

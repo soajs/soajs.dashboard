@@ -10,7 +10,7 @@ var membersNav= [
 		'url': '#/members',
 		'tplPath': 'modules/members/directives/list.tmpl',
 		'icon': 'users',
-		'mainMenu': true,
+		'userMenu': true,
 		'tracker': true,
 		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/members.js', 'modules/members/services/groups.js'],
 		'ancestor': ['Home']

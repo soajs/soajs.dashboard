@@ -1,0 +1,44 @@
+<div id="wizardStep4" ng-show="steps.indexOf(true) === 3">
+    <script type="text/ng-template" id="APIForm.html">
+        <div class="modal-body wizardForm">
+            <ngform></ngform>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="done()">Done</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+    <div class="w100 table">
+        <div class="table-cell w10">
+            <a href="" ng-click="goBack()"><span class="npicons icon icon-circle-left"></span></a>
+        </div>
+        <div class="w90 table-cell">
+            <input type="button" class="btn btn-sm btn-primary" value="Add New API" ng-click="addAPI()"/><br /><br />
+            <em>Add &amp; Manage the APIs that your service disposes of; Every API should belong to one of the predefined types: ADD - EDIT - LIST - GET - DELETE.<br />While managing an API, you can pick the inputs, from Section 2, that it should handle and define a custom workflow scenario if needed.</em>
+            <hr/>
+            <div class="entryBoxes entryBoxesGrid" style="height:100px;">
+
+                <div class="dbBox w20i" ng-repeat="(apiName, apiInfo) in config.soajsService.apis track by $index">
+                    <div class="head">
+                        <b><span class="icon icon-cog"></span>{{config.genericService.config.schema[apiName]._apiInfo.l}}</b>&nbsp;<span ng-show="config.genericService.config.schema[apiName]._apiInfo.groupMain" class="icon icon-star-full"></span>
+                        <span class="rightActions">
+                            <a href="" ng-click="editAPI(apiName, apiInfo);">
+                                <span class="icon icon-pencil" tooltip="Update API"></span>
+                            </a>
+                            <a href="" ng-confirm-click="Are you sure you want to remove this API ?" ng-click="removeAPI(apiName);">
+                                <span class="icon icon-cross" tooltip="Remove API"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>Group:</b>&nbsp;{{config.genericService.config.schema[apiName]._apiInfo.group}}<br/>
+                        <b>Route:</b>&nbsp;{{apiName}}<br/>
+                        <b>Method:</b>&nbsp;{{apiInfo.method}}<br/>
+                        <b>Type:</b>&nbsp;{{apiInfo.type}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

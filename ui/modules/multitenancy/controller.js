@@ -1117,7 +1117,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope','ngDataApi', '$route
 				for(var x = 0; x < l; x++) {
 					if(response[x].appId === appId) {
 						$scope.currentApplication = response[x];
-						if($scope.currentApplication._TTL.toString().length > 3) {
+						if($scope.currentApplication._TTL && $scope.currentApplication._TTL.toString().length > 3) {
 							$scope.currentApplication._TTL = ($scope.currentApplication._TTL / 3600000).toString();
 						}
 						break;

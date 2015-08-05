@@ -20,14 +20,18 @@ describe("importing sample data", function () {
     });
 
     after(function (done) {
+        process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
         console.log('test data imported.');
         controller = require("soajs.controller");
         setTimeout(function () {
             urac = require("soajs.urac");
-            dashboard = helper.requireModule('./service/index');
+            dashboard = helper.requireModule('./index');
             setTimeout(function () {
                 require("./soajs.dashboard.locked.test.js");
                 require("./soajs.dashboard.test.js");
+                require("./soajs.contentbuilder.test.js");
+                require("./soajs.uploadService.test.js");
+                require("./soajs.hostsdeploy.test.js");
                 done();
             }, 1000);
         }, 1000);

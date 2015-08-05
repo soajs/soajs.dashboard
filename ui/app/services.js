@@ -8,8 +8,11 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		return cb(new Error("Unable Fetching data from " + config.url));
 	}
 
-	function returnAPIResponse(scope, response, cb) {
-		if(response && response.result === true) {
+	function returnAPIResponse(scope, response, config, cb) {
+		if(config.responseType === 'arraybuffer' && response){
+            return cb(null, response);
+        }
+        else if(response && response.result === true) {
 			if(response.soajsauth && $cookieStore.get('soajs_auth')) {
 				$cookieStore.put("soajs_auth", response.soajsauth);
 			}
@@ -68,7 +71,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		}
 
 		$http(config).success(function(response, status, headers, config) {
-			returnAPIResponse(scope, response, cb);
+			returnAPIResponse(scope, response, config, cb);
 		}).error(function(errData, status, headers, config) {
 			returnAPIError(scope, opts, status, headers, config, cb);
 		});
@@ -182,4 +185,16 @@ soajsApp.service('checkApiHasAccess', function(){
 		}
 	}
 
+});
+
+soajsApp.service("injectFiles", function(){
+
+	function injectCss(filePath){
+		var csstag = "<link rel='stylesheet' type='text/css' href='"+filePath+"' />";
+		jQuery("head").append(csstag);
+	}
+
+	return {
+		'injectCss': injectCss
+	}
 });

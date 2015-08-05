@@ -56,3 +56,29 @@ form .btn-sm{
     min-width: 725px;
     display: inline;
 }
+
+form input[type='file']{
+    padding:0;
+    border:none;
+    box-shadow:none;
+    border-radius:0px;
+    margin-bottom:8px;
+    width:auto;
+}
+
+form .file-actions{
+    margin-top:6px;
+}
+
+form .file-actions2{
+    margin-top:15px;
+}
+
+form .file-actions3{
+    margin-top:2px;
+}
+
+form .file-even,
+form .file-odd{
+    border-bottom:solid 1px #e5e5e5;
+}

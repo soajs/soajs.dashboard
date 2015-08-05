@@ -1,6 +1,9 @@
 "use strict";
 soajsApp.filter('filterPicker', function($filter) {
 	return function(value, filterName) {
+		if(Array.isArray(filterName) && filterName.length === 0){
+			return value;
+		}
 		return $filter(filterName)(value);
 	}
 });
@@ -16,28 +19,60 @@ soajsApp.filter('TTL', function() {
 	}
 });
 
+soajsApp.filter('prettyLocalDate', function() {
+	return function(text) {
+		if(!text) { return ''; }
+		return new Date(text).toLocaleString();
+	};
+});
+
+soajsApp.filter('fulldate', function() {
+	return function(text) {
+		if(!text) { return ''; }
+		return new Date(text).toISOString();
+	};
+});
+
+soajsApp.filter('toTrustedSrc', ['$sce', function($sce) {
+	return function(src) {
+        return $sce.trustAsResourceUrl(src);
+	};
+}]);
+
 soajsApp.filter('toTrustedHtml', ['$sce', function($sce) {
 	return function(text) {
 		return $sce.trustAsHtml(text);
 	};
 }]);
 
-soajsApp.filter('trimmed', function() {
+soajsApp.filter('trimmed', ['$sce', function($sce) {
+	function hed(text) {
+		return text.replace(/(<([^>]+)>)/ig,"").toString();
+	}
+
 	return function(value) {
+		value = hed(value);
 		if(value.length > 170) {
 			value = value.slice(0, 170) + " ...";
 		}
 		return value;
 	};
-});
-soajsApp.filter('trimmed100', function() {
+}]);
+
+soajsApp.filter('trimmed100', ['$sce', function($sce) {
+
+	function hed(text) {
+		return text.replace(/(<([^>]+)>)/ig,"").toString();
+	}
+
 	return function(value) {
+		value = hed(value);
 		if(value.length > 100) {
 			value = value.slice(0, 100) + " ...";
 		}
 		return value;
 	};
-});
+}]);
 
 soajsApp.filter('label', function() {
 	return function(value) {
@@ -59,13 +94,13 @@ soajsApp.filter('object', ['$sce', function($sce) {
 					var t = [];
 					for(var e = 0; e < obj[i].length; e++) {
 						if(typeof(obj[i][e]) === 'object') {
-							t.push('<span class="noWrap">'+ iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g," ") + '</span>');
+							t.push('<span class="noWrap">' + iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g, " ") + '</span>');
 						}
 						else {
 							t.push(obj[i][e]);
 						}
 					}
-					string += t +"<br />";
+					string += t + "<br />";
 				}
 				else if(typeof(obj[i]) === 'object') {
 					string += iterateAndPrintObj(obj[i]);
@@ -89,10 +124,18 @@ soajsApp.filter('object', ['$sce', function($sce) {
 	};
 }]);
 
-function highlightMyCode(){
+soajsApp.filter('range', function() {
+	return function(input, total) {
+		total = parseInt(total);
+		for (var i=0; i<total; i++)
+			input.push(i);
+		return input;
+	};
+});
+
+function highlightMyCode() {
 	hljs.configure({"tabReplace": "    "});
 	jQuery('pre code').each(function(i, block) {
-		var parentId = jQuery(block).parent().attr('id');
 		hljs.highlightBlock(block);
 	});
 }
