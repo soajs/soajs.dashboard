@@ -10,6 +10,9 @@
         <input ng-model="aclFill[service.name].accessType" value="private" type="radio" name="{{service.name}}_radio" ng-checked="aclFill[service.name].accessType==='private'"/> private
     </span>
     <span style="padding-left: 40px;">
+        <input type="radio" ng-checked="aclFill[service.name].accessType==='owner'" name="{{service.name}}_radio" ng-model="aclFill[service.name].accessType" value="owner"/> owner
+    </span>
+    <span style="padding-left: 40px;">
         <input type="radio" ng-checked="aclFill[service.name].accessType==='admin'" name="{{service.name}}_radio" ng-model="aclFill[service.name].accessType" value="admin"/> administrator
     </span>
 </div>

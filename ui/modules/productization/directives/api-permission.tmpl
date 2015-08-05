@@ -13,15 +13,18 @@
                         <input ng-click="checkForGroupDefault(service,grp,val,myApi)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (aclFill[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill[service.name].apis[myApi.v].include" ng-show="aclFill[service.name].apisRestrictPermission" />{{myApi.l}}
                     </div>
                     <div class="apiAccess" ng-hide="(aclFill[service.name].apisRestrictPermission && (aclFill[service.name].apis[myApi.v].include!==true))">
-                        <span style="padding-right: 15px;">
+                        <span style="padding-right:5px;">
                             <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="clear" type="radio"/>
-                            <em>inherit from service</em>
+                            <em style="">inherit from service</em>
                         </span>
                         <span>
                             <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="public" type="radio"/> public
                         </span>
                         <span>
                             <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="private" type="radio"/> private
+                        </span>
+                        <span>
+                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="owner" type="radio"/> owner
                         </span>
                         <span>
                             <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="admin" type="radio"/> administrator

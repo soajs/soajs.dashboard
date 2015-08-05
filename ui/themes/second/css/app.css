@@ -774,7 +774,7 @@ fieldset legend {
 
 .apiListing .apiAccess {
     float: left;
-    width: 370px;
+    width: 410px;
 }
 
 .apiListing-container .odd {
@@ -782,7 +782,7 @@ fieldset legend {
 }
 
 .apiListing-container .even, .apiListing-container .odd {
-    width: 670px;
+    width: 710px;
 }
 
 .apiListing-container input {

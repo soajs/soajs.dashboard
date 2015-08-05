@@ -45,9 +45,16 @@ productizationService.service('aclHelpers', function(){
 					else if( service.access===false){
 						service.accessType = 'public';
 					}
-					else if( Array.isArray(service.access) && (service.access.indexOf('administrator')>-1 )){
-						service.accessType = 'admin';
+					else if( Array.isArray(service.access) )
+					{
+						if(service.access.indexOf('administrator')>-1 ){
+							service.accessType = 'admin';
+						}
+						else if(service.access.indexOf('owner')>-1 ){
+							service.accessType = 'owner';
+						}
 					}
+
 				}
 				else{
 					service.accessType = 'public';
@@ -69,8 +76,13 @@ productizationService.service('aclHelpers', function(){
 								service.apis[ap].accessType = 'public';
 							}
 							else {
-								if(Array.isArray(service.apis[ap].access) && (service.apis[ap].access.indexOf('administrator') > -1)) {
-									service.apis[ap].accessType = 'admin';
+								if(Array.isArray(service.apis[ap].access)){
+									if((service.apis[ap].access.indexOf('administrator') > -1)) {
+										service.apis[ap].accessType = 'admin';
+									}
+									else if((service.apis[ap].access.indexOf('owner') > -1)) {
+										service.apis[ap].accessType = 'owner';
+									}
 								}
 							}
 						}
@@ -133,6 +145,9 @@ productizationService.service('aclHelpers', function(){
 					else if(s.accessType==='admin'){
 						aclObj[propt].access= ['administrator'];
 					}
+					else if(s.accessType==='owner'){
+						aclObj[propt].access= ['owner'];
+					}
 					else{
 						aclObj[propt].access=false;
 					}
@@ -157,6 +172,9 @@ productizationService.service('aclHelpers', function(){
 									}
 									else if(api.accessType==='admin'){
 										aclObj[propt].apis[ap].access=['administrator'];
+									}
+									else if(api.accessType==='owner'){
+										aclObj[propt].apis[ap].access=['owner'];
 									}
 								}
 							}
