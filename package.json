@@ -43,7 +43,8 @@
     "formidable": "*",
     "unzip": "*",
     "mkdirp": "*",
-    "rimraf": "*"
+    "rimraf": "*",
+    "request": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"
