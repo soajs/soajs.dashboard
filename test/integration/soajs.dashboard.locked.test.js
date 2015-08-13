@@ -549,7 +549,7 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
         });
 
         it("will get owner acl", function(done){
-            executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth}}, 'tenant/permissions/get', 'get', function(body) {
+            executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth}}, 'permissions/get', 'get', function(body) {
                 console.log(JSON.stringify(body));
                 assert.equal(body.result, true);
                 assert.ok(body.data);
@@ -609,8 +609,17 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
             });
         });
 
+        it("fail - will get client acl", function(done){
+            executeMyRequest({'headers': {'key': newKey}}, 'permissions/get', 'get', function(body) {
+                console.log(JSON.stringify(body));
+                assert.equal(body.result, false);
+                assert.ok(body.errors);
+                done();
+            });
+        });
+
         it("will get client acl", function(done){
-            executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}}, 'tenant/permissions/get', 'get', function(body) {
+            executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}}, 'permissions/get', 'get', function(body) {
                 console.log(JSON.stringify(body));
                 assert.equal(body.result, true);
                 assert.ok(body.data);
@@ -624,6 +633,42 @@ describe("DASHBOARD UNIT TESTS for locked", function() {
                 assert.equal(body.result, true);
                 assert.ok(body.data);
                 done();
+            });
+        });
+
+        it("fail - get tenant client extKey", function(done){
+            executeMyRequest({'headers': {'key': newKey}}, 'key/get', 'get', function(body) {
+                console.log(JSON.stringify(body));
+                assert.equal(body.result, false);
+                assert.ok(body.errors);
+                done();
+            });
+        });
+
+        it("fail - get tenant client extKey", function(done){
+            executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}}, 'key/get', 'get', function(body) {
+                console.log(JSON.stringify(body));
+                assert.equal(body.result, false);
+                assert.ok(body.errors);
+                done();
+            });
+        });
+
+        it("success - get tenant client extKey", function(done){
+            mongo.insert("dashboard_extKeys", {
+                "code": "test",
+                "key": "aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac"
+            }, function(error){
+                assert.ifError(error);
+                executeMyRequest({'headers': {'key': newKey,'soajsauth': soajsauth2}}, 'key/get', 'get', function(body) {
+                    console.log(JSON.stringify(body));
+                    assert.equal(body.result, true);
+                    assert.ok(body.data);
+                    mongo.remove("dashboard_extKeys", {}, function(error){
+                        assert.ifError(error);
+                        done();
+                    });
+                });
             });
         });
     });

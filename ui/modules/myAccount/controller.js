@@ -24,6 +24,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
+                            "forceDBKey": true,
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -77,6 +78,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						}
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
+                            "forceDBKey": true,
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -141,6 +143,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				};
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "send",
+                    "forceDBKey": true,
 					"routeName": "/urac/account/editProfile",
 					"params": {"uId": $scope.uId},
 					"data": postData
@@ -168,6 +171,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	$scope.getProfile = function(username) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
+            "forceDBKey": true,
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
 		}, function(error, response) {
@@ -251,6 +255,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	$scope.validateChangeEmail = function() {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
+            "forceDBKey": true,
 			"routeName": "/urac/changeEmail/validate",
 			"params": {"token": $route.current.params.token}
 		}, function(error) {
@@ -291,15 +296,26 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
-						"routeName": "/dashboard/tenant/permissions/get"
+						"routeName": "/dashboard/key/get"
 					}, function(error, response) {
 						if(error) {
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
-							$localStorage.acl_access = response;
-							$scope.$parent.$emit("loadUserInterface", {});
-							$scope.$parent.$emit('refreshWelcome', {});
+                            $cookieStore.put("soajs_dashboard_key", response.extKey);
+                            getSendDataFromServer($scope, ngDataApi, {
+                                "method": "get",
+                                "routeName": "/dashboard/permissions/get"
+                            }, function(error, response) {
+                                if (error) {
+                                    $scope.$parent.displayAlert('danger', error.message);
+                                }
+                                else {
+                                    $localStorage.acl_access = response;
+                                    $scope.$parent.$emit("loadUserInterface", {});
+                                    $scope.$parent.$emit('refreshWelcome', {});
+                                }
+                            });
 						}
 					});
 
@@ -410,6 +426,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 			}
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+                "forceDBKey": true,
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
 				"data": postData

@@ -636,12 +636,20 @@ module.exports = {
             }
         },
 
-        "/tenant/permissions/get": {
+        "/permissions/get": {
             _apiInfo: {
                 "l": "Get Tenant Security Permissions",
                 "group": "Tenant"
             }
         },
+
+        "/key/get": {
+            _apiInfo: {
+                "l": "Get the user dashboard key",
+                "group": "Tenant"
+            }
+        },
+
         "/tenant/list": {
             _apiInfo: {
                 "l": "List Tenants",

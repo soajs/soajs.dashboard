@@ -3533,7 +3533,7 @@ describe("DASHBOARD UNIT Tests", function() {
         var soajsauth;
 
         it("fail - should not work for non-logged in users", function(done) {
-            executeMyRequest({}, 'tenant/permissions/get', 'get', function(body) {
+            executeMyRequest({}, 'permissions/get', 'get', function(body) {
                 console.log(body);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 601, "message": "No Logged in User found."});

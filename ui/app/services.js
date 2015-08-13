@@ -64,6 +64,10 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			config.headers.soajsauth = soajsAuthCookie;
 		}
 
+        if(!opts.forceDBKey && $cookieStore.get("soajs_dashboard_key")){
+            config.headers.key = $cookieStore.get("soajs_dashboard_key");
+        }
+
 		if(opts.jsonp === true) {
 			config.url += (config.url.indexOf('?') === -1) ? '?' : '&';
 			config.url += "callback=JSON_CALLBACK";

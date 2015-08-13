@@ -18,6 +18,7 @@ var service = new soajs.server.service({
 	"security": true,
 	"multitenant": true,
 	"acl": true,
+    "roaming": true,
 	"config": config
 });
 
@@ -267,10 +268,14 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
-	service.get("/tenant/permissions/get", function(req, res) {
+	service.get("/key/get", function(req, res) {
 		checkForMongo(req);
-		tenant.injectTenantACL(config, mongo, req, res);
+		tenant.extKeyGet(config, mongo, req, res);
 	});
+    service.get("/permissions/get", function(req, res) {
+        checkForMongo(req);
+        tenant.permissionsGet(config, mongo, req, res);
+    });
 
 	/**
 	 * Hosts features

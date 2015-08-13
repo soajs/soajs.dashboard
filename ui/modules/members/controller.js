@@ -10,11 +10,11 @@ membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function($sc
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope, membersHelper) {
-
+    $scope.forceDBKey = true;
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
 	$scope.$parent.$on('reloadMembers', function(event) {
-		$scope.members.listMembers();
+		$scope.members.listMembers($scope);
 	});
 
 	$scope.members.listMembers = function() {
@@ -49,7 +49,8 @@ membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope
 }]);
 
 membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, groupsHelper) {
-	$scope.groups = angular.extend($scope);
+    $scope.forceDBKey = true;
+    $scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 	$scope.groups.listGroups = function() {
 		groupsHelper.listGroups($scope.groups, groupsConfig);

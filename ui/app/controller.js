@@ -274,6 +274,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 		function logout() {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
+                "forceDBKey": true,
 				"routeName": "/urac/logout",
 				"params": {"username": user.username}
 			}, function(error, response) {
@@ -281,6 +282,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 
+				$cookieStore.remove('soajs_dashboard_key');
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$localStorage.acl_access = null;

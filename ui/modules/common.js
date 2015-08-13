@@ -27,6 +27,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		}
 	};
 
+    apiOptions.forceDBKey = false;
+    if(options.forceDBKey){
+        apiOptions.forceDBKey = options.forceDBKey;
+    }
 	if(options.jsonp) {
 		apiOptions.jsonp = true;
 	}

@@ -214,7 +214,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                             'file': formData.upload_0,
                             'uploadUrl': "/dashboard/services/upload",
                             'headers': {
-                                "soajsauth": soajsAuthCookie
+                                "soajsauth": soajsAuthCookie,
+                                "key": $cookieStore.get("soajs_dashboard_key")
                             },
                             'progress': progress
                         }, function (error, response) {
