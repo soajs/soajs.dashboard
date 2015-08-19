@@ -43,7 +43,7 @@ membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope
 
 	//call default method
 	if($scope.members.access.adminUser.list) {
-		$scope.members.listMembers();
+		$scope.members.listMembers($scope);
 	}
 
 }]);
@@ -284,6 +284,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		getUserGroupInfo(function() {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+                forceDBKey: true,
 				"routeName": "/dashboard/tenant/acl/get",
 				"params": { "id": $scope.user.tenant.id }
 			}, function(error, response) {
@@ -310,6 +311,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		function getUserGroupInfo(cb) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
+                forceDBKey: true,
 				"routeName": "/urac/admin/getUser",
 				"params": {"uId": $routeParams.uId}
 			}, function(error, response) {
@@ -360,6 +362,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
+            forceDBKey: true,
 			"routeName": "/urac/admin/editUser",
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
@@ -407,6 +410,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		if(counter === $scope.tenantApp.applications.length){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+                forceDBKey:true,
 				"routeName": "/urac/admin/editUser",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData

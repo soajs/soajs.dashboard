@@ -49,7 +49,18 @@ var tenantConfig = {
 			'topActions': [],
 			'defaultSortField': '',
 			'defaultLimit': 5
-		}
+		},
+        'keys': {
+            recordsPerPageArray: [5, 10, 50, 100],
+            'columns': [
+                {'label': 'Code', 'field': 'code'},
+                {'label': 'Key', 'field': 'key'}
+            ],
+            'leftActions': [],
+            'topActions': [],
+            'defaultSortField': 'code',
+            'defaultLimit': 5
+        }
 	},
 	'form': {
 		'tenantEdit': {
@@ -314,7 +325,30 @@ var tenantConfig = {
 					'required': false
 				}
 			]
-		}
+		},
+        'dbKey': {
+            'name': '',
+            'label': '',
+            'actions': {},
+            'entries': [
+                {
+                    'name': 'code',
+                    'label': 'Tenant Code',
+                    'type': 'text',
+                    'value': '',
+                    'tooltip': 'Enter the tenant code.',
+                    'required': true
+                },
+                {
+                    'name': 'key',
+                    'label': 'Tenant Ext Key',
+                    'type': 'text',
+                    'value': '',
+                    'tooltip': 'Enter the tenant ext key.',
+                    'required': true
+                }
+            ]
+        }
 	},
 	'permissions':{
 		'product':{
@@ -358,7 +392,12 @@ var tenantConfig = {
 				'delete' : ['dashboard', '/tenant/application/key/ext/delete'],
 				'update' : ['dashboard', '/tenant/application/key/ext/update']
 			}
-		}
+		},
+        'db':{
+            'listKeys': ['dashboard', "/tenant/db/keys/list"],
+            'addKey': ['dashboard', "/tenant/db/keys/add"],
+            'deleteKey': ['dashboard', "/tenant/db/keys/delete"]
+        }
 	}
 
 };

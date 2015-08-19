@@ -277,6 +277,24 @@ service.init(function() {
         tenant.permissionsGet(config, mongo, req, res);
     });
 
+    /**
+     * Dashboard Keys
+     */
+    service.get("/tenant/db/keys/list", function(req, res){
+        checkForMongo(req);
+        tenant.listDashboardKeys(config, mongo, req, res);
+    });
+
+    service.get("/tenant/db/keys/delete", function(req, res){
+        checkForMongo(req);
+        tenant.deleteDashboardKey(config, mongo, req, res);
+    });
+
+    service.post("/tenant/db/keys/add", function(req, res){
+        checkForMongo(req);
+        tenant.addDashboardKey(config, mongo, req, res);
+    });
+
 	/**
 	 * Hosts features
 	 */

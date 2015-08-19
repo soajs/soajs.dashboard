@@ -60,6 +60,12 @@ var errors = {
 	"450": "Unable to remove tenant oAuth User",
 	"451": "Unable to updated tenant oAuth User",
 
+    "452": "Invalid Tenant Code",
+    "453": "Invalid Tenant External Key",
+    "454": "Tenant does not exist",
+    "455": "Tenant Key already exists",
+    "456": "Error adding Tenant Key",
+
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 

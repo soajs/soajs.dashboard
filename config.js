@@ -869,6 +869,39 @@ module.exports = {
             "commonFields": ['id', 'appId', 'key', 'envCode', 'config']
         },
 
+        "/tenant/db/keys/list": {
+            _apiInfo: {
+                "l": "List Dashboard Tenant Keys",
+                "group": "Dashboard Tenants",
+                "groupMain": true
+            }
+        },
+
+        "/tenant/db/keys/add": {
+            _apiInfo: {
+                "l": "Add Dashboard Tenant Key",
+                "group": "Dashboard Tenants"
+            },
+            "code": {
+                "source": ['body.code'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "format": "alphanumeric",
+                    "maxLength": 4
+                }
+            },
+            commonFields: ['extKey']
+        },
+
+        "/tenant/db/keys/delete": {
+            _apiInfo: {
+                "l": "Delete Dashboard Tenant Keys",
+                "group": "Dashboard Tenants"
+            },
+            commonFields: ['id']
+        },
+
         "/settings/tenant/get": {
             _apiInfo: {
                 "l": "Get Tenant",
