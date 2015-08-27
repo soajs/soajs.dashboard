@@ -153,8 +153,7 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric",
-                    "maxLength": 5
+                    "format": "alphanumeric"
                 }
             },
             "packageCode": {
@@ -162,8 +161,7 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric",
-                    "maxLength": 5
+                    "format": "alphanumeric"
                 }
             },
             "clearAcl": {
