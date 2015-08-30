@@ -22,15 +22,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var apiOptions = {
 		url: (options.url) ? options.url + options.routeName : apiConfiguration.domain + options.routeName,
 		headers: {
-			'Content-Type': 'application/json',
-			'key': apiConfiguration.key
+			'Content-Type': 'application/json'
 		}
 	};
 
-    apiOptions.forceDBKey = false;
-    if(options.forceDBKey){
-        apiOptions.forceDBKey = options.forceDBKey;
-    }
 	if(options.jsonp) {
 		apiOptions.jsonp = true;
 	}
@@ -58,7 +53,6 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			}
 		}
 	}
-
 	ngDataApi[options.method]($scope, apiOptions, callback);
 	
 }

@@ -1,12 +1,13 @@
 "use strict";
 var myAccountApp = soajsApp.components;
 
-myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookieStore', function($scope, $timeout, $modal, ngDataApi, $cookieStore) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.$parent.$on('xferData', function(event, args) {
 		$scope.memberData = args.memberData;
 	});
 	$scope.changeEmail = function() {
+		var key = $cookieStore.get("soajs_dashboard_key");
 		var config = changeEmailConfig.formConf;
 		var options = {
 			form: config,
@@ -24,7 +25,9 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-                            "forceDBKey": true,
+							"headers":{
+								"key": key
+							},
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -55,6 +58,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 	};
 	
 	$scope.changePassword = function() {
+		var key = $cookieStore.get("soajs_dashboard_key");
 		var config = changePwConfig.formConf;
 		var options = {
 			form: config,
@@ -78,7 +82,9 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						}
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-                            "forceDBKey": true,
+							"headers":{
+								"key": key
+							},
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -141,11 +147,14 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'username': formData.username, 'firstName': formData.firstName, 'lastName': formData.lastName,
 					'profile': prof
 				};
+				var key = $cookieStore.get("soajs_dashboard_key");
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "send",
-                    "forceDBKey": true,
 					"routeName": "/urac/account/editProfile",
 					"params": {"uId": $scope.uId},
+					"headers":{
+						"key": key
+					},
 					"data": postData
 				}, function(error) {
 					if(error) {
@@ -169,9 +178,12 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	};
 
 	$scope.getProfile = function(username) {
+		var key = $cookieStore.get("soajs_dashboard_key");
 		getSendDataFromServer($scope, ngDataApi, {
+			"headers":{
+				"key": key
+			},
 			"method": "get",
-            "forceDBKey": true,
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
 		}, function(error, response) {
@@ -255,7 +267,6 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	$scope.validateChangeEmail = function() {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": true,
 			"routeName": "/urac/changeEmail/validate",
 			"params": {"token": $route.current.params.token}
 		}, function(error) {
@@ -294,33 +305,54 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					$cookieStore.put('soajs_user', response);
 					$cookieStore.put("soajs_auth", response.soajsauth);
 
-					getSendDataFromServer($scope, ngDataApi, {
-						"method": "get",
-						"routeName": "/dashboard/key/get"
-					}, function(error, response) {
-						if(error) {
-							$scope.$parent.displayAlert('danger', error.message);
-						}
-						else {
-                            $cookieStore.put("soajs_dashboard_key", response.extKey);
-                            getSendDataFromServer($scope, ngDataApi, {
-                                "method": "get",
-                                "routeName": "/dashboard/permissions/get"
-                            }, function(error, response) {
-                                if (error) {
-                                    $scope.$parent.displayAlert('danger', error.message);
-                                }
-                                else {
-                                    $localStorage.acl_access = response;
-                                    $scope.$parent.$emit("loadUserInterface", {});
-                                    $scope.$parent.$emit('refreshWelcome', {});
-                                }
-                            });
-						}
-					});
-
+					//get dashboard keys
+					getKeys();
 				}
 			});
+
+			function getKeys(){
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "get",
+					"routeName": "/dashboard/key/get",
+					"params": { "main": true}
+				}, function(error, response) {
+					if(error) {
+						$scope.$parent.displayAlert('danger', error.message);
+					}
+					else {
+						$cookieStore.put("soajs_dashboard_key", response.extKey);
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "get",
+							"routeName": "/dashboard/key/get",
+							"params": { "main": false}
+						}, function(error, response) {
+							if (error) {
+								$scope.$parent.displayAlert('danger', error.message);
+							}
+							else {
+								$cookieStore.put("soajs_dashboard_persona_key", response.extKey);
+								getPermissions();
+							}
+						});
+					}
+				});
+			}
+
+			function getPermissions(){
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "get",
+					"routeName": "/dashboard/permissions/get"
+				}, function(error, response) {
+					if (error) {
+						$scope.$parent.displayAlert('danger', error.message);
+					}
+					else {
+						$localStorage.acl_access = response;
+						$scope.$parent.$emit("loadUserInterface", {});
+						$scope.$parent.$emit('refreshWelcome', {});
+					}
+				});
+			}
 		}
 	}];
 	
@@ -410,7 +442,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 	}
 }]);
 
-myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
+myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', '$cookieStore', function($scope, ngDataApi, $routeParams, isUserLoggedIn, $cookieStore) {
 	var formConfig = resetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
@@ -424,11 +456,14 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
 			}
+			var key = $cookieStore.get("soajs_dashboard_key");
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-                "forceDBKey": true,
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
+				"headers":{
+					"key": key
+				},
 				"data": postData
 			}, function(error) {
 				if(error) {

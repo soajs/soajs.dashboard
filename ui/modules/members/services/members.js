@@ -7,7 +7,9 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		var tenantId = (callback)? currentScope.tId: userCookie.tenant.id;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": currentScope.forceDBKey,
+			"headers":{
+				"key": currentScope.key
+			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
 		}, function(error, response) {
@@ -81,7 +83,9 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": currentScope.forceDBKey,
+			"headers":{
+				"key": currentScope.key
+			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
 		}, function(error, response) {
@@ -123,7 +127,9 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
-                                    "forceDBKey": currentScope.forceDBKey,
+									"headers":{
+										"key": currentScope.key
+									},
 									"routeName": "/urac/admin/addUser",
 									"data": postData
 								}, function(error) {
@@ -166,7 +172,9 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": currentScope.forceDBKey,
+			"headers":{
+				"key": currentScope.key
+			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
 		}, function(error, response) {
@@ -223,7 +231,9 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
-                                    "forceDBKey": currentScope.forceDBKey,
+									"headers":{
+										"key": currentScope.key
+									},
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
 									"data": postData

@@ -3071,58 +3071,6 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
 
-                it("success - will get nothing", function(done) {
-                    var ex3pckg = {
-                        "code": "TPROD_EXAMPLE03",
-                        "name": "example03 package",
-                        "description": "this is a description for test product example03 package",
-                        "acl": {
-                            "urac": {},
-                            "example03": {}
-                        },
-                        "_TTL": 86400000
-                    };
-
-                    mongo.findOne('products', {'code': 'TPROD'}, function(error, productRecord) {
-                        assert.ifError(error);
-                        productRecord.packages.push(ex3pckg);
-                        mongo.save('products', productRecord, function(error) {
-                            assert.ifError(error);
-                            executeMyRequest({'qs': {'id':'551286bce603d7e01ab1688e'} }, 'tenant/acl/get/', 'post', function(body) {
-                                console.log(JSON.stringify(body));
-                                assert.ok(!body.data);
-                                done();
-                            });
-                        });
-                    });
-                });
-
-                it("success - will get acl", function(done){
-                    var options = {
-                        uri: 'http://localhost:4001/login',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            key: "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974"
-                        },
-                        body: {
-                            "username": "owner",
-                            "password": "123456"
-                        },
-                        json: true
-                    };
-                    var otherextkey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
-                    request.post(options, function(error, response, body) {
-                        assert.ifError(error);
-                        assert.ok(body);
-                        console.log(JSON.stringify(body));
-                        executeMyRequest({'headers': {'key': otherextkey,'soajsauth': body.soajsauth}, 'qs':{'id': '551286bce603d7e01ab1688e'}}, 'tenant/acl/get', 'post', function(body) {
-                            console.log(JSON.stringify(body));
-                            assert.equal(body.result, true);
-                            assert.ok(body.data);
-                            done();
-                        });
-                    });
-                });
             });
 
             describe("update application ext keys", function() {
@@ -4465,6 +4413,9 @@ describe("DASHBOARD UNIT Tests", function() {
                 assert.ifError(error);
                 assert.ok(record);
                 delete record._id;
+	            console.log("************************");
+	            console.log(record);
+	            console.log("************************");
                 assert.deepEqual(record, {
                     "code": "TPROD",
                     "name": "test product",
@@ -4493,16 +4444,6 @@ describe("DASHBOARD UNIT Tests", function() {
                                 }
                             },
                             "_TTL": 12 * 3600 * 1000
-                        },
-                        {
-                            "code": "TPROD_EXAMPLE03",
-                            "name": "example03 package",
-                            "description": "this is a description for test product example03 package",
-                            "acl": {
-                                "urac": {},
-                                "example03": {}
-                            },
-                            "_TTL": 86400000
                         }
                     ]
                 });

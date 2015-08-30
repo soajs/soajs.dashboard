@@ -563,7 +563,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			executeMyRequest({
 				'form': {
 					"code": "DBTN",
-					"extKey": extKey
+					"extKey": "1234"
 				}
 			}, 'tenant/db/keys/add', 'post', function (body) {
 				assert.equal(body.result, false);
@@ -582,7 +582,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			}, 'tenant/db/keys/add', 'post', function (body) {
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
-				assert.equal(body.errors.codes[0], 455);
+				assert.equal(body.errors.codes[0], 705);
 				done();
 			});
 		});
@@ -673,6 +673,23 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				assert.ok(body);
 				assert.equal(body.result, true);
 				soajsauth = body.soajsauth;
+				done();
+			});
+		});
+
+		it("will get owner key", function (done) {
+			executeMyRequest({
+				'headers': {
+					'key': newKey,
+					'soajsauth': soajsauth
+				},
+				"qs":{
+					"main": true
+				}
+			}, 'key/get', 'get', function (body) {
+				console.log(JSON.stringify(body));
+				assert.equal(body.result, true);
+				assert.ok(body.data);
 				done();
 			});
 		});

@@ -268,10 +268,12 @@ service.init(function() {
 		checkForMongo(req);
 		tenant.listApplicationConfig(config, mongo, req, res);
 	});
+
 	service.get("/key/get", function(req, res) {
 		checkForMongo(req);
 		tenant.extKeyGet(config, mongo, req, res);
 	});
+
     service.get("/permissions/get", function(req, res) {
         checkForMongo(req);
         tenant.permissionsGet(config, mongo, req, res);

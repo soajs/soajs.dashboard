@@ -9,8 +9,8 @@ membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function($sc
 	$scope.userCookie = $cookieStore.get('soajs_user');
 }]);
 
-membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope, membersHelper) {
-    $scope.forceDBKey = true;
+membersApp.controller('membersCtrl', ['$scope', 'membersHelper', '$cookieStore', function($scope, membersHelper, $cookieStore) {
+	$scope.key = $cookieStore.get("soajs_dashboard_key");
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
 	$scope.$parent.$on('reloadMembers', function(event) {
@@ -48,8 +48,8 @@ membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope
 
 }]);
 
-membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, groupsHelper) {
-    $scope.forceDBKey = true;
+membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', '$cookieStore', function($scope, groupsHelper, $cookieStore) {
+	$scope.key = $cookieStore.get("soajs_dashboard_key");
     $scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 	$scope.groups.listGroups = function() {
@@ -227,7 +227,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 }]);
 
 membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper) {
-	$scope.key = apiConfiguration.key;
+	$scope.key = $cookieStore.get("soajs_dashboard_key");
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.user = {};
@@ -284,7 +284,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		getUserGroupInfo(function() {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-                forceDBKey: true,
+				"headers":{
+					"key": $scope.key
+				},
 				"routeName": "/dashboard/tenant/acl/get",
 				"params": { "id": $scope.user.tenant.id }
 			}, function(error, response) {
@@ -311,7 +313,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		function getUserGroupInfo(cb) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-                forceDBKey: true,
+				"headers":{
+					"key": $scope.key
+				},
 				"routeName": "/urac/admin/getUser",
 				"params": {"uId": $routeParams.uId}
 			}, function(error, response) {
@@ -362,7 +366,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
-            forceDBKey: true,
+			"headers":{
+				"key": $scope.key
+			},
 			"routeName": "/urac/admin/editUser",
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
@@ -410,7 +416,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		if(counter === $scope.tenantApp.applications.length){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-                forceDBKey:true,
+				"headers":{
+					"key": $scope.key
+				},
 				"routeName": "/urac/admin/editUser",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData

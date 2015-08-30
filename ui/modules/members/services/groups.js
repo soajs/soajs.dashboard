@@ -8,7 +8,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		if(currentScope.access.adminGroup.list) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
-                "forceDBKey": currentScope.forceDBKey,
+				"headers":{
+					"key": currentScope.key
+				},
 				"routeName": "/urac/admin/group/list",
 				"params": {'tId': tenantId}
 			}, function(error, response) {
@@ -95,7 +97,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 						getSendDataFromServer(currentScope, ngDataApi, {
 							"method": "send",
-                            "forceDBKey": currentScope.forceDBKey,
+							"headers":{
+								"key": currentScope.key
+							},
 							"routeName": "/urac/admin/group/add",
 							"data": postData
 						}, function(error) {
@@ -148,7 +152,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 						getSendDataFromServer(currentScope, ngDataApi, {
 							"method": "send",
-                            "forceDBKey": currentScope.forceDBKey,
+							"headers":{
+								"key": currentScope.key
+							},
 							"routeName": "/urac/admin/group/edit",
 							"params": {"gId": data['_id']},
 							"data": postData
@@ -200,7 +206,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": currentScope.forceDBKey,
+			"headers":{
+				"key": currentScope.key
+			},
 			"routeName": "/urac/admin/group/delete",
 			"params": {"gId": data._id, 'tId': tenantId}
 		}, function(error) {
@@ -220,7 +228,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-            "forceDBKey": currentScope.forceDBKey,
+			"headers":{
+				"key": currentScope.key
+			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
 		}, function(error, response) {
@@ -260,7 +270,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								};
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
-                                    "forceDBKey": currentScope.forceDBKey,
+									"headers":{
+										"key": currentScope.key
+									},
 									"routeName": "/urac/admin/group/addUsers",
 									"params": {'tId': tenantId},
 									"data": postData

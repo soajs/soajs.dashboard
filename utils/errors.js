@@ -112,6 +112,7 @@ var errors = {
 	"702": "Content Schema doesn't exists",
 	"703": "Invalid or no Content Service with this name and version",
 	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port.",
+	"705": "Tenant already has a key to use the dashboard",
 
 	"750": "Invalid Request."
 };
