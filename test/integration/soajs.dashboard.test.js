@@ -3529,7 +3529,7 @@ describe("DASHBOARD UNIT Tests", function() {
         });
     });
 
-    describe("testing get tenant permissions for logged in users", function() {
+    describe("testing settings for logged in users", function() {
         var soajsauth;
 
         it("fail - should not work for non-logged in users", function(done) {
