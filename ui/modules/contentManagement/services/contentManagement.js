@@ -165,7 +165,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                 'uploadUrl': url,
                                 'headers': {
                                     "soajsauth": soajsAuthCookie,
-                                    "key": $cookieStore.get("soajs_dashboard_key")
+                                    "key": apiConfiguration.key
                                 },
                                 'progress': progress,
                                 "data": {

@@ -285,7 +285,6 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 				}
 
 				$cookieStore.remove('soajs_dashboard_key');
-				$cookieStore.remove('soajs_dashboard_persona_key');
 				$cookieStore.remove('soajsID');
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');

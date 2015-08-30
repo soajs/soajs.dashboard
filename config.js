@@ -645,16 +645,7 @@ module.exports = {
             _apiInfo: {
                 "l": "Get the user dashboard key",
                 "group": "Tenant"
-            },
-	        "main":{
-		        "required": true,
-		        "source": ["query.main"],
-		        "default": false,
-		        "validation":{
-			        "type": "boolean",
-			        "required": true
-		        }
-	        }
+            }
         },
 
         "/tenant/list": {

@@ -67,8 +67,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		if(opts.headers.key){
 			config.headers.key = opts.headers.key;
 		}
-        else if($cookieStore.get("soajs_dashboard_persona_key")){
-            config.headers.key = $cookieStore.get("soajs_dashboard_persona_key");
+        else if($cookieStore.get("soajs_dashboard_key")){
+            config.headers.key = $cookieStore.get("soajs_dashboard_key");
         }
 		else{
 	        config.headers.key = apiConfiguration.key;

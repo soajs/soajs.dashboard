@@ -9,8 +9,8 @@ membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function($sc
 	$scope.userCookie = $cookieStore.get('soajs_user');
 }]);
 
-membersApp.controller('membersCtrl', ['$scope', 'membersHelper', '$cookieStore', function($scope, membersHelper, $cookieStore) {
-	$scope.key = $cookieStore.get("soajs_dashboard_key");
+membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope, membersHelper) {
+	$scope.key = apiConfiguration.key;
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
 	$scope.$parent.$on('reloadMembers', function(event) {
@@ -48,8 +48,8 @@ membersApp.controller('membersCtrl', ['$scope', 'membersHelper', '$cookieStore',
 
 }]);
 
-membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', '$cookieStore', function($scope, groupsHelper, $cookieStore) {
-	$scope.key = $cookieStore.get("soajs_dashboard_key");
+membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, groupsHelper) {
+	$scope.key = apiConfiguration.key;
     $scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 	$scope.groups.listGroups = function() {
@@ -227,7 +227,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 }]);
 
 membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper) {
-	$scope.key = $cookieStore.get("soajs_dashboard_key");
+	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.user = {};
