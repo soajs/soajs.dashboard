@@ -130,6 +130,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             console.log(error.message);
                         }
                         else {
+	                        response.data = response.data.services;
                             propulateServices(response.data);
                         }
                     });
@@ -360,7 +361,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
             }
             else {
-                awarenessResponse = awarenessResponse.data;
+                awarenessResponse = awarenessResponse.data.services;
                 for (var oneService in awarenessResponse) {
                     if (awarenessResponse.hasOwnProperty(oneService)) {
                         if (oneService === 'controller') {
