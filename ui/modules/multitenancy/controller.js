@@ -90,8 +90,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
             "routeName": "/dashboard/environment/list"
         }, function (error, response) {
             if (error) {
-                console.log('Error: ' + error.message);
-                //$scope.$parent.displayAlert('danger', error.message);
+                $scope.$parent.displayAlert('danger', error.message);
             }
             else {
                 response.forEach(function (oneEnv) {

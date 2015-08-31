@@ -14,7 +14,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }, function (error, response) {
                 if (error || !response) {
-                    console.log(error.message);
                     currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
                 }
                 else {
@@ -127,8 +126,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }, function (error, response) {
                         if (error || !response || !response.result || !response.data) {
                             currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
-                            console.log(error.message);
-                        }
+                                                    }
                         else {
 	                        response.data = response.data.services;
                             propulateServices(response.data);
@@ -454,7 +452,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, response) {
             if (error) {
-                console.log("error executing Reload Registry test for " + oneHost.name + " on ip: " + oneHost.ip);
                 currentScope.generateNewMsg(env, 'danger', "error executing Reload Registry test for " +
                     oneHost.name +
                     " on ip: " +
@@ -826,7 +823,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }
                 }
 
-                console.log(params);
                 getSendDataFromServer(currentScope, ngDataApi, {
                     "method": "send",
                     "routeName": "/dashboard/hosts/deployService",

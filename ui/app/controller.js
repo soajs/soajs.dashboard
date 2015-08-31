@@ -275,7 +275,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"headers":{
-					"key": $cookieStore.get('soajs_dashboard_key')
+					"key": apiConfiguration.key
 				},
 				"routeName": "/urac/logout",
 				"params": {"username": user.username}
