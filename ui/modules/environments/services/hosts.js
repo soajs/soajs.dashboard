@@ -686,8 +686,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     postServiceList.push(servObj);
                 });
 
-                //push controller
-                //servicesList.unshift({"v": "controller", "l": "controller"});
+	            if(env.toLowerCase() !== 'dashboard'){
+                    //push controller
+                    servicesList.unshift({"v": "controller", "l": "controller"});
+	            }
 
                 var entry = {
                     'name': 'service',
@@ -767,11 +769,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 "routeName": "/dashboard/hosts/deployController",
                 "data": params
             }, function (error, response) {
+	            overlay.hide();
                 if (error) {
                     currentScope.generateNewMsg(env, 'danger', error.message);
                 }
                 else {
-                    overlay.hide();
                     currentScope.modalInstance.close();
                     currentScope.form.formData = {};
 
@@ -829,6 +831,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     "data": params
                 }, function (error, response) {
                     if (error) {
+	                    overlay.hide();
                         currentScope.generateNewMsg(env, 'danger', error.message);
                     }
                     else {
