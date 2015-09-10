@@ -331,6 +331,14 @@ module.exports = {
                     "maxLength": 4
                 }
             },
+	        "domain": {
+		        "source": ['body.domain'],
+		        "required": true,
+		        "validation": {
+			        "type": "string",
+			        "format": "hostname"
+		        }
+	        },
             "profile": {
                 "required": true,
                 "source": ['body.profile'],
@@ -353,7 +361,15 @@ module.exports = {
                 "group": "Environment"
             },
             "commonFields": ['id', 'description', 'services', 'deployer', 'port'],
-            "profile": {
+	        "domain": {
+		        "source": ['body.domain'],
+		        "required": true,
+		        "validation": {
+			        "type": "string",
+			        "format": "hostname"
+		        }
+	        },
+	        "profile": {
                 "required": true,
                 "source": ['body.profile'],
                 "validation": {

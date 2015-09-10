@@ -1,6 +1,7 @@
 'use strict';
 var env_template = {
 	"code": "",
+	"domain": "",
 	"port": 0,
 	"profile": "",
 	"description": "",
@@ -78,7 +79,7 @@ var env_template = {
 					"path": '/',
 					"httpOnly": true,
 					"secure": false,
-					"domain": "",
+					//"domain": "",
 					"maxAge": null
 				},
 				"resave": false,

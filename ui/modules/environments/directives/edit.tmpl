@@ -16,6 +16,13 @@
                             </td>
                         </tr>
                         <tr class="form-group">
+	                        <td class="">
+		                        <label>Domain</label>
+		                        <input type="text" ng-required="true" tooltip="Enter Environment Domain;"
+		                               placeholder="myDomain.com" ng-model="formEnvironment.domain" class="form-control"/>
+	                        </td>
+                        </tr>
+                        <tr class="form-group">
                             <td class="">
                                 <label>Description</label>
 								<textarea tooltip="Enter a description explaining the usage of this environment"
@@ -312,7 +319,6 @@
                                                     <input ng-required="true" name="cookie.secure" type="radio" ng-model="formEnvironment.services.config.session.cookie.secure" data-ng-value="true"/> True
                                                     <input ng-required="true" name="cookie.secure" type="radio" ng-model="formEnvironment.services.config.session.cookie.secure" data-ng-value="false"/> False
                                                     <br/><em>Choose if cookies should be encrypted.</em><br />
-
                                                     <label><span class="icon icon-arrow-right"></span> Max Age </label>
                                                     <input type="number"
                                                            ng-model="formEnvironment.services.config.session.cookie.maxAge"
