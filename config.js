@@ -30,7 +30,7 @@ module.exports = {
         "dashboardFolderName": "/dashboard/",
         "servicesFolderName": "/services/",
         "uiFolderName": "/ui/",
-        "uploadFolderName": "uploads/",
+        "uploadFolderName": "/uploads/",
         "tenantFolderName": "/tenants/"
     },
 
