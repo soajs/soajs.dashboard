@@ -18,6 +18,7 @@ module.exports = {
     "expDateTTL": 86400000,
     "ncpLimit": 16,
 
+	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/node_modules/profiles/",
     "workDir": process.env.SOAJS_ENV_WORKDIR || "/",
 
     "images": {
@@ -29,7 +30,7 @@ module.exports = {
         "dashboardFolderName": "/dashboard/",
         "servicesFolderName": "/services/",
         "uiFolderName": "/ui/",
-        "uploadFolderName": "/uploads/",
+        "uploadFolderName": "uploads/",
         "tenantFolderName": "/tenants/"
     },
 

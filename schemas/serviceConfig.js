@@ -81,7 +81,7 @@ var serviceConfig = {
 						"path": {"type": "string", "required": true},
 						"httpOnly": {"type": "boolean", "required": true},
 						"secure": {"type": "boolean", "required": true},
-						"domain": {"type": "string", "required": true},
+						//"domain": {"type": "string", "required": true},
 						"maxAge": {"type": ["integer", "null"], "required": false}
 					}
 				}

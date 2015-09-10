@@ -164,7 +164,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
                         tmpl.services.config.key.password = formData.tKeyPass;
                         tmpl.services.config.cookie.secret = formData.sessionCookiePass;
                         tmpl.services.config.session.secret = formData.sessionCookiePass;
-                        tmpl.services.config.session.cookie.domain = formData.domain;
+                        //tmpl.services.config.session.cookie.domain = formData.domain;
 
                         switch (formData.platformDriver[0]) {
                             case 'manual':

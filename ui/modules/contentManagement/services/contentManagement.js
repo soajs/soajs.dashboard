@@ -78,7 +78,8 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             routeName: "/" + currentScope.selectedService.name + "/download",
             method: 'get',
             headers: {
-                "Accept": oneFile.contentType
+                "Accept": oneFile.contentType,
+	            "key": $cookieStore.get("soajs_dashboard_key")
             },
             responseType: 'arraybuffer',
             params: {
@@ -165,7 +166,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                 'uploadUrl': url,
                                 'headers': {
                                     "soajsauth": soajsAuthCookie,
-                                    "key": apiConfiguration.key
+                                    "key": $cookieStore.get("soajs_dashboard_key")
                                 },
                                 'progress': progress,
                                 "data": {
