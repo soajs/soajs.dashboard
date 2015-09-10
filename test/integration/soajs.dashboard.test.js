@@ -71,6 +71,7 @@ describe("DASHBOARD UNIT Tests", function() {
         var validEnvRecord = {
             "code": "DEV",
             "port": 8080,
+	        "domain": "api.myDomain.com",
             "profile": "single",
             "deployer": {
                 "type": "manual", //available options: container | manual | cloud (chef | puppet)
@@ -284,7 +285,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     }
                 };
                 executeMyRequest(params, 'environment/add', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: profile, services, deployer, port"});
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: domain, profile, services, deployer, port"});
 
                     done();
                 });
@@ -325,6 +326,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+	                    "domain": "api.myDomain.com",
                         "profile": data2.profile,
                         "port": data2.port,
                         "deployer": data2.deployer,
@@ -344,6 +346,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+	                    "domain": "api.myDomain.com",
                         "profile": data2.profile,
                         "port": data2.port,
                         "deployer": data2.deployer,
@@ -361,6 +364,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 var params = {
                     qs: {"id": envId},
                     form: {
+	                    "domain": "api.myDomain.com",
                         "profile": validEnvRecord.profile,
                         "port": validEnvRecord.port,
                         "deployer": validEnvRecord.deployer,
@@ -383,7 +387,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     }
                 };
                 executeMyRequest(params, 'environment/update', 'post', function(body) {
-                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: profile, services, deployer, port"});
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: domain, profile, services, deployer, port"});
                     done();
                 });
             });
@@ -392,6 +396,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 var params = {
                     qs: {"id": "aaaabbbbccc"},
                     form: {
+	                    "domain": validEnvRecord.profile,
                         "profile": validEnvRecord.profile,
                         "port": validEnvRecord.port,
                         "deployer": validEnvRecord.deployer,
@@ -4272,6 +4277,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 delete record._id;
                 assert.deepEqual(record, {
                     "code": "DEV",
+	                "domain": "api.myDomain.com",
                     "port": 8080,
                     "profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
                     "deployer": {
