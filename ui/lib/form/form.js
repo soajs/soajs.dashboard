@@ -214,6 +214,9 @@ function buildForm(context, modal, configuration, cb) {
         // for external keys, the form might be empty
         for (var i = 0; i < entries.length; i++) {
             var oneEntry = entries[i];
+	        if(oneEntry.type === 'group'){
+		        continue;
+	        }
             if (oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
                 return false;
             }
