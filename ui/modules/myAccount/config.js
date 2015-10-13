@@ -93,21 +93,11 @@ var forgetPwConfig={
 			'name': 'forgotPw',
 			'label': 'Forgot Password',
 			'msgs':{
-				'header': 'Please enter your account email address and username to reset your password',
+				'header': 'Please enter your account email address or username to reset your password',
 				'footer': ''
 			},
 			
 			'entries': [
-				{
-					'name': 'email',
-					'label': 'Email',
-					'type': 'email',
-					'placeholder': 'Enter Email...',
-					'value': '',
-					'fieldMsg':'A reset link will be sent to this email address',
-					'tooltip': 'myemail@example.domain',
-					'required': true
-				},
 				{
 					'name': 'username',
 					'label': 'Username',

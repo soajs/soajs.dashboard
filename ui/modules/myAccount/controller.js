@@ -358,7 +358,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 		'btn': 'primary',
 		'action': function(formData) {
 			var postData = {
-				'username': formData.username, 'email': formData.email
+				'username': formData.username
 			};
 			
 			getSendDataFromServer($scope, ngDataApi, {
