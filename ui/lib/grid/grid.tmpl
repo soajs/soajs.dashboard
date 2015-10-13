@@ -49,7 +49,7 @@
                 </th>
             </tr>
             <tr ng-repeat="row in grid.filteredRows | filter: grid.filterData(grid.query) | orderBy:grid.sortField:grid.reverse |limitTo: grid.itemsPerPage"
-                ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'">
+                ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
                 <td class='leftAction' ng-show="grid.topActions.length > 0">
                     <input ng-model="row.selected" name="IDS[]" type="checkbox" value="{{row['ID']}}"/>
                 </td>
@@ -59,7 +59,7 @@
                         <!--<img ng-src="themes/{{grid.themeToUse}}/img/{{action.icon}}.png" tooltip="{{action.label}}" border="0"/>-->
                     </a>
                 </td>
-                <td ng-repeat="column in grid.columns">
+                <td ng-repeat="column in grid.columns" class="columns column-{{column.field}}">
                     <span ng-if="column.filter">{{row[column.field] | filterPicker: column.filter}}</span>
                     <span ng-if="!column.filter" ng-bind-html="row[column.field]"></span>
                 </td>
