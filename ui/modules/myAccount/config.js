@@ -100,13 +100,13 @@ var forgetPwConfig={
 			'entries': [
 				{
 					'name': 'username',
-					'label': 'Username',
+					'label': 'Username / E-mail',
 					'type': 'text',
-					'placeholder': 'Enter Username...',
+					'placeholder': 'Enter Username or E-mail...',
 					'value': '',
-					'tooltip': 'Usernames are alphanumeric and support _ character only',
+					'tooltip': 'Enter your Username or E-mail to ask for a password change.',
 					'required': true
-				} 
+				}
 			]	
 				
 		}		
