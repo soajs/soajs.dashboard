@@ -118,6 +118,11 @@ function buildForm(context, modal, configuration, cb) {
                 context.form.formData[oneEntry.name] = oneEntry.value;
             }
         }
+        else if(oneEntry.type === 'number'){
+	        if(oneEntry.value === 0){
+		        context.form.formData[oneEntry.name] = oneEntry.value;
+	        }
+        }
 
         if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
             if (oneEntry.limit === undefined) {
