@@ -10,6 +10,11 @@ var multitenancyNav =[
 		'url': '#/multi-tenancy',
 		'tplPath': 'modules/multitenancy/directives/list.tmpl',
 		'icon': 'tree',
+		'pillar':{
+			'name': 'management',
+			'label': 'Management',
+			'position': 2
+		},
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js','modules/multitenancy/services/multitenancy.js'],

@@ -345,7 +345,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in.');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#",""));
 	}
 	
 }]);

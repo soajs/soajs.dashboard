@@ -10,6 +10,11 @@ var cbNav =[
 		'url': '#/content-builder',
 		'tplPath': 'modules/contentBuilder/directives/list.tmpl',
 		'icon': 'hammer',
+		'pillar':{
+			'name': 'development',
+			'label': 'Development',
+			'position': 1
+		},
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],

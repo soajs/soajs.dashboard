@@ -10,6 +10,11 @@ var productizationNav =[
 		'url': '#/productization',
 		'tplPath': 'modules/productization/directives/list.tmpl',
 		'icon': 'list',
+		'pillar':{
+			'name': 'management',
+			'label': 'Management',
+			'position': 2
+		},
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],

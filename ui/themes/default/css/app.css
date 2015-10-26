@@ -42,17 +42,17 @@ em {
 }
 
 #header {
-    height: 80px;
+    height: 50px;
     background: #424951;
     min-width: 1300px;
 }
 
 #header #logo {
     float: left;
-    margin: 10px 10px 0 10px;
+    margin: 0px 10px;
     color: #ffffff;
     font-weight: bold;
-    font-size: 36px;
+    font-size: 35px;
     text-transform: uppercase;
     cursor:pointer;
 }
@@ -65,6 +65,41 @@ em {
     display: inline;
 }
 
+#header #pillars{
+    float:left;
+    margin:0 0 0 90px;
+    height:35px;
+    position:relative;
+    z-index:10000000;
+}
+
+#header #pillars .one-pillar{
+    float:left;
+    margin-right:5px;
+}
+
+#header #pillars .one-pillar button{
+    background-color: #515e67;
+    color:white;
+    font-weight:bold;
+    display:inline-block;
+    border: none;
+    border-right:solid 1px #4f5762;
+    height:50px;
+    float:left;
+    padding-left:10px;
+    padding-right:10px;
+    font-size:16px;
+}
+
+#header #pillars .one-pillar button:hover{
+    background-color:#222222;
+}
+#header #pillars .one-pillar button.selected{
+    background-color:white;
+    color:#337ab7;
+}
+
 #header #slogan {
     font-style: italic;
     color: #337ab7;
@@ -73,7 +108,7 @@ em {
 
 #header #userMenu {
     float: right;
-    margin: 10px 20px 0 0;
+    margin: 15px 20px 0 0;
     height: 20px;
     min-width: 15%;
     font-weight: bold;
@@ -157,81 +192,10 @@ em {
     min-width: 1300px;
     display: table;
     clear: both;
-    position: relative;
-    top: -35px;
-}
-
-#noMainMenu {
-    margin-top: 35px;
-    float: left;
-    width: 13%;
-    position: relative;
-    border-bottom: solid 1px white;
-}
-
-#mainMenu {
-    margin-top: 35px;
-    background-color: #515E67;
-    float: left;
-    width: 14%;
-    min-height: 525px;
-    position: relative;
-    border-bottom: solid 1px white;
-    border-right: solid 1px white;
-}
-
-#mainMenu h4 {
-    margin: 0;
-    background-color: #70808D;
-    padding: 5px 10px;
-    border-top: 1px solid #989eaa;
-    border-bottom: solid 1px #4F5762;
-}
-
-#mainMenu ul {
-    border-top: solid 1px #606d76;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-#mainMenu li {
-    padding: 10px 0 10px 10px;
-    border-top: solid 1px #606d76;
-    border-bottom: solid 1px #4F5762;
-    cursor: pointer;
-    height: 41px;
-}
-
-#mainMenu ul li a {
-    display: block;
-    color: white;
-    font-weight: bold;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
-    text-decoration: none;
-    outline: 0;
-}
-
-#mainMenu li:first-child {
-    border-top: none;
-}
-
-#mainMenu ul li:hover {
-    background-color: #222222;
-    color: white;
-}
-
-#mainMenu ul li.active {
-    background-color: white;
-}
-
-#mainMenu ul li.active > a {
-    color: #337ab7;
-    text-shadow: none;
 }
 
 #page .wrapper {
-    width: 86%;
+    width: 100%;
     float: left;
     min-height: 560px;
     background-color: #e5eaee;
@@ -266,6 +230,10 @@ em {
 #tracker ul li {
     float: left;
     padding-left: 5px;
+}
+
+#tracker ul li b{
+    color: #515e67;
 }
 
 #notifications {

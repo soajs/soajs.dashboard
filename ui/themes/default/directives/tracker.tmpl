@@ -6,7 +6,9 @@
             <span class="glyphicon glyphicon-chevron-right"></span>
         </span>
         <span ng-if="entry.current">
-            {{entry.label}}
+	        <b ng-if="entry.pillar">{{entry.pillar}}</b>
+            <span ng-if="entry.pillar" class="glyphicon glyphicon-chevron-right"></span>
+	        {{entry.label}}
         </span>
         </li>
     </ul>

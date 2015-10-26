@@ -104,16 +104,39 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.guestMenu.links = [];
 
 		$scope.updateSelectedMenus = function() {
-			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.guestMenu.selectedMenu = $scope.mainMenu.selectedMenu;
+			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
+
+			$scope.mainMenu.links.forEach(function(oneLink){
+				for(var i=0; i < oneLink.entries.length; i++){
+					if(oneLink.entries[i].url === $scope.mainMenu.selectedMenu){
+						oneLink.selected = true;
+						break;
+					}
+				}
+			});
 		};
 
 		$scope.buildNavigation = function() {
 			for(var i = 0; i < navigation.length; i++) {
 				if(navigation[i].mainMenu) {
-					$scope.mainMenu.links.push(navigation[i]);
+					var found = false;
+					for(var j=0; j< $scope.mainMenu.links.length;j++){
+						if($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar){
+							if(navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name){
+								found = j;
+								break;
+							}
+						}
+					}
+					if(found === false){
+						$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
+						found = $scope.mainMenu.links.length -1;
+					}
+
+					$scope.mainMenu.links[found].entries.push(navigation[i]);
 				}
 
 				if(navigation[i].footerMenu) {
@@ -156,7 +179,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if(navigation[i].hasOwnProperty('private') || (a)) {
 					$scope.dashboard.push(navigation[i].id);
 					if(navigation[i].mainMenu) {
-						$scope.mainMenu.links.push(navigation[i]);
+						var found = false;
+						for(var j=0; j< $scope.mainMenu.links.length;j++){
+							if($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar){
+								if(navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name){
+									found = j;
+									break;
+								}
+							}
+						}
+						if(found === false){
+							$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
+							found = $scope.mainMenu.links.length -1;
+						}
+
+						$scope.mainMenu.links[found].entries.push(navigation[i]);
 					}
 
 					if(navigation[i].userMenu) {
@@ -181,7 +218,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					if(!navigation[i].hasOwnProperty('private') && !navigation[i].hasOwnProperty('guestMenu') && !navigation[i].hasOwnProperty('footerMenu')) {
 						if($scope.dashboard && $scope.dashboard.indexOf(navigation[i].id) === -1) {
 							$scope.displayAlert('danger', 'You do not have permissions to access this section');
-							$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+							$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#",""));
 						}
 					}
 
@@ -190,6 +227,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							findAndcestorProperties($scope.tracker, navigation[i].ancestor[j], $route.current.params);
 						}
 						$scope.tracker.push({
+							pillar: (navigation[i].pillar) ? navigation[i].pillar.label: null,
 							label: navigation[i].label,
 							link: navigation[i].url,
 							current: true
@@ -253,7 +291,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 		$scope.setUser();
 
 		if($scope.$parent.mainMenu.links.length>0){
-			$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+			$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#",""));
 		}
 		else{
 			$scope.$parent.go("/myaccount");
@@ -315,13 +353,6 @@ soajsApp.directive('userMenu', function() {
 	return {
 		restrict: 'E',
 		templateUrl: 'themes/' + themeToUse + '/directives/userMenu.tmpl'
-	};
-});
-
-soajsApp.directive('mainMenu', function() {
-	return {
-		restrict: 'E',
-		templateUrl: 'themes/' + themeToUse + '/directives/mainMenu.tmpl'
 	};
 });
 

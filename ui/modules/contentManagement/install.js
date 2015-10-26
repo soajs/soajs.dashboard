@@ -10,6 +10,11 @@ var cmNav =[
 		'url': '#/content-management',
 		'tplPath': 'modules/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',
+		'pillar':{
+			'name': 'dashboard',
+			'label': 'Dashboard',
+			'position': 4
+		},
 		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,

@@ -10,6 +10,11 @@ var servicesNav =[
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',
 		'icon': 'cloud',
+		'pillar':{
+			'name': 'development',
+			'label': 'Development',
+			'position': 1
+		},
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/services/config.js', 'modules/services/controller.js'],

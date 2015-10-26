@@ -4,7 +4,7 @@
  * Custom configuration values
  */
 var mydomain = "soajs.org";
-var themeToUse = "second";
+var themeToUse = "default";
 var whitelistedDomain = ['localhost', '127.0.0.1', 'dashboard-api.' + mydomain];
 var apiConfiguration = {
     domain: 'http://dashboard-api.' + mydomain,

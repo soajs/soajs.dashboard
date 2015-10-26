@@ -1,0 +1,24 @@
+<div id="header">
+    <div id="logo" ng-click="go('/dashboard')"><img src="images/favicon.png" alt="soajs" width="35px"/>soajs<br /></div>
+	<div id="pillars" ng-show="enableInterface">
+
+		<div class="one-pillar btn-group" dropdown ng-repeat="link in mainMenu.links | orderBy: 'pillar.position'">
+			<!--<button id="{{link.pillar.name}}" type="button" class="">{{link.pillar.label}}</button>-->
+			<button type="button" class="" id="{{link.pillar.name}}" dropdown-toggle ng-class="{selected:link.selected}">
+				{{link.pillar.label}}
+				<span class="caret"></span>
+				<span class="sr-only">Split button!</span>
+			</button>
+
+			<ul class="dropdown-menu" role="menu" aria-labelledby="{{link.pillar.name}}">
+				<li role="menuitem" ng-repeat="oneLink in link.entries" ng-class="{'first': $first, 'last': $last, selected:oneLink.selected, active: oneLink.url === mainMenu.selectedMenu}">
+					<a href="{{oneLink.url}}" class="mainMenu{{$index}}" id="mainMenu-{{oneLink.id}}">
+						<span class="icon icon-{{oneLink.icon}}"></span>{{oneLink.label}}
+					</a>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+    <user-menu></user-menu>
+</div>
