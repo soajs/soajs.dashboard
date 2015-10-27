@@ -331,7 +331,8 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						$scope.$parent.displayAlert('danger', error.message);
 					}
 					else {
-						$localStorage.acl_access = response;
+						$localStorage.acl_access = response.acl;
+						$localStorage.environments = response.environments;
 						$scope.$parent.$emit("loadUserInterface", {});
 						$scope.$parent.$emit('refreshWelcome', {});
 					}

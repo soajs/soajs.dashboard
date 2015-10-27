@@ -1,15 +1,7 @@
 <div id="mainMenu" ng-show="enableInterface">
-    <h4>ADMINISTRATION</h4>
     <ul>
-        <li ng-repeat="link in mainMenu.links" ng-if="!link.contentMenu" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === mainMenu.selectedMenu}">
-            <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}"><span class="icon icon-{{link.icon}}"></span>{{link.label}}</a>
-        </li>
-    </ul>
-    <h4>DATA</h4>
-    <ul>
-        <li ng-repeat="link in mainMenu.links" ng-if="link.contentMenu" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === mainMenu.selectedMenu}">
+        <li ng-repeat="link in leftMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
             <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}"><span class="icon icon-{{link.icon}}"></span>{{link.label}}</a>
         </li>
     </ul>
 </div>
-<div id="noMainMenu" ng-show="!enableInterface"></div>

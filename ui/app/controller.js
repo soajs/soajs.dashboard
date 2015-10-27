@@ -103,16 +103,34 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.guestMenu = {};
 		$scope.guestMenu.links = [];
 
+		$scope.leftMenu = {};
+		$scope.leftMenu.links = [];
+
+		$scope.reRenderMenu = function(pillarName){
+			$scope.leftMenu.links = [];
+
+			for(var j=0; j< $scope.mainMenu.links.length; j++){
+				if($scope.mainMenu.links[j].pillar.name === pillarName){
+					$scope.leftMenu.links = $scope.mainMenu.links[j].entries;
+					break;
+				}
+			}
+		};
+
 		$scope.updateSelectedMenus = function() {
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.guestMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
+			if($scope.leftMenu){
+				$scope.leftMenu.selectedMenu = '#/' + $location.path().split("/")[1];
+			}
 
 			$scope.mainMenu.links.forEach(function(oneLink){
 				for(var i=0; i < oneLink.entries.length; i++){
 					if(oneLink.entries[i].url === $scope.mainMenu.selectedMenu){
 						oneLink.selected = true;
+						$scope.reRenderMenu(oneLink.pillar.name);
 						break;
 					}
 				}
@@ -353,6 +371,13 @@ soajsApp.directive('userMenu', function() {
 	return {
 		restrict: 'E',
 		templateUrl: 'themes/' + themeToUse + '/directives/userMenu.tmpl'
+	};
+});
+
+soajsApp.directive('mainMenu', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'themes/' + themeToUse + '/directives/mainMenu.tmpl'
 	};
 });
 

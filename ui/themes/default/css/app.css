@@ -67,7 +67,7 @@ em {
 
 #header #pillars{
     float:left;
-    margin:0 0 0 90px;
+    margin:0 0 0 60px;
     height:35px;
     position:relative;
     z-index:10000000;
@@ -194,8 +194,82 @@ em {
     clear: both;
 }
 
+#mainMenu {
+    background-color: #515E67;
+    float: left;
+    width: 12%;
+    min-height: 525px;
+    position: relative;
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+}
+
+#mainMenu h4 {
+    margin: 0;
+    background-color: #70808D;
+    padding: 5px 10px;
+    border-top: 1px solid #989eaa;
+    border-bottom: solid 1px #4F5762;
+}
+
+#mainMenu ul {
+    border-top: solid 1px #606d76;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#mainMenu li {
+    padding: 10px 0 10px 10px;
+    border-top: solid 1px #606d76;
+    border-bottom: solid 1px #4F5762;
+    cursor: pointer;
+    height: 41px;
+}
+
+#mainMenu li.first{
+    margin-top:4px
+}
+
+#mainMenu ul li a {
+    display: block;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+    text-decoration: none;
+    outline: 0;
+}
+
+#mainMenu li:first-child {
+    border-top: none;
+}
+
+#mainMenu ul li:hover {
+    background-color: #222222;
+    color: white;
+}
+
+#mainMenu ul li.active {
+    background-color: white;
+}
+
+#mainMenu ul li.active > a {
+    color: #337ab7;
+    text-shadow: none;
+}
+
 #page .wrapper {
     width: 100%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper2 {
+    width: 88%;
     float: left;
     min-height: 560px;
     background-color: #e5eaee;
@@ -268,7 +342,7 @@ em {
 #footer {
     border-top: solid 1px white;
     width: 100%;
-    min-height: 80px;
+    min-height: 40px;
     background: #404449;
     color: #e5eaee;
     min-width: 1300px;
