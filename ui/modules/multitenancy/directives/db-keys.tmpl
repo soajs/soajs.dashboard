@@ -1,0 +1,11 @@
+<section ng-controller="tenantdbkeysCtrl">
+	<div ng-if="access.db.listKeys">
+		<span ng-if="access.db.addKey">
+			<a href="" ng-click="addDbTenantKey()" class="btn btn-primary">Add New Dashboard Tenant</a>
+		</span>
+		<br/><br/>
+		<div id="tenantsdbKeys">
+			<nglist></nglist>
+		</div>
+	</div>
+</section>

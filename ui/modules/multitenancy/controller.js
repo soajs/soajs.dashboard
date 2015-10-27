@@ -1102,7 +1102,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	}
 }]);
 
-multiTenantApp.controller('tenantdbkeysCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function ($scope, $timeout, $modal, ngDataApi) {
+multiTenantApp.controller('tenantdbkeysCtrl', ['$scope', '$timeout', '$compile','$modal', 'ngDataApi', function ($scope, $timeout, $compile, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -1110,7 +1110,6 @@ multiTenantApp.controller('tenantdbkeysCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.listDbTenantKeys = function () {
 		if ($scope.access.db.listKeys) {
-			$scope.tenantDbKeys = angular.extend($scope);
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/tenant/db/keys/list"
@@ -1145,10 +1144,10 @@ multiTenantApp.controller('tenantdbkeysCtrl', ['$scope', '$timeout', '$modal', '
 							}
 						];
 					}
-					buildGrid($scope.tenantDbKeys, options);
-					//var elem = angular.element(document.getElementById('tenantsdbKeys'));
-					//elem.html('<nglist></nglist>');
-					//$compile(elem.contents())($scope.tenantDbKeys);
+					buildGrid($scope, options);
+					var elem = angular.element(document.getElementById('tenantsdbKeys'));
+					elem.html('<nglist></nglist>');
+					$compile(elem.contents())($scope);
 				}
 			});
 		}
