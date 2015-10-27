@@ -1227,7 +1227,6 @@ multiTenantApp.controller('tenantdbkeysCtrl', ['$scope', '$timeout', '$compile',
 	}
 }]);
 
-
 multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$routeParams', 'aclHelper', function ($scope, ngDataApi, $routeParams, aclHelper) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.isInherited = false;

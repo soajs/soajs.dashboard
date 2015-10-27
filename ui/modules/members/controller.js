@@ -80,6 +80,11 @@ membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, 
 }]);
 
 membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
+	$scope.$parent.isUserLoggedIn();
+
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
+
 	$scope.users = {};
 	$scope.groups = {};
 
@@ -131,7 +136,9 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		});
 	};
 
-	$scope.listTenants();
+	if($scope.access.adminAll){
+		$scope.listTenants();
+	}
 
 }]);
 
