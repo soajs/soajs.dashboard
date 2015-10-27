@@ -47,7 +47,12 @@ var myAccountNav = [
 		'icon': 'smile',
 		'tplPath': 'modules/myAccount/directives/myAccount.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
-		'userMenu': true,
+		'mainMenu': true,
+		'pillar':{
+			'name': 'account',
+			'label': 'My Account',
+			'position': 5
+		},
 		'private': true
 	}
 ];

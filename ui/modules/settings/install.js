@@ -10,8 +10,12 @@ var settingsNav =[
 		'url': '#/settings',
 		'tplPath': 'modules/settings/directives/list.tmpl',
 		'icon': 'cogs',
-		'userMenu': true,
-		//'mainMenu': true,
+		'mainMenu': true,
+		'pillar':{
+			'name': 'account',
+			'label': 'My Account',
+			'position': 5
+		},
 		'tracker': true,
 		'scripts': ['modules/settings/config.js', 'modules/settings/controller.js'],
 		'ancestor': ['Home']

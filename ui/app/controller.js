@@ -125,7 +125,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if ($scope.mainMenu.links[j].pillar.name === pillarName) {
 					$scope.leftMenu.links = $scope.mainMenu.links[j].entries;
 
-					if ($scope.mainMenu.links[j].pillar.position > 2) {
+					var pillarsPerEnv = [3,4];
+					if (pillarsPerEnv.indexOf($scope.mainMenu.links[j].pillar.position) !== -1) {
 						$scope.leftMenu.environments = $localStorage.environments;
 
 						if($cookieStore.get('myEnv')) {

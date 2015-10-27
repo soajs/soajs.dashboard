@@ -16,5 +16,38 @@
                 <nglist></nglist>
             </section>
         </tab>
+	    <tab heading="Tenants" ng-if="access.adminAll">
+		    <section ng-controller="tenantsCtrl">
+			    <div class="entryBoxes">
+				    <div ng-repeat="row in tenantsList" class="entryBox" ng-if="row.locked!==true">
+					    <div class="header">
+						    {{row['name']}}<span>[ {{row['code']}} ]</span>
+					    </div>
+					    <div class="body">
+						    <tabset id="tenantsMembers">
+							    <tab heading="Members">
+								    <br/>
+								    <div ng-controller="tenantMembersCtrl" >
+                                        <span ng-if="tenantMembers.access.adminUser.addUser" ng-init="tenantMembers.initialize(row)">
+                                            <a href="" ng-click="tenantMembers.addMember()" class="btn btn-primary noFloat">Add New Member</a><br/><br/>
+                                        </span>
+									    <nglist></nglist>
+								    </div>
+							    </tab>
+							    <tab heading="Groups">
+								    <br/>
+								    <div ng-controller="tenantGroupsCtrl">
+                                        <span ng-if="tenantGroups.access.adminGroup.add" ng-init="tenantGroups.initialize(row)">
+                                            <a href="" ng-click="tenantGroups.addGroup()" class="btn btn-primary noFloat">Add New Group</a><br/><br/>
+                                        </span>
+									    <nglist></nglist>
+								    </div>
+							    </tab>
+						    </tabset>
+					    </div>
+				    </div>
+			    </div>
+		    </section>
+	    </tab>
     </tabset>
 </div>
