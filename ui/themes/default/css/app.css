@@ -197,11 +197,18 @@ em {
 #mainMenu {
     background-color: #515E67;
     float: left;
-    width: 12%;
     min-height: 525px;
     position: relative;
     border-bottom: solid 1px white;
     border-right: solid 1px white;
+}
+
+#mainMenu.mainMenu{
+    width: 12%;
+}
+
+#mainMenu.mainMenu2{
+    width: 45px;
 }
 
 #mainMenu .environmentsMenu{
@@ -266,6 +273,14 @@ em {
     text-shadow: none;
 }
 
+#mainMenu .collapser{
+    font-size: 20px;
+    color:white;
+    position:absolute;
+    bottom: 4px;
+    right: 2px;
+}
+
 #page .wrapper {
     width: 100%;
     float: left;
@@ -278,6 +293,16 @@ em {
 
 #page .wrapper2 {
     width: 88%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper3 {
+    width: 97%;
     float: left;
     min-height: 560px;
     background-color: #e5eaee;

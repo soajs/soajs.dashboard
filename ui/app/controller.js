@@ -109,6 +109,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.leftMenu.links = [];
 		$scope.leftMenu.environments =[];
 
+		$scope.collapseMainMenu = false;
+
+		$scope.collapseExpandMainMenu = function(){
+			$scope.collapseMainMenu = !$scope.collapseMainMenu;
+
+		};
+
 		$scope.reRenderMenu = function (pillarName) {
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments =[];
@@ -134,15 +141,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.switchEnvironment = function(envRecord){
-			if(!envRecord){
-				$cookieStore.remove('myEnv');
-			}
-			else{
-				$scope.currentSelectedEnvironment = envRecord.code;
-				if($cookieStore.get('myEnv').code !== envRecord.code){
-					$cookieStore.put('myEnv', envRecord);
-					$route.reload();
-				}
+			$scope.currentSelectedEnvironment = envRecord.code;
+			if(!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code){
+				$cookieStore.put('myEnv', envRecord);
+				$route.reload();
 			}
 		};
 
