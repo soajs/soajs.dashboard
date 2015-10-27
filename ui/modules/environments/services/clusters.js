@@ -14,13 +14,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				}
 				else {
 					if(response) {
-						for(var i = 0; i < currentScope.grid.rows.length; i++) {
-							if(currentScope.grid.rows[i]['code'] === env) {
-								delete response.soajsauth;
-								currentScope.grid.rows[i].dbs.clusters = response;
-								break;
-							}
-						}
+						delete response.soajsauth;
+						currentScope.clusters = response;
 					}
 					else {
 						currentScope.$parent.displayAlert('danger', "Unable to fetch Environment Cluster.");

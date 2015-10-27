@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout', '$modal', '$http', '$routeParams', 'ngDataApi', 'envHosts', 'envDB', 'envClusters', 'deploySrv', function ($scope, $compile, $timeout, $modal, $http, $routeParams, ngDataApi, envHosts, envDB, envClusters, deploySrv) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -43,14 +43,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		}
 		context.waitMessage.message = '';
 		context.waitMessage.type = '';
-	};
-
-	$scope.expand = function (row) {
-		row.showOptions = true;
-	};
-
-	$scope.collapse = function (row) {
-		row.showOptions = false;
 	};
 
 	$scope.listEnvironments = function (environmentId) {
@@ -107,6 +99,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 					$scope.formEnvironment.services.config.session.unset = ($scope.formEnvironment.services.config.session.unset === 'keep') ? false : true;
 				}
 				else {
+					if ($cookieStore.get('myEnv')) {
+						for (var i = response.length - 1; i >= 0; i--) {
+							if (response[i].code !== $cookieStore.get('myEnv').code) {
+								response.splice(i, 1);
+							}
+						}
+					}
+
 					$scope.grid = {rows: response};
 					if ($scope.grid.rows) {
 						if ($scope.grid.rows.length == 1) {
@@ -358,68 +358,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		});
 	};
 
-	$scope.deployEnvironment = function (envCode) {
-		deploySrv.deployEnvironment($scope, envCode);
-	};
-
-	$scope.listHosts = function (env, noPopulate) {
-		if ($scope.grid.rows) {
-			$scope.grid.rows.forEach(function (oneEnvRecord) {
-				if (oneEnvRecord.code === env) {
-					oneEnvRecord.hostInfo = {
-						waitMessage: {
-							"type": "",
-							"message": ""
-						}
-					};
-					//oneEnvRecord.hostInfo.waitMessage.type = 'info';
-					//oneEnvRecord.hostInfo.waitMessage.message = 'Services Detected. Awareness check in progress. Please wait...';
-				}
-			});
-		}
-		envHosts.listHosts($scope, env, noPopulate);
-	};
-
-	$scope.executeHeartbeatTest = function (env, oneHost) {
-		envHosts.executeHeartbeatTest($scope, env, oneHost);
-	};
-
-	$scope.executeAwarenessTest = function (env, oneHost) {
-		envHosts.executeAwarenessTest($scope, env, oneHost);
-	};
-
-	$scope.reloadRegistry = function (env, oneHost, cb) {
-		envHosts.reloadRegistry($scope, env, oneHost, cb);
-	};
-
-	$scope.loadProvisioning = function (env, oneHost) {
-		envHosts.loadProvisioning($scope, env, oneHost);
-	};
-
-	$scope.removeHost = function (env, serviceName, oneHost) {
-		envHosts.removeHost($scope, env, serviceName, oneHost);
-	};
-
-	$scope.stopHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.stopHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.startHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.hostLogs = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.hostLogs($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.infoHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.createHost = function (env, services) {
-		envHosts.createHost($scope, env, services);
-	};
-
 	$scope.removeEnvironment = function (row) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -441,42 +379,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		});
 	};
 
-	$scope.listDatabases = function (env) {
-		envDB.listDatabases($scope, env);
-	};
-
-	$scope.removeDatabase = function (env, name) {
-		envDB.removeDatabase($scope, env, name);
-	};
-
-	$scope.addDatabase = function (env, session) {
-		envDB.addDatabase($scope, env, session);
-	};
-
-	$scope.editDatabase = function (env, name, data) {
-		envDB.editDatabase($scope, env, name, data);
-	};
-
-	$scope.updateDbPrefix = function (env, prefix) {
-		envDB.updateDbPrefix($scope, env, prefix);
-	};
-
-	$scope.listClusters = function (env) {
-		envClusters.listClusters($scope, env);
-	};
-
-	$scope.addCluster = function (env) {
-		envClusters.addCluster($scope, env);
-	};
-
-	$scope.editCluster = function (env, name, data) {
-		envClusters.editCluster($scope, env, name, data);
-	};
-
-	$scope.removeCluster = function (env, name) {
-		envClusters.removeCluster($scope, env, name);
-	};
-
 	//default operation
 	if ($routeParams.id) {
 		if ($scope.access.editEnvironment) {
@@ -489,3 +391,4 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$compile', '$timeout',
 		}
 	}
 }]);
+

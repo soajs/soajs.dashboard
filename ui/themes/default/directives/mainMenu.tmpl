@@ -1,4 +1,7 @@
 <div id="mainMenu" ng-show="enableInterface">
+	<div ng-if="leftMenu.environments" class="environmentsMenu">
+		<input type="button" class="btn btn-sm" ng-repeat="oneBtn in leftMenu.environments" value="{{oneBtn.code}}" ng-click="switchEnvironment(oneBtn)" ng-class="(currentSelectedEnvironment === oneBtn.code)? 'btn-danger' : 'btn-primary'"/>
+	</div>
     <ul>
         <li ng-repeat="link in leftMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
             <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}"><span class="icon icon-{{link.icon}}"></span>{{link.label}}</a>

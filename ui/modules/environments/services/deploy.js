@@ -5,12 +5,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	function deployEnvironment(currentScope, envCode) {
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 		formConfig.entries[2].value = formConfig.entries[2].value.replace("%envName%", envCode);
+		formConfig.entries[2].value = formConfig.entries[2].value.replace("%profilePathToUse%", currentScope.profile);
 
-		for(var i = 0; i < currentScope.grid.rows.length; i++) {
-			if (currentScope.grid.rows[i]['code'] === envCode) {
-				formConfig.entries[2].value = formConfig.entries[2].value.replace("%profilePathToUse%", currentScope.grid.rows[i].profile);
-			}
-		}
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -70,16 +66,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				"method": "send",
 				"routeName": "/dashboard/hosts/deployController",
 				"data": params
-			}, function(error) {
+			}, function(error, response) {
 				if(error) {
 					currentScope.generateNewMsg(envCode, 'danger', error.message);
+					overlay.hide();
 				}
 				else {
-
-					$timeout(function() {
-						currentScope.listHosts(envCode);
-						overlay.hide();
-					}, 5000);
+					overlay.hide(function(){
+						if(response.result){
+							currentScope.listHosts(envCode);
+						}
+						else{
+							currentScope.generateNewMsg(envCode, 'danger', response.errors.details);
+						}
+					});
 				}
 			});
 		}

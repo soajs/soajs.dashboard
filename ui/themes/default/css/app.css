@@ -204,6 +204,14 @@ em {
     border-right: solid 1px white;
 }
 
+#mainMenu .environmentsMenu{
+    margin:5px;
+}
+
+#mainMenu .environmentsMenu input{
+    margin: 0 1px;
+}
+
 #mainMenu h4 {
     margin: 0;
     background-color: #70808D;
@@ -640,12 +648,12 @@ div.entryBox div.entryAction {
     text-align: center;
 }
 
-div.entryBox ul.blueListing {
+.blueListing {
     margin: 10px 0;
     padding: 0;
 }
 
-div.entryBox .blueListing li.blueLi {
+.blueListing li.blueLi {
     padding: 5px;
     margin-bottom: 5px;
     display: block;
@@ -672,7 +680,7 @@ div.entryBox li.blueLi.blueLiBox {
     word-wrap: break-word;
 }
 
-div.entryBox .blueListing li.blueLi a {
+.blueListing li.blueLi a {
     margin-right: 5px;
 }
 
@@ -680,14 +688,14 @@ div.entryBox .blueListing li.blueLi a {
     float: right;
 }
 
-div.entryBox .blueListing li.row-list a {
+.blueListing li.row-list a {
     position: relative;
     top: 0;
     margin: 0;
     margin-left: 10px;
 }
 
-div.entryBox .blueListing li .keysAccordion a {
+.blueListing li .keysAccordion a {
     margin-right: 5px;
     float: none;
 }

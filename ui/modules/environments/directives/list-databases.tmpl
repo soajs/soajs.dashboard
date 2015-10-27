@@ -1,65 +1,66 @@
-<br/>
-<div ng-if="access.dbs.updatePrefix">
-    <h3>Database Prefix:</h3>
-    <form name="databasePrefixForm" class="css-form" novalidate>
-        <table width="30%">
-            <tr>
-                <td>
-                    <b>Prefix</b><br/>
-                    <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{row.dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
-                </td>
-                <td valign="bottom" align="left">
-                    <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(row['code'], row.dbs.config.prefix)"/></td>
-            </tr>
-        </table>
-    </form>
-    <hr/>
-</div>
-<br/>
-<h3>Session Database:</h3>
-<ul class="blueListing" ng-if="row.dbs.config.session">
-    <li class="blueLi">
-        <div class="c-both w-100">
-            <h4 class="f-left">{{row.dbs.config.session['name']}}</h4>
-            <span class="rightActions">
-                <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(row['code'], 'session');">
-                    <span class="icon icon-cross" tooltip="Remove Database"></span>
-                </a>&nbsp;
+<section ng-controller="databaseCtrl">
+	<div ng-if="access.dbs.updatePrefix">
+	    <h3>Database Prefix:</h3>
+	    <form name="databasePrefixForm" class="css-form" novalidate>
+	        <table width="30%">
+	            <tr>
+	                <td>
+	                    <b>Prefix</b><br/>
+	                    <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+	                </td>
+	                <td valign="bottom" align="left">
+	                    <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(envCode, dbs.config.prefix)"/></td>
+	            </tr>
+	        </table>
+	    </form>
+	    <hr/>
+	</div>
+	<br/>
+	<h3>Session Database:</h3>
+	<ul class="blueListing" ng-if="dbs.config.session">
+	    <li class="blueLi">
+	        <div class="c-both w-100">
+	            <h4 class="f-left">{{dbs.config.session['name']}}</h4>
+	            <span class="rightActions">
+	                <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove the selected database ?" ng-click="removeDatabase(envCode, 'session');">
+	                    <span class="icon icon-cross" tooltip="Remove Database"></span>
+	                </a>&nbsp;
 
-                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(row['code'], 'session', row.dbs.config.session)">
-                    <span class="icon icon-pencil2" tooltip="Edit Database"></span>
-                </a>
-            </span>
-        </div>
-        <div class="c-both w-100">
-            <b>Cluster:</b>&nbsp;{{row.dbs.config.session['cluster']}}<br/>
-            <b>Collection:</b>&nbsp;{{row.dbs.config.session['collection']}}<br/>
-            <b>Expires After:</b>&nbsp;{{row.dbs.config.session['expireAfter']|TTL}} (hours)<br/>
-            <b>stringify:</b>&nbsp;{{row.dbs.config.session['stringify']}}<br/>
-            <b>Store:</b>&nbsp;<span ng-bind-html="row.dbs.config.session['store']|object"></span>
-        </div>
-    </li>
-</ul>
-<a ng-if="!row.dbs.config.session && access.dbs.add" ng-click="addDatabase(row['code'],true)" class="btn btn-sm btn-primary">Add Session Database</a><br/><br/>
-<hr/>
-<a ng-if="access.dbs.add" href="" ng-click="addDatabase(row['code'],false)" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
-<h3>Database List:</h3>
-<div class="entryBoxes entryBoxesGrid">
-    <div ng-repeat="(dbName, dbInfo) in row.dbs.databases track by dbName" class="dbBox">
-        <div class="head">
-            <h4>{{dbName}}</h4>
-            <span class="rightActions">
-                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(row['code'], dbName, dbInfo);">
-                    <span class="icon icon-pencil" tooltip="Edit Database"></span>
-                </a>
-                <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove this database?" ng-click="removeDatabase(row['code'], dbName);">
-                    <span class="icon icon-cross" tooltip="Remove Database"></span>
-                </a>
-            </span>
-        </div>
-        <div class="info2">
-            <b>Cluster:</b>&nbsp;{{dbInfo['cluster']}}<br/>
-            <b>Tenant Specific:</b>&nbsp;{{dbInfo['tenantSpecific']}}
-        </div>
-    </div>
-</div>
+	                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(envCode, 'session', dbs.config.session)">
+	                    <span class="icon icon-pencil2" tooltip="Edit Database"></span>
+	                </a>
+	            </span>
+	        </div>
+	        <div class="c-both w-100">
+	            <b>Cluster:</b>&nbsp;{{dbs.config.session['cluster']}}<br/>
+	            <b>Collection:</b>&nbsp;{{dbs.config.session['collection']}}<br/>
+	            <b>Expires After:</b>&nbsp;{{dbs.config.session['expireAfter']|TTL}} (hours)<br/>
+	            <b>stringify:</b>&nbsp;{{dbs.config.session['stringify']}}<br/>
+	            <b>Store:</b>&nbsp;<span ng-bind-html="dbs.config.session['store']|object"></span>
+	        </div>
+	    </li>
+	</ul>
+	<a ng-if="!dbs.config.session && access.dbs.add" ng-click="addDatabase(envCode,true)" class="btn btn-sm btn-primary">Add Session Database</a><br/><br/>
+	<hr/>
+	<a ng-if="access.dbs.add" href="" ng-click="addDatabase(envCode,false)" class="btn btn-sm btn-primary">Add New Database</a><br/><br/>
+	<h3>Database List:</h3>
+	<div class="entryBoxes entryBoxesGrid">
+	    <div ng-repeat="(dbName, dbInfo) in dbs.databases track by dbName" class="dbBox">
+	        <div class="head">
+	            <h4>{{dbName}}</h4>
+	            <span class="rightActions">
+	                <a ng-if="access.dbs.update" href="" ng-click="editDatabase(envCode, dbName, dbInfo);">
+	                    <span class="icon icon-pencil" tooltip="Edit Database"></span>
+	                </a>
+	                <a ng-if="access.dbs.delete" href="" ng-confirm-click="Are you sure you want to remove this database?" ng-click="removeDatabase(envCode, dbName);">
+	                    <span class="icon icon-cross" tooltip="Remove Database"></span>
+	                </a>
+	            </span>
+	        </div>
+	        <div class="info2">
+	            <b>Cluster:</b>&nbsp;{{dbInfo['cluster']}}<br/>
+	            <b>Tenant Specific:</b>&nbsp;{{dbInfo['tenantSpecific']}}
+	        </div>
+	    </div>
+	</div>
+</section>

@@ -1,18 +1,19 @@
-<br/>
-<a ng-if="access.clusters.add" href="" ng-click="addCluster(row['code'])" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
-<div class="entryBoxes entryBoxesGrid">
-    <div ng-repeat="(clusterName, clusterInfo) in row.dbs.clusters track by clusterName" class="dbBox">
-        <div class="head">
-            <h4>{{clusterName}}</h4>
-            <span class="rightActions">
-                <a ng-if="access.clusters.update" href="" ng-click="editCluster(row['code'], clusterName, clusterInfo);">
-                    <span class="icon icon-pencil" tooltip="Edit Cluster"></span>
-                </a>
-                <a ng-if="access.clusters.delete" href="" ng-confirm-click="Are you sure you want to remove this cluster?" ng-click="removeCluster(row['code'], clusterName);">
-                    <span class="icon icon-cross" tooltip="Remove Cluster"></span>
-                </a>
-            </span>
-        </div>
-        <div class="info2" ng-bind-html="clusterInfo|object"></div>
-    </div>
-</div>
+<section ng-controller="clustersCtrl">
+	<a ng-if="access.clusters.add" href="" ng-click="addCluster(envCode)" class="btn btn-sm btn-primary">Add New Cluster</a><br/><br/>
+	<div class="entryBoxes entryBoxesGrid">
+	    <div ng-repeat="(clusterName, clusterInfo) in clusters track by clusterName" class="dbBox">
+	        <div class="head">
+	            <h4>{{clusterName}}</h4>
+	            <span class="rightActions">
+	                <a ng-if="access.clusters.update" href="" ng-click="editCluster(envCode, clusterName, clusterInfo);">
+	                    <span class="icon icon-pencil" tooltip="Edit Cluster"></span>
+	                </a>
+	                <a ng-if="access.clusters.delete" href="" ng-confirm-click="Are you sure you want to remove this cluster?" ng-click="removeCluster(envCode, clusterName);">
+	                    <span class="icon icon-cross" tooltip="Remove Cluster"></span>
+	                </a>
+	            </span>
+	        </div>
+	        <div class="info2" ng-bind-html="clusterInfo|object"></div>
+	    </div>
+	</div>
+</section>

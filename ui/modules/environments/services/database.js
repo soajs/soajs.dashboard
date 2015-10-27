@@ -14,11 +14,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 				}
 				else {
 					if(response) {
-						for(var i = 0; i < currentScope.grid.rows.length; i++) {
-							if(currentScope.grid.rows[i]['code'] === env) {
-								currentScope.grid.rows[i].dbs = response;
-							}
-						}
+						currentScope.dbs = response;
 					}
 					else {
 						currentScope.$parent.displayAlert('danger', "Unable to fetch Environment Database.");

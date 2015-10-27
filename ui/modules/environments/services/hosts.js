@@ -17,43 +17,40 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
                 }
                 else {
-                    currentScope.hostList = response;
-                    if (response && response.length > 0) {
-                        for (var i = 0; i < currentScope.grid.rows.length; i++) {
-                            if (currentScope.grid.rows[i]['code'] === env) {
-                                currentScope.grid.rows[i].hosts = {
-                                    'controller': {
-                                        'color': 'red',
-                                        'heartbeat': false,
-                                        'port': '4000',
-                                        'ips': []
-                                    }
-                                };
-
-                                for (var j = 0; j < response.length; j++) {
-                                    if (response[j].name === 'controller') {
-                                        controllers.push({
-                                            'name': 'controller',
-                                            'hostname': response[j].hostname,
-                                            'ip': response[j].ip,
-                                            'cid': response[j].cid,
-                                            'color': 'red',
-                                            'port': 4000
-                                        });
-
-                                    }
-                                }
-                                if (controllers.length > 0) {
-                                    controllers.forEach(function (oneController) {
-                                        invokeHeartbeat(oneController);
-                                        currentScope.grid.rows[i].hosts.controller.ips.push(oneController);
-                                    });
-                                }
-                                else {
-                                    delete currentScope.grid.rows[i].hosts.controller;
-                                }
-                                break;
+	                currentScope.profile = response.profile;
+	                currentScope.deployer = response.deployer;
+                    currentScope.hostList = response.hosts;
+                    if (response.hosts && response.hosts.length > 0) {
+                        currentScope.hosts = {
+                            'controller': {
+                                'color': 'red',
+                                'heartbeat': false,
+                                'port': '4000',
+                                'ips': []
                             }
+                        };
+
+                        for (var j = 0; j < response.hosts.length; j++) {
+                            if (response.hosts[j].name === 'controller') {
+                                controllers.push({
+                                    'name': 'controller',
+                                    'hostname': response.hosts[j].hostname,
+                                    'ip': response.hosts[j].ip,
+                                    'cid': response.hosts[j].cid,
+                                    'color': 'red',
+                                    'port': 4000
+                                });
+
+                            }
+                        }
+                        if (controllers.length > 0) {
+                            controllers.forEach(function (oneController) {
+                                invokeHeartbeat(oneController);
+                                currentScope.hosts.controller.ips.push(oneController);
+                            });
+                        }
+                        else {
+                            delete currentScope.hosts.controller;
                         }
                     }
                 }
@@ -61,29 +58,25 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         }
 
         function updateParent() {
-            for (var i = 0; i < currentScope.grid.rows.length; i++) {
-                if (currentScope.grid.rows[i]['code'] === env) {
-                    var color = 'red';
-                    var healthy = false;
-                    var count = 0;
-                    currentScope.grid.rows[i].hosts.controller.ips.forEach(function (oneHost) {
-                        if (oneHost.heartbeat) {
-                            count++;
-                        }
-                    });
-
-                    if (count === currentScope.grid.rows[i].hosts.controller.ips.length) {
-                        color = 'green';
-                        healthy = true;
-                    }
-                    else if (count > 0) {
-                        healthy = true;
-                        color = 'yellow';
-                    }
-                    currentScope.grid.rows[i].hosts.controller.color = color;
-                    currentScope.grid.rows[i].hosts.controller.healthy = healthy;
+            var color = 'red';
+            var healthy = false;
+            var count = 0;
+            currentScope.hosts.controller.ips.forEach(function (oneHost) {
+                if (oneHost.heartbeat) {
+                    count++;
                 }
+            });
+
+            if (count === currentScope.hosts.controller.ips.length) {
+                color = 'green';
+                healthy = true;
             }
+            else if (count > 0) {
+                healthy = true;
+                color = 'yellow';
+            }
+            currentScope.hosts.controller.color = color;
+            currentScope.hosts.controller.healthy = healthy;
         }
 
         function invokeHeartbeat(defaultControllerHost) {
@@ -137,65 +130,60 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         }
 
         function propulateServices(regServices) {
-            for (var i = 0; i < currentScope.grid.rows.length; i++) {
-                if (currentScope.grid.rows[i]['code'] === env) {
+            var renderedHosts = {};
+            var services = Object.keys(regServices);
+            services.forEach(function (serviceName) {
+                var oneService = regServices[serviceName];
+                if (oneService.hosts && Array.isArray(oneService.hosts) && oneService.hosts.length > 0) {
 
-                    var renderedHosts = {};
-                    var services = Object.keys(regServices);
-                    services.forEach(function (serviceName) {
-                        var oneService = regServices[serviceName];
-                        if (oneService.hosts && Array.isArray(oneService.hosts) && oneService.hosts.length > 0) {
+                    if (serviceName !== 'controller') {
+                        renderedHosts[serviceName] = {
+                            'name': serviceName,
+                            'port': regServices[serviceName].port,
+                            'ips': [],
+                            'color': 'red',
+                            'healthy': false
+                        };
+                    }
 
-                            if (serviceName !== 'controller') {
-                                renderedHosts[serviceName] = {
-                                    'name': serviceName,
-                                    'port': regServices[serviceName].port,
-                                    'ips': [],
-                                    'color': 'red',
-                                    'healthy': false
-                                };
-                            }
+                    regServices[serviceName].hosts.forEach(function (oneHostIP) {
+                        if (serviceName !== 'controller') {
+                            var oneHost = {
+                                'controllers': controllers,
+                                'ip': oneHostIP,
+                                'name': serviceName,
+                                'healthy': false,
+                                'color': 'red',
+                                'downCount': 'N/A',
+                                'downSince': 'N/A',
+                                'port': regServices[serviceName].port
+                            };
 
-                            regServices[serviceName].hosts.forEach(function (oneHostIP) {
-                                if (serviceName !== 'controller') {
-                                    var oneHost = {
-                                        'controllers': controllers,
-                                        'ip': oneHostIP,
-                                        'name': serviceName,
-                                        'healthy': false,
-                                        'color': 'red',
-                                        'downCount': 'N/A',
-                                        'downSince': 'N/A',
-                                        'port': regServices[serviceName].port
-                                    };
-
-                                    currentScope.hostList.forEach(function (origHostRec) {
-                                        if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
-                                            oneHost.hostname = origHostRec.hostname;
-                                            oneHost.cid = origHostRec.cid;
-                                        }
-                                    });
-                                    if (oneHost.hostname && oneHost.ip) {
-                                        renderedHosts[serviceName].ips.push(oneHost);
-                                    }
+                            currentScope.hostList.forEach(function (origHostRec) {
+                                if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
+                                    oneHost.hostname = origHostRec.hostname;
+                                    oneHost.cid = origHostRec.cid;
                                 }
                             });
+                            if (oneHost.hostname && oneHost.ip) {
+                                renderedHosts[serviceName].ips.push(oneHost);
+                            }
                         }
                     });
+                }
+            });
 
-                    if (Object.keys(renderedHosts).length > 0) {
-                        for (var sN in renderedHosts) {
-                            currentScope.grid.rows[i].hosts[sN] = renderedHosts[sN];
-                            renderedHosts[sN].ips.forEach(function (oneHost) {
-                                $timeout(function () {
-                                    executeHeartbeatTest(currentScope, env, oneHost);
-                                }, 200);
-                            });
-                        }
-                    }
-                    break;
+            if (Object.keys(renderedHosts).length > 0) {
+                for (var sN in renderedHosts) {
+                    currentScope.hosts[sN] = renderedHosts[sN];
+                    renderedHosts[sN].ips.forEach(function (oneHost) {
+                        $timeout(function () {
+                            executeHeartbeatTest(currentScope, env, oneHost);
+                        }, 200);
+                    });
                 }
             }
+
         }
     }
 
@@ -219,16 +207,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
             else {
                 if (heartbeatResponse.result) {
-                    currentScope.grid.rows.forEach(function (oneEnvironmentRow) {
-                        if (oneEnvironmentRow.code === env) {
-                            for (var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
-                                if (oneEnvironmentRow.hosts[oneHost.name].ips[i].ip === oneHost.ip) {
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
-                                }
-                            }
+                    for (var i = 0; i < currentScope.hosts[oneHost.name].ips.length; i++) {
+                        if (currentScope.hosts[oneHost.name].ips[i].ip === oneHost.ip) {
+                            currentScope.hosts[oneHost.name].ips[i].heartbeat = true;
+                            currentScope.hosts[oneHost.name].ips[i].color = 'green';
                         }
-                    });
+                    }
                 }
                 updateServiceStatus(true);
                 if (oneHost.name === 'controller') {
@@ -246,100 +230,91 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
 
         function updateServiceStatus(healthyCheck) {
-            currentScope.grid.rows.forEach(function (oneEnvironmentRow) {
-                if (oneEnvironmentRow.code === env) {
-                    var count = 0;
-                    var healthy = oneEnvironmentRow.hosts[oneHost.name].healthy;
-                    var color = oneEnvironmentRow.hosts[oneHost.name].color;
-                    var waitMessage = {};
+            var count = 0;
+            var healthy = currentScope.hosts[oneHost.name].healthy;
+            var color = currentScope.hosts[oneHost.name].color;
+            var waitMessage = {};
 
-                    for (var i = 0; i < oneEnvironmentRow.hosts[oneHost.name].ips.length; i++) {
-                        if (oneHost.ip === oneEnvironmentRow.hosts[oneHost.name].ips[i].ip) {
-                            if (healthyCheck) {
-                                currentScope.hostList.forEach(function (origHostRec) {
-                                    if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
-                                        oneEnvironmentRow.hosts[oneHost.name].ips[i].hostname = origHostRec.hostname;
-                                        oneEnvironmentRow.hosts[oneHost.name].ips[i].cid = origHostRec.cid;
-                                    }
-                                });
-                                if (oneHost.name === 'controller') {
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = true;
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
-                                }
-                                else {
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = true;
-                                    oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'green';
-                                    waitMessage = {
-                                        type: "success",
-                                        message: "Service " + oneHost.name + " on hostname: " + oneHost.hostname + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
-                                        close: function (entry) {
-                                            entry.waitMessage.type = '';
-                                            entry.waitMessage.message = '';
-                                        }
-                                    };
-                                }
+            for (var i = 0; i < currentScope.hosts[oneHost.name].ips.length; i++) {
+                if (oneHost.ip === currentScope.hosts[oneHost.name].ips[i].ip) {
+                    if (healthyCheck) {
+                        currentScope.hostList.forEach(function (origHostRec) {
+                            if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
+	                            currentScope.hosts[oneHost.name].ips[i].hostname = origHostRec.hostname;
+	                            currentScope.hosts[oneHost.name].ips[i].cid = origHostRec.cid;
                             }
-                            else {
-                                oneEnvironmentRow.hosts[oneHost.name].ips[i].healthy = false;
-                                oneEnvironmentRow.hosts[oneHost.name].ips[i].heartbeat = false;
-                                oneEnvironmentRow.hosts[oneHost.name].ips[i].color = 'red';
-                            }
+                        });
+                        if (oneHost.name === 'controller') {
+	                        currentScope.hosts[oneHost.name].ips[i].heartbeat = true;
+	                        currentScope.hosts[oneHost.name].ips[i].color = 'green';
                         }
-                    }
-                    for (var j = 0; j < oneEnvironmentRow.hosts[oneHost.name].ips.length; j++) {
-                        if (oneEnvironmentRow.hosts[oneHost.name].ips[j].heartbeat || oneEnvironmentRow.hosts[oneHost.name].ips[j].healthy) {
-                            count++;
+                        else {
+	                        currentScope.hosts[oneHost.name].ips[i].healthy = true;
+	                        currentScope.hosts[oneHost.name].ips[i].color = 'green';
+                            waitMessage = {
+                                type: "success",
+                                message: "Service " + oneHost.name + " on hostname: " + oneHost.hostname + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
+                                close: function (entry) {
+                                    entry.waitMessage.type = '';
+                                    entry.waitMessage.message = '';
+                                }
+                            };
                         }
-                    }
-
-                    if (count === oneEnvironmentRow.hosts[oneHost.name].ips.length) {
-                        color = 'green';
-                        healthy = true;
-                    }
-                    else if (count === 0) {
-                        color = 'red';
-                        healthy = false;
                     }
                     else {
-                        color = 'yellow';
-                        healthy = false;
-                    }
-                    oneEnvironmentRow.hosts[oneHost.name].healthy = healthy;
-                    oneEnvironmentRow.hosts[oneHost.name].color = color;
-                    if (oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
-                        oneEnvironmentRow.hosts[oneHost.name].waitMessage = waitMessage;
-                        currentScope.closeWaitMessage(oneEnvironmentRow.hosts[oneHost.name]);
+	                    currentScope.hosts[oneHost.name].ips[i].healthy = false;
+	                    currentScope.hosts[oneHost.name].ips[i].heartbeat = false;
+	                    currentScope.hosts[oneHost.name].ips[i].color = 'red';
                     }
                 }
-            });
+            }
+            for (var j = 0; j < currentScope.hosts[oneHost.name].ips.length; j++) {
+                if (currentScope.hosts[oneHost.name].ips[j].heartbeat || currentScope.hosts[oneHost.name].ips[j].healthy) {
+                    count++;
+                }
+            }
+
+            if (count === currentScope.hosts[oneHost.name].ips.length) {
+                color = 'green';
+                healthy = true;
+            }
+            else if (count === 0) {
+                color = 'red';
+                healthy = false;
+            }
+            else {
+                color = 'yellow';
+                healthy = false;
+            }
+	        currentScope.hosts[oneHost.name].healthy = healthy;
+	        currentScope.hosts[oneHost.name].color = color;
+            if (oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
+	            currentScope.hosts[oneHost.name].waitMessage = waitMessage;
+                currentScope.closeWaitMessage(currentScope.hosts[oneHost.name]);
+            }
         }
     }
 
     function updateServicesControllers(currentScope, env, currentCtrl) {
-        currentScope.grid.rows.forEach(function (oneEnv) {
-            if (oneEnv.code === env && (oneEnv.hosts && Object.keys(oneEnv.hosts).length > 0)) {
+        for (var serviceName in currentScope.hosts) {
+            if (serviceName === 'controller') {
+                continue;
+            }
 
-                for (var serviceName in oneEnv.hosts) {
-                    if (serviceName === 'controller') {
-                        continue;
-                    }
+            if (currentScope.hosts[serviceName].ips && Array.isArray(currentScope.hosts[serviceName].ips) && currentScope.hosts[serviceName].ips.length > 0) {
+	            currentScope.hosts[serviceName].ips.forEach(function (OneIp) {
 
-                    if (oneEnv.hosts[serviceName].ips && Array.isArray(oneEnv.hosts[serviceName].ips) && oneEnv.hosts[serviceName].ips.length > 0) {
-                        oneEnv.hosts[serviceName].ips.forEach(function (OneIp) {
+                    if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
+                        OneIp.controllers.forEach(function (oneCtrl) {
 
-                            if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
-                                OneIp.controllers.forEach(function (oneCtrl) {
-
-                                    if (oneCtrl.ip === currentCtrl.ip) {
-                                        oneCtrl.color = 'red';
-                                    }
-                                });
+                            if (oneCtrl.ip === currentCtrl.ip) {
+                                oneCtrl.color = 'red';
                             }
                         });
                     }
-                }
+                });
             }
-        });
+        }
     }
 
     function executeAwarenessTest(currentScope, env, oneHost) {
@@ -378,62 +353,57 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
 
         function updateService(response, oneService, serviceIp) {
-
-            currentScope.grid.rows.forEach(function (oneEnvironmentRow) {
-                if (oneEnvironmentRow.code === env && oneEnvironmentRow.hosts[oneService]) {
-                    for (var i = 0; i < oneEnvironmentRow.hosts[oneService].ips.length; i++) {
-                        if (oneEnvironmentRow.hosts[oneService].ips[i].ip === serviceIp) {
-                            if (response[oneService].awarenessStats[serviceIp].healthy) {
-                                oneEnvironmentRow.hosts[oneService].ips[i].healthy = true;
-                                oneEnvironmentRow.hosts[oneService].ips[i].color = 'green';
-                            }
-                            else {
-                                oneEnvironmentRow.hosts[oneService].ips[i].healthy = false;
-                                oneEnvironmentRow.hosts[oneService].ips[i].color = 'red';
-                            }
-
-                            var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
-                            oneEnvironmentRow.hosts[oneService].ips[i].lastCheck = getTimeAgo(lc);
-
-                            if (response[oneService].awarenessStats[serviceIp].downSince) {
-                                oneEnvironmentRow.hosts[oneService].ips[i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
-                            }
-                            if (response[oneService].awarenessStats[serviceIp].downCount) {
-                                oneEnvironmentRow.hosts[oneService].ips[i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
-                            }
-
-                            oneEnvironmentRow.hosts[oneService].ips[i].controllers.forEach(function (oneCtrl) {
-                                if (oneCtrl.ip === oneHost.ip) {
-                                    oneCtrl.color = 'green';
-                                }
-                            });
-                        }
-                    }
-
-                    var count = 0;
-                    oneEnvironmentRow.hosts[oneService].ips.forEach(function (oneIP) {
-                        if (oneIP.healthy) {
-                            count++;
-                        }
-                    });
-                    var healthy, color;
-                    if (count === oneEnvironmentRow.hosts[oneService].ips.length) {
-                        color = 'green';
-                        healthy = true;
-                    }
-                    else if (count === 0) {
-                        color = 'red';
-                        healthy = false;
+            for (var i = 0; i < currentScope.hosts[oneService].ips.length; i++) {
+                if (currentScope.hosts[oneService].ips[i].ip === serviceIp) {
+                    if (response[oneService].awarenessStats[serviceIp].healthy) {
+	                    currentScope.hosts[oneService].ips[i].healthy = true;
+	                    currentScope.hosts[oneService].ips[i].color = 'green';
                     }
                     else {
-                        color = 'yellow';
-                        healthy = false;
+	                    currentScope.hosts[oneService].ips[i].healthy = false;
+	                    currentScope.hosts[oneService].ips[i].color = 'red';
                     }
-                    oneEnvironmentRow.hosts[oneService].healthy = healthy;
-                    oneEnvironmentRow.hosts[oneService].color = color;
-                    currentScope.generateNewMsg(env, 'success', "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString());
+
+                    var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
+	                currentScope.hosts[oneService].ips[i].lastCheck = getTimeAgo(lc);
+
+                    if (response[oneService].awarenessStats[serviceIp].downSince) {
+	                    currentScope.hosts[oneService].ips[i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
+                    }
+                    if (response[oneService].awarenessStats[serviceIp].downCount) {
+	                    currentScope.hosts[oneService].ips[i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
+                    }
+
+	                currentScope.hosts[oneService].ips[i].controllers.forEach(function (oneCtrl) {
+                        if (oneCtrl.ip === oneHost.ip) {
+                            oneCtrl.color = 'green';
+                        }
+                    });
+                }
+            }
+
+            var count = 0;
+	        currentScope.hosts[oneService].ips.forEach(function (oneIP) {
+                if (oneIP.healthy) {
+                    count++;
                 }
             });
+            var healthy, color;
+            if (count === currentScope.hosts[oneService].ips.length) {
+                color = 'green';
+                healthy = true;
+            }
+            else if (count === 0) {
+                color = 'red';
+                healthy = false;
+            }
+            else {
+                color = 'yellow';
+                healthy = false;
+            }
+	        currentScope.hosts[oneService].healthy = healthy;
+	        currentScope.hosts[oneService].color = color;
+            currentScope.generateNewMsg(env, 'success', "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString());
         }
     }
 
@@ -541,39 +511,35 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
             else {
-                for (var e = 0; e < currentScope.grid.rows.length; e++) {
-                    if (currentScope.grid.rows[e].code === env) {
-                        for (var i = 0; i < currentScope.grid.rows[e].hosts[serviceName].ips.length; i++) {
-                            if (currentScope.grid.rows[e].hosts[serviceName].ips[i].ip === oneHost.ip) {
-                                currentScope.grid.rows[e].hosts[serviceName].ips.splice(i, 1);
-                            }
-                        }
+                for (var i = 0; i < currentScope.hosts[serviceName].ips.length; i++) {
+                    if (currentScope.hosts[serviceName].ips[i].ip === oneHost.ip) {
+                        currentScope.hosts[serviceName].ips.splice(i, 1);
+                    }
+                }
 
-                        if (serviceName === 'controller') {
-                            for (var s in currentScope.grid.rows[e].hosts) {
-                                if (currentScope.grid.rows[e].hosts.hasOwnProperty(s) && s !== 'controller') {
-                                    for (var j = 0; j < currentScope.grid.rows[e].hosts[s].ips.length; j++) {
-                                        for (var k = 0; k < currentScope.grid.rows[e].hosts[s].ips[j].controllers.length; k++) {
-                                            if (currentScope.grid.rows[e].hosts[s].ips[j].controllers[k].ip === oneHost.ip) {
-                                                currentScope.grid.rows[e].hosts[s].ips[j].controllers.splice(k, 1);
-                                            }
-                                        }
+                if (serviceName === 'controller') {
+                    for (var s in currentScope.hosts) {
+                        if (currentScope.hosts.hasOwnProperty(s) && s !== 'controller') {
+                            for (var j = 0; j < currentScope.hosts[s].ips.length; j++) {
+                                for (var k = 0; k < currentScope.hosts[s].ips[j].controllers.length; k++) {
+                                    if (currentScope.hosts[s].ips[j].controllers[k].ip === oneHost.ip) {
+                                        currentScope.hosts[s].ips[j].controllers.splice(k, 1);
                                     }
                                 }
                             }
-
-                            if (currentScope.grid.rows[e].hosts.controller.ips.length === 0) {
-                                delete currentScope.grid.rows[e].hosts;
-                            }
-                        }
-
-                        if (currentScope.grid.rows[e] && currentScope.grid.rows[e].hosts) {
-                            currentScope.grid.rows[e].hosts.controller.ips.forEach(function (oneCtrl) {
-                                reloadRegistry(currentScope, env, oneCtrl, function () {
-                                });
-                            });
                         }
                     }
+
+                    if (currentScope.hosts.controller.ips.length === 0) {
+                        delete currentScope.hosts;
+                    }
+                }
+
+                if (currentScope.hosts) {
+                    currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
+                        reloadRegistry(currentScope, env, oneCtrl, function () {
+                        });
+                    });
                 }
                 currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
             }
@@ -703,12 +669,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 hostForm.entries.unshift(entry);
 
                 hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
-
-                for (var i = 0; i < currentScope.grid.rows.length; i++) {
-                    if (currentScope.grid.rows[i]['code'] === env) {
-                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.grid.rows[i].profile);
-                    }
-                }
+                hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.profile);
 
                 var options = {
                     timeout: $timeout,
@@ -790,14 +751,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.modalInstance.close();
                 currentScope.form.formData = {};
 
-                for (var e = 0; e < currentScope.grid.rows.length; e++) {
-                    if (currentScope.grid.rows[e].code === env) {
-                        currentScope.grid.rows[e].hosts.controller.ips.forEach(function (oneCtrl) {
-                            reloadRegistry(currentScope, env, oneCtrl, function () {
-                            });
-                        });
-                    }
-                }
+                currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
+                    reloadRegistry(currentScope, env, oneCtrl, function () {
+                    });
+                });
             });
 
             function doDeploy(counter, max, cb) {
