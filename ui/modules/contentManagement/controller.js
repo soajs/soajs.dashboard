@@ -37,7 +37,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 for (var apiRoute in oneService.schema.soajsService.apis) {
                     if (oneService.schema.soajsService.apis.hasOwnProperty(apiRoute)) {
                         var APILabel = oneService.schema.genericService.config.schema[apiRoute]._apiInfo;
-                        switch (oneService.schema.soajsService.apis[apiRoute].type) {
+	                    switch (oneService.schema.soajsService.apis[apiRoute].type) {
                             case 'add':
                                 if ($scope.access.addEntry) {
                                     $scope.ui.add = true;
@@ -93,29 +93,27 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     }
                 }
                 $timeout(function () {
-                    var firstEnv = Object.keys($scope.selectedService.schema.soajsService.db.config)[0];
-                    $scope.populateCMUI(firstEnv.toUpperCase());
+                    $scope.populateCMUI();
                 }, 1000);
             }
         });
 
     };
 
-    $scope.populateCMUI = function (envCode) {
-        $scope.selectedEnv = envCode.toLowerCase();
-
+    $scope.populateCMUI = function () {
+        $scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
         if ($scope.ui.grid) {
             $scope.listCMDataEntries();
         }
         else {
-            var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv));
+            var el = angular.element(document.getElementById("contentGridContainer"));
             el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><p>You do not have access to this content module.</p>");
             $compile(el.contents())($scope);
         }
     };
 
     $scope.goBack = function () {
-        var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv));
+        var el = angular.element(document.getElementById("contentGridContainer"));
         el.html("");
         $compile(el.contents())($scope);
 
@@ -168,7 +166,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     options.data.push(data);
                 }
                 buildGrid($scope, options);
-                var el = angular.element(document.getElementById("contentGridContainer_" + $scope.selectedEnv.toUpperCase()));
+                var el = angular.element(document.getElementById("contentGridContainer"));
                 el.html("<br/><a href=\"\" ng-click=\"addCMDataEntry()\" class=\"btn btn-primary\">" + $scope.ui.links['add'].l + "</a><br/><br/><nglist></nglist>");
                 $compile(el.contents())($scope);
             }

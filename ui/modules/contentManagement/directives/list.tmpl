@@ -21,11 +21,7 @@
             <div ng-show="!hp">
                 <h2>Managing Content of {{selectedService.name}}</h2>
                 <a href="" ng-click="goBack()" class="f-right btn btn-primary">Go Back</a>
-                <tabset>
-                    <tab heading="{{envName|uppercase}}" ng-repeat="(envName, envConfig) in selectedService.schema.soajsService.db.config" ng-click="populateCMUI(envName)" active="oneHost.active">
-                        <div id="contentGridContainer_{{envName}}"><br/><p>Loading Data...</p></div>
-                    </tab>
-                </tabset>
+                <div id="contentGridContainer"><br/><p>Loading Data...</p></div>
             </div>
 
         </div>
