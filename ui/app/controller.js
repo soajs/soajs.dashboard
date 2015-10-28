@@ -144,12 +144,25 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							$scope.switchEnvironment($scope.leftMenu.environments[0]);
 						}
 					}
-					$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
+
+					var oldPillar = getRoutePillar($route.current.originalPath);
+					var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
+					if(oldPillar !== newPillar){
+						$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
+					}
 					break;
 				}
 			}
 
-
+			function getRoutePillar(route) {
+				for (var p = 0; p < $scope.mainMenu.links.length; p++) {
+					for (var e = 0; e < $scope.mainMenu.links[p].entries.length; e++) {
+						if($scope.mainMenu.links[p].entries[e].url.replace("#","") === route){
+							return $scope.mainMenu.links[p].pillar.name;
+						}
+					}
+				}
+			}
 		};
 
 		$scope.switchEnvironment = function (envRecord) {
