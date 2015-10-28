@@ -73,12 +73,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 				else {
 					overlay.hide(function(){
-						if(response.result){
-							currentScope.listHosts(envCode);
-						}
-						else{
-							currentScope.generateNewMsg(envCode, 'danger', response.errors.details);
-						}
+						currentScope.listHosts(envCode);
 					});
 				}
 			});

@@ -69,8 +69,6 @@ em {
     float:left;
     margin:0 0 0 60px;
     height:35px;
-    position:relative;
-    z-index:10000000;
 }
 
 #header #pillars .one-pillar{
