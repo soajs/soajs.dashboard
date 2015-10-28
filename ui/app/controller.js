@@ -127,7 +127,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 					var pillarsPerEnv = [3, 4];
 					if (pillarsPerEnv.indexOf($scope.mainMenu.links[j].pillar.position) !== -1) {
-						$scope.leftMenu.environments = $localStorage.environments;
+						$scope.leftMenu.environments = angular.copy($localStorage.environments);
+
+						if ($scope.mainMenu.links[j].pillar.position === 4) {
+							for (var k = $scope.leftMenu.environments.length - 1; k >= 0; k--) {
+								if ($scope.leftMenu.environments[k].code === "DASHBOARD") {
+									$scope.leftMenu.environments.splice(k, 1);
+								}
+							}
+						}
 
 						if ($cookieStore.get('myEnv')) {
 							$scope.switchEnvironment($cookieStore.get('myEnv'));
