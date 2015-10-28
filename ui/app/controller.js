@@ -107,43 +107,46 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.leftMenu = {};
 		$scope.leftMenu.links = [];
-		$scope.leftMenu.environments =[];
+		$scope.leftMenu.environments = [];
 
 		$scope.collapseMainMenu = false;
 
-		$scope.collapseExpandMainMenu = function(){
+		$scope.collapseExpandMainMenu = function () {
 			$scope.collapseMainMenu = !$scope.collapseMainMenu;
 
 		};
 
 		$scope.reRenderMenu = function (pillarName) {
 			$scope.leftMenu.links = [];
-			$scope.leftMenu.environments =[];
+			$scope.leftMenu.environments = [];
 			$scope.currentSelectedEnvironment = null;
 
 			for (var j = 0; j < $scope.mainMenu.links.length; j++) {
 				if ($scope.mainMenu.links[j].pillar.name === pillarName) {
 					$scope.leftMenu.links = $scope.mainMenu.links[j].entries;
 
-					var pillarsPerEnv = [3,4];
+					var pillarsPerEnv = [3, 4];
 					if (pillarsPerEnv.indexOf($scope.mainMenu.links[j].pillar.position) !== -1) {
 						$scope.leftMenu.environments = $localStorage.environments;
 
-						if($cookieStore.get('myEnv')) {
+						if ($cookieStore.get('myEnv')) {
 							$scope.switchEnvironment($cookieStore.get('myEnv'));
 						}
-						else{
+						else {
 							$scope.switchEnvironment($scope.leftMenu.environments[0]);
 						}
 					}
+					$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
 					break;
 				}
 			}
+
+
 		};
 
-		$scope.switchEnvironment = function(envRecord){
+		$scope.switchEnvironment = function (envRecord) {
 			$scope.currentSelectedEnvironment = envRecord.code;
-			if(!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code){
+			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
 				$route.reload();
 			}
