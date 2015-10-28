@@ -145,11 +145,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 
-					var oldPillar = getRoutePillar($route.current.originalPath);
-					var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
-					if(oldPillar !== newPillar){
-						$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
-					}
+					//var oldPillar = getRoutePillar($route.current.originalPath);
+					//var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
+					//if(oldPillar !== newPillar){
+					//	$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
+					//}
 					break;
 				}
 			}
