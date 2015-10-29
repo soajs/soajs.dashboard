@@ -1,15 +1,18 @@
 <div id="mainMenu" ng-show="enableInterface" ng-class="(collapseMainMenu)? 'mainMenu2' : 'mainMenu' ">
-	<div ng-if="leftMenu.environments" class="environmentsMenu" ng-show="!collapseMainMenu">
-		<input type="button" class="btn btn-sm" ng-repeat="oneBtn in leftMenu.environments" value="{{oneBtn.code}}" ng-click="switchEnvironment(oneBtn)" ng-class="(currentSelectedEnvironment === oneBtn.code)? 'btn-danger' : 'btn-primary'"/>
+	<div ng-show="leftMenu.environments && leftMenu.environments.length > 0 && !collapseMainMenu" class="environmentsMenu">
+		<select name="myEnvironments" id="myEnvironments" ng-model="myCurrentEnvironment" ng-change="switchEnvironment()">
+			<option ng-repeat="oneBtn in leftMenu.environments" data-ng-value="oneBtn.code" ng-selected="currentSelectedEnvironment === oneBtn.code">{{oneBtn.code}}</option>
+		</select>
 	</div>
-    <ul>
-        <li ng-repeat="link in leftMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
-            <a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">
-	            <span class="icon icon-{{link.icon}}"></span>
-	            <span ng-show="!collapseMainMenu">{{link.label}}</span>
-            </a>
-        </li>
-    </ul>
+
+	<ul>
+		<li ng-repeat="link in leftMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
+			<a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">
+				<span class="icon icon-{{link.icon}}"></span>
+				<span ng-show="!collapseMainMenu">{{link.label}}</span>
+			</a>
+		</li>
+	</ul>
 	<a href="" ng-click="collapseExpandMainMenu()">
 		<span class="collapser icon" ng-class="(collapseMainMenu) ? 'icon-forward3' : 'icon-backward2'"></span>
 	</a>

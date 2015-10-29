@@ -117,6 +117,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		};
 
+		$scope.pillarChange = function(pillarName){
+			$cookieStore.remove('myEnv');
+		};
+
 		$scope.reRenderMenu = function (pillarName) {
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments = [];
@@ -149,18 +153,27 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 
-			function getRoutePillar(route) {
-				for (var p = 0; p < $scope.mainMenu.links.length; p++) {
-					for (var e = 0; e < $scope.mainMenu.links[p].entries.length; e++) {
-						if($scope.mainMenu.links[p].entries[e].url.replace("#","") === route){
-							return $scope.mainMenu.links[p].pillar.name;
-						}
-					}
-				}
-			}
+			//function getRoutePillar(route) {
+			//	for (var p = 0; p < $scope.mainMenu.links.length; p++) {
+			//		for (var e = 0; e < $scope.mainMenu.links[p].entries.length; e++) {
+			//			if($scope.mainMenu.links[p].entries[e].url.replace("#","") === route){
+			//				return $scope.mainMenu.links[p].pillar.name;
+			//			}
+			//		}
+			//	}
+			//}
 		};
 
 		$scope.switchEnvironment = function (envRecord) {
+			var requestedEnv = this.myCurrentEnvironment;
+			if(requestedEnv && !envRecord){
+				$localStorage.environments.forEach(function(oneEnvRecord){
+					if(oneEnvRecord.code === requestedEnv){
+						envRecord = oneEnvRecord;
+					}
+				});
+			}
+
 			$scope.currentSelectedEnvironment = envRecord.code;
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
@@ -234,46 +247,52 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 			$scope.dashboard = [];
 
-			var a = true;
-			var p = {};
-			for (var i = 0; i < navigation.length; i++) {
-				a = true;
-				if (navigation[i].hasOwnProperty('checkPermission')) {
-					p = navigation[i].checkPermission;
-					if (p.service && p.route) {
-						a = $scope.buildPermittedOperation(navigation[i].checkPermission.service, navigation[i].checkPermission.route);
+			function doPermissions(navigation){
+				var a = true;
+				var p = {};
+				for (var i = 0; i < navigation.length; i++) {
+					a = true;
+					if (navigation[i].hasOwnProperty('checkPermission')) {
+						p = navigation[i].checkPermission;
+						if (p.service && p.route) {
+							a = $scope.buildPermittedOperation(p.service, p.route);
+						}
 					}
-				}
 
-				if (navigation[i].hasOwnProperty('private') || (a)) {
-					$scope.dashboard.push(navigation[i].id);
-					if (navigation[i].mainMenu) {
-						var found = false;
-						for (var j = 0; j < $scope.mainMenu.links.length; j++) {
-							if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
-								if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
-									found = j;
-									break;
+					if (navigation[i].hasOwnProperty('private') || (a)) {
+						$scope.dashboard.push(navigation[i].id);
+						if (navigation[i].mainMenu) {
+							var found = false;
+							for (var j = 0; j < $scope.mainMenu.links.length; j++) {
+								if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
+									if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
+										found = j;
+										break;
+									}
 								}
 							}
+							if (found === false) {
+								$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
+								found = $scope.mainMenu.links.length - 1;
+							}
+
+							$scope.mainMenu.links[found].entries.push(navigation[i]);
 						}
-						if (found === false) {
-							$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
-							found = $scope.mainMenu.links.length - 1;
+
+						if (navigation[i].userMenu) {
+							$scope.userMenu.links.push(navigation[i]);
 						}
 
-						$scope.mainMenu.links[found].entries.push(navigation[i]);
-					}
-
-					if (navigation[i].userMenu) {
-						$scope.userMenu.links.push(navigation[i]);
-					}
-
-					if (navigation[i].guestMenu) {
-						$scope.guestMenu.links.push(navigation[i]);
+						if (navigation[i].guestMenu) {
+							$scope.guestMenu.links.push(navigation[i]);
+						}
 					}
 				}
+
 			}
+
+			doPermissions(navigation);
+
 			$scope.updateSelectedMenus();
 		};
 
@@ -398,6 +417,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
 				$localStorage.acl_access = null;
+				$localStorage.environments = null;
 				$scope.dashboard = [];
 				$scope.$parent.enableInterface = false;
 				$scope.$parent.go("/login");

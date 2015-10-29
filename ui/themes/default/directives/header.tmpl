@@ -1,12 +1,12 @@
 <div id="header">
-    <div id="logo" ng-click="go('/dashboard')"><img src="images/favicon.png" alt="soajs" width="35px"/>soajs<br /></div>
+	<div id="logo" ng-click="go('/dashboard')"><img src="images/favicon.png" alt="soajs" width="35px"/>soajs<br /></div>
 	<div id="pillars" ng-show="enableInterface">
 
 		<div class="one-pillar btn-group" dropdown ng-repeat="link in mainMenu.links | orderBy: 'pillar.position'">
-			<button type="button" class="" id="{{link.pillar.name}}" ng-class="{selected:link.selected}" ng-click="go(link.entries[0].url); reRenderMenu(link.pillar.name)">
+			<button type="button" class="" id="{{link.pillar.name}}" ng-class="{selected:link.selected}" ng-click="go(link.entries[0].url); reRenderMenu(link.pillar.name); pillarChange(link.pillar.name)">
 				{{link.pillar.label}}
 			</button>
 		</div>
 	</div>
-    <user-menu></user-menu>
+	<user-menu></user-menu>
 </div>
