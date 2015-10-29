@@ -61,6 +61,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 	function ($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
 		$scope.enableInterface = false;
 		$scope.go = function (path) {
+			$scope.previousPage = $route.current.originalPath;
 			$location.path(path);
 		};
 
@@ -145,11 +146,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 
-					//var oldPillar = getRoutePillar($route.current.originalPath);
-					//var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
-					//if(oldPillar !== newPillar){
-					//	$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
-					//}
+					var oldPillar = getRoutePillar($scope.previousPage);
+					var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
+					if(oldPillar !== newPillar){
+						$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
+					}
 					break;
 				}
 			}

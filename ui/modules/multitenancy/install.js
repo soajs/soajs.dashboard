@@ -46,6 +46,11 @@ var multitenancyNav =[
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,
+		'pillar':{
+			'name': 'management',
+			'label': 'Management',
+			'position': 2
+		},
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js','modules/multitenancy/services/multitenancy.js'],
 		'ancestor': ['Home', 'Multi-Tenancy']
 	}

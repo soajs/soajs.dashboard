@@ -86,6 +86,11 @@ var environmentsNav = [
 		'url': '#/environments/environment/:id?',
 		'tplPath': 'modules/environments/directives/edit.tmpl',
 		'tracker': true,
+		'pillar':{
+			'name': 'deployment',
+			'label': 'deployment',
+			'position': 3
+		},
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js', 'modules/environments/services/clusters.js', 'modules/environments/services/database.js', 'modules/environments/services/hosts.js', 'modules/environments/services/deploy.js'],
 		'ancestor': ['Home']
 	}

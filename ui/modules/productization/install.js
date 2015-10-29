@@ -26,6 +26,11 @@ var productizationNav =[
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,
+		'pillar':{
+			'name': 'management',
+			'label': 'Management',
+			'position': 2
+		},
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
 		'ancestor': ['Home', 'Productization']
 	}

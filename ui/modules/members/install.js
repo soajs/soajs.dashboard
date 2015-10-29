@@ -26,6 +26,11 @@ var membersNav= [
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,
+		'pillar':{
+			'name': 'management',
+			'label': 'Management',
+			'position': 2
+		},
 		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/acl.js'],
 		'ancestor': ['Home', 'Members']
 	}
