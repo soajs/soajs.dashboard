@@ -62,7 +62,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.enableInterface = false;
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;
-			$location.path(path);
+			$location.path(path.replace("#",""));
 		};
 
 		$scope.alerts = [];
@@ -144,12 +144,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						else {
 							$scope.switchEnvironment($scope.leftMenu.environments[0]);
 						}
-					}
-
-					var oldPillar = getRoutePillar($scope.previousPage);
-					var newPillar = getRoutePillar($scope.leftMenu.links[0].url.replace("#", ""));
-					if(oldPillar !== newPillar){
-						$scope.go($scope.leftMenu.links[0].url.replace("#", ""));
 					}
 					break;
 				}

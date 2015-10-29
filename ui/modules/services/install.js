@@ -12,7 +12,7 @@ var servicesNav =[
 		'icon': 'cloud',
 		'pillar':{
 			'name': 'development',
-			'label': 'Development',
+			'label': 'Develop',
 			'position': 1
 		},
 		'mainMenu': true,

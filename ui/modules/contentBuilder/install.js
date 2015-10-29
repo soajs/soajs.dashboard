@@ -12,7 +12,7 @@ var cbNav =[
 		'icon': 'hammer',
 		'pillar':{
 			'name': 'development',
-			'label': 'Development',
+			'label': 'Develop',
 			'position': 1
 		},
 		'mainMenu': true,
@@ -28,7 +28,7 @@ var cbNav =[
 		'tracker': true,
 		'pillar':{
 			'name': 'development',
-			'label': 'Development',
+			'label': 'Develop',
 			'position': 1
 		},
 		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],
@@ -42,7 +42,7 @@ var cbNav =[
 		'tracker': true,
 		'pillar':{
 			'name': 'development',
-			'label': 'Development',
+			'label': 'Develop',
 			'position': 1
 		},
 		'scripts': ['modules/contentBuilder/config.js', 'modules/contentBuilder/controller.js','modules/contentBuilder/services/contentBuilder.js','modules/contentBuilder/services/input.js','modules/contentBuilder/services/api.js'],

@@ -12,7 +12,7 @@ var environmentsNav = [
 		'icon': 'earth',
 		'pillar':{
 			'name': 'deployment',
-			'label': 'deployment',
+			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
@@ -32,7 +32,7 @@ var environmentsNav = [
 		'icon': 'database',
 		'pillar':{
 			'name': 'deployment',
-			'label': 'deployment',
+			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
@@ -52,7 +52,7 @@ var environmentsNav = [
 		'icon': 'stack',
 		'pillar':{
 			'name': 'deployment',
-			'label': 'deployment',
+			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
@@ -72,7 +72,7 @@ var environmentsNav = [
 		'icon': 'sphere',
 		'pillar':{
 			'name': 'deployment',
-			'label': 'deployment',
+			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
@@ -88,7 +88,7 @@ var environmentsNav = [
 		'tracker': true,
 		'pillar':{
 			'name': 'deployment',
-			'label': 'deployment',
+			'label': 'Deploy',
 			'position': 3
 		},
 		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js', 'modules/environments/services/clusters.js', 'modules/environments/services/database.js', 'modules/environments/services/hosts.js', 'modules/environments/services/deploy.js'],

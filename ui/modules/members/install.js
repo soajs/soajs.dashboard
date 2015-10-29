@@ -1,8 +1,28 @@
 "use strict";
 var membersNav= [
 	{
+		'id': 'tenants-members',
+		'label': 'Tenant Organization Chart',
+		'checkPermission':{
+			'service':'urac',
+			'route':'/admin/listUsers'
+		},
+		'url': '#/tenants-members',
+		'tplPath': 'modules/members/directives/tenant.tmpl',
+		'icon': 'users',
+		'mainMenu': true,
+		'pillar':{
+			'name': 'management',
+			'label': 'Product',
+			'position': 2
+		},
+		'tracker': true,
+		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/members.js', 'modules/members/services/groups.js'],
+		'ancestor': ['Home']
+	},
+	{
 		'id': 'members',
-		'label': 'Organization',
+		'label': 'My Organization Chart',
 		'checkPermission':{
 			'service':'urac',
 			'route':'/admin/listUsers'
@@ -13,7 +33,7 @@ var membersNav= [
 		'mainMenu': true,
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'tracker': true,
@@ -28,7 +48,7 @@ var membersNav= [
 		'tracker': true,
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/acl.js'],

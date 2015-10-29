@@ -12,7 +12,7 @@ var productizationNav =[
 		'icon': 'list',
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'mainMenu': true,
@@ -28,7 +28,7 @@ var productizationNav =[
 		'tracker': true,
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],

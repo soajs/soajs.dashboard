@@ -12,7 +12,7 @@ var cmNav =[
 		'icon': 'newspaper',
 		'pillar':{
 			'name': 'dashboard',
-			'label': 'Dashboard',
+			'label': 'Operate',
 			'position': 4
 		},
 		'mainMenu': true,

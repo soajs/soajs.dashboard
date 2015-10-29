@@ -12,7 +12,7 @@ var multitenancyNav =[
 		'icon': 'tree',
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'mainMenu': true,
@@ -32,7 +32,7 @@ var multitenancyNav =[
 		'icon': 'key',
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'mainMenu': true,
@@ -48,7 +48,7 @@ var multitenancyNav =[
 		'tracker': true,
 		'pillar':{
 			'name': 'management',
-			'label': 'Management',
+			'label': 'Product',
 			'position': 2
 		},
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js','modules/multitenancy/services/multitenancy.js'],
