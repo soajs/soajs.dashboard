@@ -12,9 +12,9 @@ var settingsNav =[
 		'icon': 'cogs',
 		'mainMenu': true,
 		'pillar':{
-			'name': 'account',
-			'label': 'My Account',
-			'position': 5
+			'name': 'management',
+			'label': 'Product',
+			'position': 2
 		},
 		'tracker': true,
 		'scripts': ['modules/settings/config.js', 'modules/settings/controller.js'],

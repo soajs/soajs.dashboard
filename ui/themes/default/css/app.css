@@ -132,6 +132,7 @@ em {
     outline: 0;
 }
 
+#header #userMenu ul li a.active,
 #header #userMenu ul li a:hover {
     color: white;
     text-decoration: none;

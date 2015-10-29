@@ -169,10 +169,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.updateSelectedMenus = function () {
+			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.guestMenu.selectedMenu = $scope.mainMenu.selectedMenu;
-			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			if ($scope.leftMenu) {
 				$scope.leftMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			}
