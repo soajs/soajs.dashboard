@@ -219,7 +219,7 @@ em {
 }
 
 #mainMenu.mainMenu{
-    width: 12%;
+    width: 15%;
 }
 
 #mainMenu.mainMenu2{
@@ -254,7 +254,7 @@ em {
     border-top: solid 1px #606d76;
     border-bottom: solid 1px #4F5762;
     cursor: pointer;
-    height: 41px;
+    min-height: 41px;
 }
 
 #mainMenu li.first{
@@ -307,7 +307,7 @@ em {
 }
 
 #page .wrapper2 {
-    width: 88%;
+    width: 85%;
     float: left;
     min-height: 560px;
     background-color: #e5eaee;
