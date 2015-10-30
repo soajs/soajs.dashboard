@@ -1,8 +1,18 @@
 <div id="mainMenu" ng-show="enableInterface" ng-class="(collapseMainMenu)? 'mainMenu2' : 'mainMenu' ">
 	<div ng-show="leftMenu.environments && leftMenu.environments.length > 0 && !collapseMainMenu" class="environmentsMenu">
-		<select name="myEnvironments" id="myEnvironments" ng-model="myCurrentEnvironment" ng-change="switchEnvironment()">
-			<option ng-repeat="oneBtn in leftMenu.environments" data-ng-value="oneBtn.code" ng-selected="currentSelectedEnvironment === oneBtn.code">{{oneBtn.code}}</option>
-		</select>
+		<!--<select name="myEnvironments" id="myEnvironments" ng-model="myCurrentEnvironment" ng-change="switchEnvironment()">-->
+			<!--<option ng-repeat="oneBtn in leftMenu.environments" data-ng-value="oneBtn.code" ng-selected="currentSelectedEnvironment === oneBtn.code">{{oneBtn.code}}</option>-->
+		<!--</select>-->
+		<div class="btn-group w100" dropdown>
+			<button id="split-button" type="button" class="btn btn-danger t-left" style="width:84%">{{currentSelectedEnvironment}}</button>
+			<button type="button" class="btn btn-danger" dropdown-toggle>
+				<span class="caret"></span>
+				<span class="sr-only">Split button!</span>
+			</button>
+			<ul class="dropdown-menu w100" role="menu" aria-labelledby="split-button">
+				<li role="menuitem" ng-repeat="oneBtn in leftMenu.environments" ng-click="switchEnvironment(oneBtn)">{{oneBtn.code}}</li>
+			</ul>
+		</div>
 	</div>
 
 	<ul>
