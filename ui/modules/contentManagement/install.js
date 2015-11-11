@@ -11,7 +11,7 @@ var cmNav =[
 		'tplPath': 'modules/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',
 		'pillar':{
-			'name': 'dashboard',
+			'name': 'operate',
 			'label': 'Operate',
 			'position': 4
 		},
