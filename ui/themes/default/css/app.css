@@ -270,6 +270,12 @@ em {
     outline: 0;
 }
 
+#mainMenu ul li a span.icon{
+    display: block;
+    float: left;
+    height: 40px;
+}
+
 #mainMenu li:first-child {
     border-top: none;
 }
