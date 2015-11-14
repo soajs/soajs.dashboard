@@ -3895,7 +3895,7 @@ describe("DASHBOARD UNIT Tests", function() {
             it("success - will get hosts list", function(done) {
                 executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
                     assert.ok(body.data);
-                    hostsCount = body.data.length;
+                    hostsCount = body.data.hosts.length;
                     done();
                 });
             });
@@ -3920,7 +3920,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     console.log(body.data);
                     console.log("=========");
                     assert.ok(body.data);
-                    assert.equal(body.data.length, 0);
+                    assert.equal(body.data.hosts.length, 0);
                     done();
                 });
             });
@@ -3938,8 +3938,8 @@ describe("DASHBOARD UNIT Tests", function() {
             it("success - will get hosts list", function(done) {
                 executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function(body) {
                     assert.ok(body.data);
-                    assert.ok(body.data.length > 0);
-                    assert.equal(body.data.length, hostsCount);
+                    assert.ok(body.data.hosts.length > 0);
+                    assert.equal(body.data.hosts.length, hostsCount);
                     done();
                 });
             });
