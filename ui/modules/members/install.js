@@ -5,7 +5,7 @@ var membersNav= [
 		'label': 'Tenant Organization Chart',
 		'checkPermission':{
 			'service':'urac',
-			'route':'/admin/listUsers'
+			'route':'/admin/all'
 		},
 		'url': '#/tenants-members',
 		'tplPath': 'modules/members/directives/tenant.tmpl',
