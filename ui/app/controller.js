@@ -51,6 +51,7 @@ soajsApp.config([
 		});
 
 		soajsApp.components = {
+			filter: $filterProvider.register,
 			controller: $controllerProvider.register,
 			service: $provide.service
 		};
