@@ -134,42 +134,45 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             var services = Object.keys(regServices);
             services.forEach(function (serviceName) {
                 var oneService = regServices[serviceName];
-                if (oneService.hosts && Array.isArray(oneService.hosts) && oneService.hosts.length > 0) {
 
-                    if (serviceName !== 'controller') {
-                        renderedHosts[serviceName] = {
-                            'name': serviceName,
-                            'port': regServices[serviceName].port,
-                            'ips': [],
-                            'color': 'red',
-                            'healthy': false
-                        };
-                    }
+                if (oneService.hosts) {
+	                oneService.hosts = oneService.hosts[oneService.hosts.latest];
+	                if(Array.isArray(oneService.hosts) && oneService.hosts.length > 0){
+		                if (serviceName !== 'controller') {
+			                renderedHosts[serviceName] = {
+				                'name': serviceName,
+				                'port': regServices[serviceName].port,
+				                'ips': [],
+				                'color': 'red',
+				                'healthy': false
+			                };
+		                }
 
-                    regServices[serviceName].hosts.forEach(function (oneHostIP) {
-                        if (serviceName !== 'controller') {
-                            var oneHost = {
-                                'controllers': controllers,
-                                'ip': oneHostIP,
-                                'name': serviceName,
-                                'healthy': false,
-                                'color': 'red',
-                                'downCount': 'N/A',
-                                'downSince': 'N/A',
-                                'port': regServices[serviceName].port
-                            };
+		                regServices[serviceName].hosts.forEach(function (oneHostIP) {
+			                if (serviceName !== 'controller') {
+				                var oneHost = {
+					                'controllers': controllers,
+					                'ip': oneHostIP,
+					                'name': serviceName,
+					                'healthy': false,
+					                'color': 'red',
+					                'downCount': 'N/A',
+					                'downSince': 'N/A',
+					                'port': regServices[serviceName].port
+				                };
 
-                            currentScope.hostList.forEach(function (origHostRec) {
-                                if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
-                                    oneHost.hostname = origHostRec.hostname;
-                                    oneHost.cid = origHostRec.cid;
-                                }
-                            });
-                            if (oneHost.hostname && oneHost.ip) {
-                                renderedHosts[serviceName].ips.push(oneHost);
-                            }
-                        }
-                    });
+				                currentScope.hostList.forEach(function (origHostRec) {
+					                if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
+						                oneHost.hostname = origHostRec.hostname;
+						                oneHost.cid = origHostRec.cid;
+					                }
+				                });
+				                if (oneHost.hostname && oneHost.ip) {
+					                renderedHosts[serviceName].ips.push(oneHost);
+				                }
+			                }
+		                });
+	                }
                 }
             });
 
