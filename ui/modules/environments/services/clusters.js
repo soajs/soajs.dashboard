@@ -39,7 +39,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 					'action': function(formData) {
 						var servers = formData.servers.split(",");
 						for(var i = 0; i < servers.length; i++) {
-							var t = servers[i].split(":");
+							var t = servers[i].trim();
+							t = t.split(":");
 							servers[i] = {
 								"host": t[0],
 								"port": t[1]
@@ -91,10 +92,12 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 		var formConfig = angular.copy(environmentsConfig.form.cluster);
 		formConfig.entries[0].type = 'readonly';
 
-		var servers = "";
+		var servers = [];
 		for(var i = 0; i < data.servers.length; i++) {
-			servers += data.servers[i].host + ":" + data.servers[i].port;
+			servers.push (data.servers[i].host + ":" + data.servers[i].port);
 		}
+		servers = servers.join(", ");
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -115,7 +118,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 					'action': function(formData) {
 						var servers = formData.servers.split(",");
 						for(var i = 0; i < servers.length; i++) {
-							var t = servers[i].split(":");
+							var t = servers[i].trim();
+							t = t.split(":");
 							servers[i] = {
 								"host": t[0],
 								"port": t[1]
