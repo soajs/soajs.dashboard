@@ -532,3 +532,19 @@ var overlay = {
 		}
 	}
 };
+
+var overlayLoading = {
+	show: function () {
+		var overlayHeight = jQuery(document).height();
+		jQuery("#overlayLoading").css('height', overlayHeight + 'px').show();
+		jQuery("#overlayLoading .bg").css('height', overlayHeight + 'px').show(100);
+		jQuery("#overlayLoading .content").show();
+	},
+	hide: function (cb) {
+		jQuery("#overlayLoading .content").hide();
+		jQuery("#overlayLoading").fadeOut(200);
+		if (cb && typeof(cb) === 'function') {
+			cb();
+		}
+	}
+};

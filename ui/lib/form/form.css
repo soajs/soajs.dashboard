@@ -82,3 +82,7 @@ form .file-even,
 form .file-odd{
     border-bottom:solid 1px #e5e5e5;
 }
+
+.modal-lg{
+    width: 1000px;
+}
