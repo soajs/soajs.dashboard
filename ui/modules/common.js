@@ -177,3 +177,10 @@ function openSaveAsDialog(filename, content, mediaType) {
     a.download = filename;
     a.click();
 }
+
+function fixBackDrop(){
+	var overlayHeight = jQuery(document).height();
+	setTimeout(function () {
+		jQuery(".modal-backdrop").css('height', overlayHeight + 'px');
+	}, 20);
+}
