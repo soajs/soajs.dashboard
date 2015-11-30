@@ -124,12 +124,33 @@ var tenantConfig = {
 			'actions': {},
 			'entries': [
 				{
-					'name': 'code',
-					'label': 'Code',
-					'type': 'text',
-					'placeholder': 'TEST...',
-					'value': '',
-					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
+					'name': 'type',
+					'label': 'Type',
+					'type': 'select',
+					'value': [
+						{
+							'v': 'owner',
+							'l': 'Owner Tenant',
+							'selected': true
+						},
+						{
+							'v': 'data',
+							'l': 'Data Tenant'
+						},
+						{
+							'v': 'TypeThree',
+							'l': 'Type 3'
+						},
+						{
+							'v': 'TypeFour',
+							'l': 'Type 4'
+						},
+						{
+							'v': 'TypeFive',
+							'l': 'Type 5'
+						}
+					],
+					'tooltip': 'Choose Tenant Type',
 					'required': true
 				},
 				{

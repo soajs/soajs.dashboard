@@ -1,36 +1,40 @@
 <section ng-controller="tenantCtrl">
     <div ng-if="access.tenant.list">
 	    <span ng-if="access.tenant.add"><a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a></span><br/><br/>
-	    <div class="entryBoxes">
-	        <div ng-repeat="row in tenantsList.rows" class="entryBox" ng-if="row.locked!==true">
-	            <div class="header">{{row['name']}}<span>[ {{row['code']}}  - {{row['_id']}} ]</span> </div>
-	            <div class="body">
-	                <div class="description">{{row['description']}}</div>
-	                <div ng-if="access.tenant.application.list || access.tenant.oauth.users.list">
-	                    <br/>
-	                    <div class="keyAlerts" ng-show="mt[row['_id']].alerts.length >0" id="{{row['_id']}}">
-	                        <alert ng-repeat="alert in mt[row['_id']].alerts" type="{{alert.type}}" class="" close="mt.closeAlert($index, row['_id'])">{{alert.msg}}</alert>
-	                        <br/>
-	                    </div>
-	                    <tabset>
-	                        <tab heading="Manage Applications" ng-if="access.tenant.application.list">
-	                            <div ng-include="'modules/multitenancy/directives/list-applications.tmpl'"></div>
-	                        </tab>
-	                        <tab heading="oAuth Users" ng-click="listOauthUsers(row)" ng-if="access.tenant.oauth.users.list">
-	                            <div ng-include="'modules/multitenancy/directives/list-oauth-users.tmpl'"></div>
-	                        </tab>
-	                    </tabset>
-	                </div>
-	                <div class="entryAction">
-	                    <a ng-if="access.tenant.update" href="" ng-click="tenantsList.actions.editTenant.command(row);">
-	                        <span class="icon icon-pencil2" tooltip="Edit Tenant"></span>
-	                    </a>
-	                    <a ng-if="access.tenant.delete" href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}" ng-click="tenantsList.actions.delete.command(row);">
-	                        <span class="icon icon-cross" tooltip="Remove Tenant"></span>
-	                    </a>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
+		<tabset>
+            <tab ng-repeat="tab in tenantTabs" heading="{{tab.label}}">
+                <div class="entryBoxes">
+                    <div ng-repeat="row in tenantsList.rows" class="entryBox" ng-if="row.locked!==true && row.type === tab.type">
+                        <div class="header">{{row['name']}}<span>[ {{row['code']}}  - {{row['_id']}} ]</span> </div>
+                        <div class="body">
+                            <div class="description">{{row['description']}}</div>
+                            <div ng-if="access.tenant.application.list || access.tenant.oauth.users.list">
+                                <br/>
+                                <div class="keyAlerts" ng-show="mt[row['_id']].alerts.length >0" id="{{row['_id']}}">
+                                    <alert ng-repeat="alert in mt[row['_id']].alerts" type="{{alert.type}}" class="" close="mt.closeAlert($index, row['_id'])">{{alert.msg}}</alert>
+                                    <br/>
+                                </div>
+                                <tabset>
+                                    <tab heading="Manage Applications" ng-if="access.tenant.application.list">
+                                        <div ng-include="'modules/multitenancy/directives/list-applications.tmpl'"></div>
+                                    </tab>
+                                    <tab heading="oAuth Users" ng-click="listOauthUsers(row)" ng-if="access.tenant.oauth.users.list">
+                                        <div ng-include="'modules/multitenancy/directives/list-oauth-users.tmpl'"></div>
+                                    </tab>
+                                </tabset>
+                            </div>
+                            <div class="entryAction">
+                                <a ng-if="access.tenant.update" href="" ng-click="tenantsList.actions.editTenant.command(row);">
+                                    <span class="icon icon-pencil2" tooltip="Edit Tenant"></span>
+                                </a>
+                                <a ng-if="access.tenant.delete" href="" ng-confirm-click="{{tenantsList.actions.delete.commandMsg}}" ng-click="tenantsList.actions.delete.command(row);">
+                                    <span class="icon icon-cross" tooltip="Remove Tenant"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+		</tabset>
     </div>
 </section>

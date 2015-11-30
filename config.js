@@ -686,6 +686,14 @@ module.exports = {
                     "format": "alphanumeric",
                     "maxLength": 4
                 }
+            },
+            "type": {
+                "source": ['body.type'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "enum": ["owner", "data", "TypeThree", "TypeFour", "TypeFive"]
+                }
             }
         },
         "/tenant/delete": {

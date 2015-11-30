@@ -6,6 +6,29 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
 
+	$scope.tenantTabs = [
+		{
+			'label': 'Owner Tenants',
+			'type': 'owner'
+		},
+		{
+			'label': 'Data Tenants',
+			'type': 'data'
+		},
+		{
+			'label': 'TypeThree Tenants',
+			'type': 'TypeThree'
+		},
+		{
+			'label': 'TypeFour Tenants',
+			'type': 'TypeFour'
+		},
+		{
+			'label': 'TypeFive Tenants',
+			'type': 'TypeFive'
+		}
+	];
+
 	$scope.mt = {};
 	$scope.mt.displayAlert = function (type, msg, id) {
 		$scope.mt[id] = {};
@@ -314,7 +337,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
-							'code': formData.code,
+							'type': formData.type,
+							'code': $scope.generateTenantCode (formData.name),
 							'name': formData.name,
 							'description': formData.description
 						};
@@ -349,6 +373,34 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		};
 
 		buildFormWithModal($scope, $modal, options);
+	};
+
+	$scope.generateTenantCode = function (tName) {
+		var tCode = "";
+		var nameArray = tName.split (" ");
+		var index = Math.ceil (4 / nameArray.length);
+
+		for (var i = 0; i < nameArray.length && tCode.length < 4; i++) {
+			nameArray[i] = nameArray[i].replace (/[!@#$%^&*()_+,.<>;'?]/, "");
+			if (tCode.length === 3) {
+				tCode += nameArray[i].slice (0, 1);
+				break;
+			}
+			if (nameArray[i].length > 1) {
+				tCode += nameArray[i].slice (0, index);
+			} else {
+				tCode += nameArray[i].slice (0, index);
+				index++;
+			}
+		}
+
+		if (tCode.length < 4) {
+			tCode += "tenant".slice (0, 4 - tCode.length);
+		} else if (tCode.length > 4) {
+			tCode = tCode.slice (0, 4);
+		}
+
+		return tCode.toUpperCase();
 	};
 
 	$scope.reloadOauthUsers = function (tId) {
