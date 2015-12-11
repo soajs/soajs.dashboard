@@ -103,10 +103,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	};
 
 	$scope.listTenants = function () {
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/list"
 		}, function (error, response) {
+			overlayLoading.hide();
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}

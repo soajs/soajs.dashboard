@@ -289,18 +289,19 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 			var postData = {
 				'username': formData.username, 'password': formData.password
 			};
+			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
 				"routeName": "/urac/login",
 				"data": postData
 			}, function(error, response) {
 				if(error) {
+					overlayLoading.hide();
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
 					$cookieStore.put('soajs_user', response);
 					$cookieStore.put("soajs_auth", response.soajsauth);
-
 					//get dashboard keys
 					getKeys();
 				}
@@ -313,6 +314,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					"params": { "main": false}
 				}, function(error, response) {
 					if (error) {
+						overlayLoading.hide();
 						$scope.$parent.displayAlert('danger', error.message);
 					}
 					else {
@@ -327,6 +329,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					"method": "get",
 					"routeName": "/dashboard/permissions/get"
 				}, function(error, response) {
+					overlayLoading.hide();
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.message);
 					}

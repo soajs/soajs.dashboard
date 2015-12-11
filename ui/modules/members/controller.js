@@ -112,21 +112,25 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 			"routeName": "/urac/admin/all"
 		}, function(error, response) {
 			if(error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.users = arrGroupByTenant(response.users);
 				$scope.groups = arrGroupByTenant(response.groups);
+				overlayLoading.hide();
 			}
 		});
 	};
 
 	$scope.listTenants = function() {
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/list"
 		}, function(error, response) {
 			if(error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
