@@ -1,9 +1,8 @@
 <section ng-controller="productCtrl" ng-show="grid.rows">
 	<span ng-if="access.addProduct"><a href="" ng-click="addProduct()" class="btn btn-primary">Add New Product</a><br/><br/></span>
 	<div class="entryBoxes">
-		<div ng-repeat="row in grid.rows" class="entryBox">
-			<div class="header" ng-if="!row['locked']">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
-			<div class="header" ng-if="row['locked']" ng-style="{'background-color':'#dff0d8', 'border-color': '#3c763d'}">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
+		<div ng-repeat="row in grid.rows" class="entryBox" ng-class="{lockedBorder: row['locked'] === true}">
+			<div class="header" ng-class="{locked: row['locked']===true}">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
 			<div class="body clearfix">
 				<div class="description">{{row['description']}}</div>
 				<a ng-if="access.addPck" style="top:0" class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
