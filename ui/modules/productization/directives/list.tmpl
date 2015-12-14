@@ -3,37 +3,14 @@
 	<div class="entryBoxes">
 		<div ng-repeat="row in grid.rows" class="entryBox">
 			<div class="header" ng-if="!row['locked']">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
-			<div class="header" ng-if="row['locked']" ng-style="{'background-color':'#dff0d8', 'border-color': '#d6e9c6'}">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
+			<div class="header" ng-if="row['locked']" ng-style="{'background-color':'#dff0d8', 'border-color': '#3c763d'}">{{row['name']}}<span>[ {{row['code']}} ]</span></div>
 			<div class="body clearfix">
 				<div class="description">{{row['description']}}</div>
 				<a ng-if="access.addPck" style="top:0" class="btn btn-sm btn-primary" href="" ng-click="addPackage(row['_id'])">Add New Package</a>
 				<div ng-if="access.listPck">
 					<label ng-show="row.packages.length > 0">Packages:</label>
 					<ul class="blueListing">
-						<li class="blueLi" ng-repeat="package in row.packages" ng-if="package['locked']" ng-style="{'background-color':'#dff0d8', 'border-color': '#d6e9c6'}">
-							<a ng-click="viewPackage(package)" href="" ng-hide="package.showDetails">
-								<span class="icon icon-plus" tooltip="Expand Packages"></span>
-							</a>
-
-							<a ng-click="closePackage(package)" href="" ng-show="package.showDetails">
-								<span class="icon icon-minus" tooltip="Collapse Packages"></span>
-							</a>
-							<b>{{package['name']}}</b>&nbsp;[ {{package['code']}} ]  ( {{package['_TTL'] | TTL}} hours )
-							<span class="rightActions">
-								<a ng-if="access.deletePck" href="" ng-confirm-click="Are you sure you want to remove the selected package ?" ng-click="removeProductPackage(row['_id'], package['code']);">
-									<span class="icon icon-cross" tooltip="Remove Package"></span>
-								</a>
-								<a ng-if="access.updatePck" href="" ng-click="editPackAcl(row['_id'], package['code']);">
-									<span class="icon icon-unlocked" tooltip="Edit Package ACL"></span>
-								</a>&nbsp;
-
-								<a ng-if="access.updatePck" href="" ng-click="editPackage(row['_id'], package)">
-									<span class="icon icon-pencil2" tooltip="Edit Package"></span>
-								</a>
-                        	</span>
-							<div ng-show="package.showDetails"><em>{{package['description']}}</em></div>
-						</li>
-						<li class="blueLi" ng-repeat="package in row.packages" ng-if="!package['locked']">
+						<li class="blueLi" ng-repeat="package in row.packages">
 							<a ng-click="viewPackage(package)" href="" ng-hide="package.showDetails">
 								<span class="icon icon-plus" tooltip="Expand Packages"></span>
 							</a>

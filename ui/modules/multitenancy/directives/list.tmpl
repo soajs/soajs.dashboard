@@ -3,7 +3,7 @@
 	    <span ng-if="access.tenant.add"><a href="" ng-click="addTenant()" class="btn btn-primary">Add New Tenant</a></span><br/><br/>
 	    <div class="entryBoxes">
 	        <div ng-repeat="row in tenantsList.rows" class="entryBox" ng-if="row.locked!==true">
-	            <div class="header">
+	            <div class="header closed">
 					<a ng-click="openKeys(row['_id'], row)" href="" ng-hide="row.showKeys">
 						<span class="icon icon-plus" tooltip="Expand Applications"></span>
 					</a>
