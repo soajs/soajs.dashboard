@@ -10,7 +10,7 @@
 					<a ng-click="closeKeys(row['_id'], row)" href="" ng-show="row.showKeys">
 						<span class="icon icon-minus" tooltip="Collapse Applications"></span>
 					</a>
-					<span class="icon icon-star-full" ng-if="row['dashboardAccess']"></span>{{row['name']}}<span>[ {{row['code']}}  - {{row['_id']}} ]</span>
+					<span class="icon icon-star-full no-margin" ng-if="row['dashboardAccess']"></span>{{row['name']}}<span>[ {{row['code']}}  - {{row['_id']}} ]</span>
 				</div>
 	            <div class="body" ng-show="row.showKeys">
 	                <div class="description">{{row['description']}}</div>
