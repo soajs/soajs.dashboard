@@ -686,6 +686,13 @@ module.exports = {
                     "format": "alphanumeric",
                     "maxLength": 4
                 }
+            },
+            "email": {
+                "source": ['body.email'],
+                "required": true,
+                "validation": {
+                    "type": "email"
+                }
             }
         },
         "/tenant/delete": {

@@ -21,26 +21,6 @@ var multitenancyNav =[
 		'ancestor': ['Home']
 	},
 	{
-		'id': 'dashboard-tenants',
-		'label': 'Dashboard Tenants',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/tenant/db/keys/list'
-		},
-		'url': '#/dashboard-tenants',
-		'tplPath': 'modules/multitenancy/directives/db-keys.tmpl',
-		'icon': 'key',
-		'pillar':{
-			'name': 'management',
-			'label': 'Product',
-			'position': 2
-		},
-		'mainMenu': true,
-		'tracker': true,
-		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js'],
-		'ancestor': ['Home']
-	},
-	{
 		'id': 'tenant-app-acl',
 		'label': 'Edit Application ACL',
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',

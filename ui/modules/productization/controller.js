@@ -22,6 +22,13 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				for (var i = 0; i < response.length; i++) {
+					if (response[i].locked) {
+						var lockedProd = response[i];
+						response.splice(i, 1);
+						response.unshift(lockedProd);
+					}
+				}
 				$scope.grid = {
 					rows: response
 				};
