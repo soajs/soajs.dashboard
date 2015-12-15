@@ -399,6 +399,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 		var user = $cookieStore.get('soajs_user');
 
 		function logout() {
+			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"headers": {
@@ -407,6 +408,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 				"routeName": "/urac/logout",
 				"params": {"username": user.username}
 			}, function (error, response) {
+				overlayLoading.hide();
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}

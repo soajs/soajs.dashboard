@@ -442,12 +442,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     $modal.open({
                         templateUrl: "serviceInfoBox.html",
                         size: 'lg',
-                        backdrop: false,
+                        backdrop: true,
                         keyboard: false,
                         controller: function ($scope, $modalInstance) {
                             $scope.title = "Reloaded Registry of " + oneHost.name;
                             $scope.data = JSON.stringify(response, null, 2);
-                            setTimeout(function () {
+                            fixBackDrop();
+	                        setTimeout(function () {
                                 highlightMyCode()
                             }, 500);
                             $scope.ok = function () {
@@ -487,12 +488,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $modal.open({
                     templateUrl: "serviceInfoBox.html",
                     size: 'lg',
-                    backdrop: false,
+	                backdrop: true,
                     keyboard: false,
                     controller: function ($scope, $modalInstance) {
                         $scope.title = "Reloaded Provisioned Information of " + oneHost.name;
                         $scope.data = JSON.stringify(response, null, 2);
-                        setTimeout(function () {
+	                    fixBackDrop();
+	                    setTimeout(function () {
                             highlightMyCode()
                         }, 500);
                         $scope.ok = function () {
@@ -582,13 +584,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $modal.open({
                     templateUrl: "logBox.html",
                     size: 'lg',
-                    backdrop: false,
+                    backdrop: true,
                     keyboard: false,
                     windowClass: 'large-Modal',
                     controller: function ($scope, $modalInstance) {
                         $scope.title = "Host Logs of " + oneHost.name;
                         $scope.data = remove_special(response.data);
-
+	                    fixBackDrop();
                         setTimeout(function () {
                             highlightMyCode()
                         }, 500);
