@@ -23,7 +23,7 @@
                                 <span class="icon icon-minus" tooltip="Collapse Applications"></span>
                             </a>
 
-                            [{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
+                            <span class="icon icon-star-full" ng-if="application['dashboardAccess']"></span>[{{application['package']}}] &nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} hours )</span>
 
                             <div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys || tenant.applications.length === 1">
                                 <em>{{application['description']}}</em>

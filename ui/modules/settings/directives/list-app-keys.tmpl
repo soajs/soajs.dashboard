@@ -45,6 +45,7 @@
                                     <tr>
                                         <th colspan="2"></th>
                                         <th> External Key</th>
+                                        <th> Dashboard Access</th>
                                         <th> Expiry Date</th>
                                     </tr>
                                     <tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
@@ -59,6 +60,8 @@
                                             </a>
                                         </td>
                                         <td> {{extnlKey.extKey}}</td>
+                                        <td class="text-align-center" ng-if="extnlKey['dashboardAccess']">Yes</td>
+                                        <td class="text-align-center" ng-if="!extnlKey['dashboardAccess']">No</td>
                                         <td> {{extnlKey.expDate|date}}</td>
                                     </tr>
                                 </tbody>

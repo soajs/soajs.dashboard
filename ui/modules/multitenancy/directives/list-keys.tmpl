@@ -65,8 +65,8 @@
                                                 </a>
                                             </td>
                                             <td> {{extnlKey.extKey}}</td>
-                                            <td ng-if="extnlKey['dashboardAccess']"> Yes</td>
-                                            <td ng-if="!extnlKey['dashboardAccess']"> No</td>
+                                            <td class="text-align-center" ng-if="extnlKey['dashboardAccess']">Yes</td>
+                                            <td class="text-align-center" ng-if="!extnlKey['dashboardAccess']">No</td>
                                             <td> {{extnlKey.expDate|date}}</td>
                                         </tr>
                                     </tbody>

@@ -131,46 +131,52 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						$scope.$parent.displayAlert('danger', error.message);
 					}
 
-					response.forEach (function (oneTenant) {
-						for (var i = 0; i < tenantDbKeys.length; i++) {
-							if (oneTenant.code === tenantDbKeys[i].code) {
-								oneTenant.dashboardAccess = true;
-								for (var j = 0; j < oneTenant.applications.length; j++) {
-									for (var k = 0; k < oneTenant.applications[j].keys.length; k++) {
-										for (var l = 0; l < oneTenant.applications[j].keys[k].extKeys.length; l++) {
-											if (oneTenant.applications[j].keys[k].extKeys[l].extKey === tenantDbKeys[i].key) {
-												oneTenant.applications[j].dashboardAccess = true;
-												oneTenant.applications[j].keys[k].dashboardAccess = true;
-												oneTenant.applications[j].keys[k].extKeys[l].dashboardAccess = true;
-												break;
-											}
-										}
-									}
+					$scope.markTenantsDashboardAccess (response, tenantDbKeys, function () {
+						$scope.tenantsList = {
+							rows: response
+						};
+						$scope.tenantsList.actions = {
+							'editTenant': {
+								'label': 'Edit Tenant',
+								'command': function (row) {
+									$scope.edit_Tenant(row);
+								}
+							},
+							'delete': {
+								'label': 'Remove',
+								'commandMsg': "Are you sure you want to remove this tenant ?",
+								'command': function (row) {
+									$scope.removeTenant(row);
 								}
 							}
-						}
+						};
 					});
-					$scope.tenantsList = {
-						rows: response
-					};
-					$scope.tenantsList.actions = {
-						'editTenant': {
-							'label': 'Edit Tenant',
-							'command': function (row) {
-								$scope.edit_Tenant(row);
-							}
-						},
-						'delete': {
-							'label': 'Remove',
-							'commandMsg': "Are you sure you want to remove this tenant ?",
-							'command': function (row) {
-								$scope.removeTenant(row);
-							}
-						}
-					};
 				});
 			}
 		});
+	};
+
+	$scope.markTenantsDashboardAccess = function (tenants, tenantDbKeys, callback) {
+		tenants.forEach (function (oneTenant) {
+			for (var i = 0; i < tenantDbKeys.length; i++) {
+				if (oneTenant.code === tenantDbKeys[i].code) {
+					oneTenant.dashboardAccess = true;
+					for (var j = 0; j < oneTenant.applications.length; j++) {
+						for (var k = 0; k < oneTenant.applications[j].keys.length; k++) {
+							for (var l = 0; l < oneTenant.applications[j].keys[k].extKeys.length; l++) {
+								if (oneTenant.applications[j].keys[k].extKeys[l].extKey === tenantDbKeys[i].key) {
+									oneTenant.applications[j].dashboardAccess = true;
+									oneTenant.applications[j].keys[k].dashboardAccess = true;
+									oneTenant.applications[j].keys[k].extKeys[l].dashboardAccess = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+		callback();
 	};
 
 	$scope.listOauthUsers = function (row) {
