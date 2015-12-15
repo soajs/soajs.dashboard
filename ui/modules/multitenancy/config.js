@@ -165,7 +165,8 @@ var tenantConfig = {
 					'label': 'Package',
 					'type': 'select',
 					'tooltip': 'Choose a package for this tenant',
-					'required': false
+					'required': false,
+					'fieldMsg': 'If this tenant logs in to the dashboard, pick a package for it from the list above.'
 				}
 			]
 		},
