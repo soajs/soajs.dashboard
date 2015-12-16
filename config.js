@@ -694,6 +694,13 @@ module.exports = {
                     "type": "string",
                     "enum": ["owner", "data", "TypeThree", "TypeFour", "TypeFive"]
                 }
+            },
+            "email": {
+                "source": ['body.email'],
+                "required": true,
+                "validation": {
+                    "type": "email"
+                }
             }
         },
         "/tenant/delete": {

@@ -224,6 +224,7 @@ function buildForm(context, modal, configuration, cb) {
 				continue;
 			}
 			if (oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
+				console.log(oneEntry);
 				return false;
 			}
 		}

@@ -163,6 +163,15 @@ var tenantConfig = {
 					'required': true
 				},
 				{
+					'name': 'email',
+					'label': 'Email',
+					'type': 'email',
+					'placeholder': 'Tenant Administrator Email Address. Example: admin@tenant.com',
+					'value': '',
+					'tooltip': 'Enter Tenant Administrator Email.',
+					'required': true
+				},
+				{
 					'name': 'description',
 					'label': 'Description',
 					'type': 'textarea',
@@ -171,7 +180,15 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this tenant',
 					'required': false
-				}				
+				},
+				{
+					'name': 'package',
+					'label': 'Package',
+					'type': 'select',
+					'tooltip': 'Choose a package for this tenant',
+					'required': false,
+					'fieldMsg': 'If this tenant logs in to the dashboard, pick a package for it from the list above.'
+				}
 			]
 		},
 		'oauthUserUpdate': {
@@ -346,30 +363,7 @@ var tenantConfig = {
 					'required': false
 				}
 			]
-		},
-        'dbKey': {
-            'name': '',
-            'label': '',
-            'actions': {},
-            'entries': [
-                {
-                    'name': 'code',
-                    'label': 'Tenant Code',
-                    'type': 'text',
-                    'value': '',
-                    'tooltip': 'Enter the tenant code.',
-                    'required': true
-                },
-                {
-                    'name': 'key',
-                    'label': 'Tenant Ext Key',
-                    'type': 'text',
-                    'value': '',
-                    'tooltip': 'Enter the tenant ext key.',
-                    'required': true
-                }
-            ]
-        }
+		}
 	},
 	'permissions':{
 		'product':{
@@ -417,7 +411,6 @@ var tenantConfig = {
         'db':{
             'listKeys': ['dashboard', "/tenant/db/keys/list"],
             'addKey': ['dashboard', "/tenant/db/keys/add"],
-            'deleteKey': ['dashboard', "/tenant/db/keys/delete"]
         }
 	}
 

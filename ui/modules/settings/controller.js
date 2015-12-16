@@ -1,6 +1,6 @@
 "use strict";
 var settingsApp = soajsApp.components;
-settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi) {
+settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', 'injectFiles', function($scope, $timeout, $modal, $routeParams, $compile, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -19,16 +19,47 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.tenant =  response.tenant;
-				response.environments.forEach(function(oneEnv) {
-					$scope.availableEnv.push(oneEnv.code.toLowerCase());
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "get",
+					"routeName": "/dashboard/tenant/db/keys/list"
+				}, function (error, tenantDbKeys) {
+					if (error) {
+						$scope.$parent.displayAlert('danger', error.message);
+					} else {
+						$scope.markTenantDashboardAccess(response.tenant, tenantDbKeys, function () {
+							$scope.tenant =  response.tenant;
+							response.environments.forEach(function(oneEnv) {
+								$scope.availableEnv.push(oneEnv.code.toLowerCase());
+							});
+							if(first && first==true){
+								$scope.listOauthUsers();
+							}
+						});
+					}
 				});
-				if(first && first==true){
-					$scope.listOauthUsers();
-				}
-
 			}
 		});
+	};
+
+	$scope.markTenantDashboardAccess = function (oneTenant, tenantDbKeys, callback) {
+		for (var i = 0; i < tenantDbKeys.length; i++) {
+			if (oneTenant.code === tenantDbKeys[i].code) {
+				oneTenant.dashboardAccess = true;
+				for (var j = 0; j < oneTenant.applications.length; j++) {
+					for (var k = 0; k < oneTenant.applications[j].keys.length; k++) {
+						for (var l = 0; l < oneTenant.applications[j].keys[k].extKeys.length; l++) {
+							if (oneTenant.applications[j].keys[k].extKeys[l].extKey === tenantDbKeys[i].key) {
+								oneTenant.applications[j].dashboardAccess = true;
+								oneTenant.applications[j].keys[k].dashboardAccess = true;
+								oneTenant.applications[j].keys[k].extKeys[l].dashboardAccess = true;
+								return callback();
+							}
+						}
+					}
+				}
+			}
+		}
+		return callback();
 	};
 
 	$scope.clearOauth = function(){
@@ -642,6 +673,17 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 							if(keys[v].key === key) {
 								delete response['soajsauth'];
+								var extKeys = keys[v].extKeys;
+								for (var k = 0; k < extKeys.length; k++) {
+									if (extKeys[k].dashboardAccess && extKeys[k].dashboardAccess === true) {
+										for (var l = 0; l < response.length; l++) {
+											if (response[l].extKey === extKeys[k].extKey) {
+												response[l]['dashboardAccess'] = true;
+												break;
+											}
+										}
+									}
+								}
 								$scope.tenant.applications[j].keys[v].extKeys = response;
 							}
 						}
@@ -712,5 +754,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.getTenant( true );
+	injectFiles.injectCss("modules/settings/settings.css");
 
 }]);

@@ -1247,7 +1247,7 @@ describe("DASHBOARD UNIT Tests", function() {
 
     });
 
-    describe("products tests", function() {
+    describe.skip("products tests", function() {
         var productId;
 
         describe("product", function() {
@@ -1897,6 +1897,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         form: {
                             "code": "TSTN",
                             "name": 'test tenant',
+                            "email": 'admin@someTenant.com',
                             "description": 'this is a dummy description'
                         }
                     };
@@ -1915,7 +1916,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         }
                     };
                     executeMyRequest(params, 'tenant/add', 'post', function(body) {
-                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: code"});
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: code, email"});
 
                         done();
                     });
@@ -1926,6 +1927,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         form: {
                             "code": "TSTN",
                             "name": 'test tenant',
+                            "email": 'admin@someTenant.com',
                             "description": 'this is a dummy description'
                         }
                     };
@@ -1944,6 +1946,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.deepEqual(tenantRecord, {
                             "code": "TSTN",
                             "name": "test tenant",
+                            "email": "admin@someTenant.com",
                             "description": "this is a dummy description",
                             "applications": [],
                             "oauth": {}
@@ -1991,6 +1994,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.deepEqual(body.data, {
                             "code": "TSTN",
                             "name": "test tenant updated",
+                            "email": "admin@someTenant.com",
                             "description": "this is a dummy updated description",
                             "applications": [],
                             "oauth": {}
@@ -2066,6 +2070,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     var params = {
                         form: {
                             "code": "TSTN",
+                            "email": "admin@someTenant.com",
                             "description": 'this is a dummy description',
                             "name": "test tenant"
                         }
@@ -3480,6 +3485,248 @@ describe("DASHBOARD UNIT Tests", function() {
 
             });
         });
+
+        describe("Automatic removal of dashboard tenant keys", function () {
+
+            describe("Removal of automatically created dashboard tenant keys tests", function () {
+                var tenantCode = "DTKT";
+                var tenantId, appId, key, tenantExtKey;
+
+                function createDashboardTenantKey (cb) {
+                    var params = {
+                        uri: 'http://api.soajs.org:4000/dashboard/tenant/add',
+                        headers: {
+                            "Content-Type": "application/json",
+                            json: true,
+                            key: extKey
+                        },
+                        body: {
+                            'code': tenantCode,
+                            'name': "Dashboard Tenant Key Test",
+                            'email': "faraj.ameer@gmail.com"
+                        }
+                    };
+                    helper.requester ('post', params, function (error, body) {
+                        if (body.result === false) {
+                            assert.ifError (body.result);
+                        }
+                        assert.ok (body.data.id);
+                        tenantId = body.data.id;
+                        params = {
+                            uri: 'http://api.soajs.org:4000/dashboard/tenant/application/add',
+                            headers: {
+                                "Content-Type": "application/json",
+                                json: true,
+                                key: extKey
+                            },
+                            qs: {
+                                "id": tenantId
+                            },
+                            body: {
+                                'description': 'Test Dashboard application',
+                                '_TTL': '168',
+                                'productCode': 'DSBRD',
+                                'packageCode': 'OWNER'
+                            }
+                        };
+                        helper.requester ('post', params, function (error, body) {
+                            assert.ifError (error);
+                            assert.ok (body.data.appId);
+                            appId = body.data.appId;
+                            params = {
+                                uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/add',
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    json: true,
+                                    key: extKey
+                                },
+                                qs: {
+                                    "id": tenantId,
+                                    "appId": appId
+                                }
+                            };
+                            helper.requester ('post', params, function (error, body) {
+                                assert.ifError(error);
+                                assert.ok(body.data.key);
+                                key = body.data.key;
+                                params = {
+                                    uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        json: true,
+                                        key: extKey
+                                    },
+                                    qs: {
+                                        "id": tenantId,
+                                        "appId": appId,
+                                        "key": key
+                                    }
+                                };
+                                helper.requester('post', params, function (error, body) {
+                                    assert.ifError(error);
+                                    assert.ok(body.data.extKey);
+                                    tenantExtKey = body.data.extKey;
+                                    params = {
+                                        uri: 'http://api.soajs.org:4000/dashboard/tenant/db/keys/add',
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            json: true,
+                                            key: extKey
+                                        },
+                                        body: {
+                                            "code": tenantCode,
+                                            "extKey": tenantExtKey
+                                        }
+                                    };
+                                    helper.requester('post', params, function (error, body) {
+                                        assert.ifError(error);
+                                        assert.ok(body.data);
+                                        assert.equal(body.data, true);
+
+                                        cb();
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+                function deleteTestingTenantIfExists (cb) {
+                    mongo.count ('tenants', {'code': tenantCode}, function (error, count) {
+                        assert.ifError (error);
+
+                        if (count > 0) {
+                            mongo.remove('tenants', {'code': tenantCode}, function (error) {
+                                assert.ifError(error);
+                                cb();
+                            });
+                        } else {
+                            cb();
+                        }
+                    });
+                }
+                function deleteTenantUracDataIfExists (cb) {
+                    uracMongo.count('users', {'tenant.code': tenantCode}, function (error, count) {
+                        assert.ifError (error);
+
+                        if (count > 0) {
+                            uracMongo.remove('users', {'tenant.code': tenantCode}, function(error, data) {
+                                assert.ifError(error);
+                                uracMongo.remove('groups', {'tenant.code': tenantCode}, function(error, data) {
+                                    assert.ifError(error);
+                                    cb();
+                                });
+                            });
+                        } else {
+                            cb();
+                        }
+                    });
+                }
+                function checkIfKeyExists (code, cb) {
+                    mongo.findOne ("dashboard_extKeys", {'code': code}, function (error, result) {
+                        assert.ifError(error);
+                        if (result === null){
+                            cb(null, true);
+                        } else {
+                            cb (null, false);
+                        }
+                    });
+                }
+
+                beforeEach ("remove test tenant if it exists and recreate it", function (done) {
+                    deleteTestingTenantIfExists (function () {
+                        deleteTenantUracDataIfExists (function () {
+                            createDashboardTenantKey (function () {
+                                done();
+                            });
+                        });
+                    });
+                });
+
+                it("success - will automatically delete dashboard key when tenant gets deleted", function (done) {
+                    var params = {
+                        qs: {
+                            'id': tenantId
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/delete', 'get', function (body) {
+                        if (body.result === false)
+                            assert.ifError(body);
+
+                        checkIfKeyExists(tenantCode, function (error, deleted) {
+                            assert.ifError (error);
+                            assert.ok (deleted);
+                            assert.equal (deleted, true);
+                            done();
+                        });
+                    });
+                });
+
+                it("success - will automatically delete dashboard key when application gets deleted", function (done) {
+                    var params = {
+                        qs: {
+                            "id": tenantId,
+                            "appId": appId
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/application/delete', 'get', function (body) {
+                        if (body.result === false)
+                            assert.ifError(body.result);
+
+                        checkIfKeyExists(tenantCode, function (error, deleted) {
+                            assert.ifError(error);
+                            assert.ok(deleted);
+                            assert.equal(deleted, true);
+                            done();
+                        });
+                    });
+                });
+
+                it("success - will automatically delete dashboard key when key gets deleted", function (done) {
+                    var params = {
+                        qs: {
+                            "id": tenantId,
+                            "appId": appId,
+                            "key": key
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+                        if (body.result === false)
+                            assert.ifError(body.result);
+
+                        checkIfKeyExists(tenantCode, function (error, deleted) {
+                            assert.ifError(error);
+                            assert.ok(deleted);
+                            assert.equal(deleted, true);
+                            done();
+                        });
+                    });
+                });
+
+                it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
+                    var params = {
+                        qs: {
+                            "id": tenantId,
+                            "appId": appId,
+                            "key": key
+                        },
+                        form: {
+                            "extKey": tenantExtKey
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
+                        if (body.result === false)
+                            assert.ifError(body.result);
+
+                        checkIfKeyExists(tenantCode, function (error, deleted) {
+                            assert.ifError(error);
+                            assert.ok(deleted);
+                            assert.equal(deleted, true);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
     });
 
     describe("testing settings for logged in users", function() {
@@ -4233,6 +4480,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         'name': 'dashboard',
                         'awareness': true,
                         'extKeyRequired': true,
+                        'image': 'soajsorg/dashboard',
                         'port': 4003,
                         'requestTimeout': 40,
                         'requestTimeoutRenewal': 8
@@ -4271,6 +4519,7 @@ describe("DASHBOARD UNIT Tests", function() {
 
     describe('mongo check db', function() {
         it('asserting environment record', function(done) {
+            process.env.SOAJS_ENV_WORKDIR = '/';//////////////////////
             mongo.findOne('environment', {"code": "DEV"}, function(error, record) {
                 assert.ifError(error);
                 assert.ok(record);
@@ -4525,6 +4774,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 assert.deepEqual(record, {
                     "code": "TSTN",
                     "name": "test tenant",
+                    "email": "admin@someTenant.com",
                     "description": "this is a dummy description"
                 });
                 done();
@@ -4554,6 +4804,138 @@ describe("DASHBOARD UNIT Tests", function() {
                     assert.ok(body.data.newKey);
                     done();
                 });
+            });
+        });
+    });
+
+    describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
+        var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
+
+        before (function (done) {
+            //get tenant/product info from db
+            mongo.findOne('tenants', {'code': "test"}, function (error, record) {
+                assert.ifError(error);
+                assert.ok(record);
+                tenantId = record._id.toString();
+                appId = record.applications[0].appId.toString();
+                key = record.applications[0].keys[0].key;
+                tenantExtKey = record.applications[0].keys[0].extKeys[0].extKey;
+                productCode = record.applications[0].product;
+                packageCode = record.applications[0].package;
+
+                mongo.findOne ('products', {'code': productCode}, function (error, record) {
+                    assert.ifError(error);
+                    assert.ok(record);
+                    productId = record._id.toString();
+
+                    done();
+                });
+            });
+        });
+
+        it("success - prevent from deleting tenant", function (done) {
+            params = {
+                qs: {
+                    "id": tenantId
+                }
+            };
+
+            executeMyRequest(params, 'tenant/delete', 'get', function (body) {
+                assert.ok(body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 462, "message": errorCodes[462]});
+                done();
+            });
+        });
+
+        it("success - prevent from deleting application", function (done) {
+            params = {
+                qs: {
+                    "id": tenantId,
+                    "appId": appId
+                }
+            };
+            executeMyRequest(params, 'tenant/application/delete', 'get', function (body) {
+                assert.ok(body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 463, "message": errorCodes[463]});
+                done();
+            });
+        });
+
+        it("success - prevent from deleting key", function (done) {
+            params = {
+                qs: {
+                    "id": tenantId,
+                    "appId": appId,
+                    "key": key
+                }
+            };
+            executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+                assert.ok(body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 464, "message": errorCodes[464]});
+                done();
+            });
+        });
+
+        it("success - prevent from deleting extKey", function (done) {
+            params = {
+                qs: {
+                    "id": tenantId,
+                    "appId": appId,
+                    "key": key
+                },
+                form: {
+                    "extKey": tenantExtKey
+                }
+            };
+            executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
+                assert.ok(body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 465, "message": errorCodes[465]});
+                done();
+            });
+        });
+
+        it("success - prevent from deleting product", function (done) {
+            params = {
+                qs: {
+                    'id': productId
+                }
+            };
+            executeMyRequest(params, 'product/delete', 'get', function (body) {
+                assert.ok (body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 466, "message": errorCodes[466]});
+                done();
+            });
+        });
+
+        it("success - prevent from deleting package", function (done) {
+            params = {
+                qs: {
+                    'id': productId,
+                    'code': packageCode.split("_")[1]
+                }
+            };
+            executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+                assert.ok(body);
+                if (body.result === false)
+                    assert.ifError(body.result);
+
+                assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
+                done();
             });
         });
     });

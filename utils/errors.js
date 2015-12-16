@@ -69,6 +69,13 @@ var errors = {
 	"460": "Unable to find product",
 	"461": "Unable to find package",
 
+	"462": "You are not allowed to remove the tenant you are currently logged in with",
+	"463": "You are not allowed to remove the application you are currently logged in with",
+	"464": "You are not allowed to remove the key you are currently logged in with",
+	"465": "You are not allowed to remove the external key you are currently logged in with",
+	"466": "You are not allowed to remove the product you are currently logged in with",
+	"467": "You are not allowed to remove the package you are currently logged in with",
+
 	"500": "This record is locked. You cannot delete it",
 	"501": "This record is locked. You cannot modify or delete it",
 	"502": "Invalid cluster name provided",
