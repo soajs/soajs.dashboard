@@ -78,6 +78,28 @@ var tenantConfig = {
 					'required': true
 				},
 				{
+					'name': 'type',
+					'label': 'Role',
+					'type': 'select',
+					'value': [
+						{
+							'v': 'admin',
+							'l': 'Administration Tenant'
+						},
+						{
+							'v': 'product',
+							'l': 'Product Tenant'
+						},
+						{
+							'v': 'client',
+							'l': 'Client Tenant'
+						}
+					],
+					'tooltip': 'Choose Tenant Role',
+					'required': true,
+					'fieldMsg': 'Specify where this tenant is used'
+				},
+				{
 					'name': 'name',
 					'label': 'Name',
 					'type': 'text',
@@ -95,6 +117,15 @@ var tenantConfig = {
 					'value': '',
 					'tooltip': 'Enter a description explaining the usage of this tenant',
 					'required': false
+				},
+				{
+					'name': 'tag',
+					'label': 'Tag',
+					'type': 'text',
+					'placeholder': 'Example: testing',
+					'tooltip': 'Optional: Choose a tag to better organize your tenants',
+					'required': false,
+					'fieldMsg': 'Choose a tag to better organize your tenants.'
 				},
 				{
 					'name': 'secret',
@@ -125,33 +156,26 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'type',
-					'label': 'Type',
+					'label': 'Role',
 					'type': 'select',
 					'value': [
 						{
-							'v': 'owner',
-							'l': 'Owner Tenant',
+							'v': 'admin',
+							'l': 'Administration Tenant'
+						},
+						{
+							'v': 'product',
+							'l': 'Product Tenant'
+						},
+						{
+							'v': 'client',
+							'l': 'Client Tenant',
 							'selected': true
-						},
-						{
-							'v': 'data',
-							'l': 'Data Tenant'
-						},
-						{
-							'v': 'TypeThree',
-							'l': 'Type 3'
-						},
-						{
-							'v': 'TypeFour',
-							'l': 'Type 4'
-						},
-						{
-							'v': 'TypeFive',
-							'l': 'Type 5'
 						}
 					],
-					'tooltip': 'Choose Tenant Type',
-					'required': true
+					'tooltip': 'Choose Tenant Role',
+					'required': true,
+					'fieldMsg': 'Specify where this tenant is used'
 				},
 				{
 					'name': 'name',
@@ -188,6 +212,15 @@ var tenantConfig = {
 					'tooltip': 'Choose a package for this tenant',
 					'required': false,
 					'fieldMsg': 'If this tenant logs in to the dashboard, pick a package for it from the list above.'
+				},
+				{
+					'name': 'tag',
+					'label': 'Tag',
+					'type': 'text',
+					'placeholder': 'Example: testing',
+					'tooltip': 'Optional: Choose a tag to better organize your tenants',
+					'required': false,
+					'fieldMsg': 'Choose a tag to better organize your tenants.'
 				}
 			]
 		},

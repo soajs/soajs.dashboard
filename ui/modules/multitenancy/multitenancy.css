@@ -5,3 +5,9 @@
 .text-align-center {
     text-align: center !important;
 }
+
+.text-field-align-right {
+    float: right !important;
+    width: 250px !important;
+    margin-top:5px !important;
+}

@@ -8,24 +8,19 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 
 	$scope.tenantTabs = [
 		{
-			'label': 'Owner Tenants',
-			'type': 'owner'
+			'label': 'Administration',
+			'type': 'admin',
+			'tenants': []
 		},
 		{
-			'label': 'Data Tenants',
-			'type': 'data'
+			'label': 'Product',
+			'type': 'product',
+			'tenants': []
 		},
 		{
-			'label': 'TypeThree Tenants',
-			'type': 'TypeThree'
-		},
-		{
-			'label': 'TypeFour Tenants',
-			'type': 'TypeFour'
-		},
-		{
-			'label': 'TypeFive Tenants',
-			'type': 'TypeFive'
+			'label': 'Client',
+			'type': 'client',
+			'tenants': []
 		}
 	];
 
@@ -56,6 +51,22 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	};
 
 	$scope.removeAppKey = function (id, app, key, event) {
+		//check if key has dashboard access, if yes: set dashboardAccess of tenant to false
+		$scope.tenantsList.rows.forEach (function (oneTenant) {
+			if (oneTenant._id === id && oneTenant.dashboardAccess) {
+				oneTenant.applications.forEach (function (oneApp) {
+					if (oneApp.appId === app.appId && oneApp.dashboardAccess) {
+						oneApp.keys.forEach (function (oneKey) {
+							if (oneKey.key === key && oneKey.dashboardAccess) {
+								oneTenant.dashboardAccess = false;
+								oneApp.dashboardAccess = false;
+							}
+						});
+					}
+				});
+			}
+		});
+
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/delete",
@@ -101,7 +112,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'l': p.packages[i].code,
 							'acl': p.packages[i].acl
 						});
-						if (p.packages[i].locked && p.packages[i].locked === true) {
+						if (p.locked) {
 							lockedProds.push({
 								'pckCode': p.packages[i].code,
 								'prodCode': p.code,
@@ -156,7 +167,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						$scope.$parent.displayAlert('danger', error.message);
 					}
 
-					$scope.markTenantsDashboardAccess (response, tenantDbKeys, function () {
+					$scope.markTenantsWithDashboardAccess (response, tenantDbKeys, function () {
+						$scope.splitTenantsByType(response, function (){});
 						$scope.tenantsList = {
 							rows: response
 						};
@@ -181,7 +193,25 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 	};
 
-	$scope.markTenantsDashboardAccess = function (tenants, tenantDbKeys, callback) {
+	$scope.splitTenantsByType = function (tenants, callback) {
+		//Clearing previously filled tenants arrays
+		for (var i = 0; i < $scope.tenantTabs.length; i++) {
+			$scope.tenantTabs[i].tenants = [];
+		}
+		tenants.forEach (function (oneTenant) {
+			if (!oneTenant.type) {
+				oneTenant.type = "client";
+			}
+			for (var i = 0; i < $scope.tenantTabs.length; i++) {
+				if (oneTenant.type === $scope.tenantTabs[i].type) {
+					$scope.tenantTabs[i].tenants.push (oneTenant);
+				}
+			}
+		});
+		callback();
+	};
+
+	$scope.markTenantsWithDashboardAccess = function (tenants, tenantDbKeys, callback) {
 		tenants.forEach (function (oneTenant) {
 			for (var i = 0; i < tenantDbKeys.length; i++) {
 				if (oneTenant.code === tenantDbKeys[i].code) {
@@ -250,7 +280,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		for (var i = 0; i < formConfig.entries.length; i++) {
 			keys.forEach(function (inputName) {
 				if (formConfig.entries[i].name === inputName) {
-					formConfig.entries[i].value = data[inputName];
+					if (inputName === 'type') {
+						for (var j = 0; j < formConfig.entries[i].value.length; j++) {
+							if (formConfig.entries[i].value[j].v === data[inputName]) {
+								formConfig.entries[i].value[j].selected = true;
+							}
+						}
+					} else {
+						formConfig.entries[i].value = data[inputName];
+					}
 				}
 			});
 		}
@@ -276,9 +314,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					'label': 'Update Tenant',
 					'btn': 'primary',
 					'action': function (formData) {
+						if (Array.isArray(formData.type)) var tType = formData.type[0];
+						else var tType = formData.type;
+
 						var postData = {
+							'type': tType,
 							'name': formData.name,
-							'description': formData.description
+							'description': formData.description,
+							'tag': formData.tag
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
@@ -390,12 +433,18 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					'label': 'Add Tenant',
 					'btn': 'primary',
 					'action': function (formData) {
+						var tCode = $scope.generateTenantCode(formData.name);
+						var tType = "";
+						if (Array.isArray(formData.type)) tType = formData.type[0];
+						else tType = formData.type;
+
 						var postData = {
-							'type': formData.type,
-							'code': $scope.generateTenantCode (formData.name),
+							'type': tType,
+							'code': tCode,
 							'name': formData.name,
 							'email': formData.email,
-							'description': formData.description
+							'description': formData.description,
+							'tag': formData.tag
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
@@ -404,7 +453,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						}, function (error, response) {
 
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.$parent.displayAlert('danger', error.message);
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listTenants();
 							}
 							else {
 								var tId = response.id;
@@ -424,7 +476,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										"params": {"id": tId}
 									}, function (error, response) {
 										if (error) {
-											$scope.form.displayAlert('danger', error.message);
+											$scope.$parent.displayAlert('danger', error.message);
+											$scope.modalInstance.close();
+											$scope.form.formData = {};
+											$scope.listTenants();
 										}
 										else {
 											var appId = response.appId;
@@ -434,7 +489,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 												"params": {"id": tId, "appId": appId}
 											}, function (error, response) {
 												if (error) {
-													$scope.mt.displayAlert('danger', error.message, tId);
+													$scope.$parent.displayAlert('danger', error.message, tId);
+													$scope.modalInstance.close();
+													$scope.form.formData = {};
+													$scope.listTenants();
 												}
 												else {
 													var key = response.key;
@@ -443,32 +501,18 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 														"routeName": "/dashboard/tenant/application/key/ext/add",
 														"data": postData,
 														"params": {"id": tId, "appId": appId, "key": key}
-													}, function (error, response) {
+													}, function (error) {
 														if (error) {
-															$scope.form.displayAlert('danger', error.message, tId);
+															$scope.$parent.displayAlert('danger', error.message, tId);
+															$scope.modalInstance.close();
+															$scope.form.formData = {};
+															$scope.listTenants();
 														}
 														else {
-															var extKey = response.extKey;
-															var postData = {
-																'code': formData.code,
-																'extKey': extKey
-															};
-															getSendDataFromServer($scope, ngDataApi, {
-																"method": "send",
-																"routeName": "/dashboard/tenant/db/keys/add",
-																"data": postData
-															}, function (error) {
-																if (error) {
-																	$scope.form.displayAlert('danger', error.message);
-																}
-																else {
-																	$scope.$parent.displayAlert('success', 'Tenant Added Successfully.');
-																	$scope.modalInstance.close();
-																	$scope.form.formData = {};
-																	$scope.listTenants();
-																}
-															});
-
+															$scope.$parent.displayAlert('success', 'Tenant Added Successfully.');
+															$scope.modalInstance.close();
+															$scope.form.formData = {};
+															$scope.listTenants();
 														}
 													});
 
@@ -527,8 +571,20 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		} else if (tCode.length > 4) {
 			tCode = tCode.slice (0, 4);
 		}
+		tCode = tCode.toUpperCase();
 
-		return tCode.toUpperCase();
+		var counter = 1;
+		return $scope.checkTenantCodeAvailability (tName, tCode, counter);
+	};
+
+	$scope.checkTenantCodeAvailability = function (tName, tCode, counter) {
+		$scope.tenantsList.rows.forEach (function (oneTenant) {
+			if (oneTenant.code === tCode && oneTenant.name !== tName) {
+				tCode = tCode.slice (0, 3) + counter++;
+				return $scope.checkTenantCodeAvailability (tName, tCode, counter);
+			}
+		});
+		return tCode;
 	};
 
 	$scope.reloadOauthUsers = function (tId) {
@@ -838,6 +894,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			else {
 				for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
 					if ($scope.tenantsList.rows[i]['_id'] === tId) {
+						var currentApps = $scope.tenantsList.rows[i].applications;
+						response.forEach (function (app) {
+							for (var i = 0; i < currentApps.length; i++) {
+								if (app.appId === currentApps[i].appId && currentApps[i].dashboardAccess) {
+									app.dashboardAccess = true;
+									break;
+								}
+							}
+						});
 						$scope.tenantsList.rows[i].applications = response;
 						break;
 					}
@@ -847,6 +912,17 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	};
 
 	$scope.removeTenantApplication = function (tId, appId) {
+		//check if application has dashboard access, if yes: set dashboardAccess of tenant to false
+		$scope.tenantsList.rows.forEach (function (oneTenant) {
+			if (oneTenant._id === tId && oneTenant.dashboardAccess) {
+				oneTenant.applications.forEach (function (oneApp) {
+					if (oneApp.appId === appId && oneApp.dashboardAccess) {
+						oneTenant.dashboardAccess = false;
+					}
+				});
+			}
+		});
+
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/delete",
@@ -1195,17 +1271,23 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 									if (keys[v].key === key) {
 										delete response['soajsauth'];
 										//$scope.tenantsList.rows[i].applications[j].keys[v]=
-										var extKeys = keys[v].extKeys;
-										for (var k = 0; k < extKeys.length; k++) {
-											if (extKeys[k].dashboardAccess && extKeys[k].dashboardAccess === true) {
-												for (var l = 0; l < response.length; l++) {
-													if (response[l].extKey === extKeys[k].extKey) {
-														response[l]['dashboardAccess'] = true;
-														break;
-													}
-												}
+										var dashboardAccess = false;
+										response.forEach (function (extKeyObj) {
+											if (extKeyObj.dashboardAccess) {
+												$scope.tenantsList.rows[i].dashboardAccess = true;
+												$scope.tenantsList.rows[i].applications[j].dashboardAccess = true;
+												$scope.tenantsList.rows[i].applications[j].keys[v].dashboardAccess = true;
+												dashboardAccess = true;
 											}
+										});
+
+										//in case tenant previously had an external key with dashboard access but now is deleted
+										if (!dashboardAccess && $scope.tenantsList.rows[i].dashboardAccess) {
+											$scope.tenantsList.rows[i].dashboardAccess = false;
+											$scope.tenantsList.rows[i].applications[j].dashboardAccess = false;
+											$scope.tenantsList.rows[i].applications[j].keys[v].dashboardAccess = false;
 										}
+
 										$scope.tenantsList.rows[i].applications[j].keys[v].extKeys = response;
 									}
 								}
@@ -1235,6 +1317,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						for (var j = 0; j < apps.length; j++) {
 
 							if (apps[j].appId === appId) {
+								var currentKeys = $scope.tenantsList.rows[i].applications[j].keys;
+								response.forEach (function (keyObj) {
+									for (var i = 0; i < currentKeys.length; i++) {
+										if (keyObj.key === currentKeys[i].key && currentKeys[i].dashboardAccess) {
+											keyObj.dashboardAccess = true;
+											break;
+										}
+									}
+								});
 								$scope.tenantsList.rows[i].applications[j].keys = response;
 								break;
 							}

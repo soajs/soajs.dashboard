@@ -5,7 +5,7 @@ var multitenancyNav =[
 		'label': 'Multi-Tenancy',
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/tenant/list'
+			'route':'/product/list'
 		},
 		'url': '#/multi-tenancy',
 		'tplPath': 'modules/multitenancy/directives/list.tmpl',

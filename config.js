@@ -584,8 +584,7 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric",
-                    "maxLength": 5
+                    "format": "alphanumeric"
                 }
             }
         },
@@ -629,8 +628,7 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric",
-                    "maxLength": 6
+                    "format": "alphanumeric"
                 }
             }
         },
@@ -645,8 +643,7 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric",
-                    "maxLength": 6
+                    "format": "alphanumeric"
                 }
             }
         },
@@ -670,6 +667,14 @@ module.exports = {
                 "l": "List Tenants",
                 "group": "Tenant",
                 "groupMain": true
+            },
+            "type": {
+                "source": ['query.type'],
+                "required": false,
+                "validation": {
+                    "type": "string",
+                    "enum": ["admin", "product", "client"]
+                }
             }
         },
         "/tenant/add": {
@@ -687,19 +692,27 @@ module.exports = {
                     "maxLength": 4
                 }
             },
-            "type": {
-                "source": ['body.type'],
-                "required": true,
-                "validation": {
-                    "type": "string",
-                    "enum": ["owner", "data", "TypeThree", "TypeFour", "TypeFive"]
-                }
-            },
             "email": {
                 "source": ['body.email'],
                 "required": true,
                 "validation": {
                     "type": "email"
+                }
+            },
+            "type": {
+                "source": ['body.type'],
+                "required": false,
+                "default": "client",
+                "validation": {
+                    "type": "string",
+                    "enum": ["admin", "product", "client"]
+                }
+            },
+            "tag": {
+                "source": ['body.tag'],
+                "required": false,
+                "validation": {
+                    "type": "string"
                 }
             }
         },
@@ -722,7 +735,23 @@ module.exports = {
                 "l": "Update Tenant",
                 "group": "Tenant"
             },
-            "commonFields": ['id', 'name', 'description']
+            "commonFields": ['id', 'name', 'description'],
+            "type": {
+                "source": ['body.type'],
+                "required": false,
+                "default": "client",
+                "validation": {
+                    "type": "string",
+                    "enum": ["admin", "product", "client"]
+                }
+            },
+            "tag": {
+                "source": ['body.tag'],
+                "required": false,
+                "validation": {
+                    "type": "string"
+                }
+            }
         },
 
         "/tenant/oauth/list": {

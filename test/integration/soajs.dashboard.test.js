@@ -1892,7 +1892,7 @@ describe("DASHBOARD UNIT Tests", function() {
 
             describe("add tenant tests", function() {
 
-                it("success - will add tenant", function(done) {
+                it("success - will add tenant and set type to client by default", function(done) {
                     var params = {
                         form: {
                             "code": "TSTN",
@@ -1948,6 +1948,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "name": "test tenant",
                             "email": "admin@someTenant.com",
                             "description": "this is a dummy description",
+                            "type": "client",
                             "applications": [],
                             "oauth": {}
                         });
@@ -1996,6 +1997,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "name": "test tenant updated",
                             "email": "admin@someTenant.com",
                             "description": "this is a dummy updated description",
+                            "type": "client",
                             "applications": [],
                             "oauth": {}
                         });
@@ -2066,6 +2068,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         done();
                     });
                 });
+
                 it("success - will add tenant", function(done) {
                     var params = {
                         form: {
@@ -2092,6 +2095,21 @@ describe("DASHBOARD UNIT Tests", function() {
                             });
 
                         });
+                    });
+                });
+
+                it("succeess - will list tenants of type client only", function (done) {
+                    var params = {
+                        qs: {
+                            "type": "client"
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/list', 'get', function(body) {
+                        assert.ok(body.data);
+                        body.data.forEach (function (tenant) {
+                            assert.deepEqual(tenant.type, "client");
+                        });
+                        done();
                     });
                 });
             });
@@ -3566,25 +3584,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                     assert.ifError(error);
                                     assert.ok(body.data.extKey);
                                     tenantExtKey = body.data.extKey;
-                                    params = {
-                                        uri: 'http://api.soajs.org:4000/dashboard/tenant/db/keys/add',
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            json: true,
-                                            key: extKey
-                                        },
-                                        body: {
-                                            "code": tenantCode,
-                                            "extKey": tenantExtKey
-                                        }
-                                    };
-                                    helper.requester('post', params, function (error, body) {
-                                        assert.ifError(error);
-                                        assert.ok(body.data);
-                                        assert.equal(body.data, true);
-
-                                        cb();
-                                    });
+                                    cb();
                                 });
                             });
                         });
@@ -3624,7 +3624,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 function checkIfKeyExists (code, cb) {
                     mongo.findOne ("dashboard_extKeys", {'code': code}, function (error, result) {
                         assert.ifError(error);
-                        if (result === null){
+                        if (!result){
                             cb(null, true);
                         } else {
                             cb (null, false);
@@ -3703,6 +3703,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 });
 
                 it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
+                    console.log (tenantExtKey);
                     var params = {
                         qs: {
                             "id": tenantId,
@@ -4775,7 +4776,8 @@ describe("DASHBOARD UNIT Tests", function() {
                     "code": "TSTN",
                     "name": "test tenant",
                     "email": "admin@someTenant.com",
-                    "description": "this is a dummy description"
+                    "description": "this is a dummy description",
+                    "type": "client"
                 });
                 done();
             });
