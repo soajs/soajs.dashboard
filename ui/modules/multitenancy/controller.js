@@ -78,7 +78,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'l': p.packages[i].code,
 							'acl': p.packages[i].acl
 						});
-						if (p.packages[i].locked && p.packages[i].locked === true) {
+
+						if(p.locked){
 							lockedProds.push({
 								'pckCode': p.packages[i].code,
 								'prodCode': p.code,
