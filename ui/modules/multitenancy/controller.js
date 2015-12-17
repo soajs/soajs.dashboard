@@ -1,17 +1,17 @@
 "use strict";
 var multiTenantApp = soajsApp.components;
-multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, injectFiles) {
+multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', '$filter', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, injectFiles, $filter) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
 
 	$scope.tenantTabs = [
-		{
+		/*{
 			'label': 'Administration',
 			'type': 'admin',
 			'tenants': []
-		},
+		},*/
 		{
 			'label': 'Product',
 			'type': 'product',
@@ -209,6 +209,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			}
 		});
+		$scope.originalTenants = angular.copy($scope.tenantTabs);
 		callback();
 	};
 
@@ -1373,6 +1374,25 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			}
 		});
+	};
+
+	$scope.filterData = function (query, tabIndex) {
+		if (query && query !== "") {
+			query = query.toLowerCase();
+			var filtered = [];
+			var tenants = $scope.originalTenants[tabIndex].tenants;
+			for (var i = 0; i < tenants.length; i++) {
+				if (tenants[i].name.toLowerCase().indexOf(query) !== -1 || tenants[i].code.toLowerCase().indexOf(query) !== -1 || tenants[i].tag && tenants[i].tag.toLowerCase().indexOf(query) !== -1) {
+					filtered.push(tenants[i]);
+				}
+			}
+			$scope.tenantTabs[tabIndex].tenants = filtered;
+		} else {
+			if ($scope.tenantTabs && $scope.originalTenants) {
+				$scope.tenantTabs[tabIndex].tenants = $scope.originalTenants[tabIndex].tenants;
+
+			}
+		}
 	};
 
 	//default operation

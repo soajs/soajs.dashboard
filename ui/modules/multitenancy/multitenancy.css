@@ -9,5 +9,20 @@
 .text-field-align-right {
     float: right !important;
     width: 250px !important;
-    margin-top:5px !important;
+    position: absolute;
+    right: 0;
+    top: 0px;
+}
+
+.buttonSelected {
+    background-color: #d9534f !important;
+    border-color: #d43f3a !important;
+}
+
+.mr5 {
+    margin-right: 5px !important;
+}
+
+.tenantTab {
+    position: relative;
 }

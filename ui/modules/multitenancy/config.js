@@ -82,10 +82,10 @@ var tenantConfig = {
 					'label': 'Role',
 					'type': 'select',
 					'value': [
-						{
+						/*{
 							'v': 'admin',
 							'l': 'Administration Tenant'
-						},
+						},*/
 						{
 							'v': 'product',
 							'l': 'Product Tenant'
@@ -159,10 +159,10 @@ var tenantConfig = {
 					'label': 'Role',
 					'type': 'select',
 					'value': [
-						{
+						/*{
 							'v': 'admin',
 							'l': 'Administration Tenant'
-						},
+						},*/
 						{
 							'v': 'product',
 							'l': 'Product Tenant'
@@ -207,7 +207,7 @@ var tenantConfig = {
 				},
 				{
 					'name': 'package',
-					'label': 'Package',
+					'label': 'Dashboard Package',
 					'type': 'select',
 					'tooltip': 'Choose a package for this tenant',
 					'required': false,
