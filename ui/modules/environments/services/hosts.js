@@ -119,10 +119,20 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }, function (error, response) {
                         if (error || !response || !response.result || !response.data) {
                             currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
-                                                    }
+                        }
                         else {
-	                        response.data = response.data.services;
-                            propulateServices(response.data);
+                            var servicesList = Object.keys(response.data.services);
+                            var daemonsList = Object.keys(response.data.daemons);
+                            var list = {};
+                            servicesList.forEach (function (sKey) {
+                                list[sKey] = response.data.services[sKey];
+                                list[sKey].type = "service";
+                            });
+                            daemonsList.forEach (function (dKey) {
+                                list[dKey] = response.data.daemons[dKey];
+                                list[dKey].type = "daemon";
+                            });
+                            propulateServices(list);
                         }
                     });
                 }
@@ -144,7 +154,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				                'port': regServices[serviceName].port,
 				                'ips': [],
 				                'color': 'red',
-				                'healthy': false
+				                'healthy': false,
+                                'type': regServices[serviceName].type
 			                };
 		                }
 
@@ -506,6 +517,51 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function loadDaemonStats(currentScope, env, oneHost) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "daemonStats",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', "error executing Daemon Statistics test for " +
+                    oneHost.name +
+                    " on ip: " +
+                    oneHost.ip +
+                    ":" +
+                    oneHost.port +
+                    " @ " +
+                    new Date().toISOString());
+            }
+            else {
+                $modal.open({
+                    templateUrl: "serviceInfoBox.html",
+                    size: "lg",
+                    backdrop: true,
+                    keyboard: false,
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Loaded Daemon Statistics for " + oneHost.name;
+                        $scope.data = JSON.stringify(response, null, 2);
+                        fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode()
+                        }, 500);
+                        $scope.ok  =function () {
+                            $modalInstance.dismiss("ok");
+                        }
+                    }
+                })
+            }
+        });
+    }
+
     function removeHost(currentScope, env, serviceName, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "get",
@@ -856,6 +912,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'executeAwarenessTest': executeAwarenessTest,
         'reloadRegistry': reloadRegistry,
         'loadProvisioning': loadProvisioning,
+        'loadDaemonStats': loadDaemonStats,
         'removeHost': removeHost,
         'hostLogs': hostLogs,
         'infoHost': infoHost,

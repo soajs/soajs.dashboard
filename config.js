@@ -1216,7 +1216,7 @@ module.exports = {
                 "source": ['body.operation'],
                 "validation": {
                     "type": "string",
-                    "enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost']
+                    "enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost', 'daemonStats']
                 }
             },
             "serviceName": {

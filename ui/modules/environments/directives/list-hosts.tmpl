@@ -99,7 +99,9 @@
 	                    <alert type="{{serviceInfo.waitMessage.type}}" close="serviceInfo.waitMessage.close(serviceInfo)" >{{serviceInfo.waitMessage.message}}</alert>
 	                </div>
 	                <div style="width: 100%;" class="head {{serviceInfo.color}}">
-	                    <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}&nbsp;port:&nbsp;{{serviceInfo.port}}
+						<span class="icon" ng-if="serviceInfo.type === 'service'" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>
+						<span class="icon icon-evil2" ng-if="serviceInfo.type === 'daemon'"></span>
+						&nbsp;{{serviceName}}&nbsp;port:&nbsp;{{serviceInfo.port}}
 	                </div>
 	                <div class="service-ips">
 	                    <div ng-repeat="oneIp in serviceInfo.ips" class="">
@@ -114,7 +116,7 @@
 	                                            </tr>
 	                                        </thead>
 	                                        <tr>
-	                                            <td valign="top" width="20%">
+	                                            <td valign="top" width="26%">
 	                                                <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="Execute Heartbeat Operation">
 	                                                    <span class="icon icon-heart"></span>&nbsp;
 	                                                </a>
@@ -125,6 +127,10 @@
 	                                                <a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="Load Provisioning Operation">
 	                                                    <span class="icon icon-download3"></span>&nbsp;
 	                                                </a>
+
+													<a href="" ng-show="oneIp.healthy && serviceInfo.type === 'daemon'" ng-click="loadDaemonStats(envCode, oneIp)" title="Load Daemon Statistics Operation">
+														<span class="icon icon-stats-dots"></span>&nbsp;
+													</a>
 
 	                                                <a href="" ng-show="oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(envCode, serviceName, oneIp)">
 	                                                    <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;

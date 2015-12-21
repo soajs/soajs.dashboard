@@ -57,6 +57,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 		envHosts.loadProvisioning($scope, env, oneHost);
 	};
 
+	$scope.loadDaemonStats = function (env, oneHost) {
+		envHosts.loadDaemonStats($scope, env, oneHost);
+	};
+
 	$scope.removeHost = function (env, serviceName, oneHost) {
 		envHosts.removeHost($scope, env, serviceName, oneHost);
 	};
