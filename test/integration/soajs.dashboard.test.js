@@ -3198,7 +3198,7 @@ describe("DASHBOARD UNIT Tests", function() {
                 it("success - will add two external keys (using locked product) but only one with dashboard access", function (done) {
                     var extKey = "aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac";
                     var params = {
-                        uri: 'http://api.soajs.org:4000/dashboard/tenant/add',
+                        uri: 'http://localhost:4000/dashboard/tenant/add',
                         headers: {
                             "Content-Type": "application/json",
                             json: true,
@@ -3217,7 +3217,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.ifError(error);
                         assert.ok (tenant_body.data.id);
                         params = {
-                            uri: 'http://api.soajs.org:4000/dashboard/tenant/application/add',
+                            uri: 'http://localhost:4000/dashboard/tenant/application/add',
                             headers: {
                                 "Content-Type": "application/json",
                                 json: true,
@@ -3237,7 +3237,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             assert.ifError (error);
                             assert.ok (app_body.data.appId);
                             params = {
-                                uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/add',
+                                uri: 'http://localhost:4000/dashboard/tenant/application/key/add',
                                 headers: {
                                     "Content-Type": "application/json",
                                     json: true,
@@ -3252,7 +3252,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                 assert.ifError(error);
                                 assert.ok(key_body.data.key);
                                 params = {
-                                    uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
+                                    uri: 'http://localhost:4000/dashboard/tenant/application/key/ext/add',
                                     headers: {
                                         "Content-Type": "application/json",
                                         json: true,
@@ -3268,7 +3268,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                     assert.ifError(error);
                                     assert.ok(extKey_body.data.extKey);
                                     params = {
-                                        uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
+                                        uri: 'http://localhost:4000/dashboard/tenant/application/key/ext/add',
                                         headers: {
                                             "Content-Type": "application/json",
                                             json: true,
@@ -3729,7 +3729,7 @@ describe("DASHBOARD UNIT Tests", function() {
 
                 function createDashboardTenantKey (cb) {
                     var params = {
-                        uri: 'http://api.soajs.org:4000/dashboard/tenant/add',
+                        uri: 'http://localhost:4000/dashboard/tenant/add',
                         headers: {
                             "Content-Type": "application/json",
                             json: true,
@@ -3748,7 +3748,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.ok (body.data.id);
                         tenantId = body.data.id;
                         params = {
-                            uri: 'http://api.soajs.org:4000/dashboard/tenant/application/add',
+                            uri: 'http://localhost:4000/dashboard/tenant/application/add',
                             headers: {
                                 "Content-Type": "application/json",
                                 json: true,
@@ -3769,7 +3769,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             assert.ok (body.data.appId);
                             appId = body.data.appId;
                             params = {
-                                uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/add',
+                                uri: 'http://localhost:4000/dashboard/tenant/application/key/add',
                                 headers: {
                                     "Content-Type": "application/json",
                                     json: true,
@@ -3785,7 +3785,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                 assert.ok(body.data.key);
                                 key = body.data.key;
                                 params = {
-                                    uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
+                                    uri: 'http://localhost:4000/dashboard/tenant/application/key/ext/add',
                                     headers: {
                                         "Content-Type": "application/json",
                                         json: true,
