@@ -267,6 +267,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 	}
 
 	function activateMembers(currentScope) {
+		overlayLoading.show();
 		var config = {
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'active'},
@@ -277,11 +278,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		};
 
 		multiRecordUpdate(ngDataApi, currentScope, config, function() {
+			overlayLoading.hide();
 			currentScope.listMembers();
 		});
 	}
 
 	function deactivateMembers(currentScope) {
+		overlayLoading.show();
 		var config = {
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'inactive'},
@@ -292,6 +295,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		};
 
 		multiRecordUpdate(ngDataApi, currentScope, config, function() {
+			overlayLoading.hide();
 			currentScope.listMembers();
 		});
 	}

@@ -160,6 +160,9 @@ function buildForm(context, modal, configuration, cb) {
 				oneEntry.action = {};
 			}
 		}
+		if (oneEntry.type === 'json') {
+			console.log(oneEntry);
+		}
 	}
 
 	if (configuration.data) {
@@ -220,11 +223,11 @@ function buildForm(context, modal, configuration, cb) {
 		// for external keys, the form might be empty
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
+			// if (oneEntry.type === 'json') {}
 			if (oneEntry.type === 'group') {
 				continue;
 			}
 			if (oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
-				console.log(oneEntry);
 				return false;
 			}
 		}
