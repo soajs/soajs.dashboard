@@ -1247,7 +1247,7 @@ describe("DASHBOARD UNIT Tests", function() {
 
     });
 
-    describe.skip("products tests", function() {
+    describe("products tests", function() {
         var productId;
 
         describe("product", function() {
@@ -1395,7 +1395,8 @@ describe("DASHBOARD UNIT Tests", function() {
             });
 
             describe("delete product tests", function() {
-                it('fail - missing params', function(done) {
+                var tProd2;
+	            it('fail - missing params', function(done) {
                     var params = {
                         qs: {}
                     };
@@ -1417,13 +1418,30 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
 
+	            it("success - will add product again", function(done) {
+		            var params = {
+			            form: {
+				            "code": "TPRO2",
+				            "name": 'test product 2',
+				            "description": 'this is a dummy description'
+			            }
+		            };
+		            executeMyRequest(params, 'product/add', 'post', function(body) {
+			            assert.ok(body.data);
+			            mongo.findOne('products', {'code': 'TPRO2'}, function(error, productRecord) {
+				            assert.ifError(error);
+				            tProd2 = productRecord._id.toString();
+				            done();
+			            });
+		            });
+	            });
+
                 it("success - will delete product", function(done) {
                     var params = {
-                        qs: {'id': productId}
+                        qs: {'id': tProd2}
                     };
                     executeMyRequest(params, 'product/delete', 'get', function(body) {
                         assert.ok(body.data);
-
                         done();
                     });
                 });
@@ -1432,35 +1450,13 @@ describe("DASHBOARD UNIT Tests", function() {
                     mongo.find('products', {}, {}, function(error, records) {
                         assert.ifError(error);
                         assert.ok(records);
-                        assert.equal(records.length, 1);
+                        assert.equal(records.length, 2);
                         done();
                     });
                 });
             });
 
             describe("list product tests", function() {
-                it("success - will get empty list", function(done) {
-                    executeMyRequest({}, 'product/list', 'get', function(body) {
-                        assert.ok(body.data);
-                        assert.equal(body.data.length, 1);
-
-                        done();
-                    });
-                });
-                it("success - will add product", function(done) {
-                    var params = {
-                        form: {
-                            "code": "TPROD",
-                            "description": 'this is a dummy description',
-                            "name": "test product"
-                        }
-                    };
-                    executeMyRequest(params, 'product/add', 'post', function(body) {
-                        assert.ok(body.data);
-
-                        done();
-                    });
-                });
                 it("success - will list product", function(done) {
                     executeMyRequest({}, 'product/list', 'get', function(body) {
                         assert.ok(body.data);
@@ -1470,8 +1466,8 @@ describe("DASHBOARD UNIT Tests", function() {
                         delete body.data[1]._id;
                         assert.deepEqual(body.data[1], {
                             "code": "TPROD",
-                            "name": "test product",
-                            "description": "this is a dummy description",
+                            "name": "test product updated",
+                            "description": "this is a dummy updated description",
                             "packages": []
                         });
                         done();
@@ -1600,7 +1596,8 @@ describe("DASHBOARD UNIT Tests", function() {
                 });
 
             });
-            describe("get prod package tests", function() {
+
+	        describe("get prod package tests", function() {
                 it('success - product/packages/get', function(done) {
                     var params = {
                         qs: {
@@ -1786,13 +1783,12 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
 
-                it("success - will delete package", function(done) {
+                it("fail - cannot delete package being used by current key", function(done) {
                     var params = {
                         qs: {"id": productId, 'code': 'BASIC'}
                     };
                     executeMyRequest(params, 'product/packages/delete', 'get', function(body) {
-                        assert.ok(body.data);
-
+                        assert.ok(body.errors);
                         done();
                     });
                 });
@@ -1802,50 +1798,50 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.ifError(error);
                         assert.ok(records);
                         assert.equal(records.length, 2);
-                        assert.equal(records[1].packages.length, 0);
+                        assert.equal(records[1].packages.length, 1);
                         done();
                     });
                 });
             });
 
             describe("list package tests", function() {
-                it("success - will get empty list", function(done) {
-                    var params = {
-                        qs: {"id": productId}
-                    };
-                    executeMyRequest(params, 'product/packages/list', 'get', function(body) {
-                        assert.ok(body.data);
-                        assert.equal(body.data.length, 0);
-
-                        done();
-                    });
-                });
-                it("success - will add package", function(done) {
-                    var params = {
-                        qs: {"id": productId},
-                        form: {
-                            "code": "BASIC",
-                            "name": "basic package",
-                            "description": 'this is a dummy description',
-                            "_TTL": '12',
-                            "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    };
-                    executeMyRequest(params, 'product/packages/add', 'post', function(body) {
-                        assert.ok(body.data);
-
-                        done();
-                    });
-                });
+                //it("success - will get empty list", function(done) {
+                //    var params = {
+                //        qs: {"id": productId}
+                //    };
+                //    executeMyRequest(params, 'product/packages/list', 'get', function(body) {
+                //        assert.ok(body.data);
+                //        assert.equal(body.data.length, 0);
+                //
+                //        done();
+                //    });
+                //});
+                //it("success - will add package", function(done) {
+                //    var params = {
+                //        qs: {"id": productId},
+                //        form: {
+                //            "code": "BASIC",
+                //            "name": "basic package",
+                //            "description": 'this is a dummy description',
+                //            "_TTL": '12',
+                //            "acl": {
+                //                "urac": {
+                //                    'access': false,
+                //                    'apis': {
+                //                        '/account/changeEmail': {
+                //                            'access': true
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //        }
+                //    };
+                //    executeMyRequest(params, 'product/packages/add', 'post', function(body) {
+                //        assert.ok(body.data);
+                //
+                //        done();
+                //    });
+                //});
                 it("success - will list package", function(done) {
                     var params = {
                         qs: {"id": productId, 'code': 'BASIC'}
@@ -1855,9 +1851,9 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.equal(body.data.length, 1);
                         assert.deepEqual(body.data[0], {
                             "code": "TPROD_BASIC",
-                            "name": "basic package",
-                            "description": "this is a dummy description",
-                            "_TTL": 12 * 3600 * 1000,
+                            "name": "basic package 2",
+                            "description": "this is a dummy updated description",
+                            "_TTL": 24 * 3600 * 1000,
                             "acl": {
                                 "urac": {
                                     'access': false,
@@ -1946,7 +1942,6 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.deepEqual(tenantRecord, {
                             "code": "TSTN",
                             "name": "test tenant",
-                            "email": "admin@someTenant.com",
                             "description": "this is a dummy description",
                             "type": "client",
                             "applications": [],
@@ -1995,7 +1990,6 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.deepEqual(body.data, {
                             "code": "TSTN",
                             "name": "test tenant updated",
-                            "email": "admin@someTenant.com",
                             "description": "this is a dummy updated description",
                             "type": "client",
                             "applications": [],
@@ -4481,7 +4475,6 @@ describe("DASHBOARD UNIT Tests", function() {
                         'name': 'dashboard',
                         'awareness': true,
                         'extKeyRequired': true,
-                        'image': 'soajsorg/dashboard',
                         'port': 4003,
                         'requestTimeout': 40,
                         'requestTimeoutRenewal': 8
@@ -4520,7 +4513,6 @@ describe("DASHBOARD UNIT Tests", function() {
 
     describe('mongo check db', function() {
         it('asserting environment record', function(done) {
-            process.env.SOAJS_ENV_WORKDIR = '/';//////////////////////
             mongo.findOne('environment', {"code": "DEV"}, function(error, record) {
                 assert.ifError(error);
                 assert.ok(record);
@@ -4674,13 +4666,13 @@ describe("DASHBOARD UNIT Tests", function() {
 	            console.log("************************");
                 assert.deepEqual(record, {
                     "code": "TPROD",
-                    "name": "test product",
-                    "description": "this is a dummy description",
+                    "name": "test product updated",
+                    "description": "this is a dummy updated description",
                     "packages": [
                         {
                             "code": "TPROD_BASIC",
-                            "name": "basic package",
-                            "description": "this is a dummy description",
+                            "name": "basic package 2",
+                            "description": "this is a dummy updated description",
                             "acl": {
                                 "urac": {
                                     'access': false,
@@ -4699,7 +4691,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                     //]
                                 }
                             },
-                            "_TTL": 12 * 3600 * 1000
+                            "_TTL": 24 * 3600 * 1000
                         }
                     ]
                 });
@@ -4775,7 +4767,6 @@ describe("DASHBOARD UNIT Tests", function() {
                 assert.deepEqual(record, {
                     "code": "TSTN",
                     "name": "test tenant",
-                    "email": "admin@someTenant.com",
                     "description": "this is a dummy description",
                     "type": "client"
                 });
