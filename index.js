@@ -287,11 +287,6 @@ service.init(function() {
         tenant.listDashboardKeys(config, mongo, req, res);
     });
 
-    service.post("/tenant/db/keys/add", function(req, res){
-        checkForMongo(req);
-        tenant.addDashboardKey(config, mongo, req, res);
-    });
-
 	/**
 	 * Hosts features
 	 */
