@@ -36,6 +36,7 @@
     "docker-mock": "*"
   },
   "dependencies": {
+    "async": "*",
     "ncp": "*",
     "dockerode": "*",
     "object-hash": "*",
