@@ -1,6 +1,6 @@
 "use strict";
 var multiTenantApp = soajsApp.components;
-multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', '$filter', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, injectFiles, $filter) {
+multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};

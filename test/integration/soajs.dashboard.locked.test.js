@@ -545,48 +545,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 	describe("dashboard keys tests", function () {
 
-		it("fail - wrong code", function (done) {
-			executeMyRequest({
-				'form': {
-					"code": "mike",
-					"extKey": extKey
-				}
-			}, 'tenant/db/keys/add', 'post', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				assert.equal(body.errors.codes[0], 454);
-				done();
-			});
-		});
-
-		it("fail - wrong ext Key", function (done) {
-			executeMyRequest({
-				'form': {
-					"code": "DBTN",
-					"extKey": "1234"
-				}
-			}, 'tenant/db/keys/add', 'post', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				assert.equal(body.errors.codes[0], 453);
-				done();
-			});
-		});
-
-		it("fail - ext Key exists", function (done) {
-			executeMyRequest({
-				'form': {
-					"code": "DBTN",
-					"extKey": "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974"
-				}
-			}, 'tenant/db/keys/add', 'post', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				assert.equal(body.errors.codes[0], 705);
-				done();
-			});
-		});
-
 		var keys = [];
 		it("success - ext Key list", function (done) {
 			executeMyRequest({}, 'tenant/db/keys/list', 'get', function (body) {
@@ -594,56 +552,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				assert.ok(body.data);
 				assert.equal(body.data.length, 2);
 				keys = body.data;
-				done();
-			});
-		});
-
-		it("fail - ext Key delete invalid id", function (done) {
-			executeMyRequest({
-				'qs': {
-					'id': '12345'
-				}
-			}, 'tenant/db/keys/delete', 'get', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				assert.equal(body.errors.codes[0], 701);
-				done();
-			});
-		});
-
-		it("success - ext Key delete", function (done) {
-			var id;
-			keys.forEach(function (oneK) {
-				if (oneK.code === 'DBTN') {
-					id = oneK._id.toString()
-				}
-			});
-			executeMyRequest({
-				'qs': {
-					'id': id
-				}
-			}, 'tenant/db/keys/delete', 'get', function (body) {
-				assert.equal(body.result, true);
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("success - ext Key add", function (done) {
-			var poster;
-			keys.forEach(function (oneK) {
-				if (oneK.code === 'DBTN') {
-					poster = {
-						"code": oneK.code,
-						"extKey": oneK.key
-					}
-				}
-			});
-			executeMyRequest({
-				'form': poster
-			}, 'tenant/db/keys/add', 'post', function (body) {
-				assert.equal(body.result, true);
-				assert.ok(body.data);
 				done();
 			});
 		});
