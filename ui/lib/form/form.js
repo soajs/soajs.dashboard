@@ -160,9 +160,6 @@ function buildForm(context, modal, configuration, cb) {
 				oneEntry.action = {};
 			}
 		}
-		if (oneEntry.type === 'json') {
-			console.log(oneEntry);
-		}
 	}
 
 	if (configuration.data) {
