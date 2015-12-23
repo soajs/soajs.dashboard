@@ -1128,6 +1128,117 @@ module.exports = {
             }
         },
 
+        "/daemons/list": {
+            _apiInfo: {
+                "l": "List Daemons",
+                "group": "Daemons"
+            },
+            'daemonNames': {
+                'source': ['body.daemonNames'],
+                'required': false,
+                'validation': {
+                    'type': 'array',
+                    'items': {'type': 'string'}
+                }
+            }
+        },
+        "/daemons/add": {
+            _apiInfo: {
+                "l": "Add Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['port'],
+            'name': {
+                'source': ['body.name'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+        "/daemons/update": {
+            _apiInfo: {
+                "l": "Update Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'port'],
+            'name': {
+                'source': ['body.name'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+        "/daemons/delete": {
+            _apiInfo: {
+                "l": "Delete Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['id']
+        },
+
+        "/daemons/groupConfig/list": {
+            _apiInfo: {
+                "l": "List Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'grpConfNames': {
+                'source': ['body.grpConfNames'],
+                'required': false,
+                'validation': {
+                    'type': 'array',
+                    'items': {'type': 'string'}
+                }
+            }
+        },
+        "/daemons/groupConfig/add": {
+            _apiInfo: {
+                "l": "Add Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'groupName': {
+                'source': ['body.groupName'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'interval': {
+                'source': ['body.interval'],
+                'required': true,
+                'validation': {
+                    'type': 'number'
+                }
+            },
+            'execution': {
+                'source': ['body.execution'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+        "/daemons/groupConfig/update": {
+            _apiInfo: {
+                "l": "Update Daemon Group Configuration",
+                "group": "Daemons"
+            }
+        },
+        "/daemons/groupConfig/delete": {
+            _apiInfo: {
+                "l": "Delete Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'id': {
+                'source': ['query.id'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+
         "/hosts/list": {
             _apiInfo: {
                 "l": "List Hosts",

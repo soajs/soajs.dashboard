@@ -1,0 +1,61 @@
+<section ng-controller="daemonsCtrl">
+    <tabset>
+        <tab heading="Daemons">
+            <a ng-if="access.daemons.addDaemon" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemon()" class="btn btn-primary">Create Daemon</a><br/><br/>
+            <div class="entryBoxes">
+                <div id="d_{{daemon._id}}" ng-repeat="daemon in grid.rows" class="entryBox" ng-init="daemon.hide = true">
+                    <div class="header closed"><a href="" ng-click="showHide(daemon)"><span class="icon icon-{{daemon.icon || 'plus'}}"></span></a>{{daemon['name']|uppercase}}<span>[ {{daemon['port']}} ]</span></div>
+                    <div class="body grid">
+                        <fieldset>
+                            <legend>Jobs</legend>
+                            <table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
+                                <tbody>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Service Config</th>
+                                        <th>Tenant External Keys</th>
+                                    </tr>
+                                    <tr ng-repeat="(name, data) in daemon.jobs">
+                                        <td>{{name}}</td>
+                                        <td>{{data.type}}</td>
+                                        <td>{{data.serviceConfig}}</td>
+                                        <td>{{data.tenantExtKeys}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--<alert type="warning" ng-if="daemon.jobs | nonEmpty">No jobs found for {{daemon.name}}.</alert>-->
+                        </fieldset>
+                    </div>
+                    <div class="entryAction">
+                        <a href="" ng-click="updateDaemon(daemon);" ng-if="access.daemons.updateDaemon">
+                            <span class="icon icon-pencil2" tooltip="Edit Daemon"></span>
+                        </a>
+                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.deleteDaemon">
+                            <span class="icon icon-cross" tooltip="Delete Daemon"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Daemon Groups">
+            <a ng-if="access.daemonGroupConfig.addDaemonGroupConfig" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemonGroupConfig()" class="btn btn-primary">Add Group Config</a><br/><br/>
+            <div class="entryBoxes entryBoxesGrid">
+                <div ng-repeat="grpConf in groupConfigs.rows" class="dbBox">
+                    <div class="head">
+                        <h4>{{grpConf.daemonConfigGroup}}</h4>
+                        <span class="rightActions">
+	                        <a ng-if="access.daemonGroupConfig.updateDaemonGroupConfig" href="" ng-click="updateDaemonGroupConfig(grpConf);">
+                                <span class="icon icon-pencil" tooltip="Edit Group Config"></span>
+                            </a>
+	                        <a ng-if="access.daemonGroupConfig.deleteDaemonGroupConfig" href="" ng-confirm-click="Are you sure you want to remove this group config?" ng-click="deleteDaemonGroupConfig(grpConf);">
+                                <span class="icon icon-cross" tooltip="Remove Group Config"></span>
+                            </a>
+	                    </span>
+                    </div>
+                    <div class="info2" ng-bind-html="grpConf|object"></div>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+</section>

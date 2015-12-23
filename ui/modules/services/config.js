@@ -143,10 +143,79 @@ var servicesConfig = {
 					"entries": []
 				}
 			]
+		},
+		"daemonEdit": {
+			"entries": [
+				{
+					"name": "name",
+					"label": "Name",
+					"type": "text",
+					"value": "",
+					"tooltip": "Daemon Name",
+					"required": true
+				},
+				{
+					"name": "port",
+					"label": "Port",
+					"type": "number",
+					"value": "",
+					"tooltip": "Daemon Port",
+					"required": true
+				}
+			]
+		},
+		"daemonGroupEdit": {
+			"entries": [
+				{
+					"name": "groupName",
+					"label": "Config Group Name",
+					"type": "text",
+					"value": "",
+					"tooltip": "Daemon Config Group Name",
+					"required": true
+				},
+				{
+					"name": "interval",
+					"label": "Interval",
+					"type": "number",
+					"value": "",
+					"tooltip": "Interval of Execution",
+					"required": true
+				},
+				{
+					"name": "execution",
+					"label": "Execution",
+					"type": "select",
+					"value": [
+						{
+							"v": "parallel",
+							"l": "Parallel"
+						},
+						{
+							"v": "sequential",
+							"l": "Sequential"
+						}
+					],
+					"tooltip": "Execution Pattern",
+					"required": true
+				}
+			]
 		}
 	},
 	permissions:{
 		'listServices': ['dashboard', '/services/list'],
-		'update': ['dashboard', '/services/update']
+		'update': ['dashboard', '/services/update'],
+		'daemons': {
+			'listDaemons': ['dashboard', '/daemons/list'],
+			'updateDaemon': ['dashboard', '/daemons/update'],
+			'deleteDaemon': ['dashboard', '/daemons/delete'],
+			'addDaemon': ['dashboard', '/daemons/add']
+		},
+		'daemonGroupConfig': {
+			'listDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/list'],
+			'updateDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/update'],
+			'deleteDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/delete'],
+			'addDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/add']
+		}
 	}
 };
