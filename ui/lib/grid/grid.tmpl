@@ -19,7 +19,7 @@
                 </td>
                 <td align="right">
                     <div ng-show="grid.search">
-                        Search: <input class="searchInput" ng-model="grid.query" type="text" ng-click="grid.applySearch=true"/>
+                        Search: <input class="searchInput" ng-model="grid.query" type="text" ng-keyup="grid.filterData(grid.query)"/>
                         <button ng-click="grid.query=''" class="btn-filter btn btn-sm btn-danger">Clear</button>
                     </div>
                 </td>
@@ -48,7 +48,7 @@
                     <a href="" ng-class="{active:grid.sortField===column.field}" ng-click="grid.changeSort(column.field);">{{column.label}}</a>
                 </th>
             </tr>
-            <tr ng-repeat="row in grid.filteredRows | filter: grid.filterData(grid.query) | orderBy:grid.sortField:grid.reverse |limitTo: grid.itemsPerPage"
+            <tr ng-repeat="row in grid.filteredRows | orderBy:grid.sortField:grid.reverse |limitTo: grid.itemsPerPage"
                 ng-class="{'first': $first, 'last': $last, selected:row.selected}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
                 <td class='leftAction' ng-show="grid.topActions.length > 0">
                     <input ng-model="row.selected" name="IDS[]" type="checkbox" value="{{row['ID']}}"/>
