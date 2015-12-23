@@ -77,13 +77,14 @@ function buildGrid($scope, opts) {
 		};
 
 		context.grid.filterData = function(query) {
-			if(query && query !== '') {
+			if(query && query !== '' && query.length >=3) {
 				var filtered = [];
 				for(var i = 0; i < context.grid.rows.length; i++) {
 					for(var j = 0; j < context.grid.columns.length; j++) {
 						if(context.grid.rows[i][context.grid.columns[j].field] && typeof(context.grid.rows[i][context.grid.columns[j].field])=='string') {
 							if(context.grid.rows[i][context.grid.columns[j].field].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
 								filtered.push(context.grid.rows[i]);
+								break;
 							}
 						}
 					}
