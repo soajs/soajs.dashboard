@@ -20,7 +20,7 @@
                 <td align="right">
                     <div ng-show="grid.search">
                         Search: <input class="searchInput" ng-model="grid.query" type="text" ng-keyup="grid.filterData(grid.query)"/>
-                        <button ng-click="grid.query=''" class="btn-filter btn btn-sm btn-danger">Clear</button>
+                        <button ng-click="grid.query =''; grid.filterData('')" class="btn-filter btn btn-sm btn-danger">Clear</button>
                     </div>
                 </td>
             </tr>
