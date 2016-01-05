@@ -215,15 +215,14 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
-	// testAction
-	context.form.itemsAreValid = function (data) {
-		var entries = context.form.entries;
-
-		// for external keys, the form might be empty
+	function doValidateItems(entries, data){
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
 			if (oneEntry.type === 'group') {
-				continue;
+				var validation = doValidateItems(oneEntry.entries, data);
+				if(validation === false){
+					return false;
+				}
 			}
 			else if(oneEntry.type ==='radio' || oneEntry.type ==='select'){
 				if(Array.isArray(data[oneEntry.name])){
@@ -238,6 +237,12 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 		return true;
+	}
+
+	// testAction
+	context.form.itemsAreValid = function (data) {
+		var entries = context.form.entries;
+		return doValidateItems(entries, data);
 	};
 
 	context.form.toggleSelection = function (fieldName, value) {
