@@ -87,6 +87,7 @@ function buildForm(context, modal, configuration, cb) {
 			if (fieldEntry.name === inputName) {
 				if (Array.isArray(fieldEntry.value)) {
 					fieldEntry.value.forEach(function (oneValue) {
+						oneValue.selected = false;
 						if (Array.isArray(configuration.data[inputName])) {
 							if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
 								oneValue.selected = true;
@@ -190,8 +191,9 @@ function buildForm(context, modal, configuration, cb) {
 
 	context.form.do = function (functionObj) {
 		if (functionObj.type === 'submit') {
-			if (context.form.itemsAreValid()) {
-				functionObj.action(context.form.formData);
+			var data = angular.copy(context.form.formData);
+			if (context.form.itemsAreValid(data)) {
+				functionObj.action(data);
 			}
 		}
 		else {
@@ -214,17 +216,24 @@ function buildForm(context, modal, configuration, cb) {
 	};
 
 	// testAction
-	context.form.itemsAreValid = function () {
+	context.form.itemsAreValid = function (data) {
 		var entries = context.form.entries;
-		var data = context.form.formData;
+
 		// for external keys, the form might be empty
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
-			// if (oneEntry.type === 'json') {}
 			if (oneEntry.type === 'group') {
 				continue;
 			}
-			if (oneEntry.required && (!data[oneEntry.name] || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
+			else if(oneEntry.type ==='radio' || oneEntry.type ==='select' || oneEntry.type ==='multi-select'){
+				if(Array.isArray(data[oneEntry.name])){
+					data[oneEntry.name] = data[oneEntry.name][0];
+				}
+			}
+			if(data[oneEntry.name] === 'false') data[oneEntry.name] = false;
+			if(data[oneEntry.name] === 'true') data[oneEntry.name] = true;
+
+			if (oneEntry.required && (data[oneEntry.name] === null || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
 				return false;
 			}
 		}
