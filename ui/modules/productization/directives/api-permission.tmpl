@@ -1,33 +1,33 @@
-<div class="body listApis" ng-class="{openApis: aclFill[service.name].include===true && aclFill[service.name].collapse===false }">
+<div class="body listApis" ng-class="{openApis: aclFill[oneEnv.code][service.name].include===true && aclFill[oneEnv.code][service.name].collapse===false }">
     <div>
         <span>
-            <input ng-click="applyRestriction(service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill[service.name].apisRestrictPermission" ng-checked="aclFill[service.name].apisRestrictPermission===true" value="restricted"/>
+            <input ng-click="applyRestriction(oneEnv.code, service)" type="checkbox" name="apisRestrictPermission_{{service.name}}" ng-model="aclFill[oneEnv.code][service.name].apisRestrictPermission" ng-checked="aclFill[oneEnv.code][service.name].apisRestrictPermission===true" value="restricted"/>
         </span>
         <span><b>Restrict Access to Selected Apis</b></span>
         <fieldset ng-repeat="(grp, val) in service.fixList">
             <legend>{{grp}}</legend>
             <div class="clearfix apiListing-container">
-                <div class="apiListing" ng-repeat="myApi in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
+                <div class="apiListing" ng-repeat="myApis in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
                      ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
                     <div class="apiLabel">
-                        <input ng-click="checkForGroupDefault(service,grp,val,myApi)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (aclFill[service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill[service.name].apis[myApi.v].include" ng-show="aclFill[service.name].apisRestrictPermission" />{{myApi.l}}
+                        <input ng-click="checkForGroupDefault(oneEnv.code,service,grp,val,myApis)" ng-disabled="(val.defaultApi && myApis.groupMain!==true && (aclFill[oneEnv.code][service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].include" ng-show="aclFill[oneEnv.code][service.name].apisRestrictPermission" />{{myApis.l}}
                     </div>
-                    <div class="apiAccess" ng-hide="(aclFill[service.name].apisRestrictPermission && (aclFill[service.name].apis[myApi.v].include!==true))">
+                    <div class="apiAccess" ng-hide="(aclFill[oneEnv.code][service.name].apisRestrictPermission && (aclFill[oneEnv.code][service.name].apis[myApis.v].include!==true))">
                         <span style="padding-right:5px;">
-                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="clear" type="radio"/>
+                            <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="clear" type="radio"/>
                             <em style="">inherit from service</em>
                         </span>
                         <span>
-                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="public" type="radio"/> public
+                            <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="public" type="radio"/> public
                         </span>
                         <span>
-                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="private" type="radio"/> private
+                            <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="private" type="radio"/> private
                         </span>
                         <span>
-                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="owner" type="radio"/> owner
+                            <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="owner" type="radio"/> owner
                         </span>
                         <span>
-                            <input ng-model="aclFill[service.name].apis[myApi.v].accessType" value="admin" type="radio"/> administrator
+                            <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="admin" type="radio"/> administrator
                         </span>
                     </div>
                 </div>

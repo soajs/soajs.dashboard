@@ -314,7 +314,14 @@ module.exports = {
                 "l": "List Environments",
                 "group": "Environment",
                 "groupMain": true
-            }
+            },
+	        "short":{
+		        "required": false,
+		        "source":["query.short", "body.short"],
+		        "validation":{
+			        "type":"boolean"
+		        }
+	        }
         },
         "/environment/add": {
             _apiInfo: {
@@ -652,7 +659,15 @@ module.exports = {
             _apiInfo: {
                 "l": "Get Tenant Security Permissions",
                 "group": "Tenant"
-            }
+            },
+	        "envCode": {
+		        "source": ["query.envCode"],
+		        "required": false,
+		        "validation": {
+			        "type": "string",
+			        "format": "alphanumeric"
+		        }
+	        }
         },
 
         "/key/get": {
