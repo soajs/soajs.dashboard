@@ -225,7 +225,7 @@ function buildForm(context, modal, configuration, cb) {
 			if (oneEntry.type === 'group') {
 				continue;
 			}
-			else if(oneEntry.type ==='radio' || oneEntry.type ==='select' || oneEntry.type ==='multi-select'){
+			else if(oneEntry.type ==='radio' || oneEntry.type ==='select'){
 				if(Array.isArray(data[oneEntry.name])){
 					data[oneEntry.name] = data[oneEntry.name][0];
 				}
