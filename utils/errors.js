@@ -121,6 +121,24 @@ var errors = {
 	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port.",
 	"705": "Tenant already has a key to use the dashboard",
 
+	"710": "A Daemon with the same name and/or port already exists",
+	"711": "Unable to update daemon",
+	"712": "Unable to delete daemon",
+	"713": "Unable to add daemon",
+	"714": "A Group Configuration with the same name and/or daemon already exists",
+	"715": "Unable to update group configuration",
+	"716": "Unable to delete group configuration",
+	"717": "Unable to add group configuration",
+	"718": "Unable to retrieve list of daemons",
+	"719": "Unable to retrieve list of group configurations",
+
+	"720": "Unable to update job's service configuration",
+	"721": "Unable to retrieve job's service configuration",
+	"722": "Unable to update job's tenant external keys",
+	"723": "Unable to list job's tenant external keys",
+	"724": "Job not found",
+	"725": "Group Configuration not found",
+
 	"750": "Invalid Request."
 };
 

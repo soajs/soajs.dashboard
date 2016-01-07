@@ -345,7 +345,7 @@ service.init(function() {
 		checkForMongo(req);
 		daemons.update (config, mongo, req, res);
 	});
-	service.post("/daemons/delete", function (req, res) {
+	service.get("/daemons/delete", function (req, res) {
 		checkForMongo(req);
 		daemons.delete (config, mongo, req, res);
 	});
@@ -362,9 +362,25 @@ service.init(function() {
 		checkForMongo(req);
 		daemons.updateGroupConfig (config, mongo, req, res);
 	});
-	service.post("/daemons/groupConfig/delete", function (req, res) {
+	service.get("/daemons/groupConfig/delete", function (req, res) {
 		checkForMongo(req);
 		daemons.deleteGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/serviceConfig/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateServiceConfig(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/serviceConfig/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listServiceConfig(config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateTenantExtKeys(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/tenantExtKeys/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listTenantExtKeys(config, mongo, req, res);
 	});
 
 	/**

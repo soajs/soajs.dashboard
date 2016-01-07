@@ -144,7 +144,7 @@ var servicesConfig = {
 				}
 			]
 		},
-		"daemonEdit": {
+		"daemon": {
 			"entries": [
 				{
 					"name": "name",
@@ -161,42 +161,68 @@ var servicesConfig = {
 					"value": "",
 					"tooltip": "Daemon Port",
 					"required": true
+				},
+				{
+					'name': 'jobs',
+					'label': 'Jobs',
+					'type': 'group',
+					'collapsed': false,
+					'class': 'daemonJobs',
+					'entries': []
 				}
 			]
 		},
-		"daemonGroupEdit": {
+		"oneJob": [
+			{
+				'name': 'job%count%',
+				'label': 'Job Name',
+				'type': 'text',
+				'placeholder': 'Daemon job',
+				'value': '',
+				'tooltip': 'Daemon Job',
+				'required': true
+			},
+			{
+				"type": "html",
+				"name": "removeJob%count%",
+				"value": "<span class='red'><span class='icon icon-cross' title='Remove Job'></span></span>",
+				"onAction" : function(id, data, form) {
+					var number = id.replace("removeJob", "");
+
+					delete form.formData['job' + number];
+
+					form.entries.forEach(function(oneEntry) {
+						if(oneEntry.type === 'group') {
+							for(var i = 0; i < oneEntry.entries.length; i++) {
+								if(oneEntry.entries[i].name === 'job' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+								if(oneEntry.entries[i].name === 'removeJob' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+							}
+						}
+					});
+				}
+			}
+		],
+		"jobServiceConfig": {
 			"entries": [
 				{
-					"name": "groupName",
-					"label": "Config Group Name",
+					"name": "env",
+					"label": "Environment",
 					"type": "text",
 					"value": "",
-					"tooltip": "Daemon Config Group Name",
+					"tooltip": "Environment Code",
 					"required": true
 				},
 				{
-					"name": "interval",
-					"label": "Interval",
-					"type": "number",
+					"name": "config",
+					"label": "Service Configuration",
+					"type": "textarea",
 					"value": "",
-					"tooltip": "Interval of Execution",
-					"required": true
-				},
-				{
-					"name": "execution",
-					"label": "Execution",
-					"type": "select",
-					"value": [
-						{
-							"v": "parallel",
-							"l": "Parallel"
-						},
-						{
-							"v": "sequential",
-							"l": "Sequential"
-						}
-					],
-					"tooltip": "Execution Pattern",
+					"rows": 10,
+					"tooltip": "Service Configuration",
 					"required": true
 				}
 			]
@@ -206,16 +232,22 @@ var servicesConfig = {
 		'listServices': ['dashboard', '/services/list'],
 		'update': ['dashboard', '/services/update'],
 		'daemons': {
-			'listDaemons': ['dashboard', '/daemons/list'],
-			'updateDaemon': ['dashboard', '/daemons/update'],
-			'deleteDaemon': ['dashboard', '/daemons/delete'],
-			'addDaemon': ['dashboard', '/daemons/add']
+			'list': ['dashboard', '/daemons/list'],
+			'update': ['dashboard', '/daemons/update'],
+			'delete': ['dashboard', '/daemons/delete'],
+			'add': ['dashboard', '/daemons/add']
 		},
 		'daemonGroupConfig': {
-			'listDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/list'],
-			'updateDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/update'],
-			'deleteDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/delete'],
-			'addDaemonGroupConfig': ['dashboard', '/daemons/groupConfig/add']
+			'list': ['dashboard', '/daemons/groupConfig/list'],
+			'update': ['dashboard', '/daemons/groupConfig/update'],
+			'delete': ['dashboard', '/daemons/groupConfig/delete'],
+			'add': ['dashboard', '/daemons/groupConfig/add']
+		},
+		'tenants': {
+			'list': ['dashboard', '/tenant/list']
+		},
+		'environments': {
+			'list': ['dashboard', '/environment/list']
 		}
 	}
 };

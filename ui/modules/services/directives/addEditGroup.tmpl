@@ -1,0 +1,53 @@
+<div class="modal-header">
+    <a class="pull-right" ng-click="closeModal()" href="">
+        <span class="icon icon-cross" tooltip="Close"></span>
+    </a>
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="form">
+        <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+        <form name="grpConf" id="grpConf" novalidate ng-submit="grpConf.$valid && onSubmit()">
+            <div class="form-group">
+                <label>Group Name</label>
+                <input type="text" class="form-control" ng-model="postData.groupName" ng-required="true" placeholder="Group Name"/>
+                <br>
+                <label>Daemon</label>
+                <select class="form-control" ng-required="true" ng-options="daemon as daemon.name for daemon in outerScope.grid.rows" ng-model="daemon" ng-change="selectDaemon(daemon)"></select>
+                <br>
+                <label>Interval</label>
+                <input type="number" class="form-control" ng-model="postData.interval" ng-required="true" placeholder="Time in Milliseconds"/>
+                <label class="fieldMsg">Time between jobs after the end of previous job (if any).</label>
+                <br>
+                <label>Status</label>
+                <input type="number" class="form-control" ng-model="postData.status" ng-required="true" pattern="\b[0-1]\b"/>
+                <label class="fieldMsg">Status can be either 1 or 0. 1: Daemon is active. 0: Daemon is paused.</label>
+                <br>
+                <label>Jobs Processing</label>
+                <select class="form-control" name="processingSelect" id="processingSelect" ng-required="true" ng-model="postData.processing">
+                    <option value="sequential">Sequential</option>
+                    <option value="parallel">Parallel</option>
+                </select>
+                <label class="fieldMsg">Parallel: All jobs run at the same time. Sequential: Jobs run one after the other depending on specified order.</label>
+                <br>
+                <label ng-if="daemonJobsList">Jobs</label><br>
+                <span ng-repeat="(key, object) in daemonJobsList">
+                    <label>
+                        <input type="checkbox" ng-model="selectedJobs[key]['isSelected']" value="key"/>&nbsp;
+                        <input type="text" class="form-control order-text" ng-if="selectedJobs[key]['isSelected'] && postData.processing==='sequential'" ng-model="selectedJobs[key]['order']" ng-style="{'text-align': 'center'}" ng-required="true" pattern="\b[0-9]?[0-9]\b" size="3" maxlength="2"/>&nbsp;
+                        {{key}}&nbsp;&nbsp;
+                    </label>
+                    <span ng-if="selectedJobs[key]['isSelected']">
+                        <input type="radio" value="tenant" ng-model="selectedJobs[key]['type']" ng-required="true">Tenant&nbsp;
+                        <input type="radio" value="global" ng-model="selectedJobs[key]['type']" ng-required="true">Global
+                    </span><br>
+                </span>
+                <label class="fieldMsg" ng-if="postData.processing==='sequential'">For sequential processing, specify the order of execution in the text boxes that appear next to job names.</label><br>
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Submit"/>
+                    <input type="button" class="btn btn-danger" value="Cancel" ng-click="closeModal()"/>
+                </div><br/>
+            </div>
+        </form>
+    </div>
+</div>

@@ -4734,6 +4734,669 @@ describe("DASHBOARD UNIT Tests", function() {
 
     });
 
+    describe("daemons/groups tests", function () {
+
+        describe("daemons tests", function () {
+            var daemonId = "";
+
+            describe("add daemon tests", function () {
+
+                it("success - add new daemon", function (done) {
+                    var params = {
+                        form: {
+                            "name": "test daemon 1",
+                            "port": 5555,
+                            "jobs": {"pull": {}, "push": {}}
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/add', 'post', function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fail - missing required param", function (done) {
+                    var params = {
+                        form: {
+                            "name": "test daemon 1",
+                            "jobs": {"pull": {}, "push": {}}
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/add', 'post', function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: port"});
+                        done();
+                    });
+                });
+
+                it("fail - daemon already exists", function (done) {
+                    var params = {
+                        form: {
+                            "name": "test daemon 1",
+                            "port": 5555,
+                            "jobs": {"pull": {}, "push": {}}
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/add', 'post', function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 710, "message": errorCodes[710]});
+                        done();
+                    });
+                });
+            });
+
+            describe("update daemon tests", function () {
+
+                before("get daemon data", function (done) {
+                    mongo.findOne("daemons", {"name": "test daemon 1"}, function (error, data) {
+                        assert.ifError(error);
+                        assert.ok(data);
+                        daemonId = data._id.toString();
+                        done();
+                    });
+                });
+
+                it("success - updates daemon", function (done) {
+                    var params = {
+                        qs: {
+                            "id": daemonId
+                        },
+                        form: {
+                            "name": "test daemon updated",
+                            "port": 5566,
+                            "jobs": {"pull": {}, "push": {}, "someJob": {}}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fail - missing required param", function (done) {
+                    var params = {
+                        form: {
+                            "name": "test daemon 3",
+                            "port": 5566,
+                            "jobs": {"pull": {}, "push": {}, "someJob": {}}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+                        done();
+                    });
+                });
+
+                it("fail - trying to update daemon and set a port number being used by another daemon", function (done) {
+                    var params = {
+                        qs: {
+                            "id": daemonId
+                        },
+                        form: {
+                            "name": "test daemon 2",
+                            "port": 4200,
+                            "jobs": {"pull": {}, "push": {}, "someJob": {}}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 711, "message": errorCodes[711]});
+                        done();
+                    });
+                });
+
+                it("fail - invalid id provided", function (done) {
+                    var params = {
+                        qs: {
+                            "id": "123:::321"
+                        },
+                        form: {
+                            "name": "test daemon 2",
+                            "port": 5566,
+                            "jobs": {"pull": {}, "push": {}, "someJob": {}}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 711, "message": errorCodes[711]});
+                        done();
+                    });
+                });
+            });
+
+            describe("delete daemon tests", function () {
+
+                it("fail - missing required param", function (done) {
+                   executeMyRequest({}, "daemons/delete", "get", function (body) {
+                       assert.ok(body.errors);
+                       assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+                       done();
+                   });
+                });
+
+                it("success - deletes daemon", function (done) {
+                    var params = {
+                        qs: {
+                            "id": daemonId
+                        }
+                    };
+                    executeMyRequest(params, "daemons/delete", "get", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+            });
+
+            describe("list daemon tests", function () {
+
+                it("success - list all daemons", function (done) {
+                    executeMyRequest({}, 'daemons/list', 'post', function(body) {
+                        assert.ok(body.data);
+                        assert.ok(body.data.length > 0);
+                        done();
+                    });
+                });
+
+                it("success - list only specified daemons", function (done) {
+                    var params = {
+                        form: {
+                            "daemonNames": ['helloDaemon']
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/list', 'post', function(body) {
+                        assert.ok(body.data);
+                        assert.ok(body.data.length > 0);
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe("group configuration tests", function () {
+            var groupId = "";
+
+            describe("add group config tests", function () {
+
+                it("success - add new group config", function (done) {
+                    var params = {
+                        form: {
+                            "groupName": "test group config 1",
+                            "daemon": "orderDaemon",
+                            "interval": 150000,
+                            "status": 0,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/add", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fail - missing required param", function (done) {
+                    var params = {
+                        form: {
+                            "groupName": "test group config 1",
+                            "interval": 150000,
+                            "status": 0,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/add", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: daemon"});
+                        done();
+                    });
+                });
+
+                it("fail - group config already exists", function (done) {
+                    var params = {
+                        form: {
+                            "groupName": "test group config 1",
+                            "daemon": "orderDaemon",
+                            "interval": 150000,
+                            "status": 0,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/add", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 714, "message": errorCodes[714]});
+                        done();
+                    });
+                });
+            });
+
+            describe("update group config tests", function () {
+
+                before ("get group config data", function (done) {
+                    mongo.findOne("daemon_grpconf", {"daemonConfigGroup": "test group config 1"}, function (error, data) {
+                        assert.ifError(error);
+                        assert.ok(data);
+                        groupId = data._id.toString();
+                        done();
+                    });
+                });
+
+                it("success - updates group", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId
+                        },
+                        form: {
+                            "groupName": "test group config 2",
+                            "daemon": "orderDaemon",
+                            "interval": 200000,
+                            "status": 1,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fail - missing required param", function (done) {
+                    var params = {
+                        form: {
+                            "groupName": "test group config 3",
+                            "daemon": "orderDaemon",
+                            "interval": 200000,
+                            "status": 1,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+                        done();
+                    });
+                });
+
+                it("fail - trying to update group and set a daemon being used by another group config", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId
+                        },
+                        form: {
+                            "groupName": "test group config 3",
+                            "daemon": "helloDaemon",
+                            "interval": 200000,
+                            "status": 1,
+                            "processing": "parallel",
+                            "jobs": {},
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 715, "message": errorCodes[715]});
+                        done();
+                    });
+                });
+            });
+
+            describe("delete group config tests", function () {
+
+                it("fail - missing required param", function (done) {
+                    executeMyRequest({}, "daemons/groupConfig/delete", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
+                        done();
+                    })
+                });
+
+                it("success - deletes daemon", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/delete", "get", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+            });
+
+            describe("list group config tests", function () {
+
+                it("success - list all group configs", function (done) {
+                    executeMyRequest({}, 'daemons/groupConfig/list', 'post', function(body) {
+                        assert.ok(body.data);
+                        assert.ok(body.data.length > 0);
+                        done();
+                    });
+                });
+
+                it("success - list only specified group configs", function (done) {
+                    var params = {
+                        form: {
+                            "grpConfNames": ['group1']
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/groupConfig/list', 'post', function(body) {
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+            });
+
+            describe("update service configuration tests", function () {
+
+                before ("create a new daemon group configuration and get its id", function (done) {
+                    var params = {
+                        form: {
+                            "groupName": "test group config 5",
+                            "daemon": "orderDaemon",
+                            "interval": 150000,
+                            "status": 0,
+                            "processing": "parallel",
+                            "jobs": {
+                                someJob: {
+                                    type: "global",
+                                    serviceConfig: {},
+                                    tenantExtKeys: [],
+                                    tenantsInfo: []
+                                }
+                            },
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/add", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+
+                        mongo.findOne("daemon_grpconf", {daemonConfigGroup: "test group config 5"}, function (error, group) {
+                            assert.ifError(error);
+                            assert.ok(group);
+                            groupId = group._id.toString();
+                            done();
+                        });
+                    });
+                });
+
+                it("success - service configuration updated successfully", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "someJob"
+                        },
+                        form: {
+                            env: "dev",
+                            config: {"testProperty": "testValue"}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("success - delete service configuration successfully", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "someJob"
+                        },
+                        form: {
+                            env: "dev",
+                            config: {}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fail - missing required params", function (done) {
+                    var params = {
+                        form: {
+                            env: "dev",
+                            config: {"testProperty": "testValue"}
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id, jobName"});
+                        done();
+                    });
+                });
+            });
+
+            describe("list service configuration tests", function () {
+
+                before ("update service configuration for job", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "someJob"
+                        },
+                        form: {
+                            env: "dev",
+                            config: {
+                                "prop1": "value1",
+                                "prop2": "value2"
+                            }
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("success - lists service configuration of specified job", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "someJob"
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/list", "get", function (body) {
+                        assert.ok(body.data);
+                        assert.ok(Object.keys(body.data).length > 0);
+                        done();
+                    });
+                });
+
+                it("fail - missing required params", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/list", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: jobName"});
+                        done();
+                    });
+                });
+
+                it("fail - job does not exist", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "wrongJob"
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/serviceConfig/list", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 724, "message": errorCodes[724]});
+                        done();
+                    });
+                });
+            });
+
+            describe("update tenant external keys tests", function () {
+
+                before("update test group and add a job of type tenant", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId
+                        },
+                        form: {
+                            "groupName": "test group config 2",
+                            "daemon": "orderDaemon",
+                            "interval": 200000,
+                            "status": 1,
+                            "processing": "parallel",
+                            "jobs": {
+                                anotherJob: {
+                                    "type": "tenant",
+                                    "serviceConfig": {},
+                                    "tenantExtKeys": [],
+                                    "tenantsInfo": []
+                                }
+                            },
+                            "order": []
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("success - updates test group", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId,
+                            "jobName": "anotherJob"
+                        },
+                        form: {
+                            tenantExtKeys: [
+                                "123456780c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac"
+                            ],
+                            tenantsInfo: [
+                                {
+                                    "code": "TTNT",
+                                    "name": "Testing Tenant",
+                                    "appDescription": "Fake tenant used for testing purposes",
+                                    "package": "TPROD_ABC",
+                                    "extKey": "123456780c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac"
+                                }
+                            ]
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "post", function (body) {
+                        assert.ok(body.data);
+                        assert.deepEqual(body.data, true);
+                        done();
+                    });
+                });
+
+                it("fails - missing required params", function (done) {
+                    var params = {
+                        qs: {
+                            "id": groupId
+                        },
+                        form: {
+                            tenantExtKeys: [
+                                "123456780c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac"
+                            ],
+                            tenantsInfo: [
+                                {
+                                    "code": "TTNT",
+                                    "name": "Testing Tenant",
+                                    "appDescription": "Fake tenant used for testing purposes",
+                                    "package": "TPROD_ABC",
+                                    "extKey": "123456780c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac"
+                                }
+                            ]
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "post", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: jobName"});
+                        done();
+                    });
+                });
+            });
+
+            describe("list tenant external keys tests", function () {
+
+                it("success - lists tenant external keys of specified job", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "anotherJob"
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/list", "get", function (body) {
+                        assert.ok(body.data);
+                        assert.ok(body.data.length > 0);
+                        done();
+                    });
+                });
+
+                it("fail - missing required params", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/list", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual (body.errors.details[0], {"code": 172, "message": "Missing required field: jobName"});
+                        done();
+                    });
+                });
+
+                it("fail - job does not exist", function (done) {
+                    var params = {
+                        qs: {
+                            id: groupId,
+                            jobName: "wrongJob"
+                        }
+                    };
+                    executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/list", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 724, "message": errorCodes[724]});
+                        done();
+                    });
+                });
+
+            });
+
+            after("delete test group", function (done) {
+                var params = {
+                    qs: {
+                        "id": groupId
+                    }
+                };
+                executeMyRequest(params, "daemons/groupConfig/delete", "get", function (body) {
+                    assert.ok(body.data);
+                    assert.deepEqual(body.data, true);
+                    done();
+                });
+            });
+        });
+    });
+
     describe('mongo check db', function() {
         it('asserting environment record', function(done) {
             mongo.findOne('environment', {"code": "DEV"}, function(error, record) {
