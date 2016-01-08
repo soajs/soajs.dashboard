@@ -20,69 +20,77 @@ form .header h3,
 form .modal-header h3 {
     margin: 0;
 }
+
 form .modal-header {
     position: relative;
 }
-.modal-header .closeButton{
+
+.modal-header .closeButton {
     position: absolute;
     right: 15px;
-    top:18px;
+    top: 18px;
 }
-.modal-header .closeButton a{
+
+.modal-header .closeButton a {
     color: white;
 }
-form .ng-dirty.ng-invalid{
-    border-color:red;
+
+form .ng-dirty.ng-invalid {
+    border-color: red;
 }
 
-form .ng-dirty.ng-valid{
-    border-color:green;
+form .ng-dirty.ng-valid {
+    border-color: green;
 }
 
-form .footer{
+form .footer {
     text-align: right;
 }
 
-form .header h3{
-	padding: 15px;
+form .header h3 {
+    padding: 15px;
 }
 
-form .btn-sm{
-	margin-left:5px;	
+form .btn-sm {
+    margin-left: 5px;
 }
 
-.grouped .form-control{
+.grouped .form-control {
     width: 70%;
     min-width: 725px;
     display: inline;
 }
 
-form input[type='file']{
-    padding:0;
-    border:none;
-    box-shadow:none;
-    border-radius:0px;
-    margin-bottom:8px;
-    width:auto;
+form input[type='file'] {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0px;
+    margin-bottom: 8px;
+    width: auto;
 }
 
-form .file-actions{
-    margin-top:6px;
+form .file-actions {
+    margin-top: 6px;
 }
 
-form .file-actions2{
-    margin-top:15px;
+form .file-actions2 {
+    margin-top: 15px;
 }
 
-form .file-actions3{
-    margin-top:2px;
+form .file-actions3 {
+    margin-top: 2px;
 }
 
 form .file-even,
-form .file-odd{
-    border-bottom:solid 1px #e5e5e5;
+form .file-odd {
+    border-bottom: solid 1px #e5e5e5;
 }
 
-.modal-lg{
+.modal-lg {
     width: 1000px;
+}
+
+.modal-dialog {
+    width: 700px;
 }
