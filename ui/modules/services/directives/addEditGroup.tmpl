@@ -34,7 +34,7 @@
                 <span ng-repeat="(key, object) in daemonJobsList">
                     <label>
                         <input type="checkbox" ng-model="selectedJobs[key]['isSelected']" value="key"/>&nbsp;
-                        <input type="text" class="form-control order-text" ng-if="selectedJobs[key]['isSelected'] && postData.processing==='sequential'" ng-model="selectedJobs[key]['order']" ng-style="{'text-align': 'center'}" ng-required="true" pattern="\b[0-9]?[0-9]\b" size="3" maxlength="2"/>&nbsp;
+                        <input type="text" class="form-control order-text" ng-if="selectedJobs[key]['isSelected'] && postData.processing==='sequential'" ng-model="selectedJobs[key]['order']" ng-init="checkIfOnlyJob(key)" ng-style="{'text-align': 'center'}" ng-required="true" pattern="\b[0-9]?[0-9]\b" size="3" maxlength="2"/>&nbsp;
                         {{key}}&nbsp;&nbsp;
                     </label>
                     <span ng-if="selectedJobs[key]['isSelected']">

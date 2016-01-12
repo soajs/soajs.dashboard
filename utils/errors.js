@@ -125,7 +125,7 @@ var errors = {
 	"711": "Unable to update daemon",
 	"712": "Unable to delete daemon",
 	"713": "Unable to add daemon",
-	"714": "A Group Configuration with the same name and/or daemon already exists",
+	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",
 	"717": "Unable to add group configuration",
@@ -138,6 +138,7 @@ var errors = {
 	"723": "Unable to list job's tenant external keys",
 	"724": "Job not found",
 	"725": "Group Configuration not found",
+	"726": "Daemon not found",
 
 	"750": "Invalid Request."
 };

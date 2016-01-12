@@ -201,9 +201,11 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                         var mdm = $modal.open({
                             templateUrl: "serviceInfoBox.html",
                             size: 'lg',
-                            backdrop: false,
-                            keyboard: false,
+                            backdrop: true,
+                            keyboard: true,
                             controller: function ($scope, $modalInstance) {
+                                fixBackDrop();
+
                                 $scope.title = "Creating Service";
                                 $scope.text = "<p>Uploading service please wait, do not refresh this page, this will take a few minutes...</p>";
                                 $scope.progress = progress;
@@ -229,9 +231,11 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
                                 $modal.open({
                                     templateUrl: "serviceInfoBox.html",
                                     size: 'lg',
-                                    backdrop: false,
-                                    keyboard: false,
+                                    backdrop: true,
+                                    keyboard: true,
                                     controller: function ($scope, $modalInstance) {
+                                        fixBackDrop();
+
                                         $scope.title = "Custom Service Uploaded";
                                         $scope.text = "<p>New Service Created from uploaded ZIP File and registered.<br />Proceed to environments to deploy your service.<br /></p>";
                                         $scope.data = true;
@@ -378,7 +382,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
             } else {
                 $scope.environmentsList = [];
                 response.forEach (function (oneEnv) {
-                    $scope.environmentsList.push (oneEnv.code.toLowerCase());
+                    $scope.environmentsList.push (oneEnv.code);
                 });
 
                 if (cb) cb();
@@ -466,13 +470,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
     $scope.clearConfiguration = function (env, jobName, jobData, groupId) {
         var postData = {
             env: env,
-            jobName: jobName,
             config: {}
         };
         getSendDataFromServer($scope, ngDataApi, {
             "method": "send",
             "routeName": "/dashboard/daemons/groupConfig/serviceConfig/update",
-            "params": {"id": groupId},
+            "params": {"id": groupId, jobName: jobName},
             "data": postData
         }, function (error) {
             if (error) {
@@ -489,9 +492,11 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
         $modal.open({
             templateUrl: "selectTenantExtKeys.tmpl",
             size: 'lg',
-            backdrop: false,
+            backdrop: true,
             keyboard: true,
             controller: function ($scope, $modalInstance) {
+                fixBackDrop();
+
                 $scope.outerScope = outerScope;
                 $scope.title = "Select Tenant External Keys";
                 $scope.message = {}; //used to display errors inside modal
@@ -712,7 +717,9 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
             }
             else {
                 $scope.$parent.displayAlert('success', 'Daemon deleted successfully.');
-                $scope.listDaemons();
+                $scope.listDaemons(function () {
+                    $scope.listDaemonGroupConfig();
+                });
             }
         });
     };
@@ -827,13 +834,21 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
         $modal.open({
             templateUrl: "addEditGroup.tmpl",
             size: 'lg',
-            backdrop: false,
+            backdrop: true,
             keyboard: true,
             controller: function ($scope, $modalInstance) {
+                fixBackDrop();
+
                 $scope.outerScope = outerScope;
                 $scope.postData = {};
                 $scope.message = {}; //used to display errors inside modal
                 $scope.title = "Add Daemon Group Configuration";
+
+                $scope.checkIfOnlyJob = function (jobName) {
+                    if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
+                        $scope.selectedJobs[jobName]['order'] = 1;
+                    }
+                };
 
                 $scope.selectDaemon = function (daemon) {
                     $scope.postData.daemon = daemon.name;
@@ -914,18 +929,27 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
         $modal.open({
             templateUrl: "addEditGroup.tmpl",
             size: 'lg',
-            backdrop: false,
+            backdrop: true,
             keyboard: true,
             controller: function ($scope, $modalInstance) {
+                fixBackDrop();
+
                 $scope.outerScope = outerScope;
                 $scope.postData = {};
                 $scope.message = {}; //used to display errors inside modal
+                $scope.originalDaemon = grpConf.daemon; //used to detect if user changed daemon
                 $scope.title = "Edit Daemon Group Configuration";
 
                 $scope.postData.groupName = grpConf.daemonConfigGroup;
                 $scope.postData.interval = grpConf.interval;
                 $scope.postData.status = grpConf.status;
                 $scope.postData.processing = grpConf.processing;
+
+                $scope.checkIfOnlyJob = function (jobName) {
+                    if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
+                        $scope.selectedJobs[jobName]['order'] = 1;
+                    }
+                };
 
                 $scope.fetchSelectedDaemon = function () {
                     for (var i = 0; i < outerScope.grid.rows.length; i++) {
@@ -965,9 +989,9 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                 };
                 $scope.markSelectedJobs();
 
-                $scope.selectDaemon = function () {
-                    $scope.postData.daemon = $scope.daemon.name;
-                    $scope.daemonJobsList = $scope.daemon.jobs;
+                $scope.selectDaemon = function (daemon) {
+                    $scope.postData.daemon = daemon.name;
+                    $scope.daemonJobsList = daemon.jobs;
                     $scope.selectedJobs = {};
                 };
 
@@ -1001,7 +1025,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                     $scope.postData.jobs = {};
                     for (var oneJob in $scope.selectedJobs) {
                         if ($scope.selectedJobs[oneJob]['isSelected']) {
-                            if (grpConf.jobs[oneJob] && grpConf.jobs[oneJob].type === $scope.selectedJobs[oneJob].type) {
+                            if ($scope.postData.daemon === $scope.originalDaemon && grpConf.jobs[oneJob] && grpConf.jobs[oneJob].type === $scope.selectedJobs[oneJob].type) {
                                 //type of this job did not change, clone serviceConfig, tenantExtKeys, and tenantsInfo
                                 $scope.postData.jobs[oneJob] = {
                                     type: $scope.selectedJobs[oneJob]['type'],

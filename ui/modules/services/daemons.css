@@ -13,6 +13,8 @@
 
 #jobs tr[class^="form-group tr-removeJob"]{
     width:4%;
+    margin-top: 22px;
+    padding-left: 15px;
 }
 
 .text-field-align-right {

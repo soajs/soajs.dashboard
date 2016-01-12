@@ -1985,6 +1985,44 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
 
+                it("fail - tenant admin user and/or group already exist in urac", function (done) {
+                    var record = {
+                        "username": "admin_utab",
+                        "password": "$2a$04$l3HbssI61jRMN/2C6yMBi.4oEgeLaRkTAFgbrvZ9fsHq.j29Tyic.",
+                        "firstName": "Administrator",
+                        "lastName": "urac test tenant",
+                        "email": "admin@anotherTenant.com",
+                        "status": "pendingNew",
+                        "config": {},
+                        "tenant": {
+                            "id": "56937dc1682d44112229beea",
+                            "code": "UTAB"
+                        },
+                        "ts": 1452506561932,
+                        "groups": [
+                            "administrator"
+                        ]
+                    };
+                    uracMongo.insert ("users", record, function (error, result) {
+                        assert.ifError(error);
+                        assert.ok(result);
+
+                        var params = {
+                            form: {
+                                "code": "UTAB",
+                                "name": 'urac test tenant',
+                                "email": 'admin@someTenant.com',
+                                "description": 'this is a dummy description'
+                            }
+                        };
+                        executeMyRequest(params, 'tenant/add', 'post', function(body) {
+                            assert.ok(body.errors);
+                            assert.deepEqual(body.errors.details[0], {code: 606, "message": errorCodes[606]});
+                            done();
+                        });
+                    });
+                });
+
                 it('fail - missing params', function(done) {
                     var params = {
                         form: {
@@ -3562,6 +3600,25 @@ describe("DASHBOARD UNIT Tests", function() {
 
         describe("application config", function() {
             describe("update application config", function() {
+
+                it("success - will update configuration (empty config)", function (done) {
+                    var params = {
+                        qs: {
+                            id: tenantId,
+                            appId: applicationId,
+                            key: key
+                        },
+                        form: {
+                            'envCode': 'DEV',
+                            'config': {}
+                        }
+                    };
+                    executeMyRequest(params, 'tenant/application/key/config/update', 'post', function(body) {
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+
                 it("success - will update configuration", function(done) {
                     var params = {
                         qs: {
@@ -3586,6 +3643,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         done();
                     });
                 });
+
                 it("fail - wrong key", function(done) {
                     var params = {
                         qs: {
@@ -4861,7 +4919,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     };
                     executeMyRequest(params, "daemons/update", "post", function (body) {
                         assert.ok(body.errors);
-                        assert.deepEqual(body.errors.details[0], {"code": 711, "message": errorCodes[711]});
+                        assert.deepEqual(body.errors.details[0], {"code": 701, "message": errorCodes[701]});
                         done();
                     });
                 });
@@ -5026,28 +5084,6 @@ describe("DASHBOARD UNIT Tests", function() {
                     executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
                         assert.ok(body.errors);
                         assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
-                        done();
-                    });
-                });
-
-                it("fail - trying to update group and set a daemon being used by another group config", function (done) {
-                    var params = {
-                        qs: {
-                            "id": groupId
-                        },
-                        form: {
-                            "groupName": "test group config 3",
-                            "daemon": "helloDaemon",
-                            "interval": 200000,
-                            "status": 1,
-                            "processing": "parallel",
-                            "jobs": {},
-                            "order": []
-                        }
-                    };
-                    executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
-                        assert.ok(body.errors);
-                        assert.deepEqual(body.errors.details[0], {"code": 715, "message": errorCodes[715]});
                         done();
                     });
                 });
