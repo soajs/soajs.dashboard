@@ -29,7 +29,7 @@ var servicesNav =[
 		},
 		'url': '#/daemons',
 		'tplPath': 'modules/services/directives/list-daemons.tmpl',
-		'icon': 'rocket',
+		'icon': 'evil2',
 		'pillar':{
 			'name': 'development',
 			'label': 'Develop',

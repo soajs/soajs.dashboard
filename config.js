@@ -1249,7 +1249,7 @@ module.exports = {
                 "l": "Update Daemon Group Configuration",
                 "group": "Daemons"
             },
-            'commonFields': ['id', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
         },
         "/daemons/groupConfig/delete": {
             _apiInfo: {
