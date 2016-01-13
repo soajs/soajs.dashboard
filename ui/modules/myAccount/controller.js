@@ -364,12 +364,13 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 			var postData = {
 				'username': formData.username
 			};
-			
+			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/urac/forgotPassword",
 				"params": postData
 			}, function(error) {
+				overlayLoading.hide();
 				if(error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
