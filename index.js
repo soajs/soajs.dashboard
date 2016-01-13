@@ -10,6 +10,7 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 var host = require("./lib/host.js");
 var services = require("./lib/services.js");
+var daemons = require("./lib/daemons.js");
 var cb = require("./lib/contentbuilder.js");
 
 var service = new soajs.server.service({
@@ -327,6 +328,59 @@ service.init(function() {
 	service.post("/services/upload", function(req, res) {
 		checkForMongo(req);
 		services.upload(config, mongo, req, res);
+	});
+
+	/**
+	 * Daemons features
+	 */
+	service.post("/daemons/list", function (req, res) {
+		checkForMongo(req);
+		daemons.list (config, mongo, req, res);
+	});
+	service.post("/daemons/add", function (req, res) {
+		checkForMongo(req);
+		daemons.add (config, mongo, req, res);
+	});
+	service.post("/daemons/update", function (req, res) {
+		checkForMongo(req);
+		daemons.update (config, mongo, req, res);
+	});
+	service.get("/daemons/delete", function (req, res) {
+		checkForMongo(req);
+		daemons.delete (config, mongo, req, res);
+	});
+
+	service.post("/daemons/groupConfig/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/add", function (req, res) {
+		checkForMongo(req);
+		daemons.addGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateGroupConfig (config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/delete", function (req, res) {
+		checkForMongo(req);
+		daemons.deleteGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/serviceConfig/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateServiceConfig(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/serviceConfig/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listServiceConfig(config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateTenantExtKeys(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/tenantExtKeys/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listTenantExtKeys(config, mongo, req, res);
 	});
 
 	/**

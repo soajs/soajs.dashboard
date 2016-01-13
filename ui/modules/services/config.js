@@ -143,10 +143,111 @@ var servicesConfig = {
 					"entries": []
 				}
 			]
+		},
+		"daemon": {
+			"entries": [
+				{
+					"name": "name",
+					"label": "Name",
+					"type": "text",
+					"value": "",
+					"tooltip": "Daemon Name",
+					"required": true
+				},
+				{
+					"name": "port",
+					"label": "Port",
+					"type": "number",
+					"value": "",
+					"tooltip": "Daemon Port",
+					"required": true
+				},
+				{
+					'name': 'jobs',
+					'label': 'Jobs',
+					'type': 'group',
+					'collapsed': false,
+					'class': 'daemonJobs',
+					'entries': []
+				}
+			]
+		},
+		"oneJob": [
+			{
+				'name': 'job%count%',
+				'label': 'Job Name',
+				'type': 'text',
+				'placeholder': 'Daemon job',
+				'value': '',
+				'tooltip': 'Daemon Job',
+				'required': true
+			},
+			{
+				"type": "html",
+				"name": "removeJob%count%",
+				"value": "<span class='red'><span class='icon icon-cross' title='Remove Job'></span></span>",
+				"onAction" : function(id, data, form) {
+					var number = id.replace("removeJob", "");
+
+					delete form.formData['job' + number];
+
+					form.entries.forEach(function(oneEntry) {
+						if(oneEntry.type === 'group') {
+							for(var i = 0; i < oneEntry.entries.length; i++) {
+								if(oneEntry.entries[i].name === 'job' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+								if(oneEntry.entries[i].name === 'removeJob' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+							}
+						}
+					});
+				}
+			}
+		],
+		"jobServiceConfig": {
+			"entries": [
+				{
+					"name": "env",
+					"label": "Environment",
+					"type": "text",
+					"value": "",
+					"tooltip": "Environment Code",
+					"required": true
+				},
+				{
+					"name": "config",
+					"label": "Service Configuration",
+					"type": "textarea",
+					"value": "",
+					"rows": 10,
+					"tooltip": "Service Configuration",
+					"required": true
+				}
+			]
 		}
 	},
 	permissions:{
 		'listServices': ['dashboard', '/services/list'],
-		'update': ['dashboard', '/services/update']
+		'update': ['dashboard', '/services/update'],
+		'daemons': {
+			'list': ['dashboard', '/daemons/list'],
+			'update': ['dashboard', '/daemons/update'],
+			'delete': ['dashboard', '/daemons/delete'],
+			'add': ['dashboard', '/daemons/add']
+		},
+		'daemonGroupConfig': {
+			'list': ['dashboard', '/daemons/groupConfig/list'],
+			'update': ['dashboard', '/daemons/groupConfig/update'],
+			'delete': ['dashboard', '/daemons/groupConfig/delete'],
+			'add': ['dashboard', '/daemons/groupConfig/add']
+		},
+		'tenants': {
+			'list': ['dashboard', '/tenant/list']
+		},
+		'environments': {
+			'list': ['dashboard', '/environment/list']
+		}
 	}
 };
