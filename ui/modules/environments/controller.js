@@ -158,15 +158,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						var tmpl = angular.copy(env_template);
 						tmpl.code = formData.code;
 						tmpl.domain = formData.domain;
-						tmpl.port = parseInt(formData.port[0]);
+						//tmpl.port = parseInt(formData.port[0]);
+						tmpl.port = parseInt(formData.port);
 						tmpl.description = formData.description;
-						tmpl.profile = formData.profile[0];
+						//tmpl.profile = formData.profile[0];
+						tmpl.profile = formData.profile;
 
 						tmpl.services.config.key.password = formData.tKeyPass;
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
 
-						switch (formData.platformDriver[0]) {
+						//switch (formData.platformDriver[0]) {
+						switch (formData.platformDriver) {
 							case 'manual':
 								tmpl.deployer.type = 'manual';
 								break;
