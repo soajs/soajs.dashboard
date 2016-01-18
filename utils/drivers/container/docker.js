@@ -17,11 +17,15 @@ var lib = {
                 host: config.host,
                 port: config.port
             };
-            if (fs.existsSync(certsFolderLocation + "certs")) {
-                dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
-                dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
-                dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
-            }
+            //if (fs.existsSync(certsFolderLocation + "certs")) {
+                //dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
+                //dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
+                //dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
+            //}
+
+            dockerConfig['ca'] = fs.readFileSync('/Users/soajs/certs/ca.pem');
+            dockerConfig['cert'] = fs.readFileSync('/Users/soajs/certs/cert.pem');
+            dockerConfig['key'] = fs.readFileSync('/Users/soajs/certs/key.pem');
             docker = new Docker(dockerConfig);
         }
         return docker;

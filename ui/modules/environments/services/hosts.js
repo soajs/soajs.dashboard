@@ -630,6 +630,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 if (currentScope.hosts) {
                     currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
                         reloadRegistry(currentScope, env, oneCtrl, function () {
+                            currentScope.listHosts(env);
                         });
                     });
                 }
@@ -889,7 +890,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             services[formData.service] = {
                                 'name': formData.service,
                                 'port': port,
-                                'ips': [],
+                                'ips': {},
                                 'color': 'red',
                                 'heartbeat': false
                             };
@@ -918,7 +919,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 'downCount': 'N/A'
                             });
                         });
-                        services[formData.service].ips.push(hosttmpl);
+
+                        if (services[formData.service].ips[1]) {
+                            services[formData.service].ips[1].push(hosttmpl);
+                        } else {
+                            services[formData.service].ips = {
+                                1: []
+                            };
+                            services[formData.service].ips[1].push(hosttmpl);
+                        }
 
                         $timeout(function () {
                             currentScope.executeHeartbeatTest(env, hosttmpl);
