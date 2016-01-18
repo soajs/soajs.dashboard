@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <a class="pull-right" ng-click="closeModal()" href="">
+        <span class="icon icon-cross" tooltip="Close"></span>
+    </a>
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="form">
+        <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+        <form name="tenantExtKeys" id="tenantExtKeys" novalidate ng-submit="tenantExtKeys.$valid && onSubmit()">
+            <div class="form-group">
+                <input type="text" class="form-control text-field-align-right mb5" ng-model="tenantSearch" ng-keyup="filterData(tenantSearch)" placeholder="Search">
+                <label>Available Tenants With External Keys</label>
+                <div class="grid externalKeysGrid" style="overflow:scroll; height:500px; width: 100%">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <th class="actions">Select</th>
+                                <th class="name">Name</th>
+                                <th class="package">Package</th>
+                                <th class="description">Application Description</th>
+                            </tr>
+                            <tr ng-repeat="tenant in outerScope.filteredTenantsList" ng-class-even="'even'" ng-class-odd="'odd'" ng-if="outerScope.filteredTenantsList.length > 0">
+                                <td><input type="checkbox" ng-model="selectedTenants[tenant.extKey]" ng-true-value="{{tenant}}"/></td>
+                                <td>{{tenant.name}}</td>
+                                <td>{{tenant.package}}</td>
+                                <td>{{tenant.appDescription}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <alert type="warning" ng-if="outerScope.filteredTenantsList.length === 0 && !tenantSearch">No tenants found.</alert>
+                    <alert type="warning" ng-if="outerScope.filteredTenantsList.length === 0 && tenantSearch">No search results found for {{tenantSearch}}.</alert>
+                </div><br>
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Save"/>
+                    <input type="button" class="btn btn-danger" value="Cancel" ng-click="closeModal()"/>
+                </div><br/>
+            </div>
+        </form>
+    </div>
+</div>

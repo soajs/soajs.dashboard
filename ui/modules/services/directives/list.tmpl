@@ -11,7 +11,7 @@
             <button class="btn btn-danger" ng-click="ok()">Close</button>
         </div>
     </script>
-    <input class="btn btn-primary" ng-click="uploadService()" value="Create Custom Service"/><br /><br/>
+        <input class="btn btn-primary" ng-click="uploadService()" value="Create Custom Service"/><br /><br/>
     <div class="entryBoxes" ng-show="grid.rows">
         <div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">
             <div class="header closed"><a href="" ng-click="showHide(service)"><span class="icon icon-{{service.icon || 'plus'}}"></span></a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
