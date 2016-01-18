@@ -366,6 +366,13 @@ module.exports = {
                 'validation': {
                     'type': 'string'
                 }
+            },
+            'solo': {
+                'source': ['body.solo'],
+                'required': true,
+                'validation': {
+                    'type': 'boolean'
+                }
             }
         },
         "/environment/list": {
@@ -1242,14 +1249,14 @@ module.exports = {
                 "l": "Add Daemon Group Configuration",
                 "group": "Daemons"
             },
-            'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+            'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
         },
         "/daemons/groupConfig/update": {
             _apiInfo: {
                 "l": "Update Daemon Group Configuration",
                 "group": "Daemons"
             },
-            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
         },
         "/daemons/groupConfig/delete": {
             _apiInfo: {

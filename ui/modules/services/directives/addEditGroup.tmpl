@@ -19,16 +19,21 @@
                 <input type="number" class="form-control" ng-model="postData.interval" ng-required="true" placeholder="Time in Milliseconds"/>
                 <label class="fieldMsg">Time between jobs after the end of previous job (if any).</label>
                 <br>
-                <label>Status</label>
-                <input type="number" class="form-control" ng-model="postData.status" ng-required="true" pattern="\b[0-1]\b"/>
-                <label class="fieldMsg">Status can be either 1 or 0. 1: Daemon is active. 0: Daemon is paused.</label>
+                <label>Status:&nbsp;&nbsp;</label>
+                <input type="radio" value="1" ng-model="postData.status" ng-required="true">&nbsp;Active&nbsp;
+                <input type="radio" value="0" ng-model="postData.status" ng-required="true">&nbsp;Inactive
+                <br>
+                <label>Solo:&nbsp;&nbsp;</label>
+                <input type="radio" value="true" ng-model="postData.solo" ng-required="true" checked>&nbsp;Yes&nbsp;
+                <input type="radio" value="false" ng-model="postData.solo" ng-required="true">&nbsp;No
+                <label class="fieldMsg">If yes and if this daemon is deployed on several machines for the same environment, then only one instance of this daemon is allowed to run.</label>
                 <br>
                 <label>Jobs Processing</label>
                 <select class="form-control" name="processingSelect" id="processingSelect" ng-required="true" ng-model="postData.processing">
                     <option value="sequential">Sequential</option>
                     <option value="parallel">Parallel</option>
                 </select>
-                <label class="fieldMsg">Parallel: All jobs run at the same time. Sequential: Jobs run one after the other depending on specified order.</label>
+                <label class="fieldMsg">Parallel: Daemon jobs run at the same time. Sequential: Daemon jobs run one after the other depending on specified order.</label>
                 <br>
                 <label ng-if="daemonJobsList">Jobs</label><br>
                 <span ng-repeat="(key, object) in daemonJobsList">
@@ -38,8 +43,8 @@
                         {{key}}&nbsp;&nbsp;
                     </label>
                     <span ng-if="selectedJobs[key]['isSelected']">
-                        <input type="radio" value="tenant" ng-model="selectedJobs[key]['type']" ng-required="true">Tenant&nbsp;
-                        <input type="radio" value="global" ng-model="selectedJobs[key]['type']" ng-required="true">Global
+                        <input type="radio" value="tenant" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;Tenant&nbsp;
+                        <input type="radio" value="global" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;Global
                     </span><br>
                 </span>
                 <label class="fieldMsg" ng-if="postData.processing==='sequential'">For sequential processing, specify the order of execution in the text boxes that appear next to job names.</label><br>
