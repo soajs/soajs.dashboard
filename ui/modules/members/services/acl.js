@@ -111,11 +111,12 @@ membersAclService.service('membersAclHelper', [function() {
 
 	function renderPermissionsWithServices(currentScope, oneApplication) {
 		var aclObj = oneApplication.app_acl || oneApplication.parentPackageAcl;
+
 		var count = 0;
 		var myAcl = {};
 		var envCodes = currentScope.environments_codes;
 		envCodes.forEach(function (oneEnv) {
-			if (aclObj[oneEnv.code.toLowerCase()] && (!aclObj[oneEnv.code.toLowerCase()].access && !aclObj[oneEnv.code.toLowerCase()].apis && !aclObj[oneEnv.code.toLowerCase()].apisRegExp && !aclObj[oneEnv.code.toLowerCase()].apisPermission)) {;
+			if (aclObj[oneEnv.code.toLowerCase()] && (!aclObj[oneEnv.code.toLowerCase()].access && !aclObj[oneEnv.code.toLowerCase()].apis && !aclObj[oneEnv.code.toLowerCase()].apisRegExp && !aclObj[oneEnv.code.toLowerCase()].apisPermission)) {
 				for (var envCode in aclObj) {
 					envCode = envCode.toLowerCase();
 					count++;
@@ -125,8 +126,10 @@ membersAclService.service('membersAclHelper', [function() {
 						if (myAcl[envCode.toUpperCase()].hasOwnProperty(serviceName)) {
 							for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
 								if (currentScope.tenantApp.services[i].name === serviceName) {
-									oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName].name=currentScope.tenantApp.services[i].name;
-									oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName].apiList=currentScope.tenantApp.services[i].apis;
+									if(oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName]){
+										oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName].name=currentScope.tenantApp.services[i].name;
+										oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName].apiList=currentScope.tenantApp.services[i].apis;
+									}
 								}
 							}
 							if (oneApplication.aclFill[oneEnv.code.toUpperCase()][serviceName]) {
@@ -146,7 +149,9 @@ membersAclService.service('membersAclHelper', [function() {
 								}
 								else {
 									newList = aclObj[envCode][serviceName].apis;
-									oneApplication.aclFill[oneEnv.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
+									if(newList){
+										oneApplication.aclFill[oneEnv][serviceName].fixList = groupApisForDisplay(newList, 'group');
+									}
 								}
 
 								prepareViewAclObj(oneApplication.aclFill[oneEnv.code.toUpperCase()]);
@@ -168,7 +173,7 @@ membersAclService.service('membersAclHelper', [function() {
 							break;
 						}
 					}
-					if (oneApplication.aclFill[envCodes[0].code.toUpperCase()][serviceName]) {
+					if (oneApplication.aclFill[envCodes[0].code][serviceName]) {
 						var newList;
 						if ((myAcl[envCodes[0].code.toUpperCase()][serviceName]) && (myAcl[envCodes[0].code.toUpperCase()][serviceName].apisPermission === 'restricted')) {
 							newList = [];
@@ -185,9 +190,10 @@ membersAclService.service('membersAclHelper', [function() {
 							oneApplication.aclFill[envCodes[0].code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
 						}
 						else {
-							newList = myAcl[envCodes[0].code.toUpperCase()][serviceName].apis;
-							console.log(newList);
-						//	oneApplication.aclFill[envCodes[0].code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
+							newList = myAcl[envCodes[0].code][serviceName].apis;
+							if(newList){
+								oneApplication.aclFill[envCodes[0].code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
+							}
 						}
 						prepareViewAclObj(oneApplication.aclFill[envCodes[0].code.toUpperCase()]);
 
@@ -229,7 +235,7 @@ membersAclService.service('membersAclHelper', [function() {
 						}
 						else if(service.accessType === 'groups') {
 							aclObj[envCode.toLowerCase()][propt].access = [];
-							grpCodes = aclPriviledges.services[envCode.toLowerCase()][propt].grpCodes;
+							grpCodes = aclPriviledges.services[envCode][propt].grpCodes;
 							if(grpCodes) {
 								for(code in grpCodes) {
 									if(grpCodes.hasOwnProperty(code)) {
@@ -281,7 +287,6 @@ membersAclService.service('membersAclHelper', [function() {
 				}
 			}
 		}
-		console.log(aclObj);
 		return {'valid': valid, 'data': aclObj};
 	}
 

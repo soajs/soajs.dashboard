@@ -237,7 +237,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper) {
+membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', '$route', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper, $route) {
 	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
 	$scope.msg = {};
@@ -251,7 +251,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 	$scope.minimize = function(application, service, oneEnv) {
 		application.aclFill[oneEnv][service.name].collapse = true;
-		console.log($scope);
 	};
 
 	$scope.expand = function(application, service, oneEnv) {
@@ -323,15 +322,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					console.log(response);
 					$scope.tenantApp = response;
-					$scope.tenantApp.applications.forEach(function(oneApplication) {
-						if($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
-							if($scope.user.config.packages[oneApplication.package].acl) {
+					$scope.tenantApp.applications.forEach(function (oneApplication) {
+						if ($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
+							if ($scope.user.config.packages[oneApplication.package].acl) {
 								oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
 							}
 						}
 						membersAclHelper.renderPermissionsWithServices($scope, oneApplication);
+						overlayLoading.hide();
 
 					});
 					delete $scope.tenantApp.services;
@@ -352,9 +351,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					console.log(response);
 					$scope.user = response;
-
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/urac/admin/group/list",
@@ -375,7 +372,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				}
 			});
 		}
-		console.log($scope);
 	};
 
 	$scope.clearUserAcl = function() {
@@ -404,7 +400,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				}
 			}
 		});
-		console.log(postData);
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"headers":{
@@ -418,6 +413,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				$route.reload();
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
 				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
@@ -454,7 +450,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
 			}
 		});
-		console.log(postData);
 		if(counter === $scope.tenantApp.applications.length){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
@@ -477,5 +472,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		}
 	};
 	//call default method
-	$scope.getEnvironments();
+	overlayLoading.show(function() {
+		$scope.getEnvironments();
+	});
+
 }]);

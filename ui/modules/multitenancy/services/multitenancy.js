@@ -88,21 +88,21 @@ multiTenantService.service('aclHelper', function(){
 		var acl;
 		var count = 0;
 		var myAcl = {};
-		//var envNames = [];
 		var servNamesNew = [];
 		var servNamesOld = [];
+
 		if (tenantAcl){
 			acl= tenantAcl;
 		}
 		else {
 			acl= parentAcl;
 		}
+
 		envCodes.forEach(function (oneEnv) {
-			if (parentAcl[oneEnv.code.toLowerCase()] && (!parentAcl[oneEnv.code.toLowerCase()].access && !parentAcl[oneEnv.code.toLowerCase()].apis && !parentAcl[oneEnv.code.toLowerCase()].apisRegExp && !parentAcl[oneEnv.code.toLowerCase()].apisPermission)) {
+			if (acl[oneEnv.code.toLowerCase()] && (!acl[oneEnv.code.toLowerCase()].access && !acl[oneEnv.code.toLowerCase()].apis && !acl[oneEnv.code.toLowerCase()].apisRegExp && !acl[oneEnv.code.toLowerCase()].apisPermission)) {
 				for (var envCode in acl) {
 					envCode = envCode.toLowerCase();
 					count++;
-					//envNames.push(envCode);
 					myAcl[envCode.toUpperCase()] = acl[envCode];
 					servNamesNew = Object.keys(myAcl[envCode.toUpperCase()]);
 					if (servNamesOld.length === 0) {
@@ -138,6 +138,7 @@ multiTenantService.service('aclHelper', function(){
 
 		currentScope.currentApplication.serviceNames = servNamesOld;
 		currentScope.currentApplication.aclFill = myAcl;
+
 		if (count === 0) {
 			currentScope.msg.type = 'warning';
 			currentScope.msg.msg = "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!";

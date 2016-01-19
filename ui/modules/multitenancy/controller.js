@@ -771,7 +771,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 
 						var postData = {
 							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
 						};
 						if (formData.package && (typeof(formData.package) == 'string')) {
 							var productCode = formData.package.split("_")[0];
@@ -1525,6 +1525,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 											$scope.isInherited = true;
 										}
 										aclHelper.prepareViewAclObj($scope.currentApplication.aclFill);
+										overlayLoading.hide();
 									}
 								});
 							}
@@ -1597,7 +1598,6 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 
 		var result = aclHelper.prepareAclObjToSave($scope.currentApplication.aclFill);
-
 		if (result.valid) {
 			postData.acl = result.data;
 			getSendDataFromServer($scope, ngDataApi, {
@@ -1623,5 +1623,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	};
 
 	//default operation
-	$scope.getEnvironments();
+	overlayLoading.show(function() {
+		$scope.getEnvironments();
+	});
 }]);
