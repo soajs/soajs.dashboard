@@ -58,6 +58,10 @@ soajsApp.config([
 	}
 ]);
 
+soajsApp.run(function($rootScope){
+	$rootScope.angular = angular;
+});
+
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
 	function ($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
 		$scope.enableInterface = false;

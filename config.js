@@ -307,6 +307,65 @@ module.exports = {
                 "validation": {
                     "type": "boolean"
                 }
+            },
+
+            'jobs': {
+                'source': ['body.jobs'],
+                'required': true,
+                'validation': {
+                    'type': 'object'
+                }
+            },
+            'groupName': {
+                'source': ['body.groupName'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'daemon': {
+                'source': ['body.daemon'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'interval': {
+                'source': ['body.interval'],
+                'required': true,
+                'validation': {
+                    'type': 'number'
+                }
+            },
+            'status': {
+                'source': ['body.status'],
+                'required': true,
+                'validation': {
+                    'type': 'number',
+                    enum: [0, 1]
+                }
+            },
+            'processing': {
+                'source': ['body.processing'],
+                'required': true,
+                'validation': {
+                    'type': 'string',
+                    'enum': ['parallel', 'sequential']
+                }
+            },
+            'order': {
+                'source': ['body.order'],
+                'required': true,
+                'validation': {
+                    'type': 'array'
+                }
+            },
+            'jobName': {
+                'source': ['query.jobName'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
             }
         },
         "/environment/list": {
@@ -1149,6 +1208,136 @@ module.exports = {
                 "l": "Create Custom Service",
                 "group": "Services"
             }
+        },
+
+        "/daemons/list": {
+            _apiInfo: {
+                "l": "List Daemons",
+                "group": "Daemons"
+            },
+            'daemonNames': {
+                'source': ['body.daemonNames'],
+                'required': false,
+                'validation': {
+                    'type': 'array',
+                    'items': {'type': 'string'}
+                }
+            }
+        },
+        "/daemons/add": {
+            _apiInfo: {
+                "l": "Add Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['port', 'name', 'jobs']
+        },
+        "/daemons/update": {
+            _apiInfo: {
+                "l": "Update Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'port', 'name', 'jobs']
+        },
+        "/daemons/delete": {
+            _apiInfo: {
+                "l": "Delete Daemon",
+                "group": "Daemons"
+            },
+            'commonFields': ['id']
+        },
+
+        "/daemons/groupConfig/list": {
+            _apiInfo: {
+                "l": "List Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'grpConfNames': {
+                'source': ['body.grpConfNames'],
+                'required': false,
+                'validation': {
+                    'type': 'array',
+                    'items': {'type': 'string'}
+                }
+            }
+        },
+        "/daemons/groupConfig/add": {
+            _apiInfo: {
+                "l": "Add Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+        },
+        "/daemons/groupConfig/update": {
+            _apiInfo: {
+                "l": "Update Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+        },
+        "/daemons/groupConfig/delete": {
+            _apiInfo: {
+                "l": "Delete Daemon Group Configuration",
+                "group": "Daemons"
+            },
+            'commonFields': ['id']
+        },
+
+        "/daemons/groupConfig/serviceConfig/update": {
+            _apiInfo: {
+                "l": "Update Service Configuration",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'jobName'],
+            'env': {
+                'source': ['body.env'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'config': {
+                'source': ['body.config'],
+                'required': true,
+                'validation': {
+                    'type': 'object'
+                }
+            }
+        },
+        "/daemons/groupConfig/serviceConfig/list": {
+            _apiInfo: {
+                "l": "List Service Configuration",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'jobName']
+        },
+
+        "/daemons/groupConfig/tenantExtKeys/update": {
+            _apiInfo: {
+                "l": "Update Job's External Keys",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'jobName'],
+            'tenantExtKeys': {
+                'source': ['body.tenantExtKeys'],
+                'required': true,
+                'validation': {
+                    'type': 'array'
+                }
+            },
+            'tenantsInfo': {
+                'source': ['body.tenantsInfo'],
+                'required': true,
+                'validation': {
+                    'type': 'array'
+                }
+            }
+        },
+        "/daemons/groupConfig/tenantExtKeys/list": {
+            _apiInfo: {
+                "l": "List Job's External Keys",
+                "group": "Daemons"
+            },
+            'commonFields': ['id', 'jobName']
         },
 
         "/hosts/list": {
