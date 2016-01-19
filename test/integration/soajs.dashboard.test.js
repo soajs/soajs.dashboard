@@ -1487,11 +1487,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev":{
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1509,11 +1511,13 @@ describe("DASHBOARD UNIT Tests", function() {
                                 "description": "this is a dummy description",
                                 "_TTL": 12 * 3600 * 1000,
                                 "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
+                                    "dev":{
+                                        "urac": {
+                                            'access': false,
+                                            'apis': {
+                                                '/account/changeEmail': {
+                                                    'access': true
+                                                }
                                             }
                                         }
                                     }
@@ -1534,11 +1538,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1556,11 +1562,13 @@ describe("DASHBOARD UNIT Tests", function() {
                                 "description": "this is a dummy description",
                                 "_TTL": 12 * 3600 * 1000,
                                 "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
+                                    "dev": {
+                                        "urac": {
+                                            'access': false,
+                                            'apis': {
+                                                '/account/changeEmail': {
+                                                    'access': true
+                                                }
                                             }
                                         }
                                     }
@@ -1624,11 +1632,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1697,11 +1707,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy updated description',
                             "_TTL": '24',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1720,11 +1732,13 @@ describe("DASHBOARD UNIT Tests", function() {
                                 "description": "this is a dummy updated description",
                                 "_TTL": 24 * 3600 * 1000,
                                 "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
+                                    "dev": {
+                                        "urac": {
+                                            'access': false,
+                                            'apis': {
+                                                '/account/changeEmail': {
+                                                    'access': true
+                                                }
                                             }
                                         }
                                     }
@@ -1789,10 +1803,12 @@ describe("DASHBOARD UNIT Tests", function() {
                             "_TTL": '24',
                             "acl": {
                                 "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                    "dev": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1917,11 +1933,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": "this is a dummy updated description",
                             "_TTL": 24 * 3600 * 1000,
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -4897,6 +4915,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "name": "basic package 2",
                             "description": "this is a dummy updated description",
                             "acl": {
+                                "dev": {
                                 "urac": {
                                     'access': false,
                                     'apis': {
@@ -4904,6 +4923,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                             'access': true
                                         }
                                     }
+                                }
                                     //todo: retest this after fixing inputmask data type conversion
                                     //,
                                     //'apisRegExp': [
