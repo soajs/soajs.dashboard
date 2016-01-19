@@ -8,10 +8,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 
 	$scope.tenantTabs = [
 		/*{
-			'label': 'Administration',
-			'type': 'admin',
-			'tenants': []
-		},*/
+		 'label': 'Administration',
+		 'type': 'admin',
+		 'tenants': []
+		 },*/
 		{
 			'label': 'Product',
 			'type': 'product',
@@ -1412,11 +1412,28 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	$scope.isInherited = false;
 	$scope.currentApplication = {};
 	$scope.allGroups = [];
+	$scope.msg = {};
+	$scope.environments_codes =[];
+
+	$scope.getEnvironments = function() {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list",
+			"params": { "short": true }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.environments_codes = response;
+				$scope.getApplicationInfo();
+			}
+		});
+	};
 
 	$scope.getApplicationInfo = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
-
 		// get tenant application info
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -1453,10 +1470,9 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 					}
 					else {
 						$scope.currentApplication.parentPckgAcl = response.acl;
-
+						aclHelper.fillAcl($scope);
 						var parentAcl = $scope.currentApplication.parentPckgAcl;
-						var serviceNames = Object.keys(parentAcl);
-
+						var serviceNames = $scope.currentApplication.serviceNames;
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/services/list",
@@ -1467,7 +1483,6 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 							}
 							else {
 								var servicesList = response;
-
 								for (var x = 0; x < servicesList.length; x++) {
 									var service = servicesList[x];
 									var name = service.name;
@@ -1506,12 +1521,8 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 										response.forEach(function (grpObj) {
 											$scope.allGroups.push(grpObj.code);
 										});
-										if ($scope.currentApplication.acl) {
-											$scope.currentApplication.aclFill = angular.copy($scope.currentApplication.acl);
-										}
-										else {
+										if (!$scope.currentApplication.acl) {
 											$scope.isInherited = true;
-											$scope.currentApplication.aclFill = angular.copy($scope.currentApplication.parentPckgAcl);
 										}
 										aclHelper.prepareViewAclObj($scope.currentApplication.aclFill);
 									}
@@ -1524,31 +1535,31 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 		});
 	};
 
-	$scope.minimize = function (service) {
-		$scope.currentApplication.aclFill[service.name].collapse = true;
+	$scope.minimize = function (service, envCode) {
+		$scope.currentApplication.aclFill[envCode][service.name].collapse = true;
 	};
 
-	$scope.expand = function (service) {
-		$scope.currentApplication.aclFill[service.name].collapse = false;
+	$scope.expand = function (service, envCode) {
+		$scope.currentApplication.aclFill[envCode][service.name].collapse = false;
 	};
 
-	$scope.selectService = function (service) {
-		if ($scope.currentApplication.aclFill[service.name].include) {
+	$scope.selectService = function (service, envCode) {
+		if ($scope.currentApplication.aclFill[envCode][service.name].include) {
 			if (service.forceRestricted) {
-				$scope.currentApplication.aclFill[service.name].apisRestrictPermission = true;
+				$scope.currentApplication.aclFill[envCode][service.name].apisRestrictPermission = true;
 			}
-			$scope.currentApplication.aclFill[service.name].collapse = false;
+			$scope.currentApplication.aclFill[envCode][service.name].collapse = false;
 		} else {
-			$scope.currentApplication.aclFill[service.name].collapse = true;
+			$scope.currentApplication.aclFill[envCode][service.name].collapse = true;
 		}
 	};
 
-	$scope.checkForGroupDefault = function (service, grp, val, myApi) {
-		aclHelper.checkForGroupDefault($scope.currentApplication.aclFill, service, grp, val, myApi)
+	$scope.checkForGroupDefault = function (service, grp, val, myApi, envCode) {
+		aclHelper.checkForGroupDefault($scope.currentApplication.aclFill[envCode], service, grp, val, myApi)
 	};
 
-	$scope.applyRestriction = function (service) {
-		aclHelper.applyRestriction($scope.currentApplication.aclFill, service);
+	$scope.applyRestriction = function (service, envCode) {
+		aclHelper.applyRestriction($scope.currentApplication.aclFill[envCode], service);
 	};
 
 	$scope.clearAcl = function () {
@@ -1570,6 +1581,8 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				$scope.msg.type = '';
+				$scope.msg.msg = '';
 				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
 			}
 		});
@@ -1597,7 +1610,10 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
+					$scope.msg.type = '';
+					$scope.msg.msg = '';
 					$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+
 				}
 			});
 		}
@@ -1607,5 +1623,5 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	};
 
 	//default operation
-	$scope.getApplicationInfo();
+	$scope.getEnvironments();
 }]);

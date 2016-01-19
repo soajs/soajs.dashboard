@@ -3,68 +3,72 @@ var multiTenantService = soajsApp.components;
 multiTenantService.service('aclHelper', function(){
 
 	function prepareAclObjToSave(aclFill){
-		var aclObj={};
+		var acl={};
 		var valid = true;
-		var serviceName, grpCodes, apiName, code;
-		for(serviceName in aclFill){
-			if(aclFill.hasOwnProperty( serviceName )){
-				var service = angular.copy(aclFill[serviceName]);
+		var serviceName, grpCodes, apiName, code, env;
+		for (env in aclFill){
+			acl[env.toLowerCase()]={};
+			var aclObj = acl[env.toLowerCase()];
+			for(serviceName in aclFill[env]){
+				if(aclFill[env].hasOwnProperty( serviceName )){
+					var service = angular.copy(aclFill[env][serviceName]);
 
-				if(service.include===true){
-					aclObj[serviceName]={};
-					aclObj[serviceName].apis={};
+					if(service.include===true){
+						aclObj[serviceName]={};
+						aclObj[serviceName].apis={};
 
-					if(service.accessType==='private'){
-						aclObj[serviceName].access=true;
-					}
-					else if(service.accessType==='public'){
-						aclObj[serviceName].access=false;
-					}
-					else if(service.accessType==='groups'){
-						aclObj[serviceName].access=[];
-						grpCodes = aclFill[serviceName].grpCodes;
-						if(grpCodes){
-							for(code in grpCodes){
-								if(grpCodes.hasOwnProperty(code)){
-									aclObj[serviceName].access.push(code);
+						if(service.accessType==='private'){
+							aclObj[serviceName].access=true;
+						}
+						else if(service.accessType==='public'){
+							aclObj[serviceName].access=false;
+						}
+						else if(service.accessType==='groups'){
+							aclObj[serviceName].access=[];
+							grpCodes = aclFill[env][serviceName].grpCodes;
+							if(grpCodes){
+								for(code in grpCodes){
+									if(grpCodes.hasOwnProperty(code)){
+										aclObj[serviceName].access.push(code);
+									}
 								}
 							}
+							if(aclObj[serviceName].access.length==0){
+								return {'valid': false } ;
+							}
 						}
-						if(aclObj[serviceName].access.length==0){
-							return {'valid': false } ;
+
+						if(service.apisRestrictPermission ===true ){
+							aclObj[serviceName].apisPermission ='restricted';
 						}
-					}
 
-					if(service.apisRestrictPermission ===true ){
-						aclObj[serviceName].apisPermission ='restricted';
-					}
+						if(service.apis){
+							for(apiName in service.apis){
+								if(service.apis.hasOwnProperty(apiName)){
+									var api = service.apis[apiName];
+									if((service.apisRestrictPermission=== true && api.include===true) || !service.apisRestrictPermission){
+										/// need to also check for the default api if restricted
+										aclObj[serviceName].apis[apiName]={};
+										if(api.accessType==='private'){
+											aclObj[serviceName].apis[apiName].access=true;
+										}
+										else if(api.accessType==='public'){
+											aclObj[serviceName].apis[apiName].access=false;
+										}
+										else if(api.accessType==='groups'){
+											aclObj[serviceName].apis[apiName].access=[];
+											grpCodes = aclFill[env][serviceName].apis[apiName].grpCodes;
 
-					if(service.apis){
-						for(apiName in service.apis){
-							if(service.apis.hasOwnProperty(apiName)){
-								var api = service.apis[apiName];
-								if((service.apisRestrictPermission=== true && api.include===true) || !service.apisRestrictPermission){
-									/// need to also check for the default api if restricted
-									aclObj[serviceName].apis[apiName]={};
-									if(api.accessType==='private'){
-										aclObj[serviceName].apis[apiName].access=true;
-									}
-									else if(api.accessType==='public'){
-										aclObj[serviceName].apis[apiName].access=false;
-									}
-									else if(api.accessType==='groups'){
-										aclObj[serviceName].apis[apiName].access=[];
-										grpCodes = aclFill[serviceName].apis[apiName].grpCodes;
-
-										if(grpCodes){
-											for(code in grpCodes){
-												if(grpCodes.hasOwnProperty(code)){
-													aclObj[serviceName].apis[apiName].access.push(code);
+											if(grpCodes){
+												for(code in grpCodes){
+													if(grpCodes.hasOwnProperty(code)){
+														aclObj[serviceName].apis[apiName].access.push(code);
+													}
 												}
 											}
-										}
-										if(aclObj[serviceName].apis[apiName].access.length==0){
-											return {'valid': false } ;
+											if(aclObj[serviceName].apis[apiName].access.length==0){
+												return {'valid': false } ;
+											}
 										}
 									}
 								}
@@ -74,58 +78,131 @@ multiTenantService.service('aclHelper', function(){
 				}
 			}
 		}
-		return {'valid': valid, 'data':aclObj } ;
+		return {'valid': valid, 'data':acl } ;
+	}
+
+	function fillAcl(currentScope) {
+		var parentAcl = currentScope.currentApplication.parentPckgAcl;
+		var envCodes = currentScope.environments_codes;
+		var tenantAcl = currentScope.currentApplication.acl;
+		var acl;
+		var count = 0;
+		var myAcl = {};
+		//var envNames = [];
+		var servNamesNew = [];
+		var servNamesOld = [];
+		if (tenantAcl){
+			acl= tenantAcl;
+		}
+		else {
+			acl= parentAcl;
+		}
+		envCodes.forEach(function (oneEnv) {
+			if (parentAcl[oneEnv.code.toLowerCase()] && (!parentAcl[oneEnv.code.toLowerCase()].access && !parentAcl[oneEnv.code.toLowerCase()].apis && !parentAcl[oneEnv.code.toLowerCase()].apisRegExp && !parentAcl[oneEnv.code.toLowerCase()].apisPermission)) {
+				for (var envCode in acl) {
+					envCode = envCode.toLowerCase();
+					count++;
+					//envNames.push(envCode);
+					myAcl[envCode.toUpperCase()] = acl[envCode];
+					servNamesNew = Object.keys(myAcl[envCode.toUpperCase()]);
+					if (servNamesOld.length === 0) {
+						servNamesOld = servNamesNew;
+					}
+					else {
+						for (var i = 0; i < servNamesNew.length; i++) {
+							var ct = 0;
+							for (var j = 0; j < servNamesOld.length; j++) {
+								if (servNamesOld[j] === servNamesNew[i]) {
+									ct = 1;
+								}
+							}
+							if (ct === 0) {
+								servNamesOld.push(servNamesNew[i]);
+							}
+						}
+					}
+				}
+			}
+		});
+
+		if (count === 0) {
+			//old
+			servNamesOld = Object.keys(acl);
+			myAcl[envCodes[0].code.toUpperCase()] = acl;
+			envCodes.forEach(function (oneEnv) {
+				if (oneEnv.code !== envCodes[0].code) {
+					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
+				}
+			});
+		}
+
+		currentScope.currentApplication.serviceNames = servNamesOld;
+		currentScope.currentApplication.aclFill = myAcl;
+		if (count === 0) {
+			currentScope.msg.type = 'warning';
+			currentScope.msg.msg = "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!";
+		}
 	}
 
 	function prepareViewAclObj(aclFill){
-		var service, propt;
 
-		for(propt in aclFill){
-			if(aclFill.hasOwnProperty(propt)){
-				service = aclFill[propt];
+		for (var lowerCase in aclFill){
+			var upperCase = lowerCase.toUpperCase();
+			if(upperCase !== lowerCase){
+				aclFill[upperCase] = aclFill[lowerCase];
+				delete aclFill[lowerCase];
+			}
+		}
+		var service, propt, env;
 
-				service.include =true;
-				service.collapse = false;
-				if(service.access){
-					if( service.access===true){
-						service.accessType = 'private';
+		for(env in aclFill){
+			for(propt in aclFill[env]){
+				if(aclFill[env].hasOwnProperty(propt)){
+					service = aclFill[env][propt];
+
+					service.include =true;
+					service.collapse = false;
+					if(service.access){
+						if( service.access===true){
+							service.accessType = 'private';
+						}
+						else if( service.access===false){
+							service.accessType = 'public';
+						}
+						else if(Array.isArray(service.access)){
+							service.accessType = 'groups';
+							service.grpCodes={};
+							service.access.forEach(function( c ) {
+								service.grpCodes[c]=true;
+							});
+						}
 					}
-					else if( service.access===false){
+					else{
 						service.accessType = 'public';
 					}
-					else if(Array.isArray(service.access)){
-						service.accessType = 'groups';
-						service.grpCodes={};
-						service.access.forEach(function( c ) {
-							service.grpCodes[c]=true;
-						});
+					if(service.apisPermission==='restricted'){
+						service.apisRestrictPermission = true;
 					}
-				}
-				else{
-					service.accessType = 'public';
-				}
-				if(service.apisPermission==='restricted'){
-					service.apisRestrictPermission = true;
-				}
-				var ap;
-				if(service.apis){
-					for(ap in service.apis){
-						if( service.apis.hasOwnProperty( ap )) {
-							service.apis[ap].include = true;
-							service.apis[ap].accessType = 'clear';
-							if(service.apis[ap].access == true) {
-								service.apis[ap].accessType = 'private';
-							}
-							else if(service.apis[ap].access === false) {
-								service.apis[ap].accessType = 'public';
-							}
-							else {
-								if(Array.isArray(service.apis[ap].access)) {
-									service.apis[ap].accessType = 'groups';
-									service.apis[ap].grpCodes = {};
-									service.apis[ap].access.forEach(function(c) {
-										service.apis[ap].grpCodes[c] = true;
-									});
+					var ap;
+					if(service.apis){
+						for(ap in service.apis){
+							if( service.apis.hasOwnProperty( ap )) {
+								service.apis[ap].include = true;
+								service.apis[ap].accessType = 'clear';
+								if(service.apis[ap].access == true) {
+									service.apis[ap].accessType = 'private';
+								}
+								else if(service.apis[ap].access === false) {
+									service.apis[ap].accessType = 'public';
+								}
+								else {
+									if(Array.isArray(service.apis[ap].access)) {
+										service.apis[ap].accessType = 'groups';
+										service.apis[ap].grpCodes = {};
+										service.apis[ap].access.forEach(function(c) {
+											service.apis[ap].grpCodes[c] = true;
+										});
+									}
 								}
 							}
 						}
@@ -198,6 +275,7 @@ multiTenantService.service('aclHelper', function(){
 
 	return {
 		'prepareAclObjToSave': prepareAclObjToSave,
+		'fillAcl': fillAcl,
 		'prepareViewAclObj': prepareViewAclObj,
 		'groupApisForDisplay': groupApisForDisplay,
 		'checkForGroupDefault': checkForGroupDefault,
