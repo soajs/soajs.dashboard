@@ -60,12 +60,14 @@ soajsApp.config([
 
 soajsApp.run(function ($rootScope) {
 	$rootScope.angular = angular;
+	$rootScope.LANG = LANG;
+	$rootScope.translation = translation;
 });
 
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
 	function ($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
-		$scope.translation = translation;
-		$scope.LANG = LANG;
+		//$scope.translation = translation;
+		//$scope.LANG = LANG;
 		$scope.enableInterface = false;
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;

@@ -1,16 +1,16 @@
 "use strict";
-var productizationNav =[
+var productizationNav = [
 	{
 		'id': 'productization',
 		'label': 'Productization',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/product/list'
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/product/list'
 		},
 		'url': '#/productization',
 		'tplPath': 'modules/productization/directives/list.tmpl',
 		'icon': 'list',
-		'pillar':{
+		'pillar': {
 			'name': 'management',
 			'label': 'Product',
 			'position': 2
@@ -18,7 +18,7 @@ var productizationNav =[
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
-		'ancestor': ['Home']
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'product-acl',
@@ -26,13 +26,13 @@ var productizationNav =[
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/productization/directives/editAcl.tmpl',
 		'tracker': true,
-		'pillar':{
+		'pillar': {
 			'name': 'management',
 			'label': 'Product',
 			'position': 2
 		},
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
-		'ancestor': ['Home', 'Productization']
+		'ancestor': [translation.home[LANG], 'Productization']
 	}
 ];
 navigation = navigation.concat(productizationNav);

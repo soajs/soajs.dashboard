@@ -12,6 +12,38 @@ var translation = {
 	'help': {
 		"ENG": "Help",
 		"FRA": "Aide"
+	},
+	"refreshListing": {
+		"ENG": "Refresh Listing",
+		"FRA": "Refresh Listing"
+	},
+	"getPrevious": {
+		"ENG": "Get Previous",
+		"FRA": "Get Previous"
+	},
+	"getNext": {
+		"ENG": "Get Next",
+		"FRA": "Get Next"
+	},
+	"username": {
+		"ENG": "Username",
+		"FRA": "Nom d'utilisateur"
+	},
+	"password": {
+		"ENG": "Password",
+		"FRA": "Mot De Passe"
+	},
+	"merchant": {
+		"ENG": "Merchant",
+		"FRA": "Merchant"
+	},
+	"dateCreated": {
+		"ENG": "Date Created",
+		"FRA": "Date de Création"
+	},
+	"dateModified": {
+		"ENG": "Date Modified",
+		"FRA": "Date Modified"
 	}
 };
 

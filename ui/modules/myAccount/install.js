@@ -1,8 +1,19 @@
 "use strict";
+var accTranslation = {
+	"login": {
+		"ENG": "Login",
+		"FRA": "Login"
+	}
+};
+
+for (var attrname in accTranslation) {
+	translation[attrname] = accTranslation[attrname];
+}
+
 var myAccountNav = [
 	{
 		'id': 'login',
-		'label': 'Login',
+		'label': translation.login[LANG],
 		'url': '#/login',
 		'guestMenu': true,
 		'tplPath': 'modules/myAccount/directives/login.tmpl',
@@ -10,7 +21,7 @@ var myAccountNav = [
 	},
 	{
 		'id': 'forgot_password',
-		'label': 'Forgot Password',
+		//'label': 'Forgot Password',
 		'url': '#/forgotPw',
 		'tplPath': 'modules/myAccount/directives/forgotPassword.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
@@ -18,7 +29,7 @@ var myAccountNav = [
 	},
 	{
 		'id': 'reset_password',
-		'label': 'Reset Password',
+		//'label': 'Reset Password',
 		'url': '#/resetPassword',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
 		'tplPath': 'modules/myAccount/directives/resetPassword.tmpl',
@@ -26,7 +37,7 @@ var myAccountNav = [
 	},
 	{
 		'id': 'set_password',
-		'label': 'Set Password',
+		//'label': 'Set Password',
 		'url': '#/setNewPassword',
 		'tplPath': 'modules/myAccount/directives/setNewPassword.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
@@ -34,7 +45,7 @@ var myAccountNav = [
 	},
 	{
 		'id': 'validate_email',
-		'label': 'Validate Change Email',
+		//'label': 'Validate Change Email',
 		'url': '#/changeEmail/validate',
 		'tplPath': 'modules/myAccount/directives/validate.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
