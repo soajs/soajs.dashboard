@@ -113,7 +113,7 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		}, function(error, response) {
 			if(error) {
 				overlayLoading.hide();
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
 				$scope.users = arrGroupByTenant(response.users);
@@ -131,7 +131,7 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		}, function(error, response) {
 			if(error) {
 				overlayLoading.hide();
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.tenantsList = response;
@@ -279,7 +279,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			"params": { "short": true }
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.environments_codes = response;
@@ -319,7 +319,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"params": { "id": $scope.user.tenant.id }
 			}, function(error, response) {
 				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 				else {
 					$scope.tenantApp = response;
@@ -348,7 +348,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"params": {"uId": $routeParams.uId}
 			}, function(error, response) {
 				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
 					$scope.user = response;
@@ -358,7 +358,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 						"params": {'tId': $scope.user.tenant.id}
 					}, function(error, response) {
 						if(error) {
-							$scope.$parent.displayAlert("danger", error.message);
+							$scope.$parent.displayAlert("danger", error.code, true, 'urac');
 						}
 						else {
 							response.forEach(function(grpObj) {
@@ -410,7 +410,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			"data": postData
 		}, function(error) {
 			if(error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
 				$route.reload();
@@ -461,7 +461,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"data": postData
 			}, function(error) {
 				if(error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
 					$scope.msg.type = '';

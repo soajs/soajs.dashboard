@@ -64,8 +64,18 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.alerts.splice(i, 1);
 	};
 
-	context.form.displayAlert = function (type, msg) {
+	context.form.displayAlert = function (type, msg, isCode, service) {
 		context.form.alerts = [];
+		if (isCode) {
+			if (errorCodes[service] && errorCodes[service][msg]) {
+				if (errorCodes[service][msg][LANG]) {
+					msg = errorCodes[service][msg][LANG];
+				}
+				else{
+					msg = errorCodes[service][msg]['ENG'];
+				}
+			}
+		}
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
 	};
@@ -215,22 +225,22 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
-	function doValidateItems(entries, data){
+	function doValidateItems(entries, data) {
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
 			if (oneEntry.type === 'group') {
 				var validation = doValidateItems(oneEntry.entries, data);
-				if(validation === false){
+				if (validation === false) {
 					return false;
 				}
 			}
-			else if(oneEntry.type ==='radio' || oneEntry.type ==='select'){
-				if(Array.isArray(data[oneEntry.name])){
+			else if (oneEntry.type === 'radio' || oneEntry.type === 'select') {
+				if (Array.isArray(data[oneEntry.name])) {
 					data[oneEntry.name] = data[oneEntry.name][0];
 				}
 			}
-			if(data[oneEntry.name] === 'false') data[oneEntry.name] = false;
-			if(data[oneEntry.name] === 'true') data[oneEntry.name] = true;
+			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
+			if (data[oneEntry.name] === 'true') data[oneEntry.name] = true;
 
 			if (oneEntry.required && (data[oneEntry.name] === null || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
 				return false;

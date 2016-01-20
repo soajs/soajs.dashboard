@@ -80,16 +80,29 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.alerts.push({'type': type, 'msg': msg});
 		};
 
-		$scope.displayAlert = function (type, msg) {
+		$scope.displayAlert = function (type, msg, isCode, service) {
 			$scope.alerts = [];
+			if (isCode) {
+				if (errorCodes[service] && errorCodes[service][msg]) {
+					if (errorCodes[service][msg][LANG]) {
+						msg = errorCodes[service][msg][LANG];
+					}
+					else {
+						msg = errorCodes[service][msg]['ENG'];
+					}
+				}
+			}
 			$scope.alerts.push({'type': type, 'msg': msg});
 			$scope.closeAllAlerts();
 		};
 
-		$scope.displayCodeAlert = function (type, msg, service) {
+		$scope.displayCodeAlert = function (type, code, service) {
 			$scope.alerts = [];
-			if (errorCodes[service] && errorCodes[service][LANG] && errorCodes[service][LANG][msg]) {
-				msg = errorCodes[service][LANG][msg];
+			var msg = code;
+			if (errorCodes[service] && errorCodes[service][code]) {
+				if (errorCodes[service][code][LANG]) {
+					msg = errorCodes[service][code][LANG];
+				}
 			}
 			$scope.alerts.push({'type': type, 'msg': msg});
 			$scope.closeAllAlerts();
