@@ -55,11 +55,15 @@ var deployer = {
                 "Tty": false,
                 "Hostname": containerName,
                 "HostConfig": {
-                    "Links": links,
                     "PortBindings": port,
                     "PublishAllPorts": true
                 }
             };
+
+	        if(links && Array.isArray(links) && links.length > 0){
+		        options.HostConfig.Links = links;
+	        }
+
             if (params.Cmd) {
                 options.Cmd = params.Cmd;
             }
