@@ -8,7 +8,7 @@ var translation = {
 	'welcome': {
 		"ENG": "Welcome",
 		"FRA": "Bienvenue"
-	},ddingadd
+	},
 	'help': {
 		"ENG": "Help",
 		"FRA": "Aide"
