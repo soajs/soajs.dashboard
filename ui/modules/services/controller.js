@@ -1145,3 +1145,15 @@ servicesApp.filter('timeInMillisConverter', function () {
         return time.toFixed(2) + " " + unit;
     };
 });
+
+servicesApp.filter('statusDisplay', function () {
+    return function (status) {
+        if (status === 1) {
+            return "Active";
+        } else if (status === 0) {
+            return "Inactive";
+        }
+
+        return "Unknown";
+    };
+});

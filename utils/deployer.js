@@ -12,7 +12,7 @@ function generateUniqueId(len, cb) {
 }
 
 function getDeployer(config) {
-    var deployerDriver = require("./drivers/" + config.driver.type + "/" + config.driver.driver + ".js");
+    var deployerDriver = require("./" + config.driver.type + "/" + config.driver.driver + ".js");
     return deployerDriver;
 }
 

@@ -221,37 +221,26 @@ module.exports = {
                 "validation": {
                     "type": "object",
                     "properties": {
-                        "type": {"required": true, "type": "string", "enum": ['manual', 'cloud', 'container']},
-                        "cloud": {
-                            "type": "object",
-                            "required": false,
-                            "properties": {}
-                        },
-                        "container": {
+                        "type": {"required": true, "type": "string", "enum": ['manual', 'container']},
+                        "selected": {"type": "string", "required": false},
+                        "docker": {
                             "type": "object",
                             "required": false,
                             "properties": {
                                 "selected": {"type": "string", "required": false},
-                                "docker": {
+                                "boot2docker": {
                                     "type": "object",
-                                    "required": false,
-                                    "properties": {
-                                        "selected": {"type": "string", "required": false},
-                                        "boot2docker": {
-                                            "type": "object",
-                                            "required": false
-                                        },
-                                        "joyent": {
-                                            "type": "object",
-                                            "required": false
-                                        },
-                                        "socket": {
-                                            "type": "object",
-                                            "required": false
-                                        }
-                                    }
+                                    "required": false
                                 },
-                                "coreos": {
+                                "joyent": {
+                                    "type": "object",
+                                    "required": false
+                                },
+                                "socket": {
+                                    "type": "object",
+                                    "required": false
+                                },
+                                "rackspace": {
                                     "type": "object",
                                     "required": false
                                 }

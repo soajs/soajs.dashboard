@@ -69,22 +69,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								}
 							}
 
-							if ($scope.formEnvironment.deployer.container) {
-								for (var driver in $scope.formEnvironment.deployer.container.docker) {
-									$scope.formEnvironment.deployer.container.docker[driver] = JSON.stringify($scope.formEnvironment.deployer.container.docker[driver], null, 2);
-								}
-
-								for (var driver in $scope.formEnvironment.deployer.container.coreos) {
-									$scope.formEnvironment.deployer.container.coreos[driver] = JSON.stringify($scope.formEnvironment.deployer.container.coreos[driver], null, 2);
-								}
-							}
-
-							if ($scope.formEnvironment.deployer.cloud) {
-								for (var driver in $scope.formEnvironment.deployer.cloud) {
-									$scope.formEnvironment.deployer.cloud[driver] = JSON.stringify($scope.formEnvironment.deployer.cloud[driver], null, 2);
-									if ($scope.formEnvironment.deployer.cloud[driver] === '{}') {
-										delete $scope.formEnvironment.deployer.cloud[driver];
-									}
+							if ($scope.formEnvironment.deployer) {
+								for (var driver in $scope.formEnvironment.deployer.docker) {
+									$scope.formEnvironment.deployer.docker[driver] = JSON.stringify($scope.formEnvironment.deployer.docker[driver], null, 2);
 								}
 							}
 
@@ -115,8 +102,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.grid.rows.forEach(function (env) {
 							env.profileLabel = env.profile.split("/");
 							env.profileLabel = env.profileLabel[env.profileLabel.length - 1].replace(".js", "");
-							env.selectedDeployer = env.deployer.selected;
-							delete env.deployer.selected;
 						});
 					}
 				}
@@ -132,7 +117,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	$scope.getDeploymentDriver = function (deployer, value, technology, type) {
-		deployer.ui[value] = (deployer[type].selected === technology + '.' + value);
+		deployer.ui[value] = (deployer.selected === technology + '.' + value);
 	};
 
 	$scope.addEnvironment = function () {
@@ -158,32 +143,33 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						var tmpl = angular.copy(env_template);
 						tmpl.code = formData.code;
 						tmpl.domain = formData.domain;
-						//tmpl.port = parseInt(formData.port[0]);
 						tmpl.port = parseInt(formData.port);
 						tmpl.description = formData.description;
-						//tmpl.profile = formData.profile[0];
 						tmpl.profile = formData.profile;
 
 						tmpl.services.config.key.password = formData.tKeyPass;
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
 
-						//switch (formData.platformDriver[0]) {
 						switch (formData.platformDriver) {
 							case 'manual':
 								tmpl.deployer.type = 'manual';
 								break;
 							case 'socket':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.container.selected = 'docker.socket';
+								tmpl.deployer.selected = 'docker.socket';
 								break;
 							case 'boot2docker':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.container.selected = 'docker.boot2docker';
+								tmpl.deployer.selected = 'docker.boot2docker';
 								break;
 							case 'joyent':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.container.selected = 'docker.joyent';
+								tmpl.deployer.selected = 'docker.joyent';
+								break;
+							case 'rackspace':
+								tmpl.deployer.type = 'container';
+								tmpl.deployer.selected = 'docker.rackspace';
 								break;
 						}
 						getSendDataFromServer($scope, ngDataApi, {
@@ -265,7 +251,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		}
 
-		if (!postData.deployer.container.docker.socket && !postData.deployer.container.docker.boot2docker && !postData.deployer.container.docker.joyent) {
+		if (!postData.deployer.docker.socket && !postData.deployer.docker.boot2docker && !postData.deployer.docker.joyent) {
 			$timeout(function () {
 				alert("Provide a configuration for at least one platform driver to proceed.");
 			}, 100);
@@ -281,36 +267,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					type = type[0];
 					postData.deployer.type = type;
 					if (type !== 'manual') {
-						postData.deployer[type].selected = subType + '.' + driver;
+						postData.deployer.selected = subType + '.' + driver;
 					}
 				}
-				if (type === 'container') {
-					if (subType === 'docker') {
-						postData.deployer.container.docker.selected = driver;
-					}
-					if (subType === 'coreos') {
-						postData.deployer.container.coreos.selected = driver;
-					}
+				if (type === 'container' && subType === 'docker') {
+					postData.deployer.docker.selected = driver;
 				}
 
-				for (var supported in postData.deployer.container.docker) {
+				for (var supported in postData.deployer.docker) {
 					if (supported === 'selected') {
 						continue;
 					}
-					postData.deployer.container.docker[supported] = JSON.parse(postData.deployer.container.docker[supported]);
-				}
-
-
-				for (var supported in postData.deployer.container.coreos) {
-					if (supported === 'selected') {
-						continue;
-					}
-					postData.deployer.container.coreos[supported] = JSON.parse(postData.deployer.container.coreos[supported]);
-				}
-
-				for (var supported in postData.deployer.cloud) {
-					if (supported === 'selected') continue;
-					postData.deployer.cloud[supported] = JSON.parse(postData.deployer.cloud[supported]);
+					postData.deployer.docker[supported] = JSON.parse(postData.deployer.docker[supported]);
 				}
 			}
 			catch (e) {
