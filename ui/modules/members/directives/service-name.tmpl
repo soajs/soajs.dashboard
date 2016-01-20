@@ -1,34 +1,34 @@
 <div class="serviceName">
-    <input type="checkbox" ng-checked="application.aclFill[service.name].include===true"
+    <input type="checkbox" ng-checked="application.aclFill[oneEnv.code][service.name].include===true"
            ng-model="aclFill[application.package].services[service.name].include" value="{{application.package + '_' + service.name}}"
-           ng-click="selectService(application, service)"/>
+           ng-click="selectService(application, service, oneEnv.code)"/>
     <b> <a href="">{{service.name}} </a></b>
 </div>
-<div ng-show="application.aclFill[service.name].include" style="float: left;">
+<div ng-show="application.aclFill[oneEnv.code][service.name].include" style="float: left;">
     <div style="float: left">
         <span style="padding-left: 15px;">
-            <input ng-model="application.aclFill[service.name].accessType" value="public" type="radio" ng-checked="application.aclFill[service.name].accessType==='public'"/> public
+            <input ng-model="application.aclFill[oneEnv.code][service.name].accessType" value="public" type="radio" ng-checked="application.aclFill[oneEnv.code][service.name].accessType==='public'"/> public
         </span>
         <span style="padding-left: 40px;">
-            <input ng-model="application.aclFill[service.name].accessType" value="private" type="radio" ng-checked="application.aclFill[service.name].accessType==='private'"/> private
+            <input ng-model="application.aclFill[oneEnv.code][service.name].accessType" value="private" type="radio" ng-checked="application.aclFill[oneEnv.code][service.name].accessType==='private'"/> private
         </span>
         <span style="padding-left: 40px;">
-            <input type="radio" ng-checked="application.aclFill[service.name].accessType==='groups'" ng-model="application.aclFill[service.name].accessType" value="groups"/> Groups
+            <input type="radio" ng-checked="application.aclFill[oneEnv.code][service.name].accessType==='groups'" ng-model="application.aclFill[oneEnv.code][service.name].accessType" value="groups"/> Groups
         </span>
     </div>
-    <div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[service.name].accessType=='groups' ">
+    <div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[oneEnv.code][service.name].accessType=='groups' ">
         <ul class="grpsListing">
             <li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
-                <input type="checkbox" value="{{code}}" ng-model="application.aclFill[service.name].grpCodes[code]" ng-checked="application.aclFill[service.name]['access'].indexOf(code)!== -1"/> {{code}}
+                <input type="checkbox" value="{{code}}" ng-model="application.aclFill[oneEnv.code][service.name].grpCodes[code]" ng-checked="application.aclFill[oneEnv.code][service.name]['access'].indexOf(code)!== -1"/> {{code}}
             </li>
         </ul>
     </div>
 </div>
-<div style="float:right;" ng-show="application.aclFill[service.name].include">
-    <a href="" ng-click="minimize(application, service)" ng-show="application.aclFill[service.name].collapse===false">
+<div style="float:right;" ng-show="application.aclFill[oneEnv.code][service.name].include">
+    <a href="" ng-click="minimize(application, service, oneEnv.code)" ng-show="application.aclFill[oneEnv.code][service.name].collapse===false">
         <span class="icon icon-minus" tooltip="Minimize"></span>
     </a>
-    <a href="" ng-click="expand(application, service)" ng-show="application.aclFill[service.name].collapse===true">
+    <a href="" ng-click="expand(application, service, oneEnv.code)" ng-show="application.aclFill[oneEnv.code][service.name].collapse===true">
         <span class="icon icon-plus" tooltip="Expand"></span>
     </a>
 </div>

@@ -346,20 +346,22 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', function($scope, $routeParams, ngDataApi, aclHelpers) {
 	$scope.$parent.isUserLoggedIn();
 
+	$scope.environments_codes =[];
 	$scope.allServiceApis=[];
 	$scope.aclFill={};
 	$scope.currentPackage = {};
+	$scope.msg = {};
 
-	$scope.minimize =function(service){
-		$scope.aclFill[service.name].collapse = true;
+	$scope.minimize =function(envCode, service){
+		$scope.aclFill[envCode][service.name].collapse = true;
 	};
 
-	$scope.expand =function(service){
-		$scope.aclFill[service.name].collapse = false;
+	$scope.expand =function(envCode, service){
+		$scope.aclFill[envCode][service.name].collapse = false;
 	};
 
-	$scope.selectService = function( service) {
-		$scope.aclFill[service.name].collapse = !$scope.aclFill[service.name]['include'];
+	$scope.selectService = function(envCode, service) {
+		$scope.aclFill[envCode][service.name].collapse = !$scope.aclFill[envCode][service.name]['include'];
 	};
 
 	$scope.getPackageAcl = function() {
@@ -382,7 +384,26 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 				}
 
 				$scope.aclFill= angular.copy($scope.currentPackage.acl);
-				aclHelpers.fillAcl($scope.aclFill);
+				$scope.$evalAsync(function($scope){
+
+					aclHelpers.fillAcl($scope);
+				});
+			}
+		});
+	};
+
+	$scope.getEnvironments = function() {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list",
+			"params": { "short": true }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.environments_codes = response;
+				$scope.getPackageAcl();
 			}
 		});
 	};
@@ -402,12 +423,10 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 				response.forEach(function(serv) {
 					serv.fixList = aclHelpers.groupApisForDisplay( serv.apis , 'group');
 					delete serv.apis;
-
-
 				});
 
 				$scope.allServiceApis = response;
-				$scope.getPackageAcl();
+				$scope.getEnvironments();
 			}
 		});
 	};
@@ -427,19 +446,23 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				$scope.msg.type = '';
+				$scope.msg.msg = '';
 				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
 			}
 		});
 	};
 
-	$scope.checkForGroupDefault=function(service,grp,val,myApi) {
-		aclHelpers.checkForGroupDefault($scope,service,grp,val,myApi);
+	$scope.checkForGroupDefault=function(envCode, service,grp,val,myApi) {
+		aclHelpers.checkForGroupDefault($scope,envCode, service,grp,val,myApi);
 	};
 
-	$scope.applyRestriction=function(service){
-		aclHelpers.applyPermissionRestriction($scope, service);
+	$scope.applyRestriction=function(envCode, service){
+		aclHelpers.applyPermissionRestriction($scope, envCode, service);
 	};
 
 	// default operation
-	$scope.getAllServicesList();
+	overlayLoading.show(function() {
+		$scope.getAllServicesList();
+	});
 }]);

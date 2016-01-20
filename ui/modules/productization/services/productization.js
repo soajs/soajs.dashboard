@@ -31,7 +31,39 @@ productizationService.service('aclHelpers', function(){
 		return result;
 	}
 
-	function fillAcl(aclFill){
+	function fillAcl(currentScope){
+		var count =0;
+		var myAcl = {};
+		var envCodes = currentScope.environments_codes;
+		var aclFill = currentScope.aclFill;
+		envCodes.forEach(function(oneEnv){
+			if(aclFill[oneEnv.code.toLowerCase()] && (!aclFill[oneEnv.code.toLowerCase()].access && !aclFill[oneEnv.code.toLowerCase()].apis && !aclFill[oneEnv.code.toLowerCase()].apisRegExp && !aclFill[oneEnv.code.toLowerCase()].apisPermission)){
+				count++;
+				myAcl[oneEnv.code.toUpperCase()] = aclFill[oneEnv.code.toLowerCase()];
+				propagateAcl(myAcl[oneEnv.code.toUpperCase()]);
+			}
+		});
+
+		if(count === 0){
+			//old
+			myAcl[envCodes[0].code.toUpperCase()] = aclFill;
+			propagateAcl(myAcl[envCodes[0].code.toUpperCase()]);
+			envCodes.forEach(function(oneEnv){
+				if(oneEnv.code !== envCodes[0].code){
+					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
+				}
+			});
+		}
+		currentScope.aclFill = myAcl;
+
+		if(count === 0){
+			currentScope.msg.type = 'warning';
+			currentScope.msg.msg = "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!";
+		}
+		overlayLoading.hide();
+	}
+
+	function propagateAcl(aclFill){
 		for(var propt in aclFill){
 			if(aclFill.hasOwnProperty(propt)){
 				var service = aclFill[propt];
@@ -92,18 +124,18 @@ productizationService.service('aclHelpers', function(){
 		}
 	}
 
-	function applyPermissionRestriction(scope,service){
-		if( scope.aclFill[service.name].apisRestrictPermission===true ){
+	function applyPermissionRestriction(scope, envCode, service){
+		if( scope.aclFill[envCode][service.name].apisRestrictPermission===true ){
 			for(var grpLabel in service.fixList ){
 				if(service.fixList.hasOwnProperty(grpLabel)){
 					var defaultApi = service.fixList[grpLabel]['defaultApi'];
 					if(defaultApi){
-						if( scope.aclFill[service.name].apis ){
+						if( scope.aclFill[envCode][service.name].apis ){
 							var apisList = service.fixList[grpLabel]['apis'];
-							if ((!scope.aclFill[service.name].apis[defaultApi]) || scope.aclFill[service.name].apis[defaultApi].include !== true){
+							if ((!scope.aclFill[envCode][service.name].apis[defaultApi]) || scope.aclFill[envCode][service.name].apis[defaultApi].include !== true){
 								apisList.forEach(function( oneApi ) {
-									if(scope.aclFill[service.name].apis[oneApi.v]){
-										scope.aclFill[service.name].apis[oneApi.v].include=false;
+									if(scope.aclFill[envCode][service.name].apis[oneApi.v]){
+										scope.aclFill[envCode][service.name].apis[oneApi.v].include=false;
 									}
 								});
 							}
@@ -114,14 +146,14 @@ productizationService.service('aclHelpers', function(){
 		}
 	}
 
-	function checkForGroupDefault(scope, service,grp,val,myApi){
+	function checkForGroupDefault(scope, envCode, service,grp,val,myApi){
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if(myApi.groupMain===true){
-			if( scope.aclFill[service.name] && scope.aclFill[service.name].apis ) {
-				if ((scope.aclFill[service.name].apis[defaultApi]) && scope.aclFill[service.name].apis[defaultApi].include !== true) {
+			if( scope.aclFill[envCode][service.name] && scope.aclFill[envCode][service.name].apis ) {
+				if ((scope.aclFill[envCode][service.name].apis[defaultApi]) && scope.aclFill[envCode][service.name].apis[defaultApi].include !== true) {
 					val.apis.forEach(function( one ) {
-						if(scope.aclFill[service.name].apis[one.v]){
-							scope.aclFill[service.name].apis[one.v].include=false;
+						if(scope.aclFill[envCode][service.name].apis[one.v]){
+							scope.aclFill[envCode][service.name].apis[one.v].include=false;
 						}
 					});
 				}
@@ -131,6 +163,17 @@ productizationService.service('aclHelpers', function(){
 
 	function constructAclFromPost(aclFill){
 		var aclObj= {};
+		for(var envCode in aclFill){
+			aclObj[envCode.toLowerCase()] = {};
+			aclFromPostPerEnv(aclFill[envCode.toUpperCase()], aclObj[envCode.toLowerCase()]);
+			if(Object.keys(aclObj[envCode.toLowerCase()]).length === 0){
+				delete aclObj[envCode.toLowerCase()];
+			}
+		}
+		return aclObj;
+	}
+
+	function aclFromPostPerEnv(aclFill, aclObj){
 		for(var propt in aclFill){
 			if(aclFill.hasOwnProperty(propt)){
 				var s = angular.copy(aclFill[propt]);
@@ -183,7 +226,6 @@ productizationService.service('aclHelpers', function(){
 				}
 			}
 		}
-		return aclObj;
 	}
 
 	return {
