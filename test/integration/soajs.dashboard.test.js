@@ -1870,7 +1870,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         }
                     };
                     executeMyRequest(params, 'product/packages/update', 'post', function(body) {
-                        assert.deepEqual(body.errors.details[0], {"code": 416, "message": errorCodes[416]});
+                        assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
                         done();
                     });
                 });
