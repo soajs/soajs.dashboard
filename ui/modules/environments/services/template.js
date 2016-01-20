@@ -7,24 +7,24 @@ var env_template = {
 	"description": "",
 	"deployer": {
 		"type": "",
-		"container": {
-			"selected": "",
-			"docker": {
-				"socket": {
-					"socketPath": "/var/run/docker.sock"
-				},
-				"boot2docker": {
-					"host": "192.168.59.103",
-					"port": 2376
-				},
-				"joyent": {
-					"host": "us-east-1.docker.joyent.com",
-					"port": 2376
-				}
+		"selected": "",
+		"docker": {
+			"socket": {
+				"socketPath": "/var/run/docker.sock"
 			},
-			"coreos": {}
-		},
-		"cloud": {}
+			"boot2docker": {
+				"host": "192.168.59.103",
+				"port": 2376
+			},
+			"joyent": {
+				"host": "us-east-1.docker.joyent.com",
+				"port": 2376
+			},
+			"rackspace": {
+				"host": "rackspace_host",
+				"port": 2376
+			}
+		}
 	},
 	"services": {
 		"controller": {
