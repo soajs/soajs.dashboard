@@ -198,8 +198,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/permissions/get",
-				"params":{"envCode": envRecord.code}
-			}, function(error, response) {
+				"params": {"envCode": envRecord.code}
+			}, function (error, response) {
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
@@ -407,12 +407,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.switchLanguage = function (lang) {
 			LANG = lang;
 			$scope.LANG = LANG;
-			if (!$scope.$$phase) {
-				$scope.$apply();
-			}
-			$route.reload();
-			loadJs('app/navigation.js', function () {});
-			//window.location.reload();
+			$cookieStore.put('soajs_LANG', LANG);
+			window.location.reload();
 		};
 	}]);
 
