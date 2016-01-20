@@ -1478,6 +1478,34 @@ describe("DASHBOARD UNIT Tests", function() {
 
         describe("package", function() {
             describe("add package tests", function() {
+	            it("fail - invalid env code in acl", function(done) {
+		            var params = {
+			            qs: {'id': productId},
+			            form: {
+				            "code": "BASIC",
+				            "name": "basic package",
+				            "description": 'this is a dummy description',
+				            "_TTL": '12',
+				            "acl": {
+					            "inv":{
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/add', 'post', function(body) {
+			            assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Invalid environment id provided"});
+			            done();
+		            });
+	            });
+
                 it("success - will add package", function(done) {
                     var params = {
                         qs: {'id': productId},
@@ -1699,58 +1727,83 @@ describe("DASHBOARD UNIT Tests", function() {
             });
 
             describe("update package tests", function() {
-                it("success - will update package", function(done) {
-                    var params = {
-                        qs: {'id': productId, "code": "BASIC"},
-                        form: {
-                            "name": "basic package 2",
-                            "description": 'this is a dummy updated description',
-                            "_TTL": '24',
-                            "acl": {
-                                "dev": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    };
-                    executeMyRequest(params, 'product/packages/update', 'post', function(body) {
-                        assert.ok(body.data);
+	            it('fail - invalid env code in acl', function(done) {
+		            var params = {
+			            qs: {'id': productId, "code": "BASIC"},
+			            form: {
+				            "name": "basic package 2",
+				            "description": 'this is a dummy updated description',
+				            "_TTL": '24',
+				            "acl": {
+					            "inv": {
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/update', 'post', function(body) {
+			            assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Invalid environment id provided"});
+			            done();
+		            });
+	            });
 
-                        mongo.findOne('products', {'code': 'TPROD'}, function(error, record) {
-                            assert.ifError(error);
-                            delete record._id;
-                            assert.deepEqual(record.packages[0], {
-                                "code": "TPROD_BASIC",
-                                "name": "basic package 2",
-                                "description": "this is a dummy updated description",
-                                "_TTL": 24 * 3600 * 1000,
-                                "acl": {
-                                    "dev": {
-                                        "urac": {
-                                            'access': false,
-                                            'apis': {
-                                                '/account/changeEmail': {
-                                                    'access': true
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                            done();
+	            it("success - will update package", function(done) {
+		            var params = {
+			            qs: {'id': productId, "code": "BASIC"},
+			            form: {
+				            "name": "basic package 2",
+				            "description": 'this is a dummy updated description',
+				            "_TTL": '24',
+				            "acl": {
+					            "dev": {
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/update', 'post', function(body) {
+			            assert.ok(body.data);
 
-                        });
+			            mongo.findOne('products', {'code': 'TPROD'}, function(error, record) {
+				            assert.ifError(error);
+				            delete record._id;
+				            assert.deepEqual(record.packages[0], {
+					            "code": "TPROD_BASIC",
+					            "name": "basic package 2",
+					            "description": "this is a dummy updated description",
+					            "_TTL": 24 * 3600 * 1000,
+					            "acl": {
+						            "dev": {
+							            "urac": {
+								            'access': false,
+								            'apis': {
+									            '/account/changeEmail': {
+										            'access': true
+									            }
+								            }
+							            }
+						            }
+					            }
+				            });
+				            done();
 
-
-                    });
-                });
+			            });
+		            });
+	            });
 
                 it('fail - missing params', function(done) {
                     var params = {
@@ -1777,6 +1830,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         done();
                     });
                 });
+
                 it("fail - wrong product id", function(done) {
                     var params = {
                         qs: {'id': wrong_Id, "code": "BASIC"},
@@ -1817,7 +1871,6 @@ describe("DASHBOARD UNIT Tests", function() {
                     };
                     executeMyRequest(params, 'product/packages/update', 'post', function(body) {
                         assert.deepEqual(body.errors.details[0], {"code": 416, "message": errorCodes[416]});
-
                         done();
                     });
                 });
