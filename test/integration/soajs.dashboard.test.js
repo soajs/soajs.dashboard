@@ -75,22 +75,19 @@ describe("DASHBOARD UNIT Tests", function() {
             "profile": "single",
             "deployer": {
                 "type": "manual", //available options: container | manual | cloud (chef | puppet)
-                "container": {
-                    "selected": "docker.boot2docker",
-                    "docker": {
-                        "selected": "boot2docker",
-                        "socket": {
-                            'socketPath': '/var/run/docker.sock'
-                        },
-                        "boot2docker": {
-                            'host': 'localhost',
-                            'port': 5354
-                        },
-                        "joyent": {}
+                "selected": "docker.boot2docker",
+                "docker": {
+                    "selected": "boot2docker",
+                    "socket": {
+                        'socketPath': '/var/run/docker.sock'
                     },
-                    "coreos": {}
-                },
-                "cloud": {}
+                    "boot2docker": {
+                        'host': 'localhost',
+                        'port': 5354
+                    },
+                    "joyent": {},
+                    "rackspace": {}
+                }
             },
             "description": 'this is a dummy description',
             "dbs": {
@@ -4988,6 +4985,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 150000,
                             "status": 0,
+                            "solo": true,
                             "processing": "parallel",
                             "jobs": {},
                             "order": []
@@ -5006,6 +5004,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "groupName": "test group config 1",
                             "interval": 150000,
                             "status": 0,
+                            "solo": true,
                             "processing": "parallel",
                             "jobs": {},
                             "order": []
@@ -5025,6 +5024,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 150000,
                             "status": 0,
+                            "solo": true,
                             "processing": "parallel",
                             "jobs": {},
                             "order": []
@@ -5059,6 +5059,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 200000,
                             "status": 1,
+                            "solo": false,
                             "processing": "parallel",
                             "jobs": {},
                             "order": []
@@ -5078,6 +5079,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 200000,
                             "status": 1,
+                            "solo": false,
                             "processing": "parallel",
                             "jobs": {},
                             "order": []
@@ -5101,7 +5103,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     })
                 });
 
-                it("success - deletes daemon", function (done) {
+                it("success - deletes group", function (done) {
                     var params = {
                         qs: {
                             "id": groupId
@@ -5147,6 +5149,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 150000,
                             "status": 0,
+                            "solo": true,
                             "processing": "parallel",
                             "jobs": {
                                 someJob: {
@@ -5300,6 +5303,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "daemon": "orderDaemon",
                             "interval": 200000,
                             "status": 1,
+                            "solo": true,
                             "processing": "parallel",
                             "jobs": {
                                 anotherJob: {
@@ -5448,22 +5452,19 @@ describe("DASHBOARD UNIT Tests", function() {
                     "profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
                     "deployer": {
                         "type": "manual", //available options: container | manual | cloud (chef | puppet)
-                        "container": {
-                            "selected": "docker.boot2docker",
-                            "docker": {
-                                "selected": "boot2docker",
-                                "socket": {
-                                    'socketPath': '/var/run/docker.sock'
-                                },
-                                "boot2docker": {
-                                    'host': 'localhost',
-                                    'port': 5354
-                                },
-                                "joyent": {}
+                        "selected": "docker.boot2docker",
+                        "docker": {
+                            "selected": "boot2docker",
+                            "socket": {
+                                'socketPath': '/var/run/docker.sock'
                             },
-                            "coreos": {}
-                        },
-                        "cloud": {}
+                            "boot2docker": {
+                                'host': 'localhost',
+                                'port': 5354
+                            },
+                            "joyent": {},
+                            "rackspace": {}
+                        }
                     },
                     "description": "this is a dummy description",
                     "services": {

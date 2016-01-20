@@ -844,6 +844,10 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                 $scope.message = {}; //used to display errors inside modal
                 $scope.title = "Add Daemon Group Configuration";
 
+                //Default values
+                $scope.postData.status = "1";
+                $scope.postData.solo = "true";
+
                 $scope.checkIfOnlyJob = function (jobName) {
                     if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
                         $scope.selectedJobs[jobName]['order'] = 1;
@@ -899,6 +903,11 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                 $scope.onSubmit = function () {
                     $scope.generateOrderArray();
                     $scope.getSelectedJobs();
+                    $scope.postData.status = parseInt($scope.postData.status);
+
+                    if ($scope.postData.solo === "true") $scope.postData.solo = true;
+                    else $scope.postData.solo = false;
+
                     getSendDataFromServer($scope, ngDataApi, {
                         "method": "send",
                         "routeName": "/dashboard/daemons/groupConfig/add",
@@ -942,8 +951,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 
                 $scope.postData.groupName = grpConf.daemonConfigGroup;
                 $scope.postData.interval = grpConf.interval;
-                $scope.postData.status = grpConf.status;
+                $scope.postData.status = grpConf.status.toString();
                 $scope.postData.processing = grpConf.processing;
+
+                //conversion from boolean to string is done for display purposes only
+                if (grpConf.solo) $scope.postData.solo = "true";
+                else $scope.postData.solo = "false";
 
                 $scope.checkIfOnlyJob = function (jobName) {
                     if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
@@ -980,7 +993,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                             if (Object.keys(grpConf.jobs).indexOf(oneJob) > -1) {
                                 $scope.selectedJobs[oneJob] = {
                                     'isSelected': true,
-                                    'type': grpConf.type
+                                    'type': grpConf.jobs[oneJob].type
                                 };
                             }
                         }
@@ -1049,6 +1062,9 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
                 $scope.onSubmit = function () {
                     $scope.generateOrderArray();
                     $scope.getSelectedJobs();
+                    $scope.postData.status = parseInt($scope.postData.status);
+                    if ($scope.postData.solo === "true") $scope.postData.solo = true;
+                    else $scope.postData.solo = false;
                     getSendDataFromServer($scope, ngDataApi, {
                         "method": "send",
                         "routeName": "/dashboard/daemons/groupConfig/update",
@@ -1127,5 +1143,17 @@ servicesApp.filter('timeInMillisConverter', function () {
             }
         }
         return time.toFixed(2) + " " + unit;
+    };
+});
+
+servicesApp.filter('statusDisplay', function () {
+    return function (status) {
+        if (status === 1) {
+            return "Active";
+        } else if (status === 0) {
+            return "Inactive";
+        }
+
+        return "Unknown";
     };
 });

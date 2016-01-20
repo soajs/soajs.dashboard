@@ -63,6 +63,12 @@ var dockerMock = require('docker-mock');
 describe("testing hosts deployment", function () {
     var soajsauth, containerInfo;
     before(function (done) {
+	    process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
+	    console.log("***************************************************************");
+	    console.log("*");
+	    console.log("* Setting SOAJS_ENV_WORKDIR for test mode as: ", process.env.APP_DIR_FOR_CODE_COVERAGE);
+	    console.log("*");
+	    console.log("***************************************************************");
         mongo.remove('docker', {}, function (error) {
             assert.ifError(error);
             server = dockerMock.listen(5354);
@@ -290,6 +296,4 @@ describe("testing hosts deployment", function () {
             });
         });
     });
-
-
 });

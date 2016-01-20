@@ -37,15 +37,13 @@
                     <div class="header opened" ng-class="{closed: grpConf.hide}">
                         <a href="" ng-click="showHide(grpConf)"  ng-if="grpConf.hide" class="icon icon-{{grpConf.icon || 'plus'}} margin-left-10"></a>
                         <a href="" ng-click="showHide(grpConf)"  ng-if="!grpConf.hide" class="icon icon-{{grpConf.icon || 'minus'}} margin-left-10"></a>
-                        {{grpConf.daemonConfigGroup|uppercase}}
+                        {{grpConf.daemonConfigGroup|uppercase}}&nbsp;&nbsp;[ {{grpConf.status|statusDisplay}} ]
+                        <span><b>Solo Run:</b> {{grpConf.solo}}</span>
+                        <span><b>Interval:</b> {{grpConf.interval|timeInMillisConverter}}</span>
+                        <span><b>Daemon:</b> {{grpConf.daemon}}</span>
                     </div>
                     <div class="body" ng-show="!grpConf.hide">
-                        <span>
-                            <b>Daemon Name:</b> {{grpConf.daemon}}
-                            <br><b>Status:</b> {{grpConf.status}}
-                            <br><b>Interval:</b> {{grpConf.interval|timeInMillisConverter}}
-                            <br><br><b>Jobs:</b>
-                        </span>
+                        <b>Jobs:</b>
                         <accordion close-others="true" class="keysAccordion">
                             <accordion-group ng-repeat="(key, object) in grpConf.jobs">
                                 <accordion-heading tooltip="Display Job Information"><b>{{key}} [ {{object.type}} ]</b></accordion-heading>

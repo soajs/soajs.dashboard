@@ -221,37 +221,26 @@ module.exports = {
                 "validation": {
                     "type": "object",
                     "properties": {
-                        "type": {"required": true, "type": "string", "enum": ['manual', 'cloud', 'container']},
-                        "cloud": {
-                            "type": "object",
-                            "required": false,
-                            "properties": {}
-                        },
-                        "container": {
+                        "type": {"required": true, "type": "string", "enum": ['manual', 'container']},
+                        "selected": {"type": "string", "required": false},
+                        "docker": {
                             "type": "object",
                             "required": false,
                             "properties": {
                                 "selected": {"type": "string", "required": false},
-                                "docker": {
+                                "boot2docker": {
                                     "type": "object",
-                                    "required": false,
-                                    "properties": {
-                                        "selected": {"type": "string", "required": false},
-                                        "boot2docker": {
-                                            "type": "object",
-                                            "required": false
-                                        },
-                                        "joyent": {
-                                            "type": "object",
-                                            "required": false
-                                        },
-                                        "socket": {
-                                            "type": "object",
-                                            "required": false
-                                        }
-                                    }
+                                    "required": false
                                 },
-                                "coreos": {
+                                "joyent": {
+                                    "type": "object",
+                                    "required": false
+                                },
+                                "socket": {
+                                    "type": "object",
+                                    "required": false
+                                },
+                                "rackspace": {
                                     "type": "object",
                                     "required": false
                                 }
@@ -365,6 +354,13 @@ module.exports = {
                 'required': true,
                 'validation': {
                     'type': 'string'
+                }
+            },
+            'solo': {
+                'source': ['body.solo'],
+                'required': true,
+                'validation': {
+                    'type': 'boolean'
                 }
             }
         },
@@ -1265,14 +1261,14 @@ module.exports = {
                 "l": "Add Daemon Group Configuration",
                 "group": "Daemons"
             },
-            'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+            'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
         },
         "/daemons/groupConfig/update": {
             _apiInfo: {
                 "l": "Update Daemon Group Configuration",
                 "group": "Daemons"
             },
-            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order']
+            'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
         },
         "/daemons/groupConfig/delete": {
             _apiInfo: {

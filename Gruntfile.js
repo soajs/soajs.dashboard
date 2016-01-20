@@ -122,7 +122,7 @@ module.exports = function (grunt) {
 
     instrument: {
       //files: ['example01/*.js', 'example02/*.js', 'example03/*.js' ],
-      files: ['config.js', 'index.js', 'lib/*.js', 'schemas/*.js', 'utils/*.js', 'utils/*/*/*.js', 'test/*.js'],
+      files: ['config.js', 'index.js', 'lib/*.js', 'schemas/*.js', 'utils/*.js', 'utils/*/*.js', 'test/*.js'],
       //files: ['**/*.js'],
       options: {
         lazy: false,

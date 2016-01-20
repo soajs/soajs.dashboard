@@ -12,16 +12,22 @@ var lib = {
             docker = new Docker({socketPath: config.socketPath});
         }
         else {
-            var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || __dirname + '/../../../';
             var dockerConfig = {
                 host: config.host,
                 port: config.port
             };
-            if (fs.existsSync(certsFolderLocation + "certs")) {
-                dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
-                dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
-                dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
-            }
+            //var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || __dirname + '/../../../';
+            //if (fs.existsSync(certsFolderLocation + "certs")) {
+                //dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
+                //dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
+                //dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
+            //}
+	        var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || "/Users/soajs/certs";
+	        if (fs.existsSync(certsFolderLocation)) {
+	            dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + '/ca.pem');
+	            dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + '/cert.pem');
+	            dockerConfig['key'] = fs.readFileSync(certsFolderLocation + '/key.pem');
+	        }
             docker = new Docker(dockerConfig);
         }
         return docker;
