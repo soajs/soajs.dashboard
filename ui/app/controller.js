@@ -58,16 +58,18 @@ soajsApp.config([
 	}
 ]);
 
-soajsApp.run(function($rootScope){
+soajsApp.run(function ($rootScope) {
 	$rootScope.angular = angular;
 });
 
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
 	function ($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
+		$scope.translation = translation;
+		$scope.LANG = LANG;
 		$scope.enableInterface = false;
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;
-			$location.path(path.replace("#",""));
+			$location.path(path.replace("#", ""));
 		};
 
 		$scope.alerts = [];
@@ -80,6 +82,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.displayAlert = function (type, msg) {
 			$scope.alerts = [];
+			$scope.alerts.push({'type': type, 'msg': msg});
+			$scope.closeAllAlerts();
+		};
+
+		$scope.displayCodeAlert = function (type, msg, service) {
+			$scope.alerts = [];
+			if (errorCodes[service] && errorCodes[service][LANG] && errorCodes[service][LANG][msg]) {
+				msg = errorCodes[service][LANG][msg];
+			}
 			$scope.alerts.push({'type': type, 'msg': msg});
 			$scope.closeAllAlerts();
 		};
@@ -122,7 +133,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		};
 
-		$scope.pillarChange = function(pillarName){
+		$scope.pillarChange = function (pillarName) {
 			$cookieStore.remove('myEnv');
 		};
 
@@ -171,9 +182,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.switchEnvironment = function (envRecord) {
 			var requestedEnv = this.myCurrentEnvironment;
-			if(requestedEnv && !envRecord){
-				$localStorage.environments.forEach(function(oneEnvRecord){
-					if(oneEnvRecord.code === requestedEnv){
+			if (requestedEnv && !envRecord) {
+				$localStorage.environments.forEach(function (oneEnvRecord) {
+					if (oneEnvRecord.code === requestedEnv) {
 						envRecord = oneEnvRecord;
 					}
 				});
@@ -252,7 +263,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 			$scope.dashboard = [];
 
-			function doPermissions(navigation){
+			function doPermissions(navigation) {
 				var a = true;
 				var p = {};
 				for (var i = 0; i < navigation.length; i++) {
@@ -376,6 +387,17 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 			return access;
+		};
+
+		$scope.switchLanguage = function (lang) {
+			LANG = lang;
+			$scope.LANG = LANG;
+			if (!$scope.$$phase) {
+				$scope.$apply();
+			}
+			$route.reload();
+			loadJs('app/navigation.js', function () {});
+			//window.location.reload();
 		};
 	}]);
 
@@ -507,37 +529,37 @@ soajsApp.directive('ngConfirmClick', [
 	}
 ]);
 
-soajsApp.directive('phoneInput', function($filter, $browser) {
+soajsApp.directive('phoneInput', function ($filter, $browser) {
 	return {
 		require: 'ngModel',
-		link: function($scope, $element, $attrs, ngModelCtrl) {
-			var listener = function() {
+		link: function ($scope, $element, $attrs, ngModelCtrl) {
+			var listener = function () {
 				var value = $element.val().replace(/[^0-9]/g, '');
 				$element.val($filter('tel')(value, false));
 			};
 
 			// This runs when we update the text field
-			ngModelCtrl.$parsers.push(function(viewValue) {
-				return viewValue.replace(/[^0-9]/g, '').slice(0,10);
+			ngModelCtrl.$parsers.push(function (viewValue) {
+				return viewValue.replace(/[^0-9]/g, '').slice(0, 10);
 			});
 
 			// This runs when the model gets updated on the scope directly and keeps our view in sync
-			ngModelCtrl.$render = function() {
+			ngModelCtrl.$render = function () {
 				$element.val($filter('tel')(ngModelCtrl.$viewValue, false));
 			};
 
 			$element.bind('change', listener);
-			$element.bind('keydown', function(event) {
+			$element.bind('keydown', function (event) {
 				var key = event.keyCode;
 				// If the keys include the CTRL, SHIFT, ALT, or META keys, or the arrow keys, do nothing.
 				// This lets us support copy and paste too
-				if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)){
+				if (key == 91 || (15 < key && key < 19) || (37 <= key && key <= 40)) {
 					return;
 				}
 				$browser.defer(listener); // Have to do this or changes don't get picked up properly
 			});
 
-			$element.bind('paste cut', function() {
+			$element.bind('paste cut', function () {
 				$browser.defer(listener);
 			});
 		}

@@ -184,3 +184,21 @@ function fixBackDrop(){
 		jQuery(".modal-backdrop").css('height', overlayHeight + 'px');
 	}, 20);
 }
+
+function loadJs(url, cb) {
+	var script = document.createElement('script');
+	script.setAttribute('src', url);
+	script.setAttribute('type', 'text/javascript');
+
+	var loaded = false;
+	var loadFunction = function () {
+		if (loaded) {
+			return;
+		}
+		loaded = true;
+		cb();
+	};
+	script.onload = loadFunction;
+	script.onreadystatechange = loadFunction;
+	document.getElementsByTagName("head")[0].appendChild(script);
+}

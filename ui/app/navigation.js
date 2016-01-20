@@ -1,6 +1,7 @@
 /**
  * UI Navigation links
  */
+
 var navigation = [
 	{
 		'checkPermission': {
@@ -8,7 +9,7 @@ var navigation = [
 			'route': '/environment/list'
 		},
 		'id': 'home',
-		'label': 'Home',
+		'label': translation.home[LANG],
 		'url': '#/dashboard',
 		'tplPath': 'modules/dashboard/directives/dashboard.tmpl',
 		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
@@ -19,7 +20,7 @@ var navigation = [
 	},
 	{
 		'id': 'home',
-		'label': 'Home',
+		'label': translation.home[LANG],
 		'url': '#/login',
 		'tplPath': 'modules/myAccount/directives/login.tmpl',
 		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
@@ -38,9 +39,9 @@ var navigation = [
 	//},
 	{
 		'id': 'help2',
-		'label': 'Help',
+		'label': translation.help[LANG],
 		'url': '#/help',
-		'scripts': ['modules/dashboard/config.js','modules/dashboard/controller.js'],
+		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
 		'tplPath': 'modules/dashboard/directives/help.tmpl',
 		'footerMenu': true
 	}
