@@ -182,8 +182,23 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.currentSelectedEnvironment = envRecord.code;
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
-				$route.reload();
 			}
+
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/permissions/get",
+				"params":{"envCode": envRecord.code}
+			}, function(error, response) {
+				if (error) {
+					$scope.$parent.displayAlert('danger', error.message);
+				}
+				else {
+					$localStorage.acl_access = response.acl;
+					$localStorage.environments = response.environments;
+					//$scope.$parent.$emit("loadUserInterface", {});
+					//$route.reload();
+				}
+			});
 		};
 
 		$scope.updateSelectedMenus = function () {
@@ -562,11 +577,14 @@ function findAndcestorProperties(tracker, ancestorName, params) {
 }
 
 var overlay = {
-	show: function () {
+	show: function (cb) {
 		var overlayHeight = jQuery(document).height();
 		jQuery("#overlay").css('height', overlayHeight + 'px').show(200);
 		jQuery("#overlay .bg").css('height', overlayHeight + 'px').show(200);
 		jQuery("#overlay .content").css('top', '10%');
+		if (cb && typeof(cb) === 'function') {
+			cb();
+		}
 	},
 	hide: function (cb) {
 		jQuery("#overlay .content").remove();
@@ -578,11 +596,14 @@ var overlay = {
 };
 
 var overlayLoading = {
-	show: function () {
+	show: function (cb) {
 		var overlayHeight = jQuery(document).height();
 		jQuery("#overlayLoading").css('height', overlayHeight + 'px').show();
 		jQuery("#overlayLoading .bg").css('height', overlayHeight + 'px').show(100);
 		jQuery("#overlayLoading .content").show();
+		if (cb && typeof(cb) === 'function') {
+			cb();
+		}
 	},
 	hide: function (cb) {
 		jQuery("#overlayLoading .content").hide();

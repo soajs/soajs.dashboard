@@ -3,6 +3,12 @@
         <form novalidate="" class="css-form ng-pristine" name="">
             <div class="header"><h3>Update ACL of Tenant Application</h3></div>
             <div class="body">
+                <div ng-if="msg.type">
+                    <alert type="{{msg.type}}">{{msg.msg}}</alert>
+                    <br>
+                </div>
+                <tabset>
+                <tab ng-repeat="oneEnv in environments_codes" heading="{{oneEnv.code}}"><br>
                 <label>Product Package:</label> {{currentApplication.package}}<br /><br />
                 <div id="application-ApiList" class="entryServiceBoxes">
                     <div ng-repeat="service in currentApplication.services" class="clearfix service-container">
@@ -12,6 +18,8 @@
                         <div ng-include="'modules/multitenancy/directives/api-permission.tmpl'"></div>
                     </div>
                 </div>
+                </tab>
+                </tabset>
             </div>
             <div class="footer"><br />
                 <input ng-confirm-click="Are you sure you want to clear the ACL?" type="reset" class="btn btn-sm btn-danger" ng-click="clearAcl()" value="Empty ACL" />

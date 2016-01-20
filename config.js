@@ -369,7 +369,14 @@ module.exports = {
                 "l": "List Environments",
                 "group": "Environment",
                 "groupMain": true
-            }
+            },
+	        "short":{
+		        "required": false,
+		        "source":["query.short", "body.short"],
+		        "validation":{
+			        "type":"boolean"
+		        }
+	        }
         },
         "/environment/add": {
             _apiInfo: {
@@ -707,7 +714,15 @@ module.exports = {
             _apiInfo: {
                 "l": "Get Tenant Security Permissions",
                 "group": "Tenant"
-            }
+            },
+	        "envCode": {
+		        "source": ["query.envCode"],
+		        "required": false,
+		        "validation": {
+			        "type": "string",
+			        "format": "alphanumeric"
+		        }
+	        }
         },
 
         "/key/get": {
@@ -907,7 +922,15 @@ module.exports = {
                 "l": "Update Tenant Application",
                 "group": "Tenant Application"
             },
-            "commonFields": ['id', 'appId', '_TTL', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
+            "_TTL": {
+                "source": ['body._TTL'],
+                "required": false,
+                "validation": {
+                    "type": "string",
+                    "enum": ['6', '12', '24', '48', '72', '96', '120', '144', '168']
+                }
+            },
+            "commonFields": ['id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
         },
         "/tenant/acl/get": {
             _apiInfo: {

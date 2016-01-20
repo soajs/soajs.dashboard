@@ -237,45 +237,62 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper) {
+membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', '$route', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper, $route) {
 	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
-
+	$scope.msg = {};
 	$scope.user = {};
 	$scope.tenantApp = {};
 	$scope.allGroups = [];
 	$scope.pckName = '';
+	$scope.environments_codes =[];
 
 	$scope.userCookie = $cookieStore.get('soajs_user');
 
-	$scope.minimize = function(application, service) {
-		application.aclFill[service.name].collapse = true;
+	$scope.minimize = function(application, service, oneEnv) {
+		application.aclFill[oneEnv][service.name].collapse = true;
 	};
 
-	$scope.expand = function(application, service) {
-		application.aclFill[service.name].collapse = false;
+	$scope.expand = function(application, service, oneEnv) {
+		application.aclFill[oneEnv][service.name].collapse = false;
 	};
-
-	$scope.selectService = function(application, service) {
+//need more work
+	$scope.selectService = function(application, service, oneEnv) {
 		application.services.forEach(function(oneService) {
 			if(oneService.name === service.name) {
 				if(oneService.include) {
 					if(service.forceRestricted) {
 						oneService.apisRestrictPermission = true;
 					}
-					application.aclFill[service.name].collapse = false;
+					application.aclFill[oneEnv][service.name].collapse = false;
 				} else {
-					application.aclFill[service.name].collapse = true;
+					application.aclFill[oneEnv][service.name].collapse = true;
 				}
 			}
 		});
 	};
 
-	$scope.openApi = function(application, serviceName) {
+	$scope.getEnvironments = function() {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list",
+			"params": { "short": true }
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.environments_codes = response;
+				$scope.getTenantAppInfo();
+			}
+		});
+	};
+
+	$scope.openApi = function(application, serviceName, oneEnv) {
 		var status = false;
-		for(var oneService in application.aclFill) {
+		for(var oneService in application.aclFill[oneEnv]) {
 			if(oneService === serviceName) {
-				if(application.aclFill[oneService].include && !application.aclFill[oneService].collapse) {
+				if(application.aclFill[oneEnv][oneService].include && !application.aclFill[oneEnv][oneService].collapse) {
 					status = true;
 				}
 			}
@@ -306,15 +323,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				}
 				else {
 					$scope.tenantApp = response;
-					$scope.tenantApp.applications.forEach(function(oneApplication) {
-						if($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
-							if($scope.user.config.packages[oneApplication.package].acl) {
+					$scope.tenantApp.applications.forEach(function (oneApplication) {
+						if ($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
+							if ($scope.user.config.packages[oneApplication.package].acl) {
 								oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
 							}
 						}
-						oneApplication.services = [];
 						membersAclHelper.renderPermissionsWithServices($scope, oneApplication);
-						membersAclHelper.prepareViewAclObj(oneApplication.aclFill);
+						overlayLoading.hide();
+
 					});
 					delete $scope.tenantApp.services;
 				}
@@ -335,7 +352,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				}
 				else {
 					$scope.user = response;
-
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/urac/admin/group/list",
@@ -371,10 +387,19 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		$scope.tenantApp.applications.forEach(function(oneApplication){
 			if(postData.config.packages[oneApplication.package]){
-				delete postData.config.packages[oneApplication.package];
+				if(postData.config.packages[oneApplication.package].acl){
+					for (var env in postData.config.packages[oneApplication.package].acl){
+						if (postData.config.packages[oneApplication.package].acl[env]){
+							for (var serviceName in postData.config.packages[oneApplication.package].acl[env]){
+								if (postData.config.packages[oneApplication.package].acl[env][serviceName]){
+									delete postData.config.packages[oneApplication.package].acl[env][serviceName];
+								}
+							}
+						}
+					}
+				}
 			}
 		});
-
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"headers":{
@@ -388,8 +413,10 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
+				$route.reload();
+				$scope.msg.type = '';
+				$scope.msg.msg = '';
 				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
-				$scope.getTenantAppInfo();
 			}
 		});
 	};
@@ -423,7 +450,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
 			}
 		});
-
 		if(counter === $scope.tenantApp.applications.length){
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
@@ -438,11 +464,16 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
+					$scope.msg.type = '';
+					$scope.msg.msg = '';
 					$scope.$parent.displayAlert('success', 'Acl Updated Successfully');
 				}
 			});
 		}
 	};
 	//call default method
-	$scope.getTenantAppInfo();
+	overlayLoading.show(function() {
+		$scope.getEnvironments();
+	});
+
 }]);

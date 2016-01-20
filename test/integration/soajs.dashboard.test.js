@@ -1475,6 +1475,34 @@ describe("DASHBOARD UNIT Tests", function() {
 
         describe("package", function() {
             describe("add package tests", function() {
+	            it("fail - invalid env code in acl", function(done) {
+		            var params = {
+			            qs: {'id': productId},
+			            form: {
+				            "code": "BASIC",
+				            "name": "basic package",
+				            "description": 'this is a dummy description',
+				            "_TTL": '12',
+				            "acl": {
+					            "inv":{
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/add', 'post', function(body) {
+			            assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Invalid environment id provided"});
+			            done();
+		            });
+	            });
+
                 it("success - will add package", function(done) {
                     var params = {
                         qs: {'id': productId},
@@ -1484,11 +1512,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev":{
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1506,11 +1536,13 @@ describe("DASHBOARD UNIT Tests", function() {
                                 "description": "this is a dummy description",
                                 "_TTL": 12 * 3600 * 1000,
                                 "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
+                                    "dev":{
+                                        "urac": {
+                                            'access': false,
+                                            'apis': {
+                                                '/account/changeEmail': {
+                                                    'access': true
+                                                }
                                             }
                                         }
                                     }
@@ -1531,11 +1563,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1553,11 +1587,13 @@ describe("DASHBOARD UNIT Tests", function() {
                                 "description": "this is a dummy description",
                                 "_TTL": 12 * 3600 * 1000,
                                 "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
+                                    "dev": {
+                                        "urac": {
+                                            'access': false,
+                                            'apis': {
+                                                '/account/changeEmail': {
+                                                    'access': true
+                                                }
                                             }
                                         }
                                     }
@@ -1621,11 +1657,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": 'this is a dummy description',
                             "_TTL": '12',
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1686,54 +1724,83 @@ describe("DASHBOARD UNIT Tests", function() {
             });
 
             describe("update package tests", function() {
-                it("success - will update package", function(done) {
-                    var params = {
-                        qs: {'id': productId, "code": "BASIC"},
-                        form: {
-                            "name": "basic package 2",
-                            "description": 'this is a dummy updated description',
-                            "_TTL": '24',
-                            "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    };
-                    executeMyRequest(params, 'product/packages/update', 'post', function(body) {
-                        assert.ok(body.data);
+	            it('fail - invalid env code in acl', function(done) {
+		            var params = {
+			            qs: {'id': productId, "code": "BASIC"},
+			            form: {
+				            "name": "basic package 2",
+				            "description": 'this is a dummy updated description',
+				            "_TTL": '24',
+				            "acl": {
+					            "inv": {
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/update', 'post', function(body) {
+			            assert.deepEqual(body.errors.details[0], {"code": 405, "message": "Invalid environment id provided"});
+			            done();
+		            });
+	            });
 
-                        mongo.findOne('products', {'code': 'TPROD'}, function(error, record) {
-                            assert.ifError(error);
-                            delete record._id;
-                            assert.deepEqual(record.packages[0], {
-                                "code": "TPROD_BASIC",
-                                "name": "basic package 2",
-                                "description": "this is a dummy updated description",
-                                "_TTL": 24 * 3600 * 1000,
-                                "acl": {
-                                    "urac": {
-                                        'access': false,
-                                        'apis': {
-                                            '/account/changeEmail': {
-                                                'access': true
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                            done();
+	            it("success - will update package", function(done) {
+		            var params = {
+			            qs: {'id': productId, "code": "BASIC"},
+			            form: {
+				            "name": "basic package 2",
+				            "description": 'this is a dummy updated description',
+				            "_TTL": '24',
+				            "acl": {
+					            "dev": {
+						            "urac": {
+							            'access': false,
+							            'apis': {
+								            '/account/changeEmail': {
+									            'access': true
+								            }
+							            }
+						            }
+					            }
+				            }
+			            }
+		            };
+		            executeMyRequest(params, 'product/packages/update', 'post', function(body) {
+			            assert.ok(body.data);
 
-                        });
+			            mongo.findOne('products', {'code': 'TPROD'}, function(error, record) {
+				            assert.ifError(error);
+				            delete record._id;
+				            assert.deepEqual(record.packages[0], {
+					            "code": "TPROD_BASIC",
+					            "name": "basic package 2",
+					            "description": "this is a dummy updated description",
+					            "_TTL": 24 * 3600 * 1000,
+					            "acl": {
+						            "dev": {
+							            "urac": {
+								            'access': false,
+								            'apis': {
+									            '/account/changeEmail': {
+										            'access': true
+									            }
+								            }
+							            }
+						            }
+					            }
+				            });
+				            done();
 
-
-                    });
-                });
+			            });
+		            });
+	            });
 
                 it('fail - missing params', function(done) {
                     var params = {
@@ -1760,6 +1827,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         done();
                     });
                 });
+
                 it("fail - wrong product id", function(done) {
                     var params = {
                         qs: {'id': wrong_Id, "code": "BASIC"},
@@ -1786,10 +1854,12 @@ describe("DASHBOARD UNIT Tests", function() {
                             "_TTL": '24',
                             "acl": {
                                 "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                    "dev": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -1797,8 +1867,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         }
                     };
                     executeMyRequest(params, 'product/packages/update', 'post', function(body) {
-                        assert.deepEqual(body.errors.details[0], {"code": 416, "message": errorCodes[416]});
-
+                        assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
                         done();
                     });
                 });
@@ -1914,11 +1983,13 @@ describe("DASHBOARD UNIT Tests", function() {
                             "description": "this is a dummy updated description",
                             "_TTL": 24 * 3600 * 1000,
                             "acl": {
-                                "urac": {
-                                    'access': false,
-                                    'apis': {
-                                        '/account/changeEmail': {
-                                            'access': true
+                                "dev": {
+                                    "urac": {
+                                        'access': false,
+                                        'apis': {
+                                            '/account/changeEmail': {
+                                                'access': true
+                                            }
                                         }
                                     }
                                 }
@@ -3231,92 +3302,53 @@ describe("DASHBOARD UNIT Tests", function() {
                 });
 
                 it("success - will add two external keys (using locked product) but only one with dashboard access", function (done) {
-                    var extKey = "aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac";
                     var params = {
-                        uri: 'http://api.soajs.org:4000/dashboard/tenant/add',
-                        headers: {
-                            "Content-Type": "application/json",
-                            json: true,
-                            key: extKey
-                        },
-                        body: {
+                        form: {
                             'code': "RATE",
                             'name': "Random Tenant",
                             'email': "user@tenantDomain.com"
                         }
                     };
-                    helper.requester ('post', params, function (error, tenant_body) {
-                        console.log (error);
-                        console.log (JSON.stringify (tenant_body));
-                        //process.exit();
-                        assert.ifError(error);
+	                executeMyRequest(params, 'tenant/add', 'post', function(tenant_body){
                         assert.ok (tenant_body.data.id);
                         params = {
-                            uri: 'http://api.soajs.org:4000/dashboard/tenant/application/add',
-                            headers: {
-                                "Content-Type": "application/json",
-                                json: true,
-                                key: extKey
-                            },
                             qs: {
                                 "id": tenant_body.data.id
                             },
-                            body: {
+                            form: {
                                 'description': 'Test Dashboard application',
                                 '_TTL': '168',
                                 'productCode': 'DSBRD',
                                 'packageCode': 'OWNER'
                             }
                         };
-                        helper.requester ('post', params, function (error, app_body) {
-                            assert.ifError (error);
+		                executeMyRequest(params, 'tenant/application/add', 'post', function(app_body){
                             assert.ok (app_body.data.appId);
                             params = {
-                                uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/add',
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    json: true,
-                                    key: extKey
-                                },
                                 qs: {
                                     "id": tenant_body.data.id,
                                     "appId": app_body.data.appId
                                 }
                             };
-                            helper.requester ('post', params, function (error, key_body) {
-                                assert.ifError(error);
+			                executeMyRequest(params, 'tenant/application/key/add', 'post', function(key_body){
                                 assert.ok(key_body.data.key);
                                 params = {
-                                    uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        json: true,
-                                        key: extKey
-                                    },
                                     qs: {
                                         "id": tenant_body.data.id,
                                         "appId": app_body.data.appId,
                                         "key": key_body.data.key
                                     }
                                 };
-                                helper.requester('post', params, function (error, extKey_body) {
-                                    assert.ifError(error);
+				                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(extKey_body){
                                     assert.ok(extKey_body.data.extKey);
                                     params = {
-                                        uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                            json: true,
-                                            key: extKey
-                                        },
                                         qs: {
                                             "id": tenant_body.data.id,
                                             "appId": app_body.data.appId,
                                             "key": key_body.data.key
                                         }
                                     };
-                                    helper.requester('post', params, function (error, extKeyTwo_body) {
-                                        assert.ifError(error);
+					                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(extKeyTwo_body){
                                         assert.ok(extKeyTwo_body.data.extKey);
                                         mongo.count("dashboard_extKeys", {"code": "RATE"}, function (error, count) {
                                             assert.ifError(error);
@@ -3776,84 +3808,55 @@ describe("DASHBOARD UNIT Tests", function() {
             });
         });
 
-        describe("Automatic removal of dashboard tenant keys", function () {
-
-            describe("Removal of automatically created dashboard tenant keys tests", function () {
+        describe("Removal of automatically created dashboard tenant keys tests", function () {
                 var tenantCode = "DTKT";
                 var tenantId, appId, key, tenantExtKey;
 
                 function createDashboardTenantKey (cb) {
                     var params = {
-                        uri: 'http://api.soajs.org:4000/dashboard/tenant/add',
-                        headers: {
-                            "Content-Type": "application/json",
-                            json: true,
-                            key: extKey
-                        },
-                        body: {
+                        form: {
                             'code': tenantCode,
                             'name': "Dashboard Tenant Key Test",
                             'email': "faraj.ameer@gmail.com"
                         }
                     };
-                    helper.requester ('post', params, function (error, body) {
+	                executeMyRequest(params, 'tenant/add', 'post', function(body) {
                         if (body.result === false) {
-                            assert.ifError (body.result);
+                            assert.ifError(body.result);
                         }
                         assert.ok (body.data.id);
                         tenantId = body.data.id;
                         params = {
-                            uri: 'http://api.soajs.org:4000/dashboard/tenant/application/add',
-                            headers: {
-                                "Content-Type": "application/json",
-                                json: true,
-                                key: extKey
-                            },
                             qs: {
                                 "id": tenantId
                             },
-                            body: {
+                            form: {
                                 'description': 'Test Dashboard application',
                                 '_TTL': '168',
                                 'productCode': 'DSBRD',
                                 'packageCode': 'OWNER'
                             }
                         };
-                        helper.requester ('post', params, function (error, body) {
-                            assert.ifError (error);
+		                executeMyRequest(params, 'tenant/application/add', 'post', function(body) {
                             assert.ok (body.data.appId);
                             appId = body.data.appId;
                             params = {
-                                uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/add',
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    json: true,
-                                    key: extKey
-                                },
                                 qs: {
                                     "id": tenantId,
                                     "appId": appId
                                 }
                             };
-                            helper.requester ('post', params, function (error, body) {
-                                assert.ifError(error);
+			                executeMyRequest(params, 'tenant/application/key/add', 'post', function(body) {
                                 assert.ok(body.data.key);
                                 key = body.data.key;
                                 params = {
-                                    uri: 'http://api.soajs.org:4000/dashboard/tenant/application/key/ext/add',
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        json: true,
-                                        key: extKey
-                                    },
                                     qs: {
                                         "id": tenantId,
                                         "appId": appId,
                                         "key": key
                                     }
                                 };
-                                helper.requester('post', params, function (error, body) {
-                                    assert.ifError(error);
+				                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(body) {
                                     assert.ok(body.data.extKey);
                                     tenantExtKey = body.data.extKey;
                                     cb();
@@ -3999,7 +4002,6 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
             });
-        });
     });
 
     describe("testing settings for logged in users", function() {
@@ -5597,6 +5599,7 @@ describe("DASHBOARD UNIT Tests", function() {
                             "name": "basic package 2",
                             "description": "this is a dummy updated description",
                             "acl": {
+                                "dev": {
                                 "urac": {
                                     'access': false,
                                     'apis': {
@@ -5604,6 +5607,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                             'access': true
                                         }
                                     }
+                                }
                                     //todo: retest this after fixing inputmask data type conversion
                                     //,
                                     //'apisRegExp': [
