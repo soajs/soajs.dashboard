@@ -1359,3 +1359,11 @@ div.entryBox .body .btn-primary.noFloat {
 .languageSelect {
     float: right;
 }
+
+.languageSelect a {
+    color: #337ab7;
+}
+
+.languageSelect a.active {
+    color: #000;
+}

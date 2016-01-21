@@ -1,35 +1,35 @@
 "use strict";
 var membersService = soajsApp.components;
-membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal){
+membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
 	function listMembers(currentScope, moduleConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
-		var tenantId = (callback)? currentScope.tId: userCookie.tenant.id;
+		var tenantId = (callback) ? currentScope.tId : userCookie.tenant.id;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-			"headers":{
+			"headers": {
 				"key": currentScope.key
 			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
-				if(callback && typeof(callback) === 'function'){
+				if (callback && typeof(callback) === 'function') {
 					return callback(response);
 				}
-				else{
+				else {
 					printMembers(currentScope, moduleConfig, response);
 				}
 			}
 		});
 	}
 
-	function printMembers(currentScope, moduleConfig, response){
-		for(var x = 0; x < response.length; x++) {
-			if(response[x].groups) {
+	function printMembers(currentScope, moduleConfig, response) {
+		for (var x = 0; x < response.length; x++) {
+			if (response[x].groups) {
 				response[x].grpsArr = response[x].groups.join(', ');
 			}
 			else {
@@ -45,19 +45,21 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			top: []
 		};
 
-		if(currentScope.access.adminUser.editUser) {
+		if (currentScope.access.adminUser.editUser) {
 			options.left.push({
 				'label': 'Edit',
 				'icon': 'pencil2',
 				'handler': 'editMember'
 			});
+		}
+		if (currentScope.access.adminUser.editUserAcl) {
 			options.left.push({
 				'label': 'Edit ACL',
 				'icon': 'unlocked',
 				'handler': 'editAcl'
 			});
 		}
-		if(currentScope.access.adminUser.changeStatusAccess) {
+		if (currentScope.access.adminUser.changeStatusAccess) {
 			options.top = [
 				{
 					'label': 'Activate',
@@ -78,23 +80,23 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 	function addMember(currentScope, moduleConfig, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
-		var tenantId = (useCookie) ? userCookie.tenant.id: currentScope.tId;
-		var tenantCode = (useCookie) ? userCookie.tenant.code: currentScope.tenant.code;
+		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
+		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
 
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-			"headers":{
+			"headers": {
 				"key": currentScope.key
 			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				currentScope.form.displayAlert('danger', error.message);
 			}
 			else {
 				var grps = [];
-				for(var x = 0; x < response.length; x++) {
+				for (var x = 0; x < response.length; x++) {
 					grps.push({'v': response[x].code, 'l': response[x].name, 'selected': false});
 				}
 				config.entries.push({
@@ -108,13 +110,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 					timeout: $timeout,
 					form: config,
 					name: 'addMember',
-					label: 'Add New Member',
+					label: translation.addNewMember[LANG],
 					actions: [
 						{
 							'type': 'submit',
 							'label': 'Add Member',
 							'btn': 'primary',
-							'action': function(formData) {
+							'action': function (formData) {
 								var postData = {
 									'username': formData.username,
 									'firstName': formData.firstName,
@@ -127,13 +129,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
-									"headers":{
+									"headers": {
 										"key": currentScope.key
 									},
 									"routeName": "/urac/admin/addUser",
 									"data": postData
-								}, function(error) {
-									if(error) {
+								}, function (error) {
+									if (error) {
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
@@ -149,7 +151,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 							'type': 'reset',
 							'label': 'Cancel',
 							'btn': 'danger',
-							'action': function() {
+							'action': function () {
 								currentScope.modalInstance.dismiss('cancel');
 								currentScope.form.formData = {};
 							}
@@ -172,23 +174,23 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
-			"headers":{
+			"headers": {
 				"key": currentScope.key
 			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				currentScope.form.displayAlert('danger', error.message);
 			}
 			else {
 				var grps = [];
 				var datagroups = [];
-				if(data.groups) {
+				if (data.groups) {
 					datagroups = data.groups;
 				}
 				var sel = false;
-				for(var x = 0; x < response.length; x++) {
+				for (var x = 0; x < response.length; x++) {
 					sel = datagroups.indexOf(response[x].code) > -1;
 					grps.push({'v': response[x].code, 'l': response[x].name, 'selected': sel});
 				}
@@ -218,7 +220,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 							'type': 'submit',
 							'label': 'Edit Member',
 							'btn': 'primary',
-							'action': function(formData) {
+							'action': function (formData) {
 								var postData = {
 									'username': formData.username,
 									'firstName': formData.firstName,
@@ -231,14 +233,14 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
-									"headers":{
+									"headers": {
 										"key": currentScope.key
 									},
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
 									"data": postData
-								}, function(error) {
-									if(error) {
+								}, function (error) {
+									if (error) {
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
@@ -254,7 +256,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 							'type': 'reset',
 							'label': 'Cancel',
 							'btn': 'danger',
-							'action': function() {
+							'action': function () {
 								currentScope.modalInstance.dismiss('cancel');
 								currentScope.form.formData = {};
 							}
@@ -277,7 +279,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			}
 		};
 
-		multiRecordUpdate(ngDataApi, currentScope, config, function() {
+		multiRecordUpdate(ngDataApi, currentScope, config, function () {
 			overlayLoading.hide();
 			currentScope.listMembers();
 		});
@@ -294,7 +296,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			}
 		};
 
-		multiRecordUpdate(ngDataApi, currentScope, config, function() {
+		multiRecordUpdate(ngDataApi, currentScope, config, function () {
 			overlayLoading.hide();
 			currentScope.listMembers();
 		});

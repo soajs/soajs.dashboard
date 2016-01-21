@@ -2,7 +2,7 @@
     <div ng-controller="welcomeCtrl">
         <div ng-show="enableInterface">
             <ul style="margin-left:40px;">
-                <li>Welcome {{userFirstName}} {{userLastName}}</li>
+                <li>{{translation.welcome[LANG]}} {{userFirstName}} {{userLastName}}</li>
                 <li ng-repeat="link in userMenu.links">
                     <a href="{{link.url}}" ng-class="{active: link.url === userMenu.selectedMenu}" class="userMenu{{$index}}" id="userMenu-{{link.id}}">
                         <span class="icon icon-{{link.icon}}"></span>{{link.label}}
@@ -15,7 +15,7 @@
 	            </li>
 	            <li class="logout">
 		            <a href="" ng-click="logoutUser()" class="userMenu-logout" id="userMenu-logout">
-			            <span class="icon icon-switch"></span>Logout
+			            <span class="icon icon-switch"></span>{{translation.logout[LANG]}}
 		            </a>
 	            </li>
             </ul>

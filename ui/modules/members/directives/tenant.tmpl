@@ -8,18 +8,23 @@
 				<tabset id="tenantsMembers">
 					<tab heading="Members">
 						<br/>
-						<div ng-controller="tenantMembersCtrl" >
+
+						<div ng-controller="tenantMembersCtrl">
                                 <span ng-if="tenantMembers.access.adminUser.addUser" ng-init="tenantMembers.initialize(row)">
-                                    <a href="" ng-click="tenantMembers.addMember()" class="btn btn-primary noFloat">Add New Member</a><br/><br/>
+                                    <a href="" ng-click="tenantMembers.addMember()" class="btn btn-primary noFloat">{{translation.addNewMember[LANG]}}</a>
+	                                <br/><br/>
                                 </span>
 							<nglist></nglist>
 						</div>
 					</tab>
 					<tab heading="Groups">
 						<br/>
+
 						<div ng-controller="tenantGroupsCtrl">
                                 <span ng-if="tenantGroups.access.adminGroup.add" ng-init="tenantGroups.initialize(row)">
-                                    <a href="" ng-click="tenantGroups.addGroup()" class="btn btn-primary noFloat">Add New Group</a><br/><br/>
+                                    <a href="" ng-click="tenantGroups.addGroup()" class="btn btn-primary noFloat">
+	                                    {{translation.addNewGroup[LANG]}}
+                                    </a><br/><br/>
                                 </span>
 							<nglist></nglist>
 						</div>

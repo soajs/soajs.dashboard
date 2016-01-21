@@ -13,17 +13,21 @@ var translation = {
 		"ENG": "Help",
 		"FRA": "Aide"
 	},
+	"logout": {
+		"ENG": "Logout",
+		"FRA": "Sign out"
+	},
 	"refreshListing": {
 		"ENG": "Refresh Listing",
-		"FRA": "Refresh Listing"
+		"FRA": "Recharger la liste"
 	},
 	"getPrevious": {
 		"ENG": "Get Previous",
-		"FRA": "Get Previous"
+		"FRA": "Précédent"
 	},
 	"getNext": {
 		"ENG": "Get Next",
-		"FRA": "Get Next"
+		"FRA": "Suivant"
 	},
 	"username": {
 		"ENG": "Username",
@@ -32,6 +36,22 @@ var translation = {
 	"password": {
 		"ENG": "Password",
 		"FRA": "Mot De Passe"
+	},
+	"firstName": {
+		"ENG": "First Name",
+		"FRA": "Prenom"
+	},
+	"lastName": {
+		"ENG": "Last Name",
+		"FRA": "Nom"
+	},
+	"email": {
+		"ENG": "Email",
+		"FRA": "Email"
+	},
+	"status":{
+		"ENG":"Status",
+		"FRA":"Status"
 	},
 	"merchant": {
 		"ENG": "Merchant",
@@ -43,7 +63,7 @@ var translation = {
 	},
 	"dateModified": {
 		"ENG": "Date Modified",
-		"FRA": "Date Modified"
+		"FRA": "Date Modifié"
 	}
 };
 
@@ -286,6 +306,8 @@ var errorCodes = {
 
 if ($.cookie) {
 	var lnCookie = $.cookie("soajs_LANG");
-	lnCookie = lnCookie.replace(/\"/g, '');
-	LANG = lnCookie;
+	if (lnCookie) {
+		lnCookie = lnCookie.replace(/\"/g, '');
+		LANG = lnCookie;
+	}
 }

@@ -1,12 +1,12 @@
 "use strict";
 var myAccountApp = soajsApp.components;
 
-myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function($scope, $timeout, $modal, ngDataApi) {
+myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', function ($scope, $timeout, $modal, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
-	$scope.$parent.$on('xferData', function(event, args) {
+	$scope.$parent.$on('xferData', function (event, args) {
 		$scope.memberData = args.memberData;
 	});
-	$scope.changeEmail = function() {
+	$scope.changeEmail = function () {
 		var config = changeEmailConfig.formConf;
 		var options = {
 			form: config,
@@ -18,20 +18,20 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 					'type': 'submit',
 					'label': 'Change Email',
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'email': formData.email
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-							"headers":{
+							"headers": {
 								"key": apiConfiguration.key
 							},
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -46,7 +46,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 					'type': 'reset',
 					'label': 'Cancel',
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
@@ -56,7 +56,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 		buildFormWithModal($scope, $modal, options);
 	};
 	
-	$scope.changePassword = function() {
+	$scope.changePassword = function () {
 		var config = changePwConfig.formConf;
 		var options = {
 			form: config,
@@ -68,26 +68,26 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 					'type': 'submit',
 					'label': 'Change Password',
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'password': formData.password,
 							'oldPassword': formData.oldPassword,
 							'confirmation': formData.confirmPassword
 						};
-						if(formData.password != formData.confirmPassword) {
+						if (formData.password != formData.confirmPassword) {
 							$scope.form.displayAlert('danger', 'Your password and confirm password fields do not match!');
 							return;
 						}
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-							"headers":{
+							"headers": {
 								"key": apiConfiguration.key
 							},
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -102,7 +102,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 					'type': 'reset',
 					'label': 'Cancel',
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
@@ -113,7 +113,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 	};
 }]);
 
-myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', '$cookieStore', function($scope, $timeout, $modal, ngDataApi, $cookies, $cookieStore) {
+myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', '$cookieStore', function ($scope, $timeout, $modal, ngDataApi, $cookies, $cookieStore) {
 	$scope.$parent.isUserLoggedIn();
 	var userCookie = $cookieStore.get('soajs_user');
 
@@ -125,82 +125,83 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		'data': {},
 		'actions': [
 			{
-			'type': 'submit',
-			'label': 'Edit Profile',
-			'btn': 'primary',
-			'action': function(formData) {
-				var profileObj = {};
-				if(formData.profile && (formData.profile != "")) {
-					try {
-						profileObj = JSON.parse(formData.profile);
+				'type': 'submit',
+				'label': 'Edit Profile',
+				'btn': 'primary',
+				'action': function (formData) {
+					var profileObj = {};
+					if (formData.profile && (formData.profile != "")) {
+						try {
+							profileObj = JSON.parse(formData.profile);
+						}
+						catch (e) {
+							$scope.$parent.displayAlert('danger', 'Error: Invalid Profile Json object ');
+							return;
+						}
 					}
-					catch(e) {
-						$scope.$parent.displayAlert('danger', 'Error: Invalid Profile Json object ');
-						return;
-					}
+
+					var prof = JSON.stringify(profileObj);
+					var postData = {
+						'username': formData.username, 'firstName': formData.firstName, 'lastName': formData.lastName,
+						'profile': prof
+					};
+					getSendDataFromServer($scope, ngDataApi, {
+						"method": "send",
+						"routeName": "/urac/account/editProfile",
+						"params": {"uId": $scope.uId},
+						"headers": {
+							"key": apiConfiguration.key
+						},
+						"data": postData
+					}, function (error) {
+						if (error) {
+							$scope.$parent.displayAlert('danger', error.message);
+						}
+						else {
+							$scope.$parent.displayAlert('success', 'Profile Updated Successfully.');
+							userCookie.firstName = formData.firstName;
+							userCookie.username = formData.username;
+							userCookie.lastName = formData.lastName;
+							userCookie.profile = profileObj;
+
+							$cookieStore.put('soajs_user', userCookie);
+							$scope.$parent.$emit('refreshWelcome', {});
+						}
+					});
 				}
-
-				var prof = JSON.stringify(profileObj);
-				var postData = {
-					'username': formData.username, 'firstName': formData.firstName, 'lastName': formData.lastName,
-					'profile': prof
-				};
-				getSendDataFromServer($scope, ngDataApi, {
-					"method": "send",
-					"routeName": "/urac/account/editProfile",
-					"params": {"uId": $scope.uId},
-					"headers":{
-						"key": apiConfiguration.key
-					},
-					"data": postData
-				}, function(error) {
-					if(error) {
-						$scope.$parent.displayAlert('danger', error.message);
-					}
-					else {
-						$scope.$parent.displayAlert('success', 'Profile Updated Successfully.');
-						userCookie.firstName = formData.firstName;
-						userCookie.username = formData.username;
-						userCookie.lastName = formData.lastName;
-						userCookie.profile = profileObj;
-
-						$cookieStore.put('soajs_user', userCookie);
-						$scope.$parent.$emit('refreshWelcome', {});
-					}
-				});
-			}
 			}
 		],
 		form: profileConfig.formConf
 	};
 
-	$scope.getProfile = function(username) {
+	$scope.getProfile = function (username) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"headers":{
+			"headers": {
 				"key": apiConfiguration.key
 			},
 			"method": "get",
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				$scope.$parent.displayAlert("danger", error.message);
 			}
 			else {
 				$scope.uId = response._id;
 				var p = JSON.stringify(response.profile, null, "\t");
-				formConfig.entries = [{
-					'name': 'firstName',
-					'label': 'First Name',
-					'type': 'text',
-					'placeholder': 'Enter First Name...',
-					'value': response.firstName,
-					'tooltip': 'Enter the First Name of the User',
-					'required': true
-				},
+				formConfig.entries = [
+					{
+						'name': 'firstName',
+						'label': translation.firstName[LANG],
+						'type': 'text',
+						'placeholder': 'Enter First Name...',
+						'value': response.firstName,
+						'tooltip': 'Enter the First Name of the User',
+						'required': true
+					},
 					{
 						'name': 'lastName',
-						'label': 'Last Name',
+						'label': translation.lastName[LANG],
 						'type': 'text',
 						'placeholder': 'Enter Last Name...',
 						'value': response.lastName,
@@ -236,7 +237,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'rows': 10
 					}
 				];
-				formConfig.data = response;
+				//formConfig.data = response;
 				formConfig.data.profile = p;
 				//buildFormWithModal($scope, null, formConfig);
 				buildForm($scope, null, formConfig);
@@ -247,7 +248,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		});
 	};
 
-	if((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
+	if ((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
 		var uname = userCookie.username;
 		$scope.getProfile(uname);
 	}
@@ -258,20 +259,22 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 
 }]);
 
-myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function($scope, ngDataApi, $route, isUserLoggedIn) {
+myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function ($scope, ngDataApi, $route, isUserLoggedIn) {
 
-	$scope.validateChangeEmail = function() {
+	$scope.validateChangeEmail = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/changeEmail/validate",
 			"params": {"token": $route.current.params.token}
-		}, function(error) {
-			if(error) {
+		}, function (error) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				$scope.$parent.displayAlert('success', 'Your email was validated and changed successfully.');
-				setTimeout(function() { $scope.$parent.go("/myaccount"); }, 2000);
+				setTimeout(function () {
+					$scope.$parent.go("/myaccount");
+				}, 2000);
 			}
 		});
 	};
@@ -279,13 +282,13 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	$scope.validateChangeEmail();
 }]);
 
-myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', '$localStorage', function($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn, $localStorage) {
+myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', '$localStorage', function ($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn, $localStorage) {
 	var formConfig = loginConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Login',
 		'btn': 'primary',
-		'action': function(formData) {
+		'action': function (formData) {
 			var postData = {
 				'username': formData.username, 'password': formData.password
 			};
@@ -294,8 +297,8 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				"method": "send",
 				"routeName": "/urac/login",
 				"data": postData
-			}, function(error, response) {
-				if(error) {
+			}, function (error, response) {
+				if (error) {
 					overlayLoading.hide();
 					$scope.$parent.displayAlert('danger', error.message);
 				}
@@ -307,12 +310,12 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}
 			});
 
-			function getKeys(){
+			function getKeys() {
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/dashboard/key/get",
-					"params": { "main": false}
-				}, function(error, response) {
+					"params": {"main": false}
+				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
 						$scope.$parent.displayAlert('danger', error.message);
@@ -324,11 +327,11 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				});
 			}
 
-			function getPermissions(){
+			function getPermissions() {
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
 					"routeName": "/dashboard/permissions/get"
-				}, function(error, response) {
+				}, function (error, response) {
 					overlayLoading.hide();
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.message);
@@ -344,23 +347,23 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 		}
 	}];
 	
-	if(!isUserLoggedIn()) {
+	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in.');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#",""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 	
 }]);
 
-myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function($scope, ngDataApi, isUserLoggedIn) {
+myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function ($scope, ngDataApi, isUserLoggedIn) {
 	var formConfig = forgetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Submit',
 		'btn': 'primary',
-		'action': function(formData) {
+		'action': function (formData) {
 			var postData = {
 				'username': formData.username
 			};
@@ -369,39 +372,39 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 				"method": "get",
 				"routeName": "/urac/forgotPassword",
 				"params": postData
-			}, function(error) {
+			}, function (error) {
 				overlayLoading.hide();
-				if(error) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'An reset link has been sent to your email address.');
+					$scope.$parent.displayAlert('success', 'A reset link has been sent to your email address.');
 					$scope.$parent.go("/login");
 				}
 			});
 		}
 	}];
 
-	if(!isUserLoggedIn()) {
+	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
 
-myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
+myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function ($scope, ngDataApi, $routeParams, isUserLoggedIn) {
 	var formConfig = setPasswordConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Submit',
 		'btn': 'primary',
-		'action': function(formData) {
+		'action': function (formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
-			if(formData.password != formData.confirmPassword) {
+			if (formData.password != formData.confirmPassword) {
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
 			}
@@ -410,8 +413,8 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
 				"data": postData
-			}, function(error) {
-				if(error) {
+			}, function (error) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
@@ -422,26 +425,26 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 		}
 	}];
 
-	if(!isUserLoggedIn()) {
+	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
 
-myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function($scope, ngDataApi, $routeParams, isUserLoggedIn) {
+myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', 'isUserLoggedIn', function ($scope, ngDataApi, $routeParams, isUserLoggedIn) {
 	var formConfig = resetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
 		'label': 'Submit',
 		'btn': 'primary',
-		'action': function(formData) {
+		'action': function (formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
-			if(formData.password != formData.confirmPassword) {
+			if (formData.password != formData.confirmPassword) {
 				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
 				return;
 			}
@@ -449,12 +452,12 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				"method": "send",
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
-				"headers":{
+				"headers": {
 					"key": apiConfiguration.key
 				},
 				"data": postData
-			}, function(error) {
-				if(error) {
+			}, function (error) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
@@ -465,12 +468,12 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 		}
 	}];
 
-	if(!isUserLoggedIn()) {
+	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
 	else {
 		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#",""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
 
