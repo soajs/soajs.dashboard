@@ -688,7 +688,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		var options = {
 			timeout: $timeout,
 			form: tenantConfig.form.oauthUser,
-			name: 'addUser',
+			name: 'add_oauthUser',
 			label: translation.addNewoAuthUser[LANG],
 			data: {
 				'userId': null,

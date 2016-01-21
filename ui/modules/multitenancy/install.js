@@ -10,35 +10,7 @@ var mtTranslation = {
 		"ENG": "Edit Application ACL",
 		"FRA": "Edit Application ACL"
 	},
-	"home": {
-		"ENG": "Home",
-		"FRA": "Home"
-	},
 	//config.js
-	"code": {
-		"ENG": "Code",
-		"FRA": "Code"
-	},
-	"name": {
-		"ENG": "Name",
-		"FRA": "Name"
-	},
-	"description": {
-		"ENG": "Description",
-		"FRA": "Description"
-	},
-	"product": {
-		"ENG": "Product",
-		"FRA": "Product"
-	},
-	"package": {
-		"ENG": "Package",
-		"FRA": "Package"
-	},
-	"hours": {
-		"ENG": "hours",
-		"FRA": "hours"
-	},
 	"externalKey": {
 		"ENG": "External Key",
 		"FRA": "External Key"
@@ -127,10 +99,6 @@ var mtTranslation = {
 		"ENG": "Add Tenant",
 		"FRA": "Add Tenant"
 	},
-	"email": {
-		"ENG": "Email",
-		"FRA": "Email"
-	},
 	"formEmailPlaceHolder": {
 		"ENG": "Tenant Administrator Email Address. Example: admin@tenant.com",
 		"FRA": "Tenant Administrator Email Address. Example: admin@tenant.com"
@@ -151,10 +119,6 @@ var mtTranslation = {
 		"ENG": "If this tenant logs in to the dashboard, pick a package for it from the list above.",
 		"FRA": "If this tenant logs in to the dashboard, pick a package for it from the list above."
 	},
-	"oauthUserUpdate": {
-		"ENG": "update_oAuthUser",
-		"FRA": "update_oAuthUser"
-	},
 	"userId": {
 		"ENG": "user Id",
 		"FRA": "user Id"
@@ -166,10 +130,6 @@ var mtTranslation = {
 	"formUserIdToolTip": {
 		"ENG": "Enter the user Id.",
 		"FRA": "Enter the user Id."
-	},
-	"password": {
-		"ENG": "Password",
-		"FRA": "Password"
 	},
 	"formPasswordPlaceholder": {
 		"ENG": "Enter a new password...",
@@ -267,10 +227,6 @@ var mtTranslation = {
 		"ENG": "Specify the GEO Security for the external key.",
 		"FRA": "Specify the GEO Security for the external key."
 	},
-	"addOauthUser": {
-		"ENG": "add_oauthUser",
-		"FRA": "add_oauthUser"
-	},
 	"editBasicTenantApplication": {
 		"ENG": "Edit Basic Tenant Information",
 		"FRA": "Edit Basic Tenant Information"
@@ -311,6 +267,10 @@ var mtTranslation = {
 	"addNewoAuthUser": {
 		"ENG": "Add New oAuth User",
 		"FRA": "Add New oAuth User"
+	},
+	"addOauthUser": {
+		"ENG": "add_oauthUser",
+		"FRA": "add_oauthUser"
 	},
 	"addoAuthUser": {
 		"ENG": "Add oAuth User",
@@ -494,14 +454,6 @@ var mtTranslation = {
 	"removeExternalKey": {
 		"ENG": "Remove External Key",
 		"FRA": "Remove External Key"
-	},
-	"yes": {
-		"ENG": "Yes",
-		"FRA": "Yes"
-	},
-	"no": {
-		"ENG": "No",
-		"FRA": "No"
 	},
 	"addNewApplicationKey": {
 		"ENG": "Add New Application Key",

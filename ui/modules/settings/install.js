@@ -1,8 +1,19 @@
 "use strict";
+var stTranslation = {
+	"settings": {
+		"ENG": "Settings",
+		"FRA": "Settings"
+	}
+};
+
+for (var attrname in stTranslation) {
+	translation[attrname] = stTranslation[attrname];
+}
+
 var settingsNav = [
 	{
 		'id': 'settings',
-		'label': 'Settings',
+		'label': translation.settings[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
 			'route': '/settings/tenant/get'

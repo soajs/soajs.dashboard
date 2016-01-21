@@ -64,6 +64,38 @@ var translation = {
 	"dateModified": {
 		"ENG": "Date Modified",
 		"FRA": "Date Modifié"
+	},
+	"yes": {
+		"ENG": "Yes",
+		"FRA": "Yes"
+	},
+	"no": {
+		"ENG": "No",
+		"FRA": "No"
+	},
+	"product": {
+		"ENG": "Product",
+		"FRA": "Product"
+	},
+	"package": {
+		"ENG": "Package",
+		"FRA": "Package"
+	},
+	"code": {
+		"ENG": "Code",
+		"FRA": "Code"
+	},
+	"name": {
+		"ENG": "Name",
+		"FRA": "Name"
+	},
+	"description": {
+		"ENG": "Description",
+		"FRA": "Description"
+	},
+	"hours": {
+		"ENG": "hours",
+		"FRA": "hours"
 	}
 };
 

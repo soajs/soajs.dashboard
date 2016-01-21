@@ -65,7 +65,7 @@ var tenantConfig = {
 	'form': {
 		'tenantEdit': {
 			'name': 'editTenant',
-			'label': translation.editBasicTenantApplication[LANG],
+			'label': '',
 			'actions': {},
 			'entries': [
 				{
@@ -151,7 +151,7 @@ var tenantConfig = {
 		},
 		'tenantAdd': {
 			'name': 'addTenant',
-			'label': translation.addTenant[LANG],
+			'label': '',
 			'actions': {},
 			'entries': [
 				{
@@ -226,7 +226,7 @@ var tenantConfig = {
 		},
 		'oauthUserUpdate': {
 			'name': 'update_oAuthUser',
-			'label': translation.oauthUserUpdate[LANG],
+			'label': '',
 			'actions': {},
 			'entries': [
 				{
@@ -260,7 +260,7 @@ var tenantConfig = {
 		},
 		'oauthUser': {
 			'name': 'add_oauthUser',
-			'label': translation.addOauthUser[LANG],
+			'label': '',
 			'actions': {},
 			'entries': [
 				{

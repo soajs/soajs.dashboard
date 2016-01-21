@@ -1,8 +1,19 @@
 "use strict";
+var srTranslation = {
+	"services": {
+		"ENG": "Services",
+		"FRA": "Services"
+	}
+};
+
+for (var attrname in srTranslation) {
+	translation[attrname] = srTranslation[attrname];
+}
+
 var servicesNav = [
 	{
 		'id': 'services',
-		'label': 'Services',
+		'label': translation.services[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
 			'route': '/services/list'
