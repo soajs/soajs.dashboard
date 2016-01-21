@@ -52,7 +52,7 @@ var productizationNav =[
 			'position': 2
 		},
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
-		'ancestor': ['Home', 'Productization']
+		'ancestor': [translation.home[LANG], 'Productization']
 	}
 ];
 navigation = navigation.concat(productizationNav);

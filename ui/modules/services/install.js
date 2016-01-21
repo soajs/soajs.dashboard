@@ -1,16 +1,16 @@
 "use strict";
-var servicesNav =[
+var servicesNav = [
 	{
 		'id': 'services',
 		'label': 'Services',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/services/list'
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/services/list'
 		},
 		'url': '#/services',
 		'tplPath': 'modules/services/directives/list.tmpl',
 		'icon': 'cloud',
-		'pillar':{
+		'pillar': {
 			'name': 'development',
 			'label': 'Develop',
 			'position': 1
@@ -18,19 +18,19 @@ var servicesNav =[
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/services/config.js', 'modules/services/controller.js'],
-		'ancestor': ['Home']
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'daemons',
 		'label': 'Daemons',
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/daemons/list'
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/daemons/list'
 		},
 		'url': '#/daemons',
 		'tplPath': 'modules/services/directives/list-daemons.tmpl',
 		'icon': 'evil2',
-		'pillar':{
+		'pillar': {
 			'name': 'development',
 			'label': 'Develop',
 			'position': 1
@@ -38,7 +38,7 @@ var servicesNav =[
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/services/config.js', 'modules/services/controller.js'],
-		'ancestor': ['Home']
+		'ancestor': [translation.home[LANG]]
 	}
 ];
 navigation = navigation.concat(servicesNav);

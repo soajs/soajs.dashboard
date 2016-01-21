@@ -66,7 +66,8 @@ var environmentsConfig = {
 					'value': [
 						{'v': 'socket', 'l': 'Socket', 'selected': true},
 						{'v': 'boot2docker', 'l': 'Boot2docker'},
-						{'v': 'joyent', 'l': 'Joyent'}
+						{'v': 'joyent', 'l': 'Joyent'},
+						{'v': 'rackspace', 'l': 'Rackspace'}
 					],
 					'required': false
 				},
