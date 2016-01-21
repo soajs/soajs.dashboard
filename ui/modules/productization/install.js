@@ -54,9 +54,7 @@ var ProdTranslation = {
     "formPackageDescriptionToolTip": {
         "ENG": "Enter a description explaining the usage of this package",
         "FRA": "Enter a description explaining the usage of this package"
-    },
-
-
+    }
 };
 
 for (var attrname in ProdTranslation) {
