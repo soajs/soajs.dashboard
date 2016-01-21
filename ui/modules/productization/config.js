@@ -4,10 +4,10 @@ var productizationConfig = {
 		'package': {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'Code', 'field': 'code'},
-				{'label': 'Name', 'field': 'name'},
-				{'label': 'Description', 'field': 'description'},
-				{'label': 'TTL ( hours )', 'field': '_TTL', filter: "TTL"}
+				{'label': translation.code[LANG], 'field': 'code'},
+				{'label': translation.name[LANG], 'field': 'name'},
+				{'label': translation.description[LANG], 'field': 'description'},
+				{'label': 'TTL ( ' + translation.description[LANG]+ ' )', 'field': '_TTL', filter: "TTL"}
 				//,{'label': 'ACL', 'field': 'acl'}
 			],
 			'leftActions': [],
@@ -24,7 +24,7 @@ var productizationConfig = {
 			'entries': [
 				{
 					'name': 'code',
-					'label': 'Code',
+					'label': translation.code[LANG],
 					'type': 'text',
 					'placeholder': 'TPROD...',
 					'value': '',
@@ -33,7 +33,7 @@ var productizationConfig = {
 				},
 				{
 					'name': 'name',
-					'label': 'Name',
+					'label': translation.name[LANG],
 					'type': 'text',
 					'placeholder': 'Test Product...',
 					'value': '',
@@ -42,7 +42,7 @@ var productizationConfig = {
 				},
 				{
 					'name': 'description',
-					'label': 'Description',
+					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
 					'placeholder': 'Testing Product, used by developers and does not reach production server...',
@@ -59,7 +59,7 @@ var productizationConfig = {
 			'entries': [
 				{
 					'name': 'code',
-					'label': 'Code',
+					'label': translation.code[LANG],
 					'type': 'text',
 					'placeholder': 'BASIC...',
 					'value': '',
@@ -68,7 +68,7 @@ var productizationConfig = {
 				},
 				{
 					'name': 'name',
-					'label': 'Name',
+					'label': translation.name[LANG],
 					'type': 'text',
 					'placeholder': 'Test Package...',
 					'value': '',
@@ -77,7 +77,7 @@ var productizationConfig = {
 				},
 				{
 					'name': 'description',
-					'label': 'Description',
+					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 4,
 					'placeholder': 'Testing Package, used by developers and does not reach production server...',
