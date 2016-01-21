@@ -28,16 +28,16 @@ var productizationConfig = {
 					'type': 'text',
 					'placeholder': 'TPROD...',
 					'value': '',
-					'tooltip': 'Enter Product Code; maximum 5 characters.',
+					'tooltip': translation.formProductCodeToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'name',
 					'label': translation.name[LANG],
 					'type': 'text',
-					'placeholder': 'Test Product...',
+					'placeholder': translation.formProductNamePlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter Product Name.',
+					'tooltip': translation.formProductNameToolTip[LANG],
 					'required': true
 				},
 				{
@@ -45,9 +45,9 @@ var productizationConfig = {
 					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': 'Testing Product, used by developers and does not reach production server...',
+					'placeholder': translation.formProductDescriptionPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this product',
+					'tooltip': translation.formProductDescriptionToolTip[LANG],
 					'required': false
 				}
 			]
@@ -61,18 +61,18 @@ var productizationConfig = {
 					'name': 'code',
 					'label': translation.code[LANG],
 					'type': 'text',
-					'placeholder': 'BASIC...',
+					'placeholder': translation.formPackageCodePlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter Package Code; maximum 5 characters.',
+					'tooltip': translation.formPackageCodeToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'name',
 					'label': translation.name[LANG],
 					'type': 'text',
-					'placeholder': 'Test Package...',
+					'placeholder': translation.formPackageNamePlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter Package Name.',
+					'tooltip': translation.formPackageNameToolTip[LANG],
 					'required': true
 				},
 				{
@@ -80,9 +80,9 @@ var productizationConfig = {
 					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 4,
-					'placeholder': 'Testing Package, used by developers and does not reach production server...',
+					'placeholder': translation.formPackageDescriptionPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this package',
+					'tooltip': translation.formPackageDescriptionToolTip[LANG],
 					'required': false
 				},
 				{

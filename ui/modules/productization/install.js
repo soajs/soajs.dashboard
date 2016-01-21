@@ -9,13 +9,57 @@ var ProdTranslation = {
 	"editAppACL": {
 		"ENG": "Edit Package ACL",
 		"FRA": "Edit Package ACL"
-	}
+	},
 	//config
+    "formProductNamePlaceholder": {
+        "ENG": "Test Product...",
+        "FRA": "Test Product..."
+    },
+    "formProductNameToolTip": {
+        "ENG": "Enter Product Name.",
+        "FRA": "Enter Product Name."
+    },
+    "formProductCodeToolTip": {
+        "ENG": "Enter Product Code; maximum 5 characters.",
+        "FRA": "Enter Product Code; maximum 5 characters."
+    },
+    "formProductDescriptionPlaceholder": {
+        "ENG": "Testing Product, used by developers and does not reach production server...",
+        "FRA": "Testing Product, used by developers and does not reach production server..."
+    },
+    "formProductDescriptionToolTip": {
+        "ENG": "Enter a description explaining the usage of this product",
+        "FRA": "Enter a description explaining the usage of this product"
+    },
+    "formPackageCodeToolTip": {
+        "ENG": "Enter Package Code; maximum 5 characters.",
+        "FRA": "Enter Package Code; maximum 5 characters."
+    },
+    "formPackageCodePlaceholder": {
+        "ENG": "BASIC...",
+        "FRA": "BASIC..."
+    },
+    "formPackageNamePlaceholder": {
+        "ENG": "Test Package...",
+        "FRA": "Test Package..."
+    },
+    "formPackageNameToolTip": {
+        "ENG": "Enter Package Name.",
+        "FRA": "Enter Package Name."
+    },
+    "formPackageDescriptionPlaceholder": {
+        "ENG": "Testing Package, used by developers and does not reach production server...",
+        "FRA": "Testing Package, used by developers and does not reach production server..."
+    },
+    "formPackageDescriptionToolTip": {
+        "ENG": "Enter a description explaining the usage of this package",
+        "FRA": "Enter a description explaining the usage of this package"
+    },
 
 
 };
 
-for (var attrname in mtTranslation) {
+for (var attrname in ProdTranslation) {
 	translation[attrname] = ProdTranslation[attrname];
 }
 
