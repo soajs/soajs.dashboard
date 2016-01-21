@@ -38,7 +38,7 @@ var productizationNav =[
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
-		'ancestor': ['Home']
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'product-acl',
@@ -52,7 +52,7 @@ var productizationNav =[
 			'position': 2
 		},
 		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
-		'ancestor': [translation.home[LANG], 'Productization']
+		'ancestor': [translation.home[LANG], translation.productization[LANG]]
 	}
 ];
 navigation = navigation.concat(productizationNav);

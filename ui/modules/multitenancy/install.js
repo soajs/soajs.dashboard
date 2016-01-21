@@ -10,6 +10,10 @@ var mtTranslation = {
 		"ENG": "Edit Application ACL",
 		"FRA": "Edit Application ACL"
 	},
+	"home": {
+		"ENG": "Home",
+		"FRA": "Home"
+	},
 	//config.js
 	"code": {
 		"ENG": "Code",
@@ -562,7 +566,7 @@ var multitenancyNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js', 'modules/multitenancy/services/multitenancy.js'],
-		'ancestor': ['Home']
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'tenant-app-acl',
@@ -576,7 +580,7 @@ var multitenancyNav = [
 			'position': 2
 		},
 		'scripts': ['modules/multitenancy/config.js', 'modules/multitenancy/controller.js', 'modules/multitenancy/services/multitenancy.js'],
-		'ancestor': ['Home', 'Multi-Tenancy']
+		'ancestor': [translation.home[LANG], translation.multiTenancy[LANG]]
 	}
 ];
 navigation = navigation.concat(multitenancyNav);
