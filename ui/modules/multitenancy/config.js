@@ -3,9 +3,9 @@ var tenantConfig = {
 		'tenant': {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'Code', 'field': 'code'},
-				{'label': 'Name', 'field': 'name'},
-				{'label': 'Description', 'field': 'description'}
+				{'label': translation.code[LANG], 'field': 'code'},
+				{'label': translation.name[LANG], 'field': 'name'},
+				{'label': translation.description[LANG], 'field': 'description'}
 			],
 			'leftActions': [],
 			'topActions': [],
@@ -15,10 +15,10 @@ var tenantConfig = {
 		'applications': {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'Product', 'field': 'product'},
-				{'label': 'Package', 'field': 'package'},
-				{'label': 'Description', 'field': 'description'},
-				{'label': 'TTL ( hours )', 'field': '_TTL', filter: "TTL"}
+				{'label': translation.product[LANG], 'field': 'product'},
+				{'label': translation.package[LANG], 'field': 'package'},
+				{'label': translation.description[LANG], 'field': 'description'},
+				{'label': 'TTL ( ' +  translation.hours[LANG] + ' )', 'field': '_TTL', filter: "TTL"}
 			],
 			'leftActions': [],
 			'topActions': [],
@@ -29,8 +29,8 @@ var tenantConfig = {
 			search: false,
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'External Key', 'field': 'extKey', filter: 'trimmed'},
-				{'label': 'Expiry Date', 'field': 'expDate', filter: 'date'}
+				{'label': translation.externalKey[LANG], 'field': 'extKey', filter: 'trimmed'},
+				{'label': translation.expiryKey[LANG], 'field': 'expDate', filter: 'date'}
 				//{'label': 'Geo', 'field': 'geo', filter: 'json'},
 				//{'label': 'Device', 'field': 'device', filter: 'json'}
 			],
@@ -43,7 +43,7 @@ var tenantConfig = {
 			search: false,
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'User Id', 'field': 'userId' }
+				{'label': translation.userID[LANG], 'field': 'userId' }
 			],
 			'leftActions': [],
 			'topActions': [],
@@ -53,8 +53,8 @@ var tenantConfig = {
         'keys': {
             recordsPerPageArray: [5, 10, 50, 100],
             'columns': [
-                {'label': 'Code', 'field': 'code'},
-                {'label': 'Key', 'field': 'key'}
+                {'label': translation.code[LANG], 'field': 'code'},
+                {'label': translation.key[LANG], 'field': 'key'}
             ],
             'leftActions': [],
             'topActions': [],
@@ -65,21 +65,21 @@ var tenantConfig = {
 	'form': {
 		'tenantEdit': {
 			'name': 'editTenant',
-			'label': 'Edit Basic Tenant Information',
+			'label': translation.editBasicTenantApplication[LANG],
 			'actions': {},
 			'entries': [
 				{
 					'name': 'code',
-					'label': 'Code',
+					'label': translation.code[LANG],
 					'type': 'readonly',
-					'placeholder': 'TEST...',
+					'placeholder': translation.formCodePlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
+					'tooltip': translation.formCodeToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'type',
-					'label': 'Role',
+					'label': translation.role[LANG],
 					'type': 'select',
 					'value': [
 						/*{
@@ -88,52 +88,52 @@ var tenantConfig = {
 						},*/
 						{
 							'v': 'product',
-							'l': 'Product Tenant'
+							'l': translation.productTenant[LANG]
 						},
 						{
 							'v': 'client',
-							'l': 'Client Tenant'
+							'l': translation.clientTenant[LANG]
 						}
 					],
-					'tooltip': 'Choose Tenant Role',
+					'tooltip': translation.formTypeToolTip[LANG],
 					'required': true,
-					'fieldMsg': 'Specify where this tenant is used'
+					'fieldMsg': translation.formTypeFieldMsg[LANG]
 				},
 				{
 					'name': 'name',
-					'label': 'Name',
+					'label': translation.name[LANG],
 					'type': 'text',
-					'placeholder': 'Test Tenant...',
+					'placeholder': translation.formNamePlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter Tenant Name.',
+					'tooltip': translation.formNameToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'description',
-					'label': 'Description',
+					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': 'Testing Tenant, used by developers and does not reach production server...',
+					'placeholder': translation.formDescriptionPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this tenant',
+					'tooltip': translation.formDescriptionTenantToolTip[LANG],
 					'required': false
 				},
 				{
 					'name': 'tag',
-					'label': 'Tag',
+					'label': translation.tag[LANG],
 					'type': 'text',
-					'placeholder': 'Example: testing',
-					'tooltip': 'Optional: Choose a tag to better organize your tenants',
+					'placeholder': translation.formTagPlaceHolder[LANG],
+					'tooltip': translation.formTagToolTip[LANG],
 					'required': false,
-					'fieldMsg': 'Choose a tag to better organize your tenants.'
+					'fieldMsg': translation.formTagFieldMsg[LANG]
 				},
 				{
 					'name': 'secret',
-					'label': 'oAuth Secret',
+					'label': translation.oAuthSecret[LANG],
 					'type': 'text',
-					'placeholder': 'SECRET...',
+					'placeholder': translation.formSecretPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter Tenant oAuth Secret.',
+					'tooltip': translation.formSecretToolTip[LANG],
 					'required': false
 				}
 				/*,
@@ -151,12 +151,12 @@ var tenantConfig = {
 		},
 		'tenantAdd': {
 			'name': 'addTenant',
-			'label': 'Add Tenant',
+			'label': translation.addTenant[LANG],
 			'actions': {},
 			'entries': [
 				{
 					'name': 'type',
-					'label': 'Role',
+					'label': translation.role[LANG],
 					'type': 'select',
 					'value': [
 						/*{
@@ -165,129 +165,129 @@ var tenantConfig = {
 						},*/
 						{
 							'v': 'product',
-							'l': 'Product Tenant'
+							'l': translation.productTenant[LANG]
 						},
 						{
 							'v': 'client',
-							'l': 'Client Tenant',
+							'l': translation.clientTenant[LANG],
 							'selected': true
 						}
 					],
-					'tooltip': 'Choose Tenant Role',
+					'tooltip': translation.formTypeToolTip[LANG],
 					'required': true,
-					'fieldMsg': 'Specify where this tenant is used'
+					'fieldMsg': translation.formTypeFieldMsg[LANG]
 				},
 				{
 					'name': 'name',
 					'label': 'Name',
 					'type': 'text',
-					'placeholder': 'Test Tenant...',
+					'placeholder': translation.formNamePlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter Tenant Name.',
+					'tooltip': translation.formNameToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'email',
 					'label': 'Email',
 					'type': 'email',
-					'placeholder': 'Tenant Administrator Email Address. Example: admin@tenant.com',
+					'placeholder': translation.formEmailPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter Tenant Administrator Email.',
+					'tooltip': translation.formEmailToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'description',
-					'label': 'Description',
+					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': 'Testing Tenant, used by developers and does not reach production server...',
+					'placeholder': translation.formDescriptionPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this tenant',
+					'tooltip': translation.formDescriptionTenantToolTip[LANG],
 					'required': false
 				},
 				{
 					'name': 'package',
-					'label': 'Dashboard Package',
+					'label': translation.dashboardPackage[LANG],
 					'type': 'select',
-					'tooltip': 'Choose a package for this tenant',
+					'tooltip': translation.formDashboardPackagePlaceHolder[LANG],
 					'required': false,
-					'fieldMsg': 'If this tenant logs in to the dashboard, pick a package for it from the list above.'
+					'fieldMsg': translation.formDashboardPackageToolTip[LANG]
 				},
 				{
 					'name': 'tag',
-					'label': 'Tag',
+					'label': translation.tag[LANG],
 					'type': 'text',
-					'placeholder': 'Example: testing',
-					'tooltip': 'Optional: Choose a tag to better organize your tenants',
+					'placeholder': translation.formTagPlaceHolder[LANG],
+					'tooltip': translation.formTagToolTip[LANG],
 					'required': false,
-					'fieldMsg': 'Choose a tag to better organize your tenants.'
+					'fieldMsg': translation.formTagFieldMsg[LANG]
 				}
 			]
 		},
 		'oauthUserUpdate': {
 			'name': 'update_oAuthUser',
-			'label': 'update_oAuthUser',
+			'label': translation.oauthUserUpdate[LANG],
 			'actions': {},
 			'entries': [
 				{
 					'name': 'userId',
-					'label': 'user Id',
+					'label': translation.userId[LANG],
 					'type': 'text',
-					'placeholder': 'oauthUser ..',
+					'placeholder': translation.formUserIdPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter the user Id.',
+					'tooltip': translation.formUserIdToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'password',
-					'label': 'Password',
+					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': 'Enter a new password...',
+					'placeholder': translation.formPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Keep it empty to maintain the old password.',
+					'tooltip': translation.formPasswordTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': 'confirmPassword',
-					'label': 'Confirm Password',
+					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.formConfirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Confirm oAuth user password.',
+					'tooltip': translation.formConfirmPasswordTooltip[LANG],
 					'required': false
 				}
 			]
 		},
 		'oauthUser': {
 			'name': 'add_oauthUser',
-			'label': 'add_oauthUser',
+			'label': translation.addOauthUser[LANG],
 			'actions': {},
 			'entries': [
 				{
 					'name': 'userId',
-					'label': 'User Id',
+					'label': translation.userId[LANG],
 					'type': 'text',
-					'placeholder': 'oauthUser ..',
+					'placeholder': translation.formUserIdPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter the user Id.',
+					'tooltip': translation.formUserIdToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'user_password',
-					'label': 'Password',
+					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.formOathPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter oAuth user password.',
+					'tooltip': translation.formOathPasswordTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'confirmPassword',
-					'label': 'Confirm Password',
+					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.formConfirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Confirm oAuth user password.',
+					'tooltip': translation.formConfirmPasswordTooltip[LANG],
 					'required': true
 				}
 			]
@@ -299,40 +299,39 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'product',
-					'label': 'Product',
+					'label': translation.product[LANG],
 					'type': 'text',
-					'placeholder': 'Enter the product code from productization section...',
+					'placeholder': translation.formpProductPlaceHolder[LANG],
 					'value': '',
 					'tooltip': '',
 					'required': false
 				},
 				{
 					'name': 'package',
-					'label': 'Product Package',
+					'label': translation.productPackage[LANG],
 					'type': 'text',
-					'placeholder': 'Enter the package code from productization section...',
+					'placeholder': translation.formProductPackagePlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Choose Product Package Code.',
+					'tooltip': translation.formProductPackageToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'description',
-					'label': 'Description',
+					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': 'Testing Application, used by developers and does not reach production server...',
+					'placeholder': translation.formProductPackageDescriptionPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this application',
+					'tooltip': translation.formProductPackageDescriptionTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': '_TTL',
 					'label': 'TTL',
 					'type': 'select',
-					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
-					          {'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'}, 
-					          {'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
-					'tooltip': 'Pick a time to live value for this package.'
+					'value': [{'v': 6, 'l': '6 ' + translation.hours[LANG]}, {'v': 12, 'l': '12 '+  translation.hours[LANG]}, {'v': 24, 'l': '24 '+  translation.hours[LANG]},
+					          {'v': 120, 'l':'5 ' + translation.days[LANG]}, {'v': 144, 'l':'6 ' + translation.days[LANG]}, {'v': 168, 'l':'7 ' + translation.days[LANG]}],
+					'tooltip': translation.formTTLToolTip[LANG]
 				}
 			]
 		},
@@ -343,7 +342,7 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'envCode',
-					'label': 'Environment Code',
+					'label': translation.envCode[LANG],
 					'type': 'text',
 					'value': '',
 					'placeholder': 'DEV...',
@@ -352,12 +351,12 @@ var tenantConfig = {
 				},
 				{
 					'name': 'config',
-					'label': 'Configuration',
+					'label': translation.configuration[LANG],
 					'type': 'textarea',
 					'rows': 10,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Enter the application key configuration.',
+					'tooltip': translation.formConfigToolTip[LANG],
 					'required': true
 				}
 			]
@@ -369,20 +368,20 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'expDate',
-					'label': 'Exipry Date',
+					'label': translation.expDate[LANG],
 					'type': 'date-picker',
 					'value': '',
-					'tooltip': 'Pick the Expiry Date of the external key. If empty, the key will not expire',
+					'tooltip': translation.formExpDateTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': 'device',
-					'label': 'Device',
+					'label': translation.device[LANG],
 					'type': 'textarea',
 					'rows': 5,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Specify the Device Security for the external key.',
+					'tooltip': translation.formDeviceTooltip[LANG],
 					'required': false
 				},
 				{
@@ -392,7 +391,7 @@ var tenantConfig = {
 					'rows': 5,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Specify the GEO Security for the external key.',
+					'tooltip': translation.formGEOToolTip[LANG],
 					'required': false
 				}
 			]

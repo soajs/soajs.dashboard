@@ -13,12 +13,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		 'tenants': []
 		 },*/
 		{
-			'label': 'Product',
+			'label': translation.product[LANG],
 			'type': 'product',
 			'tenants': []
 		},
 		{
-			'label': 'Client',
+			'label': translation.client[LANG],
 			'type': 'client',
 			'tenants': []
 		}
@@ -299,12 +299,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editTenant',
-			label: 'Edit Basic Tenant Information',
+			label: translation.editBasicTenantApplication[LANG],
 			data: {},
 			actions: [
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -313,7 +313,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'submit',
-					'label': 'Update Tenant',
+					'label': translation.updateTenant[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						if (Array.isArray(formData.type)) var tType = formData.type[0];
@@ -375,7 +375,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			options.actions.push(
 				{
 					'type': 'submit',
-					'label': 'Delete oAuth Info',
+					'label': translation.deleteoAuthInfo[LANG],
 					'btn': 'danger',
 					'action': function () {
 						getSendDataFromServer($scope, ngDataApi, {
@@ -428,11 +428,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			form: formConfig,
 			type: 'tenant',
 			name: 'addTenant',
-			label: 'Add New Tenant',
+			label: translation.addNewTenant[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add Tenant',
+					'label': translation.addTenant[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var tCode = $scope.generateTenantCode(formData.name);
@@ -536,7 +536,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -632,12 +632,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: tenantConfig.form.oauthUserUpdate,
 			name: 'updateUser',
-			label: 'Update User',
+			label: translation.updateUser[LANG],
 			data: user,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Update oAuth User',
+					'label': translation.updateoAuthUser[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -671,7 +671,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -689,7 +689,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: tenantConfig.form.oauthUser,
 			name: 'addUser',
-			label: 'Add New oAuth User',
+			label: translation.addNewoAuthUser[LANG],
 			data: {
 				'userId': null,
 				'user_password': null
@@ -697,7 +697,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add oAuth User',
+					'label': translation.addoAuthUser[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -729,7 +729,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -760,12 +760,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: formConfig,
 			name: 'addApplication',
-			label: 'Add New Application',
+			label: translation.addNewApplication[LANG],
 			sub: true,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add Application',
+					'label': translation.addApplication[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 
@@ -802,7 +802,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -832,12 +832,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editApplication',
-			label: 'Edit Application',
+			label: translation.editApplication[LANG],
 			data: recordData,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Edit Application',
+					'label': translation.editApplication[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var packageCode = formData.package.split("_")[1];
@@ -871,7 +871,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -992,16 +992,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: tenantConfig.form.keyConfig,
 			name: 'updatekeyConfig',
-			label: 'Update Key Configuration',
-			labels: {
-				submit: 'Update'
-			},
+			label: translation.updateKeyConfiguration[LANG],
 			data: data,
 			sub: true,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var configObj;
@@ -1043,7 +1040,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -1061,12 +1058,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: tenantConfig.form.extKey,
 			name: 'addExtKey',
-			label: 'Add New External Key',
+			label: translation.addNewExternalKey[LANG],
 			sub: true,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var deviceObj, geoObj;
@@ -1122,7 +1119,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -1146,7 +1143,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		var formConfig = angular.copy(tenantConfig.form.extKey);
 		formConfig.entries.unshift({
 			'name': 'extKey',
-			'label': 'External Key Value',
+			'label': translation.externalKeyValue[LANG],
 			'type': 'textarea',
 			'rows': 3,
 			'required': false
@@ -1155,13 +1152,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editExtKey',
-			label: 'Edit External Key',
+			label: translation.editExternalKey[LANG],
 			sub: true,
 			data: dataForm,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var geoObj, deviceObj;
@@ -1220,7 +1217,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
