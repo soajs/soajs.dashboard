@@ -30,7 +30,7 @@ var tenantConfig = {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
 				{'label': translation.externalKey[LANG], 'field': 'extKey', filter: 'trimmed'},
-				{'label': translation.expiryKey[LANG], 'field': 'expDate', filter: 'date'}
+				{'label': translation.expiryDate[LANG], 'field': 'expDate', filter: 'date'}
 				//{'label': 'Geo', 'field': 'geo', filter: 'json'},
 				//{'label': 'Device', 'field': 'device', filter: 'json'}
 			],
@@ -74,7 +74,7 @@ var tenantConfig = {
 					'type': 'readonly',
 					'placeholder': translation.formCodePlaceholder[LANG],
 					'value': '',
-					'tooltip': translation.formCodeToolTip[LANG],
+					'tooltip': translation.formTntCodeToolTip[LANG],
 					'required': true
 				},
 				{
@@ -95,17 +95,17 @@ var tenantConfig = {
 							'l': translation.clientTenant[LANG]
 						}
 					],
-					'tooltip': translation.formTypeToolTip[LANG],
+					'tooltip': translation.formTntTypeToolTip[LANG],
 					'required': true,
-					'fieldMsg': translation.formTypeFieldMsg[LANG]
+					'fieldMsg': translation.formTntTypeFieldMsg[LANG]
 				},
 				{
 					'name': 'name',
 					'label': translation.name[LANG],
 					'type': 'text',
-					'placeholder': translation.formNamePlaceHolder[LANG],
+					'placeholder': translation.formTntNamePlaceHolder[LANG],
 					'value': '',
-					'tooltip': translation.formNameToolTip[LANG],
+					'tooltip': translation.formTentNameToolTip[LANG],
 					'required': true
 				},
 				{
@@ -113,7 +113,7 @@ var tenantConfig = {
 					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': translation.formDescriptionPlaceHolder[LANG],
+					'placeholder': translation.formTentDescriptionPlaceHolder[LANG],
 					'value': '',
 					'tooltip': translation.formDescriptionTenantToolTip[LANG],
 					'required': false
@@ -173,17 +173,17 @@ var tenantConfig = {
 							'selected': true
 						}
 					],
-					'tooltip': translation.formTypeToolTip[LANG],
+					'tooltip': translation.formTntTypeToolTip[LANG],
 					'required': true,
-					'fieldMsg': translation.formTypeFieldMsg[LANG]
+					'fieldMsg': translation.formTntTypeFieldMsg[LANG]
 				},
 				{
 					'name': 'name',
 					'label': 'Name',
 					'type': 'text',
-					'placeholder': translation.formNamePlaceHolder[LANG],
+					'placeholder': translation.formTntNamePlaceHolder[LANG],
 					'value': '',
-					'tooltip': translation.formNameToolTip[LANG],
+					'tooltip': translation.formTentNameToolTip[LANG],
 					'required': true
 				},
 				{
@@ -200,7 +200,7 @@ var tenantConfig = {
 					'label': translation.description[LANG],
 					'type': 'textarea',
 					'rows': 5,
-					'placeholder': translation.formDescriptionPlaceHolder[LANG],
+					'placeholder': translation.formTentDescriptionPlaceHolder[LANG],
 					'value': '',
 					'tooltip': translation.formDescriptionTenantToolTip[LANG],
 					'required': false
@@ -242,18 +242,18 @@ var tenantConfig = {
 					'name': 'password',
 					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': translation.formPasswordPlaceholder[LANG],
+					'placeholder': translation.oAuthNewPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': translation.formPasswordTooltip[LANG],
+					'tooltip': translation.oAuthFrmPasswordTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': 'confirmPassword',
 					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': translation.formConfirmPasswordPlaceholder[LANG],
+					'placeholder': translation.confirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': translation.formConfirmPasswordTooltip[LANG],
+					'tooltip': translation.oAuthConfirmPasswordTooltip[LANG],
 					'required': false
 				}
 			]
@@ -285,9 +285,9 @@ var tenantConfig = {
 					'name': 'confirmPassword',
 					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': translation.formConfirmPasswordPlaceholder[LANG],
+					'placeholder': translation.confirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': translation.formConfirmPasswordTooltip[LANG],
+					'tooltip': translation.oAuthConfirmPasswordTooltip[LANG],
 					'required': true
 				}
 			]
@@ -368,7 +368,7 @@ var tenantConfig = {
 			'entries': [
 				{
 					'name': 'expDate',
-					'label': translation.expDate[LANG],
+					'label': translation.expiryDate[LANG],
 					'type': 'date-picker',
 					'value': '',
 					'tooltip': translation.formExpDateTooltip[LANG],

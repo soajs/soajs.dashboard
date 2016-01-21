@@ -1,98 +1,8 @@
 var settingsConfig = {
 	'form': {
-		'tenantEdit': {
-			'name': 'editTenant',
-			'label': 'Edit Basic Tenant Information',
-			'actions': {},
-			'entries': [
-				{
-					'name': 'code',
-					'label': 'Code',
-					'type': 'readonly',
-					'placeholder': 'TEST...',
-					'value': '',
-					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
-					'required': true
-				},
-				{
-					'name': 'name',
-					'label': 'Name',
-					'type': 'text',
-					'placeholder': 'Test Tenant...',
-					'value': '',
-					'tooltip': 'Enter Tenant Name.',
-					'required': true
-				},
-				{
-					'name': 'description',
-					'label': 'Description',
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': 'Testing Tenant, used by developers and does not reach production server...',
-					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this tenant',
-					'required': false
-				},
-				{
-					'name': 'secret',
-					'label': 'oAuth Secret',
-					'type': 'text',
-					'placeholder': 'SECRET...',
-					'value': '',
-					'tooltip': 'Enter Tenant oAuth Secret.',
-					'required': false
-				}
-				/*,
-				 {
-				 'name': 'redirectURI',
-				 'label': 'oAuth Redirect URI',
-				 'type': 'url',
-				 'placeholder': 'redirectURI...',
-				 'value': '',
-				 'tooltip': 'Enter Tenant oAuth redirectURI.',
-				 'required': false
-				 }
-				 */
-			]
-		},
-		'tenantAdd': {
-			'name': 'addTenant',
-			'label': 'Add Tenant',
-			'actions': {},
-			'entries': [
-				{
-					'name': 'code',
-					'label': 'Code',
-					'type': 'text',
-					'placeholder': 'TEST...',
-					'value': '',
-					'tooltip': 'Enter Tenant Code; maximum 4 characters.',
-					'required': true
-				},
-				{
-					'name': 'name',
-					'label': 'Name',
-					'type': 'text',
-					'placeholder': 'Test Tenant...',
-					'value': '',
-					'tooltip': 'Enter Tenant Name.',
-					'required': true
-				},
-				{
-					'name': 'description',
-					'label': 'Description',
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': 'Testing Tenant, used by developers and does not reach production server...',
-					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this tenant',
-					'required': false
-				}
-			]
-		},
 		'oauthUserUpdate': {
-			'name': 'update_oAuthUser',
-			'label': 'update_oAuthUser',
+			'name': '',
+			'label': '',
 			'actions': {},
 			'entries': [
 				{
@@ -125,8 +35,8 @@ var settingsConfig = {
 			]
 		},
 		'oauthUser': {
-			'name': 'add_oauthUser',
-			'label': 'add_oauthUser',
+			'name': '',
+			'label': '',
 			'actions': {},
 			'entries': [
 				{
@@ -158,50 +68,50 @@ var settingsConfig = {
 				}
 			]
 		},
-		'application': {
-			'name': '',
-			'label': '',
-			'actions': {},
-			'entries': [
-				{
-					'name': 'product',
-					'label': 'Product',
-					'type': 'text',
-					'placeholder': 'Enter the product code from productization section...',
-					'value': '',
-					'tooltip': '',
-					'required': false
-				},
-				{
-					'name': 'package',
-					'label': 'Product Package',
-					'type': 'text',
-					'placeholder': 'Enter the package code from productization section...',
-					'value': '',
-					'tooltip': 'Choose Product Package Code.',
-					'required': true
-				},
-				{
-					'name': 'description',
-					'label': 'Description',
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': 'Testing Application, used by developers and does not reach production server...',
-					'value': '',
-					'tooltip': 'Enter a description explaining the usage of this application',
-					'required': false
-				},
-				{
-					'name': '_TTL',
-					'label': 'TTL',
-					'type': 'select',
-					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
-						{'v': 48, 'l': '2 days'}, {'v': 72, 'l': '3 days'}, {'v': 96, 'l': '4 days'},
-						{'v': 120, 'l': '5 days'}, {'v': 144, 'l': '6 days'}, {'v': 168, 'l': '7 days'}],
-					'tooltip': 'Pick a time to live value for this package.'
-				}
-			]
-		},
+		//'application': {
+		//	'name': '',
+		//	'label': '',
+		//	'actions': {},
+		//	'entries': [
+		//		{
+		//			'name': 'product',
+		//			'label': 'Product',
+		//			'type': 'text',
+		//			'placeholder': 'Enter the product code from productization section...',
+		//			'value': '',
+		//			'tooltip': '',
+		//			'required': false
+		//		},
+		//		{
+		//			'name': 'package',
+		//			'label': 'Product Package',
+		//			'type': 'text',
+		//			'placeholder': 'Enter the package code from productization section...',
+		//			'value': '',
+		//			'tooltip': 'Choose Product Package Code.',
+		//			'required': true
+		//		},
+		//		{
+		//			'name': 'description',
+		//			'label': 'Description',
+		//			'type': 'textarea',
+		//			'rows': 5,
+		//			'placeholder': 'Testing Application, used by developers and does not reach production server...',
+		//			'value': '',
+		//			'tooltip': 'Enter a description explaining the usage of this application',
+		//			'required': false
+		//		},
+		//		{
+		//			'name': '_TTL',
+		//			'label': 'TTL',
+		//			'type': 'select',
+		//			'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
+		//				{'v': 48, 'l': '2 days'}, {'v': 72, 'l': '3 days'}, {'v': 96, 'l': '4 days'},
+		//				{'v': 120, 'l': '5 days'}, {'v': 144, 'l': '6 days'}, {'v': 168, 'l': '7 days'}],
+		//			'tooltip': 'Pick a time to live value for this package.'
+		//		}
+		//	]
+		//},
 		'keyConfig': {
 			'name': '',
 			'label': '',
@@ -248,7 +158,7 @@ var settingsConfig = {
 					'rows': 5,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Specify the Device Security for the external key.',
+					'tooltip': translation.formDeviceTooltip[LANG],
 					'required': false
 				},
 				{
@@ -258,7 +168,7 @@ var settingsConfig = {
 					'rows': 5,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Specify the GEO Security for the external key.',
+					'tooltip': translation.formGEOToolTip[LANG],
 					'required': false
 				}
 			]

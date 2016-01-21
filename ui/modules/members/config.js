@@ -9,7 +9,7 @@ var membersConfig = {
 			{'label': translation.lastName[LANG], 'field': 'lastName'},
 			{'label': translation.email[LANG], 'field': 'email'},
 			{'label': translation.status[LANG], 'field': 'status'},
-			{'label': 'Groups', 'field': 'grpsArr'}
+			{'label': translation.groups[LANG], 'field': 'grpsArr'}
 		],
 		'leftActions': [],
 		'topActions': [],
@@ -101,30 +101,30 @@ var groupsConfig = {
 		'entries': [
 			{
 				'name': 'code',
-				'label': 'Code',
+				'label': translation.code[LANG],
 				'type': 'text',
-				'placeholder': 'Enter the Code of the Group',
+				'placeholder': 'Enter the Code of the group',
 				'value': '',
 				'tooltip': 'Group codes are alphanumeric. Maximum length 20 characters',
 				'required': true
 			},
 			{
 				'name': 'name',
-				'label': 'Name',
+				'label': translation.name[LANG],
 				'type': 'text',
-				'placeholder': 'Enter  Name...',
+				'placeholder': 'Enter teh Name of the group',
 				'value': '',
-				'tooltip': 'Enter the Name of the group',
+				'tooltip': '',
 				'required': true
 			},
 			{
 				'name': 'description',
-				'label': 'Description',
+				'label': translation.description[LANG],
 				'type': 'textarea',
 				'rows': 2,
-				'placeholder': 'Enter Last Name...',
+				'placeholder': 'Enter the Description of the Group',
 				'value': '',
-				'tooltip': 'Enter the Description of the Group',
+				'tooltip': '',
 				'required': true
 			}
 		]
@@ -139,7 +139,7 @@ var groupsConfig = {
 				'name': 'users',
 				'label': 'Users',
 				'type': 'checkbox',
-				'placeholder': 'Add users',
+				'placeholder': '',
 				'value': [],
 				'tooltip': 'Check to add user to group',
 				'required': true

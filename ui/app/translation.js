@@ -37,6 +37,14 @@ var translation = {
 		"ENG": "Password",
 		"FRA": "Mot De Passe"
 	},
+	"confirmPassword": {
+		"ENG": "Confirm Password",
+		"FRA": "Confirm Password"
+	},
+	"confirmPasswordPlaceholder": {
+		"ENG": "Confirm Password",
+		"FRA": "Confirm Password"
+	},
 	"firstName": {
 		"ENG": "First Name",
 		"FRA": "Prenom"
@@ -96,6 +104,279 @@ var translation = {
 	"hours": {
 		"ENG": "hours",
 		"FRA": "hours"
+	},
+	"days": {
+		"ENG": "days",
+		"FRA": "days"
+	},
+	"envCode": {
+		"ENG": "Environment Code",
+		"FRA": "Environment Code"
+	},
+	"cancel": {
+		"ENG": "Cancel",
+		"FRA": "Cancel"
+	},
+	"submit": {
+		"ENG": "Submit",
+		"FRA": "Submit"
+	},
+	"warning": {
+		"ENG": "warning",
+		"FRA": "warning"
+	},
+	"groups": {
+		"ENG": "Groups",
+		"FRA": "Groups"
+	},
+	"noSearchResultsFound": {
+		"ENG": "No search results found for",
+		"FRA": "No search results found for"
+	},
+	"expandApplications": {
+		"ENG": "Expand Applications",
+		"FRA": "Expand Applications"
+	},
+	"collapseApplications": {
+		"ENG": "Collapse Applications",
+		"FRA": "Collapse Applications"
+	},
+	"oAuthUsers": {
+		"ENG": "oAuth Users",
+		"FRA": "oAuth Users"
+	},
+	"updateoAuthUser": {
+		"ENG": "Update oAuth User",
+		"FRA": "Update oAuth User"
+	},
+	"addNewoAuthUser": {
+		"ENG": "Add New oAuth User",
+		"FRA": "Add New oAuth User"
+	},
+	"addoAuthUser": {
+		"ENG": "Add oAuth User",
+		"FRA": "Add oAuth User"
+	},
+	"updateUser": {
+		"ENG": "Update User",
+		"FRA": "Update User"
+	},
+	"deleteoAuthInfo": {
+		"ENG": "Delete oAuth Info",
+		"FRA": "Delete oAuth Info"
+	},
+	"manageApplications": {
+		"ENG": "Manage Applications",
+		"FRA": "Manage Applications"
+	},
+	"removeTenant": {
+		"ENG": "Remove Tenant",
+		"FRA": "Remove Tenant"
+	},
+	"editTenant": {
+		"ENG": "Edit Tenant",
+		"FRA": "Edit Tenant"
+	},
+	"areUASureUWantClearAcl": {
+		"ENG": "Are you sure you want to clear the ACL?",
+		"FRA": "Are you sure you want to clear the ACL?"
+	},
+	//api-permission
+	"restrictAccessSelectedApis": {
+		"ENG": "Restrict Access to Selected Apis",
+		"FRA": "Restrict Access to Selected Apis"
+	},
+	"public": {
+		"ENG": "public",
+		"FRA": "public"
+	},
+	"private": {
+		"ENG": "private",
+		"FRA": "private"
+	},
+	//list-applications
+	"availableApplications": {
+		"ENG": "Available Applications",
+		"FRA": "Available Applications"
+	},
+	"areYouSureRemoveSelectedApp": {
+		"ENG": "Are you sure you want to remove the selected application",
+		"FRA": "Are you sure you want to remove the selected application"
+	},
+	"removeApplication": {
+		"ENG": "Remove Application",
+		"FRA": "Remove Application"
+	},
+	//list-keys
+	"tenantApplicationKeys": {
+		"ENG": "Tenant Application Keys",
+		"FRA": "Tenant Application Keys"
+	},
+	"addkey": {
+		"ENG": "Add New Key",
+		"FRA": "Ajouter New key"
+	},
+	"areYouSureYouWantDeleteKey": {
+		"ENG": "Are you sure you want to delete this key",
+		"FRA": "Are you sure you want to delete this key"
+	},
+	"removeKey": {
+		"ENG": "Remove Key",
+		"FRA": "Remove Key"
+	},
+	"environment": {
+		"ENG": "Environment",
+		"FRA": "Environment"
+	},
+	"editServiceConfiguration": {
+		"ENG": "Edit Service Configuration",
+		"FRA": "Edit Service Configuration"
+	},
+	"emptyServiceConfiguration": {
+		"ENG": "Empty Service Configuration",
+		"FRA": "Empty Service Configuration"
+	},
+	"displayKeyInformation": {
+		"ENG": "Display Key Information",
+		"FRA": "Display Key Information"
+	},
+	"keyEnvironmentConfiguration": {
+		"ENG": "Key Environment Configuration",
+		"FRA": "Key Environment Configuration"
+	},
+	"externalKeys": {
+		"ENG": "External Keys",
+		"FRA": "External Keys"
+	},
+	"addNewApplicationExternalKey": {
+		"ENG": "Add New Application External Key",
+		"FRA": "Add New Application External Key"
+	},
+	"areYouSureWantRemoveExternalKey": {
+		"ENG": "Are you sure you want to remove this external key",
+		"FRA": "Are you sure you want to remove this external key"
+	},
+	"removeExternalKey": {
+		"ENG": "Remove External Key",
+		"FRA": "Remove External Key"
+	},
+	"addNewApplicationKey": {
+		"ENG": "Add New Application Key",
+		"FRA": "Add New Application Key"
+	},
+	"removeApplicationKey": {
+		"ENG": "Remove Application Key",
+		"FRA": "Remove Application Key"
+	},
+	"updateKeyConfiguration": {
+		"ENG": "Update Key Configuration",
+		"FRA": "Update Key Configuration"
+	},
+	"addNewExternalKey": {
+		"ENG": "Add New External Key",
+		"FRA": "Add New External Key"
+	},
+	"externalKeyValue": {
+		"ENG": "External Key Value",
+		"FRA": "External Key Value"
+	},
+	"editExternalKey": {
+		"ENG": "Edit External Key",
+		"FRA": "Edit External Key"
+	},
+	//service-name
+	"minimize": {
+		"ENG": "Minimize",
+		"FRA": "Minimize"
+	},
+	"expand": {
+		"ENG": "Expand",
+		"FRA": "Expand"
+	},
+	//list-oauth-users
+	"tenantoAuthUsers": {
+		"ENG": "Tenant oAuth Users",
+		"FRA": "Tenant oAuth Users"
+	},
+	"authorization": {
+		"ENG": "Authorization",
+		"FRA": "Authorization"
+	},
+	"editoAuthUser": {
+		"ENG": "Edit oAuth User",
+		"FRA": "Edit oAuth User"
+	},
+	"removeoAuthUser": {
+		"ENG": "Remove oAuth User",
+		"FRA": "Remove oAuth User"
+	},
+	"oAuthSecret": {
+		"ENG": "oAuth Secret",
+		"FRA": "oAuth Secret"
+	},
+	"formSecretPlaceHolder": {
+		"ENG": "SECRET...",
+		"FRA": "SECRET..."
+	},
+	"formSecretToolTip": {
+		"ENG": "Enter Tenant oAuth Secret.",
+		"FRA": "Enter Tenant oAuth Secret."
+	},
+	"areYouSureRemoveUser": {
+		"ENG": "Are you sure you want to remove this user?",
+		"FRA": "Are you sure you want to remove this user?"
+	},
+	"formProductPackageDescriptionTooltip": {
+		"ENG": "Enter a description explaining the usage of this application",
+		"FRA": "Enter a description explaining the usage of this application"
+	},
+	"formTTLToolTip": {
+		"ENG": "Pick a time to live value for this package.",
+		"FRA": "Pick a time to live value for this package."
+	},
+	"formEnvCodeTooltip": {
+		"ENG": "Enter the environment code for the key configuration.",
+		"FRA": "Enter the environment code for the key configuration."
+	},
+	"configuration": {
+		"ENG": "Configuration",
+		"FRA": "Configuration"
+	},
+	"formConfigToolTip": {
+		"ENG": "Enter the application key configuration.",
+		"FRA": "Enter the application key configuration."
+	},
+	"formExpDateTooltip": {
+		"ENG": "Pick the Expiry Date of the external key. If empty, the key will not expire",
+		"FRA": "Pick the Expiry Date of the external key. If empty, the key will not expire"
+	},
+	"device": {
+		"ENG": "Device",
+		"FRA": "Device"
+	},
+	"formDeviceTooltip": {
+		"ENG": "Specify the Device Security for the external key.",
+		"FRA": "Specify the Device Security for the external key."
+	},
+	"formGEOToolTip": {
+		"ENG": "Specify the GEO Security for the external key.",
+		"FRA": "Specify the GEO Security for the external key."
+	},
+	"key": {
+		"ENG": "key",
+		"FRA": "key"
+	},
+	"externalKey": {
+		"ENG": "External Key",
+		"FRA": "External Key"
+	},
+	"expiryDate": {
+		"ENG": "Expiry Date",
+		"FRA": "Expiry Date"
+	},
+	"dashboardAccess": {
+		"ENG": "Dashboard Access",
+		"FRA": "Dashboard Access"
 	}
 };
 
