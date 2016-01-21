@@ -4,11 +4,11 @@ var membersConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
-			{'label': 'Username', 'field': 'username'},
-			{'label': 'First Name', 'field': 'firstName'},
-			{'label': 'Last Name', 'field': 'lastName'},
-			{'label': 'Email', 'field': 'email'},
-			{'label': 'Status', 'field': 'status'},
+			{'label': translation.username[LANG], 'field': 'username'},
+			{'label': translation.firstName[LANG], 'field': 'firstName'},
+			{'label': translation.lastName[LANG], 'field': 'lastName'},
+			{'label': translation.email[LANG], 'field': 'email'},
+			{'label': translation.status[LANG], 'field': 'status'},
 			{'label': 'Groups', 'field': 'grpsArr'}
 		],
 		'leftActions': [],
@@ -24,7 +24,7 @@ var membersConfig = {
 		'entries': [
 			{
 				'name': 'username',
-				'label': 'Username',
+				'label': translation.username[LANG],
 				'type': 'text',
 				'placeholder': 'Enter Username...',
 				'value': '',
@@ -33,7 +33,7 @@ var membersConfig = {
 			},
 			{
 				'name': 'email',
-				'label': 'Email',
+				'label': translation.email[LANG],
 				'type': 'email',
 				'placeholder': 'Enter Email...',
 				'value': '',
@@ -42,7 +42,7 @@ var membersConfig = {
 			},
 			{
 				'name': 'firstName',
-				'label': 'First Name',
+				'label': translation.firstName[LANG],
 				'type': 'text',
 				'placeholder': 'Enter First Name...',
 				'value': '',
@@ -51,7 +51,7 @@ var membersConfig = {
 			},
 			{
 				'name': 'lastName',
-				'label': 'Last Name',
+				'label': translation.lastName[LANG],
 				'type': 'text',
 				'placeholder': 'Enter Last Name...',
 				'value': '',
@@ -61,20 +61,21 @@ var membersConfig = {
 		]
 	},
 
-	permissions:{
-		"adminAll": [ 'urac', '/admin/all'],
-		'adminUser':{
-			'list' : ['urac', '/admin/listUsers'],
-			'changeStatusAccess' : ['urac', '/admin/changeStatusAccess'],
-			'editUser' : ['urac', '/admin/editUser'],
-			'addUser' : ['urac', '/admin/addUser']
+	permissions: {
+		"adminAll": ['urac', '/admin/all'],
+		'adminUser': {
+			'list': ['urac', '/admin/listUsers'],
+			'changeStatusAccess': ['urac', '/admin/changeStatusAccess'],
+			'editUser': ['urac', '/admin/editUser'],
+			'editUserAcl': ['urac', '/admin/editUser'],
+			'addUser': ['urac', '/admin/addUser']
 		},
-		'adminGroup':{
-			'list' : ['urac', '/admin/group/list'],
-			'add' : ['urac', '/admin/group/add'],
-			'edit' : ['urac', '/admin/group/edit'],
-			'delete' : ['urac', '/admin/group/delete'],
-			'addUsers' : ['urac', '/admin/group/addUsers']
+		'adminGroup': {
+			'list': ['urac', '/admin/group/list'],
+			'add': ['urac', '/admin/group/add'],
+			'edit': ['urac', '/admin/group/edit'],
+			'delete': ['urac', '/admin/group/delete'],
+			'addUsers': ['urac', '/admin/group/addUsers']
 		}
 	}
 };
@@ -131,7 +132,7 @@ var groupsConfig = {
 	users: {
 		'name': '',
 		'label': '',
-		'msgs':{},
+		'msgs': {},
 		'actions': {},
 		'entries': [
 			{

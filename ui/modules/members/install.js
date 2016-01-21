@@ -4,6 +4,14 @@ var membersTranslation = {
 	"tenantOrganizationChart": {
 		"ENG": "Tenant Organization Chart",
 		"FRA": "Tenant Organization Chart"
+	},
+	"addNewMember": {
+		"ENG": "Add New Member",
+		"FRA": "Ajouter New Member"
+	},
+	"addNewGroup":{
+		"ENG":"Add New Group",
+		"FRA":"Ajouter New Group"
 	}
 };
 

@@ -208,23 +208,23 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.currentSelectedEnvironment = envRecord.code;
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
-			}
 
-			getSendDataFromServer($scope, ngDataApi, {
-				"method": "get",
-				"routeName": "/dashboard/permissions/get",
-				"params": {"envCode": envRecord.code}
-			}, function (error, response) {
-				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
-				}
-				else {
-					$localStorage.acl_access = response.acl;
-					$localStorage.environments = response.environments;
-					//$scope.$parent.$emit("loadUserInterface", {});
-					//$route.reload();
-				}
-			});
+			//getSendDataFromServer($scope, ngDataApi, {
+			//	"method": "get",
+			//	"routeName": "/dashboard/permissions/get",
+			//	"params":{"envCode": envRecord.code}
+			//}, function(error, response) {
+			//	if (error) {
+			//		$scope.$parent.displayAlert('danger', error.message);
+			//	}
+			//	else {
+			//		$localStorage.acl_access = response.acl;
+			//		$localStorage.environments = response.environments;
+			//		$scope.$parent.$emit("loadUserInterface", {});
+					$route.reload();
+			//	}
+			//});
+			}
 		};
 
 		$scope.updateSelectedMenus = function () {

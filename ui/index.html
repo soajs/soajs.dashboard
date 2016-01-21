@@ -1,67 +1,84 @@
 <!doctype html>
 <html lang="en" ng-app="soajsApp">
 <head>
-    <meta charset="utf-8">
-    <title>SOAJS: {{query}}</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+	<meta charset="utf-8">
+	<title>SOAJS: {{query}}</title>
+	<link rel="icon" type="image/png" href="images/favicon.png">
 
-    <link rel="stylesheet" href="app/css/bootstrap.min.css">
-    <link rel="stylesheet" href="app/css/highlight.min.css">
-    <link rel='stylesheet prefetch' href='app/css/font-awesome.min.css'>
-    <link rel='stylesheet' href='lib/form/scripts/textAngular.css'>
+	<link rel="stylesheet" href="app/css/bootstrap.min.css">
+	<link rel="stylesheet" href="app/css/highlight.min.css">
+	<link rel='stylesheet prefetch' href='app/css/font-awesome.min.css'>
+	<link rel='stylesheet' href='lib/form/scripts/textAngular.css'>
 
-    <script src="app/scripts/jquery.min.js"></script>
-    <script src="app/scripts/angular.js"></script>
-    <script src="app/scripts/angular-route.min.js"></script>
-    <script src="app/scripts/angular-cookies.min.js"></script>
-    <script src="app/scripts/ngStorage.js"></script>
-    <script src="app/scripts/angular-sanitize.min.js"></script>
-    <script src="app/scripts/ui-bootstrap.js"></script>
-    <script src="app/scripts/ui-bootstrap-tpls.js"></script>
-    <script src="app/scripts/ng-file-upload-shim.min.js"></script>
-    <script src="app/scripts/ng-file-upload.min.js"></script>
-    <script src='lib/form/scripts/textAngular-rangy.min.js'></script>
-    <script src='lib/form/scripts/textAngular-sanitize.min.js'></script>
-    <script src='lib/form/scripts/textAngular.min.js'></script>
+	<script src="app/scripts/jquery.min.js"></script>
+	<script src="app/scripts/jquery.cookie.min.js"></script>
+	<script src="app/scripts/angular.js"></script>
+	<script src="app/scripts/angular-route.min.js"></script>
+	<script src="app/scripts/angular-cookies.min.js"></script>
+	<script src="app/scripts/ngStorage.js"></script>
+	<script src="app/scripts/angular-sanitize.min.js"></script>
+	<script src="app/scripts/ui-bootstrap.js"></script>
+	<script src="app/scripts/ui-bootstrap-tpls.js"></script>
+	<script src="app/scripts/ng-file-upload-shim.min.js"></script>
+	<script src="app/scripts/ng-file-upload.min.js"></script>
 
-    <script src="app/scripts/highlight.min.js"></script>
-    <script src="app/scripts/require.js"></script>
+	<script src='lib/form/scripts/textAngular-rangy.min.js'></script>
+	<script src='lib/form/scripts/textAngular-sanitize.min.js'></script>
+	<script src='lib/form/scripts/textAngular.min.js'></script>
 
-    <script src="config.js"></script>
-    <script src="app/navigation.js"></script>
+	<script src="app/scripts/highlight.min.js"></script>
+	<script src="app/scripts/require.js"></script>
 
-    <!-- pillar 1-->
-    <script src="modules/services/install.js"></script>
-    <script src="modules/contentBuilder/install.js"></script>
-    <!-- pillar 2-->
-    <script src="modules/productization/install.js"></script>
-    <script src="modules/multitenancy/install.js"></script>
-    <script src="modules/members/install.js"></script>
-    <!-- pillar 3-->
-    <script src="modules/environments/install.js"></script>
-    <!-- pillar 4-->
-    <script src="modules/contentManagement/install.js"></script>
+	<script src="config.js"></script>
+	<script src="app/translation.js"></script>
+	<script src="app/navigation.js"></script>
 
-    <!-- pillar 5-->
-    <script src="modules/myAccount/install.js"></script>
-    <script src="modules/settings/install.js"></script>
+	<!-- pillar 1-->
+	<script src="modules/services/install.js"></script>
+	<script src="modules/contentBuilder/install.js"></script>
+	<!-- pillar 2-->
+	<script src="modules/productization/install.js"></script>
+	<script src="modules/multitenancy/install.js"></script>
+	<script src="modules/members/install.js"></script>
+	<!-- pillar 3-->
+	<script src="modules/environments/install.js"></script>
+	<!-- pillar 4-->
+	<script src="modules/order/install.js"></script>
+	<script src="modules/userinfo/install.js"></script>
+	<script src="modules/shoppingCart/install.js"></script>
 
-    <script src="app/controller.js"></script>
-    <script src="app/services.js"></script>
-    <script src="app/filters.js"></script>
+	<script src="modules/catalogProfiles/install.js"></script>
+	<script src="modules/knowledgebase/install.js"></script>
+	<script src="modules/merchantsProducts/install.js"></script>
 
-    <link rel="stylesheet" href="lib/grid/grid.css">
-    <script src="lib/grid/grid.js"></script>
+	<script src="modules/deliveryMethods/install.js"></script>
+	<script src="modules/shippingMethods/install.js"></script>
+	<script src="modules/addressValidation/install.js"></script>
+	<script src="modules/taxValidation/install.js"></script>
+	<script src="modules/paymentMethods/install.js"></script>
+	<script src="modules/currencyConverter/install.js"></script>
+	<script src="modules/contentManagement/install.js"></script>
 
-    <link rel="stylesheet" href="lib/form/form.css">
-    <script src="lib/form/form.js"></script>
+	<!-- pillar 5-->
+	<script src="modules/myAccount/install.js"></script>
+	<script src="modules/settings/install.js"></script>
 
-    <script src="modules/common.js"></script>
+	<script src="app/controller.js"></script>
+	<script src="app/services.js"></script>
+	<script src="app/filters.js"></script>
+
+	<link rel="stylesheet" href="lib/grid/grid.css">
+	<script src="lib/grid/grid.js"></script>
+
+	<link rel="stylesheet" href="lib/form/form.css">
+	<script src="lib/form/form.js"></script>
+
+	<script src="modules/common.js"></script>
 </head>
 <body ng-controller="soajsAppController as soajsAppCtrl">
-<overlay></overlay>
-<header></header>
-<content></content>
-<footer></footer>
+	<overlay></overlay>
+	<header></header>
+	<content></content>
+	<footer></footer>
 </body>
 </html>
