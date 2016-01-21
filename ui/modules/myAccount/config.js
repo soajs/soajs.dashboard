@@ -9,7 +9,7 @@ var loginConfig = {
 		'entries': [
 			{
 				'name': 'username',
-				'label': 'Username',
+				'label': translation.username[LANG],
 				'type': 'text',
 				'placeholder': 'Enter Username...',
 				'value': '',
@@ -18,12 +18,12 @@ var loginConfig = {
 			},
 			{
 				'name': 'password',
-				'label': 'Password',
+				'label': translation.password[LANG],
 				'type': 'password',
 				'placeholder': 'Enter Password...',
 				'value': '',
-				'fieldMsg': ' <a href="#/forgotPw">Forgot your password?</a> ',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'fieldMsg': ' <a href="#/forgotPw">' + 'Forgot your password?' + '</a> ',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
 		]
@@ -45,16 +45,16 @@ var resetPwConfig = {
 				'type': 'password',
 				'placeholder': 'Enter New Password...',
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'confirmPassword',
 				'label': 'Confirm Password',
 				'type': 'password',
-				'placeholder': 'Re-enter Password...',
+				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
 		]
@@ -80,13 +80,12 @@ var setPasswordConfig = {
 				'name': 'confirmPassword',
 				'label': 'Confirm Password',
 				'type': 'password',
-				'placeholder': 'Re-enter Password...',
+				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
 				'tooltip': 'Passwords are alphanumeric and support _ character only',
 				'required': true
 			}
 		]
-
 	}
 };
 
@@ -98,7 +97,6 @@ var forgetPwConfig = {
 			'header': 'Please enter your account email address or username to reset your password',
 			'footer': ''
 		},
-
 		'entries': [
 			{
 				'name': 'username',
@@ -117,7 +115,7 @@ var forgetPwConfig = {
 var changePwConfig = {
 	formConf: {
 		'name': 'changePassword',
-		'label': 'Change Pw',
+		'label': '',
 		'entries': [
 			{
 				'name': 'oldPassword',
@@ -125,29 +123,28 @@ var changePwConfig = {
 				'type': 'text',
 				'placeholder': 'Enter your Old Password...',
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'password',
 				'label': 'New Password',
 				'type': 'password',
-				'placeholder': 'Enter New Password...',
+				'placeholder': translation.newPasswordPlaceholder[LANG],
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'confirmPassword',
-				'label': 'Confirm Password',
+				'label': translation.confirmPassword[LANG],
 				'type': 'password',
-				'placeholder': 'Re-enter Password...',
+				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
 		]
-
 	}
 };
 

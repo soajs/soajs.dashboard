@@ -69,7 +69,7 @@ var servicesConfig = {
 				}
 			}
 		],
-		serviceCustomAdd: {
+		"serviceCustomAdd": {
 			'entries': [
 				{
 					'name': 'upload',
@@ -82,7 +82,7 @@ var servicesConfig = {
 				}
 			]
 		},
-		serviceEdit:{
+		"serviceEdit":{
 			'entries': [
 				{
 					'name': 'name',

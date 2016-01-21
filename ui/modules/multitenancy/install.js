@@ -111,10 +111,6 @@ var mtTranslation = {
 		"ENG": "Enter the user Id.",
 		"FRA": "Enter the user Id."
 	},
-	"oAuthNewPasswordPlaceholder": {
-		"ENG": "Enter a new password",
-		"FRA": "Enter a new password"
-	},
 	"oAuthFrmPasswordTooltip": {
 		"ENG": "Keep it empty to maintain the old password.",
 		"FRA": "Keep it empty to maintain the old password."
@@ -124,8 +120,8 @@ var mtTranslation = {
 		"FRA": "Confirm oAuth user password."
 	},
 	"formOathPasswordPlaceholder": {
-		"ENG": "password...",
-		"FRA": "password..."
+		"ENG": "password",
+		"FRA": "password"
 	},
 	"formOathPasswordTooltip": {
 		"ENG": "Enter oAuth user password.",

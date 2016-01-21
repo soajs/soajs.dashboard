@@ -82,7 +82,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		var config = angular.copy(moduleConfig.form);
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
-
+		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
@@ -91,6 +91,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
 		}, function (error, response) {
+			overlayLoading.hide();
 			if (error) {
 				currentScope.form.displayAlert('danger', error.message);
 			}

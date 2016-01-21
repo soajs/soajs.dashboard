@@ -42,8 +42,16 @@ var translation = {
 		"FRA": "Confirm Password"
 	},
 	"confirmPasswordPlaceholder": {
-		"ENG": "Confirm Password",
-		"FRA": "Confirm Password"
+		"ENG": "Re-Enter Password",
+		"FRA": "Re-Enter Password"
+	},
+	"newPasswordPlaceholder": {
+		"ENG": "Enter a new password",
+		"FRA": "Enter a new password"
+	},
+	"passwordsToolTip": {
+		"ENG": "Passwords are alphanumeric and support _ character only",
+		"FRA": "Passwords are alphanumeric and support _ character only"
 	},
 	"firstName": {
 		"ENG": "First Name",
@@ -57,9 +65,9 @@ var translation = {
 		"ENG": "Email",
 		"FRA": "Email"
 	},
-	"status":{
-		"ENG":"Status",
-		"FRA":"Status"
+	"status": {
+		"ENG": "Status",
+		"FRA": "Status"
 	},
 	"merchant": {
 		"ENG": "Merchant",
@@ -75,11 +83,11 @@ var translation = {
 	},
 	"yes": {
 		"ENG": "Yes",
-		"FRA": "Yes"
+		"FRA": "Oui"
 	},
 	"no": {
 		"ENG": "No",
-		"FRA": "No"
+		"FRA": "Non"
 	},
 	"product": {
 		"ENG": "Product",
@@ -107,7 +115,7 @@ var translation = {
 	},
 	"days": {
 		"ENG": "days",
-		"FRA": "days"
+		"FRA": "jours"
 	},
 	"envCode": {
 		"ENG": "Environment Code",

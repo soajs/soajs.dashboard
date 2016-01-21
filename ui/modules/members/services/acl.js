@@ -150,7 +150,10 @@ membersAclService.service('membersAclHelper', [function() {
 								else {
 									newList = aclObj[envCode][serviceName].apis;
 									if(newList){
-										oneApplication.aclFill[oneEnv][serviceName].fixList = groupApisForDisplay(newList, 'group');
+										if(oneApplication.aclFill[envCode])
+										{
+											oneApplication.aclFill[envCode][serviceName].fixList = groupApisForDisplay(newList, 'group');
+										}
 									}
 								}
 

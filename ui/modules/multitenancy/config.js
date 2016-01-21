@@ -242,7 +242,7 @@ var tenantConfig = {
 					'name': 'password',
 					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': translation.oAuthNewPasswordPlaceholder[LANG],
+					'placeholder': translation.newPasswordPlaceholder[LANG],
 					'value': '',
 					'tooltip': translation.oAuthFrmPasswordTooltip[LANG],
 					'required': false
@@ -259,7 +259,7 @@ var tenantConfig = {
 			]
 		},
 		'oauthUser': {
-			'name': 'add_oauthUser',
+			'name': '',
 			'label': '',
 			'actions': {},
 			'entries': [
