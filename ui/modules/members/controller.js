@@ -219,15 +219,15 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 		groupsHelper.editGroup($scope.tenantGroups, groupsConfig, data, false);
 	};
 
-	$scope.tenantGroups.addGroup = function() {
+	$scope.tenantGroups.addGroup = function () {
 		groupsHelper.addGroup($scope.tenantGroups, groupsConfig, false);
 	};
 
-	$scope.tenantGroups.deleteGroups = function() {
+	$scope.tenantGroups.deleteGroups = function () {
 		groupsHelper.deleteGroups($scope.tenantGroups);
 	};
 
-	$scope.tenantGroups.delete1Group = function(data) {
+	$scope.tenantGroups.delete1Group = function (data) {
 		groupsHelper.delete1Group($scope.tenantGroups, data, false);
 	};
 
@@ -319,9 +319,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					"key": $scope.key
 				},
 				"routeName": "/dashboard/tenant/acl/get",
-				"params": { "id": $scope.user.tenant.id }
-			}, function(error, response) {
-				if(error) {
+				"params": {"id": $scope.user.tenant.id}
+			}, function (error, response) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 				else {
@@ -349,8 +349,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				},
 				"routeName": "/urac/admin/getUser",
 				"params": {"uId": $routeParams.uId}
-			}, function(error, response) {
-				if(error) {
+			}, function (error, response) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
@@ -359,8 +359,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 						"method": "get",
 						"routeName": "/urac/admin/group/list",
 						"params": {'tId': $scope.user.tenant.id}
-					}, function(error, response) {
-						if(error) {
+					}, function (error, response) {
+						if (error) {
 							$scope.$parent.displayAlert("danger", error.code, true, 'urac');
 						}
 						else {
@@ -401,15 +401,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			"routeName": "/urac/admin/editUser",
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
-		}, function(error) {
-			if(error) {
+		}, function (error) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
 				$route.reload();
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
+				$scope.$parent.displayAlert('success', translation.userAclDeletedSuccessfully[LANG]);
 			}
 		});
 	};
@@ -440,7 +440,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				counter++;
 			}
 			else {
-				$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+				$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
 			}
 		});
 		if (counter === $scope.tenantApp.applications.length) {
@@ -452,14 +452,14 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"routeName": "/urac/admin/editUser",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
-			}, function(error) {
-				if(error) {
+			}, function (error) {
+				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
 					$scope.msg.type = '';
 					$scope.msg.msg = '';
-					$scope.$parent.displayAlert('success', 'Acl Updated Successfully');
+					$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
 				}
 			});
 		}

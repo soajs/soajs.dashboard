@@ -26,7 +26,7 @@ var membersTranslation = {
 		"ENG":"You need to choose at least one group when the access type is set to Groups",
 		"FRA":"You need to choose at least one group when the access type is set to Groups"
 	},
-	"userAclDeletedSuccessfully'":{
+	"userAclDeletedSuccessfully":{
 		"ENG":"User Acl Deleted Successfully",
 		"FRA":"User Acl Deleted Successfully"
 	},
@@ -54,7 +54,7 @@ var membersTranslation = {
 	"enterLastNameUser":{
 		"ENG":"Enter the Last Name of the User",
 		"FRA":"Enter the Last Name of the User"
-	},
+	}
 };
 
 for (var attrname in membersTranslation) {
