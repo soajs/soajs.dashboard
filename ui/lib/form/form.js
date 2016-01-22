@@ -190,9 +190,27 @@ function buildForm(context, modal, configuration, cb) {
 	}
 
 	context.form.do = function (functionObj) {
+		var formDataKeys = Object.keys(context.form.formData);
+		var fileTypes = ['document', 'image', 'audio', 'video'];
+		var customData = [];
+		for (var i = 0; i < context.form.entries.length; i++) {
+			for (var j = 0; j < formDataKeys.length; j++) {
+				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
+				console.log(pattern);
+				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
+					customData.push ({
+						label: formDataKeys[j],
+						data: context.form.formData[formDataKeys[j]]
+					});
+				}
+			}
+		}
 		if (functionObj.type === 'submit') {
 			var data = angular.copy(context.form.formData);
 			if (context.form.itemsAreValid(data)) {
+				for (var i = 0; i < customData.length; i++) {
+					data[customData[i].label] = customData[i].data;
+				}
 				functionObj.action(data);
 			}
 		}
@@ -200,6 +218,7 @@ function buildForm(context, modal, configuration, cb) {
 			functionObj.action();
 		}
 	};
+
 	context.form.callObj = function (functionObj) {
 		if (functionObj) {
 			if (functionObj.action) {
