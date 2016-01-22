@@ -26,36 +26,36 @@ var membersConfig = {
 				'name': 'username',
 				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Username...',
+				'placeholder': translation.enterUsername[LANG] + '...',
 				'value': '',
-				'tooltip': 'Usernames are alphanumeric and support _ & - characters only',
+				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'email',
 				'label': translation.email[LANG],
 				'type': 'email',
-				'placeholder': 'Enter Email...',
+				'placeholder': translation.enterEmail[LANG] + '...',
 				'value': '',
-				'tooltip': 'myemail@example.domain',
+				'tooltip': translation.emailToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'firstName',
 				'label': translation.firstName[LANG],
 				'type': 'text',
-				'placeholder': 'Enter First Name...',
+				'placeholder': translation.enterFirstName[LANG] + '...',
 				'value': '',
-				'tooltip': 'Enter the First Name of the User',
+				'tooltip': translation.enterFirstNameUser[LANG],
 				'required': true
 			},
 			{
 				'name': 'lastName',
 				'label': translation.lastName[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Last Name...',
+				'placeholder': translation.enterLastName[LANG] + '...',
 				'value': '',
-				'tooltip': 'Enter the Last Name of the User',
+				'tooltip': translation.enterLastNameUser[LANG],
 				'required': true
 			}
 		]
@@ -84,9 +84,10 @@ var groupsConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
-			{'label': 'Code', 'field': 'code'},
-			{'label': 'Name', 'field': 'name'},
-			{'label': 'Description', 'field': 'description'}
+			{'label': translation.code[LANG], 'field': 'code'},
+			{'label': translation.name[LANG], 'field': 'name'},
+			{'label': translation.description[LANG]
+				, 'field': 'description'}
 		],
 		'leftActions': [],
 		'topActions': [],
