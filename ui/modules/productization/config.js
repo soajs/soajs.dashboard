@@ -89,10 +89,10 @@ var productizationConfig = {
 					'name': '_TTL',
 					'label': 'TTL',
 					'type': 'select',
-					'value': [{'v': 6, 'l': '6 hours'}, {'v': 12, 'l': '12 hours'}, {'v': 24, 'l': '24 hours'},
-						{'v': 48, 'l': '2 days'}, {'v': 72, 'l':'3 days'}, {'v': 96, 'l':'4 days'},
-						{'v': 120, 'l':'5 days'}, {'v': 144, 'l':'6 days'}, {'v': 168, 'l':'7 days'}],
-					'tooltip': 'Pick a time to live value for this package.'
+					'value': [{'v': 6, 'l': '6 ' + translation.hours[LANG]}, {'v': 12, 'l': '12 ' + translation.hours[LANG]}, {'v': 24, 'l': '24 ' + translation.hours[LANG]},
+						{'v': 48, 'l': '2 ' + translation.days[LANG]}, {'v': 72, 'l':'3 ' + translation.days[LANG]}, {'v': 96, 'l':'4 ' + translation.days[LANG]},
+						{'v': 120, 'l':'5 ' + translation.days[LANG]}, {'v': 144, 'l':'6 ' + translation.days[LANG]}, {'v': 168, 'l':'7 ' + translation.days[LANG]}],
+					'tooltip': translation.formTTLToolTip[LANG]
 				}
 			]
 		}

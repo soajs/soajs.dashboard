@@ -385,6 +385,14 @@ var translation = {
 	"dashboardAccess": {
 		"ENG": "Dashboard Access",
 		"FRA": "Dashboard Access"
+	},
+	"edit": {
+		"ENG": "Edit",
+		"FRA": "Edit"
+	},
+	"remove": {
+		"ENG": "Remove",
+		"FRA": "Remove"
 	}
 };
 

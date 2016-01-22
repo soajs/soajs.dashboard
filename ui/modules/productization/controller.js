@@ -35,13 +35,13 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 				$scope.grid.actions = {
 					'edit': {
-						'label': 'Edit',
+						'label': translation.edit[LANG],
 						'command': function(row) {
 							$scope.editProduct(row);
 						}
 					},
 					'delete': {
-						'label': 'Remove',
+						'label': translation.remove[LANG],
 						'commandMsg': "Are you sure you want to remove this product ?",
 						'command': function(row) {
 							$scope.removeProduct(row);
