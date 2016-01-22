@@ -54,6 +54,89 @@ var ProdTranslation = {
     "formPackageDescriptionToolTip": {
         "ENG": "Enter a description explaining the usage of this package",
         "FRA": "Enter a description explaining the usage of this package"
+    },
+    //controller
+    "addNewProduct": {
+        "ENG": "Add New Product",
+        "FRA": "Add New Product"
+    },
+    "addProduct": {
+        "ENG": "Add Product",
+        "FRA": "Add Product"
+    },
+    "editProduct": {
+        "ENG": "Edit Product",
+        "FRA": "Edit Product"
+    },
+    "addNewPackage": {
+        "ENG": "Add New Package",
+        "FRA": "Add New Package"
+    },
+    "addPackage": {
+        "ENG": "Add Package",
+        "FRA": "Add Package"
+    },
+    "editPackage": {
+        "ENG": "Edit Package'",
+        "FRA": "Edit Package'"
+    },
+    "areYouSureWantRemoveProduct": {
+        "ENG": "Are you sure you want to remove this product",
+        "FRA": "Are you sure you want to remove this product"
+    },
+    "productRemovedSuccessfully": {
+        "ENG": "Product removed successfully",
+        "FRA": "Product removed successfully"
+    },
+    "productAddedSuccessfully": {
+        "ENG": "Product Added successfully",
+        "FRA": "Product Added successfully"
+    },
+    "productUpdatedSuccessfully": {
+        "ENG": "Product Updated successfully",
+        "FRA": "Product Updated successfully"
+    },
+    "selectedPackageRemoved": {
+        "ENG": "Selected Package has been removed",
+        "FRA": "Selected Package has been removed"
+    },
+    "ACLUpdatedSuccessfully": {
+        "ENG": "ACL Updated Successfully",
+        "FRA": "ACL Updated Successfully"
+    },
+    //editAcl
+    "modifyACLPackage": {
+        "ENG": "Modify ACL of Package",
+        "FRA": "Modify ACL of Package"
+    },
+    //list
+    "packages": {
+        "ENG": "Packages",
+        "FRA": "Packages"
+    },
+    "areYouSureWantRemoveSelectedPackage": {
+        "ENG": "Are you sure you want to remove the selected package",
+        "FRA": "Are you sure you want to remove the selected package"
+    },
+    "removePackage": {
+        "ENG": "Remove Package",
+        "FRA": "Remove Package"
+    },
+    "editPackageACL": {
+        "ENG": "Edit Package ACL",
+        "FRA": "Edit Package ACL"
+    },
+    "expandPackages": {
+        "ENG": "Expand Packages",
+        "FRA": "Expand Packages"
+    },
+    "collapsePackages": {
+        "ENG": "Collapse Packages",
+        "FRA": "Collapse Packages"
+    },
+    "removeProduct": {
+        "ENG": "Remove Product",
+        "FRA": "Remove Product"
     }
 };
 

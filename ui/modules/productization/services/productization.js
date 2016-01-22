@@ -58,7 +58,7 @@ productizationService.service('aclHelpers', function(){
 
 		if(count === 0){
 			currentScope.msg.type = 'warning';
-			currentScope.msg.msg = "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!";
+			currentScope.msg.msg = translation.warningMsgAcl[LANG];
 		}
 		overlayLoading.hide();
 	}

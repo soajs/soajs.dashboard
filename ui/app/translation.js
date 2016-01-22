@@ -202,6 +202,19 @@ var translation = {
 		"ENG": "private",
 		"FRA": "private"
 	},
+	"owner": {
+		"ENG": "owner",
+		"FRA": "owner"
+	},
+	"administrator": {
+		"ENG": "administrator",
+		"FRA": "administrator"
+	},
+	"InheritFromService": {
+		"ENG": "inherit from service",
+		"FRA": "inherit from service"
+	},
+
 	//list-applications
 	"availableApplications": {
 		"ENG": "Available Applications",
@@ -393,7 +406,13 @@ var translation = {
 	"remove": {
 		"ENG": "Remove",
 		"FRA": "Remove"
-	}
+	},
+	"passwordConfirmFieldsNotMatch": {
+		"ENG": "Password and Confirm Password fields do not match",
+		"FRA": "Password and Confirm Password fields do not match"
+	},
+
+
 };
 
 var errorCodes = {
