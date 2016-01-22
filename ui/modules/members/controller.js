@@ -416,7 +416,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$route.reload();
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', 'User Acl Deleted Successfully');
+				$scope.$parent.displayAlert('success', translation.userAclDeletedSuccessfully[LANG]);
 			}
 		});
 	};
@@ -447,7 +447,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				counter++;
 			}
 			else{
-				$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+				$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
 			}
 		});
 		if(counter === $scope.tenantApp.applications.length){
@@ -466,7 +466,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				else {
 					$scope.msg.type = '';
 					$scope.msg.msg = '';
-					$scope.$parent.displayAlert('success', 'Acl Updated Successfully');
+					$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
 				}
 			});
 		}

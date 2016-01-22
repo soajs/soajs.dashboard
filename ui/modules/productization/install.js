@@ -100,10 +100,6 @@ var ProdTranslation = {
         "ENG": "Selected Package has been removed",
         "FRA": "Selected Package has been removed"
     },
-    "ACLUpdatedSuccessfully": {
-        "ENG": "ACL Updated Successfully",
-        "FRA": "ACL Updated Successfully"
-    },
     //editAcl
     "modifyACLPackage": {
         "ENG": "Modify ACL of Package",
