@@ -53,6 +53,14 @@ var translation = {
 		"ENG": "Passwords are alphanumeric and support _ character only",
 		"FRA": "Passwords are alphanumeric and support _ character only"
 	},
+	"usernamesToolTip": {
+		"ENG": "Usernames are alphanumeric and support  _ & -  character only",
+		"FRA": "Usernames are alphanumeric and support  _ & -  character only"
+	},
+	"emailToolTip": {
+		"ENG": "myemail@example.domain",
+		"FRA": "myemail@example.domain"
+	},
 	"firstName": {
 		"ENG": "First Name",
 		"FRA": "Prenom"
@@ -88,6 +96,10 @@ var translation = {
 	"no": {
 		"ENG": "No",
 		"FRA": "Non"
+	},
+	"member": {
+		"ENG": "Member",
+		"FRA": "Member"
 	},
 	"product": {
 		"ENG": "Product",
@@ -227,6 +239,10 @@ var translation = {
 	"removeApplication": {
 		"ENG": "Remove Application",
 		"FRA": "Remove Application"
+	},
+	"ACLUpdatedSuccessfully": {
+		"ENG": "ACL Updated Successfully",
+		"FRA": "ACL Updated Successfully"
 	},
 	//list-keys
 	"tenantApplicationKeys": {

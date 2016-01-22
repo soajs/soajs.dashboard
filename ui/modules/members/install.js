@@ -12,7 +12,49 @@ var membersTranslation = {
 	"addNewGroup":{
 		"ENG":"Add New Group",
 		"FRA":"Ajouter New Group"
-	}
+	},
+	"myOrganizationChart":{
+		"ENG":"My Organization Chart",
+		"FRA":"My Organization Chart"
+	},
+	"userACL":{
+		"ENG":"User ACL",
+		"FRA":"User ACL"
+	},
+	//constroller
+	"needToChooseGroupAccessTypeSetGroups":{
+		"ENG":"You need to choose at least one group when the access type is set to Groups",
+		"FRA":"You need to choose at least one group when the access type is set to Groups"
+	},
+	"userAclDeletedSuccessfully'":{
+		"ENG":"User Acl Deleted Successfully",
+		"FRA":"User Acl Deleted Successfully"
+	},
+	//config
+	"enterUsername":{
+		"ENG":"Enter Username",
+		"FRA":"Enter Username"
+	},
+	"enterEmail":{
+		"ENG":"Enter Email",
+		"FRA":"Enter Email"
+	},
+	"enterFirstName":{
+		"ENG":"Enter First Name",
+		"FRA":"Enter First Name"
+	},
+	"enterFirstNameUser":{
+		"ENG":"Enter the First Name of the User",
+		"FRA":"Enter the First Name of the User"
+	},
+	"enterLastName":{
+		"ENG":"Enter Last Name",
+		"FRA":"Enter Last Name"
+	},
+	"enterLastNameUser":{
+		"ENG":"Enter the Last Name of the User",
+		"FRA":"Enter the Last Name of the User"
+	},
 };
 
 for (var attrname in membersTranslation) {
@@ -33,7 +75,7 @@ var membersNav = [
 		'mainMenu': true,
 		'pillar': {
 			'name': 'management',
-			'label': 'Product',
+			'label': translation.product[LANG],
 			'position': 2
 		},
 		'tracker': true,
@@ -42,7 +84,7 @@ var membersNav = [
 	},
 	{
 		'id': 'members',
-		'label': 'My Organization Chart',
+		'label': translation.myOrganizationChart[LANG],
 		'checkPermission': {
 			'service': 'urac',
 			'route': '/admin/listUsers'
@@ -53,7 +95,7 @@ var membersNav = [
 		'mainMenu': true,
 		'pillar': {
 			'name': 'management',
-			'label': 'Product',
+			'label': translation.product[LANG],
 			'position': 2
 		},
 		'tracker': true,
@@ -62,17 +104,17 @@ var membersNav = [
 	},
 	{
 		'id': 'user-acl',
-		'label': 'User ACL',
+		'label': translation.userACL[LANG],
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
 		'tracker': true,
 		'pillar': {
 			'name': 'management',
-			'label': 'Product',
+			'label': translation.product[LANG],
 			'position': 2
 		},
 		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/acl.js'],
-		'ancestor': [translation.home[LANG], 'Members']
+		'ancestor': [translation.home[LANG], translation.member[LANG]]
 	}
 ];
 navigation = navigation.concat(membersNav);
