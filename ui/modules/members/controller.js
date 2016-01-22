@@ -1,6 +1,6 @@
 "use strict";
 var membersApp = soajsApp.components;
-membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function($scope, $cookieStore) {
+membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function ($scope, $cookieStore) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -9,77 +9,77 @@ membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function($sc
 	$scope.userCookie = $cookieStore.get('soajs_user');
 }]);
 
-membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function($scope, membersHelper) {
+membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function ($scope, membersHelper) {
 	$scope.key = apiConfiguration.key;
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
-	$scope.$parent.$on('reloadMembers', function(event) {
+	$scope.$parent.$on('reloadMembers', function (event) {
 		$scope.members.listMembers($scope);
 	});
 
-	$scope.members.listMembers = function() {
+	$scope.members.listMembers = function () {
 		membersHelper.listMembers($scope.members, membersConfig);
 	};
 
-	$scope.members.addMember = function() {
+	$scope.members.addMember = function () {
 		membersHelper.addMember($scope.members, membersConfig, true);
 	};
 
-	$scope.members.editAcl = function(data) {
+	$scope.members.editAcl = function (data) {
 		membersHelper.editAcl($scope.members, data);
 	};
 
-	$scope.members.editMember = function(data) {
+	$scope.members.editMember = function (data) {
 		membersHelper.editMember($scope.members, membersConfig, data, true)
 	};
 
-	$scope.members.activateMembers = function() {
+	$scope.members.activateMembers = function () {
 		membersHelper.activateMembers($scope.members);
 	};
 
-	$scope.members.deactivateMembers = function() {
+	$scope.members.deactivateMembers = function () {
 		membersHelper.deactivateMembers($scope.members);
 	};
 
 	//call default method
-	if($scope.members.access.adminUser.list) {
+	if ($scope.members.access.adminUser.list) {
 		$scope.members.listMembers($scope);
 	}
 
 }]);
 
-membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function($scope, groupsHelper) {
+membersApp.controller('groupsCtrl', ['$scope', 'groupsHelper', function ($scope, groupsHelper) {
 	$scope.key = apiConfiguration.key;
-    $scope.groups = angular.extend($scope);
+	$scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
-	$scope.groups.listGroups = function() {
+	$scope.groups.listGroups = function () {
 		groupsHelper.listGroups($scope.groups, groupsConfig);
 	};
 
-	$scope.groups.addGroup = function() {
+	$scope.groups.addGroup = function () {
 		groupsHelper.addGroup($scope.groups, groupsConfig, true);
 	};
 
-	$scope.groups.editGroup = function(data) {
+	$scope.groups.editGroup = function (data) {
 		groupsHelper.editGroup($scope.groups, groupsConfig, data, true);
 	};
 
-	$scope.groups.deleteGroups = function() {
+	$scope.groups.deleteGroups = function () {
 		groupsHelper.deleteGroups($scope.groups);
 	};
 
-	$scope.groups.delete1Group = function(data) {
+	$scope.groups.delete1Group = function (data) {
 		groupsHelper.delete1Group($scope.groups, data, true);
 	};
 
-	$scope.groups.assignUsers = function(data) {
+	$scope.groups.assignUsers = function (data) {
 		groupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}}, true);
 	};
 
 	$scope.groups.listGroups();
 }]);
 
-membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function($scope, $timeout, $routeParams, ngDataApi) {
+membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngDataApi', function ($scope, $timeout, $routeParams, ngDataApi) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -88,16 +88,16 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 	$scope.users = {};
 	$scope.groups = {};
 
-	$scope.getAllUsersGroups = function() {
+	$scope.getAllUsersGroups = function () {
 		function arrGroupByTenant(arr) {
 			var result = {};
-			for(var i = 0; i < arr.length; i++) {
+			for (var i = 0; i < arr.length; i++) {
 				var group;
-				if(arr[i].tenant.id) {
+				if (arr[i].tenant.id) {
 					group = arr[i].tenant.id;
 				}
-				if(group) {
-					if(!result[group]) {
+				if (group) {
+					if (!result[group]) {
 						result[group] = {};
 						result[group].list = [];
 					}
@@ -110,8 +110,8 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/urac/admin/all"
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
@@ -123,13 +123,13 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		});
 	};
 
-	$scope.listTenants = function() {
+	$scope.listTenants = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/list"
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
@@ -140,82 +140,82 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 		});
 	};
 
-	if($scope.access.adminAll){
+	if ($scope.access.adminAll) {
 		$scope.listTenants();
 	}
 
 }]);
 
-membersApp.controller('tenantMembersCtrl', ['$scope', 'membersHelper', '$timeout', function($scope, membersHelper, $timeout) {
+membersApp.controller('tenantMembersCtrl', ['$scope', 'membersHelper', '$timeout', function ($scope, membersHelper, $timeout) {
 
 	$scope.tenantMembers = angular.extend($scope);
 
-	$scope.tenantMembers.initialize = function(tenantRecord) {
+	$scope.tenantMembers.initialize = function (tenantRecord) {
 		$scope.tenantMembers.tenant = tenantRecord;
 		$scope.tenantMembers.tId = tenantRecord['_id'];
 
-		$timeout(function() {
-			if($scope.tenantMembers.users && $scope.tenantMembers.users[$scope.tenantMembers.tId]) {
+		$timeout(function () {
+			if ($scope.tenantMembers.users && $scope.tenantMembers.users[$scope.tenantMembers.tId]) {
 				var myUsers = $scope.tenantMembers.users[$scope.tenantMembers.tId].list;
 				membersHelper.printMembers($scope.tenantMembers, membersConfig, myUsers);
 			}
 		}, 1000);
 	};
 
-	$scope.tenantMembers.listMembers = function() {
-		membersHelper.listMembers($scope.tenantMembers, membersConfig, function(response) {
+	$scope.tenantMembers.listMembers = function () {
+		membersHelper.listMembers($scope.tenantMembers, membersConfig, function (response) {
 			membersHelper.printMembers($scope.tenantMembers, membersConfig, response);
 		});
 	};
 
-	$scope.tenantMembers.addMember = function() {
+	$scope.tenantMembers.addMember = function () {
 		membersHelper.addMember($scope.tenantMembers, membersConfig, false);
 	};
 
-	$scope.tenantMembers.editAcl = function(data) {
+	$scope.tenantMembers.editAcl = function (data) {
 		membersHelper.editAcl($scope.tenantMembers, data);
 	};
 
-	$scope.tenantMembers.editMember = function(data) {
+	$scope.tenantMembers.editMember = function (data) {
 		membersHelper.editMember($scope.tenantMembers, membersConfig, data, false);
 	};
 
-	$scope.tenantMembers.activateMembers = function() {
+	$scope.tenantMembers.activateMembers = function () {
 		membersHelper.activateMembers($scope.tenantMembers);
 	};
 
-	$scope.tenantMembers.deactivateMembers = function() {
+	$scope.tenantMembers.deactivateMembers = function () {
 		membersHelper.deactivateMembers($scope.tenantMembers);
 	};
 
-	$scope.tenantMembers.$parent.$on('reloadTenantMembers', function(event, args) {
+	$scope.tenantMembers.$parent.$on('reloadTenantMembers', function (event, args) {
 		$scope.tenantMembers.listMembers();
 	});
 
 }]);
 
-membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout', function($scope, groupsHelper, $timeout) {
+membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout', function ($scope, groupsHelper, $timeout) {
 
 	$scope.tenantGroups = angular.extend($scope);
-	$scope.tenantGroups.initialize = function(tenantRecord) {
+	$scope.tenantGroups.initialize = function (tenantRecord) {
 		$scope.tenantGroups.tenant = tenantRecord;
 		$scope.tenantGroups.tId = tenantRecord['_id'];
 
-		$timeout(function() {
-			if($scope.tenantGroups.groups && $scope.tenantGroups.groups[$scope.tenantGroups.tId]) {
+		$timeout(function () {
+			if ($scope.tenantGroups.groups && $scope.tenantGroups.groups[$scope.tenantGroups.tId]) {
 				var myGroups = $scope.tenantGroups.groups[$scope.tenantGroups.tId].list;
 				groupsHelper.printGroups($scope.tenantGroups, groupsConfig, myGroups);
 			}
 		}, 1000);
 	};
 
-	$scope.tenantGroups.listGroups = function() {
-		groupsHelper.listGroups($scope.tenantGroups, groupsConfig, function(response) {
+	$scope.tenantGroups.listGroups = function () {
+		groupsHelper.listGroups($scope.tenantGroups, groupsConfig, function (response) {
 			groupsHelper.printGroups($scope.tenantGroups, groupsConfig, response);
 		});
 	};
 
-	$scope.tenantGroups.editGroup = function(data) {
+	$scope.tenantGroups.editGroup = function (data) {
 		groupsHelper.editGroup($scope.tenantGroups, groupsConfig, data, false);
 	};
 
@@ -231,13 +231,16 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 		groupsHelper.delete1Group($scope.tenantGroups, data, false);
 	};
 
-	$scope.tenantGroups.assignUsers = function(data) {
-		groupsHelper.assignUsers($scope.tenantGroups, groupsConfig, data, {'name': 'reloadTenantMembers', params: {'name': 'tIdReload', 'params': $scope.tenantGroups.tId}});
+	$scope.tenantGroups.assignUsers = function (data) {
+		groupsHelper.assignUsers($scope.tenantGroups, groupsConfig, data, {
+			'name': 'reloadTenantMembers',
+			params: {'name': 'tIdReload', 'params': $scope.tenantGroups.tId}
+		});
 	};
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', '$route', function($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper, $route) {
+membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', '$route', function ($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper, $route) {
 	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
 	$scope.msg = {};
@@ -245,23 +248,23 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 	$scope.tenantApp = {};
 	$scope.allGroups = [];
 	$scope.pckName = '';
-	$scope.environments_codes =[];
+	$scope.environments_codes = [];
 
 	$scope.userCookie = $cookieStore.get('soajs_user');
 
-	$scope.minimize = function(application, service, oneEnv) {
+	$scope.minimize = function (application, service, oneEnv) {
 		application.aclFill[oneEnv][service.name].collapse = true;
 	};
 
-	$scope.expand = function(application, service, oneEnv) {
+	$scope.expand = function (application, service, oneEnv) {
 		application.aclFill[oneEnv][service.name].collapse = false;
 	};
 //need more work
-	$scope.selectService = function(application, service, oneEnv) {
-		application.services.forEach(function(oneService) {
-			if(oneService.name === service.name) {
-				if(oneService.include) {
-					if(service.forceRestricted) {
+	$scope.selectService = function (application, service, oneEnv) {
+		application.services.forEach(function (oneService) {
+			if (oneService.name === service.name) {
+				if (oneService.include) {
+					if (service.forceRestricted) {
 						oneService.apisRestrictPermission = true;
 					}
 					application.aclFill[oneEnv][service.name].collapse = false;
@@ -272,11 +275,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		});
 	};
 
-	$scope.getEnvironments = function() {
+	$scope.getEnvironments = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list",
-			"params": { "short": true }
+			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
@@ -288,11 +291,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		});
 	};
 
-	$scope.openApi = function(application, serviceName, oneEnv) {
+	$scope.openApi = function (application, serviceName, oneEnv) {
 		var status = false;
-		for(var oneService in application.aclFill[oneEnv]) {
-			if(oneService === serviceName) {
-				if(application.aclFill[oneEnv][oneService].include && !application.aclFill[oneEnv][oneService].collapse) {
+		for (var oneService in application.aclFill[oneEnv]) {
+			if (oneService === serviceName) {
+				if (application.aclFill[oneEnv][oneService].include && !application.aclFill[oneEnv][oneService].collapse) {
 					status = true;
 				}
 			}
@@ -300,19 +303,19 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		return status;
 	};
 
-	$scope.checkForGroupDefault = function(aclFill, service, grp, val, myApi){
+	$scope.checkForGroupDefault = function (aclFill, service, grp, val, myApi) {
 		membersAclHelper.checkForGroupDefault(aclFill, service, grp, val, myApi);
 	};
 
-	$scope.applyRestriction = function(aclFill, service){
+	$scope.applyRestriction = function (aclFill, service) {
 		membersAclHelper.applyRestriction(aclFill, service);
 	};
 
-	$scope.getTenantAppInfo = function() {
-		getUserGroupInfo(function() {
+	$scope.getTenantAppInfo = function () {
+		getUserGroupInfo(function () {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"headers":{
+				"headers": {
 					"key": $scope.key
 				},
 				"routeName": "/dashboard/tenant/acl/get",
@@ -341,7 +344,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		function getUserGroupInfo(cb) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-				"headers":{
+				"headers": {
 					"key": $scope.key
 				},
 				"routeName": "/urac/admin/getUser",
@@ -361,10 +364,8 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 							$scope.$parent.displayAlert("danger", error.code, true, 'urac');
 						}
 						else {
-							response.forEach(function(grpObj) {
-								if($scope.user.groups.indexOf(grpObj.code)!== -1){
-									$scope.allGroups.push(grpObj.code);
-								}
+							response.forEach(function (grpObj) {
+								$scope.allGroups.push(grpObj.code);
 							});
 							cb();
 						}
@@ -374,35 +375,27 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		}
 	};
 
-	$scope.clearUserAcl = function() {
+	$scope.clearUserAcl = function () {
 		var postData = $scope.user;
 
-		if(typeof(postData.config) !== 'object') {
+		if (typeof(postData.config) !== 'object') {
 			postData.config = {};
 		}
 
-		if(typeof(postData.config.packages) !== 'object') {
+		if (typeof(postData.config.packages) !== 'object') {
 			postData.config.packages = {};
 		}
 
-		$scope.tenantApp.applications.forEach(function(oneApplication){
-			if(postData.config.packages[oneApplication.package]){
-				if(postData.config.packages[oneApplication.package].acl){
-					for (var env in postData.config.packages[oneApplication.package].acl){
-						if (postData.config.packages[oneApplication.package].acl[env]){
-							for (var serviceName in postData.config.packages[oneApplication.package].acl[env]){
-								if (postData.config.packages[oneApplication.package].acl[env][serviceName]){
-									delete postData.config.packages[oneApplication.package].acl[env][serviceName];
-								}
-							}
-						}
-					}
+		$scope.tenantApp.applications.forEach(function (oneApplication) {
+			if (postData.config.packages[oneApplication.package]) {
+				if (postData.config.packages[oneApplication.package].acl) {
+					delete postData.config.packages[oneApplication.package].acl;
 				}
 			}
 		});
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
-			"headers":{
+			"headers": {
 				"key": $scope.key
 			},
 			"routeName": "/urac/admin/editUser",
@@ -421,39 +414,39 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		});
 	};
 
-	$scope.saveUserAcl = function() {
+	$scope.saveUserAcl = function () {
 		var postData = $scope.user;
-		if(typeof(postData.config) !== 'object') {
+		if (typeof(postData.config) !== 'object') {
 			postData.config = {};
 		}
-		if(typeof(postData.config.packages) !== 'object') {
+		if (typeof(postData.config.packages) !== 'object') {
 			postData.config.packages = {};
 		}
 
 		var counter = 0;
-		$scope.tenantApp.applications.forEach(function(oneApplication){
-			var tmpObj ={ services: oneApplication.aclFill };
+		$scope.tenantApp.applications.forEach(function (oneApplication) {
+			var tmpObj = {services: oneApplication.aclFill};
 			var result = membersAclHelper.prepareAclObjToSave(tmpObj);
-			if(result.valid){
+			if (result.valid) {
 
 				var packageName = oneApplication.package;
-				if(!postData.config.packages[packageName]){
-					postData.config.packages[packageName] ={};
+				if (!postData.config.packages[packageName]) {
+					postData.config.packages[packageName] = {};
 				}
-				if(!postData.config.packages[packageName].acl){
-					postData.config.packages[packageName].acl ={};
+				if (!postData.config.packages[packageName].acl) {
+					postData.config.packages[packageName].acl = {};
 				}
 				postData.config.packages[packageName].acl = result.data;
 				counter++;
 			}
-			else{
+			else {
 				$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
 			}
 		});
-		if(counter === $scope.tenantApp.applications.length){
+		if (counter === $scope.tenantApp.applications.length) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"headers":{
+				"headers": {
 					"key": $scope.key
 				},
 				"routeName": "/urac/admin/editUser",
@@ -472,7 +465,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		}
 	};
 	//call default method
-	overlayLoading.show(function() {
+	overlayLoading.show(function () {
 		$scope.getEnvironments();
 	});
 
