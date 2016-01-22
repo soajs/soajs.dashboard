@@ -140,7 +140,7 @@ multiTenantService.service('aclHelper', function(){
 		currentScope.currentApplication.aclFill = myAcl;
 
 		if (count === 0) {
-			currentScope.msg.type = translation.warning[LANG];
+			currentScope.msg.type = 'warning';
 			currentScope.msg.msg = translation.warningMsgAcl[LANG];
 		}
 	}

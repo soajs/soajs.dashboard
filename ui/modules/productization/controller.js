@@ -35,14 +35,14 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 
 				$scope.grid.actions = {
 					'edit': {
-						'label': 'Edit',
+						'label': translation.edit[LANG],
 						'command': function(row) {
 							$scope.editProduct(row);
 						}
 					},
 					'delete': {
-						'label': 'Remove',
-						'commandMsg': "Are you sure you want to remove this product ?",
+						'label': translation.remove[LANG],
+						'commandMsg': translation.areYouSureWantRemoveProduct[LANG] + " ?",
 						'command': function(row) {
 							$scope.removeProduct(row);
 						}
@@ -62,7 +62,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', "Product removed successfully.");
+				$scope.$parent.displayAlert('success', translation.productRemovedSuccessfully[LANG] + ".");
 				$scope.listProducts();
 			}
 		});
@@ -74,11 +74,11 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			form: productizationConfig.form.product,
 			type: 'product',
 			name: 'addProduct',
-			label: 'Add New Product',
+			label: translation.addNewProduct[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add Product',
+					'label': translation.addProduct[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
@@ -95,7 +95,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Product Added Successfully.');
+								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listProducts();
@@ -105,7 +105,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						$scope.modalInstance.dismiss('cancel');
@@ -123,7 +123,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		formConfig.form = angular.copy(productizationConfig.form.product);
 		formConfig.form.entries[0].type = 'readonly';
 		formConfig.name = 'editProduct';
-		formConfig.label = 'Edit Product';
+		formConfig.label = translation.editProduct[LANG];
 		formConfig.timeout = $timeout;
 
 		var keys = Object.keys(row);
@@ -138,7 +138,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		formConfig.actions = [
 			{
 				'type': 'submit',
-				'label': 'Edit Product',
+				'label': translation.editProduct[LANG],
 				'btn': 'primary',
 				'action': function(formData) {
 					var postData = {
@@ -155,7 +155,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
-							$scope.$parent.displayAlert('success', 'Product Updated Successfully.');
+							$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
 							$scope.modalInstance.close();
 							$scope.form.formData = {};
 							$scope.listProducts();
@@ -165,7 +165,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			},
 			{
 				'type': 'reset',
-				'label': 'Cancel',
+				'label': translation.cancel[LANG],
 				'btn': 'danger',
 				'action': function() {
 					$scope.modalInstance.dismiss('cancel');
@@ -207,12 +207,12 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			timeout: $timeout,
 			form: formConf,
 			name: 'addPackage',
-			label: 'Add New Package',
+			label: translation.addNewPackage[LANG],
 			sub: true,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add Package',
+					'label': translation.addPackage[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
@@ -233,7 +233,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Package Added Successfully.');
+								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.$parent.$emit('reloadProducts', {});
@@ -244,7 +244,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						$scope.modalInstance.dismiss('cancel');
@@ -271,12 +271,12 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editPackage',
-			label: 'Edit Package',
+			label: translation.editPackage[LANG],
 			data: recordData,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Edit Package',
+					'label': translation.editPackage[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
@@ -295,7 +295,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Package Updated Successfully.');
+								$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadPackages(productId);
@@ -305,7 +305,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						$scope.modalInstance.dismiss('cancel');
@@ -329,7 +329,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', "Selected Package has been removed.");
+				$scope.$parent.displayAlert('success', translation.selectedPackageRemoved[LANG] + ".");
 				$scope.reloadPackages(productId);
 			}
 		});
@@ -448,7 +448,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			else {
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+				$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG] + '.');
 			}
 		});
 	};

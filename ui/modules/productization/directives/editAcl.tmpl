@@ -1,7 +1,7 @@
 <section>
     <div class='form' ng-controller="aclCtrl as formCtrl">
         <form novalidate="" class="css-form ng-pristine" name="">
-            <div class="header"><h3 class="">Modify ACL of Package: {{currentPackage.code}}</h3></div>
+            <div class="header"><h3 class="">{{translation.modifyACLPackage[LANG]}}: {{currentPackage.code}}</h3></div>
             <div class="body">
 	            <div ng-if="msg.type">
 		            <alert type="{{msg.type}}">{{msg.msg}}</alert>

@@ -17,7 +17,7 @@
 							<div style="float:left">
                                 <span style="padding-right: 15px;">
                                     <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"/>
-                                    <em>inherit from service</em>
+                                    <em>{{translation.InheritFromService[LANG]}}</em>
                                 </span>
                                 <span>
                                     <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="public" type="radio"/> {{translation.public[LANG]}}

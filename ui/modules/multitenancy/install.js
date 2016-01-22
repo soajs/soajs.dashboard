@@ -177,6 +177,90 @@ var mtTranslation = {
 		"ENG": "Edit Application",
 		"FRA": "Edit Application"
 	},
+	"applicationKeyRemovedSuccessfully": {
+		"ENG": "Application Key Removed Successfully",
+		"FRA": "Application Key Removed Successfully"
+	},
+	"areYouSureWantRemoveTenant": {
+		"ENG": "Are you sure you want to remove this tenant",
+		"FRA": "Are you sure you want to remove this tenant"
+	},
+	"TenantInfoUpdatedSuccessfully": {
+		"ENG": "Tenant Info Updated Successfully",
+		"FRA": "Tenant Info Updated Successfully"
+	},
+	"TenantUpdatedSuccessfully": {
+		"ENG": "Tenant Updated Successfully",
+		"FRA": "Tenant Updated Successfully"
+	},
+	"TenantRemovedSuccessfully": {
+		"ENG": "Tenant removed Successfully",
+		"FRA": "Tenant removed Successfully"
+	},
+	"TenantAddedSuccessfully": {
+		"ENG": "Tenant Added Successfully",
+		"FRA": "Tenant Added Successfully"
+	},
+	"TenantOAuthDeletedSuccessfully": {
+		"ENG": "Tenant OAuth Deleted Successfully",
+		"FRA": "Tenant OAuth Deleted Successfully"
+	},
+	"userUpdatedSuccessfully": {
+		"ENG": "User Updated Successfully",
+		"FRA": "User Updated Successfully"
+	},
+	"userAddedSuccessfully": {
+		"ENG": "User Added Successfully",
+		"FRA": "User Added Successfully"
+	},
+	"userDeletedSuccessfully": {
+		"ENG": "User Deleted Successfully",
+		"FRA": "User Deleted Successfully"
+	},
+	"applicationAddedSuccessfully": {
+		"ENG": "Application Added Successfully",
+		"FRA": "Application Added Successfully"
+	},
+	"choosePackage": {
+		"ENG": "Choose a package",
+		"FRA": "Choose a package"
+	},
+	"applicationUpdatedSuccessfully": {
+		"ENG": "Application Updated Successfully",
+		"FRA": "Application Updated Successfully"
+	},
+	"selectedAppRemoved": {
+		"ENG": "Selected Application has been removed",
+		"FRA": "Selected Application has been removed"
+	},
+	"applicationKeyAddedSuccessfully": {
+		"ENG": "Application Key Added Successfully",
+		"FRA": "Application Key Added Successfully"
+	},
+	"keyConfigurationUpdatedSuccessfully": {
+		"ENG": "Key Configuration Updated Successfully",
+		"FRA": "Key Configuration Updated Successfully"
+	},
+	"errorInvalidConfigJsonObject": {
+		"ENG": "Error: Invalid Config Json object",
+		"FRA": "Error: Invalid Config Json object"
+	},
+	"errorInvalidDeviceJsonObject": {
+		"ENG": "Error: Invalid device Json object",
+		"FRA": "Error: Invalid device Json object"
+	},
+	"errorInvalidGeoJsonObject": {
+		"ENG": "Error: Invalid geo Json object",
+		"FRA": "Error: Invalid geo Json object"
+	},
+	"externalKeyAddedSuccessfully": {
+		"ENG": "External Key Added Successfully",
+		"FRA": "External Key Added Successfully"
+	},
+	"externalKeyUpdatedSuccessfully": {
+		"ENG": "External Key Updated Successfully",
+		"FRA": "External Key Updated Successfully"
+	},
 	//multitenancy
 	"warningMsgAcl": {
 		"ENG": "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!",
