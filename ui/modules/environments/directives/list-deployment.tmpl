@@ -22,5 +22,26 @@
                 </tab>
             </tabset>
         </fieldset>
+        <fieldset>
+            <legend>Docker Certificates:</legend>
+            <div class="grid">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Length</th>
+                            <th>Upload Date</th>
+                        </tr>
+                        <tr ng-repeat="cert in row.deployer.certificates" ng-class-even="'even'" ng-class-odd="'odd'" ng-if="row.deployer.certificates.length > 0">
+                            <td ng-style="{'width': '30px'}"><a href="" class="icon icon-bin" ng-click="removeCert(cert._id)"/></td>
+                            <td>{{cert.filename}}</td>
+                            <td>{{cert.length}}</td>
+                            <td>{{cert.uploadDate}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
     </div>
 </fieldset>

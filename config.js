@@ -440,6 +440,19 @@ module.exports = {
                 }
             }
         },
+        "/environment/cert/delete": {
+            _apiInfo: {
+                "l": "Remove Certificate",
+                "group": "Environment"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
         "/environment/key/update": {
             _apiInfo: {
                 "l": "Update Environment Tenant Key Security",

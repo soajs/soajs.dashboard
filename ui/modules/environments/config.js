@@ -65,7 +65,7 @@ var environmentsConfig = {
 					'type': 'select',
 					'value': [
 						{'v': 'socket', 'l': 'Socket', 'selected': true},
-						{'v': 'boot2docker', 'l': 'Boot2docker'},
+						{'v': 'machine', 'l': 'Machine'},
 						{'v': 'joyent', 'l': 'Joyent'},
 						{'v': 'rackspace', 'l': 'Rackspace'}
 					],
@@ -310,6 +310,19 @@ var environmentsConfig = {
 					"name": "defaultENVVAR",
 					"type": "html",
 					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+				}
+			]
+		},
+		uploadCerts: {
+			'entries': [
+				{
+					'name': 'uploadCerts',
+					'label': 'Certificates',
+					'type': 'document',
+					'tooltip': 'Upload Certificate',
+					'required': false,
+					"limit": 3,
+					'fieldMsg': "Upload certificates in .pem format."
 				}
 			]
 		}

@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', 'Upload', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi, Upload) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -159,9 +159,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								tmpl.deployer.type = 'container';
 								tmpl.deployer.selected = 'docker.socket';
 								break;
-							case 'boot2docker':
+							case 'machine':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'docker.boot2docker';
+								tmpl.deployer.selected = 'docker.machine';
 								break;
 							case 'joyent':
 								tmpl.deployer.type = 'container';
@@ -251,7 +251,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		}
 
-		if (!postData.deployer.docker.socket && !postData.deployer.docker.boot2docker && !postData.deployer.docker.joyent) {
+		if (!postData.deployer.docker.socket && !postData.deployer.docker.machine && !postData.deployer.docker.joyent) {
 			$timeout(function () {
 				alert("Provide a configuration for at least one platform driver to proceed.");
 			}, 100);
@@ -346,6 +346,172 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				else {
 					$scope.$parent.displayAlert('danger', "Unable to remove selected Environment.");
 				}
+			}
+		});
+	};
+
+	$scope.uploadCerts = function () {
+		var formConfig = angular.copy(environmentsConfig.form.uploadCerts);
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: "uploadCerts",
+			label: "Upload Docker Certificates",
+			actions: [
+				{
+					type: 'submit',
+					label: 'Upload',
+					btn: 'primary',
+					action: function (formData) {
+						$scope.modalInstance.close();
+						var uploadInfo = $modal.open ({
+							templateUrl: 'uploadCertsInfo.html',
+							backdrop: true,
+							keyboard: false,
+							controller: function ($scope, $modalInstance) {
+								fixBackDrop();
+
+								$scope.text = "<h4 style='text-align:center;'>Uploading Certificates...</h4><p style='text-align:center;'>This might take a few minutes, please wait.</p>";
+							}
+						});
+						$scope.uploadFiles(formData, "uploadCerts", 0, uploadInfo, function () {
+							$scope.form.formData = {};
+							uploadInfo.close();
+							var uploadDone = $modal.open({
+								templateUrl: 'uploadCertsInfo.html',
+								backdrop: true,
+								keyboard: true,
+								controller: function ($scope, $modalInstance) {
+									fixBackDrop();
+									$scope.text = "<h4 style='text-align:center;'>Certificate(s) added successfully.</h4>";
+								}
+							});
+							$timeout(function () {
+								uploadDone.dismiss();
+							}, 1500);
+							$scope.listEnvironments(); //add env id here
+						});
+					}
+				},
+				{
+					type: 'reset',
+					label: 'Cancel',
+					btn: 'danger',
+					action: function () {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+
+		buildFormWithModal($scope, $modal, options);
+	};
+
+	//$scope.uploadCerts = function () {
+	//	var outerScope = $scope;
+	//	var upload = $modal.open({
+	//		templateUrl: "uploadCerts.tmpl",
+	//		backdrop: true,
+	//		keyboard: true,
+	//		controller: function ($scope, $modalInstance) {
+	//			fixBackDrop();
+    //
+	//			$scope.title = "Upload Certificates";
+    //
+	//			$scope.test = function () {
+	//				console.log ("Hello");
+	//			};
+    //
+	//			$scope.onSubmit = function () {
+	//				console.log ($scope.formData);
+	//				upload.close();
+	//				var uploadInfo = $modal.open ({
+	//					templateUrl: 'uploadCertsInfo.html',
+	//					backdrop: true,
+	//					keyboard: false,
+	//					controller: function ($scope, $modalInstance) {
+	//						fixBackDrop();
+	//						$scope.text = "<h4 style='text-align:center;'>Uploading Certificates...</h4><p style='text-align:center;'>This might take a few minutes, please wait.</p>";
+	//					}
+	//				});
+	//				outerScope.uploadFiles($scope.formData.certificates, "uploadCerts", 0, uploadInfo, function () {
+	//					$scope.formData.certificates = {};
+	//					uploadInfo.close();
+	//					var uploadDone = $modal.open({
+	//						templateUrl: 'uploadCertsInfo.html',
+	//						backdrop: true,
+	//						keyboard: true,
+	//						controller: function ($scope, $modalInstance) {
+	//							fixBackDrop();
+	//							$scope.text = "<h4 style='text-align:center;'>Certificate(s) added successfully.</h4>";
+	//						}
+	//					});
+	//					$timeout(function () {
+	//						uploadDone.dismiss();
+	//					}, 1500);
+	//					$scope.listEnvironments(); //add env id here
+	//				});
+	//			};
+    //
+	//			$scope.closeModal = function () {
+	//				upload.close();
+	//			}
+	//		}
+	//	});
+	//};
+
+	$scope.uploadFiles = function (formData, prefix, counter, modal, cb) {
+		var total = Object.keys(formData).length;
+
+		if (counter >= total) {
+			return;
+		}
+
+		var soajsauthCookie = $cookieStore.get('soajs_auth');
+		var dashKeyCookie = $cookieStore.get('soajs_dashboard_key');
+		var progress = {
+			value: 0
+		};
+
+		var filename = prefix + "_" + counter;
+
+		$scope.form.uploadFileToUrl(Upload, {
+			file: formData[filename],
+			uploadUrl: "/dashboard/environment/cert/upload",
+			headers: {
+				'soajsauth': soajsauthCookie,
+				'key': dashKeyCookie
+			},
+			data: {
+				envId: $routeParams.id
+			},
+			progress: progress
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+				modal.close();
+			} else {
+				counter++;
+				$scope.uploadFiles(formData, prefix, counter);
+
+				if (cb) return cb();
+			}
+
+		});
+	};
+
+	$scope.removeCert = function (certId) {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/cert/delete",
+			"params": {"id": certId}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
+			} else {
+				$scope.$parent.displayAlert('success', 'Selected Certificate has been removed');
+				$scope.listEnvironments();
 			}
 		});
 	};
