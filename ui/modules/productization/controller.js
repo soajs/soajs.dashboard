@@ -1,24 +1,24 @@
 "use strict";
 var productizationApp = soajsApp.components;
-productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', function($scope, $timeout, $modal, $routeParams, ngDataApi, injectFiles) {
+productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, productizationConfig.permissions);
 
-	$scope.viewPackage = function(pack) {
+	$scope.viewPackage = function (pack) {
 		pack.showDetails = true;
 	};
-	$scope.closePackage = function(pack) {
+	$scope.closePackage = function (pack) {
 		pack.showDetails = false;
 	};
 
-	$scope.listProducts = function() {
+	$scope.listProducts = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/list"
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
@@ -36,14 +36,14 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.grid.actions = {
 					'edit': {
 						'label': translation.edit[LANG],
-						'command': function(row) {
+						'command': function (row) {
 							$scope.editProduct(row);
 						}
 					},
 					'delete': {
 						'label': translation.remove[LANG],
 						'commandMsg': translation.areYouSureWantRemoveProduct[LANG] + " ?",
-						'command': function(row) {
+						'command': function (row) {
 							$scope.removeProduct(row);
 						}
 					}
@@ -52,13 +52,13 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
-	$scope.removeProduct = function(row) {
+	$scope.removeProduct = function (row) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/delete",
 			"params": {"id": row._id}
-		}, function(error) {
-			if(error) {
+		}, function (error) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
@@ -68,7 +68,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
-	$scope.addProduct = function() {
+	$scope.addProduct = function () {
 		var options = {
 			timeout: $timeout,
 			form: productizationConfig.form.product,
@@ -80,7 +80,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'submit',
 					'label': translation.addProduct[LANG],
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'code': formData.code,
 							'name': formData.name,
@@ -90,8 +90,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"method": "send",
 							"routeName": "/dashboard/product/add",
 							"data": postData
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -107,7 +107,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
@@ -117,7 +117,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editProduct = function(row) {
+	$scope.editProduct = function (row) {
 
 		var formConfig = {};
 		formConfig.form = angular.copy(productizationConfig.form.product);
@@ -127,9 +127,9 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		formConfig.timeout = $timeout;
 
 		var keys = Object.keys(row);
-		for(var i = 0; i < formConfig.form.entries.length; i++) {
-			keys.forEach(function(inputName) {
-				if(formConfig.form.entries[i].name === inputName) {
+		for (var i = 0; i < formConfig.form.entries.length; i++) {
+			keys.forEach(function (inputName) {
+				if (formConfig.form.entries[i].name === inputName) {
 					formConfig.form.entries[i].value = row[inputName];
 				}
 			});
@@ -140,7 +140,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				'type': 'submit',
 				'label': translation.editProduct[LANG],
 				'btn': 'primary',
-				'action': function(formData) {
+				'action': function (formData) {
 					var postData = {
 						'name': formData.name,
 						'description': formData.description
@@ -150,8 +150,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						"routeName": "/dashboard/product/update",
 						"data": postData,
 						"params": {"id": row['_id']}
-					}, function(error) {
-						if(error) {
+					}, function (error) {
+						if (error) {
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
@@ -167,7 +167,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				'type': 'reset',
 				'label': translation.cancel[LANG],
 				'btn': 'danger',
-				'action': function() {
+				'action': function () {
 					$scope.modalInstance.dismiss('cancel');
 					$scope.form.formData = {};
 				}
@@ -176,18 +176,18 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, formConfig);
 	};
 
-	$scope.reloadPackages = function(productId) {
+	$scope.reloadPackages = function (productId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/list",
 			"params": {"id": productId}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				for(var i = 0; i < $scope.grid.rows.length; i++) {
-					if($scope.grid.rows[i]['_id'] === productId) {
+				for (var i = 0; i < $scope.grid.rows.length; i++) {
+					if ($scope.grid.rows[i]['_id'] === productId) {
 						$scope.grid.rows[i].packages = response;
 					}
 				}
@@ -195,11 +195,11 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		});
 	};
 
-	$scope.addPackage = function(productId) {
+	$scope.addPackage = function (productId) {
 		var formConf = angular.copy(productizationConfig.form.package);
-		formConf.entries.forEach(function(oneEn) {
-			if(oneEn.type==='select'){
-				oneEn.value[0].selected=true;
+		formConf.entries.forEach(function (oneEn) {
+			if (oneEn.type === 'select') {
+				oneEn.value[0].selected = true;
 			}
 		});
 
@@ -214,7 +214,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'submit',
 					'label': translation.addPackage[LANG],
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'code': formData.code,
 							'name': formData.name,
@@ -228,8 +228,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"routeName": "/dashboard/product/packages/add",
 							"data": postData,
 							"params": {"id": productId}
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -246,7 +246,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
@@ -256,11 +256,11 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.editPackAcl = function(productId, code) {
-		$scope.$parent.go("/productization/"+productId+"/editAcl/" + code );
+	$scope.editPackAcl = function (productId, code) {
+		$scope.$parent.go("/productization/" + productId + "/editAcl/" + code);
 	};
 
-	$scope.editPackage = function(productId, data) {
+	$scope.editPackage = function (productId, data) {
 		var formConfig = angular.copy(productizationConfig.form.package);
 		var recordData = angular.copy(data);
 		delete recordData.acl;
@@ -278,7 +278,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'submit',
 					'label': translation.editPackage[LANG],
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'name': formData.name,
 							'description': formData.description,
@@ -290,8 +290,8 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"routeName": "/dashboard/product/packages/update",
 							"data": postData,
 							"params": {"id": productId, "code": data.code.split("_")[1]}
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -307,7 +307,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
 					}
@@ -318,14 +318,14 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.removeProductPackage = function(productId, packageCode) {
+	$scope.removeProductPackage = function (productId, packageCode) {
 		packageCode = packageCode.split("_")[1];
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/delete",
 			"params": {"id": productId, "code": packageCode}
-		}, function(error) {
-			if(error) {
+		}, function (error) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
@@ -336,55 +336,55 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	};
 
 	//default operation
-	if($scope.access.listProduct){
+	if ($scope.access.listProduct) {
 		$scope.listProducts();
 	}
 
 	injectFiles.injectCss("modules/productization/productization.css");
 }]);
 
-productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', function($scope, $routeParams, ngDataApi, aclHelpers) {
+productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', function ($scope, $routeParams, ngDataApi, aclHelpers) {
 	$scope.$parent.isUserLoggedIn();
 
-	$scope.environments_codes =[];
-	$scope.allServiceApis=[];
-	$scope.aclFill={};
+	$scope.environments_codes = [];
+	$scope.allServiceApis = [];
+	$scope.aclFill = {};
 	$scope.currentPackage = {};
 	$scope.msg = {};
 
-	$scope.minimize =function(envCode, service){
+	$scope.minimize = function (envCode, service) {
 		$scope.aclFill[envCode][service.name].collapse = true;
 	};
 
-	$scope.expand =function(envCode, service){
+	$scope.expand = function (envCode, service) {
 		$scope.aclFill[envCode][service.name].collapse = false;
 	};
 
-	$scope.selectService = function(envCode, service) {
+	$scope.selectService = function (envCode, service) {
 		$scope.aclFill[envCode][service.name].collapse = !$scope.aclFill[envCode][service.name]['include'];
 	};
 
-	$scope.getPackageAcl = function() {
+	$scope.getPackageAcl = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/get",
-			"params": { "id": $routeParams.pid }
+			"params": {"id": $routeParams.pid}
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
 				var code = $routeParams.code;
-				for (var x = 0; x<response.packages.length; x++){
-					if(response.packages[x].code === code){
+				for (var x = 0; x < response.packages.length; x++) {
+					if (response.packages[x].code === code) {
 						$scope.currentPackage = angular.copy(response.packages[x]);
 						$scope.currentPackage._TTL = (response.packages[x]._TTL / 3600000).toString();
 						break;
 					}
 				}
 
-				$scope.aclFill= angular.copy($scope.currentPackage.acl);
-				$scope.$evalAsync(function($scope){
+				$scope.aclFill = angular.copy($scope.currentPackage.acl);
+				$scope.$evalAsync(function ($scope) {
 
 					aclHelpers.fillAcl($scope);
 				});
@@ -392,11 +392,11 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		});
 	};
 
-	$scope.getEnvironments = function() {
+	$scope.getEnvironments = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/list",
-			"params": { "short": true }
+			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
@@ -409,19 +409,19 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 	};
 
 	//default operation
-	$scope.getAllServicesList = function() {
+	$scope.getAllServicesList = function () {
 		var serviceNames = [];
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/services/list",
-			"data": { "serviceNames":serviceNames }
+			"data": {"serviceNames": serviceNames}
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				response.forEach(function(serv) {
-					serv.fixList = aclHelpers.groupApisForDisplay( serv.apis , 'group');
+				response.forEach(function (serv) {
+					serv.fixList = aclHelpers.groupApisForDisplay(serv.apis, 'group');
 					delete serv.apis;
 				});
 
@@ -431,18 +431,18 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		});
 	};
 
-	$scope.saveACL=function(){
-		var productId=  $routeParams.pid;
-		var postData = $scope.currentPackage ;
+	$scope.saveACL = function () {
+		var productId = $routeParams.pid;
+		var postData = $scope.currentPackage;
 		postData.acl = aclHelpers.constructAclFromPost($scope.aclFill);
 
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/product/packages/update",
 			"data": postData,
-			"params": {"id": productId, "code": postData.code.split("_")[1], '_TTL': postData._TTL }
-		}, function(error) {
-			if(error) {
+			"params": {"id": productId, "code": postData.code.split("_")[1], '_TTL': postData._TTL}
+		}, function (error) {
+			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
@@ -453,16 +453,16 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		});
 	};
 
-	$scope.checkForGroupDefault=function(envCode, service,grp,val,myApi) {
-		aclHelpers.checkForGroupDefault($scope,envCode, service,grp,val,myApi);
+	$scope.checkForGroupDefault = function (envCode, service, grp, val, myApi) {
+		aclHelpers.checkForGroupDefault($scope, envCode, service, grp, val, myApi);
 	};
 
-	$scope.applyRestriction=function(envCode, service){
+	$scope.applyRestriction = function (envCode, service) {
 		aclHelpers.applyPermissionRestriction($scope, envCode, service);
 	};
 
 	// default operation
-	overlayLoading.show(function() {
+	overlayLoading.show(function () {
 		$scope.getAllServicesList();
 	});
 }]);
