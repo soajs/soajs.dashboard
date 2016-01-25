@@ -187,20 +187,15 @@ var membersTranslation = {
 	"updateACLof":{ // Update ACL of (user)
 		"ENG":"Update ACL of",
 		"FRA":"Update ACL of"
-	}/*
-	"enterLastNameUser":{
-		"ENG":"Enter",
-		"FRA":"Enter"
 	},
-	"enterLastNameUser":{
-		"ENG":"Enter",
-		"FRA":"Enter"
+	"areYouSureWantClearACLUser":{
+		"ENG":"Are you sure you want to clear the ACL of this user",
+		"FRA":"Are you sure you want to clear the ACL of this user"
 	},
-	"enterLastNameUser":{
-		"ENG":"Enter",
-		"FRA":"Enter"
-	},*/
-
+	"members":{
+		"ENG":"Members",
+		"FRA":"Members"
+	}
 };
 
 for (var attrname in membersTranslation) {
