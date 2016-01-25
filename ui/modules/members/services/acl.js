@@ -111,7 +111,6 @@ membersAclService.service('membersAclHelper', [function () {
 
 	function renderPermissionsWithServices(currentScope, oneApplication) {
 		var aclObj = oneApplication.app_acl || oneApplication.parentPackageAcl;
-
 		var count = 0;
 		var myAcl = {};
 		var envCodes = currentScope.environments_codes;
@@ -125,14 +124,14 @@ membersAclService.service('membersAclHelper', [function () {
 						if (myAcl[envCode.toUpperCase()].hasOwnProperty(serviceName)) {
 							for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
 								if (currentScope.tenantApp.services[i].name === serviceName) {
-									if (myAcl[oneEnv.code.toUpperCase()][serviceName]) {
+									if (myAcl[oneEnv.code.toUpperCase()] && myAcl[oneEnv.code.toUpperCase()][serviceName]) {
 										myAcl[oneEnv.code.toUpperCase()][serviceName].name = currentScope.tenantApp.services[i].name;
 										myAcl[oneEnv.code.toUpperCase()][serviceName].apiList = currentScope.tenantApp.services[i].apis;
-										break;
+										//break;
 									}
 								}
 							}
-							if (myAcl[oneEnv.code.toUpperCase()][serviceName]) {
+							if (myAcl[oneEnv.code.toUpperCase()] && myAcl[oneEnv.code.toUpperCase()][serviceName]) {
 								var newList;
 								if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
 									newList = [];
