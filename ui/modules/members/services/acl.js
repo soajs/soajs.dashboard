@@ -122,34 +122,36 @@ membersAclService.service('membersAclHelper', [function () {
 					myAcl[envCode.toUpperCase()] = aclObj[envCode];
 					for (var serviceName in myAcl[envCode.toUpperCase()]) {
 						if (myAcl[envCode.toUpperCase()].hasOwnProperty(serviceName)) {
-							for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
-								if (currentScope.tenantApp.services[i].name === serviceName) {
-									if (myAcl[oneEnv.code.toUpperCase()] && myAcl[oneEnv.code.toUpperCase()][serviceName]) {
-										myAcl[oneEnv.code.toUpperCase()][serviceName].name = currentScope.tenantApp.services[i].name;
-										myAcl[oneEnv.code.toUpperCase()][serviceName].apiList = currentScope.tenantApp.services[i].apis;
-										//break;
-									}
-								}
-							}
-							if (myAcl[oneEnv.code.toUpperCase()] && myAcl[oneEnv.code.toUpperCase()][serviceName]) {
-								var newList;
-								if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
-									newList = [];
-									myAcl[oneEnv.code.toUpperCase()][serviceName].forceRestricted = true;
-
-									for (var apiInfo = 0; apiInfo < myAcl[oneEnv.code.toUpperCase()][serviceName].apiList.length; apiInfo++) {
-										if (aclObj[envCode][serviceName].apis) {
-											if (aclObj[envCode][serviceName].apis[myAcl[oneEnv.code.toUpperCase()][serviceName].apiList[apiInfo].v]) {
-												newList.push(myAcl[oneEnv.code.toUpperCase()][serviceName].apiList[apiInfo]);
-											}
+							if (myAcl[oneEnv.code.toUpperCase()]) {
+								for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
+									if (currentScope.tenantApp.services[i].name === serviceName) {
+										if (myAcl[oneEnv.code.toUpperCase()][serviceName]) {
+											myAcl[oneEnv.code.toUpperCase()][serviceName].name = currentScope.tenantApp.services[i].name;
+											myAcl[oneEnv.code.toUpperCase()][serviceName].apiList = currentScope.tenantApp.services[i].apis;
+											//break;
 										}
 									}
-									myAcl[oneEnv.code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
 								}
-								else {
-									newList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
-									if (newList) {
+								if (myAcl[oneEnv.code.toUpperCase()][serviceName]) {
+									var newList;
+									if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
+										newList = [];
+										myAcl[oneEnv.code.toUpperCase()][serviceName].forceRestricted = true;
+
+										for (var apiInfo = 0; apiInfo < myAcl[oneEnv.code.toUpperCase()][serviceName].apiList.length; apiInfo++) {
+											if (aclObj[envCode][serviceName].apis) {
+												if (aclObj[envCode][serviceName].apis[myAcl[oneEnv.code.toUpperCase()][serviceName].apiList[apiInfo].v]) {
+													newList.push(myAcl[oneEnv.code.toUpperCase()][serviceName].apiList[apiInfo]);
+												}
+											}
+										}
 										myAcl[oneEnv.code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
+									}
+									else {
+										newList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
+										if (newList) {
+											myAcl[oneEnv.code.toUpperCase()][serviceName].fixList = groupApisForDisplay(newList, 'group');
+										}
 									}
 								}
 							}
@@ -162,6 +164,7 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		});
 		if (count === 0) {
+			console.log(11);
 			myAcl[envCodes[0].code.toUpperCase()] = aclObj;
 			for (var serviceName in myAcl[envCodes[0].code.toUpperCase()]) { //wrong
 				if (myAcl[envCodes[0].code.toUpperCase()].hasOwnProperty(serviceName)) {
