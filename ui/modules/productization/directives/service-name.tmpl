@@ -4,16 +4,16 @@
 </div>
 <div ng-show="aclFill[oneEnv.code][service.name].include" style="float: left;">
     <span style="padding-left: 15px;">
-        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="public" type="radio" name="{{service.name}}_radio" ng-checked="aclFill[oneEnv.code][service.name].accessType==='public'" /> public
+        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="public" type="radio"/> public
     </span>
     <span style="padding-left: 40px;">
-        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="private" type="radio" name="{{service.name}}_radio" ng-checked="aclFill[oneEnv.code][service.name].accessType==='private'"/> private
+        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="private" type="radio"/> private
     </span>
     <span style="padding-left: 40px;">
-        <input type="radio" ng-checked="aclFill[oneEnv.code][service.name].accessType==='owner'" name="{{service.name}}_radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="owner"/> owner
+        <input type="radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="owner"/> owner
     </span>
     <span style="padding-left: 40px;">
-        <input type="radio" ng-checked="aclFill[oneEnv.code][service.name].accessType==='admin'" name="{{service.name}}_radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="admin"/> administrator
+        <input type="radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="admin"/> administrator
     </span>
 </div>
 <div style="float:right;" ng-show="aclFill[oneEnv.code][service.name].include">
