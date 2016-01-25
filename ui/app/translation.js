@@ -205,6 +205,39 @@ var translation = {
 		"ENG": "Users",
 		"FRA": "Users"
 	},
+	"profile": {
+		"ENG": "Profile",
+		"FRA": "Profile"
+	},
+	"enterFirstName":{
+		"ENG":"Enter First Name",
+		"FRA":"Enter First Name"
+	},
+	"enterFirstNameUser":{
+		"ENG":"Enter the First Name of the User",
+		"FRA":"Enter the First Name of the User"
+	},
+	"enterLastName":{
+		"ENG":"Enter Last Name",
+		"FRA":"Enter Last Name"
+	},
+	"enterLastNameUser":{
+		"ENG":"Enter the Last Name of the User",
+		"FRA":"Enter the Last Name of the User"
+	},
+	"enterEmail":{
+		"ENG":"Enter Email",
+		"FRA":"Enter Email"
+	},
+	"enterUsername":{
+		"ENG":"Enter Username",
+		"FRA":"Enter Username"
+	},
+	"login":{
+		"ENG":"Login",
+		"FRA":"Login"
+	},
+
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",

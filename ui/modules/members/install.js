@@ -31,30 +31,6 @@ var membersTranslation = {
 		"FRA":"User Acl Deleted Successfully"
 	},
 	//config
-	"enterUsername":{
-		"ENG":"Enter Username",
-		"FRA":"Enter Username"
-	},
-	"enterEmail":{
-		"ENG":"Enter Email",
-		"FRA":"Enter Email"
-	},
-	"enterFirstName":{
-		"ENG":"Enter First Name",
-		"FRA":"Enter First Name"
-	},
-	"enterFirstNameUser":{
-		"ENG":"Enter the First Name of the User",
-		"FRA":"Enter the First Name of the User"
-	},
-	"enterLastName":{
-		"ENG":"Enter Last Name",
-		"FRA":"Enter Last Name"
-	},
-	"enterLastNameUser":{
-		"ENG":"Enter",
-		"FRA":"Enter"
-	},
 	"formGroupCodePlaceholder":{
 		"ENG":"Enter the Code of the group",
 		"FRA":"Enter the Code of the group"

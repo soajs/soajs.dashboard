@@ -2,7 +2,7 @@
 var loginConfig = {
 	formConf: {
 		'name': 'login',
-		'label': 'Login',
+		'label': translation.login[LANG],
 		'msgs': {
 			'footer': ''
 		},
@@ -11,18 +11,18 @@ var loginConfig = {
 				'name': 'username',
 				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Username...',
+				'placeholder': translation.enterUsername[LANG] + '...',
 				'value': '',
-				'tooltip': 'Usernames are alphanumeric and support _ character only',
+				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'password',
 				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': 'Enter Password...',
+				'placeholder': translation.enterPassword[LANG] +'...',
 				'value': '',
-				'fieldMsg': ' <a href="#/forgotPw">' + 'Forgot your password?' + '</a> ',
+				'fieldMsg': ' <a href="#/forgotPw">' + translation.forgotYourPassword[LANG] + '?' + '</a> ',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
@@ -33,24 +33,24 @@ var loginConfig = {
 var resetPwConfig = {
 	formConf: {
 		'name': 'resetPw',
-		'label': 'Reset Password',
+		'label': translation.resetPassword[LANG],
 		'msgs': {
-			'header': 'Please enter a new password',
+			'header': translation.pleaseEnterNewPassword[LANG],
 			'footer': ''
 		},
 		'entries': [
 			{
 				'name': 'password',
-				'label': 'New Password',
+				'label': translation.newPassword[LANG],
 				'type': 'password',
-				'placeholder': 'Enter New Password...',
+				'placeholder': translation.newPasswordPlaceholder[LANG] + '...',
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'confirmPassword',
-				'label': 'Confirm Password',
+				'label': translation.confirmPassword[LANG],
 				'type': 'password',
 				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
@@ -65,24 +65,24 @@ var resetPwConfig = {
 var setPasswordConfig = {
 	formConf: {
 		'name': 'resetPw',
-		'label': 'Set your Password',
+		'label': translation.setYourPassword[LANG],
 		'entries': [
 			{
 				'name': 'password',
-				'label': 'Password',
+				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': 'Enter Password...',
+				'placeholder': translation.enterPassword[LANG] + '...',
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'confirmPassword',
-				'label': 'Confirm Password',
+				'label': translation.confirmPassword[LANG],
 				'type': 'password',
 				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
 		]
@@ -92,19 +92,19 @@ var setPasswordConfig = {
 var forgetPwConfig = {
 	formConf: {
 		'name': 'forgotPw',
-		'label': 'Forgot Password',
+		'label': translation.forgotPassword[LANG],
 		'msgs': {
-			'header': 'Please enter your account email address or username to reset your password',
+			'header': translation.forgetPasswordMsgHeader[LANG],
 			'footer': ''
 		},
 		'entries': [
 			{
 				'name': 'username',
-				'label': 'Username / E-mail',
+				'label': translation.username[LANG] + ' /  ' + translation.email[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Username or E-mail...',
+				'placeholder': translation.enterUsernameEmail + '...',
 				'value': '',
-				'tooltip': 'Enter your Username or E-mail to ask for a password change.',
+				'tooltip': translation.enterUserNameEmailPasswordChange[LANG] + '.',
 				'required': true
 			}
 		]
@@ -119,16 +119,16 @@ var changePwConfig = {
 		'entries': [
 			{
 				'name': 'oldPassword',
-				'label': 'Old Password',
+				'label': translation.oldPassword[LANG],
 				'type': 'text',
-				'placeholder': 'Enter your Old Password...',
+				'placeholder': translation.EnterOldPassword + '...',
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'password',
-				'label': 'New Password',
+				'label': translation.newPassword[LANG],
 				'type': 'password',
 				'placeholder': translation.newPasswordPlaceholder[LANG],
 				'value': '',
@@ -155,11 +155,11 @@ var changeEmailConfig = {
 		'entries': [
 			{
 				'name': 'email',
-				'label': 'New Email',
+				'label': translation.newEmail[LANG],
 				'type': 'email',
-				'placeholder': 'Enter Email...',
+				'placeholder': translation.enterEmail[LANG] + '...',
 				'value': '',
-				'tooltip': 'myemail@example.domain',
+				'tooltip': translation.emailToolTip[LANG],
 				'required': true
 			}
 		]
@@ -170,60 +170,60 @@ var changeEmailConfig = {
 var registerConfig = {
 	formConf: {
 		'name': 'newProfile',
-		'label': 'Register',
+		'label': translation.register[LANG],
 		'entries': [
 			{
 				'name': 'firstName',
 				'label': translation.firstName[LANG],
 				'type': 'text',
-				'placeholder': 'Enter First Name...',
+				'placeholder': translation.enterFirstName[LANG] + '...',
 				'value': '',
-				'tooltip': 'Enter the First Name of the User',
+				'tooltip': translation.enterFirstNameUser[LANG],
 				'required': true
 			},
 			{
 				'name': 'lastName',
 				'label': translation.lastName[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Last Name...',
+				'placeholder': translation.enterLastName[LANG] + '...',
 				'value': '',
-				'tooltip': 'Enter the Last Name of the User',
+				'tooltip': translation.enterLastNameUser[LANG],
 				'required': true
 			},
 			{
 				'name': 'email',
-				'label': 'Email',
+				'label': translation.email[LANG],
 				'type': 'email',
-				'placeholder': 'Enter Email...',
+				'placeholder': translation.enterEmail[LANG] + '...',
 				'value': '',
-				'tooltip': 'myemail@example.domain',
+				'tooltip': translation.emailToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'username',
-				'label': 'Username',
+				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': 'Enter Username...',
+				'placeholder': translation.enterUsername + '...',
 				'value': '',
-				'tooltip': 'Usernames are alphanumeric and support _ character only',
+				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'password',
-				'label': 'Password',
+				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': 'Enter Password...',
+				'placeholder': translation.enterPassword[LANG] + '...',
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			},
 			{
 				'name': 'confirmPassword',
-				'label': 'Confirm Password',
+				'label': translation.confirmPassword[LANG],
 				'type': 'password',
-				'placeholder': 'Re-enter Password...',
+				'placeholder': translation.confirmPasswordPlaceholder[LANG] + '...',
 				'value': '',
-				'tooltip': 'Passwords are alphanumeric and support _ character only',
+				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
 		]
