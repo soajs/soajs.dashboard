@@ -12,11 +12,11 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 			form: config,
 			'timeout': $timeout,
 			'name': 'changeEmail',
-			'label': 'Change Email',
+			'label': translation.changeEmail[LANG],
 			'actions': [
 				{
 					'type': 'submit',
-					'label': 'Change Email',
+					'label': translation.changeEmail[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -35,7 +35,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'A link will be sent to your new email address to validate the change.');
+								$scope.$parent.displayAlert('success', translation.successMsgChangeEmail[LANG] + '.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 							}
@@ -44,7 +44,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -62,11 +62,11 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 			form: config,
 			'timeout': $timeout,
 			'name': 'changePassword',
-			'label': 'Change Password',
+			'label': translation.changePassword[LANG],
 			'actions': [
 				{
 					'type': 'submit',
-					'label': 'Change Password',
+					'label': translation.changePassword[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -75,7 +75,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							'confirmation': formData.confirmPassword
 						};
 						if (formData.password != formData.confirmPassword) {
-							$scope.form.displayAlert('danger', 'Your password and confirm password fields do not match!');
+							$scope.form.displayAlert('danger', translation.errorMessageChangePassword[LANG] + '!');
 							return;
 						}
 						getSendDataFromServer($scope, ngDataApi, {
@@ -91,7 +91,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Password Updated Successfully.');
+								$scope.$parent.displayAlert('success', translation.successMsgChangePassword[LANG] + '.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 							}
@@ -100,7 +100,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -120,13 +120,13 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	var formConfig = {
 		'timeout': $timeout,
 		'name': 'editProfile',
-		'label': 'Edit Profile',
+		'label': translation.editProfile[LANG],
 		'entries': [],
 		'data': {},
 		'actions': [
 			{
 				'type': 'submit',
-				'label': 'Edit Profile',
+				'label': translation.editProfile[LANG],
 				'btn': 'primary',
 				'action': function (formData) {
 					var profileObj = {};
@@ -135,7 +135,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							profileObj = JSON.parse(formData.profile);
 						}
 						catch (e) {
-							$scope.$parent.displayAlert('danger', 'Error: Invalid Profile Json object ');
+							$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG] + ' ');
 							return;
 						}
 					}
@@ -158,7 +158,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							$scope.$parent.displayAlert('danger', error.message);
 						}
 						else {
-							$scope.$parent.displayAlert('success', 'Profile Updated Successfully.');
+							$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG] + '.');
 							userCookie.firstName = formData.firstName;
 							userCookie.username = formData.username;
 							userCookie.lastName = formData.lastName;
@@ -194,45 +194,45 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'name': 'firstName',
 						'label': translation.firstName[LANG],
 						'type': 'text',
-						'placeholder': 'Enter First Name...',
+						'placeholder':  translation.enterFirstName[LANG] + '...',
 						'value': response.firstName,
-						'tooltip': 'Enter the First Name of the User',
+						'tooltip': translation.enterFirstNameUser[LANG],
 						'required': true
 					},
 					{
 						'name': 'lastName',
 						'label': translation.lastName[LANG],
 						'type': 'text',
-						'placeholder': 'Enter Last Name...',
+						'placeholder': translation.enterLastName[LANG] + '...',
 						'value': response.lastName,
-						'tooltip': 'Enter the Last Name of the User',
+						'tooltip': translation.enterLastNameUser[LANG],
 						'required': true
 					},
 					{
 						'name': 'email',
-						'label': 'Email',
+						'label': translation.email[LANG],
 						'type': 'readonly',
-						'placeholder': 'Enter Email...',
+						'placeholder': translation.enterEmail[LANG] + '...',
 						'value': response.email,
-						'tooltip': 'myemail@example.domain',
+						'tooltip': translation.emailToolTip[LANG],
 						'required': true
 					},
 					{
 						'name': 'username',
-						'label': 'Username',
+						'label':translation.username[LANG],
 						'type': 'text',
-						'placeholder': 'Enter Username...',
+						'placeholder': translation.enterUsername[LANG] + '...',
 						'value': response.username,
-						'tooltip': 'Usernames are alphanumeric and support _ character only',
+						'tooltip': translation.usernamesToolTip[LANG],
 						'required': true
 					},
 					{
 						'name': 'profile',
-						'label': 'Profile',
+						'label': translation.profile[LANG],
 						'type': 'textarea',
 						'value': p,
-						'placeholder': 'JSON object representing your profile ...',
-						'tooltip': 'Fill in your additional profile information.',
+						'placeholder': translation.JSONObjectRepresentingYourProfile[LANG] + ' ...',
+						'tooltip': translation.fillYourAdditionalProfileInformation[LANG] + '.',
 						'required': false,
 						'rows': 10
 					}
@@ -253,7 +253,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		$scope.getProfile(uname);
 	}
 	else {
-		$scope.$parent.displayAlert("danger", 'You need to Login first');
+		$scope.$parent.displayAlert("danger", translation.youNeedToLoginFirst[LANG]);
 		$scope.$parent.go("/");
 	}
 
@@ -271,7 +271,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Your email was validated and changed successfully.');
+				$scope.$parent.displayAlert('success', translation.yourEmailValidatedChangedSuccessfully[LANG] + '.');
 				setTimeout(function () {
 					$scope.$parent.go("/myaccount");
 				}, 2000);
@@ -286,7 +286,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 	var formConfig = loginConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
-		'label': 'Login',
+		'label': translation.login[LANG],
 		'btn': 'primary',
 		'action': function (formData) {
 			var postData = {
@@ -351,7 +351,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in.');
+		$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG] + '.');
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 	
@@ -361,7 +361,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 	var formConfig = forgetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
-		'label': 'Submit',
+		'label': translation.submit[LANG],
 		'btn': 'primary',
 		'action': function (formData) {
 			var postData = {
@@ -378,7 +378,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'A reset link has been sent to your email address.');
+					$scope.$parent.displayAlert('success', translation.resetLinkSentYourEmailAddress[LANG] + '.');
 					$scope.$parent.go("/login");
 				}
 			});
@@ -389,7 +389,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
+		$scope.$parent.displayAlert('danger', translation.youAlreadyLoggedInLogOutFirst[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
@@ -398,14 +398,14 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 	var formConfig = setPasswordConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
-		'label': 'Submit',
+		'label': translation.submit[LANG],
 		'btn': 'primary',
 		'action': function (formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
 			if (formData.password != formData.confirmPassword) {
-				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
+				$scope.$parent.displayAlert('danger', translation.errorMessageChangePassword[LANG] + '!');
 				return;
 			}
 			getSendDataFromServer($scope, ngDataApi, {
@@ -418,7 +418,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Password was set successfully.');
+					$scope.$parent.displayAlert('success', translation.passwordSetSuccessfully[LANG] + '.');
 					$scope.$parent.go("/login");
 				}
 			});
@@ -429,7 +429,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
+		$scope.$parent.displayAlert('danger', translation.youAlreadyLoggedInLogOutFirst[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
@@ -438,14 +438,14 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 	var formConfig = resetPwConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
-		'label': 'Submit',
+		'label': translation.submit[LANG],
 		'btn': 'primary',
 		'action': function (formData) {
 			var postData = {
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
 			if (formData.password != formData.confirmPassword) {
-				$scope.$parent.displayAlert('danger', 'Your password and confirm password fields do not match!');
+				$scope.$parent.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG] + '!');
 				return;
 			}
 			getSendDataFromServer($scope, ngDataApi, {
@@ -461,7 +461,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 					$scope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Your password was reset.');
+					$scope.$parent.displayAlert('success', translation.yourPasswordReset[LANG] + '.');
 					$scope.$parent.go("/login");
 				}
 			});
@@ -472,7 +472,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', 'You are already logged in. Log out first');
+		$scope.$parent.displayAlert('danger', translation.youAlreadyLoggedInLogOutFirst[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
 	}
 }]);
