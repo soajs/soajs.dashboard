@@ -47,14 +47,14 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 
 		if (currentScope.access.adminUser.editUser) {
 			options.left.push({
-				'label': 'Edit',
+				'label': translation.edit[LANG],
 				'icon': 'pencil2',
 				'handler': 'editMember'
 			});
 		}
 		if (currentScope.access.adminUser.editUserAcl) {
 			options.left.push({
-				'label': 'Edit ACL',
+				'label': translation.editACL[LANG],
 				'icon': 'unlocked',
 				'handler': 'editAcl'
 			});
@@ -62,13 +62,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		if (currentScope.access.adminUser.changeStatusAccess) {
 			options.top = [
 				{
-					'label': 'Activate',
-					'msg': "Are you sure you want to activate the selected member(s)?",
+					'label': translation.activate[LANG],
+					'msg': translation.areYouSureWantActivateSelectedMember[LANG],
 					'handler': 'activateMembers'
 				},
 				{
-					'label': 'Deactivate',
-					'msg': "Are you sure you want to deactivate the selected member(s)?",
+					'label': translation.deactivate[LANG],
+					'msg': translation.areYouSureWantDeactivateSelectedMember[LANG],
 					'handler': 'deactivateMembers'
 				}
 			];
@@ -102,10 +102,10 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				}
 				config.entries.push({
 					'name': 'groups',
-					'label': 'Groups',
+					'label': translation.groups[LANG],
 					'type': 'checkbox',
 					'value': grps,
-					'tooltip': 'Assign groups'
+					'tooltip': translation.assignGroups[LANG]
 				});
 				var options = {
 					timeout: $timeout,
@@ -115,7 +115,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 					actions: [
 						{
 							'type': 'submit',
-							'label': 'Add Member',
+							'label': translation.addMember[LANG],
 							'btn': 'primary',
 							'action': function (formData) {
 								var postData = {
@@ -140,7 +140,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
-										currentScope.$parent.displayAlert('success', 'Member Added Successfully.');
+										currentScope.$parent.displayAlert('success', translation.memberAddedSuccessfully[LANG] + '.');
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listMembers();
@@ -150,7 +150,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 						},
 						{
 							'type': 'reset',
-							'label': 'Cancel',
+							'label': translation.cancel[LANG],
 							'btn': 'danger',
 							'action': function () {
 								currentScope.modalInstance.dismiss('cancel');
@@ -197,29 +197,29 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				}
 				config.entries.push({
 					'name': 'groups',
-					'label': 'Groups',
+					'label': translation.groups[LANG],
 					'type': 'checkbox',
 					'value': grps,
-					'tooltip': 'Assign groups'
+					'tooltip': translation.assignGroups[LANG]
 				});
 				config.entries.push({
 					'name': 'status',
-					'label': 'Status',
+					'label': translation.status[LANG],
 					'type': 'radio',
 					'value': [{'v': 'pendingNew'}, {'v': 'active'}, {'v': 'inactive'}],
-					'tooltip': 'Select the status of the user'
+					'tooltip': translation.selectStatusUser[LANG]
 				});
 
 				var options = {
 					timeout: $timeout,
 					form: config,
 					'name': 'editMember',
-					'label': 'Edit Member',
+					'label': translation.editMember[LANG],
 					'data': data,
 					'actions': [
 						{
 							'type': 'submit',
-							'label': 'Edit Member',
+							'label': translation.editMember[LANG],
 							'btn': 'primary',
 							'action': function (formData) {
 								var postData = {
@@ -245,7 +245,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
-										currentScope.$parent.displayAlert('success', 'Member Updated Successfully.');
+										currentScope.$parent.displayAlert('success', translation.memberUpdatedSuccessfully[LANG] + '.');
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listMembers();
@@ -255,7 +255,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 						},
 						{
 							'type': 'reset',
-							'label': 'Cancel',
+							'label': translation.cancel[LANG],
 							'btn': 'danger',
 							'action': function () {
 								currentScope.modalInstance.dismiss('cancel');
@@ -275,8 +275,8 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'active'},
 			'msg': {
-				'error': 'one or more of the selected Member(s) status was not updated.',
-				'success': 'Selected Member(s) has been activated.'
+				'error': translation.errorMessageActivateMembers[LANG] + '.',
+				'success': translation.successMessageActivateMembers[LANG] + '.'
 			}
 		};
 
@@ -292,8 +292,8 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'inactive'},
 			'msg': {
-				'error': 'one or more of the selected Member(s) status was not updated.',
-				'success': 'Selected Member(s) has been deactivated.'
+				'error': translation.errorMessageDeactivateMembers[LANG] + '.',
+				'success': translation.successMessageDeactivateMembers[LANG] + '.'
 			}
 		};
 

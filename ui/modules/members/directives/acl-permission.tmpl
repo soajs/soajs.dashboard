@@ -16,16 +16,16 @@
 						<div style="float:left">
                             <span style="padding-right: 15px;">
                                 <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{application.package}}_{{service.name}}_{{grp}}_{{$index}}_accessType"/>
-                                <em>inherit from service</em>
+                                <em>{{translation.InheritFromService[LANG]}}</em>
                             </span>
                             <span>
-                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="public" type="radio"/> public
+                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="public" type="radio"/> {{translation.public[LANG]}}
                             </span>
                             <span>
-                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="private" type="radio"/> private
+                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
                             </span>
                             <span>
-                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/> Groups
+                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/> {{translation.groups[LANG]}}
                             </span>
 						</div>
 						<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType==='groups'">

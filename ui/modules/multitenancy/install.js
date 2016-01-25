@@ -262,10 +262,7 @@ var mtTranslation = {
 		"FRA": "External Key Updated Successfully"
 	},
 	//multitenancy
-	"warningMsgAcl": {
-		"ENG": "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!",
-		"FRA": "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!"
-	},
+
 	//directives
 
 	//editAcl

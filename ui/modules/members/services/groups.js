@@ -39,7 +39,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		};
 		if (currentScope.access.adminGroup.addUsers) {
 			options.left.push({
-				'label': 'Link Users to Group',
+				'label': translation.linkUsersGroup[LANG],
 				'icon': 'link',
 				'handler': 'assignUsers'
 			});
@@ -47,22 +47,22 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 		if (currentScope.access.adminGroup.edit) {
 			options.left.push({
-				'label': 'Edit',
+				'label': translation.edit[LANG],
 				'icon': 'pencil2',
 				'handler': 'editGroup'
 			});
 		}
 		if (currentScope.access.adminGroup.delete) {
 			options.top.push({
-				'label': 'Delete',
-				'msg': "Are you sure you want to delete the selected group(s)?",
+				'label': translation.delete[LANG],
+				'msg': translation.areYouSureWantDeleteSelectedGroup[LANG],
 				'handler': 'deleteGroups'
 			});
 
 			options.left.push({
-				'label': 'Delete',
+				'label': translation.delete[LANG],
 				'icon': 'cross',
-				'msg': "Are you sure you want to delete this group?",
+				'msg': translation.areYouSureWantDeleteGroup[LANG],
 				'handler': 'delete1Group'
 			});
 		}
@@ -80,11 +80,11 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			timeout: $timeout,
 			form: config,
 			name: 'addGroup',
-			label: 'Add New Group',
+			label: translation.addNewGroup[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Add Group',
+					'label': translation.addGroup[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -107,7 +107,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								currentScope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Group Added Successfully.');
+								currentScope.$parent.displayAlert('success', translation.groupAddedSuccessfully[LANG] + '.');
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listGroups();
@@ -137,12 +137,12 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			timeout: $timeout,
 			form: config,
 			'name': 'editGroup',
-			'label': 'Edit Group',
+			'label': translation.editGroup[LANG],
 			'data': data,
 			'actions': [
 				{
 					'type': 'submit',
-					'label': 'Edit Group',
+					'label': translation.editGroup[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -163,7 +163,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								currentScope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Group Updated Successfully.');
+								currentScope.$parent.displayAlert('success', translation.groupUpdatedSuccessfully[LANG] + '.');
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listGroups();
@@ -173,7 +173,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						currentScope.modalInstance.dismiss('cancel');
@@ -191,8 +191,8 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			'routeName': "/urac/admin/group/delete",
 			"params": {'gId': '%id%'},
 			'msg': {
-				'error': 'one or more of the selected Groups(s) status was not deleted.',
-				'success': 'Selected Groups(s) has been deleted.'
+				'error': translation.errorMessageDeleteGroup[LANG] + '.',
+				'success': translation.successMessageDeleteGroup[LANG] + '.'
 			}
 		};
 
@@ -216,7 +216,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
-				currentScope.$parent.displayAlert('success', "Selected group has been removed.");
+				currentScope.$parent.displayAlert('success', translation.selectedGroupRemoved[LANG] + ".");
 				currentScope.listGroups();
 			}
 		});
@@ -256,12 +256,12 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 					timeout: $timeout,
 					form: config,
 					name: 'addGroup',
-					label: 'Add Users to Group: ' + data.name,
+					label: translation.addUsersGroup[LANG] + ': ' + data.name,
 					'msgs': {},
 					actions: [
 						{
 							'type': 'submit',
-							'label': 'Assing Users',
+							'label': translation.addingUsers[LANG],
 							'btn': 'primary',
 							'action': function (formData) {
 								var postData = {
@@ -281,7 +281,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 										currentScope.form.displayAlert('danger', error.code, true, 'urac');
 									}
 									else {
-										currentScope.$parent.displayAlert('success', 'User(s) Added Successfully.');
+										currentScope.$parent.displayAlert('success', translation.UserAddedSuccessfully[LANG] + '.');
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listGroups();
@@ -293,7 +293,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 						},
 						{
 							'type': 'reset',
-							'label': 'Cancel',
+							'label': translation.cancel[LANG],
 							'btn': 'danger',
 							'action': function () {
 								currentScope.modalInstance.dismiss('cancel');

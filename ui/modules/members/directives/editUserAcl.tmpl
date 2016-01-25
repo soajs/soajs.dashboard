@@ -1,7 +1,7 @@
 <section>
     <div class='form' ng-controller="memberAclCtrl as formCtrl">
         <form novalidate="" class="css-form ng-pristine" name="">
-            <div class="header"><h3 class="">Update ACL of {{user.username}}</h3></div>
+            <div class="header"><h3 class="">{{translation.updateACLof[LANG]}} {{user.username}}</h3></div>
             <div class="body">
                 <div ng-if="msg.type">
                     <alert type="{{msg.type}}">{{msg.msg}}</alert>

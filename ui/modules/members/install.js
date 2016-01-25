@@ -21,7 +21,7 @@ var membersTranslation = {
 		"ENG":"User ACL",
 		"FRA":"User ACL"
 	},
-	//constroller
+	//controller
 	"needToChooseGroupAccessTypeSetGroups":{
 		"ENG":"You need to choose at least one group when the access type is set to Groups",
 		"FRA":"You need to choose at least one group when the access type is set to Groups"
@@ -52,9 +52,155 @@ var membersTranslation = {
 		"FRA":"Enter Last Name"
 	},
 	"enterLastNameUser":{
-		"ENG":"Enter the Last Name of the User",
-		"FRA":"Enter the Last Name of the User"
-	}
+		"ENG":"Enter",
+		"FRA":"Enter"
+	},
+	"formGroupCodePlaceholder":{
+		"ENG":"Enter the Code of the group",
+		"FRA":"Enter the Code of the group"
+	},
+	"formGroupCodeTooltip":{
+		"ENG":"Group codes are alphanumeric. Maximum length 20 characters",
+		"FRA":"Group codes are alphanumeric. Maximum length 20 characters"
+	},
+	"formGroupNamePlaceHolder":{
+		"ENG":"Enter the Name of the group'",
+		"FRA":"Enter the Name of the group'"
+	},
+	"formGroupDescriptionPlaceholder":{
+		"ENG":"Enter the Description of the Group",
+		"FRA":"Enter the Description of the Group"
+	},
+	"formGroupUsersTooltip":{
+		"ENG":"Check to add user to group",
+		"FRA":"Check to add user to group"
+	},
+	//services
+	//groups
+	"linkUsersGroup":{
+		"ENG":"Link Users to Group",
+		"FRA":"Link Users to Group"
+	},
+	"areYouSureWantDeleteSelectedGroup":{
+		"ENG":"Are you sure you want to delete the selected group(s)?",
+		"FRA":"Are you sure you want to delete the selected group(s)?"
+	},
+	"areYouSureWantDeleteGroup":{
+		"ENG":"Are you sure you want to delete this group?",
+		"FRA":"Are you sure you want to delete this group?"
+	},
+	"addGroup":{
+		"ENG":"Add Group",
+		"FRA":"Add Group"
+	},
+	"groupAddedSuccessfully":{
+		"ENG":"Group Added Successfully",
+		"FRA":"Group Added Successfully"
+	},
+	"editGroup":{
+		"ENG":"Edit Group",
+		"FRA":"Edit Group"
+	},
+	"groupUpdatedSuccessfully":{
+		"ENG":"Group Updated Successfully",
+		"FRA":"Group Updated Successfully"
+	},
+	"errorMessageDeleteGroup":{
+		"ENG":"one or more of the selected Groups(s) status was not deleted",
+		"FRA":"one or more of the selected Groups(s) status was not deleted"
+	},
+	"successMessageDeleteGroup":{
+		"ENG":"Selected Groups(s) has been deleted",
+		"FRA":"Selected Groups(s) has been deleted"
+	},
+	"selectedGroupRemoved":{
+		"ENG":"Selected group has been removed",
+		"FRA":"Selected group has been removed"
+	},
+	"addUsersGroup":{
+		"ENG":"Add Users to Group",
+		"FRA":"Add Users to Group"
+	},
+	"addingUsers":{
+		"ENG":"Adding Users",
+		"FRA":"Adding Users"
+	},
+	"UserAddedSuccessfully":{
+		"ENG":"User(s) Added Successfully",
+		"FRA":"User(s) Added Successfully"
+	},
+	//members
+	"editACL":{
+		"ENG":"Edit ACL",
+		"FRA":"Edit ACL"
+	},
+	"areYouSureWantActivateSelectedMember":{
+		"ENG":"Are you sure you want to activate the selected member(s)?",
+		"FRA":"Are you sure you want to activate the selected member(s)?"
+	},
+	"areYouSureWantDeactivateSelectedMember":{
+		"ENG":"Are you sure you want to deactivate the selected member(s)?",
+		"FRA":"Are you sure you want to deactivate the selected member(s)?"
+	},
+	"assignGroups":{
+		"ENG":"Assign groups",
+		"FRA":"Assign groups"
+	},
+	"addMember":{
+		"ENG":"Add Member",
+		"FRA":"Add Member"
+	},
+	"memberAddedSuccessfully":{
+		"ENG":"Member Added Successfully",
+		"FRA":"Member Added Successfully"
+	},
+	"selectStatusUser":{
+		"ENG":"Select the status of the user",
+		"FRA":"Select the status of the user"
+	},
+	"editMember":{
+		"ENG":"Edit Member",
+		"FRA":"Edit Member"
+	},
+	"memberUpdatedSuccessfully":{
+		"ENG":"Member Updated Successfully",
+		"FRA":"Member Updated Successfully"
+	},
+	"errorMessageActivateMembers":{
+		"ENG":"one or more of the selected Member(s) status was not updated",
+		"FRA":"one or more of the selected Member(s) status was not updated"
+	},
+	"successMessageActivateMembers":{
+		"ENG":"Selected Member(s) has been activated",
+		"FRA":"Selected Member(s) has been activated"
+	},
+	"errorMessageDeactivateMembers":{
+		"ENG":"one or more of the selected Member(s) status was not updated",
+		"FRA":"one or more of the selected Member(s) status was not updated"
+	},
+	"successMessageDeactivateMembers":{
+		"ENG":"Selected Member(s) has been deactivated",
+		"FRA":"Selected Member(s) has been deactivated"
+	},
+	//Directives
+	//editUserAcl
+	"updateACLof":{ // Update ACL of (user)
+		"ENG":"Update ACL of",
+		"FRA":"Update ACL of"
+	}/*
+	"enterLastNameUser":{
+		"ENG":"Enter",
+		"FRA":"Enter"
+	},
+	"enterLastNameUser":{
+		"ENG":"Enter",
+		"FRA":"Enter"
+	},
+	"enterLastNameUser":{
+		"ENG":"Enter",
+		"FRA":"Enter"
+	},*/
+
 };
 
 for (var attrname in membersTranslation) {

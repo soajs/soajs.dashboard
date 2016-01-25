@@ -104,16 +104,16 @@ var groupsConfig = {
 				'name': 'code',
 				'label': translation.code[LANG],
 				'type': 'text',
-				'placeholder': 'Enter the Code of the group',
+				'placeholder': translation.formGroupCodePlaceholder[LANG],
 				'value': '',
-				'tooltip': 'Group codes are alphanumeric. Maximum length 20 characters',
+				'tooltip': translation.formGroupCodeTooltip[LANG],
 				'required': true
 			},
 			{
 				'name': 'name',
 				'label': translation.name[LANG],
 				'type': 'text',
-				'placeholder': 'Enter teh Name of the group',
+				'placeholder': translation.formGroupNamePlaceHolder[LANG],
 				'value': '',
 				'tooltip': '',
 				'required': true
@@ -123,7 +123,7 @@ var groupsConfig = {
 				'label': translation.description[LANG],
 				'type': 'textarea',
 				'rows': 2,
-				'placeholder': 'Enter the Description of the Group',
+				'placeholder': translation.formGroupDescriptionPlaceholder[LANG],
 				'value': '',
 				'tooltip': '',
 				'required': true
@@ -138,11 +138,11 @@ var groupsConfig = {
 		'entries': [
 			{
 				'name': 'users',
-				'label': 'Users',
+				'label': translation.users[LANG],
 				'type': 'checkbox',
 				'placeholder': '',
 				'value': [],
-				'tooltip': 'Check to add user to group',
+				'tooltip': translation.formGroupUsersTooltip[LANG],
 				'required': true
 			}
 		]

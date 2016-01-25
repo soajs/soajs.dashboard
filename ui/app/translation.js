@@ -201,6 +201,10 @@ var translation = {
 		"ENG": "Are you sure you want to clear the ACL?",
 		"FRA": "Are you sure you want to clear the ACL?"
 	},
+	"users": {
+		"ENG": "Users",
+		"FRA": "Users"
+	},
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",
@@ -226,7 +230,10 @@ var translation = {
 		"ENG": "inherit from service",
 		"FRA": "inherit from service"
 	},
-
+	"warningMsgAcl": {
+		"ENG": "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!",
+		"FRA": "Your system still uses the old ACL configuration; Your ACL has been cloned to all environments listed below and will be migrate once you click SAVE!"
+	},
 	//list-applications
 	"availableApplications": {
 		"ENG": "Available Applications",
@@ -243,6 +250,14 @@ var translation = {
 	"ACLUpdatedSuccessfully": {
 		"ENG": "ACL Updated Successfully",
 		"FRA": "ACL Updated Successfully"
+	},
+	"activate": {
+		"ENG": "Activate",
+		"FRA": "Activate"
+	},
+	"deactivate": {
+		"ENG": "Deactivate",
+		"FRA": "Deactivate"
 	},
 	//list-keys
 	"tenantApplicationKeys": {
@@ -418,6 +433,10 @@ var translation = {
 	"edit": {
 		"ENG": "Edit",
 		"FRA": "Edit"
+	},
+	"delete": {
+		"ENG": "Delete",
+		"FRA": "Delete"
 	},
 	"remove": {
 		"ENG": "Remove",
