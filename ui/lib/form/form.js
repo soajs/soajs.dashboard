@@ -196,7 +196,6 @@ function buildForm(context, modal, configuration, cb) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			for (var j = 0; j < formDataKeys.length; j++) {
 				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
-				console.log(pattern);
 				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
 					customData.push ({
 						label: formDataKeys[j],
