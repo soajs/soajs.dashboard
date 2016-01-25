@@ -15,12 +15,12 @@
 
 						<div ng-repeat="enCode in availableEnv">
 							<div class="entryBox greyBox" ng-class="{ blueBox: key.config[enCode] }">
-								<b>{{enCode}} Environment</b>&nbsp;&nbsp;
+								<b>{{enCode}} {{translation.environment[LANG]}}</b>&nbsp;&nbsp;
 								<a ng-if="access.tenant.appKeys.updateConfig" href="" ng-click="updateConfiguration(application['appId'], key.key, enCode, key.config[enCode]);">
-									<span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
+									<span class="icon icon-pencil" tooltip="{{translation.editServiceConfiguration[LANG]}}"></span>
 								</a>
 								<a ng-if="access.tenant.appKeys.updateConfig" ng-show="key.config[enCode]" href="" ng-click="emptyConfiguration(application['appId'], key.key, enCode );">
-									<span class="icon icon-bin" tooltip="Empty Service Configuration"></span>
+									<span class="icon icon-bin" tooltip="{{translation.emptyServiceConfiguration[LANG]}}"></span>
 								</a>
 							</div>
 						</div>

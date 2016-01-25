@@ -7,29 +7,29 @@ var settingsConfig = {
 			'entries': [
 				{
 					'name': 'userId',
-					'label': 'user Id',
+					'label': translation.userID[LANG],
 					'type': 'text',
-					'placeholder': 'oauthUser ..',
+					'placeholder': translation.formUserIdPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter the user Id.',
+					'tooltip': translation.formUserIdToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'password',
-					'label': 'Password',
+					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': 'Enter a new password...',
+					'placeholder': translation.newPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Keep it empty to maintain the old password.',
+					'tooltip': translation.oAuthFrmPasswordTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': 'confirmPassword',
-					'label': 'Confirm Password',
+					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.confirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Confirm oAuth user password.',
+					'tooltip': translation.oAuthConfirmPasswordTooltip[LANG],
 					'required': false
 				}
 			]
@@ -41,29 +41,29 @@ var settingsConfig = {
 			'entries': [
 				{
 					'name': 'userId',
-					'label': 'User Id',
+					'label': translation.userID[LANG],
 					'type': 'text',
-					'placeholder': 'oauthUser ..',
+					'placeholder': translation.formUserIdPlaceHolder[LANG],
 					'value': '',
-					'tooltip': 'Enter the user Id.',
+					'tooltip': translation.formUserIdToolTip[LANG],
 					'required': true
 				},
 				{
 					'name': 'user_password',
-					'label': 'Password',
+					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.formOathPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Enter oAuth user password.',
+					'tooltip': translation.formOathPasswordTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'confirmPassword',
-					'label': 'Confirm Password',
+					'label': translation.confirmPassword[LANG],
 					'type': 'password',
-					'placeholder': 'password...',
+					'placeholder': translation.confirmPasswordPlaceholder[LANG],
 					'value': '',
-					'tooltip': 'Confirm oAuth user password.',
+					'tooltip': translation.oAuthConfirmPasswordTooltip[LANG],
 					'required': true
 				}
 			]
@@ -119,21 +119,21 @@ var settingsConfig = {
 			'entries': [
 				{
 					'name': 'envCode',
-					'label': 'Environment Code',
+					'label': translation.envCode[LANG],
 					'type': 'text',
 					'value': '',
 					'placeholder': 'DEV...',
-					'tooltip': 'Enter the environment code for the key configuration.',
+					'tooltip': translation.formEnvCodeTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'config',
-					'label': 'Configuration',
+					'label': translation.configuration[LANG],
 					'type': 'textarea',
 					'rows': 10,
 					'placeholder': "",
 					'value': '',
-					'tooltip': 'Enter the application key configuration.',
+					'tooltip': translation.formConfigToolTip[LANG],
 					'required': true
 				}
 			]
@@ -145,15 +145,15 @@ var settingsConfig = {
 			'entries': [
 				{
 					'name': 'expDate',
-					'label': 'Exipry Date',
+					'label': translation.expiryDate[LANG],
 					'type': 'date-picker',
 					'value': '',
-					'tooltip': 'Pick the Expiry Date of the external key. If empty, the key will not expire',
+					'tooltip': translation.formExpDateTooltip[LANG],
 					'required': false
 				},
 				{
 					'name': 'device',
-					'label': 'Device',
+					'label': translation.device[LANG],
 					'type': 'textarea',
 					'rows': 5,
 					'placeholder': "",

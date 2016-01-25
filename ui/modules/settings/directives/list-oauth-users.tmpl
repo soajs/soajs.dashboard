@@ -1,7 +1,7 @@
 <div ng-if="access.tenant.oauth.users.list" class="clearfix">
     <label>Tenant oAuth Users</label>
 
-    <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addThisOauthUser()">Add oAuth User</a>
+    <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addThisOauthUser()">{{translation.addoAuthUser[LANG]}}</a>
     <br/>
 
     <div class="grid oAuthUsers">
@@ -9,8 +9,8 @@
             <tbody>
                 <tr>
                     <th colspan="2"></th>
-                    <th>User Id</th>
-                    <th>Authorization</th>
+                    <th>{{translation.userID[LANG]}}</th>
+                    <th>{{translation.authorization[LANG]}}</th>
                 </tr>
                 <tr ng-repeat="user in oAuthUsers.list" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
 

@@ -225,7 +225,7 @@ var tenantConfig = {
 			]
 		},
 		'oauthUserUpdate': {
-			'name': 'update_oAuthUser',
+			'name': '',
 			'label': '',
 			'actions': {},
 			'entries': [

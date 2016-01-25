@@ -12,7 +12,7 @@ var mtTranslation = {
 	},
 	//config.js
 	"userID": {
-		"ENG": "User Id",
+		"ENG": "User Id", //
 		"FRA": "User Id"
 	},
 	"role": {
@@ -47,11 +47,11 @@ var mtTranslation = {
 		"ENG": "Specify where this tenant is used",
 		"FRA": "Specify where this tenant is used"
 	},
-	"formTntNamePlaceHolder": {
+	"formTntNamePlaceHolder": {//
 		"ENG": "Test Tenant..",
 		"FRA": "Test Tenant.."
 	},
-	"formTentNameToolTip": {
+	"formTentNameToolTip": { //
 		"ENG": "Enter Tenant Name.",
 		"FRA": "Enter Tenant Name."
 	},
@@ -59,7 +59,7 @@ var mtTranslation = {
 		"ENG": "Testing Tenant, used by developers and does not reach production server...",
 		"FRA": "Testing Tenant, used by developers and does not reach production server..."
 	},
-	"formDescriptionTenantToolTip": {
+	"formDescriptionTenantToolTip": { //
 		"ENG": "Enter a description explaining the usage of this tenant",
 		"FRA": "Enter a description explaining the usage of this tenant"
 	},
@@ -104,27 +104,27 @@ var mtTranslation = {
 		"FRA": "user Id"
 	},
 	"formUserIdPlaceHolder": {
-		"ENG": "oauthUser",
+		"ENG": "oauthUser", //
 		"FRA": "oauthUser"
 	},
 	"formUserIdToolTip": {
-		"ENG": "Enter the user Id.",
+		"ENG": "Enter the user Id.", //
 		"FRA": "Enter the user Id."
 	},
 	"oAuthFrmPasswordTooltip": {
-		"ENG": "Keep it empty to maintain the old password.",
+		"ENG": "Keep it empty to maintain the old password.", //
 		"FRA": "Keep it empty to maintain the old password."
 	},
 	"oAuthConfirmPasswordTooltip": {
-		"ENG": "Confirm oAuth user password.",
+		"ENG": "Confirm oAuth user password.", //
 		"FRA": "Confirm oAuth user password."
 	},
 	"formOathPasswordPlaceholder": {
-		"ENG": "password",
+		"ENG": "password", //
 		"FRA": "password"
 	},
 	"formOathPasswordTooltip": {
-		"ENG": "Enter oAuth user password.",
+		"ENG": "Enter oAuth user password.", //
 		"FRA": "Enter oAuth user password."
 	},
 	"formpProductPlaceHolder": {
@@ -205,11 +205,11 @@ var mtTranslation = {
 		"ENG": "Tenant OAuth Deleted Successfully",
 		"FRA": "Tenant OAuth Deleted Successfully"
 	},
-	"userUpdatedSuccessfully": {
+	"userUpdatedSuccessfully": { //move
 		"ENG": "User Updated Successfully",
 		"FRA": "User Updated Successfully"
 	},
-	"userAddedSuccessfully": {
+	"userAddedSuccessfully": { // move
 		"ENG": "User Added Successfully",
 		"FRA": "User Added Successfully"
 	},
@@ -234,35 +234,42 @@ var mtTranslation = {
 		"FRA": "Selected Application has been removed"
 	},
 	"applicationKeyAddedSuccessfully": {
-		"ENG": "Application Key Added Successfully",
+		"ENG": "Application Key Added Successfully",// move
 		"FRA": "Application Key Added Successfully"
 	},
 	"keyConfigurationUpdatedSuccessfully": {
-		"ENG": "Key Configuration Updated Successfully",
+		"ENG": "Key Configuration Updated Successfully", // move
 		"FRA": "Key Configuration Updated Successfully"
 	},
 	"errorInvalidConfigJsonObject": {
-		"ENG": "Error: Invalid Config Json object",
+		"ENG": "Error: Invalid Config Json object", //
 		"FRA": "Error: Invalid Config Json object"
 	},
 	"errorInvalidDeviceJsonObject": {
-		"ENG": "Error: Invalid device Json object",
+		"ENG": "Error: Invalid device Json object", //
 		"FRA": "Error: Invalid device Json object"
 	},
 	"errorInvalidGeoJsonObject": {
-		"ENG": "Error: Invalid geo Json object",
+		"ENG": "Error: Invalid geo Json object", //
 		"FRA": "Error: Invalid geo Json object"
 	},
 	"externalKeyAddedSuccessfully": {
-		"ENG": "External Key Added Successfully",
+		"ENG": "External Key Added Successfully", //
 		"FRA": "External Key Added Successfully"
 	},
 	"externalKeyUpdatedSuccessfully": {
-		"ENG": "External Key Updated Successfully",
+		"ENG": "External Key Updated Successfully", //
 		"FRA": "External Key Updated Successfully"
 	},
+	"externalKeyRemovedSuccessfully": { //
+		"ENG": "External Key Removed Successfully",
+		"FRA": "External Key Removed Successfully"
+	},
 	//multitenancy
-
+	"mySecretPhrase":{ //
+		"ENG":"My secret phrase",
+		"FRA":"My secret phrase"
+	},
 	//directives
 
 	//editAcl

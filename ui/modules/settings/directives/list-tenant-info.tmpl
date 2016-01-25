@@ -4,27 +4,27 @@
 			<tbody>
 				<tr class="form-group ng-scope">
 					<td class="ng-scope">
-						<label class="ng-binding">Name</label>
-						<input type="text" ng-required="true" tooltip="Enter Tenant Name." placeholder="Test Tenant..." ng-model="tenant.name" name="name" class="form-control" required="required"/>
+						<label class="ng-binding">{{translation.name[LANG]}}</label>
+						<input type="text" ng-required="true" tooltip="{{translation.formTentNameToolTip[LANG]}}." placeholder="{{translation.formTntNamePlaceHolder[LANG]}}" ng-model="tenant.name" name="name" class="form-control" required="required"/>
 					</td>
 				</tr>
 				<tr class="form-group ng-scope">
 					<td class="ng-scope">
-						<label class="ng-binding">Description</label>
-						<textarea tooltip="Enter a description explaining the usage of this tenant" placeholder="Testing Tenant, used by developers and does not reach production server..." class="form-control" ng-model="tenant.description" rows="5" name="description" id="iddescription"></textarea>
+						<label class="ng-binding">{{translation.description[LANG]}}</label>
+						<textarea tooltip="{{translation.formDescriptionTenantToolTip[LANG]}}" placeholder="{{translation.formTentDescriptionPlaceHolder[LANG]}}" class="form-control" ng-model="tenant.description" rows="5" name="description" id="iddescription"></textarea>
 					</td>
 				</tr>
 				<tr class="form-group ng-scope" ng-if="access.tenant.oauth.list">
 					<td class="ng-scope">
 						<label class="ng-binding">{{translation.oAuthSecret[LANG]}}</label>
-						<input type="text" tooltip="Enter Tenant oAuth Secret." placeholder="SECRET..." value="My secret phrase" ng-model="tenant.oauth.secret" name="secret" class="form-control"/>
+						<input type="text" tooltip="{{translation.formSecretToolTip[LANG]}}" placeholder="{{translation.formSecretPlaceHolder[LANG]}}" value="{{translation.mySecretPhrase[LANG]}}" ng-model="tenant.oauth.secret" name="secret" class="form-control"/>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
 	<div class="footer"><br/>
-		<input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="Update Tenant"/>
-		<input ng-if="access.tenant.oauth.delete" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="Delete oAuth Info"/>
+		<input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="{{translation.updateTenant[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.delete" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="{{translation.deleteoAuthInfo[LANG]}}"/>
 	</div>
 </form>
