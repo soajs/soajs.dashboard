@@ -331,8 +331,8 @@ var srTranslation = {
 		"FRA": "Delete Daemon"
 	},
 	"areYouSureWantRemoveDaemon": {
-		"ENG": "Are you sure you want to remove this daemon",
-		"FRA": "Are you sure you want to remove this daemon"
+		"ENG": "Are you sure you want to remove this daemon?",
+		"FRA": "Are you sure you want to remove this daemon?"
 	},
 	"addGroupConfiguration": {
 		"ENG": "Add Group Configuration",
@@ -349,6 +349,47 @@ var srTranslation = {
 	"serviceConfigurationPerEnvironment": {
 		"ENG": "Service Configuration Per Environment",
 		"FRA": "Service Configuration Per Environment"
+	},
+	"areYouSureWantClearServiceConfigurationEnvironment": {
+		"ENG": "Are you sure you want to clear service configuration for this environment?",
+		"FRA": "Are you sure you want to clear service configuration for this environment?"
+	},
+	"tenantsExternalKeys": {
+		"ENG": "Tenants External Keys",
+		"FRA": "Tenants External Keys"
+	},
+	"noTenantExternalKeysFoundJob": {
+		"ENG": "No tenant external keys found for this job.",
+		"FRA": "No tenant external keys found for this job."
+	},
+	"applicationDescription": {
+		"ENG": "Application Description",
+		"FRA": "Application Description"
+	},
+	"editGroupConfig": {
+		"ENG": "Edit Group Config",
+		"FRA": "Edit Group Config"
+	},
+	"removeGroupConfig": {
+		"ENG": "Remove Group Config",
+		"FRA": "Remove Group Config"
+	},
+	"areYouSureWantRemoveGroupConfig": {
+		"ENG": "Are you sure you want to remove this group config?",
+		"FRA": "Are you sure you want to remove this group config?"
+	},
+	//selectTenantExtKeys
+	"availableTenantsWithExternalKeys": {
+		"ENG": "Available Tenants With External Keys",
+		"FRA": "Available Tenants With External Keys"
+	},
+	"noTenantsFound": {
+		"ENG": "No tenants found.",
+		"FRA": "No tenants found."
+	},
+	"noSearchResultsFoundFor": {
+		"ENG": "No search results found for",
+		"FRA": "No search results found for"
 	}
 };
 

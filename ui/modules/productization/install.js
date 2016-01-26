@@ -106,10 +106,6 @@ var ProdTranslation = {
         "FRA": "Modify ACL of Package"
     },
     //list
-    "packages": {
-        "ENG": "Packages",
-        "FRA": "Packages"
-    },
     "areYouSureWantRemoveSelectedPackage": {
         "ENG": "Are you sure you want to remove the selected package",
         "FRA": "Are you sure you want to remove the selected package"

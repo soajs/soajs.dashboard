@@ -21,10 +21,10 @@
                     </div>
                     <div class="entryAction">
                         <a href="" ng-click="updateDaemon(daemon);" ng-if="access.daemons.update">
-                            <span class="icon icon-pencil2" tooltip="{{translation.editDaemon}}"></span>
+                            <span class="icon icon-pencil2" tooltip="{{translation.editDaemon[LANG]}}"></span>
                         </a>
-                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="{{translation.areYouSureWantRemoveDaemon[LANG]}}?">
-                            <span class="icon icon-cross" tooltip="{{translation.deleteDaemon}}"></span>
+                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="{{translation.areYouSureWantRemoveDaemon[LANG]}}">
+                            <span class="icon icon-cross" tooltip="{{translation.deleteDaemon[LANG]}}"></span>
                         </a>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                         <b>{{translation.jobs[LANG]}}:</b>
                         <accordion close-others="true" class="keysAccordion">
                             <accordion-group ng-repeat="(key, object) in grpConf.jobs">
-                                <accordion-heading tooltip="{{translation.displayJobInformation[LANG]}}><b>{{key}} [ {{object.type}} ]</b></accordion-heading>
+                                <accordion-heading tooltip="{{translation.displayJobInformation[LANG]}}"><b>{{key}} [ {{object.type}} ]</b></accordion-heading>
                                 <div ng-if="object.type==='global'">
                                     <span><b>{{translation.serviceConfigurationPerEnvironment[LANG]}}:</b></span><br><br>
                                     <div class="entryBoxes entryBoxesGrid">
@@ -54,28 +54,28 @@
                                             <b>{{env}} {{translation.environment[LANG]}}</b>
                                             <div class="f-right">
                                                 <a href="" ng-click="updateConfiguration(env, key, object, grpConf._id);">
-                                                    <span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
+                                                    <span class="icon icon-pencil" tooltip="{{translation.editServiceConfiguration[LANG]}}"></span>
                                                 </a>
-                                                <a href="" ng-if="object.serviceConfig[env]" ng-click="clearConfiguration(env, key, object, grpConf._id);" ng-confirm-click="Are you sure you want to clear service configuration for this environment?">
-                                                    <span class="icon icon-bin" tooltip="Empty Service Configuration"></span>
+                                                <a href="" ng-if="object.serviceConfig[env]" ng-click="clearConfiguration(env, key, object, grpConf._id);" ng-confirm-click="{{translation.areYouSureWantClearServiceConfigurationEnvironment[LANG]}}">
+                                                    <span class="icon icon-bin" tooltip="{{translation.emptyServiceConfiguration[LANG]}}"></span>
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div ng-if="object.type==='tenant'">
-                                    <a href="" ng-style="{'margin-top': '10px'}" ng-click="selectTenantExternalKeys(grpConf, key)" class="btn btn-primary">Select Tenant External Keys</a>
-                                    <span><b>Tenants External Keys:</b></span><br><br>
+                                    <a href="" ng-style="{'margin-top': '10px'}" ng-click="selectTenantExternalKeys(grpConf, key)" class="btn btn-primary">{{translation.selectTenantExternalKeys[LANG]}}</a>
+                                    <span><b>{{translation.tenantsExternalKeys[LANG]}}:</b></span><br><br>
                                     <div class="grid externalKeysGrid">
                                         <div ng-if="object.tenantsInfo.length === 0">
-                                            <br><br><alert type="warning">No tenant external keys found for this job.</alert>
+                                            <br><br><alert type="warning">{{translation.noTenantExternalKeysFoundJob[LANG]}}</alert>
                                         </div>
                                         <table cellspacing="0" cellpadding="0" border="0" width="100%" class="" ng-if="object.tenantsInfo.length > 0">
                                             <tbody>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Package</th>
-                                                <th>Application Description</th>
+                                                <th>{{translation.name[LANG]}}</th>
+                                                <th>{{translation.package[LANG]}}</th>
+                                                <th>{{translation.applicationDescription[LANG]}}</th>
                                             </tr>
                                             <tr ng-repeat="tenant in object.tenantsInfo" ng-class-even="'even'" ng-class-odd="'odd'">
                                                 <td>{{tenant.name}}</td>
@@ -91,10 +91,10 @@
                     </div>
                     <div class="entryAction">
                         <a ng-if="access.daemonGroupConfig.update" href="" ng-click="updateDaemonGroupConfig(grpConf);">
-                            <span class="icon icon-pencil2" tooltip="Edit Group Config"></span>
+                            <span class="icon icon-pencil2" tooltip="{{translation.editGroupConfig[LANG]}}"></span>
                         </a>
-                        <a ng-if="access.daemonGroupConfig.delete" href="" ng-confirm-click="Are you sure you want to remove this group config?" ng-click="deleteDaemonGroupConfig(grpConf);">
-                            <span class="icon icon-cross" tooltip="Remove Group Config"></span>
+                        <a ng-if="access.daemonGroupConfig.delete" href="" ng-confirm-click="{{translation.areYouSureWantRemoveGroupConfig[LANG]}}" ng-click="deleteDaemonGroupConfig(grpConf);">
+                            <span class="icon icon-cross" tooltip="{{translation.removeGroupConfig[LANG]}}"></span>
                         </a>
                     </div>
                 </div>
