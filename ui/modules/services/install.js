@@ -320,6 +320,35 @@ var srTranslation = {
 	"route": {
 		"ENG": "Route",
 		"FRA": "Route"
+	},
+	//list-daemons
+	"editDaemon": {
+		"ENG": "Edit Daemon",
+		"FRA": "Edit Daemon"
+	},
+	"deleteDaemon": {
+		"ENG": "Delete Daemon",
+		"FRA": "Delete Daemon"
+	},
+	"areYouSureWantRemoveDaemon": {
+		"ENG": "Are you sure you want to remove this daemon",
+		"FRA": "Are you sure you want to remove this daemon"
+	},
+	"addGroupConfiguration": {
+		"ENG": "Add Group Configuration",
+		"FRA": "Add Group Configuration"
+	},
+	"soloRun": {
+		"ENG": "Solo Run",
+		"FRA": "Solo Run"
+	},
+	"displayJobInformation": {
+		"ENG": "Display Job Information",
+		"FRA": "Display Job Information"
+	},
+	"serviceConfigurationPerEnvironment": {
+		"ENG": "Service Configuration Per Environment",
+		"FRA": "Service Configuration Per Environment"
 	}
 };
 

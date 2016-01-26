@@ -1,7 +1,7 @@
 <section ng-controller="daemonsCtrl">
     <tabset>
         <tab heading="Daemons" ng-if="access.daemons.list">
-            <a ng-if="access.daemons.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemon()" class="btn btn-primary">Add Daemon</a><br/><br/>
+            <a ng-if="access.daemons.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemon()" class="btn btn-primary">{{translation.addDaemon[LANG]}}</a><br/><br/>
             <div class="entryBoxes">
                 <div id="d_{{daemon._id}}" ng-repeat="daemon in grid.rows" class="entryBox" ng-init="daemon.hide = true">
                     <div class="header opened" ng-class="{closed: daemon.hide}">
@@ -11,7 +11,7 @@
                     </div>
                     <div class="body grid" ng-show="!daemon.hide">
                         <fieldset>
-                            <legend>Jobs</legend>
+                            <legend>{{translation.jobs[LANG]}}</legend>
                             <div class="entryBoxes entryBoxesGrid">
                                 <div class="entryBox greyBox" ng-repeat="(key, object) in daemon.jobs" ng-style="{'width': '150px', 'text-align': 'center'}">
                                     <b>{{key}}</b>&nbsp;&nbsp;
@@ -21,37 +21,37 @@
                     </div>
                     <div class="entryAction">
                         <a href="" ng-click="updateDaemon(daemon);" ng-if="access.daemons.update">
-                            <span class="icon icon-pencil2" tooltip="Edit Daemon"></span>
+                            <span class="icon icon-pencil2" tooltip="{{translation.editDaemon}}"></span>
                         </a>
-                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="Are you sure you want to remove this daemon?">
-                            <span class="icon icon-cross" tooltip="Delete Daemon"></span>
+                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="{{translation.areYouSureWantRemoveDaemon[LANG]}}?">
+                            <span class="icon icon-cross" tooltip="{{translation.deleteDaemon}}"></span>
                         </a>
                     </div>
                 </div>
             </div>
         </tab>
         <tab heading="Group Configurations" ng-if="access.daemonGroupConfig.list">
-            <a ng-if="access.daemonGroupConfig.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemonGroupConfig()" class="btn btn-primary">Add Group Configuration</a><br/><br/>
+            <a ng-if="access.daemonGroupConfig.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemonGroupConfig()" class="btn btn-primary">{{translation.addGroupConfiguration[LANG]}}</a><br/><br/>
             <div class="entryBoxes">
                 <div ng-repeat="grpConf in groupConfigs.rows" class="entryBox" ng-init="grpConf.hide = true">
                     <div class="header opened" ng-class="{closed: grpConf.hide}">
                         <a href="" ng-click="showHide(grpConf)"  ng-if="grpConf.hide" class="icon icon-{{grpConf.icon || 'plus'}} margin-left-10"></a>
                         <a href="" ng-click="showHide(grpConf)"  ng-if="!grpConf.hide" class="icon icon-{{grpConf.icon || 'minus'}} margin-left-10"></a>
                         {{grpConf.daemonConfigGroup|uppercase}}&nbsp;&nbsp;[ {{grpConf.status|statusDisplay}} ]
-                        <span><b>Solo Run:</b> {{grpConf.solo}}</span>
-                        <span><b>Interval:</b> {{grpConf.interval|timeInMillisConverter}}</span>
-                        <span><b>Daemon:</b> {{grpConf.daemon}}</span>
+                        <span><b>{{translation.soloRun[LANG]}}:</b> {{grpConf.solo}}</span>
+                        <span><b>{{translation.interval[LANG]}}:</b> {{grpConf.interval|timeInMillisConverter}}</span>
+                        <span><b>{{translation.daemon[LANG]}}:</b> {{grpConf.daemon}}</span>
                     </div>
                     <div class="body" ng-show="!grpConf.hide">
-                        <b>Jobs:</b>
+                        <b>{{translation.jobs[LANG]}}:</b>
                         <accordion close-others="true" class="keysAccordion">
                             <accordion-group ng-repeat="(key, object) in grpConf.jobs">
-                                <accordion-heading tooltip="Display Job Information"><b>{{key}} [ {{object.type}} ]</b></accordion-heading>
+                                <accordion-heading tooltip="{{translation.displayJobInformation[LANG]}}><b>{{key}} [ {{object.type}} ]</b></accordion-heading>
                                 <div ng-if="object.type==='global'">
-                                    <span><b>Service Configuration Per Environment:</b></span><br><br>
+                                    <span><b>{{translation.serviceConfigurationPerEnvironment[LANG]}}:</b></span><br><br>
                                     <div class="entryBoxes entryBoxesGrid">
                                         <div class="entryBox greyBox" ng-repeat="env in environmentsList" ng-class="{blueBox: object.serviceConfig[env]}" ng-style="{'width': '250px'}">
-                                            <b>{{env}} environement</b>
+                                            <b>{{env}} {{translation.environment[LANG]}}</b>
                                             <div class="f-right">
                                                 <a href="" ng-click="updateConfiguration(env, key, object, grpConf._id);">
                                                     <span class="icon icon-pencil" tooltip="Edit Service Configuration"></span>
