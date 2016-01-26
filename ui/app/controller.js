@@ -376,7 +376,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$localStorage.acl_access = null;
 				$scope.enableInterface = false;
 				if (!stopRedirect) {
-					$scope.displayFixedAlert('danger', "Session expired. Please login.");
+					$scope.displayFixedAlert('danger', translation.expiredSessionPleaseLogin[LANG]);
 					$scope.go("/login");
 				}
 			}

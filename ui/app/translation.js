@@ -135,11 +135,11 @@ var translation = {
 	},
 	"cancel": {
 		"ENG": "Cancel",
-		"FRA": "Cancel"
+		"FRA": "Annuler"
 	},
 	"submit": {
 		"ENG": "Submit",
-		"FRA": "Submit"
+		"FRA": "Soumettre"
 	},
 	"warning": {
 		"ENG": "warning",
@@ -243,7 +243,7 @@ var translation = {
 	},
 	"close": {
 		"ENG": "Close",
-		"FRA": "Close"
+		"FRA": "Fermer"
 	},
 	"active": {
 		"ENG": "Active",
@@ -318,8 +318,8 @@ var translation = {
 		"FRA": "Ajouter New key"
 	},
 	"areYouSureYouWantDeleteKey": {
-		"ENG": "Are you sure you want to delete this key",
-		"FRA": "Are you sure you want to delete this key"
+		"ENG": "Are you sure you want to delete this key?",
+		"FRA": "Are you sure you want to delete this key?"
 	},
 	"removeKey": {
 		"ENG": "Remove Key",
@@ -354,8 +354,8 @@ var translation = {
 		"FRA": "Add New Application External Key"
 	},
 	"areYouSureWantRemoveExternalKey": {
-		"ENG": "Are you sure you want to remove this external key",
-		"FRA": "Are you sure you want to remove this external key"
+		"ENG": "Are you sure you want to remove this external key?",
+		"FRA": "Are you sure you want to remove this external key?"
 	},
 	"removeExternalKey": {
 		"ENG": "Remove External Key",
@@ -550,6 +550,10 @@ var translation = {
 	"of": {
 		"ENG": "of",
 		"FRA": "de"
+	},
+	"expiredSessionPleaseLogin":{
+		"ENG":"Session expired. Please login.",
+		"FRA":"Session expired. Please login."
 	}
 
 };

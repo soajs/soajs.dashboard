@@ -1,5 +1,5 @@
 <div ng-if="access.tenant.oauth.users.list" class="clearfix">
-    <label>Tenant oAuth Users</label>
+    <label>{{translation.tenantoAuthUsers[LANG]}}</label>
 
     <a ng-if="access.tenant.oauth.users.add" class="btn btn-sm btn-primary" ng-click="addThisOauthUser()">{{translation.addoAuthUser[LANG]}}</a>
     <br/>
@@ -16,12 +16,12 @@
 
                     <td class="leftAction">
                         <a ng-if="access.tenant.oauth.users.update" href="" ng-click="editMyOauthUser(user)">
-                            <span class="icon icon-pencil2" tooltip="Edit oAuth User"> </span>
+                            <span class="icon icon-pencil2" tooltip="{{translation.editoAuthUser[LANG]}}"> </span>
                         </a>
                     </td>
                     <td class="leftAction">
-                        <a ng-if="access.tenant.oauth.users.delete" href="" ng-confirm-click="Are you sure you want to remove this user ?" ng-click="removeTenantOauthUser(user);">
-                            <span class="icon icon-cross" tooltip="Remove oAuth User"> </span>
+                        <a ng-if="access.tenant.oauth.users.delete" href="" ng-confirm-click="{{translation.areYouSureRemoveUser[LANG]}}" ng-click="removeTenantOauthUser(user);">
+                            <span class="icon icon-cross" tooltip="{{translation.removeoAuthUser[LANG]}}"> </span>
                         </a>
                     </td>
                     <td>
@@ -34,7 +34,7 @@
             </tbody>
         </table>
         <div ng-if="oAuthUsers.list.length == 0">
-            <alert type="warning">No oauth users have been added.</alert>
+            <alert type="warning">{{translation.noAauthUsersAdded[LANG]}}</alert>
         </div>
     </div>
 </div>
