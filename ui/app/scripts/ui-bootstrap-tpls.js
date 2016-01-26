@@ -2277,8 +2277,8 @@ angular.module('ui.bootstrap.pagination', [])
   boundaryLinks: false,
   directionLinks: true,
   firstText: 'First',
-  previousText: 'Previous',
-  nextText: 'Next',
+  previousText: translation.previous[LANG],
+  nextText: translation.next[LANG],
   lastText: 'Last',
   rotate: true
 })

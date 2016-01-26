@@ -209,33 +209,33 @@ var translation = {
 		"ENG": "Profile",
 		"FRA": "Profile"
 	},
-	"enterFirstName":{
-		"ENG":"Enter First Name",
-		"FRA":"Enter First Name"
+	"enterFirstName": {
+		"ENG": "Enter First Name",
+		"FRA": "Enter First Name"
 	},
-	"enterFirstNameUser":{
-		"ENG":"Enter the First Name of the User",
-		"FRA":"Enter the First Name of the User"
+	"enterFirstNameUser": {
+		"ENG": "Enter the First Name of the User",
+		"FRA": "Enter the First Name of the User"
 	},
-	"enterLastName":{
-		"ENG":"Enter Last Name",
-		"FRA":"Enter Last Name"
+	"enterLastName": {
+		"ENG": "Enter Last Name",
+		"FRA": "Enter Last Name"
 	},
-	"enterLastNameUser":{
-		"ENG":"Enter the Last Name of the User",
-		"FRA":"Enter the Last Name of the User"
+	"enterLastNameUser": {
+		"ENG": "Enter the Last Name of the User",
+		"FRA": "Enter the Last Name of the User"
 	},
-	"enterEmail":{
-		"ENG":"Enter Email",
-		"FRA":"Enter Email"
+	"enterEmail": {
+		"ENG": "Enter Email",
+		"FRA": "Enter Email"
 	},
-	"enterUsername":{
-		"ENG":"Enter Username",
-		"FRA":"Enter Username"
+	"enterUsername": {
+		"ENG": "Enter Username",
+		"FRA": "Enter Username"
 	},
-	"login":{
-		"ENG":"Login",
-		"FRA":"Login"
+	"login": {
+		"ENG": "Login",
+		"FRA": "Login"
 	},
 
 	//api-permission
@@ -479,7 +479,50 @@ var translation = {
 		"ENG": "Password and Confirm Password fields do not match",
 		"FRA": "Password and Confirm Password fields do not match"
 	},
-
+	"operate": {
+		"ENG": "Operate",
+		"FRA": "Operate"
+	},
+	"noRecordsFound": {
+		"ENG": "No Records Found.",
+		"FRA": "Aucun Records Found"
+	},
+	"All": {
+		"ENG": "All",
+		"FRA": "Tous"
+	},
+	"None": {
+		"ENG": "None",
+		"FRA": "Aucun"
+	},
+	"moreAction": {
+		"ENG": "More Action",
+		"FRA": "More Action"
+	},
+	"clearGridSearch": {
+		"ENG": "Clear",
+		"FRA": "Clear"
+	},
+	"searchGrid":{
+		"ENG": "Search",
+		"FRA": "Search"
+	},
+	"previous": {
+		"ENG": "Previous",
+		"FRA": "Précédent"
+	},
+	"next": {
+		"ENG": "Next",
+		"FRA": "Suivant"
+	},
+	"first": {
+		"ENG": "Next",
+		"FRA": "Suivant"
+	},
+	"last": {
+		"ENG": "Next",
+		"FRA": "Suivant"
+	}
 
 };
 

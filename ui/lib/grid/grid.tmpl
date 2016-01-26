@@ -4,10 +4,10 @@
             <tr class="header">
                 <td>
                     <div ng-show="grid.topActions.length > 0">
-                        Select: <a href="" ng-click="grid.selectAll()">All</a> - <a href="" ng-click="grid.selectNone()">None</a> |
+                        Select: <a href="" ng-click="grid.selectAll()">{{translation.All[LANG]}}</a> - <a href="" ng-click="grid.selectNone()">{{translation.None[LANG]}}</a> |
                         <div class="btn-sm btn-group" dropdown>
                             <button type="button" class="btn btn-sm btn-danger dropdown-toggle" dropdown-toggle ng-disabled="disabled">
-                                More Action <span class="caret"></span>
+                                {{translation.moreAction[LANG]}} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li ng-repeat="action in grid.topActions">
@@ -19,8 +19,8 @@
                 </td>
                 <td align="right">
                     <div ng-show="grid.search">
-                        Search: <input class="searchInput" ng-model="grid.query" type="text" ng-keyup="grid.filterData(grid.query); grid.applySearch=true"/>
-                        <button ng-click="grid.query =''; grid.filterData('')" class="btn-filter btn btn-sm btn-danger">Clear</button>
+                        {{translation.searchGrid[LANG]}}: <input class="searchInput" ng-model="grid.query" type="text" ng-keyup="grid.filterData(grid.query); grid.applySearch=true"/>
+                        <button ng-click="grid.query =''; grid.filterData('')" class="btn-filter btn btn-sm btn-danger">{{translation.clearGridSearch[LANG]}}</button>
                     </div>
                 </td>
             </tr>
@@ -90,7 +90,7 @@
     <div ng-show="grid.filteredRows.length ===0">
     	<br>
         <div class="alert-warning alert ng-isolate-scope alert-warning alert-dismissable">
-            <span class="ng-scope ng-binding">No Records Found.</span>
+            <span class="ng-scope ng-binding">{{translation.noRecordsFound[LANG]}}</span>
         </div>
     </div>
 </div>
