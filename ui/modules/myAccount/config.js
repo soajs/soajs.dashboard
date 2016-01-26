@@ -11,7 +11,7 @@ var loginConfig = {
 				'name': 'username',
 				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': translation.enterUsername[LANG] + '...',
+				'placeholder': translation.enterUsername[LANG],
 				'value': '',
 				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
@@ -20,9 +20,9 @@ var loginConfig = {
 				'name': 'password',
 				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': translation.enterPassword[LANG] +'...',
+				'placeholder': translation.enterPassword[LANG],
 				'value': '',
-				'fieldMsg': ' <a href="#/forgotPw">' + translation.forgotYourPassword[LANG] + '?' + '</a> ',
+				'fieldMsg': ' <a href="#/forgotPw">' + translation.forgotYourPassword[LANG]  + '</a>',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
 			}
@@ -43,7 +43,7 @@ var resetPwConfig = {
 				'name': 'password',
 				'label': translation.newPassword[LANG],
 				'type': 'password',
-				'placeholder': translation.newPasswordPlaceholder[LANG] + '...',
+				'placeholder': translation.newPasswordPlaceholder[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
@@ -71,7 +71,7 @@ var setPasswordConfig = {
 				'name': 'password',
 				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': translation.enterPassword[LANG] + '...',
+				'placeholder': translation.enterPassword[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
@@ -102,9 +102,9 @@ var forgetPwConfig = {
 				'name': 'username',
 				'label': translation.username[LANG] + ' /  ' + translation.email[LANG],
 				'type': 'text',
-				'placeholder': translation.enterUsernameEmail + '...',
+				'placeholder': translation.enterUsernameEmail[LANG],
 				'value': '',
-				'tooltip': translation.enterUserNameEmailPasswordChange[LANG] + '.',
+				'tooltip': translation.enterUserNameEmailPasswordChange[LANG],
 				'required': true
 			}
 		]
@@ -121,7 +121,7 @@ var changePwConfig = {
 				'name': 'oldPassword',
 				'label': translation.oldPassword[LANG],
 				'type': 'text',
-				'placeholder': translation.EnterOldPassword + '...',
+				'placeholder': translation.EnterOldPassword[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
@@ -157,7 +157,7 @@ var changeEmailConfig = {
 				'name': 'email',
 				'label': translation.newEmail[LANG],
 				'type': 'email',
-				'placeholder': translation.enterEmail[LANG] + '...',
+				'placeholder': translation.enterEmail[LANG],
 				'value': '',
 				'tooltip': translation.emailToolTip[LANG],
 				'required': true
@@ -176,7 +176,7 @@ var registerConfig = {
 				'name': 'firstName',
 				'label': translation.firstName[LANG],
 				'type': 'text',
-				'placeholder': translation.enterFirstName[LANG] + '...',
+				'placeholder': translation.enterFirstName[LANG],
 				'value': '',
 				'tooltip': translation.enterFirstNameUser[LANG],
 				'required': true
@@ -185,7 +185,7 @@ var registerConfig = {
 				'name': 'lastName',
 				'label': translation.lastName[LANG],
 				'type': 'text',
-				'placeholder': translation.enterLastName[LANG] + '...',
+				'placeholder': translation.enterLastName[LANG],
 				'value': '',
 				'tooltip': translation.enterLastNameUser[LANG],
 				'required': true
@@ -194,7 +194,7 @@ var registerConfig = {
 				'name': 'email',
 				'label': translation.email[LANG],
 				'type': 'email',
-				'placeholder': translation.enterEmail[LANG] + '...',
+				'placeholder': translation.enterEmail[LANG],
 				'value': '',
 				'tooltip': translation.emailToolTip[LANG],
 				'required': true
@@ -203,7 +203,7 @@ var registerConfig = {
 				'name': 'username',
 				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': translation.enterUsername + '...',
+				'placeholder': translation.enterUsername[LANG],
 				'value': '',
 				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
@@ -212,7 +212,7 @@ var registerConfig = {
 				'name': 'password',
 				'label': translation.password[LANG],
 				'type': 'password',
-				'placeholder': translation.enterPassword[LANG] + '...',
+				'placeholder': translation.enterPassword[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true
@@ -221,7 +221,7 @@ var registerConfig = {
 				'name': 'confirmPassword',
 				'label': translation.confirmPassword[LANG],
 				'type': 'password',
-				'placeholder': translation.confirmPasswordPlaceholder[LANG] + '...',
+				'placeholder': translation.confirmPasswordPlaceholder[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
 				'required': true

@@ -237,21 +237,21 @@ var translation = {
 		"ENG": "Login",
 		"FRA": "Login"
 	},
-	"save":{
-		"ENG":"Save",
-		"FRA":"Save"
+	"save": {
+		"ENG": "Save",
+		"FRA": "Save"
 	},
-	"close":{
-		"ENG":"Close",
-		"FRA":"Close"
+	"close": {
+		"ENG": "Close",
+		"FRA": "Close"
 	},
-	"active":{
-		"ENG":"Active",
-		"FRA":"Active"
+	"active": {
+		"ENG": "Active",
+		"FRA": "Active"
 	},
-	"inactive":{
-		"ENG":"Inactive",
-		"FRA":"Inactive"
+	"inactive": {
+		"ENG": "Inactive",
+		"FRA": "Inactive"
 	},
 
 	//api-permission
@@ -302,11 +302,11 @@ var translation = {
 	},
 	"activate": {
 		"ENG": "Activate",
-		"FRA": "Activate"
+		"FRA": "Activer"
 	},
 	"deactivate": {
 		"ENG": "Deactivate",
-		"FRA": "Deactivate"
+		"FRA": "Désactiver"
 	},
 	//list-keys
 	"tenantApplicationKeys": {
@@ -485,7 +485,7 @@ var translation = {
 	},
 	"delete": {
 		"ENG": "Delete",
-		"FRA": "Delete"
+		"FRA": "Effacer"
 	},
 	"remove": {
 		"ENG": "Remove",
@@ -513,15 +513,15 @@ var translation = {
 	},
 	"moreAction": {
 		"ENG": "More Action",
-		"FRA": "More Action"
+		"FRA": "Plus Action"
 	},
 	"clearGridSearch": {
 		"ENG": "Clear",
-		"FRA": "Clear"
+		"FRA": "Éffacé"
 	},
-	"searchGrid":{
+	"searchGrid": {
 		"ENG": "Search",
-		"FRA": "Search"
+		"FRA": "Recherche"
 	},
 	"previous": {
 		"ENG": "Previous",
@@ -532,12 +532,24 @@ var translation = {
 		"FRA": "Suivant"
 	},
 	"first": {
-		"ENG": "Next",
-		"FRA": "Suivant"
+		"ENG": "First",
+		"FRA": "Début"
 	},
 	"last": {
-		"ENG": "Next",
-		"FRA": "Suivant"
+		"ENG": "Last",
+		"FRA": "Dernière"
+	},
+	"select": {
+		"ENG": "Select",
+		"FRA": "Sélectionner"
+	},
+	"displaying": {
+		"ENG": "Displaying",
+		"FRA": "Résultats"
+	},
+	"of": {
+		"ENG": "of",
+		"FRA": "de"
 	}
 
 };

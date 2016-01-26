@@ -94,8 +94,8 @@ var accTranslation = {
 		"FRA": "Enter Password"
 	},
 	"forgotYourPassword": {
-		"ENG": "Forgot your password",
-		"FRA": "Forgot your password"
+		"ENG": "Forgot your password?",
+		"FRA": "Forgot your password?"
 	},
 	"resetPassword": {
 		"ENG": "Reset Password",
