@@ -1,6 +1,6 @@
 <div class="modal-header">
     <a class="pull-right" ng-click="closeModal()" href="">
-        <span class="icon icon-cross" tooltip="Close"></span>
+        <span class="icon icon-cross" tooltip="{{translation.close[LANG]}}"></span>
     </a>
     <h3 class="modal-title">{{title}}</h3>
 </div>
@@ -9,33 +9,33 @@
         <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
         <form name="grpConf" id="grpConf" novalidate ng-submit="grpConf.$valid && onSubmit()">
             <div class="form-group">
-                <label>Group Name</label>
-                <input type="text" class="form-control" ng-model="postData.groupName" ng-required="true" placeholder="Group Name"/>
+                <label>{{translation.groupName[LANG]}}</label>
+                <input type="text" class="form-control" ng-model="postData.groupName" ng-required="true" placeholder="{{translation.groupName[LANG]}}"/>
                 <br>
-                <label>Daemon</label>
+                <label>{{translation.daemon[LANG]}}</label>
                 <select class="form-control" ng-required="true" ng-options="daemon as daemon.name for daemon in outerScope.grid.rows" ng-model="daemon" ng-change="selectDaemon(daemon)"></select>
                 <br>
-                <label>Interval</label>
-                <input type="number" class="form-control" ng-model="postData.interval" ng-required="true" placeholder="Time in Milliseconds"/>
-                <label class="fieldMsg">Time between jobs after the end of previous job (if any).</label>
+                <label>{{translation.interval[LANG]}}</label>
+                <input type="number" class="form-control" ng-model="postData.interval" ng-required="true" placeholder="{{translation.timeMilliseconds[LANG]}}"/>
+                <label class="fieldMsg">{{translation.timeBetweenJobsAfterPreviousJob[LANG]}}.</label>
                 <br>
-                <label>Status:&nbsp;&nbsp;</label>
-                <input type="radio" value="1" ng-model="postData.status" ng-required="true">&nbsp;Active&nbsp;
-                <input type="radio" value="0" ng-model="postData.status" ng-required="true">&nbsp;Inactive
+                <label>{{translation.status[LANG]}}:&nbsp;&nbsp;</label>
+                <input type="radio" value="1" ng-model="postData.status" ng-required="true">&nbsp;{{translation.active[LANG]}}&nbsp;
+                <input type="radio" value="0" ng-model="postData.status" ng-required="true">&nbsp;{{translation.inactive[LANG]}}
                 <br>
-                <label>Solo:&nbsp;&nbsp;</label>
-                <input type="radio" value="true" ng-model="postData.solo" ng-required="true" checked>&nbsp;Yes&nbsp;
-                <input type="radio" value="false" ng-model="postData.solo" ng-required="true">&nbsp;No
-                <label class="fieldMsg">If yes and if this daemon is deployed on several machines for the same environment, then only one instance of this daemon is allowed to run.</label>
+                <label>{{translation.solo[LANG]}}:&nbsp;&nbsp;</label>
+                <input type="radio" value="true" ng-model="postData.solo" ng-required="true" checked>&nbsp;{{translation.yes[LANG]}}&nbsp;
+                <input type="radio" value="false" ng-model="postData.solo" ng-required="true">&nbsp;{{translation.no[LANG]}}
+                <label class="fieldMsg">{{translation.htmlFormSoloLabelFieldMsg[LANG]}}.</label>
                 <br>
-                <label>Jobs Processing</label>
+                <label>{{translation.jobsProcessing[LANG]}}</label>
                 <select class="form-control" name="processingSelect" id="processingSelect" ng-required="true" ng-model="postData.processing">
-                    <option value="sequential">Sequential</option>
-                    <option value="parallel">Parallel</option>
+                    <option value="sequential">{{translation.sequential[LANG]}}</option>
+                    <option value="parallel">{{translation.parallel[LANG]}}</option>
                 </select>
-                <label class="fieldMsg">Parallel: Daemon jobs run at the same time. Sequential: Daemon jobs run one after the other depending on specified order.</label>
+                <label class="fieldMsg">{{translation.htmlFormJobsProcessingLabelFieldMsg[LANG]}}.</label>
                 <br>
-                <label ng-if="daemonJobsList">Jobs</label><br>
+                <label ng-if="daemonJobsList">{{translation.jobs[LANG]}}</label><br>
                 <span ng-repeat="(key, object) in daemonJobsList">
                     <label>
                         <input type="checkbox" ng-model="selectedJobs[key]['isSelected']" value="key"/>&nbsp;
@@ -43,11 +43,11 @@
                         {{key}}&nbsp;&nbsp;
                     </label>
                     <span ng-if="selectedJobs[key]['isSelected']">
-                        <input type="radio" value="tenant" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;Tenant&nbsp;
-                        <input type="radio" value="global" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;Global
+                        <input type="radio" value="tenant" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;{{translation.tenant[LANG]}}&nbsp;
+                        <input type="radio" value="global" ng-model="selectedJobs[key]['type']" ng-required="true">&nbsp;{{translation.global[LANG]}}
                     </span><br>
                 </span>
-                <label class="fieldMsg" ng-if="postData.processing==='sequential'">For sequential processing, specify the order of execution in the text boxes that appear next to job names.</label><br>
+                <label class="fieldMsg" ng-if="postData.processing==='sequential'">{{translation.htmlFormJobsLabelFieldMsg[LANG]}}.</label><br>
                 <div class="pull-right">
                     <input type="submit" class="btn btn-primary" value="Submit"/>
                     <input type="button" class="btn btn-danger" value="Cancel" ng-click="closeModal()"/>

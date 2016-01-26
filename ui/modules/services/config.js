@@ -3,38 +3,38 @@ var servicesConfig = {
 		"oneApi": [
 			{
 				'name': 'apiV%count%',
-				'label': 'API Route',
+				'label': translation.aPIRoute[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': '/routeName',
+				'placeholder': '/' + translation.routeName[LANG],
 				'required': true
 			},
 			{
 				'name': 'apiL%count%',
-				'label': 'API Label',
+				'label': translation.aPILabel[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': 'My API Route',
+				'placeholder': translation.myAPIRoute[LANG],
 				'required': true
 			},
 			{
 				'name': 'apiG%count%',
-				'label': 'API Group',
+				'label': translation.aPIGroup[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': 'My API Group',
+				'placeholder': translation.myAPIGroup[LANG],
 				'required': true
 			},
 			{
 				'name': 'apiMain%count%',
-				'label': 'Default Group API',
+				'label': translation.defaultGroupAPI[LANG],
 				'type': 'radio',
 				'value': [{'v': false, "selected": true}, {'v': true}]
 			},
 			{
 				"type": "html",
 				"name": "removeAPI%count%",
-				"value": "<span class='red'><span class='icon icon-cross' title='Remove API'></span></span>",
+				"value": "<span class='red'><span class='icon icon-cross' title=" + translation.removeAPI[LANG] + "></span></span>",
 				"onAction" : function(id, data, form) {
 					var number = id.replace("removeAPI", "");
 
@@ -73,12 +73,12 @@ var servicesConfig = {
 			'entries': [
 				{
 					'name': 'upload',
-					'label': 'Service File',
+					'label': translation.serviceFile[LANG],
 					'type': 'document',
-					'tooltip': 'Upload Service File',
+					'tooltip': translation.uploadServiceFile[LANG],
 					'required': false,
 					"limit": 1,
-					'fieldMsg': "Compress your Service's folder into a ZIP file and upload it using this form."
+					'fieldMsg': translation.formServiceCustomAddFieldMsg[LANG] + "."
 				}
 			]
 		},
@@ -86,57 +86,57 @@ var servicesConfig = {
 			'entries': [
 				{
 					'name': 'name',
-					'label': 'Service Name',
+					'label': translation.serviceName[LANG],
 					'type': 'readonly',
 					'value': '',
-					'tooltip': 'Service Name',
+					'tooltip': translation.serviceName[LANG],
 					'required': true
 				},
 				{
 					'name': 'port',
-					'label': 'Service Port',
+					'label': translation.servicePort[LANG],
 					'type': 'number',
 					'value': '',
-					'tooltip': 'Enter the Service port number',
+					'tooltip': translation.enterServicePortNumber[LANG],
 					'required': true
 				},
 				{
 					'name': 'requestTimeout',
-					'label': 'Request Timeout',
+					'label': translation.requestTimeout[LANG],
 					'type': 'number',
 					'placeholder': '30',
 					'value': '',
-					'tooltip': 'Maximum timeout value for a request to this service',
+					'tooltip': translation.formRequestTimeoutTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'requestTimeoutRenewal',
-					'label': 'Request Timeout Renewal',
+					'label': translation.requestTimeoutRenewal[LANG],
 					'type': 'number',
 					'placeholder': '5',
 					'value': '',
-					'tooltip': 'In case of a timeout, set the number of trial attempts',
+					'tooltip': translation.formRequestTimeoutRenewalTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'extKeyRequired',
-					'label': 'External Key Required',
+					'label': translation.extKeyRequired[LANG],
 					'type': 'radio',
 					'value': [{'v': false}, {'v': true}],
-					'tooltip': 'If this service requires an external key; ie if it is multi-tenant',
+					'tooltip': translation.formExtKeyRequiredTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'awareness',
-					'label': 'Awareness',
+					'label': translation.awareness[LANG],
 					'type': 'radio',
 					'value': [{'v': false}, {'v': true}],
-					'tooltip': 'If this service needs to be aware of the location of SOAJS controllers',
+					'tooltip': translation.formAwarenessTooltip[LANG],
 					'required': true
 				},
 				{
 					"name": "apis",
-					"label": "Service APIs",
+					"label": translation.serviceAPIs[LANG],
 					"type": "group",
 					'collapsed': false,
 					"class": "serviceAPIs",
@@ -148,23 +148,23 @@ var servicesConfig = {
 			"entries": [
 				{
 					"name": "name",
-					"label": "Name",
+					"label": translation.name[LANG],
 					"type": "text",
 					"value": "",
-					"tooltip": "Daemon Name",
+					"tooltip": translation.daemonName[LANG],
 					"required": true
 				},
 				{
 					"name": "port",
-					"label": "Port",
+					"label": translation.port[LANG],
 					"type": "number",
 					"value": "",
-					"tooltip": "Daemon Port",
+					"tooltip": translation.daemonPort[LANG],
 					"required": true
 				},
 				{
 					'name': 'jobs',
-					'label': 'Jobs',
+					'label': translation.jobs[LANG],
 					'type': 'group',
 					'collapsed': false,
 					'class': 'daemonJobs',
@@ -175,17 +175,17 @@ var servicesConfig = {
 		"oneJob": [
 			{
 				'name': 'job%count%',
-				'label': 'Job Name',
+				'label': translation.jobName[LANG],
 				'type': 'text',
-				'placeholder': 'Daemon job',
+				'placeholder': translation.daemonJob[LANG],
 				'value': '',
-				'tooltip': 'Daemon Job',
+				'tooltip': translation.daemonJob[LANG],
 				'required': true
 			},
 			{
 				"type": "html",
 				"name": "removeJob%count%",
-				"value": "<span class='red'><span class='icon icon-cross' title='Remove Job'></span></span>",
+				"value": "<span class='red'><span class='icon icon-cross' title=" + translation.removeJob[LANG] + "></span></span>",
 				"onAction" : function(id, data, form) {
 					var number = id.replace("removeJob", "");
 
@@ -210,19 +210,19 @@ var servicesConfig = {
 			"entries": [
 				{
 					"name": "env",
-					"label": "Environment",
+					"label": translation.environment[LANG],
 					"type": "text",
 					"value": "",
-					"tooltip": "Environment Code",
+					"tooltip": translation.envCode[LANG],
 					"required": true
 				},
 				{
 					"name": "config",
-					"label": "Service Configuration",
+					"label": translation.serviceConfiguration[LANG],
 					"type": "textarea",
 					"value": "",
 					"rows": 10,
-					"tooltip": "Service Configuration",
+					"tooltip": translation.serviceConfiguration[LANG],
 					"required": true
 				}
 			]
