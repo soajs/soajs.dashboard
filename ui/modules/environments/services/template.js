@@ -12,7 +12,7 @@ var env_template = {
 			"socket": {
 				"socketPath": "/var/run/docker.sock"
 			},
-			"boot2docker": {
+			"machine": {
 				"host": "192.168.59.103",
 				"port": 2376
 			},

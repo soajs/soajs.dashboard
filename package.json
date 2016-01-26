@@ -44,7 +44,8 @@
     "unzip": "*",
     "mkdirp": "*",
     "rimraf": "*",
-    "request": "*"
+    "request": "*",
+    "gridfs-stream": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"

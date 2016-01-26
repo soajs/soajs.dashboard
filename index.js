@@ -63,6 +63,14 @@ service.init(function() {
 		checkForMongo(req);
 		environment.list(config, mongo, req, res);
 	});
+	service.post("/environment/cert/upload", function (req, res) {
+		checkForMongo(req);
+		environment.uploadCerts(config, mongo, req, res);
+	});
+	service.get("/environment/cert/delete", function (req, res) {
+		checkForMongo(req);
+		environment.removeCert(config, mongo, req, res);
+	});
 	service.post("/environment/key/update", function(req, res) {
 		checkForMongo(req);
 		environment.keyUpdate(config, mongo, req, res);

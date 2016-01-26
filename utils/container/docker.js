@@ -2,6 +2,7 @@
 var fs = require("fs");
 var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
+var Grid = require('gridfs-stream');
 
 var lib = {
     "getDeployer": function (deployerConfig) {
@@ -22,15 +23,40 @@ var lib = {
                 //dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
                 //dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
             //}
-	        var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || "/Users/soajs/certs";
-	        if (fs.existsSync(certsFolderLocation)) {
-	            dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + '/ca.pem');
-	            dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + '/cert.pem');
-	            dockerConfig['key'] = fs.readFileSync(certsFolderLocation + '/key.pem');
-	        }
-            docker = new Docker(dockerConfig);
+            //var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || "/Users/soajs/certs";
+            //if (fs.existsSync(certsFolderLocation)) {
+	         //   dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + '/ca.pem');
+	         //   dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + '/cert.pem');
+	         //   dockerConfig['key'] = fs.readFileSync(certsFolderLocation + '/key.pem');
+            //}
+
+            mongo.getMongoSkinDB(function (error, db) { //still missing env Id
+                if (error) {
+                    //console.log (error);
+                    return error;
+                } else {
+                    var gfs = Grid(db, mongo.mongoSkin);
+
+                    var readStream = gfs.createReadStream({filename: 'ca.pem'});
+                    readStream.pipe(dockerConfig['ca']);
+
+                    readStream = gfs.createReadStream({filename: 'cert.pem'});
+                    readStream.pipe(dockerConfig['cert']);
+
+                    readStream = gfs.createReadStream({filename: 'key.pem'});
+                    readStream.pipe(dockerConfig['key']);
+
+                    docker = new Docker(dockerConfig);
+                    return docker;
+                }
+            });
+
+            //dockerConfig['ca'] = ca.pem certificate
+            //dockerConfig['cert'] = cert.pem certificate
+            //dockerConfig['key'] = key.pem certificate
+            //docker = new Docker(dockerConfig);
         }
-        return docker;
+        //return docker;
     },
 
     "container": function (dockerInfo, action, cid, opts, cb) {
