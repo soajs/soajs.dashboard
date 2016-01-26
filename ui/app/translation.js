@@ -237,6 +237,22 @@ var translation = {
 		"ENG": "Login",
 		"FRA": "Login"
 	},
+	"save":{
+		"ENG":"Save",
+		"FRA":"Save"
+	},
+	"close":{
+		"ENG":"Close",
+		"FRA":"Close"
+	},
+	"active":{
+		"ENG":"Active",
+		"FRA":"Active"
+	},
+	"inactive":{
+		"ENG":"Inactive",
+		"FRA":"Inactive"
+	},
 
 	//api-permission
 	"restrictAccessSelectedApis": {

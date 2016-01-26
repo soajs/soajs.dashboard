@@ -65,12 +65,12 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editService',
-			label: 'Update Service',
+			label: translation.updateService[LANG],
 			'data': service,
 			actions: [
 				{
 					'type': 'button',
-					'label': 'Add New API',
+					'label': translation.addNewAPI[LANG],
 					'btn': 'success',
 					'action': function () {
 						$scope.form.entries.forEach(function (oneEntry) {
@@ -87,7 +87,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				},
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
@@ -142,7 +142,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 						if (postData.apis.length === 0) {
 							$timeout(function () {
-								alert("You need to provide at least One API for this service!");
+								alert(translation.youNeedProvideOneAPiForService[LANG] + "!");
 							}, 10);
 						}
 						else {
@@ -156,7 +156,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 									$scope.form.displayAlert('danger', error.message);
 								}
 								else {
-									$scope.$parent.displayAlert('success', 'Service Data Updated Successfully.');
+									$scope.$parent.displayAlert('success', translation.serviceDataUpdatedSuccessFully[LANG] + '.');
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
 									$scope.listServices();
@@ -167,7 +167,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -186,11 +186,11 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			timeout: $timeout,
 			form: formConfig,
 			name: 'addService',
-			label: 'Create Custom Service',
+			label: translation.createCustomService[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						$scope.modalInstance.close();
@@ -206,8 +206,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							controller: function ($scope, $modalInstance) {
 								fixBackDrop();
 
-								$scope.title = "Creating Service";
-								$scope.text = "<p>Uploading service please wait, do not refresh this page, this will take a few minutes...</p>";
+								$scope.title = translation.creatingService[LANG];
+								$scope.text = "<p>" + translate.UploadingServicePleaseWaitTextHtml[LANG] + "...</p>";
 								$scope.progress = progress;
 							}
 						});
@@ -236,9 +236,9 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 									controller: function ($scope, $modalInstance) {
 										fixBackDrop();
 
-										$scope.title = "Custom Service Uploaded";
-										$scope.text = "<p>" + "New Service Created from uploaded ZIP File and registered." + "<br />" +
-											"Proceed to environments to deploy your service." + "<br /></p>";
+										$scope.title = translation.customServiceUploaded[LANG];
+										$scope.text = "<p>" + translation.newServiceCreatedTextHtml[LANG] + "." + "<br />" +
+											translation.proceedEnvironmentsDeployService[LANG] + "." + "<br /></p>";
 										$scope.data = true;
 										$scope.deploy = function () {
 											$modalInstance.dismiss('deploy');
@@ -257,7 +257,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -427,11 +427,11 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			timeout: $timeout,
 			form: formConfig,
 			name: "updateServiceConfig",
-			label: "Update Service Configuration",
+			label: translation.updateServiceConfiguration[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Save',
+					'label': translation.save[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {};
@@ -446,7 +446,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							if (error) {
 								$scope.displayAlert('danger', error.message);
 							} else {
-								$scope.$parent.displayAlert("success", "Service Configuration updated successfully");
+								$scope.$parent.displayAlert("success", translation.serviceConfigurationUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadServiceConfig(groupId, jobName);
@@ -456,7 +456,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -482,7 +482,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			if (error) {
 				$scope.displayAlert('danger', error.message);
 			} else {
-				$scope.displayAlert('success', 'Service Configuration cleared successfully');
+				$scope.displayAlert('success', translation.serviceConfigurationClearedSuccessfully[LANG]);
 				$scope.reloadServiceConfig(groupId, jobName);
 			}
 		});
@@ -499,7 +499,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				fixBackDrop();
 
 				$scope.outerScope = outerScope;
-				$scope.title = "Select Tenant External Keys";
+				$scope.title = translation.selectTenantExternalKeys[LANG];
 				$scope.message = {}; //used to display errors inside modal
 				$scope.tenantSearch = ""; //used to search tenants
 				$scope.selectedTenants = {};
@@ -552,7 +552,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.message.danger = "";
 							}, 5000);
 						} else {
-							outerScope.displayAlert('success', 'List of tenant external keys updated successfully');
+							outerScope.displayAlert('success', translation.listTenantExternalKeysUpdatedSuccessfully[LANG]);
 							$modalInstance.close();
 							outerScope.listTenantExtKeys(grpConf, jobName);
 						}
@@ -637,12 +637,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editDaemon',
-			label: 'Update Daemon',
+			label: translation.updateDaemon[LANG],
 			'data': daemon,
 			actions: [
 				{
 					'type': 'button',
-					'label': 'Add Job',
+					'label': translation.addJob[LANG],
 					'btn': 'success',
 					'action': function () {
 						$scope.form.entries.forEach(function (oneEntry) {
@@ -659,7 +659,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				},
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {};
@@ -683,7 +683,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Daemon Data Updated Successfully.');
+								$scope.$parent.displayAlert('success', translation.daemonDataUpdatedSuccessfully[LANG] + '.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listDaemons();
@@ -693,7 +693,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -717,7 +717,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Daemon deleted successfully.');
+				$scope.$parent.displayAlert('success', translation.daemonDeletedSuccessfully[LANG] + '.');
 				$scope.listDaemons(function () {
 					$scope.listDaemonGroupConfig();
 				});
@@ -745,11 +745,11 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			timeout: $timeout,
 			form: formConfig,
 			name: 'addDaemon',
-			label: 'Add Daemon',
+			label: translation.addDaemon[LANG],
 			actions: [
 				{
 					'type': 'button',
-					'label': 'Add Job',
+					'label': translation.addJob[LANG],
 					'btn': 'success',
 					'action': function () {
 						$scope.form.entries.forEach(function (oneEntry) {
@@ -766,7 +766,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				},
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {};
@@ -789,7 +789,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Daemon Added Successfully.');
+								$scope.$parent.displayAlert('success', translation.daemonAddedSuccessfully[LANG] + '.');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listDaemons();
@@ -799,7 +799,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -843,7 +843,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.outerScope = outerScope;
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
-				$scope.title = "Add Daemon Group Configuration";
+				$scope.title = translation.addDaemonGroupConfiguration[LANG];
 
 				//Default values
 				$scope.postData.status = "1";
@@ -920,7 +920,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.message.danger = "";
 							}, 5000);
 						} else {
-							outerScope.$parent.displayAlert('success', 'Daemon group added successfully');
+							outerScope.$parent.displayAlert('success', translation.daemonGroupAddedSuccessfully[LANG]);
 							$modalInstance.close();
 							outerScope.listDaemonGroupConfig();
 						}
@@ -948,7 +948,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
 				$scope.originalDaemon = grpConf.daemon; //used to detect if user changed daemon
-				$scope.title = "Edit Daemon Group Configuration";
+				$scope.title = translation.editDaemonGroupConfiguration[LANG];
 
 				$scope.postData.groupName = grpConf.daemonConfigGroup;
 				$scope.postData.interval = grpConf.interval;
@@ -1078,7 +1078,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.message.danger = "";
 							}, 5000);
 						} else {
-							outerScope.$parent.displayAlert('success', 'Daemon group updated successfully');
+							outerScope.$parent.displayAlert('success', translation.daemonGroupUpdatedSuccessfully[LANG]);
 							$modalInstance.close();
 							outerScope.listDaemonGroupConfig();
 						}
@@ -1104,7 +1104,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Daemon group configuration deleted successfully.');
+				$scope.$parent.displayAlert('success', translation.daemonGroupConfigurationDeletedSuccessfully[LANG] + '.');
 				$scope.listDaemonGroupConfig();
 			}
 		});
