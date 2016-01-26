@@ -475,7 +475,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		};
 
 		var filename = prefix + "_" + counter;
-
 		$scope.form.uploadFileToUrl(Upload, {
 			file: formData[filename],
 			uploadUrl: "/dashboard/environment/cert/upload",
@@ -484,7 +483,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				'key': dashKeyCookie
 			},
 			data: {
-				envId: $routeParams.id
+				envId: $routeParams.id,
+				filename: formData[filename].name
 			},
 			progress: progress
 		}, function (error, response) {

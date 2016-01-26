@@ -24,7 +24,7 @@
         </fieldset>
         <fieldset>
             <legend>Docker Certificates:</legend>
-            <div class="grid">
+            <div class="grid" ng-if="row.deployer.certificates.length > 0">
                 <table cellspacing="0" cellpadding="0" border="0" width="100%">
                     <tbody>
                         <tr>
@@ -33,8 +33,8 @@
                             <th>Length</th>
                             <th>Upload Date</th>
                         </tr>
-                        <tr ng-repeat="cert in row.deployer.certificates" ng-class-even="'even'" ng-class-odd="'odd'" ng-if="row.deployer.certificates.length > 0">
-                            <td ng-style="{'width': '30px'}"><a href="" class="icon icon-bin" ng-click="removeCert(cert._id)"/></td>
+                        <tr ng-repeat="cert in row.deployer.certificates" ng-class-even="'even'" ng-class-odd="'odd'">
+                            <td ng-style="{'width': '30px'}"><a href="" class="icon icon-bin" ng-click="removeCert(cert._id)" ng-confirm-click="Are you sure you want to delete {{cert.filename}}?"/></td>
                             <td>{{cert.filename}}</td>
                             <td>{{cert.length}}</td>
                             <td>{{cert.uploadDate}}</td>
@@ -42,6 +42,9 @@
                     </tbody>
                 </table>
             </div>
+            <alert type="warning" ng-if="row.deployer.certificates.length === 0">
+                No certificates uploaded yet!
+            </alert>
         </fieldset>
     </div>
 </fieldset>
