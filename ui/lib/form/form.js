@@ -67,14 +67,7 @@ function buildForm(context, modal, configuration, cb) {
 	context.form.displayAlert = function (type, msg, isCode, service) {
 		context.form.alerts = [];
 		if (isCode) {
-			if (errorCodes[service] && errorCodes[service][msg]) {
-				if (errorCodes[service][msg][LANG]) {
-					msg = errorCodes[service][msg][LANG];
-				}
-				else{
-					msg = errorCodes[service][msg]['ENG'];
-				}
-			}
+			msg = getCodeMessage(msg, service);
 		}
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
@@ -207,7 +200,7 @@ function buildForm(context, modal, configuration, cb) {
 			for (var j = 0; j < formDataKeys.length; j++) {
 				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
 				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
-					customData.push ({
+					customData.push({
 						label: formDataKeys[j],
 						data: context.form.formData[formDataKeys[j]]
 					});

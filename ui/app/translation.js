@@ -185,13 +185,147 @@ var translation = {
 		"ENG": "Update User",
 		"FRA": "Update User"
 	},
+	"userID": {
+		"ENG": "User Id", //
+		"FRA": "User Id"
+	},
 	"deleteoAuthInfo": {
 		"ENG": "Delete oAuth Info",
 		"FRA": "Delete oAuth Info"
 	},
+	"formUserIdPlaceHolder": {
+		"ENG": "oauthUser",
+		"FRA": "oauthUser"
+	},
+	"formUserIdToolTip": {
+		"ENG": "Enter the user Id.",
+		"FRA": "Enter the user Id."
+	},
+	"oAuthFrmPasswordTooltip": {
+		"ENG": "Keep it empty to maintain the old password.",
+		"FRA": "Keep it empty to maintain the old password."
+	},
+	"oAuthConfirmPasswordTooltip": {
+		"ENG": "Confirm oAuth user password.",
+		"FRA": "Confirm oAuth user password."
+	},
+	"formOathPasswordPlaceholder": {
+		"ENG": "password",
+		"FRA": "password"
+	},
+	"formOathPasswordTooltip": {
+		"ENG": "Enter oAuth user password.",
+		"FRA": "Enter oAuth user password."
+	},
+	
+	"TenantInfoUpdatedSuccessfully": {
+		"ENG": "Tenant Info Updated Successfully",
+		"FRA": "Tenant Info Updated Successfully"
+	},
+	"TenantUpdatedSuccessfully": {
+		"ENG": "Tenant Updated Successfully",
+		"FRA": "Tenant Updated Successfully"
+	},
+	"TenantRemovedSuccessfully": {
+		"ENG": "Tenant removed Successfully",
+		"FRA": "Tenant removed Successfully"
+	},
+	"TenantAddedSuccessfully": {
+		"ENG": "Tenant Added Successfully",
+		"FRA": "Tenant Added Successfully"
+	},
+	"TenantOAuthDeletedSuccessfully": {
+		"ENG": "Tenant OAuth Deleted Successfully",
+		"FRA": "Tenant OAuth Deleted Successfully"
+	},
+	"userUpdatedSuccessfully": {
+		"ENG": "User Updated Successfully",
+		"FRA": "User Updated Successfully"
+	},
+	"userAddedSuccessfully": {
+		"ENG": "User Added Successfully",
+		"FRA": "User Added Successfully"
+	},
+	"userDeletedSuccessfully": {
+		"ENG": "User Deleted Successfully",
+		"FRA": "User Deleted Successfully"
+	},
+	"applicationAddedSuccessfully": {
+		"ENG": "Application Added Successfully",
+		"FRA": "Application Added Successfully"
+	},
+	
+	"applicationKeyAddedSuccessfully": {
+		"ENG": "Application Key Added Successfully",
+		"FRA": "Application Key Added Successfully"
+	},
+	"keyConfigurationUpdatedSuccessfully": {
+		"ENG": "Key Configuration Updated Successfully",
+		"FRA": "Key Configuration Updated Successfully"
+	},
+	"errorInvalidConfigJsonObject": {
+		"ENG": "Error: Invalid Config Json object",
+		"FRA": "Error: Invalid Config Json object"
+	},
+	"errorInvalidDeviceJsonObject": {
+		"ENG": "Error: Invalid device Json object",
+		"FRA": "Error: Invalid device Json object"
+	},
+	"errorInvalidGeoJsonObject": {
+		"ENG": "Error: Invalid geo Json object",
+		"FRA": "Error: Invalid geo Json object"
+	},
+	"externalKeyAddedSuccessfully": {
+		"ENG": "External Key Added Successfully",
+		"FRA": "External Key Added Successfully"
+	},
+	"externalKeyUpdatedSuccessfully": {
+		"ENG": "External Key Updated Successfully",
+		"FRA": "External Key Updated Successfully"
+	},
+	"externalKeyRemovedSuccessfully": {
+		"ENG": "External Key Removed Successfully",
+		"FRA": "External Key Removed Successfully"
+	},
+	"mySecretPhrase": {
+		"ENG": "My secret phrase",
+		"FRA": "My secret phrase"
+	},
+	"applicationKeyRemovedSuccessfully": {
+		"ENG": "Application Key Removed Successfully",
+		"FRA": "Application Key Removed Successfully"
+	},
 	"manageApplications": {
 		"ENG": "Manage Applications",
 		"FRA": "Manage Applications"
+	},
+	"formTntNamePlaceHolder": {
+		"ENG": "Test Tenant",
+		"FRA": "Test Tenant"
+	},
+	"formTentNameToolTip": {
+		"ENG": "Enter Tenant Name.",
+		"FRA": "Enter Tenant Name."
+	},
+	"formTentDescriptionPlaceHolder": {
+		"ENG": "Testing Tenant, used by developers and does not reach production server...",
+		"FRA": "Testing Tenant, used by developers and does not reach production server..."
+	},
+	"formDescriptionTenantToolTip": {
+		"ENG": "Enter a description explaining the usage of this tenant",
+		"FRA": "Enter a description explaining the usage of this tenant"
+	},
+	"formTagPlaceHolder": {
+		"ENG": "Example: testing",
+		"FRA": "Example: testing"
+	},
+	"formTagToolTip": {
+		"ENG": "Optional: Choose a tag to better organize your tenants",
+		"FRA": "Optional: Choose a tag to better organize your tenants"
+	},
+	"formTagFieldMsg": {
+		"ENG": "Choose a tag to better organize your tenants.",
+		"FRA": "Choose a tag to better organize your tenants."
 	},
 	"removeTenant": {
 		"ENG": "Remove Tenant",
@@ -257,7 +391,7 @@ var translation = {
 		"ENG": "Inactive",
 		"FRA": "Inactive"
 	},
-
+	
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",
@@ -555,11 +689,11 @@ var translation = {
 		"ENG": "of",
 		"FRA": "de"
 	},
-	"expiredSessionPleaseLogin":{
-		"ENG":"Session expired. Please login.",
-		"FRA":"Session expired. Please login."
+	"expiredSessionPleaseLogin": {
+		"ENG": "Session expired. Please login.",
+		"FRA": "Session expired. Please login."
 	}
-
+	
 };
 
 var errorCodes = {
@@ -641,11 +775,11 @@ var errorCodes = {
 			"ENG": "Group code already exists. Choose another",
 			"FRA": "Le code du group existe deja. Choose another"
 		},
-
+		
 		500: {
 			"ENG": "This record in locked. You cannot modify or delete it"
 		},
-
+		
 		600: {
 			"ENG": "Database connection error"
 		},
@@ -654,51 +788,168 @@ var errorCodes = {
 		}
 	},
 	"dashboard": {
-		"400": {"ENG": "Unable to add the environment record"},
-		"401": {"ENG": "Unable to update the environment record"},
-		"402": {"ENG": "Unable to get the environment records"},
-		"403": {"ENG": "Environment already exists"},
-		"404": {"ENG": "Unable to remove environment record"},
-		"405": {"ENG": "Invalid environment id provided"},
-		"406": {"ENG": "Unable to update tenant key security information"},
-		"407": {"ENG": "Invalid or no Platform Driver configuration provided!"},
-
-		"409": {"ENG": "Invalid product id provided"},
-		"410": {"ENG": "Unable to add the product record"},
-		"411": {"ENG": "Unable to update the product record"},
-		"412": {"ENG": "Unable to get the product record"},
-		"413": {"ENG": "Product already exists"},
-		"414": {"ENG": "Unable to remove product record"},
-		"415": {"ENG": "Unable to add the product package"},
-		"416": {"ENG": "Unable to update the product package"},
-		"417": {"ENG": "Unable to get the product packages"},
-		"418": {"ENG": "Product package already exists"},
-		"419": {"ENG": "Unable to remove product package"},
-
-		"420": {"ENG": "Unable to add the tenant record"},
-		"421": {"ENG": "Unable to update the tenant record"},
-		"422": {"ENG": "Unable to get the tenant records"},
-		"423": {"ENG": "Tenant already exists"},
-		"424": {"ENG": "Unable to remove tenant record"},
-
-		"425": {"ENG": "Unable to add the tenant OAuth"},
-		"426": {"ENG": "Unable to update the tenant OAuth"},
-		"427": {"ENG": "Unable to get the tenant OAuth"},
-		"428": {"ENG": "Unable to remove tenant OAuth"},
-
-		"429": {"ENG": "Unable to add the tenant application"},
-		"430": {"ENG": "Unable to update the tenant application"},
-		"431": {"ENG": "Unable to get the tenant application"},
-		"432": {"ENG": "Unable to remove tenant application"},
-		"433": {"ENG": "Tenant application already exist"},
-		"434": {"ENG": "Invalid product code or package code provided"},
-
-		"435": {"ENG": "Unable to get the tenant application keys"},
-		"436": {"ENG": "Unable to add a new key to the tenant application"},
-		"437": {"ENG": "Unable to remove key from the tenant application"},
-		"438": {"ENG": "Invalid tenant Id provided"},
-		"439": {"ENG": "Invalid tenant oauth user Id provided"},
-
+		"400": {
+			"ENG": "Unable to add the environment record",
+			"FRA": "Unable to add the environment record"
+		},
+		"401": {
+			"ENG": "Unable to update the environment record",
+			"ENG": "Unable to update the environment record"
+		},
+		"402": {
+			"ENG": "Unable to get the environment records",
+			"ENG": "Unable to get the environment records"
+		},
+		"403": {
+			"ENG": "Environment already exists",
+			"ENG": "Environment already exists"
+		},
+		"404": {
+			"ENG": "Unable to remove environment record",
+			"ENG": "Unable to remove environment record"
+		},
+		"405": {
+			"ENG": "Invalid environment id provided",
+			"ENG": "Invalid environment id provided"
+		},
+		"406": {
+			"ENG": "Unable to update tenant key security information",
+			"ENG": "Unable to update tenant key security information"
+		},
+		"407": {
+			"ENG": "Invalid or no Platform Driver configuration provided!",
+			"ENG": "Invalid or no Platform Driver configuration provided!"
+		},
+		
+		"409": {
+			"ENG": "Invalid product id provided",
+			"ENG": "Invalid product id provided"
+		},
+		"410": {
+			"ENG": "Unable to add the product record",
+			"ENG": "Unable to add the product record"
+		},
+		"411": {
+			"ENG": "Unable to update the product record",
+			"ENG": "Unable to update the product record"
+		},
+		"412": {
+			"ENG": "Unable to get the product record",
+			"ENG": "Unable to get the product record"
+		},
+		"413": {
+			"ENG": "Product already exists",
+			"ENG": "Product already exists"
+		},
+		"414": {
+			"ENG": "Unable to remove product record",
+			"ENG": "Unable to remove product record"
+		},
+		"415": {
+			"ENG": "Unable to add the product package",
+			"ENG": "Unable to add the product package"
+		},
+		"416": {
+			"ENG": "Unable to update the product package",
+			"ENG": "Unable to update the product package"
+		},
+		"417": {
+			"ENG": "Unable to get the product packages",
+			"ENG": "Unable to get the product packages"
+		},
+		"418": {
+			"ENG": "Product package already exists",
+			"ENG": "Product package already exists"
+		},
+		"419": {
+			"ENG": "Unable to remove product package",
+			"ENG": "Unable to remove product package"
+		},
+		
+		"420": {
+			"ENG": "Unable to add the tenant record",
+			"ENG": "Unable to add the tenant record"
+		},
+		"421": {
+			"ENG": "Unable to update the tenant record",
+			"ENG": "Unable to update the tenant record"
+		},
+		"422": {
+			"ENG": "Unable to get the tenant records",
+			"ENG": "Unable to get the tenant records"
+		},
+		"423": {
+			"ENG": "Tenant already exists",
+			"ENG": "Tenant already exists"
+		},
+		"424": {
+			"ENG": "Unable to remove tenant record",
+			"ENG": "Unable to remove tenant record"
+		},
+		
+		"425": {
+			"ENG": "Unable to add the tenant OAuth",
+			"ENG": "Unable to add the tenant OAuth"
+		},
+		"426": {
+			"ENG": "Unable to update the tenant OAuth",
+			"ENG": "Unable to update the tenant OAuth"
+		},
+		"427": {
+			"ENG": "Unable to get the tenant OAuth",
+			"ENG": "Unable to get the tenant OAuth"
+		},
+		"428": {
+			"ENG": "Unable to remove tenant OAuth",
+			"ENG": "Unable to remove tenant OAuth"
+		},
+		
+		"429": {
+			"ENG": "Unable to add the tenant application",
+			"ENG": "Unable to add the tenant application"
+		},
+		"430": {
+			"ENG": "Unable to update the tenant application",
+			"ENG": "Unable to update the tenant application"
+		},
+		"431": {
+			"ENG": "Unable to get the tenant application",
+			"ENG": "Unable to get the tenant application"
+		},
+		"432": {
+			"ENG": "Unable to remove tenant application",
+			"ENG": "Unable to remove tenant application"
+		},
+		"433": {
+			"ENG": "Tenant application already exist",
+			"ENG": "Tenant application already exist"
+		},
+		"434": {
+			"ENG": "Invalid product code or package code provided",
+			"ENG": "Invalid product code or package code provided"
+		},
+		
+		"435": {
+			"ENG": "Unable to get the tenant application keys",
+			"ENG": "Unable to get the tenant application keys"
+		},
+		"436": {
+			"ENG": "Unable to add a new key to the tenant application",
+			"ENG": "Unable to add a new key to the tenant application"
+		},
+		"437": {
+			"ENG": "Unable to remove key from the tenant application",
+			"ENG": "Unable to remove key from the tenant application"
+		},
+		"438": {
+			"ENG": "Invalid tenant Id provided",
+			"ENG": "Invalid tenant Id provided"
+		},
+		"439": {
+			"ENG": "Invalid tenant oauth user Id provided",
+			"ENG": "Invalid tenant oauth user Id provided"
+		},
+		
 		"440": {"ENG": "Unable to add the tenant application ext Key"},
 		"441": {"ENG": "Unable to update the tenant application ext Key"},
 		"442": {"ENG": "Unable to get the tenant application ext Keys"},
@@ -706,29 +957,29 @@ var errorCodes = {
 		"444": {"ENG": "Unable to get the tenant application configuration"},
 		"445": {"ENG": "Unable to update the tenant application configuration"},
 		"446": {"ENG": "Invalid environment provided"},
-
+		
 		"447": {"ENG": "Unable to get tenant oAuth Users"},
 		"448": {"ENG": "tenant oAuth User already exists"},
 		"449": {"ENG": "Unable to add tenant oAuth User"},
 		"450": {"ENG": "Unable to remove tenant oAuth User"},
 		"451": {"ENG": "Unable to updated tenant oAuth User"},
-
+		
 		"452": {"ENG": "Invalid Tenant Code"},
 		"453": {"ENG": "Invalid Tenant External Key"},
 		"454": {"ENG": "Tenant does not exist"},
 		"455": {"ENG": "Tenant Key already exists"},
 		"456": {"ENG": "Error adding Tenant Key"},
-
+		
 		"460": {"ENG": "Unable to find product"},
 		"461": {"ENG": "Unable to find package"},
-
+		
 		"462": {"ENG": "You are not allowed to remove the tenant you are currently logged in with"},
 		"463": {"ENG": "You are not allowed to remove the application you are currently logged in with"},
 		"464": {"ENG": "You are not allowed to remove the key you are currently logged in with"},
 		"465": {"ENG": "You are not allowed to remove the external key you are currently logged in with"},
 		"466": {"ENG": "You are not allowed to remove the product you are currently logged in with"},
 		"467": {"ENG": "You are not allowed to remove the package you are currently logged in with"},
-
+		
 		"500": {"ENG": "This record is locked. You cannot delete it"},
 		"501": {"ENG": "This record is locked. You cannot modify or delete it"},
 		"502": {"ENG": "Invalid cluster name provided"},
@@ -744,7 +995,7 @@ var errorCodes = {
 		"512": {"ENG": "environment database does not exist"},
 		"513": {"ENG": "Error updating environment database"},
 		"514": {"ENG": "Error removing environment database"},
-
+		
 		"600": {"ENG": "Database error"},
 		"601": {"ENG": "No Logged in User found."},
 		"602": {"ENG": "Invalid maintenance operation requested."},
@@ -766,33 +1017,71 @@ var errorCodes = {
 		"618": {"ENG": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."},
 		"619": {"ENG": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation."},
 		"620": {"ENG": "Make sure upload directory exists :"},
-
+		
 		"700": {"ENG": "This Content Schema already Exist"},
 		"701": {"ENG": "Invalid Id provided"},
 		"702": {"ENG": "Content Schema doesn't exists"},
 		"703": {"ENG": "Invalid or no Content Service with this name and version"},
 		"704": {"ENG": "Another Service with the same name or port exists. Change the name of this schema or its service port."},
 		"705": {"ENG": "Tenant already has a key to use the dashboard"},
-
-		"710": {"ENG": "A Daemon with the same name and/or port already exists"},
-		"711": {"ENG": "Unable to update daemon"},
-		"712": {"ENG": "Unable to delete daemon"},
-		"713": {"ENG": "Unable to add daemon"},
-		"714": {"ENG": "A Group Configuration with the same name already exists"},
-		"715": {"ENG": "Unable to update group configuration"},
-		"716": {"ENG": "Unable to delete group configuration"},
-		"717": {"ENG": "Unable to add group configuration"},
-		"718": {"ENG": "Unable to retrieve list of daemons"},
-		"719": {"ENG": "Unable to retrieve list of group configurations"},
-
-		"720": {"ENG": "Unable to update job's service configuration"},
-		"721": {"ENG": "Unable to retrieve job's service configuration"},
-		"722": {"ENG": "Unable to update job's tenant external keys"},
+		
+		"710": {
+			"ENG": "A Daemon with the same name and/or port already exists"
+		},
+		"711": {
+			"ENG": "Unable to update daemon",
+			"ENG": "Unable to update daemon"
+		},
+		"712": {
+			"ENG": "Unable to delete daemon",
+			"ENG": "Unable to delete daemon"
+		},
+		"713": {
+			"ENG": "Unable to add daemon",
+			"ENG": "Unable to add daemon"
+		},
+		"714": {
+			"ENG": "A Group Configuration with the same name already exists",
+			"ENG": "A Group Configuration with the same name already exists"
+		},
+		"715": {
+			"ENG": "Unable to update group configuration",
+			"ENG": "Unable to update group configuration"
+		},
+		"716": {
+			"ENG": "Unable to delete group configuration",
+			"ENG": "Unable to delete group configuration"
+		},
+		"717": {
+			"ENG": "Unable to add group configuration",
+			"ENG": "Unable to add group configuration"
+		},
+		"718": {
+			"ENG": "Unable to retrieve list of daemons",
+			"ENG": "Unable to retrieve list of daemons"
+		},
+		"719": {
+			"ENG": "Unable to retrieve list of group configurations",
+			"ENG": "Unable to retrieve list of group configurations"
+		},
+		
+		"720": {
+			"ENG": "Unable to update job's service configuration",
+			"ENG": "Unable to update job's service configuration"
+		},
+		"721": {
+			"ENG": "Unable to retrieve job's service configuration",
+			"ENG": "Unable to retrieve job's service configuration"
+		},
+		"722": {
+			"ENG": "Unable to update job's tenant external keys",
+			"ENG": "Unable to update job's tenant external keys"
+		},
 		"723": {"ENG": "Unable to list job's tenant external keys"},
 		"724": {"ENG": "Job not found"},
 		"725": {"ENG": "Group Configuration not found"},
 		"726": {"ENG": "Daemon not found"},
-
+		
 		"750": {
 			"ENG": "Invalid Request."
 		}

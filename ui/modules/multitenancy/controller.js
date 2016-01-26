@@ -73,7 +73,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": id, "appId": app.appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, id);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', id);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.applicationKeyRemovedSuccessfully[LANG]  , id);
@@ -93,7 +93,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"routeName": "/dashboard/product/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				var prods = [];
@@ -138,7 +138,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"routeName": "/dashboard/environment/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				response.forEach(function (oneEnv) {
@@ -157,7 +157,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				getSendDataFromServer($scope, ngDataApi, {
@@ -165,7 +165,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					"routeName": "/dashboard/tenant/db/keys/list"
 				}, function (error, tenantDbKeys) {
 					if (error) {
-						$scope.$parent.displayAlert('danger', error.message);
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 					}
 
 					$scope.markTenantsWithDashboardAccess(response, tenantDbKeys, function () {
@@ -246,7 +246,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				"params": {"id": tId}
 			}, function (error, response) {
 				if (error) {
-					$scope.mt.displayAlert('danger', error.message, tId);
+					$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 				}
 				else {
 					row.alreadyGotAuthUsers = true;
@@ -333,7 +333,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": data['_id']}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								if (formData.secret && $scope.access.tenant.oauth.update) {
@@ -349,7 +349,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										"params": {"id": data['_id']}
 									}, function (error) {
 										if (error) {
-											$scope.form.displayAlert('danger', error.message);
+											$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 										}
 										else {
 											$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]  );
@@ -385,7 +385,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": data['_id']}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]  );
@@ -408,7 +408,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": row._id}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.TenantRemovedSuccessfully[LANG] + ".");
@@ -456,7 +456,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						}, function (error, response) {
 
 							if (error) {
-								$scope.$parent.displayAlert('danger', error.message);
+								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listTenants();
@@ -479,7 +479,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										"params": {"id": tId}
 									}, function (error, response) {
 										if (error) {
-											$scope.$parent.displayAlert('danger', error.message);
+											$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 											$scope.modalInstance.close();
 											$scope.form.formData = {};
 											$scope.listTenants();
@@ -492,7 +492,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 												"params": {"id": tId, "appId": appId}
 											}, function (error, response) {
 												if (error) {
-													$scope.$parent.displayAlert('danger', error.message, tId);
+													$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', tId);
 													$scope.modalInstance.close();
 													$scope.form.formData = {};
 													$scope.listTenants();
@@ -506,7 +506,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 														"params": {"id": tId, "appId": appId, "key": key}
 													}, function (error) {
 														if (error) {
-															$scope.$parent.displayAlert('danger', error.message, tId);
+															$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', tId);
 															$scope.modalInstance.close();
 															$scope.form.formData = {};
 															$scope.listTenants();
@@ -597,7 +597,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId}
 		}, function (error, response) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -617,7 +617,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, 'uId': user['_id']}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.userDeletedSuccessfully[LANG]  , tId);
@@ -659,7 +659,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, 'uId': user['_id']}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.userUpdatedSuccessfully[LANG]  , tId);
@@ -717,7 +717,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.userAddedSuccessfully[LANG]  , tId);
@@ -786,7 +786,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								"params": {"id": tId}
 							}, function (error) {
 								if (error) {
-									$scope.form.displayAlert('danger', error.message);
+									$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 								}
 								else {
 									$scope.mt.displayAlert('success', translation.applicationAddedSuccessfully[LANG]  , tId);
@@ -858,7 +858,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, "appId": data.appId}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.applicationUpdatedSuccessfully[LANG]  , tId);
@@ -892,7 +892,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId}
 		}, function (error, response) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -932,7 +932,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.selectedAppRemoved[LANG], tId);
@@ -948,7 +948,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.applicationKeyAddedSuccessfully[LANG], tId);
@@ -971,7 +971,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG], tId);
@@ -1028,7 +1028,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG]  , tId);
@@ -1107,7 +1107,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message, tId);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard', tId);
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.externalKeyAddedSuccessfully[LANG]  , tId);
@@ -1204,7 +1204,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.externalKeyUpdatedSuccessfully[LANG]  , tId);
@@ -1237,7 +1237,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.externalKeyRemovedSuccessfully[LANG], tId);
@@ -1255,7 +1255,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function (error, response) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -1307,7 +1307,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId}
 		}, function (error, response) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
@@ -1346,7 +1346,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function (error, response) {
 			if (error) {
-				$scope.mt.displayAlert('danger', error.message, tId);
+				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
 				if (JSON.stringify(response) !== '{}') {
@@ -1420,7 +1420,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.environments_codes = response;
@@ -1439,7 +1439,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"id": tId}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				var l = response.length;
@@ -1464,7 +1464,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 
 				}, function (error, response) {
 					if (error) {
-						$scope.$parent.displayAlert('danger', error.message);
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 					}
 					else {
 						$scope.currentApplication.parentPckgAcl = response.acl;
@@ -1477,7 +1477,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 							"data": {"serviceNames": serviceNames}
 						}, function (error, response) {
 							if (error) {
-								$scope.$parent.displayAlert('danger', error.message);
+								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								var servicesList = response;
@@ -1513,7 +1513,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 									"params": {'tId': tId}
 								}, function (error, response) {
 									if (error) {
-										$scope.$parent.displayAlert("danger", error.message);
+										$scope.$parent.displayAlert("danger", error.code, true, 'urac');
 									}
 									else {
 										response.forEach(function (grpObj) {
@@ -1577,7 +1577,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"id": tId, "appId": appId}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.msg.type = '';
@@ -1605,7 +1605,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				"params": {"id": tId, "appId": appId}
 			}, function (error) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 				else {
 					$scope.msg.type = '';

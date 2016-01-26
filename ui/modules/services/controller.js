@@ -153,7 +153,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 								"data": postData
 							}, function (error) {
 								if (error) {
-									$scope.form.displayAlert('danger', error.message);
+									$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 								}
 								else {
 									$scope.$parent.displayAlert('success', translation.serviceDataUpdatedSuccessFully[LANG] + '.');
@@ -222,7 +222,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							'progress': progress
 						}, function (error, response) {
 							if (error) {
-								$scope.$parent.displayAlert('danger', error.message);
+								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 								mdm.close();
 							}
 							else {
@@ -276,7 +276,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			"routeName": "/dashboard/services/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				var l = response.length;
@@ -347,7 +347,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			"routeName": "/dashboard/tenant/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			} else {
 				$scope.tenantsList = [];
 				response.forEach(function (oneTenant) {
@@ -379,7 +379,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			"routeName": "/dashboard/environment/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.displayAlert('danger', error.message);
+				$scope.displayAlert('danger', error.code, true, 'dashboard');
 			} else {
 				$scope.environmentsList = [];
 				response.forEach(function (oneEnv) {
@@ -398,7 +398,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			"params": {id: groupId, jobName: jobName}
 		}, function (error, response) {
 			if (error) {
-				$scope.displayAlert('danger', error.message);
+				$scope.displayAlert('danger', error.code, true, 'dashboard');
 			} else {
 				$scope.groupConfigs.rows.forEach(function (oneGroup) {
 					if (oneGroup._id === groupId) {
@@ -444,7 +444,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.displayAlert('danger', error.message);
+								$scope.displayAlert('danger', error.code, true, 'dashboard');
 							} else {
 								$scope.$parent.displayAlert("success", translation.serviceConfigurationUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
@@ -480,7 +480,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			"data": postData
 		}, function (error) {
 			if (error) {
-				$scope.displayAlert('danger', error.message);
+				$scope.displayAlert('danger', error.code, true, 'dashboard');
 			} else {
 				$scope.displayAlert('success', translation.serviceConfigurationClearedSuccessfully[LANG]);
 				$scope.reloadServiceConfig(groupId, jobName);
@@ -547,7 +547,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = error.message;
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);
@@ -573,7 +573,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			"params": {id: grpConf._id, jobName: jobName}
 		}, function (error, response) {
 			if (error) {
-				$scope.displayAlert('danger', error.message);
+				$scope.displayAlert('danger', error.code, true, 'dashboard');
 			} else {
 				$scope.groupConfigs.rows.forEach(function (oneGroup) {
 					if (oneGroup._id === grpConf._id) {
@@ -592,7 +592,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.grid = {
@@ -680,7 +680,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.daemonDataUpdatedSuccessfully[LANG] + '.');
@@ -714,7 +714,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.daemonDeletedSuccessfully[LANG] + '.');
@@ -786,7 +786,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.daemonAddedSuccessfully[LANG] + '.');
@@ -819,7 +819,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.groupConfigs = {
@@ -915,7 +915,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = error.message;
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);
@@ -1073,7 +1073,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = error.message;
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);
@@ -1101,7 +1101,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.daemonGroupConfigurationDeletedSuccessfully[LANG] + '.');

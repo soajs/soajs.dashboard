@@ -16,7 +16,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"routeName": "/dashboard/settings/tenant/get"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				getSendDataFromServer($scope, ngDataApi, {
@@ -24,7 +24,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					"routeName": "/dashboard/tenant/db/keys/list"
 				}, function (error, tenantDbKeys) {
 					if (error) {
-						$scope.$parent.displayAlert('danger', error.message);
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 					} else {
 						$scope.markTenantDashboardAccess(response.tenant, tenantDbKeys, function () {
 							$scope.tenant = response.tenant;
@@ -69,7 +69,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]);
@@ -90,7 +90,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"id": $scope.tenant['_id']}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				if ($scope.tenant.oauth.secret && $scope.access.tenant.oauth.update) {
@@ -104,7 +104,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						"params": {}
 					}, function (error) {
 						if (error) {
-							$scope.form.displayAlert('danger', error.message);
+							$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 						}
 						else {
 							$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
@@ -135,7 +135,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": app.appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.applicationKeyRemovedSuccessfully[LANG]);
@@ -181,7 +181,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"params": {'uId': user['_id']}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.userUpdatedSuccessfully[LANG]);
@@ -238,7 +238,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.userAddedSuccessfully[LANG]);
@@ -271,7 +271,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				"params": {}
 			}, function (error, response) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 				else {
 					$scope.oAuthUsers.list = response;
@@ -287,7 +287,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {'uId': user['_id']}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.userDeletedSuccessfully[LANG]);
@@ -322,7 +322,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"params": {'uId': user['_id']}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.userUpdatedSuccessfully[LANG]);
@@ -355,7 +355,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.applicationKeyAddedSuccessfully[LANG]);
@@ -378,7 +378,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG]);
@@ -434,7 +434,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"params": {"appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG]);
@@ -513,7 +513,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"params": {"appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.externalKeyAddedSuccessfully[LANG]);
@@ -559,7 +559,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editExtKey',
-			label: 'Edit External Key',
+			label: translation.editExternalKey[LANG],
 			sub: true,
 			data: dataForm,
 			actions: [
@@ -610,7 +610,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"params": {"appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.externalKeyUpdatedSuccessfully[LANG]);
@@ -643,7 +643,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId, "key": key}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.externalKeyRemovedSuccessfully[LANG]);
@@ -659,7 +659,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId, "key": key}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 
@@ -702,7 +702,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				delete response['soajsauth'];
@@ -728,7 +728,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			"params": {"appId": appId, "key": key}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				if (JSON.stringify(response) !== '{}') {
@@ -747,7 +747,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							break;
 						}
 					}
-
 				}
 			}
 		});

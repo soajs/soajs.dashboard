@@ -19,7 +19,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"routeName": "/dashboard/product/list"
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				for (var i = 0; i < response.length; i++) {
@@ -59,7 +59,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"params": {"id": row._id}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.productRemovedSuccessfully[LANG] + ".");
@@ -92,7 +92,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
@@ -152,7 +152,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						"params": {"id": row['_id']}
 					}, function (error) {
 						if (error) {
-							$scope.$parent.displayAlert('danger', error.message);
+							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 						}
 						else {
 							$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
@@ -183,7 +183,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"params": {"id": productId}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				for (var i = 0; i < $scope.grid.rows.length; i++) {
@@ -230,7 +230,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"params": {"id": productId}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
@@ -292,7 +292,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							"params": {"id": productId, "code": data.code.split("_")[1]}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
@@ -326,7 +326,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 			"params": {"id": productId, "code": packageCode}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.selectedPackageRemoved[LANG] + ".");
@@ -371,7 +371,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"params": {"id": $routeParams.pid}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				var code = $routeParams.code;
@@ -399,7 +399,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.environments_codes = response;
@@ -417,7 +417,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"data": {"serviceNames": serviceNames}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				response.forEach(function (serv) {
@@ -443,7 +443,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"params": {"id": productId, "code": postData.code.split("_")[1], '_TTL': postData._TTL}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
 				$scope.msg.type = '';
