@@ -26,7 +26,7 @@ var membersConfig = {
 				'name': 'username',
 				'label': translation.username[LANG],
 				'type': 'text',
-				'placeholder': translation.enterUsername[LANG] + '...',
+				'placeholder': translation.enterUsername[LANG],
 				'value': '',
 				'tooltip': translation.usernamesToolTip[LANG],
 				'required': true
@@ -35,7 +35,7 @@ var membersConfig = {
 				'name': 'email',
 				'label': translation.email[LANG],
 				'type': 'email',
-				'placeholder': translation.enterEmail[LANG] + '...',
+				'placeholder': translation.enterEmail[LANG],
 				'value': '',
 				'tooltip': translation.emailToolTip[LANG],
 				'required': true
@@ -44,7 +44,7 @@ var membersConfig = {
 				'name': 'firstName',
 				'label': translation.firstName[LANG],
 				'type': 'text',
-				'placeholder': translation.enterFirstName[LANG] + '...',
+				'placeholder': translation.enterFirstName[LANG],
 				'value': '',
 				'tooltip': translation.enterFirstNameUser[LANG],
 				'required': true
@@ -53,7 +53,7 @@ var membersConfig = {
 				'name': 'lastName',
 				'label': translation.lastName[LANG],
 				'type': 'text',
-				'placeholder': translation.enterLastName[LANG] + '...',
+				'placeholder': translation.enterLastName[LANG],
 				'value': '',
 				'tooltip': translation.enterLastNameUser[LANG],
 				'required': true
@@ -86,8 +86,10 @@ var groupsConfig = {
 		'columns': [
 			{'label': translation.code[LANG], 'field': 'code'},
 			{'label': translation.name[LANG], 'field': 'name'},
-			{'label': translation.description[LANG]
-				, 'field': 'description'}
+			{
+				'label': translation.description[LANG]
+				, 'field': 'description'
+			}
 		],
 		'leftActions': [],
 		'topActions': [],

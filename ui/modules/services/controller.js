@@ -142,7 +142,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 						if (postData.apis.length === 0) {
 							$timeout(function () {
-								alert(translation.youNeedProvideOneAPiForService[LANG] + "!");
+								alert(translation.youNeedProvideOneAPiForService[LANG]);
 							}, 10);
 						}
 						else {
@@ -156,7 +156,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 									$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 								}
 								else {
-									$scope.$parent.displayAlert('success', translation.serviceDataUpdatedSuccessFully[LANG] + '.');
+									$scope.$parent.displayAlert('success', translation.serviceDataUpdatedSuccessFully[LANG]);
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
 									$scope.listServices();
@@ -207,7 +207,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 								fixBackDrop();
 
 								$scope.title = translation.creatingService[LANG];
-								$scope.text = "<p>" + translate.UploadingServicePleaseWaitTextHtml[LANG] + "...</p>";
+								$scope.text = "<p>" + translate.UploadingServicePleaseWaitTextHtml[LANG] + "</p>";
 								$scope.progress = progress;
 							}
 						});
@@ -237,8 +237,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 										fixBackDrop();
 
 										$scope.title = translation.customServiceUploaded[LANG];
-										$scope.text = "<p>" + translation.newServiceCreatedTextHtml[LANG] + "." + "<br />" +
-											translation.proceedEnvironmentsDeployService[LANG] + "." + "<br /></p>";
+										$scope.text = "<p>" + translation.newServiceCreatedTextHtml[LANG] + "<br />" +
+											translation.proceedEnvironmentsDeployService[LANG] + "<br /></p>";
 										$scope.data = true;
 										$scope.deploy = function () {
 											$modalInstance.dismiss('deploy');
@@ -683,7 +683,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.daemonDataUpdatedSuccessfully[LANG] + '.');
+								$scope.$parent.displayAlert('success', translation.daemonDataUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listDaemons();
@@ -717,7 +717,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.daemonDeletedSuccessfully[LANG] + '.');
+				$scope.$parent.displayAlert('success', translation.daemonDeletedSuccessfully[LANG]);
 				$scope.listDaemons(function () {
 					$scope.listDaemonGroupConfig();
 				});
@@ -789,7 +789,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.daemonAddedSuccessfully[LANG] + '.');
+								$scope.$parent.displayAlert('success', translation.daemonAddedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listDaemons();
@@ -1104,7 +1104,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.daemonGroupConfigurationDeletedSuccessfully[LANG] + '.');
+				$scope.$parent.displayAlert('success', translation.daemonGroupConfigurationDeletedSuccessfully[LANG]);
 				$scope.listDaemonGroupConfig();
 			}
 		});

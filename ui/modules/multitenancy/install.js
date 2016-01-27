@@ -122,13 +122,13 @@ var mtTranslation = {
 		"FRA": "Edit Application"
 	},
 	"areYouSureWantRemoveTenant": {
-		"ENG": "Are you sure you want to remove this tenant",
-		"FRA": "Are you sure you want to remove this tenant"
+		"ENG": "Are you sure you want to remove this tenant?",
+		"FRA": "Are you sure you want to remove this tenant?"
 	},
 
 	"choosePackage": {
-		"ENG": "Choose a package",
-		"FRA": "Choose a package"
+		"ENG": "Choose a package.",
+		"FRA": "Choose a package."
 	},
 	"applicationUpdatedSuccessfully": {
 		"ENG": "Application Updated Successfully",

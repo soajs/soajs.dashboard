@@ -76,7 +76,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', id);
 			}
 			else {
-				$scope.mt.displayAlert('success', translation.applicationKeyRemovedSuccessfully[LANG]  , id);
+				$scope.mt.displayAlert('success', translation.applicationKeyRemovedSuccessfully[LANG], id);
 				$scope.listKeys(id, app.appId);
 			}
 		});
@@ -183,7 +183,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							},
 							'delete': {
 								'label': 'Remove',
-								'commandMsg': translation.areYouSureWantRemoveTenant[LANG] + ' ?',
+								'commandMsg': translation.areYouSureWantRemoveTenant[LANG],
 								'command': function (row) {
 									$scope.removeTenant(row);
 								}
@@ -352,7 +352,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 											$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 										}
 										else {
-											$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]  );
+											$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
 											$scope.modalInstance.close();
 											$scope.form.formData = {};
 											$scope.listTenants();
@@ -360,7 +360,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 									});
 								}
 								else {
-									$scope.$parent.displayAlert('success', translation.TenantUpdatedSuccessfully[LANG]  );
+									$scope.$parent.displayAlert('success', translation.TenantUpdatedSuccessfully[LANG]);
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
 									$scope.listTenants();
@@ -388,7 +388,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]  );
+								$scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listTenants();
@@ -411,7 +411,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.TenantRemovedSuccessfully[LANG] + ".");
+				$scope.$parent.displayAlert('success', translation.TenantRemovedSuccessfully[LANG]);
 				$scope.listTenants();
 			}
 		});
@@ -512,7 +512,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 															$scope.listTenants();
 														}
 														else {
-															$scope.$parent.displayAlert('success', translation.TenantAddedSuccessfully[LANG]  );
+															$scope.$parent.displayAlert('success', translation.TenantAddedSuccessfully[LANG]);
 															$scope.modalInstance.close();
 															$scope.form.formData = {};
 															$scope.listTenants();
@@ -620,7 +620,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				$scope.mt.displayAlert('danger', error.code, true, 'dashboard', tId);
 			}
 			else {
-				$scope.mt.displayAlert('success', translation.userDeletedSuccessfully[LANG]  , tId);
+				$scope.mt.displayAlert('success', translation.userDeletedSuccessfully[LANG], tId);
 				$scope.reloadOauthUsers(tId);
 			}
 		});
@@ -646,7 +646,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						};
 						if (formData.password && formData.password != '') {
 							if (formData.password !== formData.confirmPassword) {
-								$scope.form.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]  );
+								$scope.form.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]);
 								return;
 							} else {
 								postData.password = formData.password;
@@ -662,7 +662,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.userUpdatedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.userUpdatedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadOauthUsers(tId);
@@ -706,7 +706,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'password': formData.user_password
 						};
 						if (formData.user_password !== formData.confirmPassword) {
-							$scope.form.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]  );
+							$scope.form.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]);
 							return;
 						}
 
@@ -720,7 +720,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.userAddedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.userAddedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadOauthUsers(tId);
@@ -789,7 +789,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 									$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 								}
 								else {
-									$scope.mt.displayAlert('success', translation.applicationAddedSuccessfully[LANG]  , tId);
+									$scope.mt.displayAlert('success', translation.applicationAddedSuccessfully[LANG], tId);
 									$scope.modalInstance.close();
 									$scope.form.formData = {};
 									$scope.reloadApplications(tId);
@@ -797,7 +797,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							});
 						}
 						else {
-							$scope.form.displayAlert('danger', translation.choosePackage[LANG] + ".");
+							$scope.form.displayAlert('danger', translation.choosePackage[LANG]);
 						}
 					}
 				},
@@ -861,7 +861,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.applicationUpdatedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.applicationUpdatedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadApplications(tId);
@@ -1031,7 +1031,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.keyConfigurationUpdatedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadConfiguration(tId, appId, key);
@@ -1085,7 +1085,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								geoObj = JSON.parse(formData.geo);
 							}
 							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidGeoJsonObject[LANG] + ' ', tId);
+								$scope.form.displayAlert('danger', translation.errorInvalidGeoJsonObject[LANG], tId);
 								return;
 							}
 						}
@@ -1110,7 +1110,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', tId);
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.externalKeyAddedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.externalKeyAddedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listExtKeys(tId, appId, key);
@@ -1207,7 +1207,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.mt.displayAlert('success', translation.externalKeyUpdatedSuccessfully[LANG]  , tId);
+								$scope.mt.displayAlert('success', translation.externalKeyUpdatedSuccessfully[LANG], tId);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listExtKeys(tId, appId, key);

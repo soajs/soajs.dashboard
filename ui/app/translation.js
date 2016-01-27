@@ -227,8 +227,8 @@ var translation = {
 		"FRA": "Tenant Updated Successfully"
 	},
 	"TenantRemovedSuccessfully": {
-		"ENG": "Tenant removed Successfully",
-		"FRA": "Tenant removed Successfully"
+		"ENG": "Tenant removed Successfully.",
+		"FRA": "Tenant removed Successfully."
 	},
 	"TenantAddedSuccessfully": {
 		"ENG": "Tenant Added Successfully",
@@ -435,8 +435,8 @@ var translation = {
 		"FRA": "Remove Application"
 	},
 	"ACLUpdatedSuccessfully": {
-		"ENG": "ACL Updated Successfully",
-		"FRA": "ACL Updated Successfully"
+		"ENG": "ACL Updated Successfully.",
+		"FRA": "ACL Updated Successfully."
 	},
 	"activate": {
 		"ENG": "Activate",
@@ -692,6 +692,10 @@ var translation = {
 	"expiredSessionPleaseLogin": {
 		"ENG": "Session expired. Please login.",
 		"FRA": "Session expired. Please login."
+	},
+	"language": {
+		"ENG": "Language",
+		"FRA": "language"
 	}
 	
 };
@@ -735,37 +739,48 @@ var errorCodes = {
 			"FRA": "The password and its confirmation do not match"
 		},
 		409: {
-			"ENG": "Invalid old password provided"
+			"ENG": "Invalid old password provided",
+			"FRA": "Invalid old password provided"
 		},
 		410: {
-			"ENG": "username taken, please choose another username"
+			"ENG": "username taken, please choose another username",
+			"FRA": "username taken, please choose another username"
 		},
 		411: {
-			"ENG": "invalid user id provided"
+			"ENG": "invalid user id provided",
+			"FRA": "invalid user id provided"
 		},
 		412: {
-			"ENG": "You have provided the same existing email address"
+			"ENG": "You have provided the same existing email address",
+			"FRA": "You have provided the same existing email address"
 		},
 		413: {
-			"ENG": "Invalid profile field provided. Profile should be a stringified object."
+			"ENG": "Invalid profile field provided. Profile should be a stringified object.",
+			"FRA": "Invalid profile field provided. Profile should be a stringified object."
 		},
 		414: {
-			"ENG": "Unable to add user."
+			"ENG": "Unable to add user.",
+			"FRA": "Unable to add user."
 		},
 		415: {
-			"ENG": "Unable to find group."
+			"ENG": "Unable to find group.",
+			"FRA": "Unable to find group."
 		},
 		416: {
-			"ENG": "Unable to create Group."
+			"ENG": "Unable to create Group.",
+			"FRA": "Unable to create Group."
 		},
 		417: {
-			"ENG": "Invalid group id provided"
+			"ENG": "Invalid group id provided",
+			"FRA": "Invalid group id provided"
 		},
 		418: {
-			"ENG": "Unable to edit Group."
+			"ENG": "Unable to edit Group.",
+			"FRA": "Unable to edit Group."
 		},
 		419: {
-			"ENG": "Unable to delete Group."
+			"ENG": "Unable to delete Group.",
+			"FRA": "Unable to delete Group."
 		},
 		420: {
 			"ENG": "Group name already exists. Choose another",
@@ -777,14 +792,17 @@ var errorCodes = {
 		},
 		
 		500: {
-			"ENG": "This record in locked. You cannot modify or delete it"
+			"ENG": "This record in locked. You cannot modify or delete it",
+			"FRA": "This record in locked. You cannot modify or delete it"
 		},
 		
 		600: {
-			"ENG": "Database connection error"
+			"ENG": "Database connection error",
+			"FRA": "Database connection error"
 		},
 		611: {
-			"ENG": "invalid tenant id provided"
+			"ENG": "invalid tenant id provided",
+			"FRA": "invalid tenant id provided"
 		}
 	},
 	"dashboard": {
@@ -794,296 +812,511 @@ var errorCodes = {
 		},
 		"401": {
 			"ENG": "Unable to update the environment record",
-			"ENG": "Unable to update the environment record"
+			"FRA": "Unable to update the environment record"
 		},
 		"402": {
 			"ENG": "Unable to get the environment records",
-			"ENG": "Unable to get the environment records"
+			"FRA": "Unable to get the environment records"
 		},
 		"403": {
 			"ENG": "Environment already exists",
-			"ENG": "Environment already exists"
+			"FRA": "Environment already exists"
 		},
 		"404": {
 			"ENG": "Unable to remove environment record",
-			"ENG": "Unable to remove environment record"
+			"FRA": "Unable to remove environment record"
 		},
 		"405": {
 			"ENG": "Invalid environment id provided",
-			"ENG": "Invalid environment id provided"
+			"FRA": "Invalid environment id provided"
 		},
 		"406": {
 			"ENG": "Unable to update tenant key security information",
-			"ENG": "Unable to update tenant key security information"
+			"FRA": "Unable to update tenant key security information"
 		},
 		"407": {
 			"ENG": "Invalid or no Platform Driver configuration provided!",
-			"ENG": "Invalid or no Platform Driver configuration provided!"
+			"FRA": "Invalid or no Platform Driver configuration provided!"
 		},
 		
 		"409": {
 			"ENG": "Invalid product id provided",
-			"ENG": "Invalid product id provided"
+			"FRA": "Invalid product id provided"
 		},
 		"410": {
 			"ENG": "Unable to add the product record",
-			"ENG": "Unable to add the product record"
+			"FRA": "Unable to add the product record"
 		},
 		"411": {
 			"ENG": "Unable to update the product record",
-			"ENG": "Unable to update the product record"
+			"FRA": "Unable to update the product record"
 		},
 		"412": {
 			"ENG": "Unable to get the product record",
-			"ENG": "Unable to get the product record"
+			"FRA": "Unable to get the product record"
 		},
 		"413": {
 			"ENG": "Product already exists",
-			"ENG": "Product already exists"
+			"FRA": "Product already exists"
 		},
 		"414": {
 			"ENG": "Unable to remove product record",
-			"ENG": "Unable to remove product record"
+			"FRA": "Unable to remove product record"
 		},
 		"415": {
 			"ENG": "Unable to add the product package",
-			"ENG": "Unable to add the product package"
+			"FRA": "Unable to add the product package"
 		},
 		"416": {
 			"ENG": "Unable to update the product package",
-			"ENG": "Unable to update the product package"
+			"FRA": "Unable to update the product package"
 		},
 		"417": {
 			"ENG": "Unable to get the product packages",
-			"ENG": "Unable to get the product packages"
+			"FRA": "Unable to get the product packages"
 		},
 		"418": {
 			"ENG": "Product package already exists",
-			"ENG": "Product package already exists"
+			"FRA": "Product package already exists"
 		},
 		"419": {
 			"ENG": "Unable to remove product package",
-			"ENG": "Unable to remove product package"
+			"FRA": "Unable to remove product package"
 		},
 		
 		"420": {
 			"ENG": "Unable to add the tenant record",
-			"ENG": "Unable to add the tenant record"
+			"FRA": "Unable to add the tenant record"
 		},
 		"421": {
 			"ENG": "Unable to update the tenant record",
-			"ENG": "Unable to update the tenant record"
+			"FRA": "Unable to update the tenant record"
 		},
 		"422": {
 			"ENG": "Unable to get the tenant records",
-			"ENG": "Unable to get the tenant records"
+			"FRA": "Unable to get the tenant records"
 		},
 		"423": {
 			"ENG": "Tenant already exists",
-			"ENG": "Tenant already exists"
+			"FRA": "Tenant already exists"
 		},
 		"424": {
 			"ENG": "Unable to remove tenant record",
-			"ENG": "Unable to remove tenant record"
+			"FRA": "Unable to remove tenant record"
 		},
 		
 		"425": {
 			"ENG": "Unable to add the tenant OAuth",
-			"ENG": "Unable to add the tenant OAuth"
+			"FRA": "Unable to add the tenant OAuth"
 		},
 		"426": {
 			"ENG": "Unable to update the tenant OAuth",
-			"ENG": "Unable to update the tenant OAuth"
+			"FRA": "Unable to update the tenant OAuth"
 		},
 		"427": {
 			"ENG": "Unable to get the tenant OAuth",
-			"ENG": "Unable to get the tenant OAuth"
+			"FRA": "Unable to get the tenant OAuth"
 		},
 		"428": {
 			"ENG": "Unable to remove tenant OAuth",
-			"ENG": "Unable to remove tenant OAuth"
+			"FRA": "Unable to remove tenant OAuth"
 		},
 		
 		"429": {
 			"ENG": "Unable to add the tenant application",
-			"ENG": "Unable to add the tenant application"
+			"FRA": "Unable to add the tenant application"
 		},
 		"430": {
 			"ENG": "Unable to update the tenant application",
-			"ENG": "Unable to update the tenant application"
+			"FRA": "Unable to update the tenant application"
 		},
 		"431": {
 			"ENG": "Unable to get the tenant application",
-			"ENG": "Unable to get the tenant application"
+			"FRA": "Unable to get the tenant application"
 		},
 		"432": {
 			"ENG": "Unable to remove tenant application",
-			"ENG": "Unable to remove tenant application"
+			"FRA": "Unable to remove tenant application"
 		},
 		"433": {
 			"ENG": "Tenant application already exist",
-			"ENG": "Tenant application already exist"
+			"FRA": "Tenant application already exist"
 		},
 		"434": {
 			"ENG": "Invalid product code or package code provided",
-			"ENG": "Invalid product code or package code provided"
+			"FRA": "Invalid product code or package code provided"
 		},
 		
 		"435": {
 			"ENG": "Unable to get the tenant application keys",
-			"ENG": "Unable to get the tenant application keys"
+			"FRA": "Unable to get the tenant application keys"
 		},
 		"436": {
 			"ENG": "Unable to add a new key to the tenant application",
-			"ENG": "Unable to add a new key to the tenant application"
+			"FRA": "Unable to add a new key to the tenant application"
 		},
 		"437": {
 			"ENG": "Unable to remove key from the tenant application",
-			"ENG": "Unable to remove key from the tenant application"
+			"FRA": "Unable to remove key from the tenant application"
 		},
 		"438": {
 			"ENG": "Invalid tenant Id provided",
-			"ENG": "Invalid tenant Id provided"
+			"FRA": "Invalid tenant Id provided"
 		},
 		"439": {
 			"ENG": "Invalid tenant oauth user Id provided",
-			"ENG": "Invalid tenant oauth user Id provided"
+			"FRA": "Invalid tenant oauth user Id provided"
 		},
 		
-		"440": {"ENG": "Unable to add the tenant application ext Key"},
-		"441": {"ENG": "Unable to update the tenant application ext Key"},
-		"442": {"ENG": "Unable to get the tenant application ext Keys"},
-		"443": {"ENG": "Unable to remove tenant application ext Key"},
-		"444": {"ENG": "Unable to get the tenant application configuration"},
-		"445": {"ENG": "Unable to update the tenant application configuration"},
-		"446": {"ENG": "Invalid environment provided"},
+		"440": {
+			"ENG": "Unable to add the tenant application ext Key",
+			"FRA": "Unable to add the tenant application ext Key"
+		},
+		"441": {
+			"ENG": "Unable to update the tenant application ext Key",
+			"FRA": "Unable to update the tenant application ext Key"
+		},
+		"442": {
+			"ENG": "Unable to get the tenant application ext Keys",
+			"FRA": "Unable to get the tenant application ext Keys"
+		},
+		"443": {
+			"ENG": "Unable to remove tenant application ext Key",
+			"FRA": "Unable to remove tenant application ext Key"
+		},
+		"444": {
+			"ENG": "Unable to get the tenant application configuration",
+			"FRA": "Unable to get the tenant application configuration"
+		},
+		"445": {
+			"ENG": "Unable to update the tenant application configuration",
+			"FRA": "Unable to update the tenant application configuration"
+		},
+		"446": {
+			"ENG": "Invalid environment provided",
+			"FRA": "Invalid environment provided"
+		},
 		
-		"447": {"ENG": "Unable to get tenant oAuth Users"},
-		"448": {"ENG": "tenant oAuth User already exists"},
-		"449": {"ENG": "Unable to add tenant oAuth User"},
-		"450": {"ENG": "Unable to remove tenant oAuth User"},
-		"451": {"ENG": "Unable to updated tenant oAuth User"},
+		"447": {
+			"ENG": "Unable to get tenant oAuth Users",
+			"FRA": "Unable to get tenant oAuth Users"
+		},
+		"448": {
+			"ENG": "tenant oAuth User already exists",
+			"FRA": "tenant oAuth User already exists"
+		},
+		"449": {
+			"ENG": "Unable to add tenant oAuth User",
+			"FRA": "Unable to add tenant oAuth User"
+		},
+		"450": {
+			"ENG": "Unable to remove tenant oAuth User",
+			"FRA": "Unable to remove tenant oAuth User"
+		},
+		"451": {
+			"ENG": "Unable to updated tenant oAuth User",
+			"FRA": "Unable to updated tenant oAuth User"
+		},
 		
-		"452": {"ENG": "Invalid Tenant Code"},
-		"453": {"ENG": "Invalid Tenant External Key"},
-		"454": {"ENG": "Tenant does not exist"},
-		"455": {"ENG": "Tenant Key already exists"},
-		"456": {"ENG": "Error adding Tenant Key"},
+		"452": {
+			"ENG": "Invalid Tenant Code",
+			"FRA": "Invalid Tenant Code"
+		},
+		"453": {
+			"ENG": "Invalid Tenant External Key",
+			"FRA": "Invalid Tenant External Key"
+		},
+		"454": {
+			"ENG": "Tenant does not exist",
+			"FRA": "Tenant does not exist"
+		},
+		"455": {
+			"ENG": "Tenant Key already exists",
+			"FRA": "Tenant Key already exists"
+		},
+		"456": {
+			"ENG": "Error adding Tenant Key",
+			"FRA": "Error adding Tenant Key"
+		},
 		
-		"460": {"ENG": "Unable to find product"},
-		"461": {"ENG": "Unable to find package"},
+		"460": {
+			"ENG": "Unable to find product",
+			"FRA": "Unable to find product"
+		},
+		"461": {
+			"ENG": "Unable to find package",
+			"FRA": "Unable to find package"
+		},
 		
-		"462": {"ENG": "You are not allowed to remove the tenant you are currently logged in with"},
-		"463": {"ENG": "You are not allowed to remove the application you are currently logged in with"},
-		"464": {"ENG": "You are not allowed to remove the key you are currently logged in with"},
-		"465": {"ENG": "You are not allowed to remove the external key you are currently logged in with"},
-		"466": {"ENG": "You are not allowed to remove the product you are currently logged in with"},
-		"467": {"ENG": "You are not allowed to remove the package you are currently logged in with"},
+		"462": {
+			"ENG": "You are not allowed to remove the tenant you are currently logged in with",
+			"FRA": "You are not allowed to remove the tenant you are currently logged in with"
+		},
+		"463": {
+			"ENG": "You are not allowed to remove the application you are currently logged in with",
+			"FRA": "You are not allowed to remove the application you are currently logged in with"
+		},
+		"464": {
+			"ENG": "You are not allowed to remove the key you are currently logged in with",
+			"FRA": "You are not allowed to remove the key you are currently logged in with"
+		},
+		"465": {
+			"ENG": "You are not allowed to remove the external key you are currently logged in with",
+			"FRA": "You are not allowed to remove the external key you are currently logged in with"
+		},
+		"466": {
+			"ENG": "You are not allowed to remove the product you are currently logged in with",
+			"FRA": "You are not allowed to remove the product you are currently logged in with"
+		},
+		"467": {
+			"ENG": "You are not allowed to remove the package you are currently logged in with",
+			"FRA": "You are not allowed to remove the package you are currently logged in with"
+		},
 		
-		"500": {"ENG": "This record is locked. You cannot delete it"},
-		"501": {"ENG": "This record is locked. You cannot modify or delete it"},
-		"502": {"ENG": "Invalid cluster name provided"},
-		"503": {"ENG": "Error adding new environment database"},
-		"504": {"ENG": "Environment cluster already exists"},
-		"505": {"ENG": "Error adding environment cluster"},
-		"506": {"ENG": "Error updating environment cluster"},
-		"507": {"ENG": "Invalid db Information provided for session database"},
-		"508": {"ENG": "cluster not found"},
-		"509": {"ENG": "environment database already exist"},
-		"510": {"ENG": "environment session database already exist"},
-		"511": {"ENG": "environment session database does not exist"},
-		"512": {"ENG": "environment database does not exist"},
-		"513": {"ENG": "Error updating environment database"},
-		"514": {"ENG": "Error removing environment database"},
+		"500": {
+			"ENG": "This record is locked. You cannot delete it",
+			"FRA": "This record is locked. You cannot delete it"
+		},
+		"501": {
+			"ENG": "This record is locked. You cannot modify or delete it",
+			"FRA": "This record is locked. You cannot modify or delete it"
+		},
+		"502": {
+			"ENG": "Invalid cluster name provided",
+			"FRA": "Invalid cluster name provided"
+		},
+		"503": {
+			"ENG": "Error adding new environment database",
+			"FRA": "Error adding new environment database"
+		},
+		"504": {
+			"ENG": "Environment cluster already exists",
+			"FRA": "Environment cluster already exists"
+		},
+		"505": {
+			"ENG": "Error adding environment cluster",
+			"FRA": "Error adding environment cluster"
+		},
+		"506": {
+			"ENG": "Error updating environment cluster",
+			"FRA": "Error updating environment cluster"
+		},
+		"507": {
+			"ENG": "Invalid db Information provided for session database",
+			"FRA": "Invalid db Information provided for session database"
+		},
+		"508": {
+			"ENG": "cluster not found",
+			"FRA": "cluster not found"
+		},
+		"509": {
+			"ENG": "environment database already exist",
+			"FRA": "environment database already exist"
+		},
+		"510": {
+			"ENG": "environment session database already exist",
+			"FRA": "environment session database already exist"
+		},
+		"511": {
+			"ENG": "environment session database does not exist",
+			"FRA": "environment session database does not exist"
+		},
+		"512": {
+			"ENG": "environment database does not exist",
+			"FRA": "environment database does not exist"
+		},
+		"513": {
+			"ENG": "Error updating environment database",
+			"FRA": "Error updating environment database"
+		},
+		"514": {
+			"ENG": "Error removing environment database",
+			"FRA": "Error removing environment database"
+		},
 		
-		"600": {"ENG": "Database error"},
-		"601": {"ENG": "No Logged in User found."},
-		"602": {"ENG": "Invalid maintenance operation requested."},
-		"603": {"ENG": "Error executing maintenance operation."},
-		"604": {"ENG": "Service not found."},
-		"605": {"ENG": "Service Host not found."},
-		"606": {"ENG": "Error adding an administrator user for tenant"},
-		"607": {"ENG": "Error adding an administrator group for tenant"},
-		"608": {"ENG": "Permissions denied to access this section"},
-		"609": {"ENG": "Dashboard service is not accessible at the time being Come back later."},
-		"610": {"ENG": "Invalid or profile not found."},
-		"611": {"ENG": "Invalid Service Image Name provided"},
-		"612": {"ENG": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both."},
-		"613": {"ENG": "Invalid Operation! either deploy a service by providing its image or its GC information."},
-		"614": {"ENG": "Service exists!"},
-		"615": {"ENG": "Error adding service host!"},
-		"616": {"ENG": "Error Uploading File."},
-		"617": {"ENG": "Error Registering Service."},
-		"618": {"ENG": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."},
-		"619": {"ENG": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation."},
-		"620": {"ENG": "Make sure upload directory exists :"},
+		"600": {
+			"ENG": "Database error",
+			"FRA": "Database error"
+		},
+		"601": {
+			"ENG": "No Logged in User found.",
+			"FRA": "No Logged in User found."
+		},
+		"602": {
+			"ENG": "Invalid maintenance operation requested.",
+			"FRA": "Invalid maintenance operation requested."
+		},
+		"603": {
+			"ENG": "Error executing maintenance operation.",
+			"FRA": "Error executing maintenance operation."
+		},
+		"604": {
+			"ENG": "Service not found.",
+			"FRA": "Service not found."
+		},
+		"605": {
+			"ENG": "Service Host not found.",
+			"FRA": "Service Host not found."
+		},
+		"606": {
+			"ENG": "Error adding an administrator user for tenant",
+			"FRA": "Error adding an administrator user for tenant"
+		},
+		"607": {
+			"ENG": "Error adding an administrator group for tenant",
+			"FRA": "Error adding an administrator group for tenant"
+		},
+		"608": {
+			"ENG": "Permissions denied to access this section",
+			"FRA": "Permissions denied to access this section"
+		},
+		"609": {
+			"ENG": "Dashboard service is not accessible at the time being Come back later.",
+			"FRA": "Dashboard service is not accessible at the time being Come back later."
+		},
+		"610": {
+			"ENG": "Invalid or profile not found.",
+			"FRA": "Invalid or profile not found."
+		},
+		"611": {
+			"ENG": "Invalid Service Image Name provided",
+			"FRA": "Invalid Service Image Name provided"
+		},
+		"612": {
+			"ENG": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both.",
+			"FRA": "Invalid Operation! you can either deploy a service by providing its image or if it is a GC service but not both."
+		},
+		"613": {
+			"ENG": "Invalid Operation! either deploy a service by providing its image or its GC information.",
+			"FRA": "Invalid Operation! either deploy a service by providing its image or its GC information."
+		},
+		"614": {
+			"ENG": "Service exists!",
+			"FRA": "Service exists!"
+		},
+		"615": {
+			"ENG": "Error adding service host!",
+			"FRA": "Error adding service host!"
+		},
+		"616": {
+			"ENG": "Error Uploading File.",
+			"FRA": "Error Uploading File."
+		},
+		"617": {
+			"ENG": "Error Registering Service.",
+			"FRA": "Error Registering Service."
+		},
+		"618": {
+			"ENG": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section.",
+			"FRA": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."
+		},
+		"619": {
+			"ENG": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation.",
+			"FRA": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation."
+		},
+		"620": {
+			"ENG": "Make sure upload directory exists:",
+			"FRA": "Make sure upload directory exists:"
+		},
 		
-		"700": {"ENG": "This Content Schema already Exist"},
-		"701": {"ENG": "Invalid Id provided"},
-		"702": {"ENG": "Content Schema doesn't exists"},
-		"703": {"ENG": "Invalid or no Content Service with this name and version"},
-		"704": {"ENG": "Another Service with the same name or port exists. Change the name of this schema or its service port."},
-		"705": {"ENG": "Tenant already has a key to use the dashboard"},
+		"700": {
+			"ENG": "This Content Schema already Exist",
+			"FRA": "This Content Schema already Exist"
+		},
+		"701": {
+			"ENG": "Invalid Id provided",
+			"FRA": "Invalid Id provided"
+		},
+		"702": {
+			"ENG": "Content Schema doesn't exists",
+			"FRA": "Content Schema doesn't exists"
+		},
+		"703": {
+			"ENG": "Invalid or no Content Service with this name and version",
+			"FRA": "Invalid or no Content Service with this name and version"
+		},
+		"704": {
+			"ENG": "Another Service with the same name or port exists. Change the name of this schema or its service port.",
+			"FRA": "Another Service with the same name or port exists. Change the name of this schema or its service port."
+		},
+		"705": {
+			"ENG": "Tenant already has a key to use the dashboard",
+			"FRA": "Tenant already has a key to use the dashboard"
+		},
 		
 		"710": {
-			"ENG": "A Daemon with the same name and/or port already exists"
+			"ENG": "A Daemon with the same name and/or port already exists",
+			"FRA": "A Daemon with the same name and/or port already exists"
 		},
 		"711": {
 			"ENG": "Unable to update daemon",
-			"ENG": "Unable to update daemon"
+			"FRA": "Unable to update daemon"
 		},
 		"712": {
 			"ENG": "Unable to delete daemon",
-			"ENG": "Unable to delete daemon"
+			"FRA": "Unable to delete daemon"
 		},
 		"713": {
 			"ENG": "Unable to add daemon",
-			"ENG": "Unable to add daemon"
+			"FRA": "Unable to add daemon"
 		},
 		"714": {
 			"ENG": "A Group Configuration with the same name already exists",
-			"ENG": "A Group Configuration with the same name already exists"
+			"FRA": "A Group Configuration with the same name already exists"
 		},
 		"715": {
 			"ENG": "Unable to update group configuration",
-			"ENG": "Unable to update group configuration"
+			"FRA": "Unable to update group configuration"
 		},
 		"716": {
 			"ENG": "Unable to delete group configuration",
-			"ENG": "Unable to delete group configuration"
+			"FRA": "Unable to delete group configuration"
 		},
 		"717": {
 			"ENG": "Unable to add group configuration",
-			"ENG": "Unable to add group configuration"
+			"FRA": "Unable to add group configuration"
 		},
 		"718": {
 			"ENG": "Unable to retrieve list of daemons",
-			"ENG": "Unable to retrieve list of daemons"
+			"FRA": "Unable to retrieve list of daemons"
 		},
 		"719": {
 			"ENG": "Unable to retrieve list of group configurations",
-			"ENG": "Unable to retrieve list of group configurations"
+			"FRA": "Unable to retrieve list of group configurations"
 		},
 		
 		"720": {
 			"ENG": "Unable to update job's service configuration",
-			"ENG": "Unable to update job's service configuration"
+			"FRA": "Unable to update job's service configuration"
 		},
 		"721": {
 			"ENG": "Unable to retrieve job's service configuration",
-			"ENG": "Unable to retrieve job's service configuration"
+			"FRA": "Unable to retrieve job's service configuration"
 		},
 		"722": {
 			"ENG": "Unable to update job's tenant external keys",
-			"ENG": "Unable to update job's tenant external keys"
+			"FRA": "Unable to update job's tenant external keys"
 		},
-		"723": {"ENG": "Unable to list job's tenant external keys"},
-		"724": {"ENG": "Job not found"},
-		"725": {"ENG": "Group Configuration not found"},
-		"726": {"ENG": "Daemon not found"},
+		"723": {
+			"ENG": "Unable to list job's tenant external keys",
+			"FRA": "Unable to list job's tenant external keys"
+		},
+		"724": {
+			"ENG": "Job not found",
+			"FRA": "Job not found"
+		},
+		"725": {
+			"ENG": "Group Configuration not found",
+			"FRA": "Group Configuration not found"
+		},
+		"726": {
+			"ENG": "Daemon not found",
+			"FRA": "Daemon not found"
+		},
 		
 		"750": {
-			"ENG": "Invalid Request."
+			"ENG": "Invalid Request.",
+			"FRA": "Invalid Request."
 		}
 	}
 };

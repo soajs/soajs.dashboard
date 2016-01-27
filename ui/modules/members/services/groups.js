@@ -107,7 +107,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								currentScope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								currentScope.$parent.displayAlert('success', translation.groupAddedSuccessfully[LANG] + '.');
+								currentScope.$parent.displayAlert('success', translation.groupAddedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listGroups();
@@ -163,7 +163,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								currentScope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								currentScope.$parent.displayAlert('success', translation.groupUpdatedSuccessfully[LANG] + '.');
+								currentScope.$parent.displayAlert('success', translation.groupUpdatedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listGroups();
@@ -191,8 +191,8 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			'routeName': "/urac/admin/group/delete",
 			"params": {'gId': '%id%'},
 			'msg': {
-				'error': translation.errorMessageDeleteGroup[LANG] + '.',
-				'success': translation.successMessageDeleteGroup[LANG] + '.'
+				'error': translation.errorMessageDeleteGroup[LANG],
+				'success': translation.successMessageDeleteGroup[LANG]
 			}
 		};
 
@@ -216,7 +216,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
-				currentScope.$parent.displayAlert('success', translation.selectedGroupRemoved[LANG] + ".");
+				currentScope.$parent.displayAlert('success', translation.selectedGroupRemoved[LANG]);
 				currentScope.listGroups();
 			}
 		});
@@ -281,7 +281,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 										currentScope.form.displayAlert('danger', error.code, true, 'urac');
 									}
 									else {
-										currentScope.$parent.displayAlert('success', translation.UserAddedSuccessfully[LANG] + '.');
+										currentScope.$parent.displayAlert('success', translation.UserAddedSuccessfully[LANG]);
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listGroups();

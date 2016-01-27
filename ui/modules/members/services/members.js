@@ -140,7 +140,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
-										currentScope.$parent.displayAlert('success', translation.memberAddedSuccessfully[LANG] + '.');
+										currentScope.$parent.displayAlert('success', translation.memberAddedSuccessfully[LANG]);
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listMembers();
@@ -245,7 +245,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 										currentScope.form.displayAlert('danger', error.message);
 									}
 									else {
-										currentScope.$parent.displayAlert('success', translation.memberUpdatedSuccessfully[LANG] + '.');
+										currentScope.$parent.displayAlert('success', translation.memberUpdatedSuccessfully[LANG]);
 										currentScope.modalInstance.close();
 										currentScope.form.formData = {};
 										currentScope.listMembers();
@@ -275,8 +275,8 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'active'},
 			'msg': {
-				'error': translation.errorMessageActivateMembers[LANG] + '.',
-				'success': translation.successMessageActivateMembers[LANG] + '.'
+				'error': translation.errorMessageActivateMembers[LANG],
+				'success': translation.successMessageActivateMembers[LANG]
 			}
 		};
 
@@ -292,8 +292,8 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'inactive'},
 			'msg': {
-				'error': translation.errorMessageDeactivateMembers[LANG] + '.',
-				'success': translation.successMessageDeactivateMembers[LANG] + '.'
+				'error': translation.errorMessageDeactivateMembers[LANG],
+				'success': translation.successMessageDeactivateMembers[LANG]
 			}
 		};
 

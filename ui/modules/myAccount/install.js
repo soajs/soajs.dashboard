@@ -14,20 +14,20 @@ var accTranslation = {
 		"FRA": "Changer l'e-mail"
 	},
 	"successMsgChangeEmail": {
-		"ENG": "A link will be sent to your new email address to validate the change",
-		"FRA": "A link will be sent to your new email address to validate the change"
+		"ENG": "A link will be sent to your new email address to validate the change.",
+		"FRA": "A link will be sent to your new email address to validate the change."
 	},
 	"changePassword": {
 		"ENG": "Change Password",
 		"FRA": "Changer le mot de passe"
 	},
 	"errorMessageChangePassword": {
-		"ENG": "Your password and confirm password fields do not match",
-		"FRA": "Your password and confirm password fields do not match"
+		"ENG": "Your password and confirm password fields do not match!",
+		"FRA": "Your password and confirm password fields do not match!"
 	},
 	"successMsgChangePassword": {
-		"ENG": "Password Updated Successfully",
-		"FRA": "Mot de passe Updated Successfully"
+		"ENG": "Password Updated Successfully.",
+		"FRA": "Mot de passe Updated Successfully."
 	},
 	"editProfile": {
 		"ENG": "Edit Profile",
@@ -38,8 +38,8 @@ var accTranslation = {
 		"FRA": "Error: Invalid Profile Json object"
 	},
 	"profileUpdatedSuccessfully": {
-		"ENG": "Profile Updated Successfully",
-		"FRA": "Profile Updated Successfully"
+		"ENG": "Profile Updated Successfully.",
+		"FRA": "Profile Updated Successfully."
 	},
 	"JSONObjectRepresentingYourProfile": {
 		"ENG": "JSON object representing your profile",
@@ -54,28 +54,28 @@ var accTranslation = {
 		"FRA": "You need to Login first"
 	},
 	"yourEmailValidatedChangedSuccessfully": {
-		"ENG": "Your email was validated and changed successfully",
-		"FRA": "Your email was validated and changed successfully"
+		"ENG": "Your email was validated and changed successfully.",
+		"FRA": "Your email was validated and changed successfully."
 	},
 	"youAreAlreadyLoggedIn": {
-		"ENG": "You are already logged in",
-		"FRA": "You are already logged in"
+		"ENG": "You are already logged in.",
+		"FRA": "You are already logged in."
 	},
 	"resetLinkSentYourEmailAddress": {
-		"ENG": "A reset link has been sent to your email address",
-		"FRA": "A reset link has been sent to your email address"
+		"ENG": "A reset link has been sent to your email address.",
+		"FRA": "A reset link has been sent to your email address."
 	},
 	"youAlreadyLoggedInLogOutFirst": {
 		"ENG": "You are already logged in. Log out first",
 		"FRA": "You are already logged in. Log out first"
 	},
 	"passwordSetSuccessfully": {
-		"ENG": "Password was set successfully",
-		"FRA": "Mot de passe was set successfully"
+		"ENG": "Password was set successfully.",
+		"FRA": "Mot de passe was set successfully."
 	},
 	"yourPasswordReset": {
-		"ENG": "Your password was reset",
-		"FRA": "Your Mot de passe was reset"
+		"ENG": "Your password was reset.",
+		"FRA": "Your Mot de passe was reset."
 	},
 	//directives
 	//forgotPassword

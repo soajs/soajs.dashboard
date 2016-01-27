@@ -22,8 +22,8 @@ var srTranslation = {
 		"FRA": "Add New API"
 	},
 	"youNeedProvideOneAPiForService": {
-		"ENG": "You need to provide at least One API for this service",
-		"FRA": "You need to provide at least One API for this service"
+		"ENG": "You need to provide at least One API for this service!",
+		"FRA": "You need to provide at least One API for this service!"
 	},
 	"serviceDataUpdatedSuccessFully": {
 		"ENG": "Service Data Updated Successfully",
@@ -34,8 +34,8 @@ var srTranslation = {
 		"FRA": "Create Custom Service"
 	},
 	"UploadingServicePleaseWaitTextHtml": {
-		"ENG": "Uploading service please wait, do not refresh this page, this will take a few minutes",
-		"FRA": "Uploading service please wait, do not refresh this page, this will take a few minutes"
+		"ENG": "Uploading service please wait, do not refresh this page, this will take a few minutes ...",
+		"FRA": "Uploading service please wait, do not refresh this page, this will take a few minutes ..."
 	},
 	"creatingService": {
 		"ENG": "Creating Service",
@@ -46,12 +46,12 @@ var srTranslation = {
 		"FRA": "Custom Service Uploaded"
 	},
 	"newServiceCreatedTextHtml": {
-		"ENG": "New Service Created from uploaded ZIP File and registered",
-		"FRA": "New Service Created from uploaded ZIP File and registered"
+		"ENG": "New Service Created from uploaded ZIP File and registered.",
+		"FRA": "New Service Created from uploaded ZIP File and registered."
 	},
 	"proceedEnvironmentsDeployService": {
-		"ENG": "Proceed to environments to deploy your service",
-		"FRA": "Proceed to environments to deploy your service"
+		"ENG": "Proceed to environments to deploy your service.",
+		"FRA": "Proceed to environments to deploy your service."
 	},
 	"updateServiceConfiguration": {
 		"ENG": "Update Service Configuration",
@@ -82,8 +82,8 @@ var srTranslation = {
 		"FRA": "Add Job"
 	},
 	"daemonDataUpdatedSuccessfully": {
-		"ENG": "Daemon Data Updated Successfully",
-		"FRA": "Daemon Data Updated Successfully"
+		"ENG": "Daemon Data Updated Successfully.",
+		"FRA": "Daemon Data Updated Successfully."
 	},
 	"daemonDeletedSuccessfully": {
 		"ENG": "Daemon deleted successfully",

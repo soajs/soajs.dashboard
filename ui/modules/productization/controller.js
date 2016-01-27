@@ -42,7 +42,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 					},
 					'delete': {
 						'label': translation.remove[LANG],
-						'commandMsg': translation.areYouSureWantRemoveProduct[LANG] + " ?",
+						'commandMsg': translation.areYouSureWantRemoveProduct[LANG],
 						'command': function (row) {
 							$scope.removeProduct(row);
 						}
@@ -62,7 +62,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.productRemovedSuccessfully[LANG] + ".");
+				$scope.$parent.displayAlert('success', translation.productRemovedSuccessfully[LANG]);
 				$scope.listProducts();
 			}
 		});
@@ -95,7 +95,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
+								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listProducts();
@@ -155,7 +155,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 						}
 						else {
-							$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
+							$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG]);
 							$scope.modalInstance.close();
 							$scope.form.formData = {};
 							$scope.listProducts();
@@ -233,7 +233,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG] + ".");
+								$scope.$parent.displayAlert('success', translation.productAddedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.$parent.$emit('reloadProducts', {});
@@ -295,7 +295,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG] + ".");
+								$scope.$parent.displayAlert('success', translation.productUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.reloadPackages(productId);
@@ -329,7 +329,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.selectedPackageRemoved[LANG] + ".");
+				$scope.$parent.displayAlert('success', translation.selectedPackageRemoved[LANG]);
 				$scope.reloadPackages(productId);
 			}
 		});
@@ -448,7 +448,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			else {
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG] + '.');
+				$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
 			}
 		});
 	};
