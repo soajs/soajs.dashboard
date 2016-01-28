@@ -462,12 +462,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	//};
 
 	$scope.uploadFiles = function (formData, prefix, counter, modal, cb) {
-		var total = Object.keys(formData).length;
-
-		if (counter >= total) {
-			return;
-		}
-
 		var soajsauthCookie = $cookieStore.get('soajs_auth');
 		var dashKeyCookie = $cookieStore.get('soajs_dashboard_key');
 		var progress = {
@@ -483,19 +477,22 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				'key': dashKeyCookie
 			},
 			data: {
-				envId: $routeParams.id,
+				envCode: $scope.formEnvironment.code,
 				filename: formData[filename].name
 			},
 			progress: progress
-		}, function (error, response) {
+		}, function (error) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 				modal.close();
 			} else {
 				counter++;
-				$scope.uploadFiles(formData, prefix, counter);
 
-				if (cb) return cb();
+				if (counter === Object.keys(formData).length) {
+					return cb();
+				} else {
+					$scope.uploadFiles(formData, prefix, counter, modal, cb);
+				}
 			}
 
 		});
