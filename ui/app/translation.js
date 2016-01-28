@@ -275,6 +275,10 @@ var translation = {
 		"ENG": "Error: Invalid geo Json object",
 		"FRA": "Error: Invalid geo Json object"
 	},
+	"errorInvalidJsonObject": {
+		"ENG": "Error: Invalid Json object",
+		"FRA": "Error: Invalid Json object"
+	},
 	"externalKeyAddedSuccessfully": {
 		"ENG": "External Key Added Successfully",
 		"FRA": "External Key Added Successfully"
@@ -619,7 +623,7 @@ var translation = {
 	},
 	"edit": {
 		"ENG": "Edit",
-		"FRA": "Edit"
+		"FRA": "Modifié"
 	},
 	"delete": {
 		"ENG": "Delete",

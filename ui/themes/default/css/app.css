@@ -1367,3 +1367,7 @@ div.entryBox .body .btn-primary.noFloat {
 .languageSelect a.active {
     color: #000;
 }
+
+.breakAll {
+    word-break: break-all;
+}

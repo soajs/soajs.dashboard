@@ -186,6 +186,24 @@ soajsApp.filter('tel', function () {
 	};
 });
 
+
+soajsApp.filter('translateFields', [function () {
+	return function (value, lang) {
+		if (typeof(value) === 'undefined') {
+			return '';
+		}
+		if (!lang) {
+			lang = LANG;
+		}
+		if (lang) {
+			if (translation[value] && translation[value][lang]) {
+				return translation[value][lang];
+			}
+		}
+		return value;
+	}
+}]);
+
 function highlightMyCode() {
 	hljs.configure({"tabReplace": "    "});
 	jQuery('pre code').each(function (i, block) {
