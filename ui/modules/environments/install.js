@@ -21,26 +21,6 @@ var environmentsNav = [
 		'ancestor': ['Home']
 	},
 	{
-		'id': 'environments-dbs',
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/dbs/list'
-		},
-		'label': 'Databases',
-		'url': '#/environments-dbs',
-		'tplPath': 'modules/environments/directives/list-databases.tmpl',
-		'icon': 'database',
-		'pillar':{
-			'name': 'deployment',
-			'label': 'Deploy',
-			'position': 3
-		},
-		'mainMenu': true,
-		'tracker': true,
-		'scripts': ['modules/environments/config.js', 'modules/environments/dbs-ctrl.js', 'modules/environments/services/database.js'],
-		'ancestor': ['Home']
-	},
-	{
 		'id': 'environments-clusters',
 		'checkPermission': {
 			'service': 'dashboard',
@@ -58,6 +38,26 @@ var environmentsNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/environments/config.js', 'modules/environments/clusters-ctrl.js', 'modules/environments/services/clusters.js'],
+		'ancestor': ['Home']
+	},
+	{
+		'id': 'environments-dbs',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/dbs/list'
+		},
+		'label': 'Databases',
+		'url': '#/environments-dbs',
+		'tplPath': 'modules/environments/directives/list-databases.tmpl',
+		'icon': 'database',
+		'pillar':{
+			'name': 'deployment',
+			'label': 'Deploy',
+			'position': 3
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/environments/config.js', 'modules/environments/dbs-ctrl.js', 'modules/environments/services/database.js'],
 		'ancestor': ['Home']
 	},
 	{

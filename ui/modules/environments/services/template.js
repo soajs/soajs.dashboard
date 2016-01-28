@@ -13,16 +13,20 @@ var env_template = {
 				"socketPath": "/var/run/docker.sock"
 			},
 			"machine": {
-				"host": "192.168.59.103",
-				"port": 2376
-			},
-			"joyent": {
-				"host": "us-east-1.docker.joyent.com",
-				"port": 2376
-			},
-			"rackspace": {
-				"host": "rackspace_host",
-				"port": 2376
+				"local": {
+					"host": "192.168.99.101",
+					"port": 2376
+				},
+				"cloud": {
+					"joyent": {
+						"host": "us-east-1.docker.joyent.com",
+						"port": 2376
+					},
+					"rackspace": {
+						"host": "docker.rackspace.com",
+						"port": 2376
+					}
+				}
 			}
 		}
 	},

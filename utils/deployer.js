@@ -17,7 +17,7 @@ function getDeployer(config) {
 }
 
 var deployer = {
-    "createContainer": function (deployerConfig, params, cb) {
+    "createContainer": function (deployerConfig, params, mongo, cb) {
         var name = params.name;
         var environment = params.env;
         var dockerImage = params.image;
@@ -47,6 +47,8 @@ var deployer = {
                 port["" + params.port + "/tcp"] = [{"HostPort": "" + params.port}];
             }
 
+            deployerConfig.envCode = environment;
+
             var deployer = getDeployer(deployerConfig);
             var options = {
                 Image: dockerImage,
@@ -73,23 +75,23 @@ var deployer = {
             if(params.Volumes){
                 options.Volumes = params.Volumes;
             }
-            deployer.createContainer(deployerConfig, options, cb);
+            deployer.createContainer(deployerConfig, options, mongo, cb);
         });
     },
 
-    "start": function (deployerConfig, cid, cb) {
+    "start": function (deployerConfig, cid, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.start(deployerConfig, cid, cb);
+        deployer.start(deployerConfig, cid, mongo, cb);
     },
 
-    "remove": function (deployerConfig, cid, cb) {
+    "remove": function (deployerConfig, cid, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.remove(deployerConfig, cid, cb);
+        deployer.remove(deployerConfig, cid, mongo, cb);
     },
 
-    "info": function (deployerConfig, cid, req, res) {
+    "info": function (deployerConfig, cid, req, res, mongo) {
         var deployer = getDeployer(deployerConfig);
-        deployer.info(deployerConfig, cid, req, res);
+        deployer.info(deployerConfig, cid, req, res, mongo);
     }
 };
 module.exports = deployer;

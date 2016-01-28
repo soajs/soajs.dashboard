@@ -140,6 +140,11 @@ var errors = {
 	"725": "Group Configuration not found",
 	"726": "Daemon not found",
 
+	"727": "Unable to add certificate(s)",
+	"728": "Unable to get certificate(s)",
+	"729": "Unable to remove certificate",
+	"730": "Certificate does not exist",
+
 	"750": "Invalid Request."
 };
 
