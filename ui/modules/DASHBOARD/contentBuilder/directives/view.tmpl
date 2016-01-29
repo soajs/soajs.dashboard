@@ -1,0 +1,31 @@
+<script type="text/ng-template" id="serviceInfoBox.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{data.name}}&nbsp;&nbsp;<em>v:{{data.v}}</em></h3>
+    </div>
+    <div class="modal-body">
+        <table width="100%">
+            <tr>
+                <td><b>Created By:</b>&nbsp;{{data.author}}</td>
+            </tr>
+            <tr>
+                <td><b>Created On:</b>&nbsp;{{data.ts|fulldate}}</td>
+                <td><b>Last Modified On:</b>&nbsp;{{data.modified|fulldate}}</td>
+            </tr>
+        </table>
+        <br/>
+        <tabset>
+            <tab heading="General Configuration">
+                <div ng-include="'modules/DASHBOARD/contentBuilder/directives/view-gs.tmpl'"></div>
+            </tab>
+            <tab heading="Service APIs &amp; Workflow">
+                <div ng-include="'modules/DASHBOARD/contentBuilder/directives/view-ss.tmpl'"></div>
+            </tab>
+            <tab heading="UI Properties">
+                <div ng-include="'modules/DASHBOARD/contentBuilder/directives/view-sui.tmpl'"></div>
+            </tab>
+        </tabset>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>

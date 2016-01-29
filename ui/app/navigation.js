@@ -11,8 +11,8 @@ var navigation = [
 		'id': 'home',
 		'label': translation.home[LANG],
 		'url': '#/dashboard',
-		'tplPath': 'modules/dashboard/directives/dashboard.tmpl',
-		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
+		'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
+		'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
 		'icon': 'home',
 		//'userMenu': true,
 		//'mainMenu': true,
@@ -22,8 +22,8 @@ var navigation = [
 		'id': 'home',
 		'label': translation.home[LANG],
 		'url': '#/login',
-		'tplPath': 'modules/myAccount/directives/login.tmpl',
-		'scripts': ['modules/myAccount/config.js', 'modules/myAccount/controller.js'],
+		'tplPath': 'modules/DASHBOARD/myAccount/directives/login.tmpl',
+		'scripts': ['modules/DASHBOARD/myAccount/config.js', 'modules/DASHBOARD/myAccount/controller.js'],
 		'footerMenu': true
 	},
 	//{
@@ -41,8 +41,8 @@ var navigation = [
 		'id': 'help2',
 		'label': translation.help[LANG],
 		'url': '#/help',
-		'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
-		'tplPath': 'modules/dashboard/directives/help.tmpl',
+		'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
+		'tplPath': 'modules/DASHBOARD/home/directives/help.tmpl',
 		'footerMenu': true
 	}
 ];

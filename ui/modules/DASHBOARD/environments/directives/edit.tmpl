@@ -1,0 +1,360 @@
+<section ng-controller="environmentCtrl">
+    <div class="form">
+        <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" id="envirForm" name="envirForm" ng-submit="envirForm.$valid && save()">
+            <div class="header"><h3 class="ng-binding">{{newEntry? "Create" : "Edit"}} Environment</h3></div>
+            <div class="body">
+                <a href="#/environments" class="w100 f-right t-right">Go Back to Environments</a>
+
+                <div class="header-msg"></div>
+                <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                        <tr class="form-group">
+                            <td class="">
+                                <label>Code</label>
+                                <input type="text" ng-required="true" tooltip="Enter Environment Code; maximum 5 characters."
+                                       placeholder="DEV..." ng-model="formEnvironment.code" class="form-control" ng-disabled="!newEntry"/>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+	                        <td class="">
+		                        <label>Domain</label>
+		                        <input type="text" ng-required="true" tooltip="Enter Environment Domain;"
+		                               placeholder="myDomain.com" ng-model="formEnvironment.domain" class="form-control"/>
+	                        </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <label>Description</label>
+								<textarea tooltip="Enter a description explaining the usage of this environment"
+                                          placeholder="Development Environment, used by developers and does not reach production server..." ng-model="formEnvironment.description" class="form-control">
+								</textarea>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <label>Port</label>
+                                <select ng-model="formEnvironment.port">
+                                    <option value="80" ng-selected="formEnvironment.port === '80'">80</option>
+                                    <option value="8080" ng-selected="formEnvironment.port === '8080'">8080</option>
+                                    <option value="8081" ng-selected="formEnvironment.port === '8081'">8081</option>
+                                    <option value="8082" ng-selected="formEnvironment.port === '8082'">8082</option>
+                                    <option value="8083" ng-selected="formEnvironment.port === '8083'">8083</option>
+                                </select><br />
+                                <em style="margin:0">Environment Gateway Port for Nginx.</em>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <label>Profile To Use</label>
+                                <select ng-model="formEnvironment.profile">
+                                    <option value="single" ng-selected="formEnvironment.profile === 'single'">Single</option>
+                                    <option value="replica3" ng-selected="formEnvironment.profile === 'replica3'">Replica 3</option>
+                                    <option value="replica5" ng-selected="formEnvironment.profile === 'replica5'">Replica 5</option>
+                                </select><br />
+                                <em style="margin:0">Pick a Database Profile to use.</em>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <hr/>
+                                <h3>Platforms</h3>
+                                <div class="grouped">
+                                    <b>Driver to Use:</b>&nbsp;
+                                    <select ng-model="formEnvironment.deployer.type" class="form-control" style="width:300px; min-width:300px;">
+                                        <option value="manual" ng-selected="formEnvironment.deployer.type === 'manual'">Manual</option>
+                                        <option value="container.docker.socket" ng-selected="formEnvironment.deployer.selected === 'docker.socket'">Container &raquo; Socket</option>
+                                        <option value="container.docker.boot2docker" ng-selected="formEnvironment.deployer.selected === 'docker.boot2docker'">Container &raquo; Boot2docker</option>
+                                        <option value="container.docker.joyent" ng-selected="formEnvironment.deployer.selected === 'docker.joyent'">Container &raquo; Joyent</option>
+                                        <option value="container.docker.rackspace" ng-selected="formEnvironment.deployer.selected === 'docker.rackspace'">Container &raquo; Rackspace</option>
+                                    </select><br/><br/>
+
+                                    <br/>
+                                    <h4>Docker:</h4>
+                                    <tabset>
+                                        <tab heading="Socket">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.socket" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Boot2docker">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.boot2docker" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Joyent">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.joyent" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                        <tab heading="Rackspace">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.rackspace" class="form-control"></textarea><br/>
+                                            <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
+                                        </tab>
+                                    </tabset>
+                                    <br/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="form-group">
+                            <td class="">
+                                <hr/>
+                                <h3>Service Config</h3>
+                                <div class="grouped">
+                                    <tabset>
+                                        <tab heading="Controller">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Max Pool Size</label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.controller.maxPoolSize" class="form-control"/>
+                                                <em>Specify the controller's maximum pool size, 0 is unlimited. More info on <a href="https://github.com/request/request" target="_blank">Request</a></em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Authorization</label>
+
+                                                <input name="controller_authorization" type="radio" ng-checked="formEnvironment.services.controller.authorization==true" ng-model="formEnvironment.services.controller.authorization" data-ng-value="true"/>
+                                                True
+                                                <input name="controller_authorization" type="radio" ng-model="formEnvironment.services.controller.authorization" data-ng-value="false"/> False
+                                                <br/>
+                                                <em>Specify if the controller should persist the session of the user for browsers that doesn't support cookies.</em><br />
+                                                <label><span class="icon icon-arrow-right2"></span> Request Timeout</label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.controller.requestTimeout" class="form-control"/>
+                                                <em>Specify the controller maximum timeout limit in seconds, between 20 and 60 seconds</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Request Timeout Renewal</label>
+                                                <input type="number"  ng-required="true"
+                                                       ng-model="formEnvironment.services.controller.requestTimeoutRenewal" class="form-control"/>
+                                                <em>Specify the controller timeout renewal count, 0 for unlimited</em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Awareness">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Health Check Interval </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.awareness.healthCheckInterval" class="form-control"/>
+                                                <em>Specify the amount of time in milliseconds between health check operations, minimum 5000.</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Auto Reload Registry </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.awareness.autoRelaodRegistry" class="form-control"/>
+                                                <em>Specify the amount of time in milliseconds to auto reload the registry, minimum 60000.</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Max Log Count </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.awareness.maxLogCount" class="form-control"/>
+                                                <em>Specify the maximum number to display awareness warning logs for each service before stopping, minimum 5.</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Auto Register Service </label>
+                                                <input ng-required="true" name="autoRegisterService" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegisterService" data-ng-value="true"/> True
+                                                <input ng-required="true" name="autoRegisterService" type="radio" ng-model="formEnvironment.services.config.awareness.autoRegisterService" data-ng-value="false"/> False
+                                                <br /><em>Specify if services should auto register or not.</em>
+                                            </div>
+                                        </tab>
+                                        <tab ng-show="newEntry" heading="Key">
+                                            <div ng-init="newEntry" class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Algorithm </label>
+                                                <input ng-disabled="!newEntry" type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.key.algorithm" class="form-control"/><br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Password </label>
+                                                <input ng-disabled="!newEntry" type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.key.password" class="form-control"/>
+                                                <em>Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on <a href="https://github.com/Gozala/crypto" target="_blank">Crypto</a></em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Logger">
+                                            <div class="grouped clearfix" style="vertical-align: top">
+                                                <label><span class="icon icon-arrow-right2"></span> Configuration</label>
+                                                <textarea ng-required="true" placeholder="{'src': true, 'level': 'debug'}" rows="7" ng-model="formEnvironment.config_loggerObj" class="form-control"></textarea><br/>
+                                                <em>Specify the logger configuration to use. More info on <a href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a></em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Cors">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Enabled </label>
+                                                <input ng-required="true" name="cors.enabled" type="radio" ng-model="formEnvironment.services.config.cors.enabled" data-ng-value="true"/> True
+                                                <input ng-required="true" name="cors.enabled" type="radio" ng-model="formEnvironment.services.config.cors.enabled" data-ng-value="false"/> False
+                                                <br/><em>Specify if CORS should be enabled</em><br />
+                                                <label><span class="icon icon-arrow-right2"></span> Origin </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.cors.origin"
+                                                       class="form-control"/>
+                                                <em>Specify the origin that CORS should support</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Credentials </label>
+                                                <input ng-required="true" name="cors.credentials" type="radio" ng-model="formEnvironment.services.config.cors.credentials" value="true"/> True
+                                                <input ng-required="true" name="cors.credentials" type="radio" ng-model="formEnvironment.services.config.cors.credentials" value="false"/> False
+                                                <br/><em>Specify if CORS should should support credentials in requests</em><br />
+                                                <label><span class="icon icon-arrow-right2"></span> Methods </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.cors.methods"
+                                                       class="form-control"/>
+                                                <em>Enter the methods that CORS should support</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Headers </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.cors.headers"
+                                                       class="form-control"/>
+                                                <em>Enter header values that CORS should support </em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Maxage </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.cors.maxage"
+                                                       class="form-control"/>
+                                                <em>Specify the maximum age value in milliseconds for how long CORS should cache the response</em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="oAuth">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Grants </label>
+                                                <input type="text" ng-required="true" tooltip="Enter comma separated values" placeholder="password,refresh_grants"
+                                                       ng-model="formEnvironment.services.config.oauth.grants"
+                                                       class="form-control"/><br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Debug </label>
+
+                                                <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="true"/> True
+                                                <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="false"/> False
+                                                <br/><em>Enter the supported grant types of oAuth and specify if oAuth should run in debug mode.</em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Ports">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Controller </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.ports.controller"
+                                                       class="form-control"/>
+                                                <em>Provide the controller default port</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> MaintenanceInc </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.ports.maintenanceInc"
+                                                       class="form-control"/>
+                                                <em>Provide the maintenance port range value from the default port; maintenance port = 4000 + 1000, minimum 1000.</em>
+                                                <br/>
+
+                                                <label><span class="icon icon-arrow-right2"></span> RandomInc </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.ports.randomInc"
+                                                       class="form-control"/>
+                                                <em>When new services with no port are registered, random port number is assigned. Provide limit: minimum 100.</em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Cookie">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Secret </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.cookie.secret"
+                                                       class="form-control"/>
+                                                <em>Enter the cookie secret phrase, used to encrypt cookie values, minimum 5 characters.</em>
+                                            </div>
+                                        </tab>
+                                        <tab heading="Session">
+                                            <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Name </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.session.name"
+                                                       class="form-control"/>
+                                                <em>Specify a name for the session, minimum 5 characters.</em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Secret </label>
+                                                <input type="text" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.session.secret"
+                                                       class="form-control"/>
+                                                <em>Specify a secret phrase used to encrypt session values, minimum 5 characters.</em>
+                                                <br/>
+
+                                                <label><span class="icon icon-arrow-right2"></span> Proxy </label>
+                                                <select name="session.proxy" ng-model="formEnvironment.services.config.session.proxy">
+                                                    <option value="undefined" ng-selected="formEnvironment.services.config.session.proxy === undefined">Use "trust proxy" settings from express</option>
+                                                    <option value="true" ng-selected="formEnvironment.services.config.session.proxy === true">Use "X-Forwarded-Proto" in headers</option>
+                                                    <option value="false" ng-selected="formEnvironment.services.config.session.proxy === false">Ignore all headers, only TLS/SSL connections are secured</option>
+                                                </select><br/>
+                                                <em>Pick the proxy option from the list above; 1st value is the default value. More info on <a href="https://github.com/expressjs/session" target="_blank">Express Session</a>.</em><br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Rolling </label>
+                                                <input ng-required="true" name="session.rolling" type="radio" ng-model="formEnvironment.services.config.session.rolling" data-ng-value="true"/> True
+                                                <input ng-required="true" name="session.rolling" type="radio" ng-model="formEnvironment.services.config.session.rolling" data-ng-value="false"/> False
+                                                <br/><em>Choose if the cookie should be set on every response or not. If true, the cookie expiration date will be reset everytime.</em><br />
+                                                <label><span class="icon icon-arrow-right2"></span> Resave </label>
+                                                <input ng-required="true" name="cookie.resave" type="radio" ng-model="formEnvironment.services.config.session.resave" data-ng-value="true"/> True
+                                                <input ng-required="true" name="cookie.resave" type="radio" ng-model="formEnvironment.services.config.session.resave" data-ng-value="false"/> False
+                                                <br/><em>Choose if the session should be saved back to the session store, even if it was never modified during the request.</em><br />
+                                                <label><span class="icon icon-arrow-right2"></span> Save Uninitialized </label>
+                                                <input ng-required="true" name="cookie.saveUninitialized" type="radio" ng-model="formEnvironment.services.config.session.saveUninitialized" data-ng-value="true"/>
+                                                True
+                                                <input ng-required="true" name="cookie.saveUninitialized" type="radio" ng-model="formEnvironment.services.config.session.saveUninitialized" data-ng-value="false"/>
+                                                False
+                                                <br/><em>Choose Whether to force a session that is "uninitialized" to be saved to the store. More info on <a href="https://github.com/expressjs/session" target="_blank">Express Session</a></em>
+                                                <br/>
+                                                <label><span class="icon icon-arrow-right2"></span> Unset </label>
+                                                <input ng-required="true" name="session.unset" type="radio" ng-model="formEnvironment.services.config.session.unset" data-ng-value="false"/> Keep
+                                                <input ng-required="true" name="session.unset" type="radio" ng-model="formEnvironment.services.config.session.unset" data-ng-value="true"/> Destroy
+                                                <br/><em>Choose if the session should be deleted when the response ends or it should be kept, default is kept.</em><br />
+                                                <p><span class="icon icon-arrow-right2"></span>Cookie</p>
+                                                <div class="grouped">
+
+                                                    <label><span class="icon icon-arrow-right"></span>Path </label>
+                                                    <input type="text" ng-required="true"
+                                                           ng-model="formEnvironment.services.config.session.cookie.path"
+                                                           class="form-control"/>
+                                                    <em>Specify path where cookies should be created.</em>
+                                                    <br/>
+                                                    <label><span class="icon icon-arrow-right"></span> Http Only </label>
+                                                    <input ng-required="true" name="cookie.httpOnly" type="radio" ng-model="formEnvironment.services.config.session.cookie.httpOnly" data-ng-value="true"/> True
+                                                    <input ng-required="true" name="cookie.httpOnly" type="radio" ng-model="formEnvironment.services.config.session.cookie.httpOnly" data-ng-value="false"/> False
+                                                    <br/><em>Choose if cookies should be used in HTTP mode only.</em><br />
+                                                    <label><span class="icon icon-arrow-right"></span> Secure </label>
+
+                                                    <input ng-required="true" name="cookie.secure" type="radio" ng-model="formEnvironment.services.config.session.cookie.secure" data-ng-value="true"/> True
+                                                    <input ng-required="true" name="cookie.secure" type="radio" ng-model="formEnvironment.services.config.session.cookie.secure" data-ng-value="false"/> False
+                                                    <br/><em>Choose if cookies should be encrypted.</em><br />
+                                                    <label><span class="icon icon-arrow-right"></span> Max Age </label>
+                                                    <input type="number"
+                                                           ng-model="formEnvironment.services.config.session.cookie.maxAge"
+                                                           class="form-control"/>
+                                                    <em>Specify the lifetime of a cookie in milliseconds, 0 is unlimited.</em>
+                                                    <br/>
+                                                </div>
+                                            </div>
+                                        </tab>
+                                    </tabset>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer"><br/>
+                <input type="submit" class="btn btn-sm btn-primary" value="{{(newEntry) ? 'Add' : 'Save'}} Environment"/>
+            </div>
+            <div ng-show="!newEntry" ng-init="!newEntry">
+                <h4>Tenant Key Security:</h4>
+                <alert type="warning">
+                    <h5><u>Warning:</u></h5>
+                    Changing the tenant key security encryption configuration, disables the usage of all tenant keys.<br/>If you choose to proceed:
+                    <ol>
+                        <li>A new dashboard key will be generated for you and you have to replace the current key in config.js</li>
+                        <li>You need to go to <a href="#/multi-tenancy">Multi-Tenancy</a> and generate new keys for all your tenants</li>
+                    </ol>
+                </alert>
+                <em>Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on what options are supported is found at <a href="https://github.com/Gozala/crypto" target="_blank">Crypto</a>.</em><br/>
+
+                <div ng-show="(waitMessage && waitMessage.message !== '')">
+                    <br/>
+                    <alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+                </div>
+
+                <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                    <tr class="form-group">
+                        <td class="form-select">
+                            <label>Algorithm</label>
+                            <input type="text" ng-required="true" ng-model="formEnvironment.services.config.key.algorithm" class="form-control"/>
+                        </td>
+                    </tr>
+                    <tr class="form-group">
+                        <td class="form-select">
+                            <label>Password</label>
+                            <input type="text" ng-required="true" ng-model="formEnvironment.services.config.key.password" class="form-control"/>
+                        </td>
+                    </tr>
+                </table><br/>
+                <input type="button" ng-confirm-click="Are you sure you want to Change the security key configuration?" ng-click="UpdateTenantSecurity();" value="Update Tenant Security" class="btn btn-primary f-right"/><br/>
+                <hr/>
+            </div>
+        </form>
+    </div>
+</section>

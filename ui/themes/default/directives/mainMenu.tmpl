@@ -14,8 +14,15 @@
 			</ul>
 		</div>
 	</div>
-
-	<ul>
+	<ul ng-if="pillar ==='operate'">
+		<li ng-repeat="link in leftMenu.links" ng-if="currentSelectedEnvironment === link.env" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
+			<a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">
+				<span class="icon icon-{{link.icon}}"></span>
+				<span ng-show="!collapseMainMenu">{{link.label}}</span>
+			</a>
+		</li>
+	</ul>
+	<ul ng-if="pillar!=='operate'">
 		<li ng-repeat="link in leftMenu.links" ng-class="{'first': $first, 'last': $last, selected:link.selected, active: link.url === leftMenu.selectedMenu}">
 			<a href="{{link.url}}" class="mainMenu{{$index}}" id="mainMenu-{{link.id}}">
 				<span class="icon icon-{{link.icon}}"></span>
