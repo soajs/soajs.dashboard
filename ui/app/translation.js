@@ -1317,6 +1317,18 @@ var errorCodes = {
 			"ENG": "Daemon not found",
 			"FRA": "Daemon not found"
 		},
+		"727": {
+			"ENG": "Unable to add certificate(s)"
+		},
+		"728": {
+			"ENG": "Unable to get certificate(s)"
+		},
+		"729": {
+			"ENG": "Unable to remove certificate"
+		},
+		"730": {
+			"ENG": "Certificate does not exist"
+		},
 		
 		"750": {
 			"ENG": "Invalid Request.",

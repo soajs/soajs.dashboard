@@ -88,6 +88,9 @@ soajsApp.filter('label', function () {
 
 soajsApp.filter('object', ['$sce', function ($sce) {
 	function stringifyCamelNotation(value) {
+		if (translation[value] && translation[value][LANG]) {
+			return translation[value][LANG];
+		}
 		return value.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
 			return str.toUpperCase();
 		});
@@ -112,6 +115,7 @@ soajsApp.filter('object', ['$sce', function ($sce) {
 				}
 				else if (typeof(obj[i]) === 'object') {
 					string += iterateAndPrintObj(obj[i]);
+					//string += (obj[i]);
 				}
 				else {
 					if (i !== '$$hashKey') {
@@ -132,6 +136,7 @@ soajsApp.filter('object', ['$sce', function ($sce) {
 			return obj;
 		}
 	};
+
 }]);
 
 soajsApp.filter('range', function () {
