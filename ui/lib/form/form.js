@@ -64,10 +64,16 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.alerts.splice(i, 1);
 	};
 
-	context.form.displayAlert = function (type, msg, isCode, service) {
+	context.form.displayAlert = function (type, msg, isCode, service, orgMesg) {
 		context.form.alerts = [];
 		if (isCode) {
-			msg = getCodeMessage(msg, service);
+			var msgT = getCodeMessage(msg, service);
+			if (msgT) {
+				msg = msgT;
+			}
+			else if (orgMesg) {
+				msg = orgMesg;
+			}
 		}
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
@@ -252,9 +258,10 @@ function buildForm(context, modal, configuration, cb) {
 			}
 			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
 			if (data[oneEntry.name] === 'true') data[oneEntry.name] = true;
-
-			if (oneEntry.required && (data[oneEntry.name] === null || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
-				return false;
+			if (oneEntry.required) {
+				if (data[oneEntry.name] === null || typeof(data[oneEntry.name]) === 'undefined' || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '') {
+					return false;
+				}
 			}
 		}
 		return true;

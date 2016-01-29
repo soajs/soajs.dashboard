@@ -1318,16 +1318,20 @@ var errorCodes = {
 			"FRA": "Daemon not found"
 		},
 		"727": {
-			"ENG": "Unable to add certificate(s)"
+			"ENG": "Unable to add certificate(s)",
+			"FRA": "Unable to add certificate(s)"
 		},
 		"728": {
-			"ENG": "Unable to get certificate(s)"
+			"ENG": "Unable to get certificate(s)",
+			"FRA": "Unable to get certificate(s)"
 		},
 		"729": {
-			"ENG": "Unable to remove certificate"
+			"ENG": "Unable to remove certificate",
+			"FRA": "Unable to remove certificate"
 		},
 		"730": {
-			"ENG": "Certificate does not exist"
+			"ENG": "Certificate does not exist",
+			"FRA": "Certificate does not exist"
 		},
 		
 		"750": {

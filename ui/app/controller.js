@@ -80,10 +80,16 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.alerts.push({'type': type, 'msg': msg});
 		};
 
-		$scope.displayAlert = function (type, msg, isCode, service) {
+		$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 			$scope.alerts = [];
 			if (isCode) {
-				msg = getCodeMessage(msg, service);
+				var msgT = getCodeMessage(msg, service);
+				if (msgT) {
+					msg = msgT;
+				}
+				else if (orgMesg) {
+					msg = orgMesg;
+				}
 			}
 			$scope.alerts.push({'type': type, 'msg': msg});
 			$scope.closeAllAlerts();
