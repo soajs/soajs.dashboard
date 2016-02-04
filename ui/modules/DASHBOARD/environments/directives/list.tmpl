@@ -11,10 +11,10 @@
                 <br/>
                 <tabset ng-show="row.showOptions===true">
                     <tab heading="Service Configuration">
-                        <div ng-include="'modules/environments/directives/list-service-config.tmpl'"></div>
+                        <div ng-include="'modules/DASHBOARD/environments/directives/list-service-config.tmpl'"></div>
                     </tab>
                     <tab heading="Deployment Platforms" ng-if="access.dbs.list">
-                        <div ng-include="'modules/environments/directives/list-deployment.tmpl'"></div>
+                        <div ng-include="'modules/DASHBOARD/environments/directives/list-deployment.tmpl'"></div>
                     </tab>
                 </tabset>
                 <div class="entryAction">

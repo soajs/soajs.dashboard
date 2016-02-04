@@ -516,5 +516,5 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
     };
 
     cmService.loadServices($scope);
-    injectFiles.injectCss("modules/contentManagement/contentManagement.css");
+    injectFiles.injectCss("modules/DEV/contentManagement/contentManagement.css");
 }]);

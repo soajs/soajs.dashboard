@@ -187,7 +187,7 @@ var membersNav = [
 			'route': '/admin/all'
 		},
 		'url': '#/tenants-members',
-		'tplPath': 'modules/members/directives/tenant.tmpl',
+		'tplPath': 'modules/DASHBOARD/members/directives/tenant.tmpl',
 		'icon': 'users',
 		'mainMenu': true,
 		'pillar': {
@@ -196,7 +196,7 @@ var membersNav = [
 			'position': 2
 		},
 		'tracker': true,
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/members.js', 'modules/members/services/groups.js'],
+		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -207,7 +207,7 @@ var membersNav = [
 			'route': '/admin/listUsers'
 		},
 		'url': '#/members',
-		'tplPath': 'modules/members/directives/list.tmpl',
+		'tplPath': 'modules/DASHBOARD/members/directives/list.tmpl',
 		'icon': 'users',
 		'mainMenu': true,
 		'pillar': {
@@ -216,21 +216,21 @@ var membersNav = [
 			'position': 2
 		},
 		'tracker': true,
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/members.js', 'modules/members/services/groups.js'],
+		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'user-acl',
 		'label': translation.userACL[LANG],
 		'url': '#/members/:uId/editUserAcl',
-		'tplPath': 'modules/members/directives/editUserAcl.tmpl',
+		'tplPath': 'modules/DASHBOARD/members/directives/editUserAcl.tmpl',
 		'tracker': true,
 		'pillar': {
 			'name': 'management',
 			'label': translation.product[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/members/config.js', 'modules/members/controller.js', 'modules/members/services/acl.js'],
+		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/acl.js'],
 		'ancestor': [translation.home[LANG], translation.member[LANG]]
 	}
 ];

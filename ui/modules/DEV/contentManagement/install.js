@@ -8,7 +8,7 @@ var cmNav =[
 			'route':'/cb/list'
 		},
 		'url': '#/content-management',
-		'tplPath': 'modules/contentManagement/directives/list.tmpl',
+		'tplPath': 'modules/DEV/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',
 		'pillar':{
 			'name': 'operate',
@@ -18,7 +18,7 @@ var cmNav =[
 		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
-		'scripts': ['modules/contentManagement/config.js', 'modules/contentManagement/controller.js', 'modules/contentManagement/services/contentManagement.js'],
+		'scripts': ['modules/DEV/contentManagement/config.js', 'modules/DEV/contentManagement/controller.js', 'modules/DEV/contentManagement/services/contentManagement.js'],
 		'ancestor': ['Home']
 	}
 ];

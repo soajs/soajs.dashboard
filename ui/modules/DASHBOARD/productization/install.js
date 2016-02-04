@@ -136,39 +136,39 @@ for (var attrname in ProdTranslation) {
 	translation[attrname] = ProdTranslation[attrname];
 }
 
-var productizationNav = [
+var productizationNav =[
 	{
 		'id': 'productization',
 		'label': translation.productization[LANG],
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/product/list'
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/product/list'
 		},
 		'url': '#/productization',
-		'tplPath': 'modules/productization/directives/list.tmpl',
+		'tplPath': 'modules/DASHBOARD/productization/directives/list.tmpl',
 		'icon': 'list',
-		'pillar': {
+		'pillar':{
 			'name': 'management',
 			'label': translation.product[LANG],
 			'position': 2
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
+		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'product-acl',
 		'label': translation.editAppACL[LANG],
 		'url': '#/productization/:pid/editAcl/:code',
-		'tplPath': 'modules/productization/directives/editAcl.tmpl',
+		'tplPath': 'modules/DASHBOARD/productization/directives/editAcl.tmpl',
 		'tracker': true,
-		'pillar': {
+		'pillar':{
 			'name': 'management',
 			'label': translation.product[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/productization/config.js', 'modules/productization/controller.js', 'modules/productization/services/productization.js'],
+		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
 		'ancestor': [translation.home[LANG], translation.productization[LANG]]
 	}
 ];

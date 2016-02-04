@@ -8,37 +8,17 @@ var environmentsNav = [
 		},
 		'label': 'Registries',
 		'url': '#/environments',
-		'tplPath': 'modules/environments/directives/list.tmpl',
+		'tplPath': 'modules/DASHBOARD/environments/directives/list.tmpl',
 		'icon': 'earth',
-		'pillar':{
+		'pillar': {
 			'name': 'deployment',
 			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/environments/config.js','modules/environments/services/template.js', 'modules/environments/controller.js'],
-		'ancestor': ['Home']
-	},
-	{
-		'id': 'environments-clusters',
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/clusters/list'
-		},
-		'label': 'Clusters',
-		'url': '#/environments-clusters',
-		'tplPath': 'modules/environments/directives/list-clusters.tmpl',
-		'icon': 'stack',
-		'pillar':{
-			'name': 'deployment',
-			'label': 'Deploy',
-			'position': 3
-		},
-		'mainMenu': true,
-		'tracker': true,
-		'scripts': ['modules/environments/config.js', 'modules/environments/clusters-ctrl.js', 'modules/environments/services/clusters.js'],
-		'ancestor': ['Home']
+		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/services/template.js', 'modules/DASHBOARD/environments/controller.js'],
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'environments-dbs',
@@ -48,17 +28,37 @@ var environmentsNav = [
 		},
 		'label': 'Databases',
 		'url': '#/environments-dbs',
-		'tplPath': 'modules/environments/directives/list-databases.tmpl',
+		'tplPath': 'modules/DASHBOARD/environments/directives/list-databases.tmpl',
 		'icon': 'database',
-		'pillar':{
+		'pillar': {
 			'name': 'deployment',
 			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/environments/config.js', 'modules/environments/dbs-ctrl.js', 'modules/environments/services/database.js'],
-		'ancestor': ['Home']
+		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/dbs-ctrl.js', 'modules/DASHBOARD/environments/services/database.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'environments-clusters',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/clusters/list'
+		},
+		'label': 'Clusters',
+		'url': '#/environments-clusters',
+		'tplPath': 'modules/DASHBOARD/environments/directives/list-clusters.tmpl',
+		'icon': 'stack',
+		'pillar': {
+			'name': 'deployment',
+			'label': 'Deploy',
+			'position': 3
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/clusters-ctrl.js', 'modules/DASHBOARD/environments/services/clusters.js'],
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'environments-hosts',
@@ -68,31 +68,31 @@ var environmentsNav = [
 		},
 		'label': 'Hosts',
 		'url': '#/environments-hosts',
-		'tplPath': 'modules/environments/directives/list-hosts.tmpl',
+		'tplPath': 'modules/DASHBOARD/environments/directives/list-hosts.tmpl',
 		'icon': 'sphere',
-		'pillar':{
+		'pillar': {
 			'name': 'deployment',
 			'label': 'Deploy',
 			'position': 3
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/environments/config.js', 'modules/environments/hosts-ctrl.js', 'modules/environments/services/hosts.js', 'modules/environments/services/deploy.js'],
-		'ancestor': ['Home']
+		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/hosts-ctrl.js', 'modules/DASHBOARD/environments/services/hosts.js', 'modules/DASHBOARD/environments/services/deploy.js'],
+		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'oneEnvironment',
 		'label': 'Environments',
 		'url': '#/environments/environment/:id?',
-		'tplPath': 'modules/environments/directives/edit.tmpl',
+		'tplPath': 'modules/DASHBOARD/environments/directives/edit.tmpl',
 		'tracker': true,
-		'pillar':{
+		'pillar': {
 			'name': 'deployment',
 			'label': 'Deploy',
 			'position': 3
 		},
-		'scripts': ['modules/environments/config.js', 'modules/environments/controller.js', 'modules/environments/services/clusters.js', 'modules/environments/services/database.js', 'modules/environments/services/hosts.js', 'modules/environments/services/deploy.js'],
-		'ancestor': ['Home']
+		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/controller.js', 'modules/DASHBOARD/environments/services/clusters.js', 'modules/DASHBOARD/environments/services/database.js', 'modules/DASHBOARD/environments/services/hosts.js', 'modules/DASHBOARD/environments/services/deploy.js'],
+		'ancestor': [translation.home[LANG]]
 	}
 ];
 navigation = navigation.concat(environmentsNav);
