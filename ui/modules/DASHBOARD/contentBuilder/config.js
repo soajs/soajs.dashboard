@@ -4,11 +4,11 @@ var cbConfig = {
 		'active': {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'Name', 'field': 'name'},
-				{'label': 'Version', 'field': 'v'},
-				{'label': 'Author', 'field': 'author'},
-				{'label': 'Created', 'field': 'ts', 'filter': 'fulldate'},
-				{'label': 'Last Modified', 'field': 'modified', 'filter': 'fulldate'}
+				{'label': translation.name[LANG], 'field': 'name'},
+				{'label': translation.version[LANG], 'field': 'v'},
+				{'label': translation.author[LANG], 'field': 'author'},
+				{'label': translation.created[LANG], 'field': 'ts', 'filter': 'fulldate'},
+				{'label': translation.lastModified[LANG], 'field': 'modified', 'filter': 'fulldate'}
 			],
 			'defaultSortField': 'name',
 			'defaultLimit': 10
@@ -16,9 +16,9 @@ var cbConfig = {
 		'revisions': {
 			recordsPerPageArray: [5, 10, 50, 100],
 			'columns': [
-				{'label': 'Version', 'field': 'v'},
-				{'label': 'Author', 'field': 'author'},
-				{'label': 'Last Modified', 'field': 'modified', 'filter': "fulldate"}
+				{'label': translation.version[LANG], 'field': 'v'},
+				{'label': translation.author[LANG], 'field': 'author'},
+				{'label': translation.lastModified[LANG], 'field': 'modified', 'filter': "fulldate"}
 			],
 			'defaultSortField': 'v',
 			'defaultSortASC': true,
@@ -32,25 +32,25 @@ var cbConfig = {
 				{
 					'type': 'html',
 					'name': 'html-ignore',
-					'value': 'This type of inputs is computed by the system and included in the listing UI Grid.'
+					'value': translation.cbFormStep2ComputedUIHTMLValue[LANG]
 				},
 				{
 					'name': 'label',
-					'label': 'Input Label',
+					'label': translation.inputLabel[LANG],
 					'type': 'text',
-					'placeholder': 'Title...',
+					'placeholder': translation.title[LANG],
 					'value': '',
-					'tooltip': 'Enter the input label as it should display in the UI',
+					'tooltip': translation.cbFormStep2LabelTooltip,
 					'required': true,
-					'fieldMsg': 'Enter a name for this input.'
+					'fieldMsg': translation.cbFormStep2LabelFieldMSG[LANG]
 				},
 				{
 					'name': 'listing',
-					'label': 'Include in Listing',
+					'label': translation.includingInListing[LANG],
 					'type': 'checkbox',
 					'value': [{"v": "yes", "l": "YES"}],
 					'required': true,
-					'fieldMsg': 'Should this input be included in the Listing Grid?',
+					'fieldMsg': translation.cbFormStep2ComputedUIListingFieldMSG[LANG],
 					'onAction': function(id, data){
 						if(data[0] ==='yes'){
 							jQuery(".wizardForm #filter-wrapper").slideDown();
@@ -66,133 +66,133 @@ var cbConfig = {
 				},
 				{
 					'name': 'filter',
-					'label': 'Optional Display Filter',
+					'label': translation.optionalDisplayFilter[LANG],
 					'type': 'select',
-					'value': [{"v": "date", "l": "Date"}, {"v": "uppercase", "l": "Uppercase"}],
+					'value': [{"v": "date", "l": translation.date[LANG]}, {"v": "uppercase", "l": translation.uppercase[LANG]}],
 					'required': false,
-					'fieldMsg': 'If it should be included in the Listing Grid, pick an optional filter for it'
+					'fieldMsg': translation.cbFormStep2ComputedUIFilterFieldMSG[LANG]
 				},
 				{
 					'name': 'sorting',
-					'label': 'Default Sorting Field',
+					'label': translation.defaultSortingField[LANG],
 					'type': 'checkbox',
-					'value': [{"v": "yes", "l": "YES"}],
+					'value': [{"v": "yes", "l": translation.yes[LANG]}],
 					'required': false,
-					'fieldMsg': 'Should the grid sort the records based on this input?'
+					'fieldMsg': translation.cbFormStep2ComputedUISortingFieldMSG[LANG]
 				},
 				{
 					'name': 'sortDirection',
-					'label': 'Default Sort Descending ',
+					'label': translation.defaultSortDescending[LANG],
 					'type': 'select',
 					'value': [{"v": "asc", "l": "ASC"}, {"v": "desc", "l": "DESC"}],
 					'required': false,
-					'fieldMsg': 'Should the grid sort the records based on this input in descending order?'
+					'fieldMsg': translation.cbFormStep2ComputedUISortDirectionFieldMSG[LANG]
 				}
 			],
             fileUI:[
                 {
                     'type': 'html',
                     'name': 'html-ignore',
-                    'value': 'This Type of inputs represents documents and media files and is streamed back and forth from the service.'
+                    'value': translation.cbFormStep2FileUIHtml[LANG]
                 },
                 {
                     'name': 'label',
-                    'label': 'Input Label',
+                    'label': translation.inputLabel[LANG],
                     'type': 'text',
-                    'placeholder': 'Title...',
+                    'placeholder': translation.title[LANG],
                     'value': '',
-                    'tooltip': 'Enter the input label as it should display in the UI',
+                    'tooltip': translation.cbFormStep2LabelTooltip[LANG],
                     'required': true,
-                    'fieldMsg': 'Enter a name for this input.'
+                    'fieldMsg': translation.cbFormStep2LabelFieldMSG[LANG]
                 },
                 {
                     "name": "type",
-                    "label": "UI Type",
+                    "label": translation.uiType[LANG],
                     "type": "select",
                     "value": [
-                        {"v": "audio", "l": "Audio Track"},
-                        {"v": "video", "l": "Video Track"},
-                        {"v": "image", "l": "Image"},
-                        {"v": "document", "l": "Document"}
+                        {"v": "audio", "l": translation.audioTrack[LANG]},
+                        {"v": "video", "l":  translation.videoTrack[LANG]},
+                        {"v": "image", "l":  translation.image[LANG]},
+                        {"v": "document", "l":  translation.document[LANG]}
                     ],
                     "required": true,
-                    "fieldMsg": "Pick the type of the input, to be rendered when add/update form opens in UI Module."
+                    "fieldMsg": translation.cbFormStep2FileUITypeFieldMsg[LANG]
                 },
                 {
                     "name": "limit",
-                    "label": "Limit",
+                    "label": translation.limit[LANG],
                     "type": "number",
                     "placholder": "0",
-                    "tooltip": "Enter the max number of files that can be attached to one entry. 0 means unlimited.",
+                    "tooltip": translation.cbFormStep2FileUILimitTooltip[LANG],
                     "value": 1,
                     "required": false,
-                    "fieldMsg": "The value of this field applies only to files and defines the maximum limit of files that can be added to one data record."
+                    "fieldMsg": translation.cbFormStep2FileUILimitFieldMsg[LANG]
                 }
             ],
 			user: [
 				{
 					'type': 'html',
 					'name': 'html-ignore',
-					'value': 'This Type of inputs is entered by the User while filling the data record fields.'
+					'value': translation.cbFormStep2UserHtml[LANG]
 				},
 				{
-					'label': 'Input General Information',
+					'label': translation.inputGeneralInformation[LANG],
 					'name': 'field',
 					'type': 'group',
 					'entries': [
 						{
 							'name': 'label',
-							'label': 'Input Label',
+							'label': translation.inputLabel[LANG],
 							'type': 'text',
-							'placeholder': 'Title...',
+							'placeholder': translation.title[LANG],
 							'value': '',
-							'tooltip': 'Enter the input label as it should display in the UI',
+							'tooltip': translation.cbFormStep2LabelTooltip[LANG],
 							'required': true,
-							'fieldMsg': 'Enter a name for this input.'
+							'fieldMsg': translation.cbFormStep2LabelFieldMSG[LANG]
 						},
 						{
 							"name": "required",
-							"label": "Required",
+							"label": translation.required[LANG],
 							"type": "radio",
 							"value": [{"v": false}, {"v": true}],
 							"required": false,
-							'fieldMsg': 'Is this input required by the service API?'
+							'fieldMsg': translation.cbFormStep2FieldRequiredFieldMsg[LANG]
 						}
 					]
 				},
 				{
 					"name": "service",
-					"label": "Input IMFV Properties",
+					"label": translation.InputIMFVProperties[LANG],
 					"type": "group",
 					"collapsed": true,
 					"entries": [
 						{
 							'name': 'imfv',
-							'label': 'IMFV configuration',
+							'label': translation.imfvConfiguration[LANG],
 							'type': 'textarea',
 							'rows': 10,
 							'placeholder': JSON.stringify({
 								"type": "string"
 							}, null, 2),
 							'value': '',
-							'tooltip': 'Enter the JSON Schema of this input',
-							'fieldMsg': 'Provide the JSON Schema validation of this input for the service APIs.'
+							'tooltip': translation.cbFormStep2FieldImfvTooltip[LANG],
+							'fieldMsg': translation.cbFormStep2FieldImfvFieldMsg[LANG]
 						}
 					]
 				},
 				{
 					'name': 'grid',
-					'label': 'Input Listing Properties',
+					'label': translation.inputListingProperties[LANG],
 					'type': 'group',
 					'collapsed': true,
 					'entries': [
 						{
 							'name': 'listing',
-							'label': 'Include in Listing',
+							'label': translation.includingInListing[LANG],
 							'type': 'checkbox',
-							'value': [{"v": "yes", "l": "YES"}],
+							'value': [{"v": "yes", "l": translation.yes[LANG]}],
 							'required': true,
-							'fieldMsg': 'Should this input be included in the Listing Grid?',
+							'fieldMsg': translation.cbFormStep2ComputedUIListingFieldMSG[LANG],
 							'onAction': function(id, data){
 								if(data[0] ==='yes'){
 									jQuery(".wizardForm #filter-wrapper").slideDown();
@@ -208,28 +208,28 @@ var cbConfig = {
 						},
 						{
 							'name': 'filter',
-							'label': 'Optional Display Filter',
+							'label': translation.optionalDisplayFilter[LANG],
 							'type': 'select',
 							'value': [
-								{"v": "date", "l": "Date"},
-								{"v": "fulldate", "l": "Full Date"},
-								{"v": "TTL", "l": "TTL Value"},
-								{"v": "uppercase", "l": "Uppercase"},
-								{"v": "lowercase", "l": "Lowercase"},
-								{"v": "trimmed", "l": "Trimmed 170 Characters"},
-								{"v": "trimmed100", "l": "Lowercase 100 Characters"},
-								{"v": "object", "l": "Rendered Object"}
+								{"v": "date", "l": translation.date[LANG]},
+								{"v": "fulldate", "l": translation.fullDate[LANG]},
+								{"v": "TTL", "l": translation.ttlValue[LANG]},
+								{"v": "uppercase", "l": translation.uppercase[LANG]},
+								{"v": "lowercase", "l": translation.lowercase[LANG]},
+								{"v": "trimmed", "l": translation.trimmedCharacters},
+								{"v": "trimmed100", "l": translation.lowercaseCharacters[LANG]},
+								{"v": "object", "l": translation.renderedObject[LANG]}
 							],
 							'required': false,
-							'fieldMsg': 'If it should be included in the Listing Grid, pick an optional filter for it'
+							'fieldMsg': translation.cbFormStep2ComputedUIFilterFieldMSG[LANG]
 						},
 						{
 							'name': 'sorting',
-							'label': 'Default Sorting Field',
+							'label': translation.defaultSortingField[LANG],
 							'type': 'checkbox',
-							'value': [{"v": "yes", "l": "YES"}],
+							'value': [{"v": "yes", "l": translation.yes[LANG]}],
 							'required': false,
-							'fieldMsg': 'Should the grid sort the records based on this input?'
+							'fieldMsg': translation.cbFormStep2ComputedUISortingFieldMSG[LANG]
 						},
 						{
 							'name': 'sortDirection',
@@ -237,36 +237,36 @@ var cbConfig = {
 							'type': 'select',
 							'value': [{"v": "asc", "l": "ASC"}, {"v": "desc", "l": "DESC"}],
 							'required': false,
-							'fieldMsg': 'Should the grid sort the records based on this input in descending order?'
+							'fieldMsg': translation.cbFormStep2ComputedUISortDirectionFieldMSG[LANG]
 						}
 					]
 				},
 				{
 					'name': 'form',
-					'label': 'Input Form Properties',
+					'label': translation.inputFormProperties[LANG],
 					'type': 'group',
 					'collapsed': true,
 					'entries': [
 						{
 							"name": "type",
-							"label": "UI Type",
+							"label": translation.uiType[LANG],
 							"type": "select",
 							"value": [
-								{"v": "text", "l": "Text Input"},
-								{"v": "email", "l": "Email Address"},
+								{"v": "text", "l": translation.textInput[LANG]},
+								{"v": "email", "l": translation.emailAddress[LANG]},
 								{"v": "url", "l": "URL"},
-								{"v": "phone", "l": "Phone Number"},
-								{"v": "number", "l": "Number"},
-								{"v": "password", "l": "Password"},
-								{"v": "textarea", "l": "Text Box"},
-								{"v": "editor", "l": "Advanced Editor"},
-								{"v": "radio", "l": "list (one value)"},
-								{"v": "checkbox", "l": "list (multiple values)"},
-								{"v": "select", "l": "list (drop down menu)"},
-								{"v": "multi-select", "l": "list (drop down menu multiple selection)"}
+								{"v": "phone", "l": translation.phoneNumber[LANG]},
+								{"v": "number", "l": translation.number[LANG]},
+								{"v": "password", "l": translation.password[LANG]},
+								{"v": "textarea", "l": translation.textBox[LANG]},
+								{"v": "editor", "l": translation.advancedEditor[LANG]},
+								{"v": "radio", "l": translation.listOneValue[LANG]},
+								{"v": "checkbox", "l": translation.listMultipleValue[LANG]},
+								{"v": "select", "l": translation.listDropDownMenu[LANG]},
+								{"v": "multi-select", "l": translation.listDropDownMenuMultipleSelection[LANG]}
 							],
 							"required": true,
-							"fieldMsg": "Pick the type of the input, to be rendered when add/update form opens in UI Module.",
+							"fieldMsg": translation.cbFormStep2FileUITypeFieldMsg[LANG],
 							'onAction': function(id, data){
 								var arr1 = ['radio','checkbox','select','multi-select'];
 								if(arr1.indexOf(data)!== -1){
@@ -279,33 +279,33 @@ var cbConfig = {
 						},
 						{
 							'name': 'defaultValue',
-							'label': 'Default Values',
+							'label': translation.defaultValue[LANG],
 							'type': 'textarea',
 							'rows': 2,
-							'placeholder': "label1||value1||selected -- label2||value2 -- label3||value3 -- ...",
+							'placeholder': translation.cbFormStep2UserFormDefaultValuePlaceholder[LANG],
 							'value': '',
-							'tooltip': 'Provide the default values',
-							'fieldMsg': 'Provide default values in case of: radio - checkbox - select - multi-select'
+							'tooltip': translation.cbFormStep2UserFormDefaultValueTooltip[LANG],
+							'fieldMsg': translation.cbFormStep2UserFormDefaultValueFieldMsg[LANG]
 						},
 						{
 							"name": "placeholder",
-							"label": "Placeholder",
+							"label": translation.placeholder[LANG],
 							"type": "text",
-							"placeholder": "placeholder...",
-							"tooltip": "Enter an optional placeholder value for the input",
+							"placeholder": translation.cbFormStep2UserFormPlaceholderPlaceholder[LANG],
+							"tooltip": translation.cbFormStep2UserFormPlaceholderTooltip[LANG],
 							"value": "",
 							"required": false,
-							"fieldMsg": "The value of this field shows up in text & textarea inputs when provided as a placeholder value."
+							"fieldMsg": translation.cbFormStep2UserFormPlaceholderFieldMsg[LANG]
 						},
 						{
 							"name": "tooltip",
-							"label": "Tooltip",
+							"label": translation.tooltip[LANG],
 							"type": "text",
-							"placeholder": "tooltip...",
-							"tooltip": "Enter an optional tooltip value for the input",
+							"placeholder": translation.cbFormStep2UserFormTooltipPlaceholder[LANG],
+							"tooltip": translation.cbFormStep2UserFormTooltipTooltip[LANG],
 							"value": "",
 							"required": false,
-							"fieldMsg": "The value of this field shows up in a tooltip message when the mouse is over the input."
+							"fieldMsg": translation.cbFormStep2UserFormTooltipFieldMsg[LANG]
 						}
 					]
 				}
@@ -315,39 +315,39 @@ var cbConfig = {
 			settings: [
 				{
 					"name": "servicePort",
-					"label": "Service Port",
+					"label": translation.servicePort[LANG],
 					"type": "number",
 					"placeholder": "4100",
 					"value": "",
-					"tooltip": "Enter the service port",
+					"tooltip": translation.enterServicePortNumber[LANG],
 					"required": true,
-					'fieldMsg': "Specify the port number of this service"
+					'fieldMsg': translation.cbFormStep3ServicePortFieldMsg[LANG]
 				},
 				{
 					"name": "requestTimeout",
-					"label": "Request Timeout",
+					"label": translation.requestTimeout[LANG],
 					"type": "number",
 					"placeholder": "30",
 					"value": "",
-					"tooltip": "Enter the request Timeout",
+					"tooltip": translation.cbFormStep3requestTimeoutTooltip[LANG],
 					"required": false,
-					'fieldMsg': "Specify how long the service should wait for the API response before timing out"
+					'fieldMsg': translation.cbFormStep3requestTimeoutFieldMsg[LANG]
 				},
 				{
 					"name": "requestTimeoutRenewal",
-					"label": "Request Timeout Renewal",
+					"label": translation.requestTimeoutRenewal[LANG],
 					"type": "number",
 					"placeholder": "5",
 					"value": "",
-					"tooltip": "Enter the request Timeout renewal",
+					"tooltip": translation.cbFormStep3requestTimeoutRenewalTooltip[LANG],
 					"required": false,
-					'fieldMsg': "In case of timeout, how many attempts should be repeated before giving up"
+					'fieldMsg': translation.cbFormStep3requestTimeoutRenewalFieldMsg[LANG]
 				},
                 {
                     "name": "maxFileUpload",
-                    "label": "Maximum Upload File Limit",
+                    "label": translation.maximumUploadFileLimit[LANG],
                     "type": "select",
-                    "tooltip": "If the service supports file uploads, specify the maximum upload limit allowed",
+                    "tooltip": translation.cbFormStep3MaxFileUploadTooltip[LANG],
                     "value": [
                         { 'v' : '500', 'l': '500kb', 'selected': true },
                         { 'v' : '1024', 'l': '1M' },
@@ -358,242 +358,242 @@ var cbConfig = {
                         { 'v' : '10240', 'l': '10M' }
                     ],
                     "required": false,
-                    'fieldMsg': "Pick the Maximum upload limit allowed for files."
+                    'fieldMsg': translation.cbFormStep3MaxFileUploadFieldMsg[LANG]
                 },
 				{
 					"name": "collection",
-					"label": "Default Collection",
+					"label": translation.defaultCollection[LANG],
 					"type": "text",
-					"placeholder": "data",
-					"tooltip": "Enter the default collection where the data should be stored.",
+					"placeholder": translation.data[LANG],
+					"tooltip": translation.cbFormStep3defaultCollectionTooltip[LANG],
 					"value": "",
 					"required": true,
-					'fieldMsg': "Provide the name of the default collection where the data will be stored by this service"
+					'fieldMsg': translation.cbFormStep3defaultCollectionFieldMsg[LANG]
 				},
 				{
 					"name": "errors",
-					"label": "Error Codes & Message",
+					"label": translation.errorCodesMessage[LANG],
 					"type": "textarea",
 					"rows": 6,
-					"placeholder": JSON.stringify({400: "Database Error", 401: "Invalid Id provided."}, null, 2),
-					"tooltip": "Enter the error codes that should be assigned to your APIs",
+					"placeholder": JSON.stringify({400: translation.databaseError[LANG], 401: translation.invalidIdProvided[LANG]}, null, 2),
+					"tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					"value": "",
 					"required": false,
-					'fieldMsg': "What are the error codes this service should return and their messages"
+					'fieldMsg': translation.cbFormStep3errorsFieldMsg[LANG]
 				},
 				{
 					"name": "extKeyRequired",
-					"label": "Requires External Key",
+					"label": translation.requiresExternalKey[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Does this service require an external key in the headers of the requests made to its APIs?"
+					'fieldMsg': translation.cbFormStep3extKeyRequiredFieldMsg[LANG]
 				},
 				{
 					"name": "awareness",
-					"label": "Requires Awareness",
+					"label": translation.requiresAwareness[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Does this service need to be aware of the controller(s) presence and location?"
+					'fieldMsg': translation.cbFormStep3requiresAwarenessFieldMsg[LANG]
 				},
 				{
 					"name": "session",
-					"label": "Supports Session",
+					"label": translation.supportsSession[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Should this service create a persistent session between the requests?"
+					'fieldMsg': translation.cbFormStep3SessionFieldMsg[LANG]
 				},
 				{
 					"name": "acl",
-					"label": "Supports Access Levels",
+					"label": translation.supportsAccessLevels[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Would you like to apply access level checking on the external keys from the headers?"
+					'fieldMsg': translation.cbFormStep3AccessLevelsFieldMsg[LANG]
 				},
 				{
 					"name": "security",
-					"label": "Supports Key Security",
+					"label": translation.supportsKeySecurity[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Should this service apply device and geo security checks on provided keys?"
+					'fieldMsg': translation.cbFormStep3KeySecurityFieldMsg[LANG]
 				},
 				{
 					"name": "oauth",
-					"label": "Secure with oAuth",
+					"label": translation.secureWithoAuth[LANG],
 					"type": "radio",
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
-					'fieldMsg': "Should this service be secured via oAuth?"
+					'fieldMsg': translation.cbFormStep3oauthFieldMsg[LANG]
 				}
 			]
 		},
 		step4: [
 			{
-				'label': 'Basic API Information',
+				'label': translation.basicAPIInformation[LANG],
 				'name': 'api',
 				'type': 'group',
 				'entries': [
 					{
 						'name': 'route',
-						'label': 'API route',
+						'label': translation.apiRoute[LANG],
 						'type': 'text',
-						'placeholder': '/list',
+						'placeholder': translation.slashList[LANG],
 						'value': '',
-						'tooltip': 'Enter the route of the API',
+						'tooltip': translation.cbFormStep4Route[LANG],
 						'required': true,
-						'fieldMsg': "Enter the route of this API"
+						'fieldMsg': translation.cbFormStep4Route[LANG]
 					},
 					{
 						'name': 'method',
-						'label': 'API method',
+						'label': translation.apiMethod[LANG],
 						'type': 'radio',
-						'value': [{'v': "get", "l": "GET"}, {'v': "post", "l": "POST"}, {'v': "put", "l": "PUT"}, {'v': "del", "l": "DEL"}],
+						'value': [{'v': "get", "l": translation.getUppercase[LANG]}, {'v': "post", "l": translation.post[LANG]}, {'v': "put", "l": translation.put[LANG]}, {'v': "del", "l": translation.del[LANG]}],
 						'required': true,
-						'fieldMsg': "What method does this API use?"
+						'fieldMsg': translation.cbFormStep4MethodFieldMsg[LANG]
 					},
 					{
 						'name': 'type',
-						'label': 'API type',
+						'label': translation.apiType[LANG],
 						'type': 'radio',
 						'value': [
-							{'v': "list", "l": "list"},
-							{'v': "get", "l": "get"},
-							{'v': "delete", "l": "delete"},
-							{'v': "add", "l": "add"},
-							{'v': "update", "l": "update"}
+							{'v': "list", "l": translation.list[LANG]},
+							{'v': "get", "l": translation.getLowercase[LANG]},
+							{'v': "delete", "l": translation.delete[LANG]},
+							{'v': "add", "l": translation.add[LANG]},
+							{'v': "update", "l": translation.update[LANG]}
 						],
 						'required': true,
-						'fieldMsg': "What is the type of this API?"
+						'fieldMsg': translation.cbFormStep4apiTypeFieldMsg[LANG]
 					},
 					{
 						'name': 'codeValues',
-						'label': 'Available Error Codes',
+						'label': translation.availableErrorCodes[LANG],
 						'type': 'textarea',
 						'rows': 6,
 						'value': ''
 					},
 					{
 						'name': 'code',
-						'label': 'Default Error Code',
+						'label': translation.defaultErrorCode[LANG],
 						'type': 'number',
 						'placeholder': '400',
 						'value': '',
-						'tooltip': 'Enter the custom error code of this API based on what you filled in the error codes in Step 1',
+						'tooltip': translation.cbFormStep4defaultErrorCodeTooltip[LANG],
 						'required': true,
-						'fieldMsg': "Choose from the above available codes the default error code of this API."
+						'fieldMsg': translation.cbFormStep4defaultErrorCodeFieldMsg[LANG]
 					}
 				]
 			},
 			{
-				'label': 'API Display Information',
+				'label': translation.apiDisplayInformation[LANG],
 				'name': 'label',
 				'type': 'group',
 				"entries": [
 					{
 						'name': 'label',
-						'label': 'API Label',
+						'label': translation.apiLabel[LANG],
 						'type': 'text',
-						'placeholder': 'List Entries',
+						'placeholder': translation.listEntries[LANG],
 						'value': '',
-						'tooltip': 'Enter the API Label',
+						'tooltip': translation.cbFormStep4labelTooltip[LANG],
 						'required': true,
-						'fieldMsg': "What is the Label of this API?"
+						'fieldMsg': translation.cbFormStep4labelFieldMsg[LANG]
 					},
 					{
 						'name': 'group',
-						'label': 'API Group',
+						'label': translation.apiGroup[LANG],
 						'type': 'text',
-						'placeholder': 'News',
+						'placeholder': translation.news[LANG],
 						'value': '',
-						'tooltip': 'Enter the Group name of the API',
+						'tooltip': translation.cbFormStep4GroupTooltip[LANG],
 						'required': true,
-						'fieldMsg': "What Group this API belongs to?"
+						'fieldMsg': translation.cbFormStep4GroupFieldMsg[LANG]
 					},
 					{
 						'name': 'groupMain',
-						'label': 'Is API Group Default',
+						'label': translation.cbFormStep4groupMainLabel[LANG],
 						'type': 'radio',
 						'value': [{"v": true}, {"v": false}],
 						'required': true,
-						'fieldMsg': "Is this the default group API?"
+						'fieldMsg': translation.cbFormStep4groupMainFieldMsg[LANG]
 					}
 				]
 			},
 			{
-				'label': 'API Inputs',
+				'label': translation.apiInputs[LANG],
 				'name': 'inputsGroup',
 				'type': 'group',
 				'collapsed': true,
 				'entries': [
 					{
 						'name': 'inputs',
-						'label': 'API Inputs',
+						'label': translation.apiInputs[LANG],
 						'type': 'checkbox',
 						'value': [],
 						'required': true,
-						'fieldMsg': "Pick the inputs this API will receive. (APIs of type: get - update - delete have the 'id' input auto-included)"
+						'fieldMsg': translation.cbFormStep4apiInputsFieldMsg[LANG]
 					}
 				]
 			},
 			{
-				'label': 'API Workflow',
+				'label': translation.apiWorkflow[LANG],
 				'name': 'workflow',
 				'type': 'group',
 				"collapsed": true,
 				'entries': [
 					{
 						'name': 'initialize',
-						'label': 'Initialize',
+						'label': translation.initialize[LANG],
 						'type': 'textarea',
 						"rows": 6,
-						"tooltip": "Override the default Initialize step",
+						"tooltip": translation.cbFormStep4initializeTooltip[LANG],
 						'value': "",
 						'required': false,
-						'fieldMsg': 'Override the default workflow behavior of this step or leave blank to use default.'
+						'fieldMsg': translation.cbFormStep4initializeFieldMsg[LANG]
 					},
 					{
 						'name': 'preExec',
-						'label': 'Pre Execute',
+						'label': translation.preExec[LANG],
 						'type': 'textarea',
 						"rows": 6,
-						"tooltip": "Enter an optional Pre Execute step or Leave blank to ignore",
+						"tooltip": translation.cbFormStep4preExecTooltip[LANG],
 						'value': "",
 						'required': false,
-						'fieldMsg': 'Enter Custom workflow behavior in this step or leave blank to ignore.'
+						'fieldMsg': translation.cbFormStep4preExecFieldMsg[LANG]
 					},
 					{
 						'name': 'exec',
 						'label': 'Execute',
 						'type': 'textarea',
 						"rows": 6,
-						"tooltip": "Override the default Execute step",
+						"tooltip": translation.cbFormStep4executeTooltip[LANG],
 						'value': "",
 						'required': false,
-						'fieldMsg': 'Override the default workflow behavior of this step or leave blank to use default.'
+						'fieldMsg': translation.cbFormStep4executeFieldMsg[LANG]
 					},
 					{
 						'name': 'postExec',
-						'label': 'Post Execute',
+						'label': translation.postExec[LANG],
 						'type': 'textarea',
 						"rows": 6,
-						"tooltip": "Enter an optional Post Execute step or Leave blank to ignore",
+						"tooltip": translation.cbFormStep4postExecTooltip[LANG],
 						'value': "",
 						'required': false,
-						'fieldMsg': 'Enter Custom workflow behavior in this step or leave blank to ignore.'
+						'fieldMsg': translation.cbFormStep4postExecFieldMsg[LANG]
 					},
 					{
 						'name': 'response',
-						'label': 'Response',
+						'label': translation.response[LANG],
 						'type': 'textarea',
 						"rows": 6,
-						"tooltip": "Override the default Response step",
+						"tooltip": translation.cbFormStep4responseTooltip[LANG],
 						'value': "",
 						'required': false,
-						'fieldMsg': 'Override the default workflow behavior of this step or leave blank to use default.'
+						'fieldMsg': translation.cbFormStep4responseFieldMsg[LANG]
 					}
 				]
 			}

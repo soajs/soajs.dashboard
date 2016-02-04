@@ -190,7 +190,7 @@ var translation = {
 		"FRA": "Update User"
 	},
 	"userID": {
-		"ENG": "User Id", //
+		"ENG": "User Id",
 		"FRA": "User Id"
 	},
 	"deleteoAuthInfo": {
@@ -221,7 +221,6 @@ var translation = {
 		"ENG": "Enter oAuth user password.",
 		"FRA": "Enter oAuth user password."
 	},
-	
 	"TenantInfoUpdatedSuccessfully": {
 		"ENG": "Tenant Info Updated Successfully",
 		"FRA": "Tenant Info Updated Successfully"
@@ -399,7 +398,18 @@ var translation = {
 		"ENG": "Inactive",
 		"FRA": "Inactive"
 	},
-	
+	"requestTimeout": {
+		"ENG": "Request Timeout",
+		"FRA": "Request Timeout"
+	},
+	"servicePort": {
+		"ENG": "Service Port",
+		"FRA": "Service Port"
+	},
+	"enterServicePortNumber": {
+		"ENG": "Enter the Service port number",
+		"FRA": "Enter the Service port number"
+	},
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",

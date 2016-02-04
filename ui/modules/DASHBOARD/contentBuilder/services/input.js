@@ -156,7 +156,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
 				$scope.userInput = function() {
 					var op = angular.copy(options);
-					op.label = "Add New User Input";
+					op.label = translation.addNewUserInput[LANG];
 					op.entries = angular.copy(cbConfig.form.step2.user);
 					$scope.input = {};
 					$scope.input.user = angular.extend($scope);
@@ -165,7 +165,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
 				$scope.computedInputUI = function() {
 					var op = angular.copy(options);
-					op.label = "Add New Computed UI Input";
+					op.label = translation.addNewComputedUIInput[LANG];
 					op.entries = angular.copy(cbConfig.form.step2.computedUI);
 					$scope.input = {};
 					$scope.input.computedUI = angular.extend($scope);
@@ -186,12 +186,12 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					var formData = $scope.input[inputType].form.formData;
 
 					if(!formData.label) {
-						$window.alert("Enter a label for the input to proceed!");
+						$window.alert(translation.enterLabelForInputProceed[LANG]);
 					}
 					else {
 						var machineName = formData.label.toLowerCase().trim().replace(/\s/g, "_");
 						if(currentScope.config.genericService.config.schema.commonFields[machineName]) {
-							$window.alert("You already have an input named: " + formData.label);
+							$window.alert(translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
 						}
 						else {
 							if(inputType === 'computedUI') {
@@ -276,7 +276,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
 				$scope.userInput = function() {
 					var op = angular.copy(options);
-					op.label = "Update User Input";
+					op.label = translation.updateUserInput[LANG];
 					op.entries = angular.copy(cbConfig.form.step2.user);
 					$scope.input = {};
 					$scope.input.user = angular.extend($scope);
@@ -293,7 +293,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
 				$scope.computedInputUI = function() {
 					var op = angular.copy(options);
-					op.label = "Update Computed UI Input";
+					op.label = translation.updateComputedUIInput[LANG];
 					op.entries = angular.copy(cbConfig.form.step2.computedUI);
 					$scope.input = {};
 					$scope.input.computedUI = angular.extend($scope);
@@ -302,7 +302,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
                 $scope.fileInputUI = function() {
                     var op = angular.copy(options);
-                    op.label = "Update File Input";
+                    op.label = translation.updateFileInput[LANG];
                     op.entries = angular.copy(cbConfig.form.step2.fileUI);
                     $scope.input = {};
                     $scope.input.fileUI = angular.extend($scope);
@@ -312,12 +312,12 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				$scope.done = function() {
 					var formData = $scope.input[inputType].form.formData;
 					if(!formData.label) {
-						$window.alert("Enter a label for the input to proceed!");
+						$window.alert(translation.enterLabelForInputProceed[LANG]);
 					}
 					else {
 						var machineName = formData.label.toLowerCase().trim().replace(/\s/g, "_");
 						if(machineName !== fieldName && currentScope.config.genericService.config.schema.commonFields[machineName]) {
-							$window.alert("You already have an input named: " + formData.label);
+							$window.alert(translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
 						}
 						else {
 							if(inputType === 'computedUI') {

@@ -162,18 +162,6 @@ var srTranslation = {
 		"ENG": "Service Name",
 		"FRA": "Service Name"
 	},
-	"servicePort": {
-		"ENG": "Service Port",
-		"FRA": "Service Port"
-	},
-	"enterServicePortNumber": {
-		"ENG": "Enter the Service port number",
-		"FRA": "Enter the Service port number"
-	},
-	"requestTimeout": {
-		"ENG": "Request Timeout",
-		"FRA": "Request Timeout"
-	},
 	"formRequestTimeoutTooltip": {
 		"ENG": "Maximum timeout value for a request to this service",
 		"FRA": "Maximum timeout value for a request to this service"

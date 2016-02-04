@@ -87,7 +87,7 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 					entries: elms,
 					data: data,
 					name: 'addAPI',
-					label: 'Add New API',
+					label: translation.addNewAPI[LANG],
 					actions: []
 				};
 				buildForm($scope, null, options);
@@ -95,14 +95,14 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 				$scope.done = function() {
 					var formData = $scope.form.formData;
 					if(!formData.route) {
-						$window.alert("Enter a route value for the API to proceed!");
+						$window.alert(translation.enterRouteValueApiProceed[LANG]);
 					}
 					else{
 
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
 						allowedErrorCodes = Object.keys(allowedErrorCodes);
 						if(allowedErrorCodes.indexOf(formData.code.toString()) === -1){
-							$window.alert("The error code you entered for this API is invalid.");
+							$window.alert(translation.errorCodeYouEnteredAPIInvalid[LANG]);
 						}
 						else {
 							buildAPIData(currentScope, formData);
@@ -159,7 +159,7 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 					entries: elms,
 					data: data,
 					name: 'addAPI',
-					label: 'Add New API',
+					label: translation.addNewAPI[LANG],
 					actions: []
 				};
 				buildForm($scope, null, options);
@@ -168,13 +168,13 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 					var formData = $scope.form.formData;
 
 					if(!formData.route) {
-						$window.alert("Enter a route value for the API to proceed!");
+						$window.alert(translation.enterRouteValueApiProceed[LANG]);
 					}
 					else{
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
 						allowedErrorCodes = Object.keys(allowedErrorCodes);
 						if(allowedErrorCodes.indexOf(formData.code.toString()) === -1){
-							$window.alert("The error code you entered for this API is invalid.");
+							$window.alert(translation.errorCodeYouEnteredAPIInvalid[LANG]);
 						}
 						else {
 							buildAPIData(currentScope, formData);
