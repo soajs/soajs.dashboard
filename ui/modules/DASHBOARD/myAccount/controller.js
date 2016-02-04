@@ -32,10 +32,10 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.successMsgChangeEmail[LANG] + '.');
+								$scope.$parent.displayAlert('success', translation.successMsgChangeEmail[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 							}
@@ -75,7 +75,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							'confirmation': formData.confirmPassword
 						};
 						if (formData.password != formData.confirmPassword) {
-							$scope.form.displayAlert('danger', translation.errorMessageChangePassword[LANG] + '!');
+							$scope.form.displayAlert('danger', translation.errorMessageChangePassword[LANG]);
 							return;
 						}
 						getSendDataFromServer($scope, ngDataApi, {
@@ -88,10 +88,10 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.message);
+								$scope.form.displayAlert('danger', error.code, true, 'urac');
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.successMsgChangePassword[LANG] + '.');
+								$scope.$parent.displayAlert('success', translation.successMsgChangePassword[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 							}
@@ -135,7 +135,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							profileObj = JSON.parse(formData.profile);
 						}
 						catch (e) {
-							$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG] + ' ');
+							$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG]);
 							return;
 						}
 					}
@@ -155,10 +155,10 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						"data": postData
 					}, function (error) {
 						if (error) {
-							$scope.$parent.displayAlert('danger', error.message);
+							$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 						}
 						else {
-							$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG] + '.');
+							$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG]);
 							userCookie.firstName = formData.firstName;
 							userCookie.username = formData.username;
 							userCookie.lastName = formData.lastName;
@@ -184,7 +184,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			"params": {"username": username}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert("danger", error.message);
+				$scope.$parent.displayAlert("danger", error.code, true, 'urac');
 			}
 			else {
 				$scope.uId = response._id;
@@ -194,7 +194,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'name': 'firstName',
 						'label': translation.firstName[LANG],
 						'type': 'text',
-						'placeholder':  translation.enterFirstName[LANG] + '...',
+						'placeholder': translation.enterFirstName[LANG],
 						'value': response.firstName,
 						'tooltip': translation.enterFirstNameUser[LANG],
 						'required': true
@@ -203,7 +203,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'name': 'lastName',
 						'label': translation.lastName[LANG],
 						'type': 'text',
-						'placeholder': translation.enterLastName[LANG] + '...',
+						'placeholder': translation.enterLastName[LANG],
 						'value': response.lastName,
 						'tooltip': translation.enterLastNameUser[LANG],
 						'required': true
@@ -212,16 +212,16 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'name': 'email',
 						'label': translation.email[LANG],
 						'type': 'readonly',
-						'placeholder': translation.enterEmail[LANG] + '...',
+						'placeholder': translation.enterEmail[LANG],
 						'value': response.email,
 						'tooltip': translation.emailToolTip[LANG],
 						'required': true
 					},
 					{
 						'name': 'username',
-						'label':translation.username[LANG],
+						'label': translation.username[LANG],
 						'type': 'text',
-						'placeholder': translation.enterUsername[LANG] + '...',
+						'placeholder': translation.enterUsername[LANG],
 						'value': response.username,
 						'tooltip': translation.usernamesToolTip[LANG],
 						'required': true
@@ -231,8 +231,8 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						'label': translation.profile[LANG],
 						'type': 'textarea',
 						'value': p,
-						'placeholder': translation.JSONObjectRepresentingYourProfile[LANG] + ' ...',
-						'tooltip': translation.fillYourAdditionalProfileInformation[LANG] + '.',
+						'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
+						'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
 						'required': false,
 						'rows': 10
 					}
@@ -268,10 +268,10 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 			"params": {"token": $route.current.params.token}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.yourEmailValidatedChangedSuccessfully[LANG] + '.');
+				$scope.$parent.displayAlert('success', translation.yourEmailValidatedChangedSuccessfully[LANG]);
 				setTimeout(function () {
 					$scope.$parent.go("/myaccount");
 				}, 2000);
@@ -300,7 +300,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 			}, function (error, response) {
 				if (error) {
 					overlayLoading.hide();
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
 					$cookieStore.put('soajs_user', response);
@@ -318,7 +318,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
-						$scope.$parent.displayAlert('danger', error.message);
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 					}
 					else {
 						$cookieStore.put("soajs_dashboard_key", response.extKey);
@@ -334,7 +334,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}, function (error, response) {
 					overlayLoading.hide();
 					if (error) {
-						$scope.$parent.displayAlert('danger', error.message);
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 					}
 					else {
 						$localStorage.acl_access = response.acl;
@@ -351,7 +351,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG] + '.');
+		$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 	
@@ -375,10 +375,10 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 			}, function (error) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
-					$scope.$parent.displayAlert('success', translation.resetLinkSentYourEmailAddress[LANG] + '.');
+					$scope.$parent.displayAlert('success', translation.resetLinkSentYourEmailAddress[LANG]);
 					$scope.$parent.go("/login");
 				}
 			});
@@ -405,7 +405,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
 			if (formData.password != formData.confirmPassword) {
-				$scope.$parent.displayAlert('danger', translation.errorMessageChangePassword[LANG] + '!');
+				$scope.$parent.displayAlert('danger', translation.errorMessageChangePassword[LANG]);
 				return;
 			}
 			getSendDataFromServer($scope, ngDataApi, {
@@ -415,10 +415,10 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				"data": postData
 			}, function (error) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
-					$scope.$parent.displayAlert('success', translation.passwordSetSuccessfully[LANG] + '.');
+					$scope.$parent.displayAlert('success', translation.passwordSetSuccessfully[LANG]);
 					$scope.$parent.go("/login");
 				}
 			});
@@ -445,7 +445,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				'password': formData.password, 'confirmation': formData.confirmPassword
 			};
 			if (formData.password != formData.confirmPassword) {
-				$scope.$parent.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG] + '!');
+				$scope.$parent.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]);
 				return;
 			}
 			getSendDataFromServer($scope, ngDataApi, {
@@ -458,10 +458,10 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				"data": postData
 			}, function (error) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 				else {
-					$scope.$parent.displayAlert('success', translation.yourPasswordReset[LANG] + '.');
+					$scope.$parent.displayAlert('success', translation.yourPasswordReset[LANG]);
 					$scope.$parent.go("/login");
 				}
 			});
