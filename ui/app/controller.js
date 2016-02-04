@@ -85,16 +85,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.alerts.push({'type': type, 'msg': msg});
 		};
 
-		$scope.displayAlert = function (type, msg, isCode, service) {
+		$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 			$scope.alerts = [];
 			if (isCode) {
-				if (errorCodes[service] && errorCodes[service][msg]) {
-					if (errorCodes[service][msg][LANG]) {
-						msg = errorCodes[service][msg][LANG];
-					}
-					else {
-						msg = errorCodes[service][msg]['ENG'];
-					}
+				var msgT = getCodeMessage(msg, service);
+				if (msgT) {
+					msg = msgT;
+				}
+				else if (orgMesg) {
+					msg = orgMesg;
 				}
 			}
 			$scope.alerts.push({'type': type, 'msg': msg});
@@ -231,7 +230,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				//	"params":{"envCode": envRecord.code}
 				//}, function(error, response) {
 				//	if (error) {
-				//		$scope.$parent.displayAlert('danger', error.message);
+				//		$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				//	}
 				//	else {
 				//		$localStorage.acl_access = response.acl;
@@ -397,7 +396,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$localStorage.acl_access = null;
 				$scope.enableInterface = false;
 				if (!stopRedirect) {
-					$scope.displayFixedAlert('danger', "Session expired. Please login.");
+					$scope.displayFixedAlert('danger', translation.expiredSessionPleaseLogin[LANG]);
 					$scope.go("/login");
 				}
 			}
@@ -498,7 +497,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 			}, function (error, response) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
 				}
 
 				$scope.currentSelectedEnvironment = null;

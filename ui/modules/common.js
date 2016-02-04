@@ -184,3 +184,16 @@ function fixBackDrop(){
 		jQuery(".modal-backdrop").css('height', overlayHeight + 'px');
 	}, 20);
 }
+
+function getCodeMessage(code, service) {
+	var msg = '';
+	if (errorCodes[service] && errorCodes[service][code]) {
+		if (errorCodes[service][code][LANG]) {
+			msg = errorCodes[service][code][LANG];
+		}
+		else {
+			msg = errorCodes[service][code]['ENG'];
+		}
+	}
+	return msg;
+}

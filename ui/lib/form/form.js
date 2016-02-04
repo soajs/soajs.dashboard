@@ -64,16 +64,15 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.alerts.splice(i, 1);
 	};
 
-	context.form.displayAlert = function (type, msg, isCode, service) {
+	context.form.displayAlert = function (type, msg, isCode, service, orgMesg) {
 		context.form.alerts = [];
 		if (isCode) {
-			if (errorCodes[service] && errorCodes[service][msg]) {
-				if (errorCodes[service][msg][LANG]) {
-					msg = errorCodes[service][msg][LANG];
-				}
-				else{
-					msg = errorCodes[service][msg]['ENG'];
-				}
+			var msgT = getCodeMessage(msg, service);
+			if (msgT) {
+				msg = msgT;
+			}
+			else if (orgMesg) {
+				msg = orgMesg;
 			}
 		}
 		context.form.alerts.push({'type': type, 'msg': msg});
@@ -207,7 +206,7 @@ function buildForm(context, modal, configuration, cb) {
 			for (var j = 0; j < formDataKeys.length; j++) {
 				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
 				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
-					customData.push ({
+					customData.push({
 						label: formDataKeys[j],
 						data: context.form.formData[formDataKeys[j]]
 					});
@@ -259,9 +258,10 @@ function buildForm(context, modal, configuration, cb) {
 			}
 			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
 			if (data[oneEntry.name] === 'true') data[oneEntry.name] = true;
-
-			if (oneEntry.required && (data[oneEntry.name] === null || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
-				return false;
+			if (oneEntry.required) {
+				if (data[oneEntry.name] === null || typeof(data[oneEntry.name]) === 'undefined' || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '') {
+					return false;
+				}
 			}
 		}
 		return true;
