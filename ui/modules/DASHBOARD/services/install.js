@@ -8,10 +8,6 @@ var srTranslation = {
 		"ENG": "Daemons",
 		"FRA": "Daemons"
 	},
-	"develop": {
-		"ENG": "Develop",
-		"FRA": "Develop"
-	},
 	//controller
 	"updateService": {
 		"ENG": "Update Service",
