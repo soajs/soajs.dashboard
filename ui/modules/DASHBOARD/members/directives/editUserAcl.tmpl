@@ -14,9 +14,9 @@
                         <label>{{application.package}}:</label> {{application.description}}<br/>
                         <div class="clearfix service-container" ng-repeat="service in application.aclFill[oneEnv.code]">
                             <div class="clearfix serviceNameHead">
-                                <div ng-include="'modules/members/directives/service-name.tmpl'"></div>
+                                <div ng-include="'modules/DASHBOARD/members/directives/service-name.tmpl'"></div>
                             </div>
-                            <div ng-include="'modules/members/directives/acl-permission.tmpl'"></div>
+                            <div ng-include="'modules/DASHBOARD/members/directives/acl-permission.tmpl'"></div>
                         </div>
                     </div>
                 </div>
