@@ -1,6 +1,6 @@
 "use strict";
 
-var cbTranslation= {
+var cbTranslation = {
 	"contentBuilder": {
 		"ENG": "Content Builder",
 		"FRA": "Content Builder"
@@ -274,6 +274,10 @@ var cbTranslation= {
 	"defaultValues": {
 		"ENG": "Default Values",
 		"FRA": "Default Values"
+	},
+	"defaultValue": {
+		"ENG": "Default Value",
+		"FRA": "Default Value"
 	},
 	"cbFormStep2UserFormDefaultValuePlaceholder": {
 		"ENG": "label1||value1||selected -- label2||value2 -- label3||value3 -- ...",
@@ -717,25 +721,25 @@ for (var attrname in cbTranslation) {
 	translation[attrname] = cbTranslation[attrname];
 }
 
-var cbNav =[
+var cbNav = [
 	{
 		'id': 'content-builder',
 		'label': translation.contentBuilder[LANG],
-		'checkPermission':{
-			'service':'dashboard',
-			'route':'/cb/get'
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/cb/get'
 		},
 		'url': '#/content-builder',
 		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/list.tmpl',
 		'icon': 'hammer',
-		'pillar':{
+		'pillar': {
 			'name': 'development',
 			'label': translation.develop[LANG],
 			'position': 1
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js','modules/DASHBOARD/contentBuilder/services/contentBuilder.js','modules/DASHBOARD/contentBuilder/services/input.js','modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -744,12 +748,12 @@ var cbNav =[
 		'url': '#/content-builder/add',
 		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/add.tmpl',
 		'tracker': true,
-		'pillar':{
+		'pillar': {
 			'name': 'development',
 			'label': translation.develop[LANG],
 			'position': 1
 		},
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js','modules/DASHBOARD/contentBuilder/services/contentBuilder.js','modules/DASHBOARD/contentBuilder/services/input.js','modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG], translation.contentBuilder[LANG]]
 	},
 	{
@@ -758,12 +762,12 @@ var cbNav =[
 		'url': '#/content-builder/edit/:id',
 		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/edit.tmpl',
 		'tracker': true,
-		'pillar':{
+		'pillar': {
 			'name': 'development',
 			'label': translation.develop[LANG],
 			'position': 1
 		},
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js','modules/DASHBOARD/contentBuilder/services/contentBuilder.js','modules/DASHBOARD/contentBuilder/services/input.js','modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG], translation.contentBuilder[LANG]]
 	}
 ];

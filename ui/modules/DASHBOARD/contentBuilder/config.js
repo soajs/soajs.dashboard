@@ -51,13 +51,13 @@ var cbConfig = {
 					'value': [{"v": "yes", "l": "YES"}],
 					'required': true,
 					'fieldMsg': translation.cbFormStep2ComputedUIListingFieldMSG[LANG],
-					'onAction': function(id, data){
-						if(data[0] ==='yes'){
+					'onAction': function (id, data) {
+						if (data[0] === 'yes') {
 							jQuery(".wizardForm #filter-wrapper").slideDown();
 							jQuery(".wizardForm #sorting-wrapper").slideDown();
 							jQuery(".wizardForm #sortDirection-wrapper").slideDown();
 						}
-						else{
+						else {
 							jQuery(".wizardForm #filter-wrapper").slideUp();
 							jQuery(".wizardForm #sorting-wrapper").slideUp();
 							jQuery(".wizardForm #sortDirection-wrapper").slideUp();
@@ -68,7 +68,10 @@ var cbConfig = {
 					'name': 'filter',
 					'label': translation.optionalDisplayFilter[LANG],
 					'type': 'select',
-					'value': [{"v": "date", "l": translation.date[LANG]}, {"v": "uppercase", "l": translation.uppercase[LANG]}],
+					'value': [{"v": "date", "l": translation.date[LANG]}, {
+						"v": "uppercase",
+						"l": translation.uppercase[LANG]
+					}],
 					'required': false,
 					'fieldMsg': translation.cbFormStep2ComputedUIFilterFieldMSG[LANG]
 				},
@@ -89,46 +92,46 @@ var cbConfig = {
 					'fieldMsg': translation.cbFormStep2ComputedUISortDirectionFieldMSG[LANG]
 				}
 			],
-            fileUI:[
-                {
-                    'type': 'html',
-                    'name': 'html-ignore',
-                    'value': translation.cbFormStep2FileUIHtml[LANG]
-                },
-                {
-                    'name': 'label',
-                    'label': translation.inputLabel[LANG],
-                    'type': 'text',
-                    'placeholder': translation.title[LANG],
-                    'value': '',
-                    'tooltip': translation.cbFormStep2LabelTooltip[LANG],
-                    'required': true,
-                    'fieldMsg': translation.cbFormStep2LabelFieldMSG[LANG]
-                },
-                {
-                    "name": "type",
-                    "label": translation.uiType[LANG],
-                    "type": "select",
-                    "value": [
-                        {"v": "audio", "l": translation.audioTrack[LANG]},
-                        {"v": "video", "l":  translation.videoTrack[LANG]},
-                        {"v": "image", "l":  translation.image[LANG]},
-                        {"v": "document", "l":  translation.document[LANG]}
-                    ],
-                    "required": true,
-                    "fieldMsg": translation.cbFormStep2FileUITypeFieldMsg[LANG]
-                },
-                {
-                    "name": "limit",
-                    "label": translation.limit[LANG],
-                    "type": "number",
-                    "placholder": "0",
-                    "tooltip": translation.cbFormStep2FileUILimitTooltip[LANG],
-                    "value": 1,
-                    "required": false,
-                    "fieldMsg": translation.cbFormStep2FileUILimitFieldMsg[LANG]
-                }
-            ],
+			fileUI: [
+				{
+					'type': 'html',
+					'name': 'html-ignore',
+					'value': translation.cbFormStep2FileUIHtml[LANG]
+				},
+				{
+					'name': 'label',
+					'label': translation.inputLabel[LANG],
+					'type': 'text',
+					'placeholder': translation.title[LANG],
+					'value': '',
+					'tooltip': translation.cbFormStep2LabelTooltip[LANG],
+					'required': true,
+					'fieldMsg': translation.cbFormStep2LabelFieldMSG[LANG]
+				},
+				{
+					"name": "type",
+					"label": translation.uiType[LANG],
+					"type": "select",
+					"value": [
+						{"v": "audio", "l": translation.audioTrack[LANG]},
+						{"v": "video", "l": translation.videoTrack[LANG]},
+						{"v": "image", "l": translation.image[LANG]},
+						{"v": "document", "l": translation.document[LANG]}
+					],
+					"required": true,
+					"fieldMsg": translation.cbFormStep2FileUITypeFieldMsg[LANG]
+				},
+				{
+					"name": "limit",
+					"label": translation.limit[LANG],
+					"type": "number",
+					"placeholder": "0",
+					"tooltip": translation.cbFormStep2FileUILimitTooltip[LANG],
+					"value": 1,
+					"required": false,
+					"fieldMsg": translation.cbFormStep2FileUILimitFieldMsg[LANG]
+				}
+			],
 			user: [
 				{
 					'type': 'html',
@@ -171,9 +174,7 @@ var cbConfig = {
 							'label': translation.imfvConfiguration[LANG],
 							'type': 'textarea',
 							'rows': 10,
-							'placeholder': JSON.stringify({
-								"type": "string"
-							}, null, 2),
+							'placeholder': JSON.stringify({"type": "string"}, null, 2),
 							'value': '',
 							'tooltip': translation.cbFormStep2FieldImfvTooltip[LANG],
 							'fieldMsg': translation.cbFormStep2FieldImfvFieldMsg[LANG]
@@ -193,13 +194,13 @@ var cbConfig = {
 							'value': [{"v": "yes", "l": translation.yes[LANG]}],
 							'required': true,
 							'fieldMsg': translation.cbFormStep2ComputedUIListingFieldMSG[LANG],
-							'onAction': function(id, data){
-								if(data[0] ==='yes'){
+							'onAction': function (id, data) {
+								if (data[0] === 'yes') {
 									jQuery(".wizardForm #filter-wrapper").slideDown();
 									jQuery(".wizardForm #sorting-wrapper").slideDown();
 									jQuery(".wizardForm #sortDirection-wrapper").slideDown();
 								}
-								else{
+								else {
 									jQuery(".wizardForm #filter-wrapper").slideUp();
 									jQuery(".wizardForm #sorting-wrapper").slideUp();
 									jQuery(".wizardForm #sortDirection-wrapper").slideUp();
@@ -267,12 +268,12 @@ var cbConfig = {
 							],
 							"required": true,
 							"fieldMsg": translation.cbFormStep2FileUITypeFieldMsg[LANG],
-							'onAction': function(id, data){
-								var arr1 = ['radio','checkbox','select','multi-select'];
-								if(arr1.indexOf(data)!== -1){
+							'onAction': function (id, data) {
+								var arr1 = ['radio', 'checkbox', 'select', 'multi-select'];
+								if (arr1.indexOf(data) !== -1) {
 									jQuery(".wizardForm #defaultValue-wrapper").slideDown();
 								}
-								else{
+								else {
 									jQuery(".wizardForm #defaultValue-wrapper").slideUp();
 								}
 							}
@@ -343,23 +344,23 @@ var cbConfig = {
 					"required": false,
 					'fieldMsg': translation.cbFormStep3requestTimeoutRenewalFieldMsg[LANG]
 				},
-                {
-                    "name": "maxFileUpload",
-                    "label": translation.maximumUploadFileLimit[LANG],
-                    "type": "select",
-                    "tooltip": translation.cbFormStep3MaxFileUploadTooltip[LANG],
-                    "value": [
-                        { 'v' : '500', 'l': '500kb', 'selected': true },
-                        { 'v' : '1024', 'l': '1M' },
-                        { 'v' : '2048', 'l': '2M' },
-                        { 'v' : '4096', 'l': '4M' },
-                        { 'v' : '6144', 'l': '6M' },
-                        { 'v' : '8192', 'l': '8M' },
-                        { 'v' : '10240', 'l': '10M' }
-                    ],
-                    "required": false,
-                    'fieldMsg': translation.cbFormStep3MaxFileUploadFieldMsg[LANG]
-                },
+				{
+					"name": "maxFileUpload",
+					"label": translation.maximumUploadFileLimit[LANG],
+					"type": "select",
+					"tooltip": translation.cbFormStep3MaxFileUploadTooltip[LANG],
+					"value": [
+						{'v': '500', 'l': '500kb', 'selected': true},
+						{'v': '1024', 'l': '1M'},
+						{'v': '2048', 'l': '2M'},
+						{'v': '4096', 'l': '4M'},
+						{'v': '6144', 'l': '6M'},
+						{'v': '8192', 'l': '8M'},
+						{'v': '10240', 'l': '10M'}
+					],
+					"required": false,
+					'fieldMsg': translation.cbFormStep3MaxFileUploadFieldMsg[LANG]
+				},
 				{
 					"name": "collection",
 					"label": translation.defaultCollection[LANG],
@@ -375,7 +376,10 @@ var cbConfig = {
 					"label": translation.errorCodesMessage[LANG],
 					"type": "textarea",
 					"rows": 6,
-					"placeholder": JSON.stringify({400: translation.databaseError[LANG], 401: translation.invalidIdProvided[LANG]}, null, 2),
+					"placeholder": JSON.stringify({
+						400: translation.databaseError[LANG],
+						401: translation.invalidIdProvided[LANG]
+					}, null, 2),
 					"tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					"value": "",
 					"required": false,
@@ -451,7 +455,10 @@ var cbConfig = {
 						'name': 'method',
 						'label': translation.apiMethod[LANG],
 						'type': 'radio',
-						'value': [{'v': "get", "l": translation.getUppercase[LANG]}, {'v': "post", "l": translation.post[LANG]}, {'v': "put", "l": translation.put[LANG]}, {'v': "del", "l": translation.del[LANG]}],
+						'value': [{'v': "get", "l": translation.getUppercase[LANG]}, {
+							'v': "post",
+							"l": translation.post[LANG]
+						}, {'v': "put", "l": translation.put[LANG]}, {'v': "del", "l": translation.del[LANG]}],
 						'required': true,
 						'fieldMsg': translation.cbFormStep4MethodFieldMsg[LANG]
 					},
