@@ -63,7 +63,7 @@
                                     <select ng-model="formEnvironment.deployer.type" class="form-control" style="width:300px; min-width:300px;">
                                         <option value="manual" ng-selected="formEnvironment.deployer.type === 'manual'">Manual</option>
                                         <option value="container.docker.socket" ng-selected="formEnvironment.deployer.selected === 'docker.socket'">Container &raquo; Socket</option>
-                                        <option value="container.docker.boot2docker" ng-selected="formEnvironment.deployer.selected === 'docker.boot2docker'">Container &raquo; Boot2docker</option>
+                                        <option value="container.docker.machine" ng-selected="formEnvironment.deployer.selected === 'docker.machine'">Container &raquo; Machine</option>
                                         <option value="container.docker.joyent" ng-selected="formEnvironment.deployer.selected === 'docker.joyent'">Container &raquo; Joyent</option>
                                         <option value="container.docker.rackspace" ng-selected="formEnvironment.deployer.selected === 'docker.rackspace'">Container &raquo; Rackspace</option>
                                     </select><br/><br/>
@@ -75,8 +75,8 @@
                                             <textarea rows="6" ng-model="formEnvironment.deployer.docker.socket" class="form-control"></textarea><br/>
                                             <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
                                         </tab>
-                                        <tab heading="Boot2docker">
-                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.boot2docker" class="form-control"></textarea><br/>
+                                        <tab heading="Machine">
+                                            <textarea rows="6" ng-model="formEnvironment.deployer.docker.machine" class="form-control"></textarea><br/>
                                             <em style="margin:0">Enter the Driver's configuration in the above Textarea. (JSON formatted)</em>
                                         </tab>
                                         <tab heading="Joyent">
@@ -89,6 +89,9 @@
                                         </tab>
                                     </tabset>
                                     <br/>
+                                    <h4>Docker Certificates:</h4>
+                                    <input class="btn btn-primary" ng-click="uploadCerts()" value="Upload Certificates"/>
+                                    <!--Display small table with available certificates-->
                                 </div>
                             </td>
                         </tr>
@@ -319,7 +322,7 @@
                 </table>
             </div>
             <div class="footer"><br/>
-                <input type="submit" class="btn btn-sm btn-primary" value="{{(newEntry) ? 'Add' : 'Save'}} Environment"/>
+                <input type="submit" class="btn btn-sm btn-primary" value="{{(newEntry) ? 'Add' : 'Edit'}} Environment"/>
             </div>
             <div ng-show="!newEntry" ng-init="!newEntry">
                 <h4>Tenant Key Security:</h4>
@@ -358,3 +361,37 @@
         </form>
     </div>
 </section>
+
+<script type="text/ng-template" id="uploadCertsInfo.html">
+    <!--<div class="modal-header" ng-if='title'>-->
+        <!--<h3 class="modal-title">{{title}}</h3>-->
+    <!--</div>-->
+    <div class="modal-body">
+        <div ng-bind-html="text"></div>
+    </div>
+    <div class="modal-footer" ng-if="data">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="uploadCerts.tmpl">
+        <div class="modal-header">
+            <h3 class="modal-title">{{title}}</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form">
+                <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
+                    <input type="file" file-model-multi="formData.certificates" multiple="multiple" on-change="test()">
+                    <label>Selected Files:</label>
+                    <div ng-repeat="(file, object) in formData.certificates">
+                        <label>{{object.name}}</label>
+                    </div>
+                    <label class="fieldMsg">Multiple selection of files is permitted.</label>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" type="submit" value="Submit">Upload</button>
+                        <button class="btn btn-primary" type="button" value="Cancel" ng-click="closeModal()">Cancel</button>
+                    </div><br/><br/><br/>
+                </form>
+            </div>
+        </div>
+</script>
