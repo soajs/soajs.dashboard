@@ -15,7 +15,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				"params": {'tId': tenantId}
 			}, function (error, response) {
 				if (error) {
-					currentScope.$parent.displayAlert("danger", error.code, true, 'urac');
+					currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 				}
 				else {
 					if (callback && typeof(callback) === 'function') {
@@ -104,7 +104,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							"data": postData
 						}, function (error) {
 							if (error) {
-								currentScope.form.displayAlert('danger', error.code, true, 'urac');
+								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
 							else {
 								currentScope.$parent.displayAlert('success', translation.groupAddedSuccessfully[LANG]);
@@ -160,7 +160,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							"data": postData
 						}, function (error) {
 							if (error) {
-								currentScope.form.displayAlert('danger', error.code, true, 'urac');
+								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
 							else {
 								currentScope.$parent.displayAlert('success', translation.groupUpdatedSuccessfully[LANG]);
@@ -213,7 +213,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			"params": {"gId": data._id, 'tId': tenantId}
 		}, function (error) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.code, true, 'urac');
+				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
 				currentScope.$parent.displayAlert('success', translation.selectedGroupRemoved[LANG]);
@@ -235,7 +235,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			"params": {'tId': tenantId}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.code, true, 'urac');
+				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
 				var value = [];
@@ -278,7 +278,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 									"data": postData
 								}, function (error) {
 									if (error) {
-										currentScope.form.displayAlert('danger', error.code, true, 'urac');
+										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 									}
 									else {
 										currentScope.$parent.displayAlert('success', translation.UserAddedSuccessfully[LANG]);
