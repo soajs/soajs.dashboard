@@ -3,6 +3,18 @@ var stTranslation = {
 	"settings": {
 		"ENG": "Settings",
 		"FRA": "Settings"
+	},
+	"tenantApplications": {
+		"ENG": "Tenant Applications",
+		"FRA": "Tenant Applications"
+	},
+	"noApplicationsAdded":{
+		"ENG":"No applications have been added.",
+		"FRA":"No applications have been added"
+	},
+	"noAauthUsersAdded":{
+		"ENG":"No oauth users have been added.",
+		"FRA":"No oauth users have been added."
 	}
 };
 

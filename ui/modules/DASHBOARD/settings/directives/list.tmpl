@@ -12,20 +12,21 @@
 				<div ng-include="'modules/DASHBOARD/settings/directives/list-oauth-users.tmpl'"></div>
 
 				<div ng-if="access.tenant.application.list"><br/><br/>
-					<label>Tenant Applications</label>
+					<label>{{translation.tenantApplications[LANG]}}</label>
 					<br/>
 
 					<ul class="blueListing">
 						<li class="blueLi" ng-repeat="application in tenant.applications" class="row-list">
 							<a ng-click="openKeys(application)" href="" ng-hide="application.showKeys">
-								<span class="icon icon-plus" tooltip="Expand Applications"></span>
+								<span class="icon icon-plus" tooltip="{{translation.expandApplications[LANG]}}"></span>
 							</a>
 							<a ng-click="closeKeys(application)" href="" ng-show="application.showKeys">
-								<span class="icon icon-minus" tooltip="Collapse Applications"></span>
+								<span class="icon icon-minus" tooltip="{{translation.collapseApplications[LANG]}}"></span>
 							</a>
 
 							<span class="icon icon-star-full" ng-if="application['dashboardAccess']"></span>[{{application['package']}}]
-							&nbsp; <span title="TTL">( {{application['_TTL'] | TTL}} {{translation.hours[LANG]}} )</span>
+							&nbsp;
+							<span title="TTL">( {{application['_TTL'] | TTL}} {{translation.hours[LANG]}} )</span>
 
 							<div class="appKeys" id="appKeys{{application['appId']}}" ng-show="application.showKeys || tenant.applications.length === 1">
 								<em>{{application['description']}}</em>
@@ -42,7 +43,7 @@
 						</li>
 					</ul>
 					<div ng-if="tenant.applications == 0">
-						<alert type="warning">No applications have been added.</alert>
+						<alert type="warning">{{translation.noApplicationsAdded[LANG]}}</alert>
 					</div>
 					<hr/>
 				</div>
