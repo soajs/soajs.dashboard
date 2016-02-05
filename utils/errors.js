@@ -144,6 +144,14 @@ var errors = {
 	"728": "Unable to get certificate(s)",
 	"729": "Unable to remove certificate",
 	"730": "Certificate does not exist",
+	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
+
+	"732": "Unable to list drivers",
+	"733": "Unable to add driver",
+	"734": "Unable to update driver",
+	"735": "Unable to change selected driver",
+	"736": "Unable to delete driver",
+	"737": "You are not allowed to delete a driver that is currently selected",
 
 	"750": "Invalid Request."
 };

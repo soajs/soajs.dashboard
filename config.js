@@ -440,19 +440,6 @@ module.exports = {
                 }
             }
         },
-        "/environment/cert/delete": {
-            _apiInfo: {
-                "l": "Remove Certificate",
-                "group": "Environment"
-            },
-            "id": {
-                "source": ['query.id'],
-                "required": true,
-                "validation": {
-                    "type": "string"
-                }
-            }
-        },
         "/environment/key/update": {
             _apiInfo: {
                 "l": "Update Environment Tenant Key Security",
@@ -601,6 +588,233 @@ module.exports = {
             },
             "env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
             "name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+        },
+        "/environment/platforms/list": {
+            _apiInfo: {
+                "l": "List Environment Platforms",
+                "group": "Environment Platforms"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "/environment/platforms/cert/delete": {
+            _apiInfo: {
+                "l": "Remove Certificate",
+                "group": "Environment"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "driverName": {
+                "source": ['query.driverName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/environment/platforms/cert/choose": {
+            _apiInfo: {
+                "l": "Choose Existing Certificates",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "driverName": {
+                "source": ['query.driverName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "certIds": {
+                "source": ['body.certIds'],
+                "required": true,
+                "validation": {
+                    "type": "array"
+                }
+            }
+        },
+        "/environment/platforms/driver/add": {
+            _apiInfo: {
+                "l": "Add Driver",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "driverName": {
+                "source": ['query.driverName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "local": {
+                "source": ['body.local'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "host": { "type": "string", required: true },
+                    //    "port": {"type":"number", required: true},
+                    //    "config": {"type":"object", required: false},
+                    //    "additionalProperties": false
+                    //}
+                }
+            },
+            "cloud": {
+                "source": ['body.cloud'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "host": { "type": "string", required: true },
+                    //    "port": {"type":"number", required: true},
+                    //    "config": {"type":"object", required: false},
+                    //    "additionalProperties": false
+                    //}
+                }
+            },
+            "socket": {
+                "source": ['body.socket'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "socketPath": { "type": "string", required: true },
+                    //    "additionalProperties": false
+                    //}
+                }
+            }
+        },
+        "/environment/platforms/driver/edit": {
+            _apiInfo: {
+                "l": "Update Driver",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "driverName": {
+                "source": ['query.driverName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "local": {
+                "source": ['body.local'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "host": { "type": "string", required: true },
+                    //    "port": {"type":"number", required: true},
+                    //    "config": {"type":"object", required: false},
+                    //    "additionalProperties": false
+                    //}
+                }
+            },
+            "cloud": {
+                "source": ['body.cloud'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "host": { "type": "string", required: true },
+                    //    "port": {"type":"number", required: true},
+                    //    "config": {"type":"object", required: false},
+                    //    "additionalProperties": false
+                    //}
+                }
+            },
+            "socket": {
+                "source": ['body.socket'],
+                "required": false,
+                "validation": {
+                    "type": "object",
+                    //"properties":{
+                    //    "socketPath": { "type": "string", required: true },
+                    //    "additionalProperties": false
+                    //}
+                }
+            }
+        },
+        "/environment/platforms/driver/delete": {
+            _apiInfo: {
+                "l": "Delete Driver Configuration",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "driverName": {
+                "source": ['query.driverName'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/environment/platforms/driver/changeSelected": {
+            _apiInfo: {
+                "l": "Change Selected Driver",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "selected": {
+                "source": ['body.selected'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
         },
 
         "/product/list": {
