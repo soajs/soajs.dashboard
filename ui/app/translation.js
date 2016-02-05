@@ -1399,7 +1399,36 @@ var errorCodes = {
 			"ENG": "Certificate does not exist",
 			"FRA": "Certificate does not exist"
 		},
-		
+
+		"731": {
+			"ENG": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
+			"FRA": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature"
+		},
+
+		"732": {
+			"ENG": "Unable to list drivers",
+			"FRA": "Unable to list drivers"
+		},
+		"733": {
+			"ENG": "Unable to add driver",
+			"FRA": "Unable to add driver"
+		},
+		"734": {
+			"ENG": "Unable to update driver",
+			"FRA": "Unable to update driver"
+		},
+		"735": {
+			"ENG": "Unable to change selected driver",
+			"FRA": "Unable to change selected driver"
+		},
+		"736": {
+			"ENG": "Unable to delete driver",
+			"FRA": "Unable to delete driver"
+		},
+		"737": {
+			"ENG": "You are not allowed to delete a driver that is currently selected",
+			"FRA": "You are not allowed to delete a driver that is currently selected"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
