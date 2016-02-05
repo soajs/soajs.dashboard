@@ -339,6 +339,8 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					else {
 						$localStorage.acl_access = response.acl;
 						$localStorage.environments = response.environments;
+						$cookieStore.put("soajs_envauth", response.envauth);
+
 						$scope.$parent.$emit("loadUserInterface", {});
 						$scope.$parent.$emit('refreshWelcome', {});
 					}
