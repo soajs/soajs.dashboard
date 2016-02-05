@@ -516,10 +516,11 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-				"headers": {
-					"key": apiConfiguration.key
-				},
+				//"headers": {
+				//	"key": apiConfiguration.key
+				//},
 				"routeName": "/urac/logout",
+				"proxy": true,
 				"params": {"username": user.username}
 			}, function (error, response) {
 				overlayLoading.hide();
@@ -533,6 +534,8 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 				$cookieStore.remove('soajsID');
 				$cookieStore.remove('soajs_auth');
 				$cookieStore.remove('soajs_user');
+				$cookieStore.remove('soajs_current_route');
+				$cookieStore.remove('soajs_envauth');
 				$localStorage.acl_access = null;
 				$localStorage.environments = null;
 				$scope.dashboard = [];

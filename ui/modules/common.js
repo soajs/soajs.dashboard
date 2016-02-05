@@ -26,6 +26,19 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		}
 	};
 
+	var pathParams = options.routeName.split("/");
+	var exclude =['urac','dashboard'];
+	if(exclude.indexOf(pathParams[1]) !== -1){
+		if(options.proxy){
+			apiOptions.url = (options.url) ? options.url + "/dashboard/proxy" : apiConfiguration.domain + "/dashboard/proxy";
+			apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
+		}
+	}
+	else{
+		apiOptions.url = (options.url) ? options.url + "/dashboard/proxy" : apiConfiguration.domain + "/dashboard/proxy";
+		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
+	}
+
 	if (options.jsonp) {
 		apiOptions.jsonp = true;
 	}
@@ -53,8 +66,9 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			}
 		}
 	}
+
+	console.log(apiOptions);
 	ngDataApi[options.method]($scope, apiOptions, callback);
-	
 }
 
 /*

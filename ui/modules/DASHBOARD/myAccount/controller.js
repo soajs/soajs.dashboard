@@ -304,7 +304,9 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}
 				else {
 					$cookieStore.put('soajs_user', response);
-					$cookieStore.put("soajs_auth", response.soajsauth);
+					if(response.soajsauth){
+						$cookieStore.put("soajs_auth", response.soajsauth);
+					}
 					//get dashboard keys
 					getKeys();
 				}
@@ -340,7 +342,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						$localStorage.acl_access = response.acl;
 						$localStorage.environments = response.environments;
 						$cookieStore.put("soajs_envauth", response.envauth);
-
 						$scope.$parent.$emit("loadUserInterface", {});
 						$scope.$parent.$emit('refreshWelcome', {});
 					}

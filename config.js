@@ -1572,6 +1572,21 @@ module.exports = {
                 "l": "List Content Schema Revisions",
                 "group": "Content Builder"
             }
-        }
+        },
+
+	    "/proxy" : {
+		    "_apiInfo": {
+			    "l": "Proxy Redirector",
+			    "group": "Proxy",
+			    "groupMain": true
+		    },
+		    "__env" : {
+		        "required": false,
+		        "source": ["query.__env"],
+		        "validation": {
+			        "type": "string"
+		        }
+	        }
+	    }
     }
 };
