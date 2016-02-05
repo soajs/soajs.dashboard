@@ -1,27 +1,24 @@
 <div id="wizardStep1" ng-show="steps.indexOf(true) === 0">
-    <div ng-show="!nextStep" class="redFlag t-left">You do not have any clusters configured, please go to the <a href="#/environments">environments</a> section and configure at least one cluster so
-        you
-        can proceed in this section.
-    </div>
+    <div ng-show="!nextStep" class="redFlag t-left">{{translation.youDoNotHaveClustersConfiguredPlease[LANG]}} <a href="#/environments">{{translation.environments[LANG]}}</a> {{translation.sectionConfigureAtLeastOneClusterProceedSection[LANG]}}</div>
     <div class="w100 c-both">
-        <p>The following wizard provide 4 steps that assist you in creating your content service or modify it. The wizard saves your changes as you navigate between the 4 steps automatically.</p>
+        <p>{{translation.followingWizardProvide4StepsThatAssist[LANG]}}</p>
     </div>
     <div class="w100 table">
         <div class="w90 table-cell">
             <div class="form-group">
-                <label>Service Name:</label>
-                <input ng-disabled="editMode" class="form-control" ng-model="config.name" type="text" tooltip="Enter the name of the service you are about to create."
-                       placeholder="My Service..." ng-required="true"/>
+                <label>{{translation.serviceName[LANG]}}:</label>
+                <input ng-disabled="editMode" class="form-control" ng-model="config.name" type="text" tooltip="{{translation.enterNameServiceYouAreAboutCreate[LANG]}}"
+                       placeholder="{{translation.myService[LANG]}}" ng-required="true"/>
             </div>
             <div>
-                <label>Create New Database ?</label><br/>
-                <input ng-model="config.genericService.options.multitenant" type="radio" value="true" tooltip="Specify if the service is multitenant or not." data-ng-value="true" ng-click="renderServiceMultiTenant(true);"/>
-                Yes<em>&nbsp;&nbsp;( Creates a new multitenant database with the same name as your service )</em><br/>
-                <input ng-model="config.genericService.options.multitenant" type="radio" value="false" tooltip="Specify if the service is multitenant or not." data-ng-value="false" ng-click="renderServiceMultiTenant(false);"/>
-                No<em>&nbsp;&nbsp;( Specify a database to use in every environment )</em><br/>
+                <label>{{translation.createNewDatabase[LANG]}}</label><br/>
+                <input ng-model="config.genericService.options.multitenant" type="radio" value="true" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="true" ng-click="renderServiceMultiTenant(true);"/>
+                Yes<em>&nbsp;&nbsp;( {{translation.createsNewMultitenantDatabaseSameNameService[LANG]}} )</em><br/>
+                <input ng-model="config.genericService.options.multitenant" type="radio" value="false" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="false" ng-click="renderServiceMultiTenant(false);"/>
+                No<em>&nbsp;&nbsp;( {{translation.specifyDatabaseUseEveryEnvironment[LANG]}} )</em><br/>
             </div>
             <div ng-show="config.genericService.options.multitenant === false">
-                <label>Select a Database to Use:</label>
+                <label>{{translation.selectDatabaseToUse[LANG]}}:</label>
                 <tabset>
                     <tab heading="{{env.name}}" ng-repeat="env in envList">
                         <div class="entryBoxes entryBoxesGrid">
@@ -33,8 +30,8 @@
                                         </span>
                                 </div>
                                 <div class="info2">
-                                    <b>Cluster:</b>&nbsp;{{dbInfo['cluster']}}<br/>
-                                    <b>Tenant Specific:</b>&nbsp;{{dbInfo['tenantSpecific']}}
+                                    <b>{{translation.cluster[LANG]}}:</b>&nbsp;{{dbInfo['cluster']}}<br/>
+                                    <b>{{translation.tenantSpecific[LANG]}}:</b>&nbsp;{{dbInfo['tenantSpecific']}}
                                 </div>
                             </div>
                         </div>
@@ -42,10 +39,10 @@
                 </tabset>
             </div>
             <div ng-show="config.genericService.options.multitenant === true">
-                <label>Select a Cluster to Use:</label>
+                <label>{{translation.selectClusterToUse[LANG]}}:</label>
                 <tabset>
                     <tab heading="{{env.name}}" ng-repeat="env in envList"><br/>
-                        &nbsp;&nbsp;&nbsp;<b>Tenant Specific:</b>&nbsp;<input type="checkbox" data-ng-value="true" ng-model="config.clustertoUse[env.name].tenantSpecific"/>&nbsp;Yes<br/>
+                        &nbsp;&nbsp;&nbsp;<b>{{translation.tenantSpecific[LANG]}}:</b>&nbsp;<input type="checkbox" data-ng-value="true" ng-model="config.clustertoUse[env.name].tenantSpecific"/>&nbsp;{{translation.yes[LANG]}}<br/>
 
                         <div class="entryBoxes entryBoxesGrid">
                             <div ng-repeat="(clusterName, clusterInfo) in env.clusters track by clusterName" class="dbBox">

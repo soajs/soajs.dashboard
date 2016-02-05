@@ -511,10 +511,6 @@ var cbTranslation = {
 		"ENG": "API Display Information'",
 		"FRA": "API Display Information'"
 	},
-	"apiLabel": {
-		"ENG": "API Label",
-		"FRA": "API Label"
-	},
 	"listEntries": {
 		"ENG": "List Entries",
 		"FRA": "List Entries"
@@ -526,10 +522,6 @@ var cbTranslation = {
 	"cbFormStep4labelFieldMsg": {
 		"ENG": "What is the Label of this API?",
 		"FRA": "What is the Label of this API?"
-	},
-	"apiGroup": {
-		"ENG": "API Group",
-		"FRA": "API Group"
 	},
 	"news": {
 		"ENG": "News",
@@ -623,10 +615,8 @@ var cbTranslation = {
 		"ENG": "Override the default workflow behavior of this step or leave blank to use default.",
 		"FRA": "Override the default workflow behavior of this step or leave blank to use default."
 	},
-	"addNewAPI": {
-		"ENG": "Add New API",
-		"FRA": "Add New API"
-	},
+	//Services
+	//api
 	"enterRouteValueApiProceed": {
 		"ENG": "Enter a route value for the API to proceed!",
 		"FRA": "Enter a route value for the API to proceed!"
@@ -635,6 +625,7 @@ var cbTranslation = {
 		"ENG": "The error code you entered for this API is invalid.",
 		"FRA": "The error code you entered for this API is invalid."
 	},
+	//contentBuilder
 	"view": {
 		"ENG": "View",
 		"FRA": "View"
@@ -643,6 +634,7 @@ var cbTranslation = {
 		"ENG": "Content Builder Created Successfully",
 		"FRA": "Content Builder Created Successfully"
 	},
+	//input
 	"addNewUserInput": {
 		"ENG": "Add New User Input",
 		"FRA": "Add New User Input"
@@ -671,6 +663,8 @@ var cbTranslation = {
 		"ENG": "Update File Input",
 		"FRA": "Update File Input"
 	},
+	//Directives
+	//add
 	"createNewServiceSchema": {
 		"ENG": "Create New Service Schema",
 		"FRA": "Create New Service Schema"
@@ -683,10 +677,12 @@ var cbTranslation = {
 		"ENG": "Are you sure you want to cancel? (All the data collected by the wizard will be lost)",
 		"FRA": "Are you sure you want to cancel? (All the data collected by the wizard will be lost)"
 	},
+	//list
 	"addNewSchema": {
 		"ENG": "Add New Schema",
 		"FRA": "Add New Schema"
 	},
+	//view
 	"createdBy": {
 		"ENG": "Created By",
 		"FRA": "Created By"
@@ -707,13 +703,212 @@ var cbTranslation = {
 		"ENG": "UI Properties",
 		"FRA": "UI Properties"
 	},
-	"oK": {
+	"ok": {
 		"ENG": "OK",
 		"FRA": "OK"
 	},
 	"serviceAPIsWorkflow": {
 		"ENG": "Service APIs & Workflow",
 		"FRA": "Service APIs & Workflow"
+	},
+	//add-s1
+	/*You do not have any clusters configured, please go to the environments section and configure at least one cluster so you can proceed in this section.*/
+	"youDoNotHaveClustersConfiguredPlease": {
+		"ENG": "You do not have any clusters configured, please go to the",
+		"FRA": "You do not have any clusters configured, please go to the"
+	},
+	"environments": {
+		"ENG": "environments",
+		"FRA": "environments"
+	},
+	"sectionConfigureAtLeastOneClusterProceedSection": {
+		"ENG": "section and configure at least one cluster so you can proceed in this section.",
+		"FRA": "section and configure at least one cluster so you can proceed in this section."
+	},
+	"followingWizardProvide4StepsThatAssist": {
+		"ENG": "The following wizard provide 4 steps that assist you in creating your content service or modify it. The wizard saves your changes as you navigate between the 4 steps automatically.",
+		"FRA": "The following wizard provide 4 steps that assist you in creating your content service or modify it. The wizard saves your changes as you navigate between the 4 steps automatically."
+	},
+	"enterNameServiceYouAreAboutCreate": {
+		"ENG": "Enter the name of the service you are about to create.",
+		"FRA": "Enter the name of the service you are about to create."
+	},
+	"myService": {
+		"ENG": "My Service...",
+		"FRA": "My Service..."
+	},
+	"createNewDatabase": {
+		"ENG": "Create New Database ?",
+		"FRA": "Create New Database ?"
+	},
+	"specifyIfServiceMultitenantNot": {
+		"ENG": "Specify if the service is multitenant or not.",
+		"FRA": "Specify if the service is multitenant or not."
+	},
+	"createsNewMultitenantDatabaseSameNameService": {
+		"ENG": "Creates a new multitenant database with the same name as your service",
+		"FRA": "Creates a new multitenant database with the same name as your service"
+	},
+	"specifyDatabaseUseEveryEnvironment": {
+		"ENG": "Specify a database to use in every environment",
+		"FRA": "Specify a database to use in every environment"
+	},
+	"selectDatabaseToUse": {
+		"ENG": "Select a Database to Use",
+		"FRA": "Select a Database to Use"
+	},
+	"cluster": {
+		"ENG": "Cluster",
+		"FRA": "Cluster"
+	},
+	"tenantSpecific": {
+		"ENG": "Tenant Specific",
+		"FRA": "Tenant Specific"
+	},
+	"selectClusterToUse": {
+		"ENG": "Select a Cluster to Use",
+		"FRA": "Select a Cluster to Use"
+	},
+	//add-s2
+	//Specify how many inputs your service should have and their API and UI properties.By Default, the id Input is provided for you to reference your data records later on through the APIs of this service.
+	"specifyInputsServiceAPIAndUIProperties": {
+		"ENG": "Specify how many inputs your service should have and their API and UI properties.",
+		"FRA": "Specify how many inputs your service should have and their API and UI properties."
+	},
+	"byDefaultThe": {
+		"ENG": "By Default, the",
+		"FRA": "By Default, the"
+	},
+	"idLowercase": {
+		"ENG": "id",
+		"FRA": "id"
+	},
+	"inputProvidedReferenceDataRecordsLaterAPIsService": {
+		"ENG": "Input is provided for you to reference your data records later on through the APIs of this service.",
+		"FRA": "Input is provided for you to reference your data records later on through the APIs of this service."
+	},
+	"providedBy": {
+		"ENG": "Provided by",
+		"FRA": "Provided by"
+	},
+	"auto": {
+		"ENG": "auto",
+		"FRA": "auto"
+	},
+	"updateInput": {
+		"ENG": "Update Input",
+		"FRA": "Update Input"
+	},
+	"removeInput": {
+		"ENG": "Remove Input",
+		"FRA": "Remove Input"
+	},
+	"areYouSureYouWantRemoveInput": {
+		"ENG": "Are you sure you want to remove this input ?",
+		"FRA": "Are you sure you want to remove this input ?"
+	},
+	//add-s3
+	"enterGeneralConfigurationSOAJSRequiresInitializeService": {
+		"ENG": "Enter the general configuration that SOAJS requires to initialize this service.",
+		"FRA": "Enter the general configuration that SOAJS requires to initialize this service."
+	},
+	//add-s4
+	//Add & Manage the APIs that your service disposes of; Every API should belong to one of the predefined types: ADD - EDIT - LIST - GET - DELETE.While managing an API, you can pick the inputs, from Section 2, that it should handle and define a custom workflow scenario if needed.
+	"addManageAPIThatYourServiceDisposes": {
+		"ENG": "Add & Manage the APIs that your service disposes of; Every API should belong to one of the predefined types: ADD - EDIT - LIST - GET - DELETE.",
+		"FRA": "Add & Manage the APIs that your service disposes of; Every API should belong to one of the predefined types: ADD - EDIT - LIST - GET - DELETE."
+	},
+	"whileManagingAPIYouCanPickInputs": {
+		"ENG": "While managing an API, you can pick the inputs, from Section 2, that it should handle and define a custom workflow scenario if needed.",
+		"FRA": "While managing an API, you can pick the inputs, from Section 2, that it should handle and define a custom workflow scenario if needed."
+	},
+	"updateAPI": {
+		"ENG": "Update API",
+		"FRA": "Update API"
+	},
+	"removeAPI": {
+		"ENG": "Remove API",
+		"FRA": "Remove API"
+	},
+	"areYouSureYouWantRemoveAPI": {
+		"ENG": "Are you sure you want to remove this API ?",
+		"FRA": "Are you sure you want to remove this API ?"
+	},
+	"group": {
+		"ENG": "Group",
+		"FRA": "Group"
+	},
+	"method": {
+		"ENG": "Method",
+		"FRA": "Method"
+	},
+	"type": {
+		"ENG": "Type",
+		"FRA": "Type"
+	},
+	//edit
+	"updateServiceSchemaOf": {
+		"ENG": "Update Service Schema of",
+		"FRA": "Update Service Schema of"
+	},
+	"updateServiceSchema": {
+		"ENG": "Update Service Schema",
+		"FRA": "Update Service Schema"
+	},
+	//view-gs
+	"serviceInformation": {
+		"ENG": "Service Information",
+		"FRA": "Service Information"
+	},
+	"extKeyRequired": {
+		"ENG": "External Key Required",
+		"FRA": "External Key Required"
+	},
+	"keySecurity": {
+		"ENG": "Key Security",
+		"FRA": "Key Security"
+	},
+	"persistentSession": {
+		"ENG": "Persistent Session",
+		"FRA": "Persistent Session"
+	},
+	"multitenant": {
+		"ENG": "Multitenant",
+		"FRA": "Multitenant"
+	},
+	"errors": {
+		"ENG": "errors",
+		"FRA": "errors"
+	},
+	"files": {
+		"ENG": "Files",
+		"FRA": "Files"
+	},
+	//view-sui
+	"field": {
+		"ENG": "Field",
+		"FRA": "Field"
+	},
+	"filter": {
+		"ENG": "Filter",
+		"FRA": "Filter"
+	},
+	"addUppercase": {
+		"ENG": "Add",
+		"FRA": "Add"
+	},
+	"updateUppercase": {
+		"ENG": "Update",
+		"FRA": "Update"
+	},
+	//view-ss
+	"inputs": {
+		"ENG": "Inputs",
+		"FRA": "Inputs"
+	},
+	"workflow": {
+		"ENG": "Workflow",
+		"FRA": "Workflow"
 	}
 };
 

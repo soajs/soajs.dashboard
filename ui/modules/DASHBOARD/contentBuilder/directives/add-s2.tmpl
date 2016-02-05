@@ -14,8 +14,8 @@
             </tabset>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="done()">Done</button>
-            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="done()">{{translation.done[LANG]}}</button>
+            <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
         </div>
     </script>
     <script type="text/ng-template" id="editInputForm.html">
@@ -23,8 +23,8 @@
             <ngform></ngform>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="done()">Done</button>
-            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="done()">{{translation.done[LANG]}}</button>
+            <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
         </div>
     </script>
 
@@ -35,58 +35,58 @@
 
         <div class="w80 table-cell">
             <input type="button" class="btn btn-sm btn-primary" value="Add New Input" ng-click="addInput()"/><br /><br />
-            <em>Specify how many inputs your service should have and their API and UI properties.<br />By Default, the <b>id</b> Input is provided for you to reference your data records later on through the APIs of this service.</em>
+            <em>{{translation.specifyInputsServiceAPIAndUIProperties[LANG]}}<br />{{translation.byDefaultThe[LANG]}} <b>{{translation.idLowercase[LANG]}}</b> {{translation.inputProvidedReferenceDataRecordsLaterAPIsService[LANG]}}</em>
             <hr/>
             <div class="entryBoxes entryBoxesGrid" style="height:100px;">
                 <div class="dbBox" style="width:30% !important;" ng-repeat="(fieldName, fieldInfo) in config.genericService.config.schema.commonFields track by $index">
                     <div class="head">
-                        <b>Provided by <span class="icon icon-user"></span></b>
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-user"></span></b>
                         <span class="rightActions">
-                            <span ng-show="fieldName === 'id'">(auto)</span>
+                            <span ng-show="fieldName === 'id'">({{translation.auto[LANG]}})</span>
                             <a href="" ng-click="updateInput('user', fieldName, fieldInfo);" ng-show="fieldName !=='id'">
-                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
                             </a>
-                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">
-                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
                             </a>
                         </span>
                     </div>
                     <div class="info">
-                        <b>Label:</b>&nbsp;{{fieldName}}<br/>
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{fieldName}}<br/>
                     </div>
                 </div>
 
                 <div class="dbBoxGreen w20i" ng-repeat="formField in config.soajsUI.form.add" ng-if="getInputType('fileUI', config, formField)">
                     <div class="head">
-                        <b>Provided by <span class="icon icon-user"></span></b>
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-user"></span></b>
                         <span class="rightActions">
                             <a href="" ng-click="updateInput('fileUI', formField.name, formField);">
-                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
                             </a>
-                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(formField.name);">
-                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(formField.name);">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
                             </a>
                         </span>
                     </div>
                     <div class="info">
-                        <b>Label:</b>&nbsp;{{formField.label}}<br/>
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{formField.label}}<br/>
                     </div>
                 </div>
 
                 <div class="dbBoxRed w20i" ng-repeat="columns in config.soajsUI.list.columns" ng-if="getInputType('computedUI', config, columns.name)">
                     <div class="head">
-                        <b>Provided by <span class="icon icon-laptop"></span></b>
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-laptop"></span></b>
                         <span class="rightActions">
                             <a href="" ng-click="updateInput('computedUI', columns.name, columns);">
-                                <span class="icon icon-pencil" tooltip="Update Input"></span>
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
                             </a>
-                            <a href="" ng-confirm-click="Are you sure you want to remove this input ?" ng-click="removeInput(columns.name);">
-                                <span class="icon icon-cross" tooltip="Remove Input"></span>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(columns.name);">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
                             </a>
                         </span>
                     </div>
                     <div class="info">
-                        <b>Label:</b>&nbsp;{{columns.label}}<br/>
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{columns.label}}<br/>
                     </div>
                 </div>
 

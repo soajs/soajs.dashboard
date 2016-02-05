@@ -502,7 +502,7 @@ var cbConfig = {
 				"entries": [
 					{
 						'name': 'label',
-						'label': translation.apiLabel[LANG],
+						'label': translation.aPILabel[LANG],
 						'type': 'text',
 						'placeholder': translation.listEntries[LANG],
 						'value': '',
@@ -512,7 +512,7 @@ var cbConfig = {
 					},
 					{
 						'name': 'group',
-						'label': translation.apiGroup[LANG],
+						'label': translation.aPIGroup[LANG],
 						'type': 'text',
 						'placeholder': translation.news[LANG],
 						'value': '',

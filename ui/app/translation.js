@@ -402,6 +402,10 @@ var translation = {
 		"ENG": "Request Timeout",
 		"FRA": "Request Timeout"
 	},
+	"requestTimeoutRenewal": {
+		"ENG": "Request Timeout Renewal",
+		"FRA": "Request Timeout Renewal"
+	},
 	"servicePort": {
 		"ENG": "Service Port",
 		"FRA": "Service Port"
@@ -409,6 +413,34 @@ var translation = {
 	"enterServicePortNumber": {
 		"ENG": "Enter the Service port number",
 		"FRA": "Enter the Service port number"
+	},
+	"serviceName": {
+		"ENG": "Service Name",
+		"FRA": "Service Name"
+	},
+	"done": {
+		"ENG": "Done",
+		"FRA": "Done"
+	},
+	"aPILabel": {
+		"ENG": "API Label",
+		"FRA": "API Label"
+	},
+	"aPIGroup": {
+		"ENG": "API Group",
+		"FRA": "API Group"
+	},
+	"label": {
+		"ENG": "Label",
+		"FRA": "Label"
+	},
+	"route": {
+		"ENG": "Route",
+		"FRA": "Route"
+	},
+	"addNewAPI": {
+		"ENG": "Add New API",
+		"FRA": "Add New API"
 	},
 	//api-permission
 	"restrictAccessSelectedApis": {
