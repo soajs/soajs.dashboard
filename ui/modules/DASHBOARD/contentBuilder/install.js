@@ -1,10 +1,6 @@
 "use strict";
 
 var cbTranslation = {
-	"contentBuilder": {
-		"ENG": "Content Builder",
-		"FRA": "Content Builder"
-	},
 	"addNewContentBuilder": {
 		"ENG": "Add New Content Builder",
 		"FRA": "Add New Content Builder"
@@ -35,21 +31,9 @@ var cbTranslation = {
 		"FRA": "You do not have access to the requested section"
 	},
 	//config
-	"version": {
-		"ENG": "Version",
-		"FRA": "Version"
-	},
-	"author": {
-		"ENG": "Author",
-		"FRA": "Author"
-	},
 	"created": {
 		"ENG": "Created",
 		"FRA": "Created"
-	},
-	"lastModified": {
-		"ENG": "Last Modified",
-		"FRA": "Last Modified"
 	},
 	"cbFormStep2ComputedUIHTMLValue": {
 		"ENG": "This type of inputs is computed by the system and included in the listing UI Grid.",
@@ -686,10 +670,6 @@ var cbTranslation = {
 	"createdBy": {
 		"ENG": "Created By",
 		"FRA": "Created By"
-	},
-	"createdOn": {
-		"ENG": "Created On",
-		"FRA": "Created On"
 	},
 	"lastModifiedOn": {
 		"ENG": "Last Modified On",

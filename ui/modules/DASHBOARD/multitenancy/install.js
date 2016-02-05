@@ -125,7 +125,10 @@ var mtTranslation = {
 		"ENG": "Are you sure you want to remove this tenant?",
 		"FRA": "Are you sure you want to remove this tenant?"
 	},
-
+	"youNeedToChangeOneGroupAccessTypeGroups": {
+		"ENG": "You need to choose at least one group when the access type is set to Groups",
+		"FRA": "You need to choose at least one group when the access type is set to Groups"
+	},
 	"choosePackage": {
 		"ENG": "Choose a package.",
 		"FRA": "Choose a package."

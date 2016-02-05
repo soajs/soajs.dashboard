@@ -12,26 +12,26 @@
                         </span>
                 </div>
                 <div class="info">
-                    <b>version:</b>&nbsp;{{oneService.v}}<br/><br/>
-                    <a href="" ng-click="loadUIModule(oneService)" class="btn btn-primary">Manage Content</a>
+                    <b style = "text-transform: lowercase">version:</b>&nbsp;{{oneService.v}}<br/><br/>
+                    <a href="" ng-click="loadUIModule(oneService)" class="btn btn-primary">{{translation.manageContent[LANG]}}</a>
 
                 </div>
             </div>
 
             <div ng-show="!hp">
-                <h2>Managing Content of {{selectedService.name}}</h2>
-                <a href="" ng-click="goBack()" class="f-right btn btn-primary">Go Back</a>
-                <div id="contentGridContainer"><br/><p>Loading Data...</p></div>
+                <h2>{{translation.managingContentOf[LANG]}} {{selectedService.name}}</h2>
+                <a href="" ng-click="goBack()" class="f-right btn btn-primary">{{translation.goBack[LANG]}}</a>
+                <div id="contentGridContainer"><br/><p>{{translation.loadingData[LANG]}}...</p></div>
             </div>
 
         </div>
 
         <div ng-if="services.length === 0">
-            <div class="redFlag"> No Content Management Services are running.</div>
+            <div class="redFlag"> {{translation.noContentManagementServicesRunning[LANG]}}</div>
             <br/>
 
-            <p ng-if="noCB">Create New Services in <a href="#/content-builder">Content Builder</a></p>
-            <p ng-if="!noCB">No Content Management Services are deployed yet. Head to the <a href="#/environments">Environments</a> Section and deploy them.</p>
+            <p ng-if="noCB">{{translation.createNewServicesIn[LANG]}} <a href="#/content-builder">{{translation.contentBuilder[LANG]}}</a></p>
+            <p ng-if="!noCB">{{translation.noContentManagementServiceDeployedYet[LANG]}} <a href="#/environments">{{translation.environments[LANG]}}</a> {{translation.sectionAndDeployThem[LANG]}}</p>
         </div>
     </tabset>
 </section>

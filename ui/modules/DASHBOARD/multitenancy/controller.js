@@ -1591,7 +1591,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			else {
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+				$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
 			}
 		});
 	};
@@ -1619,13 +1619,13 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				else {
 					$scope.msg.type = '';
 					$scope.msg.msg = '';
-					$scope.$parent.displayAlert('success', 'ACL Updated Successfully.');
+					$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
 
 				}
 			});
 		}
 		else {
-			$scope.$parent.displayAlert('danger', 'You need to choose at least one group when the access type is set to Groups');
+			$scope.$parent.displayAlert('danger', translation.youNeedToChangeOneGroupAccessTypeGroups[LANG]);
 		}
 	};
 

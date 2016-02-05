@@ -442,6 +442,26 @@ var translation = {
 		"ENG": "Add New API",
 		"FRA": "Add New API"
 	},
+	"author": {
+		"ENG": "Author",
+		"FRA": "Author"
+	},
+	"createdOn": {
+		"ENG": "Created On",
+		"FRA": "Created On"
+	},
+	"lastModified": {
+		"ENG": "Last Modified",
+		"FRA": "Last Modified"
+	},
+	"version": {
+		"ENG": "Version",
+		"FRA": "Version"
+	},
+	"contentBuilder": {
+		"ENG": "Content Builder",
+		"FRA": "Content Builder"
+	},
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",
