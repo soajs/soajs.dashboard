@@ -4,7 +4,7 @@
             <section ng-controller="contentBuilderActiveCtrl">
                 <div ng-include="'modules/DASHBOARD/contentBuilder/directives/view.tmpl'"></div>
                 <span ng-if="access.addService">
-                    <a href="#/content-builder/add" class="btn btn-primary">Add New Schema</a><br/><br/>
+                    <a href="#/content-builder/add" class="btn btn-primary">{{translation.addNewSchema[LANG]}}</a><br/><br/>
                 </span>
                 <nglist></nglist>
             </section>

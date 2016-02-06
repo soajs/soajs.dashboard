@@ -99,11 +99,11 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	$scope.validateStep1 = function(force) {
 		if(!$scope.config.name) {
 			//show error, no service name given
-			$window.alert("Enter a name for your service!");
+			$window.alert(translation.enterNameForYourService[LANG]);
 		}
 
 		if(Object.keys($scope.config.dbtoUse).length === 0 && Object.keys($scope.config.clustertoUse).length === 0) {
-			$window.alert("Please choose either to create a new database or use an existing one for every environment.");
+			$window.alert(translation.pleaseChooseEitherNewExistingDatabaseEnvironment[LANG]);
 		}
 		else {
 			$scope.config.genericService.config.serviceName = $scope.config.name.toLowerCase().replace(/\s/g, "_");
@@ -234,11 +234,11 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 
 				}
 				catch(e) {
-					$window.alert("Invalid Error Code format provided, please make sure it is a JSON object.");
+					$window.alert(translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
 				}
 			}
 			else {
-				$window.alert("Please fill out the mandatory fields.");
+				$window.alert(translation.pleaseFillOutMandatoryFields[LANG]);
 			}
 		}
 
@@ -295,7 +295,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 		$scope.prepareUpdateForm();
 	}
 	else {
-		$scope.$parent.displayAlert('danger', "You do not have access to the requested section");
+		$scope.$parent.displayAlert('danger', translation.youDontHaveAccessRequestedSection[LANG]);
 		$scope.$parent.go("/content-builder");
 	}
 

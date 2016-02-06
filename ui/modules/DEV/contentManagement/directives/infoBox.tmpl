@@ -10,22 +10,22 @@
             <ul id="preview">
                 <li ng-repeat="oneFile in info.info" ng-switch="info.type">
                     <div ng-switch-when="document">
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" title="Click to Open File">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" title="{{translation.clickOpenFile[LANG]}}>{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                     <div ng-switch-when="image" class="f-left imageBox">
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Open Image">
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="{{translation.clickOpenImage[LANG]}}">
                             <div ng-init="downloadFile(oneFile, 'image')"></div>
                             <img ng-src="{{oneFile.src}}" width="100"/>
                         </a><br />
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Open Image">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="{{translation.clickOpenImage[LANG]}}">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                     <div ng-switch-when="audio" class="f-left audioBox">
                         <div ng-init="downloadFile(oneFile, 'audio')" id="aud_{{oneFile.id}}" ng-bind-html="oneFile.print | toTrustedHtml"></div>
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Audio Track">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="{{translation.clickDownloadAudioTrack[LANG]}}">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                     <div ng-switch-when="video">
                         <div ng-init="downloadFile(oneFile, 'video')" id="vid_{{oneFile.id}}" ng-bind-html="oneFile.print | toTrustedHtml"></div>
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="Click to Download Video">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="{{translation.clickDownloadVideo[LANG]}}">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                 </li>
             </ul>
@@ -33,12 +33,12 @@
     </div>
 </div>
 <div class="modal-footer">
-    <div class="f-left">
+    <div class="f-left t-left">
         <p>
-            <b>Author:</b>&nbsp;{{author}}<br/>
-            <b>Created On:</b>&nbsp;{{created|date}}<br/>
-            <span ng-if="modified"><b>Last Modified:</b>&nbsp;{{modified|date}}<br/></span>
+            <b>{{translation.author[LANG]}}:&nbsp;</b>{{author}}<br/>
+            <b>{{translation.createdOn[LANG]}}:</b>&nbsp;{{created|date}}<br/>
+            <span ng-if="modified"><b>{{translation.lastModified[LANG]}}:</b>&nbsp;{{modified|date}}<br/></span>
         </p>
     </div>
-    <button class="btn btn-primary" ng-click="ok()">Close</button>
+    <button class="btn btn-primary f-right" ng-click="ok()">Close</button>
 </div>

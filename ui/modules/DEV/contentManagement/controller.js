@@ -73,11 +73,11 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                         'label': APILabel.l,
                                         'icon': 'cross',
                                         'handler': 'deleteCMDataEntry',
-                                        'msg': "Are you sure you want to delete the selected entry?"
+                                        'msg': translation.areYouSureWantDeleteSelectedEntry[LANG]
                                     });
                                     $scope.ui.top.push({
                                         'label': APILabel.l,
-                                        'msg': "Are you sure you want to delete the selected entry(s)?",
+                                        'msg': translation.areYouSureWantDeleteSelectedEntryS[LANG],
                                         'handler': 'deleteCMDataEntries'
                                     });
                                     $scope.ui.links['delete'] = apiRoute;
@@ -107,7 +107,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
         }
         else {
             var el = angular.element(document.getElementById("contentGridContainer"));
-            el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">Go Back</a><p>You do not have access to this content module.</p>");
+            el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">" + translation.goBack[LANG] + "</a><p>" + translation.youDoNotHaveAccessContentModule[LANG] + "</p>");
             $compile(el.contents())($scope);
         }
     };
@@ -181,11 +181,11 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             timeout: $timeout,
             form: config,
             name: 'addEntry',
-            label: 'Add New Entry',
+            label: translation.addNewEntry[LANG],
             actions: [
                 {
                     'type': 'submit',
-                    'label': 'Save Data',
+                    'label': translation.saveData[LANG],
                     'btn': 'primary',
                     'action': function (formData) {
                         var casting = ['select', 'radio'];
@@ -201,7 +201,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 
                         var files = cmService.extractFilesFromPostedData($scope, config, formData);
                         if (files === false) {
-                            $scope.form.displayAlert('danger', "Make sure you have filled all the files inputs.");
+                            $scope.form.displayAlert('danger', translation.makeSureYouHaveFilledInputs[LANG]);
                         }
                         else {
                             getSendDataFromServer($scope, ngDataApi, {
@@ -222,7 +222,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                                 $scope.form.displayAlert('danger', error);
                                             }
                                             else {
-                                                $scope.$parent.displayAlert('success', 'Data Added Successfully.');
+                                                $scope.$parent.displayAlert('success', translation.dataAddedSuccessfully[LANG]);
                                                 $scope.modalInstance.close();
                                                 $scope.form.formData = {};
                                                 $scope.listCMDataEntries();
@@ -230,7 +230,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                         });
                                     }
                                     else {
-                                        $scope.$parent.displayAlert('success', 'Data Added Successfully.');
+                                        $scope.$parent.displayAlert('success', translation.dataAddedSuccessfully[LANG]);
                                         $scope.modalInstance.close();
                                         $scope.form.formData = {};
                                         $scope.listCMDataEntries();
@@ -242,7 +242,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 },
                 {
                     'type': 'reset',
-                    'label': 'Cancel',
+                    'label': translation.cancel[LANG],
                     'btn': 'danger',
                     'action': function () {
                         $scope.modalInstance.dismiss('cancel');
@@ -314,12 +314,12 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 form: config,
                 data: data,
                 name: 'updateEntry',
-                label: 'Update Entry',
+                label: translation.updateEntry[LANG],
                 ngDataApi: ngDataApi,
                 actions: [
                     {
                         'type': 'submit',
-                        'label': 'Save Data',
+                        'label': translation.saveData[LANG],
                         'btn': 'primary',
                         'action': function (formData) {
                             var casting = ['select', 'radio'];
@@ -335,7 +335,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 
                             var files = cmService.extractFilesFromPostedData($scope, config, formData);
                             if (files === false) {
-                                $scope.form.displayAlert('danger', "Make sure you have filled all the files inputs.");
+                                $scope.form.displayAlert('danger', translation.makeSureYouHaveFilledInputs[LANG]);
                             }
                             else {
                                 getSendDataFromServer($scope, ngDataApi, {
@@ -357,7 +357,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                                     $scope.form.displayAlert('danger', error);
                                                 }
                                                 else {
-                                                    $scope.$parent.displayAlert('success', 'Data Updated Successfully.');
+                                                    $scope.$parent.displayAlert('success', translation.dataAddedSuccessfully[LANG]);
                                                     $scope.modalInstance.close();
                                                     $scope.form.formData = {};
                                                     $scope.listCMDataEntries();
@@ -365,7 +365,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                             });
                                         }
                                         else {
-                                            $scope.$parent.displayAlert('success', 'Data Updated Successfully.');
+                                            $scope.$parent.displayAlert('success', translation.dataAddedSuccessfully[LANG]);
                                             $scope.modalInstance.close();
                                             $scope.form.formData = {};
                                             $scope.listCMDataEntries();
@@ -377,7 +377,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     },
                     {
                         'type': 'reset',
-                        'label': 'Cancel',
+                        'label': translation.cancel[LANG],
                         'btn': 'danger',
                         'action': function () {
                             $scope.modalInstance.dismiss('cancel');
@@ -411,7 +411,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                     backdrop: false,
                     keyboard: false,
                     controller: function ($scope, $modalInstance) {
-                        $scope.title = "View Entry";
+                        $scope.title = translation.viewEntry[LANG];//????????????????????????
                         $scope.data = angular.copy(repsonse);
                         $scope.author = $scope.data.author;
                         $scope.created = $scope.data.created;
@@ -486,7 +486,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 $scope.$parent.displayAlert('danger', error.message);
             }
             else {
-                $scope.$parent.displayAlert('success', 'Data Deleted Successfully.');
+                $scope.$parent.displayAlert('success', translation.dataAddedSuccessfully[LANG]);
                 $scope.listCMDataEntries();
             }
         });
@@ -501,8 +501,8 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                 "env": $scope.selectedEnv.toUpperCase()
             },
             'msg': {
-                'error': 'one or more of the selected Data was not deleted.',
-                'success': 'Data Deleted Successfully.'
+                'error': translation.oneOrMoreSelectedDataNotDeleted[LANG],
+                'success': translation.dataAddedSuccessfully[LANG]
             }
         };
 

@@ -57,7 +57,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         var URL = window.URL || window.webkitURL;
                         oneFile.src = URL.createObjectURL(blob);
 
-                        oneFile.print = '<audio controls><source src="' + oneFile.src + '" ng-src="' + oneFile.src + '" type="' + oneFile.mediaType + '">Your browser does not support the audio tag.</audio>';
+                        oneFile.print = '<audio controls><source src="' + oneFile.src + '" ng-src="' + oneFile.src + '" type="' + oneFile.mediaType + '">' + translation.yourBrowserDoesNotSupportAudioTag[LANG] + '</audio>';
 
                         var e = angular.element(document.getElementById('aud_' + oneFile.id));
                         e.html = oneFile.print;
@@ -70,7 +70,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                         var URL = window.URL || window.webkitURL;
                         oneFile.src = URL.createObjectURL(blob);
 
-                        oneFile.print = '<video width="240" height="180" controls><source src="' + oneFile.src + '" type="' + oneFile.mediaType + '">Your browser does not support the video tag.</video>';
+                        oneFile.print = '<video width="240" height="180" controls><source src="' + oneFile.src + '" type="' + oneFile.mediaType + '">' + translation.yourBrowserDoesNotSupportAudioTag[LANG] + '</video>';
 
                         var e = angular.element(document.getElementById('vid_' + oneFile.id));
                         e.html = oneFile.print;

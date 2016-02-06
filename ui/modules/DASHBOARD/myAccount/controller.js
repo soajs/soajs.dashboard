@@ -32,7 +32,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'urac');
+								$scope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.successMsgChangeEmail[LANG]);
@@ -88,7 +88,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							"data": postData
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'urac');
+								$scope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
 							else {
 								$scope.$parent.displayAlert('success', translation.successMsgChangePassword[LANG]);
@@ -155,7 +155,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						"data": postData
 					}, function (error) {
 						if (error) {
-							$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+							$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 						}
 						else {
 							$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG]);
@@ -184,7 +184,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			"params": {"username": username}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert("danger", error.code, true, 'urac');
+				$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 			}
 			else {
 				$scope.uId = response._id;
@@ -268,7 +268,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 			"params": {"token": $route.current.params.token}
 		}, function (error) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+				$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
 				$scope.$parent.displayAlert('success', translation.yourEmailValidatedChangedSuccessfully[LANG]);
@@ -300,7 +300,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 			}, function (error, response) {
 				if (error) {
 					overlayLoading.hide();
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
 					$cookieStore.put('soajs_user', response);
@@ -320,7 +320,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
-						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
 						$cookieStore.put("soajs_dashboard_key", response.extKey);
@@ -336,7 +336,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 				}, function (error, response) {
 					overlayLoading.hide();
 					if (error) {
-						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
 						$localStorage.acl_access = response.acl;
@@ -378,7 +378,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 			}, function (error) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
 					$scope.$parent.displayAlert('success', translation.resetLinkSentYourEmailAddress[LANG]);
@@ -418,7 +418,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 				"data": postData
 			}, function (error) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
 					$scope.$parent.displayAlert('success', translation.passwordSetSuccessfully[LANG]);
@@ -461,7 +461,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				"data": postData
 			}, function (error) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
 					$scope.$parent.displayAlert('success', translation.yourPasswordReset[LANG]);

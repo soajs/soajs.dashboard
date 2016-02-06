@@ -33,7 +33,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 
 		if(currentScope.access.getService) {
 			options.left.push({
-				'label': 'View',
+				'label': translation.view[LANG],
 				'icon': 'search',
 				'handler': 'viewService'
 			});
@@ -41,7 +41,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 
 		if(currentScope.access.updateService && !viewOnly) {
 			options.left.push({
-				'label': 'Edit',
+				'label': translation.edit[LANG],
 				'icon': 'pencil2',
 				'handler': 'editService'
 			});
@@ -295,7 +295,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
-				currentScope.$parent.displayAlert("success", "Content Builder Created Successfully");
+				currentScope.$parent.displayAlert("success", translation.contentBuilderCreatedSuccessfully[LANG]);
 				currentScope.$parent.go("/content-builder");
 				cb();
 			}
@@ -320,7 +320,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
-				currentScope.$parent.displayAlert("success", "Content Builder Updated Successfully");
+				currentScope.$parent.displayAlert("success", translation.contentBuilderCreatedSuccessfully[LANG]);
 				currentScope.$parent.go("/content-builder");
 				cb();
 			}

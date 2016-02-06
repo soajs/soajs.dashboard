@@ -8,18 +8,10 @@ var srTranslation = {
 		"ENG": "Daemons",
 		"FRA": "Daemons"
 	},
-	"develop": {
-		"ENG": "Develop",
-		"FRA": "Develop"
-	},
 	//controller
 	"updateService": {
 		"ENG": "Update Service",
 		"FRA": "Update Service"
-	},
-	"addNewAPI": {
-		"ENG": "Add New API",
-		"FRA": "Add New API"
 	},
 	"youNeedProvideOneAPiForService": {
 		"ENG": "You need to provide at least One API for this service!",
@@ -122,10 +114,6 @@ var srTranslation = {
 		"ENG": "API Route",
 		"FRA": "API Route"
 	},
-	"aPILabel": {
-		"ENG": "API Label",
-		"FRA": "API Label"
-	},
 	"routeName": {
 		"ENG": "routeName",
 		"FRA": "routeName"
@@ -133,10 +121,6 @@ var srTranslation = {
 	"myAPIRoute": {
 		"ENG": "My API Route",
 		"FRA": "My API Route"
-	},
-	"aPIGroup": {
-		"ENG": "API Group",
-		"FRA": "API Group"
 	},
 	"myAPIGroup": {
 		"ENG": "My API Group",
@@ -162,29 +146,9 @@ var srTranslation = {
 		"ENG": "Compress your Service's folder into a ZIP file and upload it using this form",
 		"FRA": "Compress your Service's folder into a ZIP file and upload it using this form"
 	},
-	"serviceName": {
-		"ENG": "Service Name",
-		"FRA": "Service Name"
-	},
-	"servicePort": {
-		"ENG": "Service Port",
-		"FRA": "Service Port"
-	},
-	"enterServicePortNumber": {
-		"ENG": "Enter the Service port number",
-		"FRA": "Enter the Service port number"
-	},
-	"requestTimeout": {
-		"ENG": "Request Timeout",
-		"FRA": "Request Timeout"
-	},
 	"formRequestTimeoutTooltip": {
 		"ENG": "Maximum timeout value for a request to this service",
 		"FRA": "Maximum timeout value for a request to this service"
-	},
-	"requestTimeoutRenewal": {
-		"ENG": "Request Timeout Renewal",
-		"FRA": "Request Timeout Renewal"
 	},
 	"formRequestTimeoutRenewalTooltip": {
 		"ENG": "In case of a timeout, set the number of trial attempts",
@@ -312,14 +276,6 @@ var srTranslation = {
 	"defaultRoute": {
 		"ENG": "Default Route",
 		"FRA": "Default Route"
-	},
-	"label": {
-		"ENG": "Label",
-		"FRA": "Label"
-	},
-	"route": {
-		"ENG": "Route",
-		"FRA": "Route"
 	},
 	//list-daemons
 	"editDaemon": {

@@ -113,6 +113,10 @@ var translation = {
 		"ENG": "Packages",
 		"FRA": "Packages"
 	},
+	"develop": {
+		"ENG": "Develop",
+		"FRA": "Develop"
+	},
 	"code": {
 		"ENG": "Code",
 		"FRA": "Code"
@@ -186,7 +190,7 @@ var translation = {
 		"FRA": "Update User"
 	},
 	"userID": {
-		"ENG": "User Id", //
+		"ENG": "User Id",
 		"FRA": "User Id"
 	},
 	"deleteoAuthInfo": {
@@ -217,7 +221,6 @@ var translation = {
 		"ENG": "Enter oAuth user password.",
 		"FRA": "Enter oAuth user password."
 	},
-	
 	"TenantInfoUpdatedSuccessfully": {
 		"ENG": "Tenant Info Updated Successfully",
 		"FRA": "Tenant Info Updated Successfully"
@@ -395,7 +398,70 @@ var translation = {
 		"ENG": "Inactive",
 		"FRA": "Inactive"
 	},
-	
+	"requestTimeout": {
+		"ENG": "Request Timeout",
+		"FRA": "Request Timeout"
+	},
+	"requestTimeoutRenewal": {
+		"ENG": "Request Timeout Renewal",
+		"FRA": "Request Timeout Renewal"
+	},
+	"servicePort": {
+		"ENG": "Service Port",
+		"FRA": "Service Port"
+	},
+	"enterServicePortNumber": {
+		"ENG": "Enter the Service port number",
+		"FRA": "Enter the Service port number"
+	},
+	"serviceName": {
+		"ENG": "Service Name",
+		"FRA": "Service Name"
+	},
+	"done": {
+		"ENG": "Done",
+		"FRA": "Done"
+	},
+	"aPILabel": {
+		"ENG": "API Label",
+		"FRA": "API Label"
+	},
+	"aPIGroup": {
+		"ENG": "API Group",
+		"FRA": "API Group"
+	},
+	"label": {
+		"ENG": "Label",
+		"FRA": "Label"
+	},
+	"route": {
+		"ENG": "Route",
+		"FRA": "Route"
+	},
+	"addNewAPI": {
+		"ENG": "Add New API",
+		"FRA": "Add New API"
+	},
+	"author": {
+		"ENG": "Author",
+		"FRA": "Author"
+	},
+	"createdOn": {
+		"ENG": "Created On",
+		"FRA": "Created On"
+	},
+	"lastModified": {
+		"ENG": "Last Modified",
+		"FRA": "Last Modified"
+	},
+	"version": {
+		"ENG": "Version",
+		"FRA": "Version"
+	},
+	"contentBuilder": {
+		"ENG": "Content Builder",
+		"FRA": "Content Builder"
+	},
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",
@@ -1333,7 +1399,36 @@ var errorCodes = {
 			"ENG": "Certificate does not exist",
 			"FRA": "Certificate does not exist"
 		},
-		
+
+		"731": {
+			"ENG": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
+			"FRA": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature"
+		},
+
+		"732": {
+			"ENG": "Unable to list drivers",
+			"FRA": "Unable to list drivers"
+		},
+		"733": {
+			"ENG": "Unable to add driver",
+			"FRA": "Unable to add driver"
+		},
+		"734": {
+			"ENG": "Unable to update driver",
+			"FRA": "Unable to update driver"
+		},
+		"735": {
+			"ENG": "Unable to change selected driver",
+			"FRA": "Unable to change selected driver"
+		},
+		"736": {
+			"ENG": "Unable to delete driver",
+			"FRA": "Unable to delete driver"
+		},
+		"737": {
+			"ENG": "You are not allowed to delete a driver that is currently selected",
+			"FRA": "You are not allowed to delete a driver that is currently selected"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
