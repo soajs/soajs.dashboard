@@ -67,7 +67,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		}
 	}
 
-	console.log(apiOptions);
+	//console.log(apiOptions);
 	ngDataApi[options.method]($scope, apiOptions, callback);
 }
 
