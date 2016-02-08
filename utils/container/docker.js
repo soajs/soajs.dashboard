@@ -50,7 +50,9 @@ var lib = {
 				port: config.port
 			};
 
-			mongo.find("fs.files", {metadata: {envCode: config.envCode}}, function (error, certs) {
+			var criteria = {};
+			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
+			mongo.find("fs.files", criteria, function (error, certs) {
 				if (error) {
 					return cb(error);
 				}

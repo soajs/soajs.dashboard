@@ -45,7 +45,8 @@
     "mkdirp": "*",
     "rimraf": "*",
     "request": "*",
-    "gridfs-stream": "*"
+    "gridfs-stream": "*",
+    "async": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"
