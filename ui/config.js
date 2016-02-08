@@ -34,16 +34,7 @@ var modules = {
 	},
 	"operate": {
 		"DEV":{
-			contentManagement: 'modules/DEV/contentManagement/install.js',
-			shoppingCart: 'modules/DEV/shoppingCart/install.js',
-			order: 'modules/DEV/order/install.js',
-			catalogProfiles: 'modules/DEV/catalogProfiles/install.js',
-			knowledgebase: 'modules/DEV/knowledgebase/install.js',
-			merchantsProducts: 'modules/DEV/merchantsProducts/install.js',
-			drivers: 'modules/DEV/drivers/install.js'
-		},
-		"PROD":{
-			contentManagement: 'modules/PROD/contentManagement/install.js'
+			contentManagement: 'modules/DEV/contentManagement/install.js'
 		}
 	},
 	"common": {
