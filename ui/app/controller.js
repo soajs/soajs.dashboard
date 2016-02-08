@@ -283,6 +283,20 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					$scope.guestMenu.links.push($scope.appNavigation[i]);
 				}
 			}
+
+			for (var x in $scope.mainMenu.links){
+				$scope.mainMenu.links[x].entries.sort(function (a, b) {
+					if (a.order > b.order) {
+						return 1;
+					}
+					if (a.order < b.order) {
+						return -1;
+					}
+					// a must be equal to b
+					return 0;
+				});
+			}
+
 		};
 
 		$scope.rebuildMenus = function () {
@@ -338,12 +352,24 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
+				// sort
+				for (var x in $scope.mainMenu.links){
+					$scope.mainMenu.links[x].entries.sort(function (a, b) {
+						if (a.order > b.order) {
+							return 1;
+						}
+						if (a.order < b.order) {
+							return -1;
+						}
+						// a must be equal to b
+						return 0;
+					});
+				}
 
 			}
 
 			doPermissions($scope.appNavigation);
-
-			$scope.updateSelectedMenus();
+			//$scope.updateSelectedMenus();
 		};
 
 		$scope.buildNavigation();

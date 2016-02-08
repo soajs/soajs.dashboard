@@ -185,6 +185,7 @@ var multitenancyNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
+		'order': 2,
 		'scripts': ['modules/DASHBOARD/multitenancy/config.js', 'modules/DASHBOARD/multitenancy/controller.js', 'modules/DASHBOARD/multitenancy/services/multitenancy.js'],
 		'ancestor': [translation.home[LANG]]
 	},

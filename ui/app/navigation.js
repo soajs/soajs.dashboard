@@ -54,12 +54,12 @@ var navigation = [
 	document.getElementsByTagName("head")[0].appendChild(link);
 
 	if (modules) {
-		var allFiles= [];
+		var allFiles = [];
 		for (var pillar in modules) {
-			if (modules.hasOwnProperty(pillar)){
+			if (modules.hasOwnProperty(pillar)) {
 				for (var env in modules[pillar]) {
-					if(modules[pillar].hasOwnProperty(env)){
-						for ( var install in modules[pillar][env]){
+					if (modules[pillar].hasOwnProperty(env)) {
+						for (var install in modules[pillar][env]) {
 							if (typeof modules[pillar][env][install] === 'string') {
 								allFiles.push(modules[pillar][env][install]);
 							}
@@ -83,11 +83,10 @@ var navigation = [
 				}
 			}
 		}
-		for(var j = 0; j < allFiles.length; j++)
-		{
+		for (var j = 0; j < allFiles.length; j++) {
 			var x = document.createElement("script");
 			x.type = "text/javascript";
-			x.src= allFiles[j];
+			x.src = allFiles[j];
 			document.getElementsByTagName("head")[0].appendChild(x);
 		}
 	}
