@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="form">
+        <form name="addEditDriver" id="addEditDriver" novalidate ng-submit="addEditDriver.$valid && onSubmit()">
+            <div class="form-group">
+                <div ng-if="mode !== 'edit'">
+                    <label>Driver Type</label>
+                    <select class="form-control" ng-required="true" ng-options="info.label for (driver, info) in outerScope.allowAddDriver" ng-model="driver.info"></select><br>
+                </div>
+                <div ng-if="driver.info.label === 'dockermachine - local'">
+                    <label>Host</label><br>
+                    <input type="text" class="form-control" ng-required="true" ng-model="local.host"><br>
+                    <label>Port</label><br>
+                    <input type="number" class="form-control" ng-required="true" ng-model="local.port"><br>
+                    <label>Additional Configuration</label><br>
+                    <textarea class="form-control" ng-required="false" ng-model="local.config" rows="6"></textarea><br>
+                </div>
+                <div ng-if="driver.info.label === 'dockermachine - cloud'">
+                    <label>Cloud Provider</label><br>
+                    <select class="form-control" ng-required="true" ng-options="oneCloud for oneCloud in outerScope.availableCloudProviders" ng-model="cloud.selectedCloud"></select><br>
+                    <label>Host</label><br>
+                    <input type="text" class="form-control" ng-required="true" ng-model="cloud.host"><br>
+                    <label>Port</label><br>
+                    <input type="number" class="form-control" ng-required="true" ng-model="cloud.port"><br>
+                    <label>Additional Configuration</label><br>
+                    <textarea class="form-control" ng-required="false" ng-model="cloud.config" rows="6"></textarea><br>
+                </div>
+                <div ng-if="driver.info.label === 'docker - socket'">
+                    <label>Socket Path</label><br>
+                    <input type="text" class="form-control" ng-required="true" ng-model="socket.socketPath"><br>
+                </div>
+                <div class="pull-right">
+                    <input type="submit" class="btn btn-primary" value="Submit"/>
+                    <input type="button" class="btn btn-danger" value="Cancel" ng-click="closeModal()"/>
+                </div><br/>
+            </div>
+        </form>
+    </div>
+</div>

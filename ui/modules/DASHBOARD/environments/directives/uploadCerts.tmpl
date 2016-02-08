@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <tabset>
+        <tab heading="Upload">
+            <br>
+            <div class="form">
+                <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
+                    <input type="file" file-model-multi="formData.certificates" multiple="multiple">
+                    <div ng-if="formData.certificates && formData.certificates.length > 0">
+                        <label>Selected Files:</label>
+                        <ul>
+                            <li ng-repeat="(file, object) in formData.certificates">{{object.name}}</li>
+                        </ul>
+                    </div>
+                    <label class="fieldMsg">Multiple selection of files is permitted.</label>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" type="submit" value="Upload">Upload</button>
+                        <button class="btn btn-danger" type="button" value="Cancel" ng-click="closeModal()">Cancel</button>
+                    </div><br/><br/><br/>
+                </form>
+            </div>
+        </tab>
+        <tab heading="Choose Existing" ng-click="getAvailableCerts()" ng-if="certsToDisplay.length > 0">
+            <div class="form">
+                <form name="chooseExisting" id="chooseExisting" novalidate ng-submit="chooseCerts()">
+                    <label>Available certificates: </label>
+                    <ul>
+                        <li ng-repeat="cert in certsToDisplay" ng-if="certsToDisplay.length > 0">
+                            <input type="checkbox" name="selectedCerts" ng-model="certs.selected[cert._id]">&nbsp;&nbsp;{{cert.name}} {{cert.env}}
+                        </li>
+                    </ul>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" type="submit" value="Select">Select</button>
+                        <button class="btn btn-danger" type="button" value="Cancel" ng-click="closeModal()">Cancel</button>
+                    </div><br/><br/><br/>
+                </form>
+            </div>
+        </tab>
+    </tabset>
+</div>

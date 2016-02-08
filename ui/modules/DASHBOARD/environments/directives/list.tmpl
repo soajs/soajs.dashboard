@@ -9,14 +9,15 @@
                     {{row['description']}}
                 </div>
                 <br/>
-                <tabset ng-show="row.showOptions===true">
-                    <tab heading="Service Configuration">
-                        <div ng-include="'modules/DASHBOARD/environments/directives/list-service-config.tmpl'"></div>
-                    </tab>
-                    <tab heading="Deployment Platforms" ng-if="access.dbs.list">
-                        <div ng-include="'modules/DASHBOARD/environments/directives/list-deployment.tmpl'"></div>
-                    </tab>
-                </tabset>
+                <div ng-include="'modules/DASHBOARD/environments/directives/list-service-config.tmpl'"></div>
+                <!--<tabset ng-show="row.showOptions===true">-->
+                    <!--<tab heading="Service Configuration">-->
+                        <!--<div ng-include="'modules/DASHBOARD/environments/directives/list-service-config.tmpl'"></div>-->
+                    <!--</tab>-->
+                    <!--<tab heading="Deployment Platforms" ng-if="access.dbs.list">-->
+                        <!--<div ng-include="'modules/DASHBOARD/environments/directives/list-deployment.tmpl'"></div>-->
+                    <!--</tab>-->
+                <!--</tabset>-->
                 <div class="entryAction">
 
                     <a ng-if="access.editEnvironment" href="" ng-click="updateEnvironment(row);">

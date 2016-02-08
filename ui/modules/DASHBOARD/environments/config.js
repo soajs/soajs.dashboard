@@ -40,12 +40,12 @@ var environmentsConfig = {
 					'label': 'Environment Gateway Port',
 					'type': 'select',
 					'value': [
-						{'v': 80, 'l': '80', 'selected': true},
-						{'v': 8080, 'l': '8080'},
-						{'v': 8081, 'l': '8081'},
-						{'v': 8082, 'l': '8082'},
-						{'v': 8083, 'l': '8083'}
-					],
+                        {'v': 80, 'l': '80', 'selected': true},
+                        {'v': 8080, 'l': '8080'},
+                        {'v': 8081, 'l': '8081'},
+                        {'v': 8082, 'l': '8082'},
+                        {'v': 8083, 'l': '8083'}
+                    ],
 					'required': true
 				},
 				{
@@ -325,6 +325,43 @@ var environmentsConfig = {
 					'fieldMsg': "Upload certificates in .pem format."
 				}
 			]
+		},
+		editDriverConfig: {
+			'entries': [
+				{
+					'name': 'name',
+					'label': 'Driver Name',
+					'type': 'text',
+					'tooltip': 'Driver Name',
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'host',
+					'label': 'Driver Host',
+					'type': 'text',
+					'tooltip': 'Driver Host',
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'port',
+					'label': 'Driver Port',
+					'type': 'number',
+					'tooltip': 'Driver Port',
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'config',
+					'label': "Additional Configuration",
+					'type': "textarea",
+					'rows': 6,
+					'required': false,
+					'tooltip': "Provide optional driver configuration",
+					'value': ''
+				}
+			]
 		}
 	},
 	permissions: {
@@ -345,6 +382,11 @@ var environmentsConfig = {
 			"add": ['dashboard', '/environment/clusters/add'],
 			"delete": ['dashboard', '/environment/clusters/delete'],
 			"update": ['dashboard', '/environment/clusters/update']
+		},
+		"platforms": {
+			"list": ['dashboard', '/environment/platforms/list'],
+			"update": ['dashboard', '/environment/platforms/update'],
+			"clear": ['dashboard', '/environment/platforms/clear']
 		}
 	}
 };
