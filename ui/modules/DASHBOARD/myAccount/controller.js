@@ -339,9 +339,15 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
-						$localStorage.acl_access = response.acl;
+						$localStorage.acl_access = {};
+						$localStorage.acl_access['dashboard'] = response.acl;
 						$localStorage.environments = response.environments;
 						$cookieStore.put("soajs_envauth", response.envauth);
+						response.environments.forEach(function(oneEnv){
+							if(oneEnv.code.toLowerCase() === 'dashboard'){
+								$cookieStore.put("myEnv", oneEnv);
+							}
+						});
 						$scope.$parent.$emit("loadUserInterface", {});
 						$scope.$parent.$emit('refreshWelcome', {});
 					}

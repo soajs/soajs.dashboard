@@ -214,21 +214,25 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
 
-				//getSendDataFromServer($scope, ngDataApi, {
-				//	"method": "get",
-				//	"routeName": "/dashboard/permissions/get",
-				//	"params":{"envCode": envRecord.code}
-				//}, function(error, response) {
-				//	if (error) {
-				//		$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
-				//	}
-				//	else {
-				//		$localStorage.acl_access = response.acl;
-				//		$localStorage.environments = response.environments;
-				//		$scope.$parent.$emit("loadUserInterface", {});
-				$route.reload();
-				//	}
-				//});
+				if($scope.pillar && $scope.pillar.toLowerCase() === 'operate'){
+					getSendDataFromServer($scope, ngDataApi, {
+						"method": "get",
+						"routeName": "/dashboard/permissions/get",
+						"params":{"envCode": envRecord.code}
+					}, function(error, response) {
+						if (error) {
+							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
+						}
+						else {
+							$localStorage.acl_access[envRecord.code.toLowerCase()] = response.acl;
+							$scope.$parent.$emit("loadUserInterface", {});
+							$route.reload();
+						}
+					});
+				}
+				else{
+					$route.reload();
+				}
 			}
 		};
 
@@ -458,9 +462,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
-				if (acl[serviceName]) {
-					access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
-				}
+				access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
 			}
 			return access;
 		};

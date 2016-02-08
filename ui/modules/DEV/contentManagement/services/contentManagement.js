@@ -35,7 +35,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             },
             responseType: 'arraybuffer',
             params: {
-                'env': currentScope.selectedEnv.toUpperCase(),
+                '__env': currentScope.selectedEnv.toUpperCase(),
                 'id': oneFile._id
             }
         };
@@ -123,7 +123,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                                 'progress': progress,
                                 "data": {
                                     "nid": apiData[0]._id,
-                                    "env": currentScope.selectedEnv.toUpperCase(),
+                                    "__env": currentScope.selectedEnv.toUpperCase(),
                                     'field': fileName,
                                     'position': i,
                                     'action': method,
