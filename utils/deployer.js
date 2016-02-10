@@ -57,7 +57,8 @@ var deployer = {
                 "Tty": false,
                 "Hostname": containerName,
                 "HostConfig": {
-                    "PortBindings": port,
+	                "NetworkMode": deployerConfig.config.HostConfig.NetworkMode,
+	                "PortBindings": port,
                     "PublishAllPorts": true
                 }
             };

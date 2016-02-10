@@ -164,23 +164,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				//	$scope.switchEnvironment($localStorage.environments[0]);
 				//}
 			}
-
-			function doEnvPerNav (){
-				for (var i = 0; i < $scope.appNavigation.length; i++) {
-					var strNav = $scope.appNavigation[i].tplPath.split("/");
-					for (var e = 0; e < $localStorage.environments.length; e++) {
-						if (strNav[1] === $localStorage.environments[e].code) {
-							if ($scope.navigation[strNav[1]]) {
-								$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
-							}
-							else {
-								$scope.navigation[strNav[1]] = [];
-								$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
-							}
-						}
-					}
-				}
-			}
 		};
 
 		$scope.reRenderMenu = function (pillarName) {
@@ -499,6 +482,23 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$cookieStore.put('soajs_LANG', LANG);
 			window.location.reload();
 		};
+
+		function doEnvPerNav (){
+			for (var i = 0; i < $scope.appNavigation.length; i++) {
+				var strNav = $scope.appNavigation[i].tplPath.split("/");
+				for (var e = 0; e < $localStorage.environments.length; e++) {
+					if (strNav[1] === $localStorage.environments[e].code) {
+						if ($scope.navigation[strNav[1]]) {
+							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
+						}
+						else {
+							$scope.navigation[strNav[1]] = [];
+							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
+						}
+					}
+				}
+			}
+		}
 
 		function findAndcestorProperties(tracker, ancestorName, params) {
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
