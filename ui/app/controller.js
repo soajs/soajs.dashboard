@@ -231,19 +231,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.updateSelectedMenus = function () {
-			for (var x in $scope.mainMenu.links){
-				$scope.mainMenu.links[x].entries.sort(function (a, b) {
-					if (a.order > b.order) {
-						return 1;
-					}
-					if (a.order < b.order) {
-						return -1;
-					}
-					// a must be equal to b
-					return 0;
-				});
-			}
-
 			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
@@ -295,6 +282,18 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 
+			for (var x in $scope.mainMenu.links){
+				$scope.mainMenu.links[x].entries.sort(function (a, b) {
+					if (a.order > b.order) {
+						return 1;
+					}
+					if (a.order < b.order) {
+						return -1;
+					}
+					// a must be equal to b
+					return 0;
+				});
+			}
 		};
 
 		$scope.rebuildMenus = function () {
@@ -349,6 +348,18 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							$scope.guestMenu.links.push(navigation[i]);
 						}
 					}
+				}
+				for (var x in $scope.mainMenu.links){
+					$scope.mainMenu.links[x].entries.sort(function (a, b) {
+						if (a.order > b.order) {
+							return 1;
+						}
+						if (a.order < b.order) {
+							return -1;
+						}
+						// a must be equal to b
+						return 0;
+					});
 				}
 			}
 

@@ -1469,6 +1469,10 @@ var errorCodes = {
 			"ENG": "You are not allowed to delete a driver that is currently selected",
 			"FRA": "You are not allowed to delete a driver that is currently selected"
 		},
+		"738": {
+			"ENG": "Unable to change deployer type",
+			"FRA": "Unable to change deployer type"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
