@@ -1122,6 +1122,18 @@ var envTranslation ={
 		"ENG": "Remove Certificate",
 		"FRA": "Remove Certificate"
 	},
+	"manual": {
+		"ENG": "Manual",
+		"FRA": "Manual"
+	},
+	"container": {
+		"ENG": "Container",
+		"FRA": "Container"
+	},
+	"change": {
+		"ENG": "Change",
+		"FRA": "Change"
+	},
 	//list-service-config
 	"reloadRegistry": {
 		"ENG": "Reload Registry",
