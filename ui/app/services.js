@@ -67,6 +67,10 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			json: true
 		};
 
+		if(opts.proxy){
+			config.params['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
+		}
+
 		var soajsAuthCookie = $cookieStore.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
 			config.headers.soajsauth = soajsAuthCookie;
@@ -129,45 +133,48 @@ soajsApp.service('isUserLoggedIn', ['$cookieStore', function ($cookieStore) {
 soajsApp.service('checkApiHasAccess', function () {
 
 	return function (aclObject, serviceName, routePath, userGroups) {
-		// get acl of the service name
-		var system = aclObject[serviceName];
 
-		var api = (system && system.apis ? system.apis[routePath] : null);
+		for(var envCode in aclObject){
+			// get acl of the service name
+			var system = aclObject[envCode][serviceName];
 
-		if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
-			for (var jj = 0; jj < system.apisRegExp.length; jj++) {
-				if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
-					api = system.apisRegExp[jj];
-				}
-			}
-		}
-		//return true;
-		var apiRes = null;
-		if (system && system.access) {
-			if (system.access instanceof Array) {
-				var checkAPI = false;
-				if (userGroups) {
-					for (var ii = 0; ii < userGroups.length; ii++) {
-						if (system.access.indexOf(userGroups[ii]) !== -1) {
-							checkAPI = true;
-						}
+			var api = (system && system.apis ? system.apis[routePath] : null);
+
+			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
+					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
+						api = system.apisRegExp[jj];
 					}
 				}
-				if (!checkAPI) {
-					return false;
+			}
+			//return true;
+			var apiRes = null;
+			if (system && system.access) {
+				if (system.access instanceof Array) {
+					var checkAPI = false;
+					if (userGroups) {
+						for (var ii = 0; ii < userGroups.length; ii++) {
+							if (system.access.indexOf(userGroups[ii]) !== -1) {
+								checkAPI = true;
+							}
+						}
+					}
+					if (!checkAPI) {
+						return false;
+					}
 				}
+
+				apiRes = api_checkPermission(system, userGroups, api);
+				return (apiRes) ? true : false;
 			}
 
-			apiRes = api_checkPermission(system, userGroups, api);
-			return (apiRes) ? true : false;
-		}
-
-		if (api || (system && (system.apisPermission === 'restricted'))) {
-			apiRes = api_checkPermission(system, userGroups, api);
-			return (apiRes) ? true : false;
-		}
-		else {
-			return true;
+			if (api || (system && (system.apisPermission === 'restricted'))) {
+				apiRes = api_checkPermission(system, userGroups, api);
+				return (apiRes) ? true : false;
+			}
+			else {
+				return true;
+			}
 		}
 
 		function api_checkPermission(system, userGroups, api) {

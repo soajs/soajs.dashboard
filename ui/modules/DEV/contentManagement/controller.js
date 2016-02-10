@@ -3,6 +3,7 @@ var contentManagementApp = soajsApp.components;
 contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmService) {
     $scope.$parent.isUserLoggedIn();
     $scope.access = {};
+	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
 
     $scope.loadUIModule = function (oneService) {
         $scope.hp = false;
@@ -27,7 +28,10 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
 
         getSendDataFromServer($scope, ngDataApi, {
             "method": "get",
-            "routeName": "/" + oneService.name + "/schema"
+            "routeName": "/" + oneService.name + "/schema",
+	        "params":{
+		        "__env": $scope.selectedEnv.toUpperCase()
+	        }
         }, function (error, cbConfig) {
             if (error || !cbConfig) {
                 $scope.$parent.displayAlert("danger", error.message);
@@ -101,7 +105,6 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
     };
 
     $scope.populateCMUI = function () {
-        $scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
         if ($scope.ui.grid) {
             $scope.listCMDataEntries();
         }
@@ -143,7 +146,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             "method": "get",
             "routeName": "/" + $scope.selectedService.name + $scope.ui.links['list'],
             "params": {
-                "env": $scope.selectedEnv.toUpperCase()
+                "__env": $scope.selectedEnv.toUpperCase()
             }
         }, function (error, response) {
             if (error) {
@@ -209,7 +212,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                 "routeName": "/" + $scope.selectedService.name + $scope.ui.links['add'].v,
                                 "data": formData,
                                 "params": {
-                                    "env": $scope.selectedEnv.toUpperCase()
+                                    "__env": $scope.selectedEnv.toUpperCase()
                                 }
                             }, function (error, response) {
                                 if (error) {
@@ -260,7 +263,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             "routeName": "/" + $scope.selectedService.name + $scope.ui.links['get'],
             "params": {
                 "id": data._id,
-                "env": $scope.selectedEnv.toUpperCase()
+                "__env": $scope.selectedEnv.toUpperCase()
             }
         }, function (error, response) {
             if (error) {
@@ -300,7 +303,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                 "Accept": onefileInput.contentType
                             };
                             onefileInput.params = {
-                                'env': $scope.selectedEnv.toUpperCase(),
+                                '__env': $scope.selectedEnv.toUpperCase(),
                                 'id': onefileInput._id
                             };
                             oneFormField.value.push(onefileInput);
@@ -343,7 +346,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                     "routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
                                     "params": {
                                         "id": data._id,
-                                        "env": $scope.selectedEnv.toUpperCase()
+                                        "__env": $scope.selectedEnv.toUpperCase()
                                     },
                                     "data": formData
                                 }, function (error, response) {
@@ -396,7 +399,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             "routeName": "/" + $scope.selectedService.name + $scope.ui.links['get'],
             "params": {
                 "id": data._id,
-                "env": $scope.selectedEnv.toUpperCase()
+                "__env": $scope.selectedEnv.toUpperCase()
             }
         }, function (error, repsonse) {
             if (error) {
@@ -479,7 +482,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             "routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
             "params": {
                 "id": data._id,
-                "env": $scope.selectedEnv.toUpperCase()
+                "__env": $scope.selectedEnv.toUpperCase()
             }
         }, function (error) {
             if (error) {
@@ -498,7 +501,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             "routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
             "params": {
                 'id': '%id%',
-                "env": $scope.selectedEnv.toUpperCase()
+                "__env": $scope.selectedEnv.toUpperCase()
             },
             'msg': {
                 'error': translation.oneOrMoreSelectedDataNotDeleted[LANG],

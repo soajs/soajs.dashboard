@@ -10,7 +10,7 @@
             <ul id="preview">
                 <li ng-repeat="oneFile in info.info" ng-switch="info.type">
                     <div ng-switch-when="document">
-                        <a href="" ng-click="downloadFile(oneFile, 'document')" title="{{translation.clickOpenFile[LANG]}}>{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
+                        <a href="" ng-click="downloadFile(oneFile, 'document')" title="{{translation.clickOpenFile[LANG]}}">{{oneFile.filename}}</a>&nbsp;[ {{oneFile.length}} ]
                     </div>
                     <div ng-switch-when="image" class="f-left imageBox">
                         <a href="" ng-click="downloadFile(oneFile, 'document')" target="_blank" title="{{translation.clickOpenImage[LANG]}}">

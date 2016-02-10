@@ -1788,19 +1788,12 @@ module.exports = {
             }
         },
 
-	    "/proxy" : {
+	    "/logout" : {
 		    "_apiInfo": {
-			    "l": "Proxy Redirector",
-			    "group": "Proxy",
+			    "l": "Dashboard Logout",
+			    "group": "Dashboard",
 			    "groupMain": true
-		    },
-		    "__env" : {
-		        "required": false,
-		        "source": ["query.__env"],
-		        "validation": {
-			        "type": "string"
-		        }
-	        }
+		    }
 	    }
     }
 };
