@@ -11,23 +11,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			timeout: $timeout,
 			form: formConfig,
 			name: 'deployEnv',
-			label: 'Deploy Environment ' + envCode,
+			label: translation.deployEnvironment[LANG] + ' ' + envCode,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						if(!formData.controllers || formData.controllers < 1) {
 							$timeout(function() {
-								alert("You must choose at least 1 controller to deploy this environment");
+								alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
 							}, 100);
 						}
 						else {
 							currentScope.modalInstance.dismiss("ok");
-							var text = "<h2>Deploying new " + envCode + " Environment</h2>";
-							text += "<p>Deploying " + formData.controllers + " new controllers for environment " + envCode + ".</p>";
-							text += "<p>Do not refresh this page, this will take a few minutes...</p>";
+							var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
+							text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
+							text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
 							text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
 							jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
 							jQuery("#overlay .content").css("width", "40%").css("left", "30%");
@@ -38,7 +38,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						currentScope.modalInstance.dismiss('cancel');

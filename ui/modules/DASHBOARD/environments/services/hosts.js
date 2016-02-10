@@ -14,7 +14,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }, function (error, response) {
                 if (error || !response) {
-                    currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
+                    currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                 }
                 else {
 	                currentScope.profile = response.profile;
@@ -94,7 +94,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }, function (error, response) {
                 if (error || !response || !response.result) {
-                    currentScope.generateNewMsg(env, 'danger', 'Controllers ' + defaultControllerHost.hostname + ' not healthy.');
+                    currentScope.generateNewMsg(env, 'danger', translation.controllers[LANG] + ' ' + defaultControllerHost.hostname + ' ' + translation.notHealthy[LANG] + '.');
                     if (error) {
                         console.log(error.message);
                     }
@@ -119,7 +119,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         }
                     }, function (error, response) {
                         if (error || !response || !response.result || !response.data) {
-                            currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve services hosts information.');
+                            currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                         }
                         else {
                             var servicesList = Object.keys(response.data.services);
@@ -224,7 +224,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         }, function (error, heartbeatResponse) {
             if (error) {
                 updateServiceStatus(false);
-                currentScope.generateNewMsg(env, 'danger', "error executing heartbeat test for " + oneHost.name + " on hostname: " + oneHost.hostname + " @ " + new Date().toISOString());
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingHeartbeatTest[LANG] + " " + oneHost.name + " " + translation.onHostName[LANG] +" " + oneHost.hostname + " @ " + new Date().toISOString());
                 updateServicesControllers(currentScope, env, oneHost);
             }
             else {
@@ -240,15 +240,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
                 updateServiceStatus(true);
                 if (oneHost.name === 'controller') {
-                    currentScope.generateNewMsg(env, 'success', "Service " +
+                    currentScope.generateNewMsg(env, 'success', translation.service[LANG] + " " +
                         oneHost.name +
-                        " on hostname: " +
+                        " " + translation.onHostName[LANG] + " " +
                         oneHost.hostname +
                         ":" +
                         oneHost.port +
-                        " is healthy @ " +
+                        " " + translation.isHealthy[LANG]+ " @ " +
                         new Date().toISOString() +
-                        ", checking services please wait...");
+                        ", " + translation.checkingServicePleaseWait[LANG]);
                 }
             }
         });
@@ -309,7 +309,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						    ips[i].color = 'green';
 						    waitMessage = {
 							    type: "success",
-							    message: "Service " + oneHost.name + " on hostname: " + oneHost.hostname + ":" + oneHost.port + " is healthy @ " + new Date().toISOString(),
+							    message:  translation.service[LANG] + " " + oneHost.name + " " + translation.onHostName[LANG] + " " + oneHost.hostname + ":" + oneHost.port + " " + translation.isHealthy[LANG] + " @ " + new Date().toISOString(),
 							    close: function (entry) {
 								    entry.waitMessage.type = '';
 								    entry.waitMessage.message = '';
@@ -369,7 +369,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, awarenessResponse) {
             if (error || !awarenessResponse.result || !awarenessResponse.data) {
-                currentScope.generateNewMsg(env, 'danger', "error executing awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingAwarnessTestControllerIP[LANG] + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
             }
             else {
                 awarenessResponse = awarenessResponse.data.services;
@@ -448,7 +448,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
 	        currentScope.hosts[oneService].healthy = healthy;
 	        currentScope.hosts[oneService].color = color;
-            currentScope.generateNewMsg(env, 'success', "Awareness test for controller on ip: " + oneHost.ip + ":" + oneHost.port + " was successful @ " + new Date().toISOString());
+            currentScope.generateNewMsg(env, 'success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
         }
     }
 
@@ -467,9 +467,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, response) {
             if (error) {
-                currentScope.generateNewMsg(env, 'danger', "error executing Reload Registry test for " +
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
                     oneHost.name +
-                    " on ip: " +
+                    " " + translation.onIP[LANG] + " " +
                     oneHost.ip +
                     ":" +
                     oneHost.port +
@@ -517,9 +517,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, response) {
             if (error) {
-                currentScope.generateNewMsg(env, 'danger', "error executing Reload Provision test for " +
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
                     oneHost.name +
-                    " on ip: " +
+                    " " + translation.onIP[LANG] + " " +
                     oneHost.ip +
                     ":" +
                     oneHost.port +
@@ -562,9 +562,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, response) {
             if (error) {
-                currentScope.generateNewMsg(env, 'danger', "error executing Daemon Statistics test for " +
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingDaemonStatisticsTest + " " +
                     oneHost.name +
-                    " on ip: " +
+                    " " + translation.onIP[LANG] + " " +
                     oneHost.ip +
                     ":" +
                     oneHost.port +
@@ -634,7 +634,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         });
                     });
                 }
-                currentScope.generateNewMsg(env, 'success', 'Selected Environment host has been removed.');
+                currentScope.generateNewMsg(env, 'success', translation.selectedEnvironmentHostRemoved[LANG]);
             }
         });
     }
@@ -658,9 +658,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         }, function (error, response) {
             if (error) {
                 serviceInfo.waitMessage.type = 'danger';
-                serviceInfo.waitMessage.message = "error executing get Host Logs Operation for " +
+                serviceInfo.waitMessage.message = translation.errorExecutingGetHostLogsOperation[LANG] + " " +
                     oneHost.name +
-                    " on ip: " +
+                    " " + translation.errorExecutingGetHostLogsOperation[LANG] + " " +
                     oneHost.ip +
                     ":" +
                     oneHost.port +
@@ -723,7 +723,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             "routeName": "/dashboard/services/list"
         }, function (error, services) {
             if (error || !services) {
-                currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve the list of services');
+                currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
             }
             else {
                 services.forEach(function (oneService) {
@@ -747,15 +747,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	            if(env.toLowerCase() !== 'dashboard'){
                     //push controller
-                    servicesList.unshift({"v": "controller", "l": "controller"});
+                    servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG]});
 	            }
 
                 var entry = {
                     'name': 'service',
-                    'label': 'Service Name',
+                    'label': translation.serviceName[LANG],
                     'type': 'select',
                     'value': servicesList,
-                    'fieldMsg': 'Select the service from the list above.',
+                    'fieldMsg': translation.selectServiceFromListAbove[LANG],
                     'required': true
                 };
                 var hostForm = angular.copy(environmentsConfig.form.host);
@@ -768,15 +768,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     timeout: $timeout,
                     form: hostForm,
                     name: 'createHost',
-                    label: 'Create New Service Host',
+                    label: translation.createNewServiceHost[LANG],
                     actions: [
                         {
                             'type': 'submit',
-                            'label': 'Submit',
+                            'label': translation.submit[LANG],
                             'btn': 'primary',
                             'action': function (formData) {
-                                var text = "<h2>Deploying new Host for " + formData.service + "</h2>";
-                                text += "<p>Do not refresh this page, this will take a few minutes...</p>";
+                                var text = "<h2>" + translation.deployingNewHostFor[LANG] + " " + formData.service + "</h2>";
+                                text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
                                 jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
                                 jQuery("#overlay .content").css("width", "40%").css("left", "30%");
                                 overlay.show();
@@ -792,7 +792,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         },
                         {
                             'type': 'reset',
-                            'label': 'Cancel',
+                            'label': translation.cancel[LANG],
                             'btn': 'danger',
                             'action': function () {
                                 currentScope.modalInstance.dismiss('cancel');
@@ -885,7 +885,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         currentScope.generateNewMsg(env, 'danger', error.message);
                     }
                     else {
-                        currentScope.generateNewMsg(env, 'success', "New Service Host(s) Added.");
+                        currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);
                         if (!services[formData.service]) {
                             services[formData.service] = {
                                 'name': formData.service,

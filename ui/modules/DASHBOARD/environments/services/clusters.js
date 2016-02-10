@@ -18,7 +18,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 						currentScope.clusters = response;
 					}
 					else {
-						currentScope.$parent.displayAlert('danger', "Unable to fetch Environment Cluster.");
+						currentScope.$parent.displayAlert('danger', translation.unableFetchEnvironmentCluster[LANG]);
 					}
 				}
 			});
@@ -30,11 +30,11 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			timeout: $timeout,
 			form: environmentsConfig.form.cluster,
 			name: 'addCluster',
-			label: 'Add New Cluster',
+			label: translation.addNewCluster[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var servers = formData.servers.split(",");
@@ -65,7 +65,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Environment Cluster Added Successfully.');
+								currentScope.$parent.displayAlert('success', translation.environmentClusterAddedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listClusters(env);
@@ -75,7 +75,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						currentScope.modalInstance.dismiss('cancel');
@@ -102,7 +102,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			timeout: $timeout,
 			form: formConfig,
 			name: 'editCluster',
-			label: 'Edit Cluster',
+			label: translation.editCluster[LANG],
 			'data': {
 				'name': name,
 				'urlParam': JSON.stringify(data.URLParam, null, "\t"),
@@ -113,7 +113,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var servers = formData.servers.split(",");
@@ -143,7 +143,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Environment Cluster Updated Successfully.');
+								currentScope.$parent.displayAlert('success', translation.environmentClusterAddedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listClusters(env);
@@ -153,7 +153,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						currentScope.modalInstance.dismiss('cancel');
@@ -176,11 +176,11 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			}
 			else {
 				if(response) {
-					currentScope.$parent.displayAlert('success', "Selected Environment Cluster has been removed.");
+					currentScope.$parent.displayAlert('success', translation.selectedEnvironmentClusterRemoved[LANG]);
 					currentScope.listClusters(env);
 				}
 				else {
-					currentScope.$parent.displayAlert('danger', "Unable to remove selected Environment Cluster.");
+					currentScope.$parent.displayAlert('danger', translation.unableRemoveSelectedEnvironmentCluster[LANG]);
 				}
 			}
 		});

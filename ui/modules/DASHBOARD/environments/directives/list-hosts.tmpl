@@ -5,7 +5,7 @@
 	    </div>
 	    <div class="modal-body"><pre><code class="javascript">{{data}}</code></pre></div>
 	    <div class="modal-footer">
-	        <button class="btn btn-primary" ng-click="ok()">OK</button>
+	        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
 	    </div>
 	</script>
 
@@ -15,7 +15,7 @@
 		</div>
 		<div class="modal-body"><pre><code class="sh">{{data}}</code></pre></div>
 		<div class="modal-footer">
-		    <button class="btn btn-primary" ng-click="ok()">OK</button>
+		    <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
 		</div>
 	</script>
 
@@ -27,18 +27,18 @@
 	    <div ng-show="!hosts.controller">
 
 		    <alert type="warning" ng-if="deployer.type ==='manual'">
-			    This Environment is Configured to be deployed <b>Manually</b>. All Services running in this environment have to be started and stopped by the administrator.
+			    {{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>. {{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
 		    </alert>
 
 	        <div ng-if="deployer.type !=='manual'" id="non-deployed-{{envCode}}" style="padding: 10px 0px 25px 5px;">
-	            <alert type="warning">This Environment has not been deployed yet.</alert>
-	            <input type="button" value="Deploy Environment" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
+	            <alert type="warning">{{translation.thisEnvironmentHasNotBeenDeployedYet[LANG]}}</alert>
+	            <input type="button" value="{{translation.deployEnvironment[LANG]}}" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
 	        </div>
 	    </div>
 	    <div ng-show="hosts.controller">
-	        <input ng-if="deployer.type !== 'manual'" type="button" value="Add new Hosts" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
+	        <input ng-if="deployer.type !== 'manual'" type="button" value="{{translation.addNewHosts[LANG]}}" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
 	        <a href="" ng-click="listHosts(envCode)" class="btn btn-primary f-right">
-	            <span class="icon icon-undo" tooltip="Refresh List"></span>Refresh
+	            <span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
 	        </a>
 	    </div>
 	    <br/><br/>
@@ -53,8 +53,8 @@
 	                        <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable hostsGrid">
 	                            <thead>
 	                                <tr>
-	                                    <th colspan="2" class="host-ip">Hostname&nbsp;<b>v.{{oneIp.version}}</b></th>
-	                                    <th class="host-ip">IP:Port</th>
+	                                    <th colspan="2" class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{oneIp.version}}</b></th>
+	                                    <th class="host-ip">IP:{{translation.port[LANG]}}</th>
 	                                </tr>
 	                            </thead>
 	                            <tbody>
@@ -65,24 +65,24 @@
 	                                </tr>
 	                                <tr>
 	                                    <td colspan="4">
-	                                        <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="Execute Heartbeat Operation">
+	                                        <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
 	                                            <span class="icon icon-heart"></span>&nbsp;
 	                                        </a>
 
-	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(envCode, oneIp)" title="Execute Awareness Operation">
+	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(envCode, oneIp)" title="{{translation.executeAwarenessOperation[LANG]}}">
 	                                            <span class="icon icon-connection"></span>&nbsp;
 	                                        </a>
 
-	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(envCode, oneIp)" title="Reload Registry Operation">
+	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
 	                                            <span class="icon icon-undo"></span>&nbsp;
 	                                        </a>
 
-	                                        <a href="" ng-show="oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(envCode, serviceName, oneIp)">
-	                                            <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
+	                                        <a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, oneIp)">
+	                                            <span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
 	                                        </a>
 
 	                                        <a href="" ng-show="oneIp.heartbeat && oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
-	                                            <span class="icon icon-terminal" title="Get Container Logs"></span>&nbsp;
+	                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 	                                        </a>
 	                                    </td>
 	                                </tr>
@@ -112,33 +112,33 @@
 							                <table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
 								                <thead>
 									                <tr>
-										                <th class="actions">Actions</th>
-										                <th class="host-ip">Hostname&nbsp;<b>v.{{version}}</b></th>
+										                <th class="actions">{{translation.actions[LANG]}}</th>
+										                <th class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{version}}</b></th>
 									                </tr>
 								                </thead>
 								                <tr>
 									                <td valign="top" width="26%">
-										                <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="Execute Heartbeat Operation">
+										                <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
 											                <span class="icon icon-heart"></span>&nbsp;
 										                </a>
-										                <a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(envCode, oneIp)" title="Reload Registry Operation">
+										                <a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
 											                <span class="icon icon-undo"></span>&nbsp;
 										                </a>
 
-										                <a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="Load Provisioning Operation">
+										                <a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
 											                <span class="icon icon-download3"></span>&nbsp;
 										                </a>
 
-										                <a href="" ng-show="oneIp.healthy && serviceInfo.type === 'daemon'" ng-click="loadDaemonStats(envCode, oneIp)" title="Load Daemon Statistics Operation">
+										                <a href="" ng-show="oneIp.healthy && serviceInfo.type === 'daemon'" ng-click="loadDaemonStats(envCode, oneIp)" title="{{translation.loadDaemonStatisticsOperation[LANG]}}">
 											                <span class="icon icon-stats-dots"></span>&nbsp;
 										                </a>
 
-										                <a href="" ng-show="oneIp.cid" ng-confirm-click="Are you sure you want to remove this host?" ng-click="removeHost(envCode, serviceName, oneIp)">
-											                <span class="icon icon-cross" title="Remove Host IP"></span>&nbsp;
+										                <a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, oneIp)">
+											                <span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
 										                </a>
 
 										                <a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
-											                <span class="icon icon-terminal" title="Get Container Logs"></span>&nbsp;
+											                <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 										                </a>
 										                <!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
 										                <!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
@@ -153,17 +153,17 @@
 							                <table width="99%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid" style="margin:0 auto;">
 								                <thead>
 									                <tr>
-										                <th width="15%" colspan="2">Controller</th>
-										                <th width="15%">Status</th>
-										                <th class="lastCheck">Last Check</th>
-										                <th class="downSince">Down Since</th>
-										                <th class="downCount">Down Count</th>
+										                <th width="15%" colspan="2">{{translation.controllerUpperCase[LANG]}}</th>
+										                <th width="15%">{{translation.status[LANG]}}</th>
+										                <th class="lastCheck">{{translation.lastCheck[LANG]}}</th>
+										                <th class="downSince">{{translation.downSince[LANG]}}</th>
+										                <th class="downCount">{{translation.downCount[LANG]}}</th>
 									                </tr>
 								                </thead>
 								                <tr ng-repeat="oneController in oneIp.controllers" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'">
 									                <td><span class="{{oneController.color}}">v.{{oneController.version}}</span></td>
 									                <td><span class="{{oneController.color}}">{{oneController.ip}}</span></td>
-									                <td><span class="{{oneController.color}}">{{oneController.color === 'green' ? 'Healthy': 'Not Healthy'}}</span></td>
+									                <td><span class="{{oneController.color}}">{{oneController.color === 'green' ? translation.healthy[LANG] : translation.notHealthy[LANG]}}</span></td>
 									                <td><span>{{oneIp.lastCheck}}</span></td>
 									                <td><span>{{oneIp.downSince}}</span></td>
 									                <td><span>{{oneIp.downCount}}</span></td>
