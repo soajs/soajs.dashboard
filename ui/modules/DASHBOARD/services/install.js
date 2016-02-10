@@ -162,10 +162,6 @@ var srTranslation = {
 		"ENG": "If this service requires an external key; ie if it is multi-tenant",
 		"FRA": "If this service requires an external key; ie if it is multi-tenant"
 	},
-	"awareness": {
-		"ENG": "Awareness",
-		"FRA": "Awareness"
-	},
 	"formAwarenessTooltip": {
 		"ENG": "If this service needs to be aware of the location of SOAJS controllers",
 		"FRA": "If this service needs to be aware of the location of SOAJS controllers"

@@ -31,10 +31,6 @@ var cbTranslation = {
 		"FRA": "You do not have access to the requested section"
 	},
 	//config
-	"created": {
-		"ENG": "Created",
-		"FRA": "Created"
-	},
 	"cbFormStep2ComputedUIHTMLValue": {
 		"ENG": "This type of inputs is computed by the system and included in the listing UI Grid.",
 		"FRA": "This type of inputs is computed by the system and included in the listing UI Grid."
@@ -683,10 +679,6 @@ var cbTranslation = {
 		"ENG": "UI Properties",
 		"FRA": "UI Properties"
 	},
-	"ok": {
-		"ENG": "OK",
-		"FRA": "OK"
-	},
 	"serviceAPIsWorkflow": {
 		"ENG": "Service APIs & Workflow",
 		"FRA": "Service APIs & Workflow"
@@ -736,14 +728,6 @@ var cbTranslation = {
 	"selectDatabaseToUse": {
 		"ENG": "Select a Database to Use",
 		"FRA": "Select a Database to Use"
-	},
-	"cluster": {
-		"ENG": "Cluster",
-		"FRA": "Cluster"
-	},
-	"tenantSpecific": {
-		"ENG": "Tenant Specific",
-		"FRA": "Tenant Specific"
 	},
 	"selectClusterToUse": {
 		"ENG": "Select a Cluster to Use",
@@ -873,10 +857,7 @@ var cbTranslation = {
 		"ENG": "Filter",
 		"FRA": "Filter"
 	},
-	"addUppercase": {
-		"ENG": "Add",
-		"FRA": "Add"
-	},
+
 	"updateUppercase": {
 		"ENG": "Update",
 		"FRA": "Update"

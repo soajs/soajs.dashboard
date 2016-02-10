@@ -462,6 +462,38 @@ var translation = {
 		"ENG": "Content Builder",
 		"FRA": "Content Builder"
 	},
+	"environments": {
+		"ENG": "Environments",
+		"FRA": "Environments"
+	},
+	"cluster": {
+		"ENG": "Cluster",
+		"FRA": "Cluster"
+	},
+	"tenantSpecific": {
+		"ENG": "Tenant Specific",
+		"FRA": "Tenant Specific"
+	},
+	"created": {
+		"ENG": "Created",
+		"FRA": "Created"
+	},
+	"multiTenancy": {
+		"ENG": "Multi-Tenancy",
+		"FRA": "Multi-Tenancy"
+	},
+	"addUppercase": {
+		"ENG": "Add",
+		"FRA": "Add"
+	},
+	"ok": {
+		"ENG": "OK",
+		"FRA": "OK"
+	},
+	"awareness": {
+		"ENG": "Awareness",
+		"FRA": "Awareness"
+	},
 	//api-permission
 	"restrictAccessSelectedApis": {
 		"ENG": "Restrict Access to Selected Apis",
