@@ -246,7 +246,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				postData.services.config.logger = $scope.formEnvironment.services.config.logger;
 			}
 			catch (e) {
-				$scope.$parent.displayAlert('danger', translation.errorInvalidJsonObject[LANG]);
+				$scope.$parent.displayAlert('danger', translation.errorInvalidLoggerJsonObject[LANG]);
 				return;
 			}
 		}

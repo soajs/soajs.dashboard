@@ -1371,3 +1371,11 @@ div.entryBox .body .btn-primary.noFloat {
 .breakAll {
     word-break: break-all;
 }
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}

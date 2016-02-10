@@ -6,7 +6,7 @@ var ProdTranslation = {
 		"ENG": "Productization",
 		"FRA": "Productization"
 	},
-	"editAppACL": {
+	"editPackageACL": {
 		"ENG": "Edit Package ACL",
 		"FRA": "Edit Package ACL"
 	},
@@ -114,10 +114,6 @@ var ProdTranslation = {
 		"ENG": "Remove Package",
 		"FRA": "Remove Package"
 	},
-	"editPackageACL": {
-		"ENG": "Edit Package ACL",
-		"FRA": "Edit Package ACL"
-	},
 	"expandPackages": {
 		"ENG": "Expand Packages",
 		"FRA": "Expand Packages"
@@ -160,7 +156,7 @@ var productizationNav =[
 	},
 	{
 		'id': 'product-acl',
-		'label': translation.editAppACL[LANG],
+		'label': translation.editPackageACL[LANG],
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/DASHBOARD/productization/directives/editAcl.tmpl',
 		'tracker': true,
