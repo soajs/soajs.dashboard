@@ -157,11 +157,28 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
-				if ($scope.leftMenu.environments[0]) {
-					$scope.switchEnvironment($scope.leftMenu.environments[0]);
-				}
-				else {
-					$scope.switchEnvironment($localStorage.environments[0]);
+				//if ($scope.leftMenu.environments[0]) {
+				//	$scope.switchEnvironment($scope.leftMenu.environments[0]);
+				//}
+				//else {
+				//	$scope.switchEnvironment($localStorage.environments[0]);
+				//}
+			}
+
+			function doEnvPerNav (){
+				for (var i = 0; i < $scope.appNavigation.length; i++) {
+					var strNav = $scope.appNavigation[i].tplPath.split("/");
+					for (var e = 0; e < $localStorage.environments.length; e++) {
+						if (strNav[1] === $localStorage.environments[e].code) {
+							if ($scope.navigation[strNav[1]]) {
+								$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
+							}
+							else {
+								$scope.navigation[strNav[1]] = [];
+								$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
+							}
+						}
+					}
 				}
 			}
 		};
@@ -170,7 +187,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments = [];
 			$scope.currentSelectedEnvironment = null;
-
 			for (var j = 0; j < $scope.mainMenu.links.length; j++) {
 				if ($scope.mainMenu.links[j].pillar.name === pillarName) {
 					$scope.leftMenu.links = $scope.mainMenu.links[j].entries;
@@ -185,6 +201,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 									$scope.leftMenu.environments.splice(k, 1);
 								}
 							}
+							$cookieStore.put('myEnv', $scope.leftMenu.environments[0]);
 						}
 
 						if ($cookieStore.get('myEnv')) {
@@ -459,23 +476,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 			}
 		};
-
-		function doEnvPerNav (){
-			for (var i = 0; i < $scope.appNavigation.length; i++) {
-				var strNav = $scope.appNavigation[i].tplPath.split("/");
-				for (var e = 0; e < $localStorage.environments.length; e++) {
-					if (strNav[1] === $localStorage.environments[e].code) {
-						if ($scope.navigation[strNav[1]]) {
-							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
-						}
-						else {
-							$scope.navigation[strNav[1]] = [];
-							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
-						}
-					}
-				}
-			}
-		}
 
 		$scope.$on("loadUserInterface", function (event, args) {
 			doEnvPerNav();
