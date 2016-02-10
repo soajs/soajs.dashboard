@@ -1,11 +1,15 @@
     <section ng-controller="platformsCtrl">
-        <alert type="warning" ng-if="deployer.type ==='manual'">
-            This Environment is Configured to be deployed <b>Manually</b>. All Services running in this environment have to be started and stopped by the administrator.
-        </alert>
-        <alert class="blueAlert" ng-if="deployer.type !== 'manual'">
-            This Environment is Configured to use <b>{{deployer.type}}</b> Deployment.
-        </alert>
-        <br>
+        <!--<alert type="warning" ng-if="deployer.type ==='manual'">-->
+            <!--This Environment is Configured to be deployed <b>Manually</b>. All Services running in this environment have to be started and stopped by the administrator.-->
+        <!--</alert>-->
+        <!--<alert class="blueAlert" ng-if="deployer.type !== 'manual'">-->
+            <!--This Environment is Configured to use <b>{{deployer.type}}</b> Deployment.-->
+        <!--</alert>-->
+        <select class="form-control f-left selectCustom" ng-model="deployer.type">
+            <option value="manual">Manual</option>
+            <option value="container">Container</option>
+        </select>&nbsp;
+        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">Change</a>
         <div ng-if="allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket']">
             <a href="" class="btn btn-primary" ng-click="addDriver()">Add Driver</a>
             <br><br>
@@ -23,9 +27,9 @@
                             <span class="icon icon-pencil" tooltip="Edit Driver"></span>
                         </a>
                         <a href="" ng-click="uploadCerts(driver.label)">
-                            <span class="icon icon-circle-up" tooltip="Upload Certificates"></span>
+                            <span class="icon icon-attachment" tooltip="Upload/Choose Certificates"></span>
                         </a>
-                        <a href="" ng-click="selectDriver(driver.label)">
+                        <a href="" ng-click="selectDriver(driver.label)" ng-if="allowSelect">
                             <span class="icon icon-checkbox-checked" tooltip="Select Driver"></span>
                         </a>
                     </span>

@@ -116,7 +116,7 @@ var environmentsConfig = {
 					'name': 'tenantSpecific',
 					'label': 'Tenant Specific',
 					'type': 'radio',
-					'value': [{'v': 'false', 'selected': true}, {'v': 'true'}],
+					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': false
 				}
 			]
@@ -157,7 +157,7 @@ var environmentsConfig = {
 					'name': 'stringify',
 					'label': 'Stringified',
 					'type': 'radio',
-					'value': [{'v': 'false', 'selected': true}, {'v': 'true'}],
+					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': true
 				},
 				{

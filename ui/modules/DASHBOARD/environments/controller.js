@@ -251,57 +251,21 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		}
 
-		if (!postData.deployer.docker.socket && !postData.deployer.docker.machine && !postData.deployer.docker.joyent) {
-			$timeout(function () {
-				alert("Provide a configuration for at least one platform driver to proceed.");
-			}, 100);
-		}
-		else {
-			try {
-				var type = postData.deployer.type;
-				var subType, driver;
-				if (type.indexOf(".") !== -1) {
-					type = type.split(".");
-					subType = type[1];
-					driver = type[2];
-					type = type[0];
-					postData.deployer.type = type;
-					if (type !== 'manual') {
-						postData.deployer.selected = subType + '.' + driver;
-					}
-				}
-				if (type === 'container' && subType === 'docker') {
-					postData.deployer.docker.selected = driver;
-				}
-
-				for (var supported in postData.deployer.docker) {
-					if (supported === 'selected') {
-						continue;
-					}
-					postData.deployer.docker[supported] = JSON.parse(postData.deployer.docker[supported]);
-				}
+		postData.port = parseInt(postData.port);
+		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
+			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
+			"data": postData
+		}, function (error) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.message);
 			}
-			catch (e) {
-				console.log(e);
-				$scope.$parent.displayAlert("danger", "Error: invalid Json object provided for Deployer Configuration");
-				return;
+			else {
+				$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
 			}
-			postData.port = parseInt(postData.port);
-			postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
-			getSendDataFromServer($scope, ngDataApi, {
-				"method": "send",
-				"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
-				"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
-				"data": postData
-			}, function (error) {
-				if (error) {
-					$scope.$parent.displayAlert('danger', error.message);
-				}
-				else {
-					$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
-				}
-			});
-		}
+		});
 	};
 
 	$scope.UpdateTenantSecurity = function () {

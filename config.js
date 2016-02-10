@@ -816,6 +816,28 @@ module.exports = {
                 }
             }
         },
+        "/environment/platforms/deployer/type/change": {
+            _apiInfo: {
+                "l": "Change Deployer Type",
+                "group": "Environment"
+            },
+            "env": {
+                "source": ['query.env'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "required": true
+                }
+            },
+            "deployerType": {
+                "source": ['body.deployerType'],
+                "required": true,
+                "validation": {
+                    "type": "string",
+                    "enum": ["manual", "container"]
+                }
+            }
+        },
 
         "/product/list": {
             _apiInfo: {
