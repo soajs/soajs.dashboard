@@ -8,7 +8,7 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'code',
-					'label': 'Environment Code',
+					'label': translation.envCode[LANG],
 					'type': 'select',
 					'value': [
 						{'v': 'DEV', 'l': 'DEV'},
@@ -20,24 +20,24 @@ var environmentsConfig = {
 				},
 				{
 					'name': 'description',
-					'label': 'Environment Description',
+					'label': translation.environmentDescription[LANG],
 					'type': 'textarea',
 					'rows': '3',
-					'placeholder': 'My Environment Description...',
+					'placeholder': translation.myEnvDescription[LANG],
 					'value': '',
 					'required': true
 				},
 				{
 					'name': 'domain',
-					'label': 'Environment Domain',
+					'label': translation.environmentDomain[LANG],
 					'type': 'text',
-					'placeholder': 'mydomain.com',
+					'placeholder': translation.myDomainCom[LANG],
 					'value': '',
 					'required': true
 				},
 				{
 					'name': 'port',
-					'label': 'Environment Gateway Port',
+					'label': translation.environmentGatewayPort[LANG],
 					'type': 'select',
 					'value': [
                         {'v': 80, 'l': '80', 'selected': true},
@@ -50,22 +50,22 @@ var environmentsConfig = {
 				},
 				{
 					'name': 'profile',
-					'label': 'Profile to Use',
+					'label': translation.profileToUse[LANG],
 					'type': 'select',
 					'value': [
-						{'v': 'single', 'l': 'single', 'selected': true},
-						{'v': 'replica3', 'l': 'replica3'},
-						{'v': 'replica5', 'l': 'replica5'}
+						{'v': 'single', 'l': translation.single[LANG], 'selected': true},
+						{'v': 'replica3', 'l': translation.replica3[LANG]},
+						{'v': 'replica5', 'l': translation.replica5[LANG]}
 					],
 					'required': false
 				},
 				{
 					'name': 'platformDriver',
-					'label': 'Platform Driver',
+					'label': translation.platformDriver[LANG],
 					'type': 'select',
 					'value': [
-						{'v': 'socket', 'l': 'Socket', 'selected': true},
-						{'v': 'machine', 'l': 'Machine'},
+						{'v': 'socket', 'l': translation.socket[LANG], 'selected': true},
+						{'v': 'machine', 'l': translation.machine[LANG]},
 						{'v': 'joyent', 'l': 'Joyent'},
 						{'v': 'rackspace', 'l': 'Rackspace'}
 					],
@@ -73,18 +73,18 @@ var environmentsConfig = {
 				},
 				{
 					'name': 'tKeyPass',
-					'label': 'Tenant Key Security Password',
+					'label': translation.tenantKeySecurityPassword[LANG],
 					'type': 'text',
 					'value': '',
-					'placeholder': 'My Tenant Key AES256 Password...',
+					'placeholder': translation.myTenantKeyAES256Password[LANG],
 					'required': false
 				},
 				{
 					'name': 'sessionCookiePass',
-					'label': 'Session & Cookie encryption Password',
+					'label': translation.sessionCookieEncryptionPassword[LANG],
 					'type': 'text',
 					'value': '',
-					'placeholder': "My Password, don't tell anyone...",
+					'placeholder': translation.myPasswordDoNotTellAnyone[LANG],
 					'required': false
 				}
 			]
@@ -96,25 +96,25 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'name',
-					'label': 'Database Name',
+					'label': translation.databaseName[LANG],
 					'type': 'text',
-					'placeholder': 'myDatabase...',
+					'placeholder': translation.myDatabase[LANG],
 					'value': '',
-					'tooltip': 'Enter Environment Database Name.',
+					'tooltip': translation.enterEnvironmentDatabaseName[LANG],
 					'required': true
 				},
 				{
 					'name': 'cluster',
-					'label': 'Cluster Name',
+					'label': translation.clusterName[LANG],
 					'type': 'text',
-					'placeholder': 'cluster 1...',
+					'placeholder': translation.cluster1[LANG],
 					'value': '',
-					'tooltip': 'Enter the cluster name',
+					'tooltip': translation.enterTheClusterName[LANG],
 					'required': true
 				},
 				{
 					'name': 'tenantSpecific',
-					'label': 'Tenant Specific',
+					'label': translation.tenantSpecific[LANG],
 					'type': 'radio',
 					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': false
@@ -128,55 +128,55 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'name',
-					'label': 'Database Name',
+					'label': translation.databaseName[LANG],
 					'type': 'text',
-					'placeholder': 'myDatabase...',
+					'placeholder': translation.myDatabase[LANG],
 					'value': '',
-					'tooltip': 'Enter Environment Database Name.',
+					'tooltip': translation.enterEnvironmentDatabaseName[LANG],
 					'required': true
 				},
 				{
 					'name': 'cluster',
-					'label': 'Cluster Name',
+					'label': translation.clusterName[LANG],
 					'type': 'text',
-					'placeholder': 'cluster 1...',
+					'placeholder': translation.cluster1[LANG],
 					'value': '',
-					'tooltip': 'Enter the cluster name',
+					'tooltip': translation.enterTheClusterName[LANG],
 					'required': true
 				},
 				{
 					'name': 'collection',
-					'label': 'Session Database Collection',
+					'label': translation.sessionDatabaseCollection[LANG],
 					'type': 'text',
-					'placeholder': "session...",
+					'placeholder': translation.sessionDots[LANG],
 					'value': '',
-					'tooltip': 'Provide the Session Database Collection Name',
+					'tooltip': translation.provideTheSessionDatabaseCollectionName[LANG],
 					'required': true
 				},
 				{
 					'name': 'stringify',
-					'label': 'Stringified',
+					'label': translation.stringified[LANG],
 					'type': 'radio',
 					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': true
 				},
 				{
 					'name': 'expireAfter',
-					'label': 'Expires After',
+					'label': translation.expiresAfter[LANG],
 					'type': 'text',
-					'tooltip': 'Enter the number of hours before the session expires',
+					'tooltip': translation.enterNumberHoursBeforeSessionExpires[LANG],
 					'value': '',
 					'placeholder': '300...',
 					'required': true
 				},
 				{
 					'name': 'store',
-					'label': 'Store',
+					'label': translation.store[LANG],
 					'type': 'textarea',
 					'rows': 5,
 					'placeholder': '{}',
 					'value': '',
-					'tooltip': 'Provide the Session Database Store',
+					'tooltip': translation.provideTheSessionDatabaseStore[LANG],
 					'required': true
 				}
 			]
@@ -188,39 +188,39 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'name',
-					'label': 'Cluster Name',
+					'label': translation.clusterName[LANG],
 					'type': 'text',
-					'placeholder': 'cluster1...',
+					'placeholder': translation.cluster1[LANG],
 					'value': '',
-					'tooltip': 'Enter Environment Cluster Name.',
+					'tooltip': translation.enterEnvironmentClusterName[LANG],
 					'required': true
 				},
 				{
 					'name': 'servers',
-					'label': 'Servers List',
+					'label': translation.serversList[LANG],
 					'type': 'textarea',
 					'rows': 2,
 					'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
 					'value': '',
-					'tooltip': 'Enter the list of servers host:port seperated by a comma',
+					'tooltip': translation.enterListServersSeparatedComma[LANG],
 					'required': true
 				},
 				{
 					'name': 'credentials',
-					'label': 'Credentials',
+					'label': translation.credentials[LANG],
 					'type': 'textarea',
 					'rows': 4,
 					'placeholder': JSON.stringify({
-						"username": "admin",
-						"password": "password"
+						"username": translation.admin[LANG],
+						"password": translation.password[LANG]
 					}, null, "\t"),
 					'value': '',
-					'tooltip': 'Enter the Credentials of the cluster',
+					'tooltip': translation.enterCredentialsCluster[LANG],
 					'required': false
 				},
 				{
 					'name': 'urlParam',
-					'label': 'URL Parameters',
+					'label': translation.URLParameters[LANG],
 					'type': 'textarea',
 					'rows': 7,
 					'placeholder': JSON.stringify({
@@ -231,7 +231,7 @@ var environmentsConfig = {
 						"slaveOk": true
 					}, null, "\t"),
 					'value': '',
-					'tooltip': 'Enter the URL Parameters of the cluster',
+					'tooltip': translation.enterURLParametersCluster[LANG],
 					'required': true
 				},
 				{
@@ -248,7 +248,7 @@ var environmentsConfig = {
 						}
 					}, null, "\t"),
 					'value': '',
-					'tooltip': 'Enter the Extra Parameters of the cluster',
+					'tooltip': translation.enterExtraParametersCluster[LANG],
 					'required': true
 				}
 			]
@@ -264,22 +264,22 @@ var environmentsConfig = {
 					'type': 'number',
 					'placeholder': '1',
 					'value': 1,
-					'tooltip': 'Enter How Many Host(s)',
-					'fieldMsg': 'Enter How Many Host(s) you would like to add for this service.',
+					'tooltip': translation.hostNumber[LANG],
+					'fieldMsg': translation.enterHowManyHostsAddForService[LANG],
 					'required': true
 				},
 				{
 					'name': 'variables',
-					"label": "Environment Variables",
+					"label": translation.environmentVariables[LANG],
 					"type": "textarea",
 					"required": false,
-					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"tooltip": translation.provideOptionalEnvironmentVariablesSeparatedComma[LANG],
 					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
 				},
 				{
 					"name": "defaultENVVAR",
 					"type": "html",
-					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+					"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
 				}
 			]
 		},
@@ -290,26 +290,26 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'controllers',
-					'label': 'Controller(s)',
+					'label': translation.controller[LANG],
 					'type': 'number',
 					'placeholder': '1',
 					'value': '',
-					'tooltip': 'Choose how many controllers to deploy',
-					'fieldMsg': 'Choose how many controllers you want to deploy',
+					'tooltip': translation.chooseHowManyControllersDeploy[LANG],
+					'fieldMsg': translation.chooseHowManyControllersDeploy[LANG],
 					'required': true
 				},
 				{
 					'name': 'variables',
-					"label": "Environment Variables",
+					"label": translation.environmentVariables[LANG],
 					"type": "textarea",
 					"required": false,
-					"tooltip": "Provide Optional Environment Variables separated by a comma",
+					"tooltip": translation.provideOptionalEnvironmentVariablesSeparatedComma[LANG],
 					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
 				},
 				{
 					"name": "defaultENVVAR",
 					"type": "html",
-					"value": "<p>Default Environment Variables:<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+					"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
 				}
 			]
 		},
@@ -317,9 +317,9 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'uploadCerts',
-					'label': 'Certificates',
+					'label': translation.certificates[LANG],
 					'type': 'document',
-					'tooltip': 'Upload Certificate',
+					'tooltip': translation.uploadCertificate[LANG],
 					'required': false,
 					"limit": 3,
 					'fieldMsg': "Upload certificates in .pem format."
@@ -330,35 +330,35 @@ var environmentsConfig = {
 			'entries': [
 				{
 					'name': 'name',
-					'label': 'Driver Name',
+					'label': translation.driverName[LANG],
 					'type': 'text',
-					'tooltip': 'Driver Name',
+					'tooltip': translation.driverName[LANG],
 					'required': true,
 					'value': ''
 				},
 				{
 					'name': 'host',
-					'label': 'Driver Host',
+					'label': translation.driverHost[LANG],
 					'type': 'text',
-					'tooltip': 'Driver Host',
+					'tooltip': translation.driverHost[LANG],
 					'required': true,
 					'value': ''
 				},
 				{
 					'name': 'port',
-					'label': 'Driver Port',
+					'label': translation.driverPort[LANG],
 					'type': 'number',
-					'tooltip': 'Driver Port',
+					'tooltip': translation.driverPort[LANG],
 					'required': true,
 					'value': ''
 				},
 				{
 					'name': 'config',
-					'label': "Additional Configuration",
+					'label': translation.additionalConfiguration[LANG],
 					'type': "textarea",
 					'rows': 6,
 					'required': false,
-					'tooltip': "Provide optional driver configuration",
+					'tooltip': translation.provideOptionalDriverConfiguration[LANG],
 					'value': ''
 				}
 			]

@@ -1,9 +1,9 @@
 <section ng-controller="environmentCtrl" ng-show="grid.rows">
-    <span ng-if="access.addEnvironment"><a href="" ng-click="addEnvironment()" class="btn btn-primary">Add New Environment</a><br/><br/></span>
+    <span ng-if="access.addEnvironment"><a href="" ng-click="addEnvironment()" class="btn btn-primary">{{translation.addNewEnvironment[LANG]}}</a><br/><br/></span>
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
-            <div class="header">{{row['code']}} / Profile : {{row.profileLabel}} / Port: {{row.port}}</div>
+            <div class="header">{{row['code']}} / {{translation.profile[LANG]}} : {{row.profileLabel}} / {{translation.port[LANG]}}: {{row.port}}</div>
             <div class="body">
                 <div class="description">
                     {{row['description']}}
@@ -13,11 +13,11 @@
                 <div class="entryAction">
 
                     <a ng-if="access.editEnvironment" href="" ng-click="updateEnvironment(row);">
-                        <span class="icon icon-pencil2" tooltip="Edit Environment"></span>
+                        <span class="icon icon-pencil2" tooltip="{{translation.editEnvironment[LANG]}}"></span>
                     </a>
 
-                    <a  ng-if="access.deleteEnvironment" href="" ng-confirm-click="Are you sure you want to remove this environment?" ng-click="removeEnvironment(row);">
-                        <span class="icon icon-cross" tooltip="Remove Environment"></span>
+                    <a  ng-if="access.deleteEnvironment" href="" ng-confirm-click="{{translation.areYouSureWantRemoveThisEnvironment[LANG]}}" ng-click="removeEnvironment(row);">
+                        <span class="icon icon-cross" tooltip="{{translation.removeEnvironment[LANG]}}"></span>
                     </a>
                 </div>
             </div>

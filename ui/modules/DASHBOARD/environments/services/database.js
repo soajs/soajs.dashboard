@@ -17,7 +17,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 						currentScope.dbs = response;
 					}
 					else {
-						currentScope.$parent.displayAlert('danger', "Unable to fetch Environment Database.");
+						currentScope.$parent.displayAlert('danger', translation.unableFetchEnvironmentDatabase[LANG]);
 					}
 				}
 			});
@@ -35,11 +35,11 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			}
 			else {
 				if(response) {
-					currentScope.$parent.displayAlert('success', "Selected Environment Database has been removed.");
+					currentScope.$parent.displayAlert('success', translation.selectedEnvironmentDatabaseRemoved[LANG]);
 					currentScope.listDatabases(env);
 				}
 				else {
-					currentScope.$parent.displayAlert('danger', "Unable to remove selected Environment Database.");
+					currentScope.$parent.displayAlert('danger', translation.unableRemoveSelectedEnvironmentDatabase[LANG]);
 				}
 			}
 		});
@@ -54,7 +54,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
@@ -85,7 +85,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Environment Database Added Successfully.');
+								currentScope.$parent.displayAlert('success', translation.environmentDatabaseAddedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listDatabases(env);
@@ -95,7 +95,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						currentScope.modalInstance.dismiss('cancel');
@@ -131,12 +131,12 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			timeout: $timeout,
 			form: (name === 'session') ? angular.copy(environmentsConfig.form.session) : angular.copy(environmentsConfig.form.database),
 			name: 'updateDatabase',
-			label: 'Update Database',
+			label: translation.updateDatabase[LANG],
 			'data': formData,
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function(formData) {
 						var postData = {
@@ -167,7 +167,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
-								currentScope.$parent.displayAlert('success', 'Environment Database Updated Successfully.');
+								currentScope.$parent.displayAlert('success', translation.environmentDatabaseAddedSuccessfully[LANG]);
 								currentScope.modalInstance.close();
 								currentScope.form.formData = {};
 								currentScope.listDatabases(env);
@@ -177,7 +177,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function() {
 						currentScope.modalInstance.dismiss('cancel');
@@ -202,10 +202,10 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			}
 			else {
 				if(response) {
-					currentScope.$parent.displayAlert('success', "Environment Database Prefix has been removed.");
+					currentScope.$parent.displayAlert('success', translation.environmentDatabasePrefixRemoved[LANG]);
 				}
 				else {
-					currentScope.$parent.displayAlert('danger', "Unable to update Environment Database Prefix.");
+					currentScope.$parent.displayAlert('danger', translation.unableUpdateEnvironmentDatabasePrefix[LANG]);
 				}
 			}
 		});

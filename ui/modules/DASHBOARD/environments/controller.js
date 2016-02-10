@@ -133,11 +133,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			timeout: $timeout,
 			form: configuration,
 			name: 'addEnvironment',
-			label: 'Add New Environment',
+			label: translation.addNewEnvironment[LANG],
 			actions: [
 				{
 					'type': 'submit',
-					'label': 'Submit',
+					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
 						var tmpl = angular.copy(env_template);
@@ -181,7 +181,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', 'Environment Created Successfully.');
+								$scope.$parent.displayAlert('success', translation.environmentCreatedSuccessfully[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
 								$scope.updateEnvironment(data[0]);
@@ -191,7 +191,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				},
 				{
 					'type': 'button',
-					'label': 'Advanced Mode',
+					'label': translation.advancedMode[LANG],
 					'btn': 'success',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -200,7 +200,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				},
 				{
 					'type': 'reset',
-					'label': 'Cancel',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -246,7 +246,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				postData.services.config.logger = $scope.formEnvironment.services.config.logger;
 			}
 			catch (e) {
-				$scope.$parent.displayAlert('danger', 'Error: Invalid logger Json object');
+				$scope.$parent.displayAlert('danger', translation.errorInvalidJsonObject[LANG]);
 				return;
 			}
 		}
@@ -263,7 +263,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', 'Environment ' + (($scope.newEntry) ? "Created" : "Updated") + ' Successfully.');
+				$scope.$parent.displayAlert('success', translation.environment[LANG] + ' ' + (($scope.newEntry) ? translation.created[LANG] : translation.updated[LANG]) + ' ' + translation.successfully[LANG]);
 			}
 		});
 	};
@@ -283,9 +283,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.waitMessage.message = error.message;
 			}
 			else {
-				var text = "<p>The Tenant Security Configuration has been updated.<br />Please copy the below key value marked in red <span class='red'>" +
+				var text = "<p>" + translation.tenantSecurityConfigurationUpdated[LANG] + "<br />" + translation.pleaseCopyBelowKeyValueMarkedRed[LANG] + "<span class='red'>" +
 					response.newKey +
-					"</span> and place it the <b>config.js</b> file of this application where it says <b>apiConfiguration.key</b>.<br />Once you have updated and saved the <b>config.js</b>, Click on the button below and your dashboard will open up.</p><p>Once the page opens up, navigate to <b>Multi-Tenancy</b> and generate new external keys for all your tenants appplications.</p><br/><input type='button' onclick='overlay.hide(function(){location.reload();});' value='Reload Dashboard' class='btn btn-success'/><br /><br />";
+					"</span> " + translation.andPlace[LANG] + " <b>config.js</b> " + translation.fileOfApplicationWhereItSays[LANG] + " <b>apiConfiguration.key</b>.<br />" + translation.onceYouHaveUpdatedAndSaved[LANG] + " <b>config.js</b>" + translation.clickOnTheButtonBelowDashboardWillOpen[LANG] + "</p><p>" + translation.onceThePageOpensUpNavigate[LANG] + " <b>" + translation.multiTenancy[LANG] + "</b> " + translation.andGenerateExternalKeysTenantsApplications[LANG] + "</p><br/><input type='button' onclick='overlay.hide(function(){location.reload();});' value='Reload Dashboard' class='btn btn-success'/><br /><br />";
 
 				jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
 				overlay.show();
@@ -304,11 +304,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 			else {
 				if (response) {
-					$scope.$parent.displayAlert('success', "Selected Environment has been removed.");
+					$scope.$parent.displayAlert('success', translation.selectedEnvironmentRemoved[LANG]);
 					$scope.listEnvironments();
 				}
 				else {
-					$scope.$parent.displayAlert('danger', "Unable to remove selected Environment.");
+					$scope.$parent.displayAlert('danger', translation.unableRemoveSelectedEnvironment[LANG]);
 				}
 			}
 		});
@@ -324,7 +324,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			actions: [
 				{
 					type: 'submit',
-					label: 'Upload',
+					label: translation.upload[LANG],
 					btn: 'primary',
 					action: function (formData) {
 						$scope.modalInstance.close();
@@ -335,7 +335,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							controller: function ($scope, $modalInstance) {
 								fixBackDrop();
 
-								$scope.text = "<h4 style='text-align:center;'>Uploading Certificates...</h4><p style='text-align:center;'>This might take a few minutes, please wait.</p>";
+								$scope.text = "<h4 style='text-align:center;'>" + translation.uploadingCertificates[LANG] + "</h4><p style='text-align:center;'>" + translation.thisMightTakeFewMinutesPleaseWait[LANG] + "</p>";
 							}
 						});
 						$scope.uploadFiles(formData, "uploadCerts", 0, uploadInfo, function () {
@@ -347,7 +347,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								keyboard: true,
 								controller: function ($scope, $modalInstance) {
 									fixBackDrop();
-									$scope.text = "<h4 style='text-align:center;'>Certificate(s) added successfully.</h4>";
+									$scope.text = "<h4 style='text-align:center;'>" + translation.certificateAddedSuccessfully[LANG] + "</h4>";
 								}
 							});
 							$timeout(function () {
@@ -359,7 +359,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				},
 				{
 					type: 'reset',
-					label: 'Cancel',
+					label: translation.cancel[LANG],
 					btn: 'danger',
 					action: function () {
 						$scope.modalInstance.dismiss('cancel');
@@ -471,7 +471,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.message);
 			} else {
-				$scope.$parent.displayAlert('success', 'Selected Certificate has been removed');
+				$scope.$parent.displayAlert('success', translation.selectedCertificateRemoved[LANG]);
 				$scope.listEnvironments();
 			}
 		});

@@ -1,53 +1,47 @@
     <section ng-controller="platformsCtrl">
-        <!--<alert type="warning" ng-if="deployer.type ==='manual'">-->
-            <!--This Environment is Configured to be deployed <b>Manually</b>. All Services running in this environment have to be started and stopped by the administrator.-->
-        <!--</alert>-->
-        <!--<alert class="blueAlert" ng-if="deployer.type !== 'manual'">-->
-            <!--This Environment is Configured to use <b>{{deployer.type}}</b> Deployment.-->
-        <!--</alert>-->
         <select class="form-control f-left selectCustom" ng-model="deployer.type">
-            <option value="manual">Manual</option>
-            <option value="container">Container</option>
+            <option value="manual">{{translation.manual[LANG]}}</option>
+            <option value="container">{{translation.container[LANG]}}</option>
         </select>&nbsp;
-        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">Change</a>
+        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
         <div ng-if="allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket']">
-            <a href="" class="btn btn-primary" ng-click="addDriver()">Add Driver</a>
+            <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
             <br><br>
         </div>
         <div class="entryBoxes">
             <div ng-repeat="driver in platforms" class="entryBox mb20">
                 <div class="header">
-                    {{driver.label}}&nbsp;&nbsp;&nbsp;<span ng-if="driver.uiType !== 'socket'"><b>[ Host: {{driver.host}} | Port: {{driver.port}} ]</b></span>
-                    <span ng-if="uiSelected === driver.label" class="text-green">Selected</span>
+                    {{driver.label}}&nbsp;&nbsp;&nbsp;<span ng-if="driver.uiType !== 'socket'"><b>[ {{translation.host[LANG]}}: {{driver.host}} | {{translation.port[LANG]}}: {{driver.port}} ]</b></span>
+                    <span ng-if="uiSelected === driver.label" class="text-green">{{translation.selected[LANG]}}</span>
                     <span class="rightActions">
-                        <a ng-if="access.platforms.clear" href="" ng-confirm-click="Are you sure you want to clear this driver's configuration?" ng-click="clearDriverConfig(driver.label);">
-                            <span class="icon icon-cross" tooltip="Delete Driver"></span>
+                        <a ng-if="access.platforms.clear" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
+                            <span class="icon icon-cross" tooltip="{{translation.deleteDriver[LANG]}}"></span>
                         </a>
                         <a ng-if="access.platforms.update" href="" ng-click="editDriver(driver);">
-                            <span class="icon icon-pencil" tooltip="Edit Driver"></span>
+                            <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
                         </a>
                         <a href="" ng-click="uploadCerts(driver.label)">
-                            <span class="icon icon-attachment" tooltip="Upload/Choose Certificates"></span>
+                            <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                         </a>
                         <a href="" ng-click="selectDriver(driver.label)" ng-if="allowSelect">
-                            <span class="icon icon-checkbox-checked" tooltip="Select Driver"></span>
+                            <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
                         </a>
                     </span>
                 </div>
                 <div class="body" ng-if="driver.uiType !== 'socket'">
-                    <label>Certificates:&nbsp;</label><br>
+                    <label>{{translation.certificates[LANG]}}:&nbsp;</label><br>
                     <div class="entryBoxes entryBoxesGrid">
                         <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in driver.certificates">
                             <b>{{cert.filename}}</b>
                             <a href="" ng-click="removeCert(cert._id, driver.label)">
-                                <span class="icon icon-bin pull-right" tooltip="Remove Certificate"></span>
+                                <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
                             </a>
                         </div>
                     </div>
-                    <alert type="warning" ng-if="!driver.certificates || driver.certificates.length === 0">No certificates uploaded yet!</alert>
+                    <alert type="warning" ng-if="!driver.certificates || driver.certificates.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
                 </div>
                 <div class="body" ng-if="driver.uiType === 'socket'">
-                    <label>Socket Path:&nbsp;</label>{{driver.socketPath}}<br>
+                    <label>{{translation.socketPath[LANG]}}:&nbsp;</label>{{driver.socketPath}}<br>
                 </div>
             </div>
         </div>
@@ -58,7 +52,7 @@
             <div ng-bind-html="text"></div>
         </div>
         <div class="modal-footer" ng-if="data">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
         </div>
     </script>
 
