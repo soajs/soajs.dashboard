@@ -67,6 +67,10 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			json: true
 		};
 
+		if(opts.proxy){
+			config.params['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
+		}
+
 		var soajsAuthCookie = $cookieStore.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
 			config.headers.soajsauth = soajsAuthCookie;

@@ -30,13 +30,15 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var exclude =['urac','dashboard'];
 	if(exclude.indexOf(pathParams[1]) !== -1){
 		if(options.proxy){
-			apiOptions.url = (options.url) ? options.url + "/dashboard/proxy" : apiConfiguration.domain + "/dashboard/proxy";
+			apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 			apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
+			apiOptions.proxy = true;
 		}
 	}
 	else{
-		apiOptions.url = (options.url) ? options.url + "/dashboard/proxy" : apiConfiguration.domain + "/dashboard/proxy";
+		apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
+		apiOptions.proxy = true;
 	}
 
 	if (options.jsonp) {

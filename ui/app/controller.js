@@ -521,8 +521,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 				//"headers": {
 				//	"key": apiConfiguration.key
 				//},
-				"routeName": "/urac/logout",
-				"proxy": true,
+				"routeName": "/dashboard/logout",
 				"params": {"username": user.username}
 			}, function (error, response) {
 				overlayLoading.hide();
