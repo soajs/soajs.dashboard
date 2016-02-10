@@ -139,6 +139,10 @@ service.init(function() {
 		checkForMongo(req);
 		environment.changeSelectedDriver(config, mongo, req, res);
 	});
+	service.post("/environment/platforms/deployer/type/change", function (req, res) {
+		checkForMongo(req);
+		environment.changeDeployerType(config, mongo , req, res);
+	});
 
 	/**
 	 * Products features

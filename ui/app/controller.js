@@ -157,12 +157,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
-				//if ($scope.leftMenu.environments[0]) {
-				//	$scope.switchEnvironment($scope.leftMenu.environments[0]);
-				//}
-				//else {
-				//	$scope.switchEnvironment($localStorage.environments[0]);
-				//}
 			}
 		};
 
@@ -237,6 +231,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.updateSelectedMenus = function () {
+			for (var x in $scope.mainMenu.links){
+				$scope.mainMenu.links[x].entries.sort(function (a, b) {
+					if (a.order > b.order) {
+						return 1;
+					}
+					if (a.order < b.order) {
+						return -1;
+					}
+					// a must be equal to b
+					return 0;
+				});
+			}
+
 			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
@@ -286,19 +293,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if ($scope.appNavigation[i].guestMenu) {
 					$scope.guestMenu.links.push($scope.appNavigation[i]);
 				}
-			}
-
-			for (var x in $scope.mainMenu.links){
-				$scope.mainMenu.links[x].entries.sort(function (a, b) {
-					if (a.order > b.order) {
-						return 1;
-					}
-					if (a.order < b.order) {
-						return -1;
-					}
-					// a must be equal to b
-					return 0;
-				});
 			}
 
 		};
@@ -356,24 +350,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
-				// sort
-				for (var x in $scope.mainMenu.links){
-					$scope.mainMenu.links[x].entries.sort(function (a, b) {
-						if (a.order > b.order) {
-							return 1;
-						}
-						if (a.order < b.order) {
-							return -1;
-						}
-						// a must be equal to b
-						return 0;
-					});
-				}
-
 			}
 
 			doPermissions($scope.appNavigation);
-			//$scope.updateSelectedMenus();
+			$scope.updateSelectedMenus();
 		};
 
 		$scope.buildNavigation();
@@ -390,7 +370,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.$on('$routeChangeSuccess', function () {
 			$scope.tracker = [];
-			$scope.updateSelectedMenus();
+			//$scope.updateSelectedMenus();
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				if ($scope.appNavigation[i].tracker && $scope.appNavigation[i].url === '#' + $route.current.originalPath) {
 					if (!$scope.appNavigation[i].hasOwnProperty('private') && !$scope.appNavigation[i].hasOwnProperty('guestMenu') && !$scope.appNavigation[i].hasOwnProperty('footerMenu')) {
@@ -471,7 +451,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
-				access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
+				var envCode = ($scope.pillar === 'operate') ? $cookieStore.get('myEnv').code : "DASHBOARD";
+				access = checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode);
 			}
 			return access;
 		};

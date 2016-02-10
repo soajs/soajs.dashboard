@@ -14,6 +14,11 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookieStore', 'envPlatf
     };
 
     $scope.allowAddDriver = {};
+    $scope.allowSelect = $scope.deployer.type === 'container';
+
+    $scope.deployment = {
+        newType: ""
+    };
 
     $scope.listPlatforms = function (envCode) {
         envPlatforms.listPlatforms($scope, envCode);
@@ -45,6 +50,10 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookieStore', 'envPlatf
 
     $scope.editDriver = function (driver) {
         envPlatforms.editDriver($scope, driver);
+    };
+
+    $scope.changeDeployerType = function () {
+        envPlatforms.changeDeployerType ($scope);
     };
 
     if ($scope.access.platforms.list) {

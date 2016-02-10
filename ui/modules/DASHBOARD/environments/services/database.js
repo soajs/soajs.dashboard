@@ -68,11 +68,11 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
-								'stringify': (formData.stringify === 'true')
+								'stringify': formData.stringify
 							};
 						}
 						else {
-							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
+							postData['tenantSpecific'] = formData.tenantSpecific;
 						}
 
 						getSendDataFromServer(currentScope, ngDataApi, {
@@ -150,11 +150,11 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
-								'stringify': (formData.stringify === 'true')
+								'stringify': formData.stringify
 							};
 						}
 						else {
-							postData['tenantSpecific'] = (formData.tenantSpecific === 'true');
+							postData['tenantSpecific'] = formData.tenantSpecific;
 						}
 
 						getSendDataFromServer(currentScope, ngDataApi, {

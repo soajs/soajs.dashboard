@@ -116,7 +116,7 @@ var environmentsConfig = {
 					'name': 'tenantSpecific',
 					'label': translation.tenantSpecific[LANG],
 					'type': 'radio',
-					'value': [{'v': 'false', 'selected': true}, {'v': 'true'}],
+					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': false
 				}
 			]
@@ -157,7 +157,7 @@ var environmentsConfig = {
 					'name': 'stringify',
 					'label': translation.stringified[LANG],
 					'type': 'radio',
-					'value': [{'v': 'false', 'selected': true}, {'v': 'true'}],
+					'value': [{'v': false, 'selected': true}, {'v': true}],
 					'required': true
 				},
 				{

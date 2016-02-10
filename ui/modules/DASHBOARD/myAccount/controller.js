@@ -340,7 +340,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					}
 					else {
 						$localStorage.acl_access = {};
-						$localStorage.acl_access['dashboard'] = response.acl;
+						$localStorage.acl_access = response.acl;
 						$localStorage.environments = response.environments;
 						$cookieStore.put("soajs_envauth", response.envauth);
 						response.environments.forEach(function(oneEnv){

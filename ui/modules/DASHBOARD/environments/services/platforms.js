@@ -20,11 +20,16 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 	function renderDisplay(currentScope, record) {
 		currentScope.deployer.type = record.type;
+		currentScope.originalDeployerType = record.type;//used to detect changes in type on UI level
+
 		currentScope.deployer.selected = record.selected;
 		if (record.selected) {
 			currentScope.uiSelected = record.selected.replace(record.type + ".", "").replace(/\./g, " - ");
 		}
+		currentScope.allowSelect = currentScope.deployer.type === 'container';
+
 		currentScope.availableCerts = record.certs; //used later to view available certificates and allow user to choose them for other drivers
+
 		currentScope.platforms = [];
 
 		if (record.container.dockermachine) {
@@ -320,7 +325,6 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.cloud = {};
 				$scope.socket = {};
 
-				console.log($scope.outerScope.availableCloudProviders);
 				$scope.onSubmit = function () {
 					var postData = preparePostData($scope);
 
@@ -422,6 +426,29 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
+	function changeDeployerType (currentScope) {
+		//scope.allowSelect if type is container
+		var postData = {
+			deployerType: currentScope.deployer.type
+		};
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "send",
+			"routeName": "/dashboard/environment/platforms/deployer/type/change",
+			"params": {
+				env: currentScope.envCode
+			},
+			"data": postData
+		}, function (error, response) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.message);
+			} else {
+				currentScope.$parent.displayAlert('success', 'Deployer type changed successfully');
+				currentScope.allowSelect = currentScope.deployer.type === 'container';
+				currentScope.listPlatforms(currentScope.envCode);
+			}
+		});
+	}
+
 	function preparePostData(currentScope) {
 		if (currentScope.driver.info.label === 'dockermachine - local') {
 			var postData = {
@@ -463,6 +490,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		'selectDriver': selectDriver,
 		'clearDriverConfig': clearDriverConfig,
 		'addDriver': addDriver,
-		'editDriver': editDriver
+		'editDriver': editDriver,
+		'changeDeployerType': changeDeployerType
 	}
 }]);

@@ -152,6 +152,7 @@ var errors = {
 	"735": "Unable to change selected driver",
 	"736": "Unable to delete driver",
 	"737": "You are not allowed to delete a driver that is currently selected",
+	"738": "Unable to change deployer type",
 
 	"750": "Invalid Request."
 };
