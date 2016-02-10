@@ -914,6 +914,7 @@ var cbNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
+		'order': 3,
 		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG]]
 	},
