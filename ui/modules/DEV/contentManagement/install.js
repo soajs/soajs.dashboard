@@ -94,10 +94,7 @@ var cmTranslation = {
 		"ENG": "No Content Management Services are deployed yet. Head to the",
 		"FRA": "No Content Management Services are deployed yet. Head to the"
 	},
-	"environments": {
-		"ENG": "Environments",
-		"FRA": "Environments"
-	},
+
 	"sectionAndDeployThem": {
 		"ENG": "Section and deploy them.",
 		"FRA": "Section and deploy them."

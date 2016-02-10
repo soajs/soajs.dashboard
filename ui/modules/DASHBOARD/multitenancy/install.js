@@ -2,10 +2,6 @@
 
 var mtTranslation = {
 	//install.js
-	"multiTenancy": {
-		"ENG": "Multi-Tenancy",
-		"FRA": "Multi-Tenancy"
-	},
 	"editAppACL": {
 		"ENG": "Edit Application ACL",
 		"FRA": "Edit Application ACL"

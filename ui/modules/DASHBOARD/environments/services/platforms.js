@@ -108,7 +108,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			controller: function ($scope) {
 				fixBackDrop();
 
-				$scope.title = "Upload Certificates";
+				$scope.title = translation.uploadCertificates[LANG];
 				$scope.outerScope = currentScope;
 				$scope.formData = {
 					certificates: {}
@@ -126,7 +126,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							keyboard: false,
 							controller: function ($scope) {
 								fixBackDrop();
-								$scope.text = "<h4 style='text-align:center;'>Uploading Certificates...</h4><p style='text-align:center;'>This might take a few minutes, please wait.</p>";
+								$scope.text = "<h4 style='text-align:center;'>" + translation.uploadingCertificates[LANG] + "</h4><p style='text-align:center;'" + translation.thisMightTakeFewMinutesPleaseWait[LANG] + "</p>";
 							}
 						});
 
@@ -139,7 +139,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 								keyboard: true,
 								controller: function ($scope, $modalInstance) {
 									fixBackDrop();
-									$scope.text = "<h4 style='text-align:center;'>Certificate(s) added successfully.</h4>";
+									$scope.text = "<h4 style='text-align:center;'>" + translation.certificateAddedSuccessfully[LANG] + "</h4>";
 								}
 							});
 							$timeout(function () {
@@ -175,7 +175,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							currentScope.$parent.displayAlert('danger', error.message);
 							upload.close();
 						} else {
-							currentScope.$parent.displayAlert('success', 'The chosen certificates were saved successfully');
+							currentScope.$parent.displayAlert('success', translation.chosenCertificatesSavedSuccessfully[LANG]);
 							upload.close();
 							currentScope.listPlatforms(currentScope.envCode);
 						}
@@ -240,7 +240,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				}
 			}
 		}).error(function (data, status, header, config) {
-			currentScope.$parent.displayAlert('danger', "Error Occured while uploading file: " + options.params.filename);
+			currentScope.$parent.displayAlert('danger', translation.errorOccurredWhileUploadingFile[LANG] + " " + options.params.filename);
 			modal.close();
 		});
 	}
@@ -258,7 +258,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			} else {
-				currentScope.$parent.displayAlert('success', 'Selected Certificate has been removed');
+				currentScope.$parent.displayAlert('success', translation.selectedCertificateRemoved[LANG]);
 				currentScope.listPlatforms(currentScope.envCode);
 			}
 		});
@@ -275,7 +275,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			} else {
-				currentScope.$parent.displayAlert('success', 'Selected driver has been updated');
+				currentScope.$parent.displayAlert('success', translation.selectedDriverUpdated[LANG]);
 				currentScope.originalDeployer = currentScope.deployer.selected;
 				currentScope.uiSelected = driverName;
 			}
@@ -294,7 +294,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			} else {
-				currentScope.$parent.displayAlert('success', 'Driver configuration cleared successfully');
+				currentScope.$parent.displayAlert('success', translation.driverConfigurationClearedSuccessfully[LANG]);
 				currentScope.listPlatforms(currentScope.envCode);
 			}
 		});
@@ -309,7 +309,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
 
-				$scope.title = "Add Driver";
+				$scope.title = translation.addDriver[LANG];
 				$scope.outerScope = currentScope;
 
 				$scope.driver = {
@@ -337,7 +337,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							currentScope.$parent.displayAlert('danger', error.message);
 							$modalInstance.close();
 						} else {
-							currentScope.$parent.displayAlert('success', 'Driver created successfully');
+							currentScope.$parent.displayAlert('success', translation.driverCreatedSuccessfully[LANG]);
 							$modalInstance.close();
 							delete currentScope.allowAddDriver[$scope.driver.info.label.split(" - ")[1]];
 							currentScope.listPlatforms(currentScope.envCode);

@@ -1,19 +1,19 @@
 <br/>
 <fieldset>
-    <h3>Platforms</h3>
+    <h3>{{translation.platforms[LANG]}}</h3>
 
     <div class='grid'>
         <alert type="warning" ng-if="row.deployer.type ==='manual'">
-            This Environment is Configured to be deployed <b>Manually</b>. All Services running in this environment have to be started and stopped by the administrator.
+            {{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>. {{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
         </alert>
         <alert type="warning" ng-if="row.deployer.type !== 'manual'">
-            This Environment is Configured to use <b>{{row.deployer.type}}</b> Deployment.
+            {{translation.thisEnvironmentConfiguredUse[LANG]}} <b>{{row.deployer.type}}</b> {{translation.deployment[LANG]}}.
         </alert>
         <br/>
 
         <div ng-init="getDeploymentMode(row.deployer, 'container');"></div>
         <fieldset>
-            <legend>Container Drivers:</legend>
+            <legend>{{translation.containerDrivers[LANG]}}</legend>
             <tabset>
                 <tab ng-repeat="(driver, opts) in row.deployer.docker" ng-if="driver !== 'selected'" heading="{{driver}}" active="row.deployer.ui[driver]" ng-click="row.deployer.ui[driver] = true;">
                     <br/>
@@ -23,18 +23,18 @@
             </tabset>
         </fieldset>
         <fieldset>
-            <legend>Docker Certificates:</legend>
+            <legend>{{translation.dockerCertificates[LANG]}}</legend>
             <div class="grid" ng-if="row.deployer.certificates.length > 0">
                 <table cellspacing="0" cellpadding="0" border="0" width="100%">
                     <tbody>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Length</th>
-                            <th>Upload Date</th>
+                            <th>{{translation.name[LANG]}}</th>
+                            <th>{{translation.length[LANG]}}</th>
+                            <th>{{translation.uploadDate[LANG]}}</th>
                         </tr>
                         <tr ng-repeat="cert in row.deployer.certificates" ng-class-even="'even'" ng-class-odd="'odd'">
-                            <td ng-style="{'width': '30px'}"><a href="" class="icon icon-bin" ng-click="removeCert(cert._id)" ng-confirm-click="Are you sure you want to delete {{cert.filename}}?"/></td>
+                            <td ng-style="{'width': '30px'}"><a href="" class="icon icon-bin" ng-click="removeCert(cert._id)" ng-confirm-click="{{translation.areYouSureYouWantDelete[LANG]}} {{cert.filename}}?"/></td>
                             <td>{{cert.filename}}</td>
                             <td>{{cert.length}}</td>
                             <td>{{cert.uploadDate}}</td>
@@ -43,7 +43,7 @@
                 </table>
             </div>
             <alert type="warning" ng-if="row.deployer.certificates.length === 0">
-                No certificates uploaded yet!
+               {{translation.noCertificatesUploadedYet[LANG]}}
             </alert>
         </fieldset>
     </div>
