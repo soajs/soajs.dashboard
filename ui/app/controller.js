@@ -157,12 +157,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
-				//if ($scope.leftMenu.environments[0]) {
-				//	$scope.switchEnvironment($scope.leftMenu.environments[0]);
-				//}
-				//else {
-				//	$scope.switchEnvironment($localStorage.environments[0]);
-				//}
 			}
 		};
 
@@ -457,7 +451,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
-				access = checkApiHasAccess(acl, serviceName, routePath, userGroups);
+				var envCode = ($scope.pillar === 'operate') ? $cookieStore.get('myEnv').code : "DASHBOARD";
+				access = checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode);
 			}
 			return access;
 		};
