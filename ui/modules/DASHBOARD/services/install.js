@@ -367,6 +367,7 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
+		'order': 1,
 		'scripts': ['modules/DASHBOARD/services/config.js', 'modules/DASHBOARD/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
@@ -387,6 +388,7 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
+		'order': 2,
 		'scripts': ['modules/DASHBOARD/services/config.js', 'modules/DASHBOARD/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	}

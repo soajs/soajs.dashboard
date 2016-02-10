@@ -35,7 +35,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             },
             responseType: 'arraybuffer',
             params: {
-                'env': currentScope.selectedEnv.toUpperCase(),
+                '__env': currentScope.selectedEnv.toUpperCase(),
                 'id': oneFile._id
             }
         };
@@ -113,23 +113,32 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
                             }
                         });
 
-                        currentScope.form.uploadFileToUrl(Upload, {
-                                'file': files[fileName][i],
-                                'uploadUrl': url,
-                                'headers': {
-                                    "soajsauth": soajsAuthCookie,
-                                    "key": $cookieStore.get("soajs_dashboard_key")
-                                },
-                                'progress': progress,
-                                "data": {
-                                    "nid": apiData[0]._id,
-                                    "env": currentScope.selectedEnv.toUpperCase(),
-                                    'field': fileName,
-                                    'position': i,
-                                    'action': method,
-                                    'media': media
-                                }
-                            },
+	                    var uploadParams = {
+		                    'file': files[fileName][i],
+		                    'uploadUrl': url,
+		                    'headers': {
+			                    "soajsauth": soajsAuthCookie,
+			                    "key": $cookieStore.get("soajs_dashboard_key")
+		                    },
+		                    'progress': progress,
+		                    "data": {
+			                    "nid": apiData[0]._id,
+			                    "__env": currentScope.selectedEnv.toUpperCase(),
+			                    'field': fileName,
+			                    'position': i,
+			                    'action': method,
+			                    'media': media
+		                    }
+	                    };
+
+	                    var pathParams = url.split("/");
+	                    var exclude = ['urac', 'dashboard'];
+	                    if (exclude.indexOf(pathParams[3]) === -1) {
+		                    uploadParams.uploadUrl = "/proxy/redirect";
+		                    uploadParams.data['proxyRoute'] = encodeURIComponent(url);
+		                    uploadParams.data['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
+	                    }
+                        currentScope.form.uploadFileToUrl(Upload, uploadParams,
                             function (error, response) {
                                 if (error) {
                                     err.push(error);

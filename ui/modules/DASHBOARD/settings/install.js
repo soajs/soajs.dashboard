@@ -40,6 +40,7 @@ var settingsNav = [
 			'position': 2
 		},
 		'tracker': true,
+		'order': 5,
 		'scripts': ['modules/DASHBOARD/settings/config.js', 'modules/DASHBOARD/settings/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	}

@@ -196,6 +196,7 @@ var membersNav = [
 			'position': 2
 		},
 		'tracker': true,
+		'order': 3,
 		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
@@ -216,6 +217,7 @@ var membersNav = [
 			'position': 2
 		},
 		'tracker': true,
+		'order': 4,
 		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},

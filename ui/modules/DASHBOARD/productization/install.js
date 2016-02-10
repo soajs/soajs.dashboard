@@ -154,6 +154,7 @@ var productizationNav =[
 		},
 		'mainMenu': true,
 		'tracker': true,
+		'order': 1,
 		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
 		'ancestor': [translation.home[LANG]]
 	},

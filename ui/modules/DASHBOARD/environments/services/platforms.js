@@ -400,7 +400,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						"routeName": "/dashboard/environment/platforms/driver/edit",
 						"params": {
 							env: currentScope.envCode,
-							driverName: driver.info.label
+							driverName: driver.label
 						},
 						"data": postData
 					}, function (error, response) {
