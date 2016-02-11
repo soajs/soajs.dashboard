@@ -1,7 +1,7 @@
 'use strict';
 var routeProvider;
 
-function configureRouteNavigation(navigation){
+function configureRouteNavigation(navigation) {
 	navigation.forEach(function (navigationEntry) {
 		if (navigationEntry.scripts && navigationEntry.scripts.length > 0) {
 			navigationEntry.env = navigationEntry.scripts[0].split("/")[1];
@@ -67,12 +67,12 @@ soajsApp.run(function ($rootScope) {
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
 	function ($scope, $location, $timeout, $route, $cookies, $cookieStore, ngDataApi, checkApiHasAccess, $localStorage) {
 		$scope.appNavigation = navigation;
-		$scope.navigation=[];
-		$scope.pillar=null;
+		$scope.navigation = [];
+		$scope.pillar = null;
 		$scope.enableInterface = false;
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;
-			if(path){
+			if (path) {
 				$location.path(path.replace("#", ""));
 			}
 		};
@@ -150,9 +150,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.pillarChange = function (pillarName) {
-			$scope.pillar=pillarName;
+			$scope.pillar = pillarName;
 			$cookieStore.remove('myEnv');
-			if(pillarName === "operate") {
+			if (pillarName === "operate") {
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
@@ -177,7 +177,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 									$scope.leftMenu.environments.splice(k, 1);
 								}
 							}
-							$cookieStore.put('myEnv', $scope.leftMenu.environments[0]);
+							//$cookieStore.put('myEnv', $scope.leftMenu.environments[0]);
 						}
 
 						if ($cookieStore.get('myEnv')) {
@@ -193,29 +193,31 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.switchEnvironment = function (envRecord) {
-			if(envRecord) {
+			if (envRecord) {
 				$scope.currentSelectedEnvironment = envRecord.code;
 			}
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
 
-				if($scope.pillar && $scope.pillar.toLowerCase() === 'operate'){
+				if ($scope.pillar && $scope.pillar.toLowerCase() === 'operate') {
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/dashboard/permissions/get",
-						"params":{"envCode": envRecord.code}
-					}, function(error, response) {
+						"params": {"envCode": envRecord.code}
+					}, function (error, response) {
 						if (error) {
-							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
+							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 						}
 						else {
-							$localStorage.acl_access[envRecord.code.toLowerCase()] = response.acl;
+							if (response.acl) {
+								$localStorage.acl_access[envRecord.code.toLowerCase()] = response.acl;
+							}
 							$scope.$parent.$emit("loadUserInterface", {});
 							$route.reload();
 						}
 					});
 				}
-				else{
+				else {
 					$route.reload();
 				}
 			}
@@ -273,7 +275,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 
-			for (var x in $scope.mainMenu.links){
+			for (var x in $scope.mainMenu.links) {
 				$scope.mainMenu.links[x].entries.sort(function (a, b) {
 					if (a.order > b.order) {
 						return 1;
@@ -340,7 +342,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
-				for (var x in $scope.mainMenu.links){
+				for (var x in $scope.mainMenu.links) {
 					$scope.mainMenu.links[x].entries.sort(function (a, b) {
 						if (a.order > b.order) {
 							return 1;
@@ -361,11 +363,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event) {
-			if($scope.enableInterface){
+			if ($scope.enableInterface) {
 				$cookieStore.put("soajs_current_route", $location.path());
 			}
 
-			if($cookieStore.get("soajs_current_route") === $location.path()){
+			if ($cookieStore.get("soajs_current_route") === $location.path()) {
 				event.preventDefault();
 			}
 		});
@@ -392,21 +394,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							link: $scope.appNavigation[i].url,
 							current: true
 						});
-						if($scope.appNavigation[i].pillar){
+						if ($scope.appNavigation[i].pillar) {
 							$scope.pillar = $scope.appNavigation[i].pillar.name;
 						}
 					}
 				}
 			}
 
-			if(navigation.length > $scope.appNavigation.length){
+			if (navigation.length > $scope.appNavigation.length) {
 				$scope.appNavigation = navigation;
 				if (!$scope.$$phase) {
 					$scope.$apply();
 				}
 				configureRouteNavigation(navigation);
-				if($cookieStore.get("soajs_current_route") && $location.path() !== $cookieStore.get("soajs_current_route")){
-					$location.path( $cookieStore.get("soajs_current_route") );
+				if ($cookieStore.get("soajs_current_route") && $location.path() !== $cookieStore.get("soajs_current_route")) {
+					$location.path($cookieStore.get("soajs_current_route"));
 				}
 			}
 		});
@@ -465,7 +467,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			window.location.reload();
 		};
 
-		function doEnvPerNav (){
+		function doEnvPerNav() {
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				var strNav = $scope.appNavigation[i].tplPath.split("/");
 				for (var e = 0; e < $localStorage.environments.length; e++) {
