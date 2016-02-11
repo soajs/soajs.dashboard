@@ -67,12 +67,9 @@ function buildForm(context, modal, configuration, cb) {
 	context.form.displayAlert = function (type, msg, isCode, service, orgMesg) {
 		context.form.alerts = [];
 		if (isCode) {
-			var msgT = getCodeMessage(msg, service);
+			var msgT = getCodeMessage(msg, service, orgMesg);
 			if (msgT) {
 				msg = msgT;
-			}
-			else if (orgMesg) {
-				msg = orgMesg;
 			}
 		}
 		context.form.alerts.push({'type': type, 'msg': msg});

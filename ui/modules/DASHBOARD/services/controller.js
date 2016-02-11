@@ -547,7 +547,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard', error.message);
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);
@@ -915,7 +915,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard', error.message);
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);
@@ -1073,7 +1073,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						"data": $scope.postData
 					}, function (error) {
 						if (error) {
-							$scope.message.danger = getCodeMessage(error.code, 'dashboard');
+							$scope.message.danger = getCodeMessage(error.code, 'dashboard', error.message);
 							$timeout(function () {
 								$scope.message.danger = "";
 							}, 5000);

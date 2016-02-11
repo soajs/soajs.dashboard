@@ -27,15 +27,15 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	};
 
 	var pathParams = options.routeName.split("/");
-	var exclude =['urac','dashboard'];
-	if(exclude.indexOf(pathParams[1]) !== -1){
-		if(options.proxy){
+	var exclude = ['urac', 'dashboard'];
+	if (exclude.indexOf(pathParams[1]) !== -1) {
+		if (options.proxy) {
 			apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 			apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 			apiOptions.proxy = true;
 		}
 	}
-	else{
+	else {
 		apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
@@ -203,7 +203,7 @@ function fixBackDrop() {
 	}, 20);
 }
 
-function getCodeMessage(code, service) {
+function getCodeMessage(code, service, orgMesg) {
 	var msg = '';
 	if (errorCodes[service] && errorCodes[service][code]) {
 		if (errorCodes[service][code][LANG]) {
@@ -211,6 +211,11 @@ function getCodeMessage(code, service) {
 		}
 		else {
 			msg = errorCodes[service][code]['ENG'];
+		}
+	}
+	if (!msg) {
+		if (orgMesg) {
+			msg = orgMesg;
 		}
 	}
 	return msg;

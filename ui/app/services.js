@@ -137,6 +137,9 @@ soajsApp.service('checkApiHasAccess', function () {
 		// get acl of the service name
 		if (aclObject[envCode]) {
 			var system = aclObject[envCode][serviceName];
+			if (!system) {
+				return false;
+			}
 		}
 		else {
 			return false;
