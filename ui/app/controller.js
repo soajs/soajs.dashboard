@@ -1,5 +1,4 @@
 'use strict';
-
 var routeProvider;
 
 function configureRouteNavigation(navigation){
@@ -194,14 +193,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		$scope.switchEnvironment = function (envRecord) {
-			var requestedEnv = this.myCurrentEnvironment;
-			if (requestedEnv && !envRecord) {
-				$localStorage.environments.forEach(function (oneEnvRecord) {
-					if (oneEnvRecord.code === requestedEnv) {
-						envRecord = oneEnvRecord;
-					}
-				});
-			}
 			if(envRecord) {
 				$scope.currentSelectedEnvironment = envRecord.code;
 			}
@@ -447,7 +438,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.userFirstName = user.firstName;
 				$scope.userLastName = user.lastName;
 				$scope.rebuildMenus();
-
 			}
 		};
 
@@ -544,7 +534,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 			}, function (error, response) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 
 				$scope.currentSelectedEnvironment = null;
