@@ -526,17 +526,15 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 
 		function logout() {
 			overlayLoading.show();
+			var logoutRoute = ($cookieStore.get('soajs_envauth')) ? "/dashboard/logout" : "/urac/logout";
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-				//"headers": {
-				//	"key": apiConfiguration.key
-				//},
-				"routeName": "/dashboard/logout",
+				"routeName": logoutRoute,
 				"params": {"username": user.username}
 			}, function (error, response) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
 
 				$scope.currentSelectedEnvironment = null;
