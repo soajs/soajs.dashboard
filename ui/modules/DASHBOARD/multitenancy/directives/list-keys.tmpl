@@ -7,7 +7,7 @@
         <accordion close-others="true" ng-show="application.keys.length > 0">
             <accordion-group ng-repeat="key in application.keys" ng-click="openSubContent(key.key, $index); toggleOpen();">
                 <accordion-heading tooltip="{{translation.displayKeyInformation[LANG]}}"><span class="icon icon-key"></span>{{key.key}}
-                    <a ng-if="access.tenant.appKeys.delete" href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" class="f-right" tooltip="{{translation.removeApplicationKey[LANG]}}" ng-confirm-click="{{translation.areYouSureYouWantDeleteKey[LANG]}}">
+                    <a ng-if="access.tenant.appKeys.delete" href="" ng-click="removeAppKey(row['_id'], application, key.key, $event)" style = "float:right !important" tooltip="{{translation.removeApplicationKey[LANG]}}" ng-confirm-click="{{translation.areYouSureYouWantDeleteKey[LANG]}}">
                         <span class="icon icon-cross" tooltip="{{translation.removeKey[LANG]}}"></span>
                     </a>
                 </accordion-heading>
@@ -61,7 +61,7 @@
                                             </td>
                                             <td class="leftAction">
                                                 <a ng-if="access.tenant.externalKeys.delete" ng-click="removeExtKey(row['_id'], application['appId'], extnlKey, key.key)" ng-confirm-click="{{translation.areYouSureWantRemoveExternalKey[LANG]}}" href="">
-                                                    <span class="icon icon-cross" tooltip="{{translation.removeExternalKey}}"></span>
+                                                    <span class="icon icon-cross" tooltip="{{translation.removeExternalKey[LANG]}}"></span>
                                                 </a>
                                             </td>
                                             <td> {{extnlKey.extKey}}</td>
