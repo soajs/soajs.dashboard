@@ -468,8 +468,8 @@ var cbConfig = {
 						'type': 'radio',
 						'value': [
 							{'v': "list", "l": translation.list[LANG]},
-							{'v': "get", "l": translation.get[LANG]},
-							{'v': "delete", "l": translation.delete[LANG]},
+							{'v': "get", "l": translation.getLowercase[LANG]},
+							{'v': "delete", "l": translation.deleteLowercase[LANG]},
 							{'v': "add", "l": translation.add[LANG]},
 							{'v': "update", "l": translation.update[LANG]}
 						],

@@ -31,6 +31,10 @@ var cbTranslation = {
 		"FRA": "You do not have access to the requested section"
 	},
 	//config
+	"deleteLowercase": {
+		"ENG": "delete",
+		"FRA": "effacer"
+	},
 	"cbFormStep2ComputedUIHTMLValue": {
 		"ENG": "This type of inputs is computed by the system and included in the listing UI Grid.",
 		"FRA": "This type of inputs is computed by the system and included in the listing UI Grid."
@@ -426,6 +430,10 @@ var cbTranslation = {
 	"get": {
 		"ENG": "GET",
 		"FRA": "GET"
+	},
+	"getLowercase": {
+		"ENG": "get",
+		"FRA": "get"
 	},
 	"post": {
 		"ENG": "POST",

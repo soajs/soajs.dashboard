@@ -77,8 +77,8 @@ var ProdTranslation = {
 		"FRA": "Add Package"
 	},
 	"editPackage": {
-		"ENG": "Edit Package'",
-		"FRA": "Edit Package'"
+		"ENG": "Edit Package",
+		"FRA": "Edit Package"
 	},
 	"areYouSureWantRemoveProduct": {
 		"ENG": "Are you sure you want to remove this product?",
