@@ -1476,6 +1476,14 @@ var errorCodes = {
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
+		},
+		"900": {
+			"ENG": "Failed to logout.",
+			"FRA": "Failed to logout."
+		},
+		"901": {
+			"ENG": "Failed to logout.",
+			"FRA": "Failed to logout."
 		}
 	}
 };
