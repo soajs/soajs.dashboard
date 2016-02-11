@@ -501,7 +501,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 												"params": {"id": tId, "appId": appId}
 											}, function (error, response) {
 												if (error) {
-													$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', tId);
+													$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 													$scope.modalInstance.close();
 													$scope.form.formData = {};
 													$scope.listTenants();
@@ -515,7 +515,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 														"params": {"id": tId, "appId": appId, "key": key}
 													}, function (error) {
 														if (error) {
-															$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', tId);
+															$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 															$scope.modalInstance.close();
 															$scope.form.formData = {};
 															$scope.listTenants();
@@ -1116,7 +1116,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"params": {"id": tId, "appId": appId, "key": key}
 						}, function (error) {
 							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'dashboard', tId);
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
 								$scope.mt.displayAlert('success', translation.externalKeyAddedSuccessfully[LANG], tId);
@@ -1522,7 +1522,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 									"params": {'tId': tId}
 								}, function (error, response) {
 									if (error) {
-										$scope.$parent.displayAlert("danger", error.code, true, 'urac');
+										$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 									}
 									else {
 										response.forEach(function (grpObj) {
