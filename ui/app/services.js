@@ -67,7 +67,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			json: true
 		};
 
-		if(opts.proxy){
+		if (opts.proxy) {
 			config.params['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
 		}
 
@@ -135,7 +135,12 @@ soajsApp.service('checkApiHasAccess', function () {
 	return function (aclObject, serviceName, routePath, userGroups, envCode) {
 		envCode = envCode.toLowerCase();
 		// get acl of the service name
-		var system = aclObject[envCode][serviceName];
+		if (aclObject[envCode]) {
+			var system = aclObject[envCode][serviceName];
+		}
+		else {
+			return false;
+		}
 
 		var api = (system && system.apis ? system.apis[routePath] : null);
 
