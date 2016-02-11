@@ -544,7 +544,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 			}, function (error, response) {
 				overlayLoading.hide();
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac');
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard');
 				}
 
 				$scope.currentSelectedEnvironment = null;
