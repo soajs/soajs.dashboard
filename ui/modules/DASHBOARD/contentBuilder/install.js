@@ -31,6 +31,10 @@ var cbTranslation = {
 		"FRA": "You do not have access to the requested section"
 	},
 	//config
+	"deleteLowercase": {
+		"ENG": "delete",
+		"FRA": "effacer"
+	},
 	"cbFormStep2ComputedUIHTMLValue": {
 		"ENG": "This type of inputs is computed by the system and included in the listing UI Grid.",
 		"FRA": "This type of inputs is computed by the system and included in the listing UI Grid."
@@ -423,9 +427,13 @@ var cbTranslation = {
 		"ENG": "API method",
 		"FRA": "API method"
 	},
-	"getUppercase": {
+	"get": {
 		"ENG": "GET",
 		"FRA": "GET"
+	},
+	"getLowercase": {
+		"ENG": "get",
+		"FRA": "get"
 	},
 	"post": {
 		"ENG": "POST",
@@ -450,14 +458,6 @@ var cbTranslation = {
 	"list": {
 		"ENG": "list",
 		"FRA": "list"
-	},
-	"getLowercase": {
-		"ENG": "get",
-		"FRA": "get"
-	},
-	"delete": {
-		"ENG": "delete",
-		"FRA": "delete"
 	},
 	"add": {
 		"ENG": "add",
@@ -689,10 +689,6 @@ var cbTranslation = {
 		"ENG": "You do not have any clusters configured, please go to the",
 		"FRA": "You do not have any clusters configured, please go to the"
 	},
-	"environments": {
-		"ENG": "environments",
-		"FRA": "environments"
-	},
 	"sectionConfigureAtLeastOneClusterProceedSection": {
 		"ENG": "section and configure at least one cluster so you can proceed in this section.",
 		"FRA": "section and configure at least one cluster so you can proceed in this section."
@@ -743,7 +739,7 @@ var cbTranslation = {
 		"ENG": "By Default, the",
 		"FRA": "By Default, the"
 	},
-	"idLowercase": {
+	"id": {
 		"ENG": "id",
 		"FRA": "id"
 	},
@@ -790,10 +786,6 @@ var cbTranslation = {
 		"ENG": "Update API",
 		"FRA": "Update API"
 	},
-	"removeAPI": {
-		"ENG": "Remove API",
-		"FRA": "Remove API"
-	},
 	"areYouSureYouWantRemoveAPI": {
 		"ENG": "Are you sure you want to remove this API ?",
 		"FRA": "Are you sure you want to remove this API ?"
@@ -824,10 +816,6 @@ var cbTranslation = {
 		"ENG": "Service Information",
 		"FRA": "Service Information"
 	},
-	"extKeyRequired": {
-		"ENG": "External Key Required",
-		"FRA": "External Key Required"
-	},
 	"keySecurity": {
 		"ENG": "Key Security",
 		"FRA": "Key Security"
@@ -856,11 +844,6 @@ var cbTranslation = {
 	"filter": {
 		"ENG": "Filter",
 		"FRA": "Filter"
-	},
-
-	"updateUppercase": {
-		"ENG": "Update",
-		"FRA": "Update"
 	},
 	//view-ss
 	"inputs": {

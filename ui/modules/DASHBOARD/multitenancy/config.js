@@ -276,7 +276,7 @@ var tenantConfig = {
 					'name': 'user_password',
 					'label': translation.password[LANG],
 					'type': 'password',
-					'placeholder': translation.formOathPasswordPlaceholder[LANG],
+					'placeholder': translation.password[LANG],
 					'value': '',
 					'tooltip': translation.formOathPasswordTooltip[LANG],
 					'required': true
