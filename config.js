@@ -10,6 +10,7 @@ module.exports = {
     "requestTimeoutRenewal": 5,
     "extKeyRequired": true,
     "awareness": true,
+	"awarenessEnv": true,
 
     "hasher": {
         "hashIterations": 1024,
