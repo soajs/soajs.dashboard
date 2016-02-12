@@ -175,7 +175,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 									$scope.leftMenu.environments.splice(k, 1);
 								}
 							}
-							//$cookieStore.put('myEnv', $scope.leftMenu.environments[0]);
+							if ($cookieStore.get('myEnv').code === 'DASHBOARD') {
+								$cookieStore.put('myEnv', $scope.leftMenu.environments[0]);
+							}
 						}
 
 						if ($cookieStore.get('myEnv')) {
@@ -354,6 +356,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					});
 				}
 			}
+
 			doPermissions($scope.appNavigation);
 			$scope.updateSelectedMenus();
 		};
