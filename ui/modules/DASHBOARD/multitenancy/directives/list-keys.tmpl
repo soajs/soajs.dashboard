@@ -33,7 +33,7 @@
                     </tab>
                     <tab heading="{{translation.externalKeys[LANG]}}" ng-if="access.tenant.externalKeys.list">
                         <span ng-if="access.tenant.externalKeys.add"><br/>
-                            <button ng-click="addNewExtKey(row['_id'], application['appId'], key.key)" class="btn btn-primary btn-sm">{{translation.addNewApplicationExternalKey[LANG]}}</button>
+                            <button ng-click="addNewExtKey(row['_id'], application['appId'], key.key, application['package'])" class="btn btn-primary btn-sm">{{translation.addNewApplicationExternalKey[LANG]}}</button>
                         </span>
                         <br/>
                         <div class="small-text" id="externalKeys{{$index}}">
@@ -50,6 +50,7 @@
                                             <th colspan="2"></th>
                                             <th> {{translation.externalKey[LANG]}}</th>
                                             <th> {{translation.dashboardAccess[LANG]}} </th>
+                                            <th> {{translation.environment[LANG]}} </th>
                                             <th> {{translation.expiryDate[LANG]}} </th>
                                         </tr>
                                         <tr ng-repeat="extnlKey in key.extKeys" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:extnlKey.selected}">
@@ -67,6 +68,7 @@
                                             <td> {{extnlKey.extKey}}</td>
                                             <td class="text-align-center" ng-if="extnlKey['dashboardAccess']">{{translation.yes[LANG]}}</td>
                                             <td class="text-align-center" ng-if="!extnlKey['dashboardAccess']">{{translation.no[LANG]}}</td>
+                                            <td> {{extnlKey.env}}</td>
                                             <td> {{extnlKey.expDate|date}}</td>
                                         </tr>
                                     </tbody>

@@ -179,25 +179,25 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 
 					$scope.markTenantsWithDashboardAccess(response, tenantDbKeys, function () {
 						$scope.splitTenantsByType(response, function () {
+							$scope.tenantsList = {
+								rows: response
+							};
+							$scope.tenantsList.actions = {
+								'editTenant': {
+									'label': translation.editTenant[LANG],
+									'command': function (row) {
+										$scope.edit_Tenant(row);
+									}
+								},
+								'delete': {
+									'label': 'Remove',
+									'commandMsg': translation.areYouSureWantRemoveTenant[LANG],
+									'command': function (row) {
+										$scope.removeTenant(row);
+									}
+								}
+							};
 						});
-						$scope.tenantsList = {
-							rows: response
-						};
-						$scope.tenantsList.actions = {
-							'editTenant': {
-								'label': translation.editTenant[LANG],
-								'command': function (row) {
-									$scope.edit_Tenant(row);
-								}
-							},
-							'delete': {
-								'label': 'Remove',
-								'commandMsg': translation.areYouSureWantRemoveTenant[LANG],
-								'command': function (row) {
-									$scope.removeTenant(row);
-								}
-							}
-						};
 					});
 				});
 			}
@@ -508,6 +508,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 												}
 												else {
 													var key = response.key;
+													var postData = {
+														'expDate': null,
+														'device': null,
+														'geo': null,
+														'env': 'all'
+													};
 													getSendDataFromServer($scope, ngDataApi, {
 														"method": "send",
 														"routeName": "/dashboard/tenant/application/key/ext/add",
@@ -1063,10 +1069,45 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addNewExtKey = function (tId, appId, key) {
+	$scope.addNewExtKey = function (tId, appId, key, packageCode) {
+		var formConfig = tenantConfig.form.extKey;
+
+		//check if old or new acl
+		//if new acl, list env in acl
+		//if old acl, list all available env
+		$scope.availablePackages.forEach (function (onePackage) {
+			if (onePackage.pckCode === packageCode) {
+				if (onePackage.acl && typeof (onePackage.acl) === 'object') {
+					if (onePackage.acl['dashboard'] && (!onePackage.acl['dashboard'].apis && !onePackage.acl['dashboard'].apisRegExp && !onePackage.acl['dashboard'].apisPermission)) {
+						//new acl
+						formConfig.entries.forEach(function(oneFormField) {
+							if(oneFormField.name === 'environment') {
+								var list = [];
+								Object.keys(onePackage.acl).forEach (function (envCode) {
+									list.push({"v": envCode, "l": envCode, "selected": (envCode === 'dashboard')});
+								});
+								oneFormField.value = list;
+							}
+						});
+					} else {
+						//old acl
+						formConfig.entries.forEach(function(oneFormField) {
+							if(oneFormField.name === 'environment') {
+								var list = [];
+								$scope.availableEnv.forEach(function(envCode) {
+									list.push({"v": envCode, "l": envCode, "selected": (envCode === 'dashboard')});
+								});
+								oneFormField.value = list;
+							}
+						});
+					}
+				}
+			}
+		});
+
 		var options = {
 			timeout: $timeout,
-			form: tenantConfig.form.extKey,
+			form: formConfig,
 			name: 'addExtKey',
 			label: translation.addNewExternalKey[LANG],
 			sub: true,
@@ -1105,9 +1146,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						var postData = {
 							'expDate': formData.expDate,
 							'device': deviceObj,
-							'geo': geoObj
+							'geo': geoObj,
+							'env': formData.environment
 						};
-
 
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
@@ -1151,6 +1192,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		}
 
 		var formConfig = angular.copy(tenantConfig.form.extKey);
+		for (var i = 0; i < formConfig.entries.length; i++) {
+			if (formConfig.entries[i].name === 'environment') {
+				formConfig.entries.splice(i, 1);
+				break;
+			}
+		}
 		formConfig.entries.unshift({
 			'name': 'extKey',
 			'label': translation.externalKeyValue[LANG],
