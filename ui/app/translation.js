@@ -1477,13 +1477,14 @@ var errorCodes = {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
 		},
-		"900": {
-			"ENG": "Failed to logout.",
-			"FRA": "Failed to logout."
-		},
+
 		"901": {
-			"ENG": "Failed to logout.",
-			"FRA": "Failed to logout."
+			"ENG": "Error Logging out from environments.",
+			"FRA": "Error Logging out from environments."
+		},
+		902: {
+			"ENG": "Error Logging in to environments.",
+			"FRA": "Error Logging in to environments."
 		}
 	}
 };

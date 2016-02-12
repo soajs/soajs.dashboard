@@ -36,6 +36,7 @@
     "docker-mock": "*"
   },
   "dependencies": {
+    "async": "*",
     "ncp": "*",
     "dockerode": "*",
     "object-hash": "*",
@@ -45,8 +46,7 @@
     "mkdirp": "*",
     "rimraf": "*",
     "request": "*",
-    "gridfs-stream": "*",
-    "async": "*"
+    "gridfs-stream": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"

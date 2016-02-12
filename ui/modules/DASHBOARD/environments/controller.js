@@ -280,7 +280,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}, function (error, response) {
 			if (error) {
 				$scope.waitMessage.type = 'danger';
-				$scope.waitMessage.message = error.message;
+				$scope.waitMessage.message = getCodeMessage(error.code, 'dashboard', error.message);
 			}
 			else {
 				var text = "<p>" + translation.tenantSecurityConfigurationUpdated[LANG] + "<br />" + translation.pleaseCopyBelowKeyValueMarkedRed[LANG] + "<span class='red'>" +
@@ -300,7 +300,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"params": {"id": row['_id']}
 		}, function (error, response) {
 			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard',error.message);
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
 				if (response) {
@@ -328,7 +328,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					btn: 'primary',
 					action: function (formData) {
 						$scope.modalInstance.close();
-						var uploadInfo = $modal.open ({
+						var uploadInfo = $modal.open({
 							templateUrl: 'uploadCertsInfo.html',
 							backdrop: true,
 							keyboard: false,
@@ -380,13 +380,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	//		keyboard: true,
 	//		controller: function ($scope, $modalInstance) {
 	//			fixBackDrop();
-    //
+	//
 	//			$scope.title = "Upload Certificates";
-    //
+	//
 	//			$scope.test = function () {
 	//				console.log ("Hello");
 	//			};
-    //
+	//
 	//			$scope.onSubmit = function () {
 	//				console.log ($scope.formData);
 	//				upload.close();
@@ -417,7 +417,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	//					$scope.listEnvironments(); //add env id here
 	//				});
 	//			};
-    //
+	//
 	//			$scope.closeModal = function () {
 	//				upload.close();
 	//			}
