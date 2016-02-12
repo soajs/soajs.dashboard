@@ -146,14 +146,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.collapseMainMenu = !$scope.collapseMainMenu;
 		};
 
-		$scope.pillarChange = function (pillarName) {
+		$scope.pillarChange = function (link) {
+			var pillarName = link.pillar.name;
 			$scope.pillar = pillarName;
-			$cookieStore.remove('myEnv');
 			if (pillarName === "operate") {
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
 			}
+			$scope.go(link.entries[0].url);
 		};
 
 		$scope.reRenderMenu = function (pillarName) {
@@ -193,6 +194,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (envRecord) {
 				$scope.currentSelectedEnvironment = envRecord.code;
 			}
+
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
 
@@ -352,7 +354,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					});
 				}
 			}
-
 			doPermissions($scope.appNavigation);
 			$scope.updateSelectedMenus();
 		};

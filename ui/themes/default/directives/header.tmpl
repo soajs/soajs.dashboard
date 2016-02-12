@@ -3,7 +3,7 @@
 	<div id="pillars" ng-show="enableInterface">
 
 		<div class="one-pillar btn-group" dropdown ng-repeat="link in mainMenu.links | orderBy: 'pillar.position'">
-			<button type="button" class="" id="{{link.pillar.name}}" ng-class="{selected:link.selected}" ng-click="pillarChange(link.pillar.name); go(link.entries[0].url);reRenderMenu(link.pillar.name)">
+			<button type="button" class="" id="{{link.pillar.name}}" ng-class="{selected:link.selected}" ng-click="pillarChange(link);">
 				{{link.pillar.label}}
 			</button>
 		</div>
