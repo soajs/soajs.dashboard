@@ -32,62 +32,64 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 		currentScope.platforms = [];
 
-		if (record.container.dockermachine) {
-			currentScope.availableCloudProviders = Object.keys(record.container.dockermachine.cloud);
+		if (record.container) {
+			if (record.container.dockermachine) {
+				currentScope.availableCloudProviders = Object.keys(record.container.dockermachine.cloud);
 
-			if (!record.container.dockermachine.local || Object.keys(record.container.dockermachine.local).length === 0) {
-				currentScope.allowAddDriver['local'] = {
-					'label': 'dockermachine - local',
-					'allow': true
-				};
-			} else {
-				currentScope.platforms.push({
-					label: 'dockermachine - local',
-					uiType: 'local',
-					host: record.container.dockermachine.local.host,
-					port: record.container.dockermachine.local.port,
-					config: record.container.dockermachine.local.config,
-					certificates: []
-				});
-			}
-
-			if (record.container.dockermachine.cloud) {
-				var emptyCloudCounter = 0;
-				for (var i in record.container.dockermachine.cloud) {
-					if (Object.keys(record.container.dockermachine.cloud[i]).length > 0) {//not an empty cloud driver object
-						currentScope.platforms.push({
-							label: 'dockermachine - cloud - ' + i,
-							uiType: 'cloud',
-							host: record.container.dockermachine.cloud[i].host,
-							port: record.container.dockermachine.cloud[i].port,
-							config: record.container.dockermachine.cloud[i].config,
-							certificates: []
-						});
-					} else {
-						emptyCloudCounter++;
-					}
-				}
-				if (emptyCloudCounter === Object.keys(record.container.dockermachine.cloud).length) { //all cloud drivers and empty, allow user to add one
-					currentScope.allowAddDriver['cloud'] = {
-						'label': 'dockermachine - cloud',
+				if (!record.container.dockermachine.local || Object.keys(record.container.dockermachine.local).length === 0) {
+					currentScope.allowAddDriver['local'] = {
+						'label': 'dockermachine - local',
 						'allow': true
 					};
+				} else {
+					currentScope.platforms.push({
+						label: 'dockermachine - local',
+						uiType: 'local',
+						host: record.container.dockermachine.local.host,
+						port: record.container.dockermachine.local.port,
+						config: record.container.dockermachine.local.config,
+						certificates: []
+					});
+				}
+
+				if (record.container.dockermachine.cloud) {
+					var emptyCloudCounter = 0;
+					for (var i in record.container.dockermachine.cloud) {
+						if (Object.keys(record.container.dockermachine.cloud[i]).length > 0) {//not an empty cloud driver object
+							currentScope.platforms.push({
+								label: 'dockermachine - cloud - ' + i,
+								uiType: 'cloud',
+								host: record.container.dockermachine.cloud[i].host,
+								port: record.container.dockermachine.cloud[i].port,
+								config: record.container.dockermachine.cloud[i].config,
+								certificates: []
+							});
+						} else {
+							emptyCloudCounter++;
+						}
+					}
+					if (emptyCloudCounter === Object.keys(record.container.dockermachine.cloud).length) { //all cloud drivers and empty, allow user to add one
+						currentScope.allowAddDriver['cloud'] = {
+							'label': 'dockermachine - cloud',
+							'allow': true
+						};
+					}
 				}
 			}
-		}
 
-		if (record.container.docker) {
-			if (Object.keys(record.container.docker.socket).length === 0) {
-				currentScope.allowAddDriver['socket'] = {
-					'label': 'docker - socket',
-					'allow': true
-				};
-			} else {
-				currentScope.platforms.push({
-					label: 'docker - socket',
-					uiType: 'socket',
-					socketPath: record.container.docker.socket.socketPath
-				});
+			if (record.container.docker) {
+				if (Object.keys(record.container.docker.socket).length === 0) {
+					currentScope.allowAddDriver['socket'] = {
+						'label': 'docker - socket',
+						'allow': true
+					};
+				} else {
+					currentScope.platforms.push({
+						label: 'docker - socket',
+						uiType: 'socket',
+						socketPath: record.container.docker.socket.socketPath
+					});
+				}
 			}
 		}
 

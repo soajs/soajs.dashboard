@@ -1223,7 +1223,14 @@ module.exports = {
                 "l": "Add Tenant Application External Key",
                 "group": "Tenant Application"
             },
-            "commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo']
+            "commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo'],
+            "env": {
+                "source": ['body.env'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
         },
         "/tenant/application/key/ext/update": {
             _apiInfo: {
