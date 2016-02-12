@@ -92,6 +92,14 @@ var mtTranslation = {
 		"ENG": "Edit Basic Tenant Information",
 		"FRA": "Modifie Basic Tenant Information"
 	},
+	"environment": {
+		"ENG": "Environment",
+		"FRA": "Environment"
+	},
+	"selectEnvironment": {
+		"ENG": "Select Environment",
+		"FRA": "Select Environment"
+	},
 	//controller
 	"client": {
 		"ENG": "Client",

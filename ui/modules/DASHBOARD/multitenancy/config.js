@@ -367,6 +367,14 @@ var tenantConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'environment',
+					'label': translation.environment[LANG],
+					'type': 'select',
+					'value': [],
+					'tooltip': translation.selectEnvironment[LANG],
+					'required': true
+				},
+				{
 					'name': 'expDate',
 					'label': translation.expiryDate[LANG],
 					'type': 'date-picker',

@@ -8,24 +8,28 @@ var env_template = {
 	"deployer": {
 		"type": "",
 		"selected": "",
-		"docker": {
-			"socket": {
-				"socketPath": "/var/run/docker.sock"
-			},
-			"machine": {
+		"container":{
+			"dockermachine":{
 				"local": {
 					"host": "192.168.99.101",
-					"port": 2376
+					"port": 2376,
+					"config":{
+						"HostConfig": {
+							"NetworkMode": "soajsnet"
+						}
+					}
 				},
-				"cloud": {
-					"joyent": {
-						"host": "us-east-1.docker.joyent.com",
-						"port": 2376
-					},
+				"cloud":{
 					"rackspace": {
 						"host": "docker.rackspace.com",
 						"port": 2376
+						//additional info goes here like instances, credentials or keys ....
 					}
+				}
+			},
+			"docker": {
+				"socket": {
+					"socketPath": "/var/run/docker.sock"
 				}
 			}
 		}
