@@ -5,10 +5,6 @@ var envTranslation ={
 		"ENG": "Registries",
 		"FRA": "Registries"
 	},
-	"deploy": {
-		"ENG": "Deploy",
-		"FRA": "Deploy"
-	},
 	"platforms": {
 		"ENG": "Platforms",
 		"FRA": "Platforms"
@@ -162,10 +158,6 @@ var envTranslation ={
 		"ENG": "Credentials",
 		"FRA": "Credentials"
 	},
-	"password": {
-		"ENG": "password",
-		"FRA": "password"
-	},
 	"admin": {
 		"ENG": "admin",
 		"FRA": "admin"
@@ -263,7 +255,7 @@ var envTranslation ={
 		"ENG": "Advanced Mode",
 		"FRA": "Advanced Mode"
 	},
-	"errorInvalidJsonObject": {
+	"errorInvalidLoggerJsonObject": {
 		"ENG": "Error: Invalid logger Json object",
 		"FRA": "Error: Invalid logger Json object"
 	},
@@ -274,10 +266,6 @@ var envTranslation ={
 	"errorInvalidJsonObjectProvidedDeployerConfiguration": {
 		"ENG": "Error: invalid Json object provided for Deployer Configuration",
 		"FRA": "Error: invalid Json object provided for Deployer Configuration"
-	},
-	"environment": {
-		"ENG": "Environment",
-		"FRA": "Environment"
 	},
 	"updated": {
 		"ENG": "Updated",
@@ -360,10 +348,6 @@ var envTranslation ={
 	"cloud": {
 		"ENG": "cloud",
 		"FRA": "cloud"
-	},
-	"socketLowercase": {
-		"ENG": "socket",
-		"FRA": "socket"
 	},
 	"uploadCertificates": {
 		"ENG": "Upload Certificates",
@@ -571,10 +555,6 @@ var envTranslation ={
 		"ENG": "Host",
 		"FRA": "Host"
 	},
-	"port": {
-		"ENG": "Port",
-		"FRA": "Port"
-	},
 	"cloudProvider": {
 		"ENG": "Cloud Provider",
 		"FRA": "Cloud Provider"
@@ -690,10 +670,6 @@ var envTranslation ={
 	"specifyAlgorithmPasswordMinimumCharacters": {
 		"ENG": "Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on",
 		"FRA": "Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on"
-	},
-	"configuration": {
-		"ENG": "Configuration",
-		"FRA": "Configuration"
 	},
 	"specifyLoggerConfiguration": {
 		"ENG": "Specify the logger configuration to use. More info on",
@@ -1142,10 +1118,6 @@ var envTranslation ={
 	"theFollowingConfigurationModifiedEveryTimeReloadRegistryMaintenanceOperation": {
 		"ENG": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service.",
 		"FRA": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service."
-	},
-	"key": {
-		"ENG": "Key",
-		"FRA": "Key"
 	},
 	"restartService": {
 		"ENG": "Restart Service",

@@ -130,6 +130,7 @@ var cmNav =[
 		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
+		'order': 100,
 		'scripts': ['modules/DEV/contentManagement/config.js', 'modules/DEV/contentManagement/controller.js', 'modules/DEV/contentManagement/services/contentManagement.js'],
 		'ancestor': [translation.home[LANG]]
 	}

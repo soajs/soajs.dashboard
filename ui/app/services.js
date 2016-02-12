@@ -67,7 +67,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			json: true
 		};
 
-		if(opts.proxy){
+		if (opts.proxy) {
 			config.params['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
 		}
 
@@ -132,49 +132,55 @@ soajsApp.service('isUserLoggedIn', ['$cookieStore', function ($cookieStore) {
 
 soajsApp.service('checkApiHasAccess', function () {
 
-	return function (aclObject, serviceName, routePath, userGroups) {
-
-		for(var envCode in aclObject){
-			// get acl of the service name
+	return function (aclObject, serviceName, routePath, userGroups, envCode) {
+		envCode = envCode.toLowerCase();
+		// get acl of the service name
+		if (aclObject[envCode]) {
 			var system = aclObject[envCode][serviceName];
+			if (!system) {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
 
-			var api = (system && system.apis ? system.apis[routePath] : null);
+		var api = (system && system.apis ? system.apis[routePath] : null);
 
-			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
-				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
-					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
-						api = system.apisRegExp[jj];
-					}
+		if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+			for (var jj = 0; jj < system.apisRegExp.length; jj++) {
+				if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
+					api = system.apisRegExp[jj];
 				}
 			}
-			//return true;
-			var apiRes = null;
-			if (system && system.access) {
-				if (system.access instanceof Array) {
-					var checkAPI = false;
-					if (userGroups) {
-						for (var ii = 0; ii < userGroups.length; ii++) {
-							if (system.access.indexOf(userGroups[ii]) !== -1) {
-								checkAPI = true;
-							}
+		}
+		//return true;
+		var apiRes = null;
+		if (system && system.access) {
+			if (system.access instanceof Array) {
+				var checkAPI = false;
+				if (userGroups) {
+					for (var ii = 0; ii < userGroups.length; ii++) {
+						if (system.access.indexOf(userGroups[ii]) !== -1) {
+							checkAPI = true;
 						}
 					}
-					if (!checkAPI) {
-						return false;
-					}
 				}
-
-				apiRes = api_checkPermission(system, userGroups, api);
-				return (apiRes) ? true : false;
+				if (!checkAPI) {
+					return false;
+				}
 			}
 
-			if (api || (system && (system.apisPermission === 'restricted'))) {
-				apiRes = api_checkPermission(system, userGroups, api);
-				return (apiRes) ? true : false;
-			}
-			else {
-				return true;
-			}
+			apiRes = api_checkPermission(system, userGroups, api);
+			return (apiRes) ? true : false;
+		}
+
+		if (api || (system && (system.apisPermission === 'restricted'))) {
+			apiRes = api_checkPermission(system, userGroups, api);
+			return (apiRes) ? true : false;
+		}
+		else {
+			return true;
 		}
 
 		function api_checkPermission(system, userGroups, api) {
@@ -215,7 +221,6 @@ soajsApp.service('checkApiHasAccess', function () {
 			}
 		}
 	}
-
 });
 
 soajsApp.service("injectFiles", function () {

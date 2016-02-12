@@ -154,10 +154,6 @@ var srTranslation = {
 		"ENG": "In case of a timeout, set the number of trial attempts",
 		"FRA": "In case of a timeout, set the number of trial attempts"
 	},
-	"extKeyRequired": {
-		"ENG": "External Key Required",
-		"FRA": "External Key Required"
-	},
 	"formExtKeyRequiredTooltip": {
 		"ENG": "If this service requires an external key; ie if it is multi-tenant",
 		"FRA": "If this service requires an external key; ie if it is multi-tenant"
@@ -173,10 +169,6 @@ var srTranslation = {
 	"daemonName": {
 		"ENG": "Daemon Name",
 		"FRA": "Daemon Name"
-	},
-	"port": {
-		"ENG": "Port",
-		"FRA": "Port"
 	},
 	"daemonPort": {
 		"ENG": "Daemon Port",
@@ -261,10 +253,6 @@ var srTranslation = {
 		"FRA": "For sequential processing, specify the order of execution in the text boxes that appear next to job names"
 	},
 	//list
-	"deploy": {
-		"ENG": "Deploy",
-		"FRA": "Deploy"
-	},
 	"editService": {
 		"ENG": "Edit Service",
 		"FRA": "Edit Service"

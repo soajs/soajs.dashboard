@@ -1,9 +1,5 @@
 "use strict";
 var accTranslation = {
-	"login": {
-		"ENG": "Login",
-		"FRA": "Login"
-	},
 	"myAccount": {
 		"ENG": "My Account",
 		"FRA": "My Account"
@@ -144,7 +140,7 @@ var accTranslation = {
 	"register": {
 		"ENG": "Register",
 		"FRA": "Register"
-	},
+	}
 };
 
 for (var attrname in accTranslation) {

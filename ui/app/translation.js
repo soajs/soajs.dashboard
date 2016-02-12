@@ -213,10 +213,6 @@ var translation = {
 		"ENG": "Confirm oAuth user password.",
 		"FRA": "Confirm oAuth user password."
 	},
-	"formOathPasswordPlaceholder": {
-		"ENG": "password",
-		"FRA": "password"
-	},
 	"formOathPasswordTooltip": {
 		"ENG": "Enter oAuth user password.",
 		"FRA": "Enter oAuth user password."
@@ -482,10 +478,6 @@ var translation = {
 		"ENG": "Multi-Tenancy",
 		"FRA": "Multi-Tenancy"
 	},
-	"addUppercase": {
-		"ENG": "Add",
-		"FRA": "Add"
-	},
 	"ok": {
 		"ENG": "OK",
 		"FRA": "OK"
@@ -493,6 +485,22 @@ var translation = {
 	"awareness": {
 		"ENG": "Awareness",
 		"FRA": "Awareness"
+	},
+	"deploy": {
+		"ENG": "Deploy",
+		"FRA": "Deploy"
+	},
+	"removeAPI": {
+		"ENG": "Remove API",
+		"FRA": "Remove API"
+	},
+	"extKeyRequired": {
+		"ENG": "External Key Required",
+		"FRA": "External Key Required"
+	},
+	"port": {
+		"ENG": "Port",
+		"FRA": "Port"
 	},
 	//api-permission
 	"restrictAccessSelectedApis": {
@@ -1461,9 +1469,21 @@ var errorCodes = {
 			"ENG": "You are not allowed to delete a driver that is currently selected",
 			"FRA": "You are not allowed to delete a driver that is currently selected"
 		},
+		"738": {
+			"ENG": "Unable to change deployer type",
+			"FRA": "Unable to change deployer type"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
+		},
+		"900": {
+			"ENG": "Failed to logout.",
+			"FRA": "Failed to logout."
+		},
+		"901": {
+			"ENG": "Failed to logout.",
+			"FRA": "Failed to logout."
 		}
 	}
 };

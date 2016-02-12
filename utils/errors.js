@@ -154,7 +154,10 @@ var errors = {
 	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
 
-	"750": "Invalid Request."
+	"750": "Invalid Request.",
+
+	901: "Error Logging out from environments",
+	902: "Error Logging in to environments"
 };
 
 

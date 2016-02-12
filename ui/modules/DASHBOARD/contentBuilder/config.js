@@ -455,7 +455,7 @@ var cbConfig = {
 						'name': 'method',
 						'label': translation.apiMethod[LANG],
 						'type': 'radio',
-						'value': [{'v': "get", "l": translation.getUppercase[LANG]}, {
+						'value': [{'v': "get", "l": translation.get[LANG]}, {
 							'v': "post",
 							"l": translation.post[LANG]
 						}, {'v': "put", "l": translation.put[LANG]}, {'v': "del", "l": translation.del[LANG]}],
@@ -469,7 +469,7 @@ var cbConfig = {
 						'value': [
 							{'v': "list", "l": translation.list[LANG]},
 							{'v': "get", "l": translation.getLowercase[LANG]},
-							{'v': "delete", "l": translation.delete[LANG]},
+							{'v': "delete", "l": translation.deleteLowercase[LANG]},
 							{'v': "add", "l": translation.add[LANG]},
 							{'v': "update", "l": translation.update[LANG]}
 						],

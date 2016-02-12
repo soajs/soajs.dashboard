@@ -340,9 +340,20 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					}
 					else {
 						$localStorage.acl_access = {};
-						$localStorage.acl_access['dashboard'] = response.acl;
+						var se = Object.keys(response.acl);
+						if(response.acl[se[0]].access || response.acl[se[0]].apis || response.acl[se[0]].apisRegExp || response.acl[se[0]].apisPermission){
+							for(var i in response.environments){
+								$localStorage.acl_access[response.environments[i].code.toLowerCase()] = response.acl;
+							}
+						}
+						else{
+							$localStorage.acl_access = response.acl;
+						}
 						$localStorage.environments = response.environments;
-						$cookieStore.put("soajs_envauth", response.envauth);
+						if(response.envauth){
+							$cookieStore.put("soajs_envauth", response.envauth);
+						}
+
 						response.environments.forEach(function(oneEnv){
 							if(oneEnv.code.toLowerCase() === 'dashboard'){
 								$cookieStore.put("myEnv", oneEnv);
