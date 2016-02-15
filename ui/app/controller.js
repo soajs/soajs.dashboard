@@ -188,12 +188,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							$scope.switchEnvironment($cookieStore.get('myEnv'));
 						}
 						else {
-							if ($scope.leftMenu.environments.length === 0) {
-								console.log('Error: environments list is empty');
-							}
-							else {
-								$scope.switchEnvironment($scope.leftMenu.environments[0]);
-							}
+							$scope.switchEnvironment($scope.leftMenu.environments[0]);
 						}
 					}
 					break;
