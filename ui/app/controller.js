@@ -157,6 +157,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.go(link.entries[0].url);
 		};
 
+		$scope.checkAuthEnvCookie = function(){
+			return $cookieStore.get("soajs_envauth") || null;
+		};
+
 		$scope.reRenderMenu = function (pillarName) {
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments = [];
