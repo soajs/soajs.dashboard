@@ -1485,6 +1485,10 @@ var errorCodes = {
 		902: {
 			"ENG": "Error Logging in to environments.",
 			"FRA": "Error Logging in to environments."
+		},
+		"903": {
+			"ENG": "You do not have access to this environment.",
+			"FRA": "You do not have access to this environment."
 		}
 	}
 };
