@@ -157,7 +157,8 @@ var errors = {
 	"750": "Invalid Request.",
 
 	901: "Error Logging out from environments",
-	902: "Error Logging in to environments"
+	902: "Error Logging in to environments",
+	903: "You do not have access to this environment %envCode%"
 };
 
 
