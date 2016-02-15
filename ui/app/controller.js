@@ -196,7 +196,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (envRecord) {
 				$scope.currentSelectedEnvironment = envRecord.code;
 			}
-
 			if (!$cookieStore.get('myEnv') || $cookieStore.get('myEnv').code !== envRecord.code) {
 				$cookieStore.put('myEnv', envRecord);
 
@@ -232,6 +231,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if ($scope.leftMenu) {
 				$scope.leftMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			}
+
 			$scope.mainMenu.links.forEach(function (oneLink) {
 				for (var i = 0; i < oneLink.entries.length; i++) {
 					if (oneLink.entries[i].url === $scope.mainMenu.selectedMenu) {
@@ -241,6 +241,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					}
 				}
 			});
+
 		};
 
 		$scope.buildNavigation = function () {
@@ -303,18 +304,18 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.dashboard = [];
 
 			function doPermissions(navigation) {
-				var a = true;
+				var hasAccess = true;
 				var p = {};
 				for (var i = 0; i < navigation.length; i++) {
-					a = true;
+					hasAccess = true;
 					if (navigation[i].hasOwnProperty('checkPermission')) {
 						p = navigation[i].checkPermission;
 						if (p.service && p.route) {
-							a = $scope.buildPermittedOperation(p.service, p.route);
+							hasAccess = $scope.buildPermittedOperation(p.service, p.route);
 						}
 					}
 
-					if (navigation[i].hasOwnProperty('private') || (a)) {
+					if (hasAccess) {
 						$scope.dashboard.push(navigation[i].id);
 						if (navigation[i].mainMenu) {
 							var found = false;
@@ -330,7 +331,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 								$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
 								found = $scope.mainMenu.links.length - 1;
 							}
-
 							$scope.mainMenu.links[found].entries.push(navigation[i]);
 						}
 
@@ -455,7 +455,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
-				var envCode = ($scope.pillar === 'operate') ? $cookieStore.get('myEnv').code : "DASHBOARD";
+				var envCode;
+				if (serviceName.toLowerCase() === 'dashboard') {
+					envCode = 'DASHBOARD';
+				}
+				else {
+					envCode = ($scope.pillar === 'operate') ? $cookieStore.get('myEnv').code : "DASHBOARD";
+				}
 				access = checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode);
 			}
 			return access;
