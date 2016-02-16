@@ -154,6 +154,8 @@ var errors = {
 	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
 
+	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
+
 	"750": "Invalid Request.",
 
 	901: "Error Logging out from environments",

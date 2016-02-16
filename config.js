@@ -1395,7 +1395,14 @@ module.exports = {
                 "l": "Add Tenant Application External Key",
                 "group": "Tenant Settings"
             },
-            "commonFields": ['appId', 'key', 'expDate', 'device', 'geo']
+            "commonFields": ['appId', 'key', 'expDate', 'device', 'geo'],
+            "env": {
+                "source": ['body.env'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
         },
         "/settings/tenant/application/key/ext/update": {
             _apiInfo: {

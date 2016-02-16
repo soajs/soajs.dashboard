@@ -1,6 +1,6 @@
 "use strict";
 var multiTenantApp = soajsApp.components;
-multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, injectFiles) {
+multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', '$cookieStore', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, $cookieStore, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -23,6 +23,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			'tenants': []
 		}
 	];
+
+	$scope.currentEnv = $cookieStore.get('myEnv').code.toLowerCase();
 
 	$scope.mt = {};
 	$scope.mt.displayAlert = function (type, msg, id, isCode, service, orgMesg) {
@@ -1078,13 +1080,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		$scope.availablePackages.forEach (function (onePackage) {
 			if (onePackage.pckCode === packageCode) {
 				if (onePackage.acl && typeof (onePackage.acl) === 'object') {
-					if (onePackage.acl['dashboard'] && (!onePackage.acl['dashboard'].apis && !onePackage.acl['dashboard'].apisRegExp && !onePackage.acl['dashboard'].apisPermission)) {
+					if (onePackage.acl[$scope.currentEnv] && (!onePackage.acl[$scope.currentEnv].apis && !onePackage.acl[$scope.currentEnv].apisRegExp && !onePackage.acl[$scope.currentEnv].apisPermission)) {
 						//new acl
 						formConfig.entries.forEach(function(oneFormField) {
 							if(oneFormField.name === 'environment') {
 								var list = [];
 								Object.keys(onePackage.acl).forEach (function (envCode) {
-									list.push({"v": envCode, "l": envCode, "selected": (envCode === 'dashboard')});
+									list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
 								});
 								oneFormField.value = list;
 							}
@@ -1095,7 +1097,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							if(oneFormField.name === 'environment') {
 								var list = [];
 								$scope.availableEnv.forEach(function(envCode) {
-									list.push({"v": envCode, "l": envCode, "selected": (envCode === 'dashboard')});
+									list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
 								});
 								oneFormField.value = list;
 							}

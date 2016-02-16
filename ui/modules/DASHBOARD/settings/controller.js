@@ -1,6 +1,6 @@
 "use strict";
 var settingsApp = soajsApp.components;
-settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $compile, ngDataApi, injectFiles) {
+settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', '$cookieStore', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $compile, ngDataApi, $cookieStore, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -9,6 +9,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.oAuthUsers = {};
 	$scope.oAuthUsers.list = [];
 	$scope.availableEnv = [];
+	$scope.packagesAcl = {};
+	$scope.currentEnv = $cookieStore.get('myEnv').code.toLowerCase();
 
 	$scope.getTenant = function (first) {
 		getSendDataFromServer($scope, ngDataApi, {
@@ -26,14 +28,17 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					} else {
-						$scope.markTenantDashboardAccess(response.tenant, tenantDbKeys, function () {
-							$scope.tenant = response.tenant;
+						$scope.markTenantDashboardAccess(response.tenant, tenantDbKeys, function (tenant) {
+							$scope.tenant = tenant;
 							response.environments.forEach(function (oneEnv) {
 								$scope.availableEnv.push(oneEnv.code.toLowerCase());
 							});
 							if (first && first == true) {
 								$scope.listOauthUsers();
 							}
+
+							var counter = 0;
+							$scope.getPackageAcl($scope.tenant.applications, counter);
 						});
 					}
 				});
@@ -52,14 +57,51 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								oneTenant.applications[j].dashboardAccess = true;
 								oneTenant.applications[j].keys[k].dashboardAccess = true;
 								oneTenant.applications[j].keys[k].extKeys[l].dashboardAccess = true;
-								return callback();
+								return callback(oneTenant);
 							}
 						}
 					}
 				}
 			}
 		}
-		return callback();
+		return callback(oneTenant);
+	};
+
+	$scope.getPackageAcl = function (apps, counter) {
+		var tenantApp = apps[counter];
+
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/product/packages/get",
+			"params": {
+				"productCode": tenantApp.product,
+				"packageCode": tenantApp.package
+			}
+		}, function (error, packageInfo) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+				$scope.packagesAcl[tenantApp.package]= {
+					acl: packageInfo.acl,
+					type: ''
+				};
+				//check if old or new acl and mark it
+				if (packageInfo.acl && typeof (packageInfo.acl) === 'object') {
+					if (packageInfo.acl[$scope.currentEnv] && (!packageInfo.acl[$scope.currentEnv].apis && !packageInfo.acl[$scope.currentEnv].apisRegExp && !packageInfo.acl[$scope.currentEnv].apisPermission)) {
+						$scope.packagesAcl[tenantApp.package]['type'] = 'new';
+					} else {
+						$scope.packagesAcl[tenantApp.package]['type'] = 'old';
+					}
+				} else {
+					$scope.packagesAcl[tenantApp.package] = null;
+				}
+
+				counter++;
+				if (counter !== apps.length) {
+					$scope.getPackageAcl(apps, counter);
+				}
+			}
+		});
 	};
 
 	$scope.clearOauth = function () {
@@ -460,10 +502,33 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.addNewExtKey = function (appId, key) {
+	$scope.addNewExtKey = function (appId, key, packageCode) {
+		var formConfig = angular.copy(settingsConfig.form.extKey);
+		if ($scope.packagesAcl[packageCode] !== null) {
+			formConfig.entries.forEach(function (oneFormField) {
+				if(oneFormField.name === 'environment') {
+					var list = [];
+
+					if ($scope.packagesAcl[packageCode].type === 'new') {
+						//new acl, display envs available in acl only
+						Object.keys($scope.packagesAcl[packageCode].acl).forEach(function(envCode) {
+							list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
+						});
+					} else {
+						//old acl, display available envs
+						$scope.availableEnv.forEach(function(envCode) {
+							list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
+						});
+					}
+
+					oneFormField.value = list;
+				}
+			});
+		}
+		//if package has emtpy acl, nothing will be displayed in environments dropdown
 		var options = {
 			timeout: $timeout,
-			form: settingsConfig.form.extKey,
+			form: formConfig,
 			name: 'addExtKey',
 			label: translation.addNewExternalKey[LANG],
 			sub: true,
@@ -502,9 +567,9 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						var postData = {
 							'expDate': formData.expDate,
 							'device': deviceObj,
-							'geo': geoObj
+							'geo': geoObj,
+							'env': formData.environment
 						};
-
 
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
@@ -548,6 +613,13 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		}
 
 		var formConfig = angular.copy(settingsConfig.form.extKey);
+		for (var i = 0; i < formConfig.entries.length; i++) {
+			if (formConfig.entries[i].name === 'environment') {
+				formConfig.entries.splice(i, 1);
+				break;
+			}
+		}
+
 		formConfig.entries.unshift({
 			'name': 'extKey',
 			'label': translation.externalKeyValue[LANG],
