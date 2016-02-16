@@ -1473,6 +1473,10 @@ var errorCodes = {
 			"ENG": "Unable to change deployer type",
 			"FRA": "Unable to change deployer type"
 		},
+		"740": {
+			"ENG": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
+			"FRA": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
