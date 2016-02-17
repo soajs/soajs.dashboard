@@ -57,11 +57,18 @@ var deployer = {
                 "Tty": false,
                 "Hostname": containerName,
                 "HostConfig": {
-	                "NetworkMode": deployerConfig.config.HostConfig.NetworkMode,
 	                "PortBindings": port,
                     "PublishAllPorts": true
                 }
             };
+
+            if (deployerConfig.config.HostConfig.NetworkMode) {
+                options.HostConfig.NetworkMode = deployerConfig.config.HostConfig.NetworkMode;
+            }
+
+            if (deployerConfig.config.MachineName) {
+                options.Env.concat("constraint:node==" + deployerConfig.config.MachineName);
+            }
 
 	        if(links && Array.isArray(links) && links.length > 0){
 		        options.HostConfig.Links = links;
