@@ -208,7 +208,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
             //generating random groups for testing purposes only////////////////////
             //will be removed when group property is added to awarenessStat
-            var coreServices = ['dashboard', 'urac', 'oauth', 'proxy'];
+            var coreServices = ['dashboard', 'urac', 'oauth', 'proxy', 'gc_articles'];
             var examplesServices = ['example01', 'example02', 'example03', 'example04'];
             for (var hostName in renderedHosts) {
                 if (coreServices.indexOf(hostName) !== -1) {
@@ -223,11 +223,17 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             //filling in groups object with services based on group name////////////
             currentScope.groups = {};
             for (var hostName in renderedHosts) {
+                if (!renderedHosts[hostName].group) {
+                    renderedHosts[hostname].group = "NO_GROUP";
+                }
                 if (currentScope.groups[renderedHosts[hostName].group]) {
-                    currentScope.groups[renderedHosts[hostName].group].push(hostName);
+                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
                 } else {
-                    currentScope.groups[renderedHosts[hostName].group] = [];
-                    currentScope.groups[renderedHosts[hostName].group].push(hostName);
+                    currentScope.groups[renderedHosts[hostName].group] = {
+                        services: [],
+                        showContent: true
+                    };
+                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
                 }
             }
             console.log (currentScope.groups);

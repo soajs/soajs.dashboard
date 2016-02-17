@@ -180,10 +180,10 @@
 	            <!--</div>-->
 	            <!--<br/>-->
 	        <!--</div>-->
-			<div ng-repeat="(groupName, groupServices) in groups">
-				<fieldset>
-					<legend>{{groupName}}</legend>
-					<div ng-repeat="service in groupServices">
+			<div ng-repeat="(groupName, groupContent) in groups">
+				<fieldset ng-if="groupName !== 'NO_GROUP'" ng-style="{'border-color': '#337ab7', 'border-width': '2px'}">
+					<legend ng-if="groupName !== 'NO_GROUP'"><a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}</legend>
+					<div ng-repeat="service in groupContent.services" ng-if="groupContent.showContent">
 						<div ng-if="hosts[service].ips" class="serviceBox">
 							<div style="padding: 10px 0px 25px 5px;" ng-show="(hosts[service].waitMessage && hosts[service].waitMessage.message!=='')">
 								<alert type="{{hosts[service].waitMessage.type}}" close="hosts[service].waitMessage.close(hosts[service])" >{{hosts[service].waitMessage.message}}</alert>
@@ -266,6 +266,16 @@
 								</div>
 							</div>
 						</div><br>
+					</div>
+					<div class="entryBoxes entryBoxesGrid" ng-if="!groupContent.showContent">
+						<div class="entryBox blueBox" ng-repeat="service in groupContent.services" ng-style="{'width': '20%', 'text-align': 'center'}">
+							<!--<b>{{service}}</b>&nbsp;&nbsp;-->
+							<div style="width: 100%;" class="head {{hosts[service].color}}">
+								<span class="icon" ng-if="hosts[service].type === 'service'" ng-class="hosts[service].healthy===true? 'icon-smile2': 'icon-sad2'"></span>
+								<span class="icon icon-evil2" ng-if="hosts[service].type === 'daemon'"></span>
+								&nbsp;{{hosts[service].name}}&nbsp;port:&nbsp;{{hosts[service].port}}
+							</div>
+						</div>
 					</div>
 				</fieldset>
 			</div>

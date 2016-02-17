@@ -18,6 +18,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 		}
 	};
 
+	$scope.showHideGroupContent = function (groupName) {
+		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
+	};
+
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.waitMessage.type = type;
 		$scope.waitMessage.message = msg;

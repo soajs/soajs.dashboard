@@ -16,7 +16,8 @@ var env_template = {
 					"config":{
 						"HostConfig": {
 							"NetworkMode": "soajsnet"
-						}
+						},
+						"MachineName": ""
 					}
 				},
 				"cloud":{
