@@ -1717,6 +1717,15 @@ module.exports = {
                     "minimum": 1
                 }
             },
+	        "version": {
+		        "required": true,
+		        "source": ["body.version"],
+		        "default": 1,
+		        "validation": {
+			        "type": "number",
+			        "minimum": 1
+		        }
+	        },
             "variables": {
                 "required": false,
                 "source": ['body.variables'],
@@ -1740,6 +1749,15 @@ module.exports = {
                     "type": "string"
                 }
             },
+	        "version": {
+		        "required": true,
+		        "source": ["body.version"],
+		        "default": 1,
+		        "validation": {
+			        "type": "number",
+			        "minimum": 1
+		        }
+	        },
             "gcName": {
                 "required": false,
                 "source": ['body.gcName'],
