@@ -206,6 +206,32 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }
 
+            //generating random groups for testing purposes only////////////////////
+            //will be removed when group property is added to awarenessStat
+            var coreServices = ['dashboard', 'urac', 'oauth', 'proxy'];
+            var examplesServices = ['example01', 'example02', 'example03', 'example04'];
+            for (var hostName in renderedHosts) {
+                if (coreServices.indexOf(hostName) !== -1) {
+                    renderedHosts[hostName].group = 'SOAJS Core Services';
+                } else if (examplesServices.indexOf(hostName) !== -1) {
+                    renderedHosts[hostName].group = 'Examples Group';
+                }
+            }
+            console.log (renderedHosts);
+            ////////////////////////////////////////////////////////////////////////
+
+            //filling in groups object with services based on group name////////////
+            currentScope.groups = {};
+            for (var hostName in renderedHosts) {
+                if (currentScope.groups[renderedHosts[hostName].group]) {
+                    currentScope.groups[renderedHosts[hostName].group].push(hostName);
+                } else {
+                    currentScope.groups[renderedHosts[hostName].group] = [];
+                    currentScope.groups[renderedHosts[hostName].group].push(hostName);
+                }
+            }
+            console.log (currentScope.groups);
+            ////////////////////////////////////////////////////////////////////////
         }
     }
 

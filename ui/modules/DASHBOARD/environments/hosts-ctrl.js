@@ -7,6 +7,8 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
+	$scope.groups = {};
+
 	$scope.waitMessage = {
 		type: "",
 		message: "",
