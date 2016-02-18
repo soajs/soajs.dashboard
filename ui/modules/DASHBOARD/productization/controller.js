@@ -222,9 +222,6 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
 						};
 
-						console.log (postData);
-						console.log (formData._TTL);
-
 						postData.acl = {};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
