@@ -209,7 +209,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             //generating random groups for testing purposes only////////////////////
             //will be removed when group property is added to awarenessStat
             var coreServices = ['dashboard', 'urac', 'oauth', 'proxy', 'gc_articles'];
-            var examplesServices = ['example01', 'example02', 'example03', 'example04'];
+            var examplesServices = ['example01', 'example02'];//, 'example03', 'example04'];
             for (var hostName in renderedHosts) {
                 if (coreServices.indexOf(hostName) !== -1) {
                     renderedHosts[hostName].group = 'SOAJS Core Services';
@@ -224,7 +224,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             currentScope.groups = {};
             for (var hostName in renderedHosts) {
                 if (!renderedHosts[hostName].group) {
-                    renderedHosts[hostname].group = "NO_GROUP";
+                    renderedHosts[hostName].group = "Misc. Services/Daemons";
                 }
                 if (currentScope.groups[renderedHosts[hostName].group]) {
                     currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
@@ -782,58 +782,78 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG]});
 	            }
 
-                var entry = {
-                    'name': 'service',
-                    'label': translation.serviceName[LANG],
-                    'type': 'select',
-                    'value': servicesList,
-                    'fieldMsg': translation.selectServiceFromListAbove[LANG],
-                    'required': true
-                };
-                var hostForm = angular.copy(environmentsConfig.form.host);
-                hostForm.entries.unshift(entry);
+                //call list daemons and push available daemons to servicesList
+                getSendDataFromServer(currentScope, ngDataApi, {
+                    "method": "send",
+                    "routeName": "/dashboard/daemons/list"
+                }, function (error, daemons) {
+                    if (error) {
+                        currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
+                    } else {
+                        daemons.forEach(function (oneDaemon) {
+                            servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
 
-                hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
-                hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.profile);
+                            var daemonObj = {
+                                "name": oneDaemon.name,
+                                "port": oneDaemon.port
+                            };
+                            postServiceList.push(daemonObj);
+                        });
 
-                var options = {
-                    timeout: $timeout,
-                    form: hostForm,
-                    name: 'createHost',
-                    label: translation.createNewServiceHost[LANG],
-                    actions: [
-                        {
-                            'type': 'submit',
-                            'label': translation.submit[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                var text = "<h2>" + translation.deployingNewHostFor[LANG] + " " + formData.service + "</h2>";
-                                text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                                jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                overlay.show();
+                        var entry = {
+                            'name': 'service',
+                            'label': translation.serviceName[LANG],
+                            'type': 'select',
+                            'value': servicesList,
+                            'fieldMsg': translation.selectServiceFromListAbove[LANG],
+                            'required': true
+                        };
+                        var hostForm = angular.copy(environmentsConfig.form.host);
+                        hostForm.entries.unshift(entry);
 
-                                var max = formData.number;
-                                if (formData.service === 'controller') {
-                                    newController(formData, max);
+                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
+                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.profile);
+
+                        var options = {
+                            timeout: $timeout,
+                            form: hostForm,
+                            name: 'createHost',
+                            label: translation.createNewServiceHost[LANG],
+                            actions: [
+                                {
+                                    'type': 'submit',
+                                    'label': translation.submit[LANG],
+                                    'btn': 'primary',
+                                    'action': function (formData) {
+                                        var text = "<h2>" + translation.deployingNewHostFor[LANG] + " " + formData.service + "</h2>";
+                                        text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
+                                        jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+                                        jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+                                        overlay.show();
+
+                                        var max = formData.number;
+                                        if (formData.service === 'controller') {
+                                            newController(formData, max);
+                                        }
+                                        else {
+                                            newService(formData, max);
+                                        }
+                                    }
+                                },
+                                {
+                                    'type': 'reset',
+                                    'label': translation.cancel[LANG],
+                                    'btn': 'danger',
+                                    'action': function () {
+                                        currentScope.modalInstance.dismiss('cancel');
+                                        currentScope.form.formData = {};
+                                    }
                                 }
-                                else {
-                                    newService(formData, max);
-                                }
-                            }
-                        },
-                        {
-                            'type': 'reset',
-                            'label': translation.cancel[LANG],
-                            'btn': 'danger',
-                            'action': function () {
-                                currentScope.modalInstance.dismiss('cancel');
-                                currentScope.form.formData = {};
-                            }
-                        }
-                    ]
-                };
-                buildFormWithModal(currentScope, $modal, options);
+                            ]
+                        };
+                        buildFormWithModal(currentScope, $modal, options);
+                    }
+                });
             }
         });
 

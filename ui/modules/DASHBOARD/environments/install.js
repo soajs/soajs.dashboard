@@ -470,6 +470,10 @@ var envTranslation ={
 		"ENG": "New Service Host(s) Added.",
 		"FRA": "New Service Host(s) Added."
 	},
+	"unableRetrieveDaemonsHostsInformation": {
+		"ENG": "Unable to retrieve daemons hosts information.",
+		"FRA": "Unable to retrieve daemons hosts information."
+	},
 	//deploy
 	"deployEnvironment": {
 		"ENG": "Deploy Environment",

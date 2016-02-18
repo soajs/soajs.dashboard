@@ -181,8 +181,8 @@
 	            <!--<br/>-->
 	        <!--</div>-->
 			<div ng-repeat="(groupName, groupContent) in groups">
-				<fieldset ng-if="groupName !== 'NO_GROUP'" ng-style="{'border-color': '#337ab7', 'border-width': '2px'}">
-					<legend ng-if="groupName !== 'NO_GROUP'"><a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}</legend>
+				<fieldset ng-style="{'border-color': '#337ab7', 'border-width': '2px'}">
+					<legend><a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}</legend>
 					<div ng-repeat="service in groupContent.services" ng-if="groupContent.showContent">
 						<div ng-if="hosts[service].ips" class="serviceBox">
 							<div style="padding: 10px 0px 25px 5px;" ng-show="(hosts[service].waitMessage && hosts[service].waitMessage.message!=='')">
@@ -223,7 +223,7 @@
 																	<span class="icon icon-stats-dots"></span>&nbsp;
 																</a>
 
-																<a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, oneIp)">
+																<a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, service, oneIp)">
 																	<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
 																</a>
 
