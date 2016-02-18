@@ -20,7 +20,7 @@
                         <a ng-if="access.platforms.update" href="" ng-click="editDriver(driver);">
                             <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
                         </a>
-                        <a href="" ng-click="uploadCerts(driver.label)">
+                        <a href="" ng-click="uploadCerts(driver.label)" ng-if="driver.uiType !== 'socket'">
                             <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                         </a>
                         <a href="" ng-click="selectDriver(driver.label)" ng-if="allowSelect">

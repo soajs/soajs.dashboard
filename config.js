@@ -683,37 +683,21 @@ module.exports = {
                 "source": ['body.local'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "host": { "type": "string", required: true },
-                    //    "port": {"type":"number", required: true},
-                    //    "config": {"type":"object", required: false},
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             },
             "cloud": {
                 "source": ['body.cloud'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "host": { "type": "string", required: true },
-                    //    "port": {"type":"number", required: true},
-                    //    "config": {"type":"object", required: false},
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             },
             "socket": {
                 "source": ['body.socket'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "socketPath": { "type": "string", required: true },
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             }
         },
@@ -741,37 +725,21 @@ module.exports = {
                 "source": ['body.local'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "host": { "type": "string", required: true },
-                    //    "port": {"type":"number", required: true},
-                    //    "config": {"type":"object", required: false},
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             },
             "cloud": {
                 "source": ['body.cloud'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "host": { "type": "string", required: true },
-                    //    "port": {"type":"number", required: true},
-                    //    "config": {"type":"object", required: false},
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             },
             "socket": {
                 "source": ['body.socket'],
                 "required": false,
                 "validation": {
-                    "type": "object",
-                    //"properties":{
-                    //    "socketPath": { "type": "string", required: true },
-                    //    "additionalProperties": false
-                    //}
+                    "type": "object"
                 }
             }
         },
@@ -940,7 +908,9 @@ module.exports = {
                 "required": true,
                 "validation": {
                     "type": "string",
-                    "format": "alphanumeric"
+                    "format": "alphanumeric",
+                    "minLength": 4,
+                    "maxLength": 6
                 }
             }
         },
