@@ -42,7 +42,7 @@
     "object-hash": "*",
     "bcrypt": "*",
     "formidable": "*",
-    "unzip": "*",
+    "unzip2": "*",
     "mkdirp": "*",
     "rimraf": "*",
     "request": "*",
