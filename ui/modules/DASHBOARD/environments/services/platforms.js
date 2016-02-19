@@ -133,7 +133,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							keyboard: false,
 							controller: function ($scope) {
 								fixBackDrop();
-								$scope.text = "<h4 style='text-align:center;'>" + translation.uploadingCertificates[LANG] + "</h4><p style='text-align:center;'" + translation.thisMightTakeFewMinutesPleaseWait[LANG] + "</p>";
+								$scope.text = "<h4 style='text-align:center;'>" + translation.uploadingCertificates[LANG] + "</h4><p style='text-align:center;'>" + translation.thisMightTakeFewMinutesPleaseWait[LANG] + "</p>";
 							}
 						});
 

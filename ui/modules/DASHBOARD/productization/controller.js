@@ -219,7 +219,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 							'code': formData.code,
 							'name': formData.name,
 							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
 						};
 
 						postData.acl = {};
