@@ -62,11 +62,11 @@ var deployer = {
                 }
             };
 
-            if (deployerConfig.config.HostConfig.NetworkMode) {
+            if (deployerConfig.config && deployerConfig.config.HostConfig && deployerConfig.config.HostConfig.NetworkMode) {
                 options.HostConfig.NetworkMode = deployerConfig.config.HostConfig.NetworkMode;
             }
 
-            if (deployerConfig.config.MachineName) {
+            if (deployerConfig.config && deployerConfig.config.MachineName) {
                 options.Env.concat("constraint:node==" + deployerConfig.config.MachineName);
             }
 
