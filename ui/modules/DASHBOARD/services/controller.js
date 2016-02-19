@@ -613,8 +613,8 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 
+		var count = 0;
 		if (daemon.jobs && Object.keys(daemon.jobs).length > 0) {
-			var count = 0;
 			var jobsArr = Object.keys(daemon.jobs);
 			for (var i = 0; i < jobsArr.length; i++) {
 				var clone = angular.copy(servicesConfig.form.oneJob);
