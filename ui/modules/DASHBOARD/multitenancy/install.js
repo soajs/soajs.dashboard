@@ -184,7 +184,7 @@ var multitenancyNav = [
 		'icon': 'tree',
 		'pillar': {
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'mainMenu': true,
@@ -201,7 +201,7 @@ var multitenancyNav = [
 		'tracker': true,
 		'pillar': {
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'scripts': ['modules/DASHBOARD/multitenancy/config.js', 'modules/DASHBOARD/multitenancy/controller.js', 'modules/DASHBOARD/multitenancy/services/multitenancy.js'],

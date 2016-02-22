@@ -36,7 +36,7 @@ var settingsNav = [
 		'mainMenu': true,
 		'pillar': {
 			'name': 'management',
-			'label': 'Product',
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'tracker': true,

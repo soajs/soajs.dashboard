@@ -806,6 +806,10 @@ var translation = {
 	"language": {
 		"ENG": "Language",
 		"FRA": "language"
+	},
+	"manage": {
+		"ENG": "Manage",
+		"FRA": "Manage"
 	}
 	
 };

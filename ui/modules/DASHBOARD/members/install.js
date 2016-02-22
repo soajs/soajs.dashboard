@@ -192,7 +192,7 @@ var membersNav = [
 		'mainMenu': true,
 		'pillar': {
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'tracker': true,
@@ -213,7 +213,7 @@ var membersNav = [
 		'mainMenu': true,
 		'pillar': {
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'tracker': true,
@@ -229,7 +229,7 @@ var membersNav = [
 		'tracker': true,
 		'pillar': {
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/acl.js'],

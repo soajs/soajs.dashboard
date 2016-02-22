@@ -145,7 +145,7 @@ var productizationNav =[
 		'icon': 'list',
 		'pillar':{
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'mainMenu': true,
@@ -162,7 +162,7 @@ var productizationNav =[
 		'tracker': true,
 		'pillar':{
 			'name': 'management',
-			'label': translation.product[LANG],
+			'label': translation.manage[LANG],
 			'position': 2
 		},
 		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
