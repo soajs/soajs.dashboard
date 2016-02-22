@@ -69,7 +69,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.getPackageAcl = function (apps, counter) {
 		var tenantApp = apps[counter];
-
+		tenantApp.showKeys = true;
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/product/packages/get",
