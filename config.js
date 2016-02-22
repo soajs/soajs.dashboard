@@ -5,6 +5,7 @@ var aclSchema = require("./schemas/acl");
 
 module.exports = {
     "serviceName": "dashboard",
+    serviceGroup: "SOAJS Core Services",
     "servicePort": 4003,
     "requestTimeout": 30,
     "requestTimeoutRenewal": 5,
@@ -1451,6 +1452,13 @@ module.exports = {
                 'validation': {
                     'type': 'array',
                     'items': {'type': 'string'}
+                }
+            },
+            'getGroupConfigs': {
+                'source': ['query.getGroupConfigs'],
+                'required': false,
+                'validation': {
+                    'type': 'boolean'
                 }
             }
         },

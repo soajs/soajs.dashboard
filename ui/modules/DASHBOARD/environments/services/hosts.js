@@ -155,6 +155,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					                renderedHosts[serviceName] = {
 						                'name': serviceName,
 						                'port': regServices[serviceName].port,
+                                        'group': regServices[serviceName].group,
 						                'ips': {},
 						                'color': 'red',
 						                'healthy': false,
@@ -206,38 +207,25 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }
 
-            //generating random groups for testing purposes only////////////////////
-            //will be removed when group property is added to awarenessStat
-            var coreServices = ['dashboard', 'urac', 'oauth', 'proxy', 'gc_articles'];
-            var examplesServices = ['example01', 'example02'];//, 'example03', 'example04'];
-            for (var hostName in renderedHosts) {
-                if (coreServices.indexOf(hostName) !== -1) {
-                    renderedHosts[hostName].group = 'SOAJS Core Services';
-                } else if (examplesServices.indexOf(hostName) !== -1) {
-                    renderedHosts[hostName].group = 'Examples Group';
-                }
-            }
-            console.log (renderedHosts);
-            ////////////////////////////////////////////////////////////////////////
+            buildGroupsDisplay(currentScope, renderedHosts);
+        }
+    }
 
-            //filling in groups object with services based on group name////////////
-            currentScope.groups = {};
-            for (var hostName in renderedHosts) {
-                if (!renderedHosts[hostName].group) {
-                    renderedHosts[hostName].group = "Misc. Services/Daemons";
-                }
-                if (currentScope.groups[renderedHosts[hostName].group]) {
-                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
-                } else {
-                    currentScope.groups[renderedHosts[hostName].group] = {
-                        services: [],
-                        showContent: true
-                    };
-                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
-                }
+    function buildGroupsDisplay (currentScope, renderedHosts) {
+        currentScope.groups = {};
+        for (var hostName in renderedHosts) {
+            if (!renderedHosts[hostName].group || renderedHosts[hostName].group === "service" || renderedHosts[hostName].group === "") {
+                renderedHosts[hostName].group = "Misc. Services/Daemons";
             }
-            console.log (currentScope.groups);
-            ////////////////////////////////////////////////////////////////////////
+            if (currentScope.groups[renderedHosts[hostName].group]) {
+                currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
+            } else {
+                currentScope.groups[renderedHosts[hostName].group] = {
+                    services: [],
+                    showContent: true
+                };
+                currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
+            }
         }
     }
 
@@ -758,23 +746,45 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
             }
             else {
+                var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+                var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
                 services.forEach(function (oneService) {
-                    servicesList.push({'v': oneService.name, 'l': oneService.name});
-                    var servObj = {
-                        "name": oneService.name,
-                        "image": oneService.image,
-                        "port": oneService.port
-                    };
-                    if(oneService.gcId){
-                        servObj = {
+                    if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneService.name) !== -1) {
+                        servicesList.push({'v': oneService.name, 'l': oneService.name});
+                        var servObj = {
                             "name": oneService.name,
-                            "gcName": oneService.name,
-                            "gcVersion": oneService.gcV,
                             "image": oneService.image,
                             "port": oneService.port
                         };
+                        if(oneService.gcId){
+                            servObj = {
+                                "name": oneService.name,
+                                "gcName": oneService.name,
+                                "gcVersion": oneService.gcV,
+                                "image": oneService.image,
+                                "port": oneService.port
+                            };
+                        }
+                        postServiceList.push(servObj);
+                    } else if (env.toLowerCase() !== 'dashboard' &&
+                        ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) {
+                        servicesList.push({'v': oneService.name, 'l': oneService.name});
+                        var servObj = {
+                            "name": oneService.name,
+                            "image": oneService.image,
+                            "port": oneService.port
+                        };
+                        if(oneService.gcId){
+                            servObj = {
+                                "name": oneService.name,
+                                "gcName": oneService.name,
+                                "gcVersion": oneService.gcV,
+                                "image": oneService.image,
+                                "port": oneService.port
+                            };
+                        }
+                        postServiceList.push(servObj);
                     }
-                    postServiceList.push(servObj);
                 });
 
 	            if(env.toLowerCase() !== 'dashboard'){
@@ -783,6 +793,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	            }
 
                 //call list daemons and push available daemons to servicesList
+                //Needs to be updated
                 getSendDataFromServer(currentScope, ngDataApi, {
                     "method": "send",
                     "routeName": "/dashboard/daemons/list"
@@ -791,13 +802,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
                     } else {
                         daemons.forEach(function (oneDaemon) {
-                            servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
+                            if (env.toLowerCase() !== 'dashboard') {
+                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
 
-                            var daemonObj = {
-                                "name": oneDaemon.name,
-                                "port": oneDaemon.port
-                            };
-                            postServiceList.push(daemonObj);
+                                var daemonObj = {
+                                    "name": oneDaemon.name,
+                                    "port": oneDaemon.port
+                                };
+                                postServiceList.push(daemonObj);
+                            }
                         });
 
                         var entry = {
@@ -898,6 +911,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                 currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
                     reloadRegistry(currentScope, env, oneCtrl, function () {
+                        currentScope.listHosts(env);
                     });
                 });
             });

@@ -164,7 +164,6 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		});
 		if (count === 0) {
-			console.log(11);
 			myAcl[envCodes[0].code.toUpperCase()] = aclObj;
 			for (var serviceName in myAcl[envCodes[0].code.toUpperCase()]) { //wrong
 				if (myAcl[envCodes[0].code.toUpperCase()].hasOwnProperty(serviceName)) {
