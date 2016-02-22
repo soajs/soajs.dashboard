@@ -109,7 +109,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 	}
 
 	function editDatabase(currentScope, env, name, data) {
-		var formData;
+		var formData, formConfig;
 		if(name === 'session') {
 			var t = angular.copy(data);
 			delete t.cluster;
@@ -120,16 +120,23 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 				"stringify": data.stringify,
 				"expireAfter": data.expireAfter / (3600 * 1000),
 				"store": JSON.stringify(data.store, null, "\t")
-
 			};
+			formConfig = environmentsConfig.form.session;
 		}
 		else {
 			formData = angular.copy(data);
 			formData.name = name;
+
+			formConfig = environmentsConfig.form.database;
+			formConfig.entries.forEach (function (oneEntry) {
+				if (oneEntry.name === 'name') {
+					oneEntry.type = 'readonly';
+				}
+			});
 		}
 		var options = {
 			timeout: $timeout,
-			form: (name === 'session') ? angular.copy(environmentsConfig.form.session) : angular.copy(environmentsConfig.form.database),
+			form: formConfig,
 			name: 'updateDatabase',
 			label: translation.updateDatabase[LANG],
 			'data': formData,
