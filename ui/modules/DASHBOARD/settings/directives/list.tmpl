@@ -17,12 +17,14 @@
 
 					<ul class="blueListing">
 						<li class="blueLi" ng-repeat="application in tenant.applications" class="row-list">
-							<a ng-click="openKeys(application)" href="" ng-hide="application.showKeys">
-								<span class="icon icon-plus" tooltip="{{translation.expandApplications[LANG]}}"></span>
-							</a>
-							<a ng-click="closeKeys(application)" href="" ng-show="application.showKeys">
-								<span class="icon icon-minus" tooltip="{{translation.collapseApplications[LANG]}}"></span>
-							</a>
+							<span ng-hide="tenant.applications.length === 1">
+								<a ng-click="openKeys(application)" href="" ng-hide="application.showKeys">
+									<span class="icon icon-plus" tooltip="{{translation.expandApplications[LANG]}}"></span>
+								</a>
+								<a ng-click="closeKeys(application)" href="" ng-show="application.showKeys">
+									<span class="icon icon-minus" tooltip="{{translation.collapseApplications[LANG]}}"></span>
+								</a>
+							</span>
 
 							<span class="icon icon-star-full" ng-if="application['dashboardAccess']"></span>[{{application['package']}}]
 							&nbsp;
