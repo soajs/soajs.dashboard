@@ -474,6 +474,14 @@ var envTranslation ={
 		"ENG": "Unable to retrieve daemons hosts information.",
 		"FRA": "Unable to retrieve daemons hosts information."
 	},
+	"daemonGroupConfiguration": {
+		"ENG": "Daemon Group Configuration",
+		"FRA": "Daemon Group Configuration"
+	},
+	"chooseGroupConfigForSelectedDaemon": {
+		"ENG": "Choose a daemon group configuration for selected daemon",
+		"FRA": "Choose a daemon group configuration for selected daemon"
+	},
 	//deploy
 	"deployEnvironment": {
 		"ENG": "Deploy Environment",

@@ -840,10 +840,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                     if (daemons[i].name === selected) {
                                         var groupConfigEntry = {
                                             'name': 'groupConfig',
-                                            'label': 'Daemon Group Configuration',
+                                            'label': translation.daemonGroupConfiguration[LANG],
                                             'type': 'select',
                                             'value': [],
-                                            'fieldMessage': 'Choose a daemon group configuration for selected daemon',
+                                            'fieldMsg': translation.chooseGroupConfigForSelectedDaemon[LANG],
                                             'required': true
                                         };
                                         daemons[i].grpConf.forEach (function (oneGroupConfig) {
