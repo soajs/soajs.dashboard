@@ -750,7 +750,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
                 services.forEach(function (oneService) {
                     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneService.name) !== -1) {
-                        servicesList.push({'v': oneService.name, 'l': oneService.name});
+                        servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
                         var servObj = {
                             "name": oneService.name,
                             "image": oneService.image,
@@ -770,7 +770,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     } else if (env.toLowerCase() !== 'dashboard' &&
                         ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || //not a locked service for dashboard and non dashboard environments
                         (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
-                        servicesList.push({'v': oneService.name, 'l': oneService.name});
+                        servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
                         var servObj = {
                             "name": oneService.name,
                             "image": oneService.image,
@@ -792,7 +792,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	            if(env.toLowerCase() !== 'dashboard'){
                     //push controller
-                    servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG]});
+                    servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG], 'group': 'Controllers'});
 	            }
 
                 //call list daemons and push available daemons to servicesList
@@ -806,7 +806,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     } else {
                         daemons.forEach(function (oneDaemon) {
                             if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneDaemon.name) !== -1) {
-                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
+                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
 
                                 var daemonObj = {
                                     "name": oneDaemon.name,
@@ -818,7 +818,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             } else if (env.toLowerCase() !== 'dashboard' &&
                                 ((dashboardServices.indexOf(oneDaemon.name) !== -1 && nonDashboardServices.indexOf(oneDaemon.name) !== -1) || //not a locked daemon for dashboard and non dashboard environments
                                 (dashboardServices.indexOf(oneDaemon.name) === -1 && nonDashboardServices.indexOf(oneDaemon.name) === -1))) { //a locked daemon that is common for dashboard and non dash envs
-                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
+                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
 
                                 var daemonObj = {
                                     "name": oneDaemon.name,
@@ -838,6 +838,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             'value': servicesList,
                             'fieldMsg': translation.selectServiceFromListAbove[LANG],
                             'required': true,
+                            'groups': ['Controllers', 'Services', 'Daemons'],
                             'onAction': function (label, selected, formConfig) {
                                 selectedIsDaemon = false;
                                 for (var i = 0; i < daemons.length; i++) {
