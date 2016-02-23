@@ -127,6 +127,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			"clustertoUse": {},
 			"genericService": {
 				"config": {
+					"serviceGroup": "GCS Group",
 					"errors": {},
 					"schema": {
 						"commonFields": {
