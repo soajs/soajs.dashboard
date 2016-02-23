@@ -350,6 +350,11 @@ service.init(function() {
 		host.deployService(config, mongo, req, res);
 	});
 
+	service.post("/hosts/deployDaemon", function (req, res) {
+		checkForMongo(req);
+		host.deployDaemon(config, mongo, req, res);
+	});
+
 	/**
 	 * Services features
 	 */

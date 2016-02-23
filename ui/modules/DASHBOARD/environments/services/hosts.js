@@ -767,7 +767,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         }
                         postServiceList.push(servObj);
                     } else if (env.toLowerCase() !== 'dashboard' &&
-                        ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) {
+                        ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || //not a locked service for dashboard and non dashboard environments
+                        (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
                         servicesList.push({'v': oneService.name, 'l': oneService.name});
                         var servObj = {
                             "name": oneService.name,
@@ -793,33 +794,71 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	            }
 
                 //call list daemons and push available daemons to servicesList
-                //Needs to be updated
                 getSendDataFromServer(currentScope, ngDataApi, {
                     "method": "send",
-                    "routeName": "/dashboard/daemons/list"
+                    "routeName": "/dashboard/daemons/list",
+                    "params": {"getGroupConfigs": true}
                 }, function (error, daemons) {
                     if (error) {
                         currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
                     } else {
                         daemons.forEach(function (oneDaemon) {
-                            if (env.toLowerCase() !== 'dashboard') {
+                            if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneDaemon.name) !== -1) {
                                 servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
 
                                 var daemonObj = {
                                     "name": oneDaemon.name,
-                                    "port": oneDaemon.port
+                                    "port": oneDaemon.port,
+                                    "groupConf": oneDaemon.grpConf
+                                };
+                                postServiceList.push(daemonObj);
+                            } else if (env.toLowerCase() !== 'dashboard' &&
+                                ((dashboardServices.indexOf(oneDaemon.name) !== -1 && nonDashboardServices.indexOf(oneDaemon.name) !== -1) || //not a locked daemon for dashboard and non dashboard environments
+                                (dashboardServices.indexOf(oneDaemon.name) === -1 && nonDashboardServices.indexOf(oneDaemon.name) === -1))) { //a locked daemon that is common for dashboard and non dash envs
+                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name});
+
+                                var daemonObj = {
+                                    "name": oneDaemon.name,
+                                    "port": oneDaemon.port,
+                                    "groupConf": oneDaemon.grpConf
                                 };
                                 postServiceList.push(daemonObj);
                             }
                         });
 
+                        var selectedIsDaemon = false;
                         var entry = {
                             'name': 'service',
                             'label': translation.serviceName[LANG],
                             'type': 'select',
                             'value': servicesList,
                             'fieldMsg': translation.selectServiceFromListAbove[LANG],
-                            'required': true
+                            'required': true,
+                            'onAction': function (label, selected, formConfig) {
+                                selectedIsDaemon = false;
+                                for (var i = 0; i < daemons.length; i++) {
+                                    if (daemons[i].name === selected) {
+                                        var groupConfigEntry = {
+                                            'name': 'groupConfig',
+                                            'label': 'Daemon Group Configuration',
+                                            'type': 'select',
+                                            'value': [],
+                                            'fieldMessage': 'Choose a daemon group configuration for selected daemon',
+                                            'required': true
+                                        };
+                                        daemons[i].grpConf.forEach (function (oneGroupConfig) {
+                                            groupConfigEntry.value.push ({"l": oneGroupConfig.daemonConfigGroup, "v": oneGroupConfig.daemonConfigGroup});
+                                        });
+                                        formConfig.entries.splice(1, 0, groupConfigEntry);
+
+                                        selectedIsDaemon = true;
+                                    }
+                                }
+
+                                if (!selectedIsDaemon && formConfig.entries[1].name === 'groupConfig') {
+                                    formConfig.entries.splice (1, 1);
+                                }
+                            }
                         };
                         var hostForm = angular.copy(environmentsConfig.form.host);
                         hostForm.entries.unshift(entry);
@@ -849,6 +888,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                             newController(formData, max);
                                         }
                                         else {
+                                            formData.selectedIsDaemon = selectedIsDaemon;
                                             newService(formData, max);
                                         }
                                     }
@@ -941,11 +981,18 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }
                 }
 
-                getSendDataFromServer(currentScope, ngDataApi, {
+                var config = {
                     "method": "send",
                     "routeName": "/dashboard/hosts/deployService",
                     "data": params
-                }, function (error, response) {
+                };
+
+                if (formData.selectedIsDaemon) {
+                    config.routeName = "/dashboard/hosts/deployDaemon";
+                    params.grpConfName = formData.groupConfig;
+                }
+
+                getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
                     if (error) {
 	                    overlay.hide();
                         currentScope.generateNewMsg(env, 'danger', error.message);

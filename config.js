@@ -1761,6 +1761,60 @@ module.exports = {
                 }
             }
         },
+        "/hosts/deployDaemon": {
+            "_apiInfo": {
+                "l": "Deploy New Daemon",
+                "group": "Hosts"
+            },
+            "commonFields": ['envCode'],
+            "name": {
+                "required": false,
+                "source": ['body.name'],
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "version": {
+                "required": true,
+                "source": ["body.version"],
+                "default": 1,
+                "validation": {
+                    "type": "number",
+                    "minimum": 1
+                }
+            },
+            "gcName": {
+                "required": false,
+                "source": ['body.gcName'],
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "gcVersion": {
+                "required": false,
+                "source": ['body.gcVersion'],
+                "validation": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "variables": {
+                "required": false,
+                "source": ['body.variables'],
+                "validation": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {"type": "string"}
+                }
+            },
+            "grpConfName": {
+                "required": true,
+                "source": ['body.grpConfName'],
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
 
         "/cb/list": {
             "_apiInfo": {
