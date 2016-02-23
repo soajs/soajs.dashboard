@@ -214,7 +214,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     function buildGroupsDisplay (currentScope, renderedHosts) {
         currentScope.groups = {};
         for (var hostName in renderedHosts) {
-            if (!renderedHosts[hostName].group || renderedHosts[hostName].group === "service" || renderedHosts[hostName].group === "") {
+            if (!renderedHosts[hostName].group || renderedHosts[hostName].group === "service" || renderedHosts[hostName].group === "daemon" || renderedHosts[hostName].group === "") {
                 renderedHosts[hostName].group = "Misc. Services/Daemons";
             }
             if (currentScope.groups[renderedHosts[hostName].group]) {
@@ -754,7 +754,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         var servObj = {
                             "name": oneService.name,
                             "image": oneService.image,
-                            "port": oneService.port
+                            "port": oneService.port,
+                            "latestVersion": oneService.latest
                         };
                         if(oneService.gcId){
                             servObj = {
@@ -773,7 +774,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         var servObj = {
                             "name": oneService.name,
                             "image": oneService.image,
-                            "port": oneService.port
+                            "port": oneService.port,
+                            "latestVersion": oneService.latest
                         };
                         if(oneService.gcId){
                             servObj = {
@@ -809,7 +811,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 var daemonObj = {
                                     "name": oneDaemon.name,
                                     "port": oneDaemon.port,
-                                    "groupConf": oneDaemon.grpConf
+                                    "groupConf": oneDaemon.grpConf,
+                                    "latestVersion": oneDaemon.latest
                                 };
                                 postServiceList.push(daemonObj);
                             } else if (env.toLowerCase() !== 'dashboard' &&
@@ -820,7 +823,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 var daemonObj = {
                                     "name": oneDaemon.name,
                                     "port": oneDaemon.port,
-                                    "groupConf": oneDaemon.grpConf
+                                    "groupConf": oneDaemon.grpConf,
+                                    "latestVersion": oneDaemon.latest
                                 };
                                 postServiceList.push(daemonObj);
                             }
@@ -969,6 +973,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         }
                         else {
                             params.name = formData.service;
+                        }
+
+                        if (postServiceList[i].latestVersion) {
+                            params.version = postServiceList[i].latestVersion;
                         }
                         port = postServiceList[i].port;
                     }
