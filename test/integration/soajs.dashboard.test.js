@@ -74,19 +74,33 @@ describe("DASHBOARD UNIT Tests", function() {
 	        "domain": "api.myDomain.com",
             "profile": "single",
             "deployer": {
-                "type": "manual", //available options: container | manual | cloud (chef | puppet)
-                "selected": "docker.boot2docker",
-                "docker": {
-                    "selected": "boot2docker",
-                    "socket": {
-                        'socketPath': '/var/run/docker.sock'
+                "type": "manual",
+                "selected": "container.dockermachine.local",
+                "container":{
+                    "dockermachine":{
+                        "local": {
+                            "host": "192.168.99.101",
+                            "port": 2376,
+                            "config":{
+                                "HostConfig": {
+                                    "NetworkMode": "soajsnet"
+                                },
+                                "MachineName": "soajs-dev"
+                            }
+                        },
+                        "cloud":{
+                            "rackspace": {
+                                "host": "docker.rackspace.com",
+                                "port": 2376
+                                //additional info goes here like instances, credentials or keys ....
+                            }
+                        }
                     },
-                    "boot2docker": {
-                        'host': 'localhost',
-                        'port': 5354
-                    },
-                    "joyent": {},
-                    "rackspace": {}
+                    "docker": {
+                        "socket": {
+                            "socketPath": "/var/run/docker.sock"
+                        }
+                    }
                 }
             },
             "description": 'this is a dummy description',
@@ -3219,7 +3233,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         }
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
@@ -3243,7 +3258,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         }
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
@@ -3265,7 +3281,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         }
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
@@ -3295,7 +3312,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         });
                         done();
                     });
@@ -3337,6 +3355,9 @@ describe("DASHBOARD UNIT Tests", function() {
                                         "id": tenant_body.data.id,
                                         "appId": app_body.data.appId,
                                         "key": key_body.data.key
+                                    },
+                                    form: {
+                                        "env": "DASHBOARD"
                                     }
                                 };
 				                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(extKey_body){
@@ -3346,6 +3367,9 @@ describe("DASHBOARD UNIT Tests", function() {
                                             "id": tenant_body.data.id,
                                             "appId": app_body.data.appId,
                                             "key": key_body.data.key
+                                        },
+                                        form: {
+                                            "env": "DASHBOARD"
                                         }
                                     };
 					                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(extKeyTwo_body){
@@ -3458,7 +3482,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         });
                         done();
                     });
@@ -3579,7 +3604,8 @@ describe("DASHBOARD UNIT Tests", function() {
                             },
                             'geo': {
                                 'x': 'y'
-                            }
+                            },
+                            'env': 'DASHBOARD'
                         }
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
@@ -3854,6 +3880,9 @@ describe("DASHBOARD UNIT Tests", function() {
                                         "id": tenantId,
                                         "appId": appId,
                                         "key": key
+                                    },
+                                    form: {
+                                        'env': 'DASHBOARD'
                                     }
                                 };
 				                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(body) {
@@ -4275,7 +4304,8 @@ describe("DASHBOARD UNIT Tests", function() {
                         },
                         'geo': {
                             'x': 'y'
-                        }
+                        },
+                        'env': 'DASHBOARD'
                     }
                 };
                 executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function(body) {
@@ -5451,19 +5481,33 @@ describe("DASHBOARD UNIT Tests", function() {
                     "port": 8080,
                     "profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
                     "deployer": {
-                        "type": "manual", //available options: container | manual | cloud (chef | puppet)
-                        "selected": "docker.boot2docker",
-                        "docker": {
-                            "selected": "boot2docker",
-                            "socket": {
-                                'socketPath': '/var/run/docker.sock'
+                        "type": "manual",
+                        "selected": "container.dockermachine.local",
+                        "container":{
+                            "dockermachine":{
+                                "local": {
+                                    "host": "192.168.99.101",
+                                    "port": 2376,
+                                    "config":{
+                                        "HostConfig": {
+                                            "NetworkMode": "soajsnet"
+                                        },
+                                        "MachineName": "soajs-dev"
+                                    }
+                                },
+                                "cloud":{
+                                    "rackspace": {
+                                        "host": "docker.rackspace.com",
+                                        "port": 2376
+                                        //additional info goes here like instances, credentials or keys ....
+                                    }
+                                }
                             },
-                            "boot2docker": {
-                                'host': 'localhost',
-                                'port': 5354
-                            },
-                            "joyent": {},
-                            "rackspace": {}
+                            "docker": {
+                                "socket": {
+                                    "socketPath": "/var/run/docker.sock"
+                                }
+                            }
                         }
                     },
                     "description": "this is a dummy description",
@@ -5673,7 +5717,8 @@ describe("DASHBOARD UNIT Tests", function() {
                                     {
                                         "expDate": new Date(expDateValue).getTime() + config.expDateTTL,
                                         "device": {'a': 'b'},
-                                        "geo": {'x': 'y'}
+                                        "geo": {'x': 'y'},
+                                        "env": 'DASHBOARD'
                                     }
                                 ],
                                 "config": {

@@ -121,6 +121,7 @@ describe("testing hosts deployment", function () {
                 }
             };
             executeMyRequest(params, "hosts/deployController", "post", function (body) {
+                console.log (JSON.stringify (body));
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
