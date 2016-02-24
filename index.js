@@ -12,7 +12,6 @@ var host = require("./lib/host.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
 var cb = require("./lib/contentbuilder.js");
-var logout = require("./lib/logout.js");
 
 var service = new soajs.server.service({
 	"oauth": false,
@@ -581,14 +580,6 @@ service.init(function() {
 	service.post("/cb/update", function(req, res) {
 		checkForMongo(req);
 		cb.update(config, mongo, req, res);
-	});
-
-	/**
-	 * Proxy Route
-	 */
-	service.get("/logout", function(req, res){
-		checkForMongo(req);
-		logout.go(config, mongo, req, res);
 	});
 
 	/**

@@ -537,10 +537,9 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookieStore', '$loc
 
 		function logout() {
 			overlayLoading.show();
-			var logoutRoute = ($cookieStore.get('soajs_envauth')) ? "/dashboard/logout" : "/urac/logout";
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-				"routeName": logoutRoute,
+				"routeName": "/urac/logout",
 				"params": {"username": user.username}
 			}, function (error, response) {
 				overlayLoading.hide();

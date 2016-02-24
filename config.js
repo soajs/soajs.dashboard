@@ -1873,14 +1873,6 @@ module.exports = {
                 "l": "List Content Schema Revisions",
                 "group": "Content Builder"
             }
-        },
-
-	    "/logout" : {
-		    "_apiInfo": {
-			    "l": "Dashboard Logout",
-			    "group": "Dashboard",
-			    "groupMain": true
-		    }
-	    }
+        }
     }
 };

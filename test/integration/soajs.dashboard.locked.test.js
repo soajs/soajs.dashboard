@@ -449,7 +449,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						form: {
 							'expDate': expDateValue,
 							'device': {},
-							'geo': {}
+							'geo': {},
+							'env': 'DASHBOARD'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
