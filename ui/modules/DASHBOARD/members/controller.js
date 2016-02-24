@@ -261,19 +261,16 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 	};
 	//TODO: need more work
 	$scope.selectService = function (application, service, oneEnv) {
-		if (application.services) {
-			application.services.forEach(function (oneService) {
-				if (oneService.name === service.name) {
-					if (oneService.include) {
-						if (service.forceRestricted) {
-							oneService.apisRestrictPermission = true;
-						}
-						application.aclFill[oneEnv][service.name].collapse = false;
-					} else {
-						application.aclFill[oneEnv][service.name].collapse = true;
-					}
+		if (application.aclFill[oneEnv][service.name]) {
+			if (application.aclFill[oneEnv][service.name].include) {
+				if (application.aclFill[oneEnv][service.name].forceRestricted) {
+					application.aclFill[oneEnv][service.name].apisRestrictPermission = true;
 				}
-			});
+				application.aclFill[oneEnv][service.name].collapse = false;
+			}
+			else {
+				application.aclFill[oneEnv][service.name].collapse = true;
+			}
 		}
 	};
 
@@ -331,14 +328,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					$scope.tenantApp.applications.forEach(function (oneApplication) {
 						if ($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
 							if ($scope.user.config.packages[oneApplication.package].acl) {
-								oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
+								oneApplication.userPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
+								//oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
 							}
 						}
 						membersAclHelper.renderPermissionsWithServices($scope, oneApplication);
 						overlayLoading.hide();
-
 					});
 					delete $scope.tenantApp.services;
+
 				}
 			});
 		});

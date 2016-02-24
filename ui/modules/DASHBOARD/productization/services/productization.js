@@ -45,7 +45,7 @@ productizationService.service('aclHelpers', function(){
 		});
 
 		if(count === 0){
-			//old
+			//old schema
 			myAcl[envCodes[0].code.toUpperCase()] = aclFill;
 			propagateAcl(myAcl[envCodes[0].code.toUpperCase()]);
 			envCodes.forEach(function(oneEnv){
@@ -53,13 +53,11 @@ productizationService.service('aclHelpers', function(){
 					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
 				}
 			});
-		}
-		currentScope.aclFill = myAcl;
-
-		if(count === 0){
 			currentScope.msg.type = 'warning';
 			currentScope.msg.msg = translation.warningMsgAcl[LANG];
 		}
+		currentScope.aclFill = myAcl;
+
 		overlayLoading.hide();
 	}
 
