@@ -259,20 +259,22 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 	$scope.expand = function (application, service, oneEnv) {
 		application.aclFill[oneEnv][service.name].collapse = false;
 	};
-//need more work
+	//TODO: need more work
 	$scope.selectService = function (application, service, oneEnv) {
-		application.services.forEach(function (oneService) {
-			if (oneService.name === service.name) {
-				if (oneService.include) {
-					if (service.forceRestricted) {
-						oneService.apisRestrictPermission = true;
+		if (application.services) {
+			application.services.forEach(function (oneService) {
+				if (oneService.name === service.name) {
+					if (oneService.include) {
+						if (service.forceRestricted) {
+							oneService.apisRestrictPermission = true;
+						}
+						application.aclFill[oneEnv][service.name].collapse = false;
+					} else {
+						application.aclFill[oneEnv][service.name].collapse = true;
 					}
-					application.aclFill[oneEnv][service.name].collapse = false;
-				} else {
-					application.aclFill[oneEnv][service.name].collapse = true;
 				}
-			}
-		});
+			});
+		}
 	};
 
 	$scope.getEnvironments = function () {
