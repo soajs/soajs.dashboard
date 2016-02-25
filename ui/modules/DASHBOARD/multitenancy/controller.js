@@ -1488,6 +1488,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -1507,6 +1508,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"id": tId}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -1532,6 +1534,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 
 				}, function (error, response) {
 					if (error) {
+						overlayLoading.hide();
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
@@ -1639,13 +1642,14 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		postData.clearAcl = true;
 		postData.acl = {};
-
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/update",
 			"data": postData,
 			"params": {"id": tId, "appId": appId}
 		}, function (error) {
+			overlayLoading.hide();
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
@@ -1667,6 +1671,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 
 		var result = aclHelper.prepareAclObjToSave($scope.currentApplication.aclFill);
 		if (result.valid) {
+			overlayLoading.show();
 			postData.acl = result.data;
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
@@ -1674,6 +1679,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				"data": postData,
 				"params": {"id": tId, "appId": appId}
 			}, function (error) {
+				overlayLoading.hide();
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}

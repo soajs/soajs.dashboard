@@ -399,6 +399,7 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -435,13 +436,14 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		var productId = $routeParams.pid;
 		var postData = $scope.currentPackage;
 		postData.acl = aclHelpers.constructAclFromPost($scope.aclFill);
-
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/product/packages/update",
 			"data": postData,
 			"params": {"id": productId, "code": postData.code.split("_")[1], '_TTL': postData._TTL}
 		}, function (error) {
+			overlayLoading.hide();
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}

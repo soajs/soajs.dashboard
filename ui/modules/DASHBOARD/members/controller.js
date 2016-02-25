@@ -281,6 +281,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -321,6 +322,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"params": {"id": $scope.user.tenant.id}
 			}, function (error, response) {
 				if (error) {
+					overlayLoading.hide();
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
 				else {
@@ -361,6 +363,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 						"params": {'tId': $scope.user.tenant.id}
 					}, function (error, response) {
 						if (error) {
+							overlayLoading.hide();
 							$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 						}
 						else {
@@ -393,6 +396,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				}
 			}
 		});
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"headers": {
@@ -402,14 +406,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
 		}, function (error) {
+			overlayLoading.hide();
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
-				$route.reload();
 				$scope.msg.type = '';
 				$scope.msg.msg = '';
 				$scope.$parent.displayAlert('success', translation.userAclDeletedSuccessfully[LANG]);
+				$route.reload();
 			}
 		});
 	};
@@ -428,7 +433,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			var tmpObj = {services: oneApplication.aclFill};
 			var result = membersAclHelper.prepareAclObjToSave(tmpObj);
 			if (result.valid) {
-
 				var packageName = oneApplication.package;
 				if (!postData.config.packages[packageName]) {
 					postData.config.packages[packageName] = {};
@@ -443,6 +447,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
 			}
 		});
+		overlayLoading.show();
 		if (counter === $scope.tenantApp.applications.length) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
@@ -453,6 +458,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
 			}, function (error) {
+				overlayLoading.hide();
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
