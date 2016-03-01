@@ -60,6 +60,8 @@ soajsApp.config([
 
 soajsApp.run(function($rootScope){
 	$rootScope.angular = angular;
+	$rootScope.LANG = LANG;
+	$rootScope.translation = translation;
 });
 
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', '$cookieStore', 'ngDataApi', 'checkApiHasAccess', '$localStorage',
