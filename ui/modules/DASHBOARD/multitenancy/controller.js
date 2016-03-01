@@ -792,6 +792,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
 						};
 						if (formData.package && (typeof(formData.package) == 'string')) {
+							overlayLoading.show();
 							var productCode = formData.package.split("_")[0];
 							var packageCode = formData.package.split("_")[1];
 							postData.productCode = productCode;
@@ -802,6 +803,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								"data": postData,
 								"params": {"id": tId}
 							}, function (error) {
+								overlayLoading.hide();
 								if (error) {
 									$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 								}
@@ -1080,27 +1082,35 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		//check if old or new acl
 		//if new acl, list env in acl
 		//if old acl, list all available env
-		$scope.availablePackages.forEach (function (onePackage) {
+		$scope.availablePackages.forEach(function (onePackage) {
 			if (onePackage.pckCode === packageCode) {
 				if (onePackage.acl && typeof (onePackage.acl) === 'object') {
 					if (onePackage.acl[$scope.currentEnv] && (!onePackage.acl[$scope.currentEnv].apis && !onePackage.acl[$scope.currentEnv].apisRegExp && !onePackage.acl[$scope.currentEnv].apisPermission)) {
 						//new acl
-						formConfig.entries.forEach(function(oneFormField) {
-							if(oneFormField.name === 'environment') {
+						formConfig.entries.forEach(function (oneFormField) {
+							if (oneFormField.name === 'environment') {
 								var list = [];
-								Object.keys(onePackage.acl).forEach (function (envCode) {
-									list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
+								Object.keys(onePackage.acl).forEach(function (envCode) {
+									list.push({
+										"v": envCode,
+										"l": envCode,
+										"selected": (envCode === $scope.currentEnv)
+									});
 								});
 								oneFormField.value = list;
 							}
 						});
 					} else {
 						//old acl
-						formConfig.entries.forEach(function(oneFormField) {
-							if(oneFormField.name === 'environment') {
+						formConfig.entries.forEach(function (oneFormField) {
+							if (oneFormField.name === 'environment') {
 								var list = [];
-								$scope.availableEnv.forEach(function(envCode) {
-									list.push({"v": envCode, "l": envCode, "selected": (envCode === $scope.currentEnv)});
+								$scope.availableEnv.forEach(function (envCode) {
+									list.push({
+										"v": envCode,
+										"l": envCode,
+										"selected": (envCode === $scope.currentEnv)
+									});
 								});
 								oneFormField.value = list;
 							}
@@ -1481,6 +1491,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"short": true}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -1500,6 +1511,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			"params": {"id": tId}
 		}, function (error, response) {
 			if (error) {
+				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
@@ -1525,6 +1537,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 
 				}, function (error, response) {
 					if (error) {
+						overlayLoading.hide();
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
@@ -1546,6 +1559,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 									var service = servicesList[x];
 									var name = service.name;
 									var newList;
+
 									if ((parentAcl[name]) && (parentAcl[name].apisPermission === 'restricted')) {
 										newList = [];
 										service.forceRestricted = true;
@@ -1630,13 +1644,15 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 		postData.productCode = $scope.currentApplication.product;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		postData.clearAcl = true;
-
+		postData.acl = {};
+		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/update",
 			"data": postData,
 			"params": {"id": tId, "appId": appId}
 		}, function (error) {
+			overlayLoading.hide();
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
@@ -1658,6 +1674,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 
 		var result = aclHelper.prepareAclObjToSave($scope.currentApplication.aclFill);
 		if (result.valid) {
+			overlayLoading.show();
 			postData.acl = result.data;
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
@@ -1665,6 +1682,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				"data": postData,
 				"params": {"id": tId, "appId": appId}
 			}, function (error) {
+				overlayLoading.hide();
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}

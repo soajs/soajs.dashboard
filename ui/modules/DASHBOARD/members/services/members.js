@@ -127,7 +127,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'tId': tenantId,
 									'tCode': tenantCode
 								};
-
+								overlayLoading.show();
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"headers": {
@@ -136,6 +136,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									"routeName": "/urac/admin/addUser",
 									"data": postData
 								}, function (error) {
+									overlayLoading.hide();
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 									}
