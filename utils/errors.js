@@ -143,7 +143,7 @@ var errors = {
 	"727": "Unable to add certificate(s)",
 	"728": "Unable to get certificate(s)",
 	"729": "Unable to remove certificate",
-	"730": "Certificate does not exist",
+	"730": "One or more certificates do not exist",
 	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 
 	"732": "Unable to list drivers",
@@ -153,6 +153,8 @@ var errors = {
 	"736": "Unable to delete driver",
 	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
+
+	"739": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name",
 
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 

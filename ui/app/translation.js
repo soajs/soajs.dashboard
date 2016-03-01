@@ -1440,8 +1440,8 @@ var errorCodes = {
 			"FRA": "Unable to remove certificate"
 		},
 		"730": {
-			"ENG": "Certificate does not exist",
-			"FRA": "Certificate does not exist"
+			"ENG": "One or more certificates do not exist",
+			"FRA": "One or more certificates do not exist"
 		},
 
 		"731": {
@@ -1476,6 +1476,10 @@ var errorCodes = {
 		"738": {
 			"ENG": "Unable to change deployer type",
 			"FRA": "Unable to change deployer type"
+		},
+		"739": {
+			"ENG": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name",
+			"FRA": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name"
 		},
 		"740": {
 			"ENG": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",

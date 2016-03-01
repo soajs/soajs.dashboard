@@ -20,6 +20,7 @@ describe("importing sample data", function () {
     });
 
     after(function (done) {
+        //todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
         process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
         console.log('test data imported.');
         controller = require("soajs.controller");
@@ -32,6 +33,7 @@ describe("importing sample data", function () {
                 require("./soajs.contentbuilder.test.js");
                 require("./soajs.uploadService.test.js");
                 require("./soajs.hostsdeploy.test.js");
+                require("./soajs.uploadCertificate.test.js");
                 done();
             }, 1000);
         }, 1000);

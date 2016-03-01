@@ -79,8 +79,8 @@ describe("DASHBOARD UNIT Tests", function() {
                 "container":{
                     "dockermachine":{
                         "local": {
-                            "host": "192.168.99.101",
-                            "port": 2376,
+                            "host": "localhost",
+                            "port": 5354,
                             "config":{
                                 "HostConfig": {
                                     "NetworkMode": "soajsnet"
@@ -277,6 +277,7 @@ describe("DASHBOARD UNIT Tests", function() {
             it("success - will add environment", function(done) {
                 var data2 = util.cloneObj(validEnvRecord);
                 data2.code = 'PROD';
+                data2.deployer.type = "container";
                 data2.services.config.session.proxy = "false";
                 var params = {
                     form: data2
@@ -334,6 +335,7 @@ describe("DASHBOARD UNIT Tests", function() {
             it("success - will update environment", function(done) {
                 var data2 = util.cloneObj(validEnvRecord);
                 data2.services.config.session.proxy = "true";
+                data2.deployer.type = "container";
                 var params = {
                     qs: {"id": envId},
                     form: {
@@ -775,6 +777,37 @@ describe("DASHBOARD UNIT Tests", function() {
                 });
             });
 
+            it("success - wil add a db and set tenantSpecific to false by default", function (done) {
+                var params = {
+                    qs: {
+                        env: "dev"
+                    },
+                    form: {
+                        'name': 'testDb',
+                        'cluster': 'cluster1'
+                    }
+                };
+                executeMyRequest(params, 'environment/dbs/add', 'post', function(body) {
+                    console.log(JSON.stringify(body));
+                    assert.ok(body.data);
+
+                    mongo.findOne("environment", {'code': 'DEV'}, function (error, envRecord) {
+                        assert.ifError(error);
+                        assert.ok(envRecord);
+                        assert.ok(envRecord.dbs.databases['testDb']);
+                        assert.equal (envRecord.dbs.databases['testDb'].tenantSpecific, false);
+
+                        //clean db record, remove testDb
+                        delete envRecord.dbs.databases['testDb'];
+                        mongo.save("environment", envRecord, function (error, result) {
+                            assert.ifError(error);
+                            assert.ok(result);
+                            done();
+                        });
+                    });
+                });
+            });
+
             it('fail - missing params', function(done) {
                 var params = {
                     qs: {
@@ -876,6 +909,23 @@ describe("DASHBOARD UNIT Tests", function() {
         });
 
         describe("update environment db", function() {
+            it("success - will update a db and set tenantSpecific to false by default", function (done) {
+                var params = {
+                    qs: {
+                        env: "dev"
+                    },
+                    form: {
+                        'name': 'urac',
+                        'cluster': 'cluster1'
+                    }
+                };
+                executeMyRequest(params, 'environment/dbs/update', 'post', function(body) {
+                    console.log(JSON.stringify(body));
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
             it("success - will update a db", function(done) {
                 var params = {
                     qs: {
@@ -3263,7 +3313,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         }
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
-                        assert.deepEqual(body.errors.details[0], {"code": 440, "message": "Unable to add the tenant application ext Key"});
+                        assert.deepEqual(body.errors.details[0], {"code": 440, "message": errorCodes[440]});
                         done();
                     });
                 });
@@ -3387,6 +3437,132 @@ describe("DASHBOARD UNIT Tests", function() {
                         });
                     });
                 });
+
+                it("success - will add an external key for all environments using their corresponding encryption key (tenant using old acl)", function (done) {
+                    var params = {
+                        qs: {
+                            id: tenantId,
+                            appId: applicationId,
+                            key: key
+                        },
+                        form: {
+                            'expDate': expDateValue,
+                            'device': {
+                                'a': 'b'
+                            },
+                            'geo': {
+                                'x': 'y'
+                            },
+                            'env': 'DEV'
+                        }
+                    };
+
+                    executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
+                        console.log(JSON.stringify(body));
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+
+                it("success - will add an external key for DEV environment using its corresponding encryption key (tenant using new acl)", function (done) {
+                    var newAcl = {
+                        'dev': {
+                            'example01': {
+                                "access": ["user"],
+                                "apis": {}
+                            }
+                        },
+                        'dashboard': {
+                            'urac': {
+                                "access": false,
+                                "apis": {
+                                    "/account/changeEmail": {
+                                        "access": true
+                                    }
+                                }
+                            },
+                            'dashboard': {
+                                "access": ["owner"],
+                                "apis": {}
+                            }
+                        }
+                    };
+
+                    try {
+                        var id = mongo.ObjectId (tenantId);
+                    } catch (e) {
+                        assert.ifError (e);
+                    }
+
+                    //Upgrading acl of TSTN from old to new and removing external keys for all environments except dashboard
+                    mongo.findOne("tenants", {"_id": id}, function (error, tenantRecord) {
+                        assert.ifError(error);
+                        assert.ok (tenantRecord);
+                        tenantRecord.applications[0].acl = newAcl;
+                        tenantRecord.applications[0].keys[0].extKeys = [
+                            {
+                                "extKey": extKey,
+                                "device": {},
+                                "geo": {},
+                                "env": "DASHBOARD",
+                                "expDate": 1456498678832
+                            }
+                        ];
+                        mongo.save ("tenants", tenantRecord, function (error, result) {
+                            assert.ifError(error);
+                            assert.ok(result);
+
+                            var params = {
+                                qs: {
+                                    id: tenantId,
+                                    appId: applicationId,
+                                    key: key
+                                },
+                                form: {
+                                    'expDate': expDateValue,
+                                    'device': {
+                                        'a': 'b'
+                                    },
+                                    'geo': {
+                                        'x': 'y'
+                                    },
+                                    'env': 'DEV'
+                                }
+                            };
+
+                            executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
+                                assert.ok(body.data);
+                                done();
+                            });
+                        });
+                    });
+                });
+
+                it("fail - trying to add an external key for an environment that does not exist in new acl", function (done) {
+                    var params = {
+                        qs: {
+                            id: tenantId,
+                            appId: applicationId,
+                            key: key
+                        },
+                        form: {
+                            'expDate': expDateValue,
+                            'device': {
+                                'a': 'b'
+                            },
+                            'geo': {
+                                'x': 'y'
+                            },
+                            'env': 'PROD'
+                        }
+                    };
+
+                    executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function(body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 740, "message": errorCodes[740]});
+                        done();
+                    });
+                });
             });
 
             describe("update application ext keys", function() {
@@ -3472,7 +3648,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.equal(records.applications[0].keys.length, 1);
                         assert.ok(records.applications[0].keys[0].key);
                         key = records.applications[0].keys[0].key;
-                        assert.equal(records.applications[0].keys[0].extKeys.length, 1);
+                        assert.equal(records.applications[0].keys[0].extKeys.length, 2);
                         extKey = records.applications[0].keys[0].extKeys[0].extKey;
                         delete records.applications[0].keys[0].extKeys[0].extKey;
                         assert.deepEqual(records.applications[0].keys[0].extKeys[0], {
@@ -3551,7 +3727,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         assert.equal(records.applications[0].keys.length, 1);
                         assert.ok(records.applications[0].keys[0].key);
                         key = records.applications[0].keys[0].key;
-                        assert.equal(records.applications[0].keys[0].extKeys.length, 0);
+                        assert.equal(records.applications[0].keys[0].extKeys.length, 1);
                         done();
                     });
                 });
@@ -3568,7 +3744,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function(body) {
                         assert.ok(body.data);
-                        assert.equal(body.data.length, 0);
+                        assert.equal(body.data.length, 1);
                         done();
                     });
                 });
@@ -3625,7 +3801,7 @@ describe("DASHBOARD UNIT Tests", function() {
                     };
                     executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function(body) {
                         assert.ok(body.data);
-                        assert.equal(body.data.length, 1);
+                        assert.equal(body.data.length, 2);
 
                         done();
                     });
@@ -3843,7 +4019,7 @@ describe("DASHBOARD UNIT Tests", function() {
                         form: {
                             'code': tenantCode,
                             'name': "Dashboard Tenant Key Test",
-                            'email': "faraj.ameer@gmail.com"
+                            'email': "user@soajs.org"
                         }
                     };
 	                executeMyRequest(params, 'tenant/add', 'post', function(body) {
@@ -3882,7 +4058,7 @@ describe("DASHBOARD UNIT Tests", function() {
                                         "key": key
                                     },
                                     form: {
-                                        'env': 'DASHBOARD'
+                                        'env': 'all'
                                     }
                                 };
 				                executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function(body) {
@@ -4031,6 +4207,60 @@ describe("DASHBOARD UNIT Tests", function() {
                     });
                 });
             });
+    });
+
+    describe("login tests", function () {
+        var auth;
+        it("success - did not specify environment code, old acl", function (done) {
+            var options = {
+                uri: 'http://localhost:4001/login',
+                headers: {
+                    'Content-Type': 'application/json',
+                    key: extKey
+                },
+                body: {
+                    "username": "user1",
+                    "password": "123456"
+                },
+                json: true
+            };
+            request.post(options, function(error, response, body) {
+                assert.ifError(error);
+                assert.ok(body);
+                auth = body.soajsauth;
+                var params = {
+                    headers: {
+                        soajsauth: auth
+                    }
+                };
+                executeMyRequest(params, 'permissions/get', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+        });
+
+        it("success - did not specify environment code, new acl", function (done) {
+            //todo: implement this test case
+            done();
+        });
+
+        it("success - specified environment code, old acl", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: auth
+                },
+                qs: {
+                    envCode: 'DEV'
+                }
+            };
+            executeMyRequest(params, 'permissions/get', 'get', function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
     });
 
     describe("testing settings for logged in users", function() {
@@ -4688,6 +4918,332 @@ describe("DASHBOARD UNIT Tests", function() {
         });
     });
 
+    describe("platforms tests", function () {
+
+        describe("list platforms", function () {
+
+            it("success - will list platforms and available certificates", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    }
+                };
+
+                executeMyRequest(params, "environment/platforms/list", 'get', function (body) {
+                    assert.ok (body.data);
+                    assert.ok (Object.keys(body.data).length > 0);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                executeMyRequest({}, "environment/platforms/list", 'get', function (body) {
+                    assert.ok (body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+                    done();
+                });
+            });
+        });
+
+        describe("add drivers", function () {
+
+            it("success - will add a docker machine local driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - local'
+                    },
+                    form: {
+                        local: {
+                            host: '127.0.0.1',
+                            port: 5354,
+                            config: {}
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("success - will add a docker machine cloud driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - cloud'
+                    },
+                    form: {
+                        cloud: {
+                            host: 'docker.rackspace.com',
+                            port: 2376,
+                            config: {},
+                            cloudProvider: 'rackspace'
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("success - will add a docker socket driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'docker - socket'
+                    },
+                    form: {
+                        socket: {
+                            socketPath: '/var/run/docker.sock'
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    },
+                    form: {
+                        local: {
+                            host: '127.0.0.1',
+                            port: 5354,
+                            config: {}
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: driverName'});
+                    done();
+                });
+            });
+        });
+
+        describe("edit drivers", function () {
+
+            it("success - will update a docker machine local driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - local'
+                    },
+                    form: {
+                        local: {
+                            host: '192,168.99.103',
+                            port: 2376,
+                            config: {}
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("success - will update a docker machine cloud driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - cloud'
+                    },
+                    form: {
+                        cloud: {
+                            host: 'docker.joyent.com',
+                            port: 2376,
+                            config: {},
+                            cloudProvider: 'joyent'
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("success - will update a docker socket driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'docker - socket'
+                    },
+                    form: {
+                        socket: {
+                            socketPath: '/var/run/dockerSock.sock'
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    qs: {
+                        driverName: 'dockermachine - cloud'
+                    },
+                    form: {
+                        cloud: {
+                            host: 'docker.joyent.com',
+                            port: 2376,
+                            config: {},
+                            cloudProvider: 'joyent'
+                        }
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+                    done();
+                });
+            });
+        });
+
+        describe("change selected driver", function () {
+
+            it("success - will change selected driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    },
+                    form: {
+                        selected: 'container.dockermachine.cloud.joyent'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    form: {
+                        selected: 'container.dockermachine.cloud.joyent'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+                    done();
+                });
+            });
+        });
+
+        describe("change deployer type", function () {
+
+            it("success - will change deployer type", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    },
+                    form: {
+                        deployerType: 'container'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/deployer/type/change', 'post', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/deployer/type/change', 'post', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: deployerType'});
+                    done();
+                });
+            });
+        });
+
+        describe("delete drivers", function () {
+
+            it("success - will delete local driver", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - local'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - trying to delete the driver that is currently selected", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV',
+                        driverName: 'dockermachine - cloud - joyent'
+                    }
+                };
+
+                executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 737, 'message': 'You are not allowed to delete a driver that is currently selected'});
+                    done();
+                });
+            });
+
+            it("success - will delete cloud driver after removing selection", function (done) {
+                var params = {
+                    qs: {
+                        env: 'DEV'
+                    },
+                    form: {
+                        selected: 'container.dockermachine.local'
+                    }
+                };
+                executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
+                    assert.ok(body.data);
+
+                    params = {
+                        qs: {
+                            env: 'DEV',
+                            driverName: 'dockermachine - cloud - joyent'
+                        }
+                    };
+
+                    executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+            });
+        });
+
+    });
+
     describe("services tests", function() {
 
         describe("list services test", function() {
@@ -4982,6 +5538,19 @@ describe("DASHBOARD UNIT Tests", function() {
 
                 it("success - list all daemons", function (done) {
                     executeMyRequest({}, 'daemons/list', 'post', function(body) {
+                        assert.ok(body.data);
+                        assert.ok(body.data.length > 0);
+                        done();
+                    });
+                });
+
+                it("success - list all daemons with group configurations of each", function (done) {
+                    var params = {
+                        qs: {
+                            getGroupConfigs: true
+                        }
+                    };
+                    executeMyRequest(params, 'daemons/list', 'post', function(body) {
                         assert.ok(body.data);
                         assert.ok(body.data.length > 0);
                         done();
@@ -5481,31 +6050,19 @@ describe("DASHBOARD UNIT Tests", function() {
                     "port": 8080,
                     "profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
                     "deployer": {
-                        "type": "manual",
+                        "type": "container",
                         "selected": "container.dockermachine.local",
-                        "container":{
-                            "dockermachine":{
-                                "local": {
-                                    "host": "192.168.99.101",
-                                    "port": 2376,
-                                    "config":{
-                                        "HostConfig": {
-                                            "NetworkMode": "soajsnet"
-                                        },
-                                        "MachineName": "soajs-dev"
-                                    }
-                                },
-                                "cloud":{
-                                    "rackspace": {
-                                        "host": "docker.rackspace.com",
-                                        "port": 2376
-                                        //additional info goes here like instances, credentials or keys ....
-                                    }
+                        "container": {
+                            "dockermachine": {
+                                "local": {},
+                                "cloud": {
+                                    "joyent": {}
                                 }
                             },
                             "docker": {
-                                "socket": {
-                                    "socketPath": "/var/run/docker.sock"
+                                "socket": {},
+                                "scoket": {
+                                    "socketPath": "/var/run/dockerSock.sock"
                                 }
                             }
                         }
@@ -5684,6 +6241,9 @@ describe("DASHBOARD UNIT Tests", function() {
                 assert.ok(record.applications[0].keys[0].extKeys[0].extKey);
                 delete record.applications[0].keys[0].extKeys[0].extKey;
 
+                assert.ok(record.applications[0].keys[0].extKeys[1].extKey);
+                delete record.applications[0].keys[0].extKeys[1].extKey;
+
                 assert.deepEqual(record.oauth, {
                     "secret": "my secret key",
                     "redirectURI": "http://www.myredirecturi.com/",
@@ -5709,11 +6269,36 @@ describe("DASHBOARD UNIT Tests", function() {
                         //},
                         "_TTL": 12 * 3600 * 1000,
                         "acl": {
-                            "urac": {}
+                            'dev': {
+                                'example01': {
+                                    "access": ["user"],
+                                    "apis": {}
+                                }
+                            },
+                            'dashboard': {
+                                'urac': {
+                                    "access": false,
+                                    "apis": {
+                                        "/account/changeEmail": {
+                                            "access": true
+                                        }
+                                    }
+                                },
+                                'dashboard': {
+                                    "access": ["owner"],
+                                    "apis": {}
+                                }
+                            }
                         },
                         "keys": [
                             {
                                 "extKeys": [
+                                    {
+                                        "expDate": new Date(expDateValue).getTime() + config.expDateTTL,
+                                        "device": {'a': 'b'},
+                                        "geo": {'x': 'y'},
+                                        "env": 'DEV'
+                                    },
                                     {
                                         "expDate": new Date(expDateValue).getTime() + config.expDateTTL,
                                         "device": {'a': 'b'},

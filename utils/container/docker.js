@@ -58,7 +58,7 @@ var lib = {
 				}
 
 				if (!certs || certs.length === 0) {
-					return cb("No certificates for " + config.envCode + " environment exist");
+					return cb({'message': "No certificates for " + config.envCode + " environment exist"});
 				}
 
 				mongo.getMongoSkinDB(function (error, db) {

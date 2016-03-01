@@ -4,6 +4,7 @@
             <option value="container">{{translation.container[LANG]}}</option>
         </select>&nbsp;
         <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+        <br><br><br>
         <div ng-if="allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket']">
             <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
             <br><br>

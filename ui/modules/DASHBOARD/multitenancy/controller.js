@@ -862,9 +862,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						var postData = {
 							'productCode': formData.product,
 							'packageCode': formData.package,
-							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+							'description': formData.description
 						};
+
+						if (formData._TTL) {
+							postData._TTL = Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString();
+						}
 
 						postData.packageCode = packageCode;
 						postData.acl = recordData.acl;

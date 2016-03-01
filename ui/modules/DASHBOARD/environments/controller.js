@@ -70,8 +70,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							}
 
 							if ($scope.formEnvironment.deployer) {
-								for (var driver in $scope.formEnvironment.deployer.docker) {
-									$scope.formEnvironment.deployer.docker[driver] = JSON.stringify($scope.formEnvironment.deployer.docker[driver], null, 2);
+								for (var driver in $scope.formEnvironment.deployer.container) {
+									$scope.formEnvironment.deployer.container[driver] = JSON.stringify($scope.formEnvironment.deployer.container[driver], null, 2);
 								}
 							}
 
@@ -157,19 +157,19 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								break;
 							case 'socket':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'docker.socket';
+								tmpl.deployer.selected = 'container.docker.socket';
 								break;
 							case 'machine':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'docker.machine';
+								tmpl.deployer.selected = 'container.dockermachine.local';
 								break;
 							case 'joyent':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'docker.joyent';
+								tmpl.deployer.selected = 'container.dockermachine.cloud.joyent';
 								break;
 							case 'rackspace':
 								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'docker.rackspace';
+								tmpl.deployer.selected = 'container.dockermachine.cloud.rackspace';
 								break;
 						}
 						getSendDataFromServer($scope, ngDataApi, {

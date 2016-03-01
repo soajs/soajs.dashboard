@@ -282,7 +282,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 						var postData = {
 							'name': formData.name,
 							'description': formData.description,
-							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL
+							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
 						};
 						postData.acl = data.acl;
 						getSendDataFromServer($scope, ngDataApi, {

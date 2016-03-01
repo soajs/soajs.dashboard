@@ -2,6 +2,7 @@
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
+var fs = require('fs');
 
 var soajs = require('soajs');
 var Mongo = soajs.mongo;
@@ -89,14 +90,62 @@ describe("testing hosts deployment", function () {
                 assert.ifError(error);
                 assert.ok(body);
                 soajsauth = body.soajsauth;
+
+                var validDeployerRecord = {
+                    "type": "container",
+                    "selected": "container.dockermachine.local",
+                    "container": {
+                        "dockermachine": {
+                            "local": {
+                                "host": "localhost",
+                                "port": 5354,
+                                "config": {
+                                    "HostConfig": {
+                                        "NetworkMode": "soajsnet"
+                                    },
+                                    "MachineName": "soajs-dev"
+                                }
+                            },
+                            "cloud": {
+                                "rackspace": {
+                                    "host": "docker.rackspace.com",
+                                    "port": 2376
+                                    //additional info goes here like instances, credentials or keys ....
+                                }
+                            }
+                        },
+                        "docker": {
+                            "socket": {
+                                "socketPath": "/var/run/docker.sock"
+                            }
+                        }
+                    }
+                };
                 mongo.update("environment", {"code": "DEV"}, {
                     "$set": {
-                        "deployer.type": "container",
+                        "deployer": validDeployerRecord,
                         "profile": __dirname + "/../profiles/single.js"
                     }
                 }, function (error) {
                     assert.ifError(error);
-                    done();
+                    //upload a fake certificate to fs.files
+                    var testUploadFilesDir = __dirname + "/../uploads/";
+                    var params = {
+                        qs: {
+                            filename: 'test_cert.pem',
+                            envCode: 'DEV',
+                            driver: 'dockermachine - local'
+                        },
+                        formData: {
+                            file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
+                        }
+                    };
+
+                    executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+                        done();
+                    });
                 });
             });
         });
@@ -121,7 +170,6 @@ describe("testing hosts deployment", function () {
                 }
             };
             executeMyRequest(params, "hosts/deployController", "post", function (body) {
-                console.log (JSON.stringify (body));
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -180,6 +228,142 @@ describe("testing hosts deployment", function () {
                 });
             });
         });
+
+        it("fail - trying to deploy to an environment that is configured to be deployed manually", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                "form": {
+                    "name": "urac",
+                    "envCode": "STG",
+                    "variables": [
+                        "TEST_VAR=mocha"
+                    ]
+                }
+            };
+            executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {'code': 618, 'message': errorCodes[618]});
+                done();
+            });
+        });
+
+        it("fail - trying to deploy without certificates", function (done) {
+            mongo.update("environment", {"code": "STG"}, {"$set": {"deployer.type": "container"}}, function (error, result) {
+                assert.ifError(error);
+                assert.ok(result);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "mike-srv",
+                        "envCode": "STG",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 615, 'message': errorCodes[615]});
+                    done();
+                });
+            });
+        });
+    });
+
+    describe("testing daemon deployment", function () {
+        var gcRecord;
+        before("add a gc daemon", function (done) {
+            mongo.findOne('gc', {}, function (error, gcr) {
+                assert.ifError(error);
+                assert.ok(gcr);
+
+                gcRecord = gcr;
+                var daemonGcRecord = {
+                    name: gcRecord.name,
+                    gcId: gcRecord._id.toString(),
+                    gcV: gcRecord.v,
+                    port: 1111,
+                    jobs: {}
+                };
+                mongo.insert("daemons", daemonGcRecord, function (error, result) {
+                    assert.ifError(error);
+                    assert.ok(result);
+                    done();
+                });
+            });
+        });
+
+        it("success - deploy 1 daemon", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                "form": {
+                    "name": "helloDaemon",
+                    "grpConfName": "group1",
+                    "envCode": "DEV",
+                    "variables": [
+                        "TEST_VAR=mocha"
+                    ]
+                }
+            };
+            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                    assert.ifError(error);
+                    assert.ok(oneContainerRecord);
+                    done();
+                });
+            });
+        });
+
+        it("success - deploy 1 gc daemon", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                "form": {
+                    "gcName": gcRecord.name,
+                    "gcVersion": gcRecord.v,
+                    "grpConfName": "group1",
+                    "envCode": "DEV",
+                    "variables": [
+                        "TEST_VAR=mocha"
+                    ]
+                }
+            };
+            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
+
+        it("fail - missing required params", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                "form": {
+                    "envCode": "DEV",
+                    "variables": [
+                        "TEST_VAR=mocha"
+                    ]
+                }
+            };
+            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: grpConfName"});
+                done();
+            });
+        });
+
     });
 
     describe("testing get service logs", function () {
