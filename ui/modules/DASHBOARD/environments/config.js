@@ -49,17 +49,6 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
-					'name': 'profile',
-					'label': translation.profileToUse[LANG],
-					'type': 'select',
-					'value': [
-						{'v': 'single', 'l': translation.single[LANG], 'selected': true},
-						{'v': 'replica3', 'l': translation.replica3[LANG]},
-						{'v': 'replica5', 'l': translation.replica5[LANG]}
-					],
-					'required': false
-				},
-				{
 					'name': 'platformDriver',
 					'label': translation.platformDriver[LANG],
 					'type': 'select',

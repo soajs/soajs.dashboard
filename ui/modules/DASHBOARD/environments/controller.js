@@ -75,9 +75,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								}
 							}
 
-							$scope.formEnvironment.profile = $scope.formEnvironment.profile.split("/");
-							$scope.formEnvironment.profile = $scope.formEnvironment.profile[$scope.formEnvironment.profile.length - 1];
-							$scope.formEnvironment.profile = $scope.formEnvironment.profile.replace(".js", "");
 							break;
 						}
 					}
@@ -145,7 +142,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						tmpl.domain = formData.domain;
 						tmpl.port = parseInt(formData.port);
 						tmpl.description = formData.description;
-						tmpl.profile = formData.profile;
 
 						tmpl.services.config.key.password = formData.tKeyPass;
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;

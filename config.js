@@ -402,15 +402,7 @@ module.exports = {
 			        "type": "string",
 			        "format": "hostname"
 		        }
-	        },
-            "profile": {
-                "required": true,
-                "source": ['body.profile'],
-                "validation": {
-                    "type": "string",
-                    "enum": ['single', 'replica3', 'replica5']
-                }
-            }
+	        }
         },
         "/environment/delete": {
             _apiInfo: {
@@ -432,15 +424,7 @@ module.exports = {
 			        "type": "string",
 			        "format": "hostname"
 		        }
-	        },
-	        "profile": {
-                "required": true,
-                "source": ['body.profile'],
-                "validation": {
-                    "type": "string",
-                    "enum": ['single', 'replica3', 'replica5']
-                }
-            }
+	        }
         },
         "/environment/key/update": {
             _apiInfo: {
