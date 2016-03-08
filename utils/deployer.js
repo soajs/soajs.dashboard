@@ -21,7 +21,7 @@ var deployer = {
         var name = params.name;
         var environment = params.env;
         var dockerImage = params.image;
-        var profile = params.profile;
+        //var profile = params.profile;
         var links = params.links;
 
         generateUniqueId(8, function (err, uid) {
@@ -32,8 +32,7 @@ var deployer = {
             var containerName = name + "_" + uid + "_" + environment;
 
             var env = [
-                "SOAJS_ENV=" + environment,
-                "SOAJS_PROFILE=" + profile
+                "SOAJS_ENV=" + environment
             ];
 
             //used by gc service to pass new env params
@@ -76,12 +75,6 @@ var deployer = {
 
             if (params.Cmd) {
                 options.Cmd = params.Cmd;
-            }
-            if (params.Binds) {
-                options.HostConfig.Binds = params.Binds;
-            }
-            if(params.Volumes){
-                options.Volumes = params.Volumes;
             }
             deployer.createContainer(deployerConfig, options, mongo, cb);
         });
