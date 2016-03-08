@@ -8,7 +8,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		listStaticContent(currentScope, function (staticContentSources) {
 			var customUIEntry = {
 				'name': 'useCustomUI',
-				'label': 'Use Custom UI?',
+				'label': 'Do you want to bundle static content?',
 				'type': 'radio',
 				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 				'required': true,
@@ -24,15 +24,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						staticContentSources.forEach (function (oneSource) {
 							selectCustomUI.value.push ({'v': oneSource._id, 'l': oneSource.name});
 						});
-						formConfig.entries.splice(3, 0, selectCustomUI);
+						formConfig.entries.splice(2, 0, selectCustomUI);
 					} else {
-						if (formConfig.entries[3].name === 'selectCustomUI') {
-							formConfig.entries.splice(3, 1);
+						if (formConfig.entries[2].name === 'selectCustomUI') {
+							formConfig.entries.splice(2, 1);
 						}
 					}
 				}
 			};
-			formConfig.entries.splice(2, 0, customUIEntry);
+			formConfig.entries.splice(1, 0, customUIEntry);
 
 			for (var i = 0; i < formConfig.entries.length; i++) {
 				if (formConfig.entries[i].name === 'defaultENVVAR') {
@@ -85,22 +85,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		});
 
 		function deployEnvironment(formData) {
-			//new param: nginxConfig
-			//sitePath: deployDir
-			//dashboardBranch: if deploy dashboard is selected, include it
-			//git info for custom ui: if custom ui is selected, pass _id then grab info from staticContent collection on api level
-			console.log (formData);
 			var params = {
 				'envCode': envCode,
 				"number": formData.controllers,
-				'nginxConfig': {
-					'sitePath': formData.deployDir,
-					'useDashUI': formData.useDashboardUI
-				}
 			};
 
 			if (formData.useCutomUI) {
-				params.nginxConfig.customUIId = formData.selectCustomUI;
+				params.nginxConfig = {
+					customUIId: formData.selectCustomUI
+				};
 			}
 
 			if(formData.variables && formData.variables !== ''){

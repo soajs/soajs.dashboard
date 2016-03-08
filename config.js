@@ -1805,12 +1805,10 @@ module.exports = {
             },
             "nginxConfig": {
                 "source": ["body.nginxConfig"],
-                "required": true,
+                "required": false,
                 "validation": {
                     "type": "object",
                     "properties": {
-                        "sitePath": {"type": "string", "required": true},
-                        "useDashUI": {"type": "boolean", "required": true},
                         "customUIId": {"type": "string", "required": false}
                     }
                 }
