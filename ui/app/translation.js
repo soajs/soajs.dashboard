@@ -1485,6 +1485,10 @@ var errorCodes = {
 			"ENG": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 			"FRA": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment"
 		},
+		"741": {
+			"ENG": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
+			"FRA": "Missing service source information. Make sure you include type, owner, repo, branch, and main"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."

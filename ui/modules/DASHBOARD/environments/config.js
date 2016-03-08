@@ -288,6 +288,20 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
+					'name': 'useDashboardUI',
+					'label': 'Use Dashboard UI?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+					'required': true
+				},
+				{
+					'name': 'deployDir',
+					'label': 'UI Deployment Directory',
+					'type': 'text',
+					'value': '/opt/soajs/dashboard',
+					'required': true
+				},
+				{
 					'name': 'variables',
 					"label": translation.environmentVariables[LANG],
 					"type": "textarea",

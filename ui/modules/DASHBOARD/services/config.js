@@ -135,6 +135,63 @@ var servicesConfig = {
 					'required': true
 				},
 				{
+					"name": "source",
+					"label": "Deployment Source",
+					"type": "group",
+					'collapsed': false,
+					"class": "serviceSource",
+					"entries": [
+						{
+							'name': 'type',
+							'label': "Type",
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: github',
+							'required': true
+						},
+						{
+							'name': 'owner',
+							'label': "Owner",
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: soajs',
+							'required': true
+						},
+						{
+							'name': 'repo',
+							'label': "Repository",
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: soajs.dashboard',
+							'required': true
+						},
+						{
+							'name': 'branch',
+							'label': "Branch",
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: master',
+							'required': true
+						},
+						{
+							'name': 'main',
+							'label': "Main File",
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: /index.js',
+							'required': true
+						},
+						{
+							'name': 'token',
+							'label': 'Token',
+							'type': 'text',
+							'value': '',
+							'placeholder': 'Example: my_token',
+							'required': false
+						}
+					]
+				},
+				{
 					"name": "apis",
 					"label": translation.serviceAPIs[LANG],
 					"type": "group",

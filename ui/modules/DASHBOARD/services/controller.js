@@ -59,6 +59,11 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						count++;
 					}
 				}
+			} else if (oneEntry.name === 'source') {
+				oneEntry.entries.forEach (function (oneSubEntry) {
+					var property = oneSubEntry.name;
+					oneSubEntry.value = service.src[property];
+				});
 			}
 		});
 		var options = {
@@ -93,22 +98,33 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
+							'extKeyRequired': formData.extKeyRequired,
 							"port": formData.port,
-							"awareness": formData.awareness
+							"awareness": formData.awareness,
+							'src': {
+								type: formData.type,
+								owner: formData.owner,
+								repo: formData.repo,
+								branch: formData.branch,
+								main: formData.main
+							}
 						};
-						var extKeyRequired;
-						if (Array.isArray(formData.extKeyRequired)) {
-							extKeyRequired = formData.extKeyRequired[0];
-							postData.extKeyRequired = extKeyRequired;
+						if (formData.token) {
+							postData.src.token = formData.token;
 						}
-						else {
-							extKeyRequired = formData.extKeyRequired;
-						}
-						if (extKeyRequired === 'true') {
-							postData.extKeyRequired = true;
-						} else if (extKeyRequired === 'false') {
-							postData.extKeyRequired = false;
-						}
+						//var extKeyRequired;
+						//if (Array.isArray(formData.extKeyRequired)) {
+						//	extKeyRequired = formData.extKeyRequired[0];
+						//	postData.extKeyRequired = extKeyRequired;
+						//}
+						//else {
+						//	extKeyRequired = formData.extKeyRequired;
+						//}
+						//if (extKeyRequired === 'true') {
+						//	postData.extKeyRequired = true;
+						//} else if (extKeyRequired === 'false') {
+						//	postData.extKeyRequired = false;
+						//}
 
 						var awareness;
 						if (Array.isArray(formData.awareness)) {

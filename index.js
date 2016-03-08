@@ -11,6 +11,7 @@ var tenant = require('./lib/tenant.js');
 var host = require("./lib/host.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
+var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
 var service = new soajs.server.service({
@@ -422,6 +423,26 @@ service.init(function() {
 	service.get("/daemons/groupConfig/tenantExtKeys/list", function (req, res) {
 		checkForMongo(req);
 		daemons.listTenantExtKeys(config, mongo, req, res);
+	});
+
+	/**
+	 * Static Content features
+	 */
+	service.post("/staticContent/list", function (req, res) {
+		checkForMongo(req);
+		staticContent.list(config, mongo, req, res);
+	});
+	service.post("/staticContent/add", function (req, res) {
+		checkForMongo(req);
+		staticContent.add(config, mongo, req, res);
+	});
+	service.post("/staticContent/update", function (req, res) {
+		checkForMongo(req);
+		staticContent.update(config, mongo, req, res);
+	});
+	service.get("/staticContent/delete", function (req, res) {
+		checkForMongo(req);
+		staticContent.delete(config, mongo, req, res);
 	});
 
 	/**

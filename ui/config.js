@@ -16,7 +16,8 @@ var modules = {
 	"develop":{
 		"DASHBOARD":{
 			services: 'modules/DASHBOARD/services/install.js',
-			contentBuilder: 'modules/DASHBOARD/contentBuilder/install.js'
+			contentBuilder: 'modules/DASHBOARD/contentBuilder/install.js',
+			staticContent: 'modules/DASHBOARD/staticContent/install.js'
 		}
 	},
 	"manage":{

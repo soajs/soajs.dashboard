@@ -158,6 +158,8 @@ var errors = {
 
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 
+	"741": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
+
 	"750": "Invalid Request.",
 
 	901: "Error Logging out from environments",

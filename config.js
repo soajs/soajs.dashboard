@@ -364,6 +364,48 @@ module.exports = {
                 'validation': {
                     'type': 'boolean'
                 }
+            },
+            'type': {
+                'source': ['body.type'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'owner': {
+                'source': ['body.owner'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'repo': {
+                'source': ['body.repo'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'branch': {
+                'source': ['body.branch'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'main': {
+                'source': ['body.main'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            },
+            'token': {
+                'source': ['body.token'],
+                'required': false,
+                'validation': {
+                    'type': 'string'
+                }
             }
         },
         "/environment/list": {
@@ -1415,6 +1457,21 @@ module.exports = {
                 "validation": {
                     "type": "string"
                 }
+            },
+            'src': {
+                'source': ['body.src'],
+                'required': true,
+                'validation': {
+                    "type": "object",
+                    "properties": {
+                        "type": {"type": "string", "required": true},
+                        "owner": {"type": "string", "required": true},
+                        "repo": {"type": "string", "required": true},
+                        "branch": {"type": "string", "required": true},
+                        "main": {"type": "string", "required": true},
+                        "token": {"type": "string", "required": false}
+                    }
+                }
             }
         },
 
@@ -1562,6 +1619,55 @@ module.exports = {
             'commonFields': ['id', 'jobName']
         },
 
+        "/staticContent/list": {
+            _apiInfo: {
+                "l": "List Static Content",
+                "group": "Static Content"
+            },
+            'staticContentNames': {
+                'source': ['body.staticContentNames'],
+                'required': false,
+                'validation': {
+                    'type': 'array',
+                    'items': {'type': 'string'}
+                }
+            }
+        },
+        "/staticContent/add": {
+            _apiInfo: {
+                "l": "Add Static Content",
+                "group": "Static Content"
+            },
+            'commonFields': ['name', 'type', 'owner', 'repo', 'branch', 'main', 'token']
+        },
+        "/staticContent/update": {
+            _apiInfo: {
+                "l": "Update Static Content",
+                "group": "Static Content"
+            },
+            'commonFields': ['name', 'type', 'owner', 'repo', 'branch', 'main', 'token'],
+            'id': {
+                'source': ['query.id'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+        "/staticContent/delete": {
+            _apiInfo: {
+                "l": "Delete Static Content",
+                "group": "Static Content"
+            },
+            'id': {
+                'source': ['query.id'],
+                'required': true,
+                'validation': {
+                    'type': 'string'
+                }
+            }
+        },
+
         "/hosts/list": {
             _apiInfo: {
                 "l": "List Hosts",
@@ -1695,6 +1801,18 @@ module.exports = {
                     "type": "array",
                     "minItems": 1,
                     "items": {"type": "string"}
+                }
+            },
+            "nginxConfig": {
+                "source": ["body.nginxConfig"],
+                "required": true,
+                "validation": {
+                    "type": "object",
+                    "properties": {
+                        "sitePath": {"type": "string", "required": true},
+                        "useDashUI": {"type": "boolean", "required": true},
+                        "customUIId": {"type": "string", "required": false}
+                    }
                 }
             }
         },
