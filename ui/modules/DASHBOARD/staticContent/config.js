@@ -4,66 +4,66 @@ var staticContentConfig = {
             "entries": [
                 {
                     "name": "name",
-                    "label": "Name",
+                    "label": translation.name[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Static Content Name",
-                    "placeholder": "Example: Dashboard UI Source",
+                    "tooltip": translation.staticContentName[LANG],
+                    "placeholder": translation.exampleDashUISource[LANG],
                     "required": true
                 },
                 {
                     "name": "type",
-                    "label": "Type",
+                    "label": translation.type[LANG],
                     "type": "text",
                     "value": "github",
-                    "tooltip": "Source Type",
-                    "placeholder": "Example: github",
+                    "tooltip": translation.sourceType[LANG],
+                    "placeholder": translation.exampleGithub[LANG],
                     "required": true
                 },
                 {
                     "name": "owner",
-                    "label": "Owner",
+                    "label": translation.owner[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source Owner",
-                    "placeholder": "Example: soajs",
+                    "tooltip": translation.sourceOwner[LANG],
+                    "placeholder": translation.exampleSoajs[LANG],
                     "required": true
                 },
                 {
                     "name": "repo",
-                    "label": "Repository",
+                    "label": translation.repository[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source Repository",
-                    "placeholder": "Example: soajs.dashboard",
+                    "tooltip": translation.sourceRepository[LANG],
+                    "placeholder": translation.exampleSoajsDashboard[LANG],
                     "required": true
                 },
                 {
                     "name": "branch",
-                    "label": "Branch",
+                    "label": translation.branch[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source Branch",
-                    "placeholder": "Example: master",
+                    "tooltip": translation.sourceBranch[LANG],
+                    "placeholder": translation.exampleMaster[LANG],
                     "required": true
                 },
                 {
                     "name": "main",
-                    "label": "Main File",
+                    "label": translation.mainFile[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source Main File",
-                    "placeholder": "Example: /index.html",
+                    "tooltip": translation.sourceMainFile[LANG],
+                    "placeholder": translation.exampleIndex[LANG],
                     "required": true
                 },
                 {
                     "name": "token",
-                    "label": "OAuth",
+                    "label": translation.oauth[LANG],
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source OAuth",
-                    "placeholder": "Example: my_oauth",
-                    "fieldMsg": "Add OAuth if you are using a private repository",
+                    "tooltip": translation.sourceOauth[LANG],
+                    "placeholder": translation.exampleMyOauth[LANG],
+                    "fieldMsg": translation.oauthIfUsingPrivateRepo[LANG],
                     "required": false
                 }
             ]

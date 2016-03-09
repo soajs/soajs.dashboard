@@ -160,6 +160,11 @@ var errors = {
 
 	"741": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
 
+	"742": "Unable to list static content sources",
+	"743": "Unable to add static content source",
+	"744": "Unable to update static content source",
+	"745": "Unable to delete static content source",
+
 	"750": "Invalid Request.",
 
 	901: "Error Logging out from environments",

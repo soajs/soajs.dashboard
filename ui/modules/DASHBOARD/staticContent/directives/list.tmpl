@@ -1,27 +1,27 @@
 <section ng-controller="staticContentCtrl">
-    <a ng-if="access.add" href="" class="btn btn-primary" ng-click="addSource()">Add New Source</a><br><br>
+    <a ng-if="access.add" href="" class="btn btn-primary" ng-click="addSource()">{{translation.addNewSource[LANG]}}</a><br><br>
     <div class="entryBoxes entryBoxesGrid">
         <div id="{{source._id}}" ng-repeat="source in staticContentList" class="entryBox customEntryBox">
             <div class="header opened">
                 <span class="icon icon-github" ng-if="source.type === 'github'"></span>
                 {{source.name|uppercase}}
-                <span ng-if="source.token"><b><span class="icon icon-key"></span>Private Repository</b></span>
+                <span ng-if="source.token"><b><span class="icon icon-key"></span>{{translation.privateRepo[LANG]}}</b></span>
             </div>
             <div class="body">
-                <label>Type:</label>&nbsp;{{source.type}}<br>
-                <label>Owner:</label>&nbsp;{{source.owner}}<br>
-                <label>Repository:</label>&nbsp;{{source.repo}}<br>
-                <label>Branch:</label>&nbsp;{{source.branch}}<br>
-                <label>Main File:</label>&nbsp;{{source.main}}<br>
+                <label>{{translation.type[LANG]}}:</label>&nbsp;{{source.type}}<br>
+                <label>{{translation.owner[LANG]}}:</label>&nbsp;{{source.owner}}<br>
+                <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.repo}}<br>
+                <label>{{translation.branch[LANG]}}:</label>&nbsp;{{source.branch}}<br>
+                <label>{{translation.mainFile[LANG]}}:</label>&nbsp;{{source.main}}<br>
                 <label ng-if="source.token">Token:</label>&nbsp;{{source.tokenDisplay}}&nbsp;
                 <a href="" class="icon icon-{{source.tokenDisplayIcon}}" ng-click="showHideToken(source)"></a>
 
                 <div class="entryAction">
                     <a href="" ng-click="updateSource(source);" ng-if="access.update">
-                        <span class="icon icon-pencil2" tooltip="Update Source"></span>
+                        <span class="icon icon-pencil2" tooltip="{{translation.updateSource[LANG]}}"></span>
                     </a>
-                    <a href="" ng-click="deleteSource(source);" ng-if="access.delete" ng-confirm-click="Are you sure you want to delete this source?">
-                        <span class="icon icon-cross" tooltip="Delete Source"></span>
+                    <a href="" ng-click="deleteSource(source);" ng-if="access.delete" ng-confirm-click="{{translation.areYouSureYouWantToDeleteSource[LANG]}}">
+                        <span class="icon icon-cross" tooltip="{{translation.deleteSource[LANG]}}"></span>
                     </a>
                 </div>
             </div>

@@ -1489,6 +1489,22 @@ var errorCodes = {
 			"ENG": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
 			"FRA": "Missing service source information. Make sure you include type, owner, repo, branch, and main"
 		},
+		"742": {
+			"ENG": "Unable to list static content sources",
+			"FRA": "Unable to list static content sources"
+		},
+		"743": {
+			"ENG": "Unable to add static content source",
+			"FRA": "Unable to add static content source"
+		},
+		"744": {
+			"ENG": "Unable to update static content source",
+			"FRA": "Unable to update static content source"
+		},
+		"745": {
+			"ENG": "Unable to delete static content source",
+			"FRA": "Unable to delete static content source"
+		},
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
