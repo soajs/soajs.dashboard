@@ -68,7 +68,7 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
                             if (error) {
                                 $scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
                             } else {
-                                $scope.$parent.displayAlert('success', 'Static Content source added successfully');
+                                $scope.$parent.displayAlert('success', translation.staticContentSourceAdded[LANG]);
                                 $scope.modalInstance.close();
                                 $scope.form.formData = {};
                                 $scope.listSources();
@@ -128,7 +128,7 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
                             if (error) {
                                 $scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
                             } else {
-                                $scope.$parent.displayAlert('success', 'Static content source updated successfully');
+                                $scope.$parent.displayAlert('success', translation.staticContentSourceUpdated[LANG]);
                                 $scope.modalInstance.close();
                                 $scope.form.formData = {};
                                 $scope.listSources();
@@ -159,7 +159,7 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
             if (error) {
                 $scope.displayAlert('danger', error.code, true, 'dashboard', error.message);
             } else {
-                $scope.displayAlert('success', 'Static content source deleted successfully');
+                $scope.displayAlert('success', translation.staticContentSourceDeleted[LANG]);
                 $scope.listSources();
             }
         });

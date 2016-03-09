@@ -87,7 +87,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		function deployEnvironment(formData) {
 			var params = {
 				'envCode': envCode,
-				"number": formData.controllers,
+				"number": formData.controllers
 			};
 
 			if (formData.useCutomUI) {
@@ -126,7 +126,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'routeName': '/dashboard/staticContent/list'
 			}, function (error, response) {
 				if (error) {
-					currentScope.$parent.displayAlert('danger', "");
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				} else {
 					cb(response);
 				}

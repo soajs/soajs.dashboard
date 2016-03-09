@@ -107,6 +107,18 @@ var scTranslation = {
     "privateRepo": {
         "ENG": "Private Repository",
         "FRA": "Private Repository"
+    },
+    "staticContentSourceAdded": {
+        "ENG": "Static Content source added successfully",
+        "FRA": "Static Content source added successfully"
+    },
+    "staticContentSourceUpdated": {
+        "ENG": "Static Content source updated successfully",
+        "FRA": "Static Content source updated successfully"
+    },
+    "staticContentSourceDeleted": {
+        "ENG": "Static Content source deleted successfully",
+        "FRA": "Static Content source deleted successfully"
     }
 };
 
