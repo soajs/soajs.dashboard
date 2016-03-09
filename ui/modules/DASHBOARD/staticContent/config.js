@@ -15,7 +15,7 @@ var staticContentConfig = {
                     "name": "type",
                     "label": "Type",
                     "type": "text",
-                    "value": "",
+                    "value": "github",
                     "tooltip": "Source Type",
                     "placeholder": "Example: github",
                     "required": true
@@ -58,12 +58,12 @@ var staticContentConfig = {
                 },
                 {
                     "name": "token",
-                    "label": "Token",
+                    "label": "OAuth",
                     "type": "text",
                     "value": "",
-                    "tooltip": "Source Token",
-                    "placeholder": "Example: my_token",
-                    "fieldMsg": "Add a token only if you are using a private repository",
+                    "tooltip": "Source OAuth",
+                    "placeholder": "Example: my_oauth",
+                    "fieldMsg": "Add OAuth if you are using a private repository",
                     "required": false
                 }
             ]

@@ -145,7 +145,7 @@ var servicesConfig = {
 							'name': 'type',
 							'label': "Type",
 							'type': 'text',
-							'value': '',
+							'value': 'github',
 							'placeholder': 'Example: github',
 							'required': true
 						},
@@ -183,10 +183,10 @@ var servicesConfig = {
 						},
 						{
 							'name': 'token',
-							'label': 'Token',
+							'label': 'OAuth',
 							'type': 'text',
 							'value': '',
-							'placeholder': 'Example: my_token',
+							'placeholder': 'Example: my_oauth',
 							'required': false
 						}
 					]
