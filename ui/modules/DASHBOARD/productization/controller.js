@@ -414,16 +414,17 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		var serviceNames = [];
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
-			"routeName": "/dashboard/services/list",
-			"data": {"serviceNames": serviceNames}
+			"routeName": "/dashboard/services/list"
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
 				response.forEach(function (serv) {
-					serv.fixList = aclHelpers.groupApisForDisplay(serv.apis, 'group');
-					delete serv.apis;
+					if (serv.apis) {
+						serv.fixList = aclHelpers.groupApisForDisplay(serv.apis, 'group');
+						delete serv.apis;
+					}
 				});
 
 				$scope.allServiceApis = response;
