@@ -13,7 +13,7 @@
                 <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.repo}}<br>
                 <label>{{translation.branch[LANG]}}:</label>&nbsp;{{source.branch}}<br>
                 <label>{{translation.mainFile[LANG]}}:</label>&nbsp;{{source.main}}<br>
-                <label ng-if="source.token">Token:</label>&nbsp;{{source.tokenDisplay}}&nbsp;
+                <label ng-if="source.token">{{translation.oauth[LANG]}}:</label>&nbsp;{{source.tokenDisplay}}&nbsp;
                 <a href="" class="icon icon-{{source.tokenDisplayIcon}}" ng-click="showHideToken(source)"></a>
 
                 <div class="entryAction">

@@ -768,6 +768,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         }
                         postServiceList.push(servObj);
                     } else if (env.toLowerCase() !== 'dashboard' &&
+                        oneService.name !== 'controller' && //controller is added later manually
                         ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || //not a locked service for dashboard and non dashboard environments
                         (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
                         servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
