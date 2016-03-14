@@ -294,7 +294,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
             //combine config entries of input type files and data from gcs database
             config.entries.forEach(function (oneFormField) {
                 if (['audio', 'video', 'image', 'document'].indexOf(oneFormField.type) !== -1) {
-                    oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?env=" + $scope.selectedEnv.toUpperCase() + "&id=";
+                    oneFormField.removeFileUrl = "/" + $scope.selectedService.name + "/deleteFile?id=";
                     oneFormField.value = [];
                     if(data[oneFormField.name] && Array.isArray(data[oneFormField.name]) && data[oneFormField.name].length > 0){
                         data[oneFormField.name].forEach(function(onefileInput){
@@ -354,7 +354,16 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
                                         $scope.form.displayAlert('danger', error.message);
                                     }
                                     else {
+                                        var hasContentToUpload = false;
                                         if (typeof(files) === 'object' && Object.keys(files).length > 0) {
+                                            for (var type in files) {
+                                                if (files[type].length > 0) {
+                                                    hasContentToUpload = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (hasContentToUpload) {
                                             cmService.UploadFile($scope, config, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
                                                 if (error) {
                                                     $scope.form.displayAlert('danger', error);

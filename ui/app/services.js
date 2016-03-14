@@ -57,7 +57,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		var config = {
 			url: opts.url,
 			method: opts.method,
-			params: opts.params || '',
+			params: opts.params || {},
 			xsrfCookieName: opts.cookie || "",
 			cache: opts.cache || false,
 			timeout: opts.timeout || 60000,
@@ -84,6 +84,15 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		}
 		else {
 			config.headers.key = apiConfiguration.key;
+		}
+
+		if(opts.proxy){
+			if(!config.params.__env || !config.params.__envauth){
+				var envauth = $cookieStore.get('soajs_envauth');
+				var env = $cookieStore.get('myEnv').code;
+				config.params.__envauth = envauth[env.toLowerCase()];
+				config.params.__env = env.toUpperCase();
+			}
 		}
 
 		if (opts.jsonp === true) {
