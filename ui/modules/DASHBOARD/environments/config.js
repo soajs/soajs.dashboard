@@ -49,18 +49,6 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
-					'name': 'platformDriver',
-					'label': translation.platformDriver[LANG],
-					'type': 'select',
-					'value': [
-						{'v': 'socket', 'l': translation.socket[LANG], 'selected': true},
-						{'v': 'machine', 'l': translation.machine[LANG]},
-						{'v': 'joyent', 'l': 'Joyent'},
-						{'v': 'rackspace', 'l': 'Rackspace'}
-					],
-					'required': false
-				},
-				{
 					'name': 'tKeyPass',
 					'label': translation.tenantKeySecurityPassword[LANG],
 					'type': 'text',

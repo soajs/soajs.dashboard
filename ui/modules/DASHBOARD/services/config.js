@@ -71,14 +71,38 @@ var servicesConfig = {
 		],
 		"serviceCustomAdd": {
 			'entries': [
+				//{
+				//	'name': 'upload',
+				//	'label': translation.serviceFile[LANG],
+				//	'type': 'document',
+				//	'tooltip': translation.uploadServiceFile[LANG],
+				//	'required': false,
+				//	"limit": 1,
+				//	'fieldMsg': translation.formServiceCustomAddFieldMsg[LANG] + "."
+				//}
 				{
-					'name': 'upload',
-					'label': translation.serviceFile[LANG],
-					'type': 'document',
-					'tooltip': translation.uploadServiceFile[LANG],
-					'required': false,
-					"limit": 1,
-					'fieldMsg': translation.formServiceCustomAddFieldMsg[LANG] + "."
+					'name': 'githubAccount',
+					'label': 'GitHub Account',
+					'type': 'select',
+					'value': '',
+					'tooltip': 'Select a GitHub account',
+					'required': true
+				},
+				{
+					'name': 'githubRepo',
+					'label': 'GitHub Repository',
+					'type': 'select',
+					'value': '',
+					'tooltip': 'Select a GitHub repository',
+					'required': true
+				},
+				{
+					'name': 'githubBranch',
+					'label': 'GitHub Branch',
+					'type': 'select',
+					'value': '',
+					'tooltip': 'Select a GitHub branch',
+					'required': true
 				}
 			]
 		},

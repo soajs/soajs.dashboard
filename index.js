@@ -9,6 +9,7 @@ var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 var host = require("./lib/host.js");
+var github = require("./lib/github.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
@@ -353,6 +354,38 @@ service.init(function() {
 	service.post("/hosts/deployDaemon", function (req, res) {
 		checkForMongo(req);
 		host.deployDaemon(config, mongo, req, res);
+	});
+
+	/**
+	 * Github App features
+	 */
+	service.post("/github/login", function (req, res) {
+		checkForMongo(req);
+		github.login(mongo, config, req, res);
+	});
+	service.get("/github/logout", function (req, res) {
+		checkForMongo(req);
+		github.logout(mongo, config, req, res);
+	});
+	service.get("/github/accounts/list", function (req, res) {
+		checkForMongo(req);
+		github.listAccounts(mongo, config, req, res);
+	});
+	service.get("/github/getRepos", function (req, res) {
+		checkForMongo(req);
+		github.getRepos(mongo, config, req, res);
+	});
+	service.get("/github/getBranches", function (req, res) {
+		checkForMongo(req);
+		github.getBranches(mongo, config, req, res);
+	});
+	service.post("/github/repo/activate", function (req, res) {
+		checkForMongo(req);
+		github.activateRepo(mongo, config, req, res);
+	});
+	service.get('/github/repo/deactivate', function (req, res) {
+		checkForMongo(req);
+		github.deactivateRepo(mongo, config, req, res);
 	});
 
 	/**

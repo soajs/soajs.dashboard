@@ -1,0 +1,10 @@
+.customEntryBox {
+    width: 48% !important;
+    height: 196px !important;
+    padding-left: 0px !important;
+}
+
+.blueLi.active {
+    background-color: #DFF0D8 !important;
+    border-color: #3C763D !important;
+}

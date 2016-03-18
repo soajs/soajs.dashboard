@@ -20,20 +20,11 @@ module.exports = {
     "expDateTTL": 86400000,
     "ncpLimit": 16,
 
-	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/node_modules/profiles/",
-    "workDir": process.env.SOAJS_ENV_WORKDIR || "/",
+	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
 
     "images": {
         "nginx": 'soajsorg/nginx',
         "services": "soajsorg/soajs"
-    },
-
-    "upload": {
-        "dashboardFolderName": "/dashboard/",
-        "servicesFolderName": "/services/",
-        "uiFolderName": "/ui/",
-        "uploadFolderName": "/uploads/",
-        "tenantFolderName": "/tenants/"
     },
 
     "errors": require("./utils/errors"),
@@ -427,7 +418,7 @@ module.exports = {
                 "l": "Add Environment",
                 "group": "Environment"
             },
-            "commonFields": ['description', 'services', 'deployer', 'port'],
+            "commonFields": ['description', 'services', 'port'],
             "code": {
                 "source": ['body.code'],
                 "required": true,
@@ -1910,6 +1901,142 @@ module.exports = {
             "grpConfName": {
                 "required": true,
                 "source": ['body.grpConfName'],
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "/github/login": {
+            "_apiInfo": {
+                "l": "Github Login",
+                "group": "Github App"
+            },
+            "username": {
+                "source": ['body.username'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "password": {
+                "source": ['body.password'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "accountLabel": {
+                "source": ['body.accountLabel'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/github/logout": {
+            "_apiInfo": {
+                "l": "Github Logout",
+                "group": "Github App"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/github/getRepos": {
+            "_apiInfo": {
+                "l": "Github Get Repositories",
+                "group": "Github App"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "/github/getBranches": {
+            "_apiInfo": {
+                "l": "Github Get Repository Branches",
+                "group": "Github App"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "user": {
+                "source": ['query.user'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['query.repo'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/github/repo/activate": {
+            "_apiInfo": {
+                "l": "Activate Repository",
+                "group": "Github App"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "user": {
+                "source": ['body.user'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['body.repo'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
+        },
+        "/github/repo/deactivate": {
+            "_apiInfo": {
+                "l": "Deactivate Repository",
+                "group": "Github App"
+            },
+            "id": {
+                "source": ['query.id'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "user": {
+                "source": ['query.user'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['query.repo'],
+                "required": true,
                 "validation": {
                     "type": "string"
                 }

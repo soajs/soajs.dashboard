@@ -1,0 +1,50 @@
+<section ng-controller="githubAppCtrl">
+    <a href="" class="btn btn-primary" ng-click="addAccount()">Add Account</a>
+    <div ng-if="accounts && accounts.length === 0">
+        <alert type="warning">No GitHub accounts added yet!</alert>
+    </div>
+    <div ng-if="accounts.length > 0">
+        <div class="entryBoxes entryBoxesGrid">
+            <div id="{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+                <div class="header opened">
+                    {{account.label|uppercase}}&nbsp;&nbsp;[{{account.username}}]
+                </div>
+                <div class="body">
+                    <label>Repositories</label>
+                    <div ng-if="account.repo && account.repo.length === 0">
+                        <alert type="warning">No repositories found!</alert>
+                    </div>
+                    <ul class="blueListing" style="overflow:scroll; height:254px; width:100%">
+                        <li class="blueLi {{repo.status}}" ng-repeat="repo in account.repos" class="row-list" ng-style="{'width': '98%'}">
+                            {{repo.name}}
+                            <div class="rightActions">
+                                <a href="" class="icon icon-switch" ng-if="!repo.status" ng-click="activateRepo(account._id, repo)" tooltip="Activate" ng-style="{'margin-top': '-17px'}" ng-confirm-click="Are you sure you want to activate this repository?"></a>
+                                <a href="" class="icon icon-cross" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" tooltip="Deactivate" ng-style="{'margin-top': '-17px'}" ng-confirm-click="Are you sure you want to deactivate this repository?"></a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="entryAction">
+                        <a href="" ng-click="deleteAccount(account._id);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
+                            <span class="icon icon-cross" tooltip="{{translation.deleteSource[LANG]}}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/ng-template" id="repoAddSuccess.tmpl">
+
+    <div class="modal-body">
+        <!--<div ng-bind-html="text"></div>-->
+        <h4 style="text-align: center;">Repository has been activated</h4>
+        <label>The following modules were added:</label>
+        <ul>
+            <li ng-repeat="entry in added"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}&nbsp;&nbsp;&nbsp;<b>Repository: </b>{{entry.repo}}</li>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Dismiss</button>
+    </div>
+</script>

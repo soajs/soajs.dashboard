@@ -147,27 +147,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
 
-						switch (formData.platformDriver) {
-							case 'manual':
-								tmpl.deployer.type = 'manual';
-								break;
-							case 'socket':
-								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'container.docker.socket';
-								break;
-							case 'machine':
-								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'container.dockermachine.local';
-								break;
-							case 'joyent':
-								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'container.dockermachine.cloud.joyent';
-								break;
-							case 'rackspace':
-								tmpl.deployer.type = 'container';
-								tmpl.deployer.selected = 'container.dockermachine.cloud.rackspace';
-								break;
-						}
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/add",
