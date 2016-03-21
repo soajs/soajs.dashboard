@@ -13,7 +13,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             'routeName': '/dashboard/github/accounts/list'
         }, function (error, response) {
             if (error) {
-                $scope.$parent.displayAlert('danger', error.message);
+                $scope.displayAlert('danger', error.message);
             } else {
                 $scope.accounts = response;
 
@@ -73,18 +73,52 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.deleteAccount = function (accountId) {
-        getSendDataFromServer($scope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/github/logout',
-            params: {id: accountId.toString()}
-        }, function (error, result) {
-            if (error) {
-                $scope.displayAlert('danger', error.message);
-            } else {
-                $scope.displayAlert('success', 'Account logout was successful');
-                $scope.listAccounts();
-            }
-        });
+        var formConfig = angular.copy(githubAppConfig.form.logout);
+        var options = {
+            timeout: $timeout,
+            form: formConfig,
+            name: 'removeGithubAccount',
+            label: 'Remove GitHub Account',
+            actions: [
+                {
+                    'type': 'submit',
+                    'label': 'Submit',
+                    'btn': 'primary',
+                    'action': function (formData) {
+                        var params = {
+                            id: accountId,
+                            username: formData.username,
+                            password: formData.password
+                        };
+                        getSendDataFromServer($scope, ngDataApi, {
+                            'method': 'get',
+                            'routeName': '/dashboard/github/logout',
+                            'params': params
+                        }, function (error) {
+                            if (error) {
+                                $scope.$parent.displayAlert('danger', error.message);
+                                $scope.modalInstance.close();
+                            } else {
+                                $scope.$parent.displayAlert('success', 'Logout Successfull');
+                                $scope.modalInstance.close();
+                                $scope.form.formData = {};
+                                $scope.listAccounts();
+                            }
+                        });
+                    }
+                },
+                {
+                    'type': 'reset',
+                    'label': 'Cancel',
+                    'btn': 'danger',
+                    'action': function () {
+                        $scope.modalInstance.dismiss('cancel');
+                        $scope.form.formData = {};
+                    }
+                }
+            ]
+        };
+        buildFormWithModal($scope, $modal, options);
     };
 
     $scope.listRepos = function (accounts, counter) {
@@ -96,7 +130,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             "params": {id: id}
         }, function (error, response) {
             if (error) {
-                $scope.$parent.displayAlert('danger', error.message);
+                $scope.displayAlert('danger', error.message);
             } else {
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     if ($scope.accounts[i]._id === id) {
@@ -125,9 +159,9 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             }
         }, function (error, response) {
             if (error) {
-                $scope.$parent.displayAlert('danger', error.message);
+                $scope.displayAlert('danger', error.message);
             } else {
-                $scope.$parent.displayAlert('success', 'Repository has been activated');
+                $scope.displayAlert('success', 'Repository has been activated');
                 repo.status = 'active';
                 var repoAddSuccess = $modal.open({
                     templateUrl: 'repoAddSuccess.tmpl',
@@ -161,10 +195,25 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             }
         }, function (error, response) {
             if (error) {
-                $scope.$parent.displayAlert('danger', error.message);
+                $scope.displayAlert('danger', error.message);
             } else {
-                $scope.$parent.displayAlert('success', 'Repository has been deactivated');
-                repo.status = '';
+                $scope.displayAlert('success', 'Repository has been deactivated');
+                $scope.listAccounts();
+
+            }
+        });
+    };
+
+    $scope.syncRepo = function (accountId, repo) {
+        getSendDataFromServer($scope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/github/repo/sync'
+            //params
+        }, function (error, result) {
+            if (error) {
+                $scope.displayAlert('danger', error.message);
+            } else {
+                $scope.displayAlert('success', 'Repository has been synced');
             }
         });
     };

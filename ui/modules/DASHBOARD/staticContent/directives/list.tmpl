@@ -3,18 +3,13 @@
     <div class="entryBoxes entryBoxesGrid">
         <div id="{{source._id}}" ng-repeat="source in staticContentList" class="entryBox customEntryBox">
             <div class="header opened">
-                <span class="icon icon-github" ng-if="source.type === 'github'"></span>
                 {{source.name|uppercase}}
-                <span ng-if="source.token"><b><span class="icon icon-key"></span>{{translation.privateRepo[LANG]}}</b></span>
             </div>
             <div class="body">
-                <label>{{translation.type[LANG]}}:</label>&nbsp;{{source.type}}<br>
-                <label>{{translation.owner[LANG]}}:</label>&nbsp;{{source.owner}}<br>
-                <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.repo}}<br>
-                <label>{{translation.branch[LANG]}}:</label>&nbsp;{{source.branch}}<br>
-                <label>{{translation.mainFile[LANG]}}:</label>&nbsp;{{source.main}}<br>
-                <label ng-if="source.token">{{translation.oauth[LANG]}}:</label>&nbsp;{{source.tokenDisplay}}&nbsp;
-                <a href="" class="icon icon-{{source.tokenDisplayIcon}}" ng-click="showHideToken(source)"></a>
+                <label>{{translation.owner[LANG]}}:</label>&nbsp;{{source.src.owner}}<br>
+                <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.src.repo}}<br>
+                <label>{{translation.mainFile[LANG]}}:</label>&nbsp;{{source.src.main}}<br>
+                <label>{{translation.dashUI[LANG]}}:</label>&nbsp;{{source.dashUI}}
 
                 <div class="entryAction">
                     <a href="" ng-click="updateSource(source);" ng-if="access.update">

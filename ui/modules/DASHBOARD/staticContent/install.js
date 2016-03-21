@@ -119,6 +119,10 @@ var scTranslation = {
     "staticContentSourceDeleted": {
         "ENG": "Static Content source deleted successfully",
         "FRA": "Static Content source deleted successfully"
+    },
+    "dashUI": {
+        "ENG": "Dashboard UI",
+        "FRA": "Dashboard UI"
     }
 };
 

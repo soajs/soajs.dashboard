@@ -1945,6 +1945,20 @@ module.exports = {
                 "validation": {
                     "type": "string"
                 }
+            },
+            "username": {
+                "source": ['query.username'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "password": {
+                "source": ['query.password'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
             }
         },
         "/github/getRepos": {

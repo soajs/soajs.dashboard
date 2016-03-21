@@ -7,14 +7,6 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
     $scope.access = {};
     constructModulePermissions($scope, $scope.access, staticContentConfig.permissions);
 
-    $scope.tokenHide = "**********";
-    $scope.tokenShowIcon = "eye";
-    $scope.tokenHideIcon = "eye-blocked";
-    $scope.showHideToken = function (entry) {
-        (entry.tokenDisplay === $scope.tokenHide) ? entry.tokenDisplay = entry.token : entry.tokenDisplay = $scope.tokenHide;
-        (entry.tokenDisplayIcon === $scope.tokenHideIcon) ? entry.tokenDisplayIcon = $scope.tokenShowIcon : entry.tokenDisplayIcon = $scope.tokenHideIcon;
-    };
-
     $scope.listSources = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'send',
@@ -23,12 +15,6 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
             if (error) {
                 $scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
             } else {
-                response.forEach (function (oneValue) {
-                    if (oneValue.token) {
-                        oneValue.tokenDisplay = $scope.tokenHide;
-                        oneValue.tokenDisplayIcon = $scope.tokenShowIcon;
-                    }
-                });
                 $scope.staticContentList = response;
             }
         });

@@ -7,4 +7,11 @@
 .blueLi.active {
     background-color: #DFF0D8 !important;
     border-color: #3C763D !important;
+    color: #3c763d !important;
+}
+
+.blueLi.deleted {
+    background-color: #F2DEDE !important;
+    border-color: #EBCCD1 !important;
+    color: #a94442 !important;
 }
