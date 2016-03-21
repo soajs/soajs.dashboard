@@ -1921,13 +1921,27 @@ module.exports = {
             },
             "password": {
                 "source": ['body.password'],
+                "required": false,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "label": {
+                "source": ['body.label'],
                 "required": true,
                 "validation": {
                     "type": "string"
                 }
             },
-            "accountLabel": {
-                "source": ['body.accountLabel'],
+            "type": {
+                "source": ['body.type'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "access": {
+                "source": ['body.access'],
                 "required": true,
                 "validation": {
                     "type": "string"
@@ -1980,22 +1994,29 @@ module.exports = {
                 "l": "Github Get Repository Branches",
                 "group": "Github App"
             },
-            "id": {
-                "source": ['query.id'],
-                "required": true,
-                "validation": {
-                    "type": "string"
-                }
-            },
-            "user": {
-                "source": ['query.user'],
-                "required": true,
-                "validation": {
-                    "type": "string"
-                }
-            },
-            "repo": {
-                "source": ['query.repo'],
+            //"id": {
+            //    "source": ['query.id'],
+            //    "required": true,
+            //    "validation": {
+            //        "type": "string"
+            //    }
+            //},
+            //"user": {
+            //    "source": ['query.user'],
+            //    "required": true,
+            //    "validation": {
+            //        "type": "string"
+            //    }
+            //},
+            //"repo": {
+            //    "source": ['query.repo'],
+            //    "required": true,
+            //    "validation": {
+            //        "type": "string"
+            //    }
+            //}
+            "name": {
+                "source": ['query.name'],
                 "required": true,
                 "validation": {
                     "type": "string"

@@ -36,19 +36,26 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     'label': 'Submit',
                     'btn': 'primary',
                     'action': function (formData) {
+                        console.log (formData);
+                        //name | type | access | password if access
                         var postData = {
+                            label: formData.label,
                             username: formData.username,
-                            password: formData.password,
-                            accountLabel: formData.accountLabel
+                            type: formData.type,
+                            access: formData.access
                         };
+
+                        if (formData.access === 'private') {
+                            postData.password = formData.password;
+                        }
+
                         getSendDataFromServer($scope, ngDataApi, {
                             'method': 'send',
                             'routeName': '/dashboard/github/login',
                             'data': postData
                         }, function (error) {
                             if (error) {
-                                $scope.$parent.displayAlert('danger', error.message);
-                                $scope.modalInstance.close();
+                                $scope.displayAlert('danger', error.message);
                             } else {
                                 $scope.$parent.displayAlert('success', 'Login Successful');
                                 $scope.modalInstance.close();
