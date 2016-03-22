@@ -29,7 +29,7 @@ var githubAppConfig = {
                 {
                     "name": "loginMessage",
                     "type": "html",
-                    "value": "<p><b>If this account has private repositories, please provide a username and password:</b></p>"
+                    "value": "<p><b>If this account has private repositories, please provide a password:</b></p>"
                 },
                 {
                     'name': 'username',
@@ -61,16 +61,7 @@ var githubAppConfig = {
                 {
                     "name": "message",
                     "type": "html",
-                    "value": "<p><b>Please provide your GitHub username and password in order to delete the SOAJS token</b></p>"
-                },
-                {
-                    'name': 'username',
-                    'label': 'Github Username',
-                    'type': 'text',
-                    'value': '',
-                    'tooltip': 'Github Account Username',
-                    'placeholder': 'Github Username',
-                    'required': true
+                    "value": "<p><b>Please provide your GitHub password in order to delete the SOAJS token</b></p>"
                 },
                 {
                     'name': 'password',

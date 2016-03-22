@@ -841,6 +841,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             'required': true,
                             'groups': ['Controllers', 'Services', 'Daemons'],
                             'onAction': function (label, selected, formConfig) {
+                                //displaying list of groupConfigs in case of daemon////////////////////////
                                 selectedIsDaemon = false;
                                 for (var i = 0; i < daemons.length; i++) {
                                     if (daemons[i].name === selected) {
@@ -864,6 +865,19 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 if (!selectedIsDaemon && formConfig.entries[1].name === 'groupConfig') {
                                     formConfig.entries.splice (1, 1);
                                 }
+                                /////////////////////////////////////////////////////////////////////////////
+
+                                getSendDataFromServer(currentScope, ngDataApi, {
+                                    method: 'get',
+                                    routeName: '/dashboard/github/getBranches',
+                                    params: {name: selected}
+                                }, function (error, response) {
+                                    if (error) {
+                                        $scope.displayAlert('danger', error.message);
+                                    } else {
+                                        console.log (response);
+                                    }
+                                })
                             }
                         };
                         var hostForm = angular.copy(environmentsConfig.form.host);

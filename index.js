@@ -387,6 +387,10 @@ service.init(function() {
 		checkForMongo(req);
 		github.deactivateRepo(mongo, config, req, res);
 	});
+	service.post('/github/repo/sync', function (req, res) {
+		checkForMongo(req);
+		github.syncRepo(mongo, config, req, res);
+	});
 
 	/**
 	 * Services features

@@ -79,53 +79,71 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         buildFormWithModal($scope, $modal, options);
     };
 
-    $scope.deleteAccount = function (accountId) {
-        var formConfig = angular.copy(githubAppConfig.form.logout);
-        var options = {
-            timeout: $timeout,
-            form: formConfig,
-            name: 'removeGithubAccount',
-            label: 'Remove GitHub Account',
-            actions: [
-                {
-                    'type': 'submit',
-                    'label': 'Submit',
-                    'btn': 'primary',
-                    'action': function (formData) {
-                        var params = {
-                            id: accountId,
-                            username: formData.username,
-                            password: formData.password
-                        };
-                        getSendDataFromServer($scope, ngDataApi, {
-                            'method': 'get',
-                            'routeName': '/dashboard/github/logout',
-                            'params': params
-                        }, function (error) {
-                            if (error) {
-                                $scope.$parent.displayAlert('danger', error.message);
-                                $scope.modalInstance.close();
-                            } else {
-                                $scope.$parent.displayAlert('success', 'Logout Successfull');
-                                $scope.modalInstance.close();
-                                $scope.form.formData = {};
-                                $scope.listAccounts();
-                            }
-                        });
-                    }
-                },
-                {
-                    'type': 'reset',
-                    'label': 'Cancel',
-                    'btn': 'danger',
-                    'action': function () {
-                        $scope.modalInstance.dismiss('cancel');
-                        $scope.form.formData = {};
-                    }
+    $scope.deleteAccount = function (account) {
+        if (account.access === 'public') {
+            getSendDataFromServer($scope, ngDataApi, {
+                'method': 'get',
+                'routeName': '/dashboard/github/logout',
+                'params': {
+                    id: account._id.toString(),
+                    username: account.username
                 }
-            ]
-        };
-        buildFormWithModal($scope, $modal, options);
+            }, function (error) {
+                if (error) {
+                    $scope.displayAlert('danger', error.message);
+                } else {
+                    $scope.displayAlert('success', 'Logout Successfull');
+                    $scope.listAccounts();
+                }
+            });
+        } else if (account.access === 'private') {
+            var formConfig = angular.copy(githubAppConfig.form.logout);
+            var options = {
+                timeout: $timeout,
+                form: formConfig,
+                name: 'removeGithubAccount',
+                label: 'Remove GitHub Account',
+                actions: [
+                    {
+                        'type': 'submit',
+                        'label': 'Submit',
+                        'btn': 'primary',
+                        'action': function (formData) {
+                            var params = {
+                                id: account._id.toString(),
+                                username: account.username,
+                                password: formData.password
+                            };
+                            getSendDataFromServer($scope, ngDataApi, {
+                                'method': 'get',
+                                'routeName': '/dashboard/github/logout',
+                                'params': params
+                            }, function (error) {
+                                if (error) {
+                                    $scope.$parent.displayAlert('danger', error.message);
+                                    $scope.modalInstance.close();
+                                } else {
+                                    $scope.$parent.displayAlert('success', 'Logout Successfull');
+                                    $scope.modalInstance.close();
+                                    $scope.form.formData = {};
+                                    $scope.listAccounts();
+                                }
+                            });
+                        }
+                    },
+                    {
+                        'type': 'reset',
+                        'label': 'Cancel',
+                        'btn': 'danger',
+                        'action': function () {
+                            $scope.modalInstance.dismiss('cancel');
+                            $scope.form.formData = {};
+                        }
+                    }
+                ]
+            };
+            buildFormWithModal($scope, $modal, options);
+        }
     };
 
     $scope.listRepos = function (accounts, counter) {
@@ -205,22 +223,37 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 $scope.displayAlert('danger', error.message);
             } else {
                 $scope.displayAlert('success', 'Repository has been deactivated');
-                $scope.listAccounts();
-
+                for (var i = 0; i < $scope.accounts.length; i++) {
+                    if ($scope.accounts[i]._id === accountId) {
+                        var account = $scope.accounts[i];
+                        for (var j = 0; j < account.repos.length; j++) {
+                            if (account.repos[j].full_name === repo.full_name) {
+                                account.repos[j].status = '';
+                            }
+                        }
+                    }
+                }
             }
         });
     };
 
     $scope.syncRepo = function (accountId, repo) {
         getSendDataFromServer($scope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/github/repo/sync'
-            //params
+            method: 'send',
+            routeName: '/dashboard/github/repo/sync',
+            params: {
+                id: accountId.toString()
+            },
+            data: {
+                user: repo.owner.login,
+                repo: repo.name
+            }
         }, function (error, result) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
             } else {
                 $scope.displayAlert('success', 'Repository has been synced');
+                console.log(result);
             }
         });
     };
