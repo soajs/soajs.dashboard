@@ -11,7 +11,7 @@
 			<button class="btn btn-danger" ng-click="ok()">{{translation.close[LANG]}}</button>
 		</div>
 	</script>
-	<input class="btn btn-primary" ng-click="uploadService()" value="{{translation.createCustomService[LANG]}}"/><br/><br/>
+	<!--<input class="btn btn-primary" ng-click="uploadService()" value="{{translation.createCustomService[LANG]}}"/><br/><br/>-->
 
 	<div class="entryBoxes" ng-show="grid.rows">
 		<div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">

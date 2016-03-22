@@ -1803,6 +1803,13 @@ module.exports = {
                         "customUIId": {"type": "string", "required": false}
                     }
                 }
+            },
+            "branch": {
+                "source": ['body.branch'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
             }
         },
         "/hosts/deployService": {
@@ -1849,6 +1856,13 @@ module.exports = {
                     "type": "array",
                     "minItems": 1,
                     "items": {"type": "string"}
+                }
+            },
+            "branch": {
+                "source": ['body.branch'],
+                "required": true,
+                "validation": {
+                    "type": "string"
                 }
             }
         },
@@ -1901,6 +1915,13 @@ module.exports = {
             "grpConfName": {
                 "required": true,
                 "source": ['body.grpConfName'],
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "branch": {
+                "source": ['body.branch'],
+                "required": true,
                 "validation": {
                     "type": "string"
                 }

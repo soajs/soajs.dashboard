@@ -873,11 +873,23 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                     params: {name: selected}
                                 }, function (error, response) {
                                     if (error) {
-                                        $scope.displayAlert('danger', error.message);
+                                        currentScope.displayAlert('danger', error.message);
                                     } else {
                                         console.log (response);
+                                        var branchesEntry = {
+                                            'name': 'branch',
+                                            'label': 'Branch',
+                                            'type': 'select',
+                                            'value': [],
+                                            'fieldMsg': 'Choose branch to deploy from',
+                                            'required': true
+                                        };
+                                        response.forEach(function (oneBranch) {
+                                            branchesEntry.value.push({'v': oneBranch.name, 'l': oneBranch.name});
+                                        });
+                                        formConfig.entries.splice(2, 0, branchesEntry);
                                     }
-                                })
+                                });
                             }
                         };
                         var hostForm = angular.copy(environmentsConfig.form.host);
