@@ -867,6 +867,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 }
                                 /////////////////////////////////////////////////////////////////////////////
 
+                                for (var i = 0; i < formConfig.entries.length; i++) {
+                                    if (formConfig.entries[i].name === 'branch') {
+                                        formConfig.entries.splice(i, 1);
+                                    }
+                                }
                                 getSendDataFromServer(currentScope, ngDataApi, {
                                     method: 'get',
                                     routeName: '/dashboard/github/getBranches',
@@ -945,7 +950,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         function newController(formData, max) {
             var params = {
                 'envCode': env,
-                "number": max
+                "number": max,
+                'branch': formData.branch
             };
 
             if (formData.variables && formData.variables !== '') {
@@ -990,7 +996,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
             function doDeploy(counter, max, cb) {
                 var params = {
-                    'envCode': env
+                    'envCode': env,
+                    'branch': formData.branch
                 };
                 var port;
                 for (var i = 0; i < postServiceList.length; i++) {
@@ -1016,7 +1023,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         params.variables[i] = params.variables[i].trim();
                     }
                 }
-
+                
                 var config = {
                     "method": "send",
                     "routeName": "/dashboard/hosts/deployService",
