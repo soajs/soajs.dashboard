@@ -1804,13 +1804,13 @@ module.exports = {
                     }
                 }
             },
-            "branch": {
-                "source": ['body.branch'],
-                "required": true,
-                "validation": {
-                    "type": "string"
-                }
-            }
+            // "branch": {
+            //     "source": ['body.branch'],
+            //     "required": true,
+            //     "validation": {
+            //         "type": "string"
+            //     }
+            // }
         },
         "/hosts/deployService": {
             "_apiInfo": {
