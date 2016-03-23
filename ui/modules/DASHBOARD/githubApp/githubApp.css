@@ -16,6 +16,12 @@
     color: #a94442 !important;
 }
 
+.blueLi.outOfSync {
+    background-color: #FCF8E3 !important;
+    border-color: #faebcc !important;
+    color: #8a6d3b !important;
+}
+
 .repoHeader {
     width: 50px !important;
 }

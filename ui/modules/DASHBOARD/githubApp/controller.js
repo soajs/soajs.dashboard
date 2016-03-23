@@ -252,8 +252,65 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             if (error) {
                 $scope.displayAlert('danger', error.message);
             } else {
-                $scope.displayAlert('success', 'Repository has been synced');
-                console.log(response);
+                if (response.status === 'upToDate') {
+                    $scope.displayAlert('success', 'Repository is up to date');
+                }
+                else if (response.status === 'outOfSync') {
+                    repo.status = 'outOfSync';
+                    var repoOutOfSync = $modal.open({
+                        templateUrl: 'repoOutOfSync.tmpl',
+                        backdrop: true,
+                        keyboard: true,
+                        controller: function ($scope) {
+                            fixBackDrop();
+
+                            $scope.reactivate = function () {
+                                getSendDataFromServer($scope, ngDataApi, {
+                                    method: 'get',
+                                    routeName: '/dashboard/github/repo/deactivate',
+                                    params: {
+                                        id: accountId.toString(),
+                                        user: repo.owner.login,
+                                        repo: repo.name
+                                    }
+                                }, function (error) {
+                                    if (error) {
+                                        // $scope.displayAlert('danger', error.message);
+                                        repoOutOfSync.close();
+                                    } else {
+                                        getSendDataFromServer($scope, ngDataApi, {
+                                            'method': 'send',
+                                            routeName: '/dashboard/github/repo/activate',
+                                            params: {
+                                                id: accountId.toString()
+                                            },
+                                            data: {
+                                                user: repo.owner.login,
+                                                repo: repo.name
+                                            }
+                                        }, function (error, result) {
+                                            if (error) {
+                                                // $scope.displayAlert('danger', error.message);
+                                                repoOutOfSync.close();
+                                            } else {
+                                                // $scope.displayAlert('success', 'Repository has been reactivated');
+                                                repo.status = 'active';
+                                                repoOutOfSync.close();
+                                            }
+                                        });
+                                    }
+                                });
+                            };
+
+                            $scope.cancel = function () {
+                                repoOutOfSync.close();
+                            };
+                        }
+                    });
+                }
+                else {
+                    $scope.displayAlert('success', 'Repository has been synced');
+                }
             }
         });
     };

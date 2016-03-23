@@ -19,6 +19,7 @@
                             {{repo.full_name}}
                             <span ng-if="repo.status === 'deleted'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
                             <span ng-if="repo.status === 'active'" ng-style="{'margin-left': '10%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
+                            <span ng-if="repo.status === 'outOfSync'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
                             <div class="rightActions">
                                 <a href="" ng-if="!repo.status" ng-click="activateRepo(account._id, repo)" ng-style="{'margin-top': '-17px'}" ng-confirm-click="Are you sure you want to activate this repository?">
                                     <span class="icon icon-switch" tooltip="Activate"></span>
@@ -44,7 +45,6 @@
 </section>
 
 <script type="text/ng-template" id="repoAddSuccess.tmpl">
-
     <div class="modal-body">
         <!--<div ng-bind-html="text"></div>-->
         <h4 style="text-align: center;">Repository has been activated</h4>
@@ -73,5 +73,17 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">Ok</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="repoOutOfSync.tmpl">
+    <div class="modal-body">
+        <!--<div ng-bind-html="text"></div>-->
+        <h4 style="text-align: center;">Repository is out of sync</h4>
+        <label>Would you like to reactivate this repository?</label>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="reactivate()">Reactivate</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
     </div>
 </script>
