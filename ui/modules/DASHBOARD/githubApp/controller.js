@@ -248,12 +248,12 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 user: repo.owner.login,
                 repo: repo.name
             }
-        }, function (error, result) {
+        }, function (error, response) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
             } else {
                 $scope.displayAlert('success', 'Repository has been synced');
-                console.log(result);
+                console.log(response);
             }
         });
     };
