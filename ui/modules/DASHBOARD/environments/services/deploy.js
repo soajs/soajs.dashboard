@@ -10,7 +10,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				if (formConfig.entries[i].name === 'branch') {
 					branchInfo.branches.forEach(function (oneBranch) {
 						delete oneBranch.commit.url;
-						formConfig.entries[i].value.push({'v': oneBranch.commit, 'l': oneBranch.name});
+						formConfig.entries[i].value.push({'v': oneBranch, 'l': oneBranch.name});
 					});
 				}
 			}
@@ -102,14 +102,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 		function deployEnvironment(formData) {
 			var branchObj = JSON.parse(formData.branch);
-
+			console.log (branchObj);
 			var params = {
 				'envCode': envCode,
 				"number": formData.controllers,
 				'owner': formData.owner,
 				'repo': formData.repo,
 				'branch': branchObj.name,
-				'commit': branchObj.commit.sha
+				//'commit': branchObj.commit.sha
 			};
 
 			if (formData.useCutomUI) {

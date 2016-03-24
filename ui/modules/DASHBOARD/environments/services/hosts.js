@@ -893,19 +893,21 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                             'onAction': function (label, selectedBranch, formConfig) {
                                                 currentScope.hostList.forEach(function (oneEntry) {
                                                     if(oneEntry.name === selected) {
-                                                        console.log (oneEntry);
-                                                        var branch = JSON.parse(selectedBranch);
-                                                        console.log (selectedBranch);
-                                                        if (oneEntry.branch.name === branch.name && oneEntry.branch.commitHash === branch.commit.sha) {
-                                                            console.log ("Proceed");
-                                                        } else {
-                                                            console.log ("Warning");
-                                                        }
+                                                        // console.log (oneEntry);
+                                                        // var branch = JSON.parse(selectedBranch);
+                                                        // console.log (selectedBranch);
+                                                        // if (oneEntry.branch.name === branch.name && oneEntry.branch.commitHash === branch.commit.sha) {
+                                                        //     console.log ("Proceed");
+                                                        // } else {
+                                                        //     console.log ("Warning");
+                                                        // }
                                                     }
                                                 });
                                             }
                                         };
-                                        response.forEach(function (oneBranch) {
+                                        currentScope.owner = response.owner;
+                                        currentScope.repo = response.repo;
+                                        response.branches.forEach(function (oneBranch) {
                                             delete oneBranch.commit.url;
                                             branchesEntry.value.push({'v': oneBranch, 'l': oneBranch.name});
                                         });
@@ -943,13 +945,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                         }
                                         else {
                                             formData.selectedIsDaemon = selectedIsDaemon;
-                                            //get service owner and repo from services array
-                                            for (var i = 0; i < services.length; i++) {
-                                                if (services[i].name === formData.service) {
-                                                    formData.serviceOwner = services[i].src.owner;
-                                                    formData.serviceRepo = services[i].src.repo;
-                                                }
-                                            }
+                                            formData.serviceOwner = currentScope.owner;
+                                            formData.serviceRepo = currentScope.repo;
                                             newService(formData, max);
                                         }
                                     }
@@ -1134,7 +1131,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function createHostNew (currentScope, env, runningHosts) {
-        
+
     }
 
     return {
