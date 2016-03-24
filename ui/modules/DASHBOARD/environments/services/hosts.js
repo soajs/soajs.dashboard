@@ -13,6 +13,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     "env": env
                 }
             }, function (error, response) {
+                console.log (response);
                 if (error || !response) {
                     currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                 }
@@ -872,6 +873,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                         formConfig.entries.splice(i, 1);
                                     }
                                 }
+
                                 getSendDataFromServer(currentScope, ngDataApi, {
                                     method: 'get',
                                     routeName: '/dashboard/github/getBranches',
@@ -880,17 +882,31 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                     if (error) {
                                         currentScope.displayAlert('danger', error.message);
                                     } else {
-                                        console.log (response);
                                         var branchesEntry = {
                                             'name': 'branch',
                                             'label': 'Branch',
                                             'type': 'select',
                                             'value': [],
                                             'fieldMsg': 'Choose branch to deploy from',
-                                            'required': true
+                                            'required': true,
+                                            'onAction': function (label, selectedBranch, formConfig) {
+                                                currentScope.hostList.forEach(function (oneEntry) {
+                                                    if(oneEntry.name === selected) {
+                                                        console.log (oneEntry);
+                                                        var branch = JSON.parse(selectedBranch);
+                                                        console.log (selectedBranch);
+                                                        if (oneEntry.branch.name === branch.name && oneEntry.branch.commitHash === branch.commit.sha) {
+                                                            console.log ("Proceed");
+                                                        } else {
+                                                            console.log ("Warning");
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         };
                                         response.forEach(function (oneBranch) {
-                                            branchesEntry.value.push({'v': oneBranch.name, 'l': oneBranch.name});
+                                            delete oneBranch.commit.url;
+                                            branchesEntry.value.push({'v': oneBranch, 'l': oneBranch.name});
                                         });
                                         formConfig.entries.splice(2, 0, branchesEntry);
                                     }
@@ -926,6 +942,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                         }
                                         else {
                                             formData.selectedIsDaemon = selectedIsDaemon;
+                                            //get service owner and repo from services array
+                                            for (var i = 0; i < services.length; i++) {
+                                                if (services[i].name === formData.service) {
+                                                    formData.serviceOwner = services[i].src.owner;
+                                                    formData.serviceRepo = services[i].src.repo;
+                                                }
+                                            }
                                             newService(formData, max);
                                         }
                                     }
@@ -951,7 +974,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             var params = {
                 'envCode': env,
                 "number": max,
-                'branch': formData.branch
+                "owner": "",
+                "repo": "",
+                'branch': formData.branch.name
             };
 
             if (formData.variables && formData.variables !== '') {
@@ -995,9 +1020,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             });
 
             function doDeploy(counter, max, cb) {
+                if (typeof(formData.branch) === 'string') {
+                    formData.branch = JSON.parse(formData.branch);
+                }
                 var params = {
                     'envCode': env,
-                    'branch': formData.branch
+                    'owner': formData.serviceOwner,
+                    'repo': formData.serviceRepo,
+                    'branch': formData.branch.name
                 };
                 var port;
                 for (var i = 0; i < postServiceList.length; i++) {

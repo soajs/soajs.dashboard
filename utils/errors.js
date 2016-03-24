@@ -158,7 +158,7 @@ var errors = {
 
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 
-	"741": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
+	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
 
 	"742": "Unable to list static content sources",
 	"743": "Unable to add static content source",

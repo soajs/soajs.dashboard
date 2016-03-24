@@ -1804,13 +1804,27 @@ module.exports = {
                     }
                 }
             },
-            // "branch": {
-            //     "source": ['body.branch'],
-            //     "required": true,
-            //     "validation": {
-            //         "type": "string"
-            //     }
-            // }
+            "owner": {
+                "source": ['body.owner'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['body.repo'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "branch": {
+                "source": ['body.branch'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            }
         },
         "/hosts/deployService": {
             "_apiInfo": {
@@ -1856,6 +1870,20 @@ module.exports = {
                     "type": "array",
                     "minItems": 1,
                     "items": {"type": "string"}
+                }
+            },
+            "owner": {
+                "source": ['body.owner'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['body.repo'],
+                "required": true,
+                "validation": {
+                    "type": "string"
                 }
             },
             "branch": {
@@ -1915,6 +1943,20 @@ module.exports = {
             "grpConfName": {
                 "required": true,
                 "source": ['body.grpConfName'],
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "owner": {
+                "source": ['body.owner'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "repo": {
+                "source": ['body.repo'],
+                "required": true,
                 "validation": {
                     "type": "string"
                 }

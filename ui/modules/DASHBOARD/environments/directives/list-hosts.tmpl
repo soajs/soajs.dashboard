@@ -195,3 +195,35 @@
 	    </div>
 	</div>
 </section>
+
+<script type="text/ng-template" id="createHost.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body">
+		<div class="form">
+			<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+			<form name="grpConf" id="grpConf" novalidate ng-submit="grpConf.$valid && onSubmit()">
+				<div class="form-group">
+					<label>Service Name</label>
+					<select class="form-control" ng-required="true" ng-options="service as service.name for service in outerScope.servicesList" ng-model="service" ng-change="selectService(service)"></select>
+					<label>Daemon Group Configuration</label>
+
+					<label>Branch</label>
+
+					<label>Warning</label>
+
+					<label>Host(s) Number</label>
+
+					<label>Environment Variables</label>
+
+					<label>Default Environment Variables</label>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">Submit</button>
+		<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>
+</script>
