@@ -738,6 +738,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function createHost(currentScope, env, services) {
+        console.log (services);
         var servicesList = [], postServiceList = [];
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "send",
@@ -1130,6 +1131,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 });
             }
         }
+    }
+
+    function createHostNew (currentScope, env, runningHosts) {
+        
     }
 
     return {

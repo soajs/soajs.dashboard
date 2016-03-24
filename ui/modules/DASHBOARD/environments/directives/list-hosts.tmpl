@@ -206,18 +206,23 @@
 			<form name="grpConf" id="grpConf" novalidate ng-submit="grpConf.$valid && onSubmit()">
 				<div class="form-group">
 					<label>Service Name</label>
-					<select class="form-control" ng-required="true" ng-options="service as service.name for service in outerScope.servicesList" ng-model="service" ng-change="selectService(service)"></select>
-					<label>Daemon Group Configuration</label>
-
-					<label>Branch</label>
-
-					<label>Warning</label>
-
+					<select class="form-control" ng-required="true" ng-options="service as service.name for service in outerScope.servicesList" ng-model="postData.service" ng-change="selectService(service)"></select>
+					<div ng-if="selectedIsDaemon">
+						<label>Daemon Group Configuration</label>
+						<select class="form-control" ng-required="true" ng-options="group as group.name for group in outerScope.groupConfigs" ng-model="postData.groupConfig"></select>
+					</div>
+					<div ng-if="branches && branches.length > 0">
+						<label>Branch</label>
+					</div>
+					<div ng-if="warning">
+						<label>Warning</label>
+					</div>
 					<label>Host(s) Number</label>
-
+					<input type="number" class="form-control" ng-model="postData.number" ng-required="true" placeholder="1"/>
 					<label>Environment Variables</label>
-
+					<input type="textarea" class="form-control" ng-model="postData.envVariables" ng-required="true" placeholder="{}"/>
 					<label>Default Environment Variables</label>
+					<!--bind to html-->
 				</div>
 			</form>
 		</div>
