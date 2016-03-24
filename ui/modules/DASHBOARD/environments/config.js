@@ -276,6 +276,14 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
+					'name': 'branch',
+					'label': 'Branch',
+					'type': 'select',
+					'value': [],
+					'fieldMsg': 'Select a branch to deploy from',
+					'required': true
+				},
+				{
 					'name': 'variables',
 					"label": translation.environmentVariables[LANG],
 					"type": "textarea",

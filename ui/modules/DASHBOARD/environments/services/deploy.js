@@ -5,7 +5,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	function deployEnvironment(currentScope, envCode) {
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 
-		listStaticContent(currentScope, function (staticContentSources) {
+		getControllerBranches(currentScope, function (branchInfo) {
+			for (var i = 0; i < formConfig.entries.length; i++) {
+				if (formConfig.entries[i].name === 'branch') {
+					branchInfo.branches.forEach(function (oneBranch) {
+						delete oneBranch.commit.url;
+						formConfig.entries[i].value.push({'v': oneBranch.commit, 'l': oneBranch.name});
+					});
+				}
+			}
+
 			var customUIEntry = {
 				'name': 'useCustomUI',
 				'label': 'Do you want to bundle static content?',
@@ -14,25 +23,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'required': true,
 				'onAction': function (label, selected, formConfig) {
 					if (selected === 'true') {
-						var selectCustomUI = {
-							'name': 'selectCustomUI',
-							'label': 'Choose Static Content',
-							'type': 'select',
-							'value': [],
-							'required': true
-						};
-						staticContentSources.forEach (function (oneSource) {
-							selectCustomUI.value.push ({'v': oneSource._id, 'l': oneSource.name});
+						listStaticContent(currentScope, function (staticContentSources) {
+							var selectCustomUI = {
+								'name': 'selectCustomUI',
+								'label': 'Choose Static Content',
+								'type': 'select',
+								'value': [],
+								'required': true
+							};
+							staticContentSources.forEach (function (oneSource) {
+								selectCustomUI.value.push ({'v': oneSource._id, 'l': oneSource.name});
+							});
+							formConfig.entries.splice(3, 0, selectCustomUI);
 						});
-						formConfig.entries.splice(2, 0, selectCustomUI);
 					} else {
 						if (formConfig.entries[2].name === 'selectCustomUI') {
-							formConfig.entries.splice(2, 1);
+							formConfig.entries.splice(3, 1);
 						}
 					}
 				}
 			};
-			formConfig.entries.splice(1, 0, customUIEntry);
+			formConfig.entries.splice(2, 0, customUIEntry);
 
 			for (var i = 0; i < formConfig.entries.length; i++) {
 				if (formConfig.entries[i].name === 'defaultENVVAR') {
@@ -66,6 +77,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 								jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
 								jQuery("#overlay .content").css("width", "40%").css("left", "30%");
 								overlay.show();
+
+								formData.owner = branchInfo.owner;
+								formData.repo = branchInfo.repo;
+
 								deployEnvironment(formData);
 							}
 						}
@@ -84,10 +99,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			buildFormWithModal(currentScope, $modal, options);
 		});
 
+
 		function deployEnvironment(formData) {
+			var branchObj = JSON.parse(formData.branch);
+
 			var params = {
 				'envCode': envCode,
-				"number": formData.controllers
+				"number": formData.controllers,
+				'owner': formData.owner,
+				'repo': formData.repo,
+				'branch': branchObj.name,
+				'commit': branchObj.commit.sha
 			};
 
 			if (formData.useCutomUI) {
@@ -129,6 +151,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				} else {
 					cb(response);
+				}
+			});
+		}
+
+		function getControllerBranches (currentScope, cb) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/github/getBranches',
+				params: {
+					name: 'controller'
+				}
+			}, function (error, response) {
+				if (error) {
+					currentScope.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				} else {
+					console.log (response);
+					return cb (response);
 				}
 			});
 		}
