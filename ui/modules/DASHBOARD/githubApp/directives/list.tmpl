@@ -21,13 +21,13 @@
                             <span ng-if="repo.status === 'active'" ng-style="{'margin-left': '10%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
                             <span ng-if="repo.status === 'outOfSync'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
                             <div class="rightActions">
-                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account._id, repo)" ng-style="{'margin-top': '-17px'}" ng-confirm-click="Are you sure you want to activate this repository?">
+                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to activate this repository?">
                                     <span class="icon icon-switch" tooltip="Activate"></span>
                                 </a>
-                                <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-17px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+                                <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
                                     <span class="icon icon-cross" tooltip="Deactivate"></span>
                                 </a>
-                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account._id, repo)" ng-style="{'margin-top': '-17px'}">
+                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}">
                                     <span class="icon icon-loop2" tooltip="Sync"></span>
                                 </a>
                             </div>
@@ -52,27 +52,9 @@
         <ul>
             <li ng-repeat="entry in added"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}&nbsp;&nbsp;&nbsp;<b>Repository: </b>{{entry.repo}}</li>
         </ul>
-        <!--<div class="grid externalKeysGrid">-->
-            <!--<table cellspacing="0" cellpadding="0" border="0" width="100%">-->
-                <!--<tbody>-->
-                    <!--<tr>-->
-                        <!--<th class="repoHeader">Repository</th>-->
-                        <!--<th class="nameHeader">Name</th>-->
-                        <!--<th class="typeHeader">Type</th>-->
-                        <!--<th class="linkHeader">Link</th>-->
-                    <!--</tr>-->
-                    <!--<tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">-->
-                        <!--<td>{{entry.repo}}</td>-->
-                        <!--<td>{{entry.name}}</td>-->
-                        <!--<td>{{entry.type}}</td>-->
-                        <!--<td>Link here</td>-->
-                    <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</div>-->
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">Ok</button>
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
     </div>
 </script>
 
@@ -85,5 +67,12 @@
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="reactivate()">Reactivate</button>
         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="loading.tmpl">
+    <div class="modal-body">
+        <img class="loadingImageLarge" ng-src="./modules/DASHBOARD/environments/directives/loading.gif" width="50px" height="50px"><br>
+        <h4 class="alignCenter">Getting repositories from GitHub.<br>Please wait.</h4>
     </div>
 </script>

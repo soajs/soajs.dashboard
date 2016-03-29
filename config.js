@@ -1824,6 +1824,13 @@ module.exports = {
                 "validation": {
                     "type": "string"
                 }
+            },
+            "commit": {
+                "source": ['body.commit'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
             }
         },
         "/hosts/deployService": {
@@ -1888,6 +1895,13 @@ module.exports = {
             },
             "branch": {
                 "source": ['body.branch'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "commit": {
+                "source": ['body.commit'],
                 "required": true,
                 "validation": {
                     "type": "string"
@@ -1963,6 +1977,13 @@ module.exports = {
             },
             "branch": {
                 "source": ['body.branch'],
+                "required": true,
+                "validation": {
+                    "type": "string"
+                }
+            },
+            "commit": {
+                "source": ['body.commit'],
                 "required": true,
                 "validation": {
                     "type": "string"

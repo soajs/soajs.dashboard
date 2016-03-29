@@ -59,13 +59,8 @@ var githubAppConfig = {
         'logout': {
             'entries': [
                 {
-                    "name": "message",
-                    "type": "html",
-                    "value": "<p><b>Please provide your GitHub password in order to delete the SOAJS token</b></p>"
-                },
-                {
                     'name': 'password',
-                    'label': 'Github Password',
+                    'label': 'Please provide your GitHub password in order to delete the SOAJS token',
                     'type': 'password',
                     'value': '',
                     'tooltip': 'Github Account Password',

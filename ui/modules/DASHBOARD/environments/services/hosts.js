@@ -183,6 +183,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						                if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 							                oneHost.hostname = origHostRec.hostname;
 							                oneHost.cid = origHostRec.cid;
+                                            oneHost.commit = origHostRec.src.commit;
+                                            oneHost.branch = origHostRec.src.branch;
 						                }
 					                });
 					                if (oneHost.hostname && oneHost.ip) {
@@ -737,401 +739,733 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         return str;
     }
 
-    function createHost(currentScope, env, services) {
-        console.log (services);
-        var servicesList = [], postServiceList = [];
-        getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
-            "routeName": "/dashboard/services/list"
-        }, function (error, services) {
-            if (error || !services) {
-                currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
-            }
-            else {
-                var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
-                var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
-                services.forEach(function (oneService) {
-                    if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneService.name) !== -1) {
-                        servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
-                        var servObj = {
-                            "name": oneService.name,
-                            "image": oneService.image,
-                            "port": oneService.port,
-                            "latestVersion": oneService.latest
-                        };
-                        if(oneService.gcId){
-                            servObj = {
-                                "name": oneService.name,
-                                "gcName": oneService.name,
-                                "gcVersion": oneService.gcV,
-                                "image": oneService.image,
-                                "port": oneService.port
-                            };
-                        }
-                        postServiceList.push(servObj);
-                    } else if (env.toLowerCase() !== 'dashboard' &&
-                        oneService.name !== 'controller' && //controller is added later manually
-                        ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || //not a locked service for dashboard and non dashboard environments
-                        (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
-                        servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
-                        var servObj = {
-                            "name": oneService.name,
-                            "image": oneService.image,
-                            "port": oneService.port,
-                            "latestVersion": oneService.latest
-                        };
-                        if(oneService.gcId){
-                            servObj = {
-                                "name": oneService.name,
-                                "gcName": oneService.name,
-                                "gcVersion": oneService.gcV,
-                                "image": oneService.image,
-                                "port": oneService.port
-                            };
-                        }
-                        postServiceList.push(servObj);
-                    }
-                });
+    // function createHost(currentScope, env, services) {
+    //     var servicesList = [], postServiceList = [];
+    //     getSendDataFromServer(currentScope, ngDataApi, {
+    //         "method": "send",
+    //         "routeName": "/dashboard/services/list"
+    //     }, function (error, services) {
+    //         if (error || !services) {
+    //             currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
+    //         }
+    //         else {
+    //             var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+    //             var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
+    //             services.forEach(function (oneService) {
+    //                 if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneService.name) !== -1) {
+    //                     servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
+    //                     var servObj = {
+    //                         "name": oneService.name,
+    //                         "image": oneService.image,
+    //                         "port": oneService.port,
+    //                         "latestVersion": oneService.latest
+    //                     };
+    //                     if(oneService.gcId){
+    //                         servObj = {
+    //                             "name": oneService.name,
+    //                             "gcName": oneService.name,
+    //                             "gcVersion": oneService.gcV,
+    //                             "image": oneService.image,
+    //                             "port": oneService.port
+    //                         };
+    //                     }
+    //                     postServiceList.push(servObj);
+    //                 } else if (env.toLowerCase() !== 'dashboard' &&
+    //                     oneService.name !== 'controller' && //controller is added later manually
+    //                     ((dashboardServices.indexOf(oneService.name) !== -1 && nonDashboardServices.indexOf(oneService.name) !== -1) || //not a locked service for dashboard and non dashboard environments
+    //                     (dashboardServices.indexOf(oneService.name) === -1 && nonDashboardServices.indexOf(oneService.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
+    //                     servicesList.push({'v': oneService.name, 'l': oneService.name, 'group': 'Services'});
+    //                     var servObj = {
+    //                         "name": oneService.name,
+    //                         "image": oneService.image,
+    //                         "port": oneService.port,
+    //                         "latestVersion": oneService.latest
+    //                     };
+    //                     if(oneService.gcId){
+    //                         servObj = {
+    //                             "name": oneService.name,
+    //                             "gcName": oneService.name,
+    //                             "gcVersion": oneService.gcV,
+    //                             "image": oneService.image,
+    //                             "port": oneService.port
+    //                         };
+    //                     }
+    //                     postServiceList.push(servObj);
+    //                 }
+    //             });
+    //
+	 //            if(env.toLowerCase() !== 'dashboard'){
+    //                 //push controller
+    //                 servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG], 'group': 'Controllers'});
+	 //            }
+    //
+    //             //call list daemons and push available daemons to servicesList
+    //             getSendDataFromServer(currentScope, ngDataApi, {
+    //                 "method": "send",
+    //                 "routeName": "/dashboard/daemons/list",
+    //                 "params": {"getGroupConfigs": true}
+    //             }, function (error, daemons) {
+    //                 if (error) {
+    //                     currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
+    //                 } else {
+    //                     daemons.forEach(function (oneDaemon) {
+    //                         if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneDaemon.name) !== -1) {
+    //                             servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
+    //
+    //                             var daemonObj = {
+    //                                 "name": oneDaemon.name,
+    //                                 "port": oneDaemon.port,
+    //                                 "groupConf": oneDaemon.grpConf,
+    //                                 "latestVersion": oneDaemon.latest
+    //                             };
+    //                             postServiceList.push(daemonObj);
+    //                         } else if (env.toLowerCase() !== 'dashboard' &&
+    //                             ((dashboardServices.indexOf(oneDaemon.name) !== -1 && nonDashboardServices.indexOf(oneDaemon.name) !== -1) || //not a locked daemon for dashboard and non dashboard environments
+    //                             (dashboardServices.indexOf(oneDaemon.name) === -1 && nonDashboardServices.indexOf(oneDaemon.name) === -1))) { //a locked daemon that is common for dashboard and non dash envs
+    //                             servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
+    //
+    //                             var daemonObj = {
+    //                                 "name": oneDaemon.name,
+    //                                 "port": oneDaemon.port,
+    //                                 "groupConf": oneDaemon.grpConf,
+    //                                 "latestVersion": oneDaemon.latest
+    //                             };
+    //                             postServiceList.push(daemonObj);
+    //                         }
+    //                     });
+    //
+    //                     var selectedIsDaemon = false;
+    //                     var entry = {
+    //                         'name': 'service',
+    //                         'label': translation.serviceName[LANG],
+    //                         'type': 'select',
+    //                         'value': servicesList,
+    //                         'fieldMsg': translation.selectServiceFromListAbove[LANG],
+    //                         'required': true,
+    //                         'groups': ['Controllers', 'Services', 'Daemons'],
+    //                         'onAction': function (label, selected, formConfig) {
+    //                             //displaying list of groupConfigs in case of daemon////////////////////////
+    //                             selectedIsDaemon = false;
+    //                             for (var i = 0; i < daemons.length; i++) {
+    //                                 if (daemons[i].name === selected) {
+    //                                     var groupConfigEntry = {
+    //                                         'name': 'groupConfig',
+    //                                         'label': translation.daemonGroupConfiguration[LANG],
+    //                                         'type': 'select',
+    //                                         'value': [],
+    //                                         'fieldMsg': translation.chooseGroupConfigForSelectedDaemon[LANG],
+    //                                         'required': true
+    //                                     };
+    //                                     daemons[i].grpConf.forEach (function (oneGroupConfig) {
+    //                                         groupConfigEntry.value.push ({"l": oneGroupConfig.daemonConfigGroup, "v": oneGroupConfig.daemonConfigGroup});
+    //                                     });
+    //                                     formConfig.entries.splice(1, 0, groupConfigEntry);
+    //
+    //                                     selectedIsDaemon = true;
+    //                                 }
+    //                             }
+    //
+    //                             if (!selectedIsDaemon && formConfig.entries[1].name === 'groupConfig') {
+    //                                 formConfig.entries.splice (1, 1);
+    //                             }
+    //                             /////////////////////////////////////////////////////////////////////////////
+    //
+    //                             for (var i = 0; i < formConfig.entries.length; i++) {
+    //                                 if (formConfig.entries[i].name === 'branch') {
+    //                                     formConfig.entries.splice(i, 1);
+    //                                 }
+    //                             }
+    //
+    //                             getSendDataFromServer(currentScope, ngDataApi, {
+    //                                 method: 'get',
+    //                                 routeName: '/dashboard/github/getBranches',
+    //                                 params: {name: selected}
+    //                             }, function (error, response) {
+    //                                 if (error) {
+    //                                     currentScope.displayAlert('danger', error.message);
+    //                                 } else {
+    //                                     var branchesEntry = {
+    //                                         'name': 'branch',
+    //                                         'label': 'Branch',
+    //                                         'type': 'select',
+    //                                         'value': [],
+    //                                         'fieldMsg': 'Choose branch to deploy from',
+    //                                         'required': true,
+    //                                         'onAction': function (label, selectedBranch, formConfig) {
+    //                                             currentScope.hostList.forEach(function (oneEntry) {
+    //                                                 if(oneEntry.name === selected) {
+    //                                                     // console.log (oneEntry);
+    //                                                     // var branch = JSON.parse(selectedBranch);
+    //                                                     // console.log (selectedBranch);
+    //                                                     // if (oneEntry.branch.name === branch.name && oneEntry.branch.commitHash === branch.commit.sha) {
+    //                                                     //     console.log ("Proceed");
+    //                                                     // } else {
+    //                                                     //     console.log ("Warning");
+    //                                                     // }
+    //                                                 }
+    //                                             });
+    //                                         }
+    //                                     };
+    //                                     currentScope.owner = response.owner;
+    //                                     currentScope.repo = response.repo;
+    //                                     response.branches.forEach(function (oneBranch) {
+    //                                         delete oneBranch.commit.url;
+    //                                         branchesEntry.value.push({'v': oneBranch, 'l': oneBranch.name});
+    //                                     });
+    //                                     formConfig.entries.splice(2, 0, branchesEntry);
+    //                                 }
+    //                             });
+    //                         }
+    //                     };
+    //                     var hostForm = angular.copy(environmentsConfig.form.host);
+    //                     hostForm.entries.unshift(entry);
+    //
+    //                     hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
+    //                     hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.profile);
+    //
+    //                     var options = {
+    //                         timeout: $timeout,
+    //                         form: hostForm,
+    //                         name: 'createHost',
+    //                         label: translation.createNewServiceHost[LANG],
+    //                         actions: [
+    //                             {
+    //                                 'type': 'submit',
+    //                                 'label': translation.submit[LANG],
+    //                                 'btn': 'primary',
+    //                                 'action': function (formData) {
+    //                                     var text = "<h2>" + translation.deployingNewHostFor[LANG] + " " + formData.service + "</h2>";
+    //                                     text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
+    //                                     jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+    //                                     jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+    //                                     overlay.show();
+    //
+    //                                     var max = formData.number;
+    //                                     if (formData.service === 'controller') {
+    //                                         newController(formData, max);
+    //                                     }
+    //                                     else {
+    //                                         formData.selectedIsDaemon = selectedIsDaemon;
+    //                                         formData.serviceOwner = currentScope.owner;
+    //                                         formData.serviceRepo = currentScope.repo;
+    //                                         newService(formData, max);
+    //                                     }
+    //                                 }
+    //                             },
+    //                             {
+    //                                 'type': 'reset',
+    //                                 'label': translation.cancel[LANG],
+    //                                 'btn': 'danger',
+    //                                 'action': function () {
+    //                                     currentScope.modalInstance.dismiss('cancel');
+    //                                     currentScope.form.formData = {};
+    //                                 }
+    //                             }
+    //                         ]
+    //                     };
+    //                     buildFormWithModal(currentScope, $modal, options);
+    //                 }
+    //             });
+    //         }
+    //     });
+    //
+    //     function newController(formData, max) {
+    //         var params = {
+    //             'envCode': env,
+    //             "number": max,
+    //             "owner": "",
+    //             "repo": "",
+    //             'branch': formData.branch.name
+    //         };
+    //
+    //         if (formData.variables && formData.variables !== '') {
+    //             params.variables = formData.variables.split(",");
+    //             for (var i = 0; i < params.variables.length; i++) {
+    //                 params.variables[i] = params.variables[i].trim();
+    //             }
+    //         }
+    //
+    //         getSendDataFromServer(currentScope, ngDataApi, {
+    //             "method": "send",
+    //             "routeName": "/dashboard/hosts/deployController",
+    //             "data": params
+    //         }, function (error, response) {
+	 //            overlay.hide();
+    //             if (error) {
+    //                 currentScope.generateNewMsg(env, 'danger', error.message);
+    //             }
+    //             else {
+    //                 currentScope.modalInstance.close();
+    //                 currentScope.form.formData = {};
+    //
+    //                 $timeout(function () {
+    //                     listHosts(currentScope, env);
+    //                 }, 2000);
+    //             }
+    //         });
+    //     }
+    //
+    //     function newService(formData, max) {
+    //         doDeploy(0, max, function () {
+    //             overlay.hide();
+    //             currentScope.modalInstance.close();
+    //             currentScope.form.formData = {};
+    //
+    //             currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
+    //                 reloadRegistry(currentScope, env, oneCtrl, function () {
+    //                     currentScope.listHosts(env);
+    //                 });
+    //             });
+    //         });
+    //
+    //         function doDeploy(counter, max, cb) {
+    //             if (typeof(formData.branch) === 'string') {
+    //                 formData.branch = JSON.parse(formData.branch);
+    //             }
+    //             var params = {
+    //                 'envCode': env,
+    //                 'owner': formData.serviceOwner,
+    //                 'repo': formData.serviceRepo,
+    //                 'branch': formData.branch.name
+    //             };
+    //             var port;
+    //             for (var i = 0; i < postServiceList.length; i++) {
+    //                 if (postServiceList[i].name === formData.service) {
+    //                     if (postServiceList[i].gcName) {
+    //                         params.gcName = postServiceList[i].gcName;
+    //                         params.gcVersion = postServiceList[i].gcVersion;
+    //                     }
+    //                     else {
+    //                         params.name = formData.service;
+    //                     }
+    //
+    //                     if (postServiceList[i].latestVersion) {
+    //                         params.version = postServiceList[i].latestVersion;
+    //                     }
+    //                     port = postServiceList[i].port;
+    //                 }
+    //             }
+    //
+    //             if (formData.variables && formData.variables !== '') {
+    //                 params.variables = formData.variables.split(",");
+    //                 for (var i = 0; i < params.variables.length; i++) {
+    //                     params.variables[i] = params.variables[i].trim();
+    //                 }
+    //             }
+    //
+    //             var config = {
+    //                 "method": "send",
+    //                 "routeName": "/dashboard/hosts/deployService",
+    //                 "data": params
+    //             };
+    //
+    //             if (formData.selectedIsDaemon) {
+    //                 config.routeName = "/dashboard/hosts/deployDaemon";
+    //                 params.grpConfName = formData.groupConfig;
+    //             }
+    //
+    //             getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
+    //                 if (error) {
+	 //                    overlay.hide();
+    //                     currentScope.generateNewMsg(env, 'danger', error.message);
+    //                 }
+    //                 else {
+    //                     currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);
+    //                     if (!services[formData.service]) {
+    //                         services[formData.service] = {
+    //                             'name': formData.service,
+    //                             'port': port,
+    //                             'ips': {},
+    //                             'color': 'red',
+    //                             'heartbeat': false
+    //                         };
+    //                     }
+    //
+    //                     var hosttmpl = {
+    //                         'port': port,
+    //                         'cid': response.cid,
+    //                         'hostname': response.hostname,
+    //                         'ip': response.ip,
+    //                         'name': formData.service,
+    //                         'downCount': 'N/A',
+    //                         'downSince': 'N/A',
+    //                         'lastCheck': 'N/A',
+    //                         'healthy': true,
+    //                         'color': 'red',
+    //                         'controllers': []
+    //                     };
+    //
+    //                     response.controllers.forEach(function (oneCtrl) {
+    //                         hosttmpl.controllers.push({
+    //                             'ip': oneCtrl.ip,
+    //                             'color': 'green',
+    //                             'lastCheck': 'N/A',
+    //                             'downSince': 'N/A',
+    //                             'downCount': 'N/A'
+    //                         });
+    //                     });
+    //
+    //                     if (services[formData.service].ips[1]) {
+    //                         services[formData.service].ips[1].push(hosttmpl);
+    //                     } else {
+    //                         services[formData.service].ips = {
+    //                             1: []
+    //                         };
+    //                         services[formData.service].ips[1].push(hosttmpl);
+    //                     }
+    //
+    //                     $timeout(function () {
+    //                         currentScope.executeHeartbeatTest(env, hosttmpl);
+    //                     }, 2000);
+    //
+    //                     counter++;
+    //                     if (counter === max) {
+    //                         return cb();
+    //                     }
+    //                     else {
+    //                         doDeploy(counter, max, cb);
+    //                     }
+    //                 }
+    //             });
+    //         }
+    //     }
+    // }
 
-	            if(env.toLowerCase() !== 'dashboard'){
-                    //push controller
-                    servicesList.unshift({"v": "controller", "l": translation.controllerLowercase[LANG], 'group': 'Controllers'});
-	            }
+    function createHost (currentScope, env, runningHosts) {
+        $modal.open({
+            templateUrl: "createHost.tmpl",
+            size: 'lg',
+            backdrop: true,
+            keyboard: true,
+            controller: function ($scope, $modalInstance) {
+                fixBackDrop();
 
-                //call list daemons and push available daemons to servicesList
-                getSendDataFromServer(currentScope, ngDataApi, {
-                    "method": "send",
-                    "routeName": "/dashboard/daemons/list",
-                    "params": {"getGroupConfigs": true}
-                }, function (error, daemons) {
-                    if (error) {
-                        currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
-                    } else {
-                        daemons.forEach(function (oneDaemon) {
-                            if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(oneDaemon.name) !== -1) {
-                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
+                $scope.title = 'Create New Service Host';
+                $scope.currentScope = currentScope;
 
-                                var daemonObj = {
-                                    "name": oneDaemon.name,
-                                    "port": oneDaemon.port,
-                                    "groupConf": oneDaemon.grpConf,
-                                    "latestVersion": oneDaemon.latest
-                                };
-                                postServiceList.push(daemonObj);
-                            } else if (env.toLowerCase() !== 'dashboard' &&
-                                ((dashboardServices.indexOf(oneDaemon.name) !== -1 && nonDashboardServices.indexOf(oneDaemon.name) !== -1) || //not a locked daemon for dashboard and non dashboard environments
-                                (dashboardServices.indexOf(oneDaemon.name) === -1 && nonDashboardServices.indexOf(oneDaemon.name) === -1))) { //a locked daemon that is common for dashboard and non dash envs
-                                servicesList.push({'v': oneDaemon.name, 'l': oneDaemon.name, 'group': 'Daemons'});
+                currentScope.services = [];
+                currentScope.service = "";
+                currentScope.groupConfig = "";
+                currentScope.branch = "";
+                currentScope.serviceOwner = '';
+                currentScope.serviceRepo = '';
+                currentScope.envVariables = '';
+                currentScope.conflict = false;
+                delete currentScope.conflictCommits;
+                currentScope.confirmBranch = '';
+                delete currentScope.number;
+                currentScope.message = {};
+                currentScope.defaultEnvVariables = "<ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + env + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 
-                                var daemonObj = {
-                                    "name": oneDaemon.name,
-                                    "port": oneDaemon.port,
-                                    "groupConf": oneDaemon.grpConf,
-                                    "latestVersion": oneDaemon.latest
-                                };
-                                postServiceList.push(daemonObj);
-                            }
-                        });
-
-                        var selectedIsDaemon = false;
-                        var entry = {
-                            'name': 'service',
-                            'label': translation.serviceName[LANG],
-                            'type': 'select',
-                            'value': servicesList,
-                            'fieldMsg': translation.selectServiceFromListAbove[LANG],
-                            'required': true,
-                            'groups': ['Controllers', 'Services', 'Daemons'],
-                            'onAction': function (label, selected, formConfig) {
-                                //displaying list of groupConfigs in case of daemon////////////////////////
-                                selectedIsDaemon = false;
-                                for (var i = 0; i < daemons.length; i++) {
-                                    if (daemons[i].name === selected) {
-                                        var groupConfigEntry = {
-                                            'name': 'groupConfig',
-                                            'label': translation.daemonGroupConfiguration[LANG],
-                                            'type': 'select',
-                                            'value': [],
-                                            'fieldMsg': translation.chooseGroupConfigForSelectedDaemon[LANG],
-                                            'required': true
-                                        };
-                                        daemons[i].grpConf.forEach (function (oneGroupConfig) {
-                                            groupConfigEntry.value.push ({"l": oneGroupConfig.daemonConfigGroup, "v": oneGroupConfig.daemonConfigGroup});
-                                        });
-                                        formConfig.entries.splice(1, 0, groupConfigEntry);
-
-                                        selectedIsDaemon = true;
-                                    }
-                                }
-
-                                if (!selectedIsDaemon && formConfig.entries[1].name === 'groupConfig') {
-                                    formConfig.entries.splice (1, 1);
-                                }
-                                /////////////////////////////////////////////////////////////////////////////
-
-                                for (var i = 0; i < formConfig.entries.length; i++) {
-                                    if (formConfig.entries[i].name === 'branch') {
-                                        formConfig.entries.splice(i, 1);
-                                    }
-                                }
-
-                                getSendDataFromServer(currentScope, ngDataApi, {
-                                    method: 'get',
-                                    routeName: '/dashboard/github/getBranches',
-                                    params: {name: selected}
-                                }, function (error, response) {
-                                    if (error) {
-                                        currentScope.displayAlert('danger', error.message);
-                                    } else {
-                                        var branchesEntry = {
-                                            'name': 'branch',
-                                            'label': 'Branch',
-                                            'type': 'select',
-                                            'value': [],
-                                            'fieldMsg': 'Choose branch to deploy from',
-                                            'required': true,
-                                            'onAction': function (label, selectedBranch, formConfig) {
-                                                currentScope.hostList.forEach(function (oneEntry) {
-                                                    if(oneEntry.name === selected) {
-                                                        // console.log (oneEntry);
-                                                        // var branch = JSON.parse(selectedBranch);
-                                                        // console.log (selectedBranch);
-                                                        // if (oneEntry.branch.name === branch.name && oneEntry.branch.commitHash === branch.commit.sha) {
-                                                        //     console.log ("Proceed");
-                                                        // } else {
-                                                        //     console.log ("Warning");
-                                                        // }
-                                                    }
-                                                });
-                                            }
-                                        };
-                                        currentScope.owner = response.owner;
-                                        currentScope.repo = response.repo;
-                                        response.branches.forEach(function (oneBranch) {
-                                            delete oneBranch.commit.url;
-                                            branchesEntry.value.push({'v': oneBranch, 'l': oneBranch.name});
-                                        });
-                                        formConfig.entries.splice(2, 0, branchesEntry);
-                                    }
-                                });
-                            }
-                        };
-                        var hostForm = angular.copy(environmentsConfig.form.host);
-                        hostForm.entries.unshift(entry);
-
-                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%envName%", env);
-                        hostForm.entries[3].value = hostForm.entries[3].value.replace("%profilePathToUse%", currentScope.profile);
-
-                        var options = {
-                            timeout: $timeout,
-                            form: hostForm,
-                            name: 'createHost',
-                            label: translation.createNewServiceHost[LANG],
-                            actions: [
-                                {
-                                    'type': 'submit',
-                                    'label': translation.submit[LANG],
-                                    'btn': 'primary',
-                                    'action': function (formData) {
-                                        var text = "<h2>" + translation.deployingNewHostFor[LANG] + " " + formData.service + "</h2>";
-                                        text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                                        jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                        jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                        overlay.show();
-
-                                        var max = formData.number;
-                                        if (formData.service === 'controller') {
-                                            newController(formData, max);
-                                        }
-                                        else {
-                                            formData.selectedIsDaemon = selectedIsDaemon;
-                                            formData.serviceOwner = currentScope.owner;
-                                            formData.serviceRepo = currentScope.repo;
-                                            newService(formData, max);
-                                        }
-                                    }
-                                },
-                                {
-                                    'type': 'reset',
-                                    'label': translation.cancel[LANG],
-                                    'btn': 'danger',
-                                    'action': function () {
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                }
-                            ]
-                        };
-                        buildFormWithModal(currentScope, $modal, options);
-                    }
-                });
-            }
-        });
-
-        function newController(formData, max) {
-            var params = {
-                'envCode': env,
-                "number": max,
-                "owner": "",
-                "repo": "",
-                'branch': formData.branch.name
-            };
-
-            if (formData.variables && formData.variables !== '') {
-                params.variables = formData.variables.split(",");
-                for (var i = 0; i < params.variables.length; i++) {
-                    params.variables[i] = params.variables[i].trim();
-                }
-            }
-
-            getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "send",
-                "routeName": "/dashboard/hosts/deployController",
-                "data": params
-            }, function (error, response) {
-	            overlay.hide();
-                if (error) {
-                    currentScope.generateNewMsg(env, 'danger', error.message);
-                }
-                else {
-                    currentScope.modalInstance.close();
-                    currentScope.form.formData = {};
-
-                    $timeout(function () {
-                        listHosts(currentScope, env);
-                    }, 2000);
-                }
-            });
-        }
-
-        function newService(formData, max) {
-            doDeploy(0, max, function () {
-                overlay.hide();
-                currentScope.modalInstance.close();
-                currentScope.form.formData = {};
-
-                currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
-                    reloadRegistry(currentScope, env, oneCtrl, function () {
-                        currentScope.listHosts(env);
-                    });
-                });
-            });
-
-            function doDeploy(counter, max, cb) {
-                if (typeof(formData.branch) === 'string') {
-                    formData.branch = JSON.parse(formData.branch);
-                }
-                var params = {
-                    'envCode': env,
-                    'owner': formData.serviceOwner,
-                    'repo': formData.serviceRepo,
-                    'branch': formData.branch.name
-                };
-                var port;
-                for (var i = 0; i < postServiceList.length; i++) {
-                    if (postServiceList[i].name === formData.service) {
-                        if (postServiceList[i].gcName) {
-                            params.gcName = postServiceList[i].gcName;
-                            params.gcVersion = postServiceList[i].gcVersion;
-                        }
-                        else {
-                            params.name = formData.service;
-                        }
-
-                        if (postServiceList[i].latestVersion) {
-                            params.version = postServiceList[i].latestVersion;
-                        }
-                        port = postServiceList[i].port;
-                    }
-                }
-
-                if (formData.variables && formData.variables !== '') {
-                    params.variables = formData.variables.split(",");
-                    for (var i = 0; i < params.variables.length; i++) {
-                        params.variables[i] = params.variables[i].trim();
-                    }
-                }
-                
-                var config = {
-                    "method": "send",
-                    "routeName": "/dashboard/hosts/deployService",
-                    "data": params
-                };
-
-                if (formData.selectedIsDaemon) {
-                    config.routeName = "/dashboard/hosts/deployDaemon";
-                    params.grpConfName = formData.groupConfig;
-                }
-
-                getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
-                    if (error) {
-	                    overlay.hide();
-                        currentScope.generateNewMsg(env, 'danger', error.message);
-                    }
-                    else {
-                        currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);
-                        if (!services[formData.service]) {
-                            services[formData.service] = {
-                                'name': formData.service,
-                                'port': port,
-                                'ips': {},
-                                'color': 'red',
-                                'heartbeat': false
-                            };
-                        }
-
-                        var hosttmpl = {
-                            'port': port,
-                            'cid': response.cid,
-                            'hostname': response.hostname,
-                            'ip': response.ip,
-                            'name': formData.service,
-                            'downCount': 'N/A',
-                            'downSince': 'N/A',
-                            'lastCheck': 'N/A',
-                            'healthy': true,
-                            'color': 'red',
-                            'controllers': []
-                        };
-
-                        response.controllers.forEach(function (oneCtrl) {
-                            hosttmpl.controllers.push({
-                                'ip': oneCtrl.ip,
-                                'color': 'green',
-                                'lastCheck': 'N/A',
-                                'downSince': 'N/A',
-                                'downCount': 'N/A'
-                            });
-                        });
-
-                        if (services[formData.service].ips[1]) {
-                            services[formData.service].ips[1].push(hosttmpl);
+                $scope.getServices = function (cb) {
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        method: 'send',
+                        routeName: '/dashboard/services/list'
+                    }, function (error, response) {
+                        if (error) {
+                            currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
                         } else {
-                            services[formData.service].ips = {
-                                1: []
-                            };
-                            services[formData.service].ips[1].push(hosttmpl);
-                        }
-
-                        $timeout(function () {
-                            currentScope.executeHeartbeatTest(env, hosttmpl);
-                        }, 2000);
-
-                        counter++;
-                        if (counter === max) {
+                            response.forEach(function (oneService) {
+                                oneService.type = 'service';
+                                if (allowListing(env, oneService)) {
+                                    currentScope.services.push(oneService);
+                                }
+                            });
                             return cb();
                         }
-                        else {
-                            doDeploy(counter, max, cb);
+                    });
+                };
+
+                $scope.getDaemons = function () {
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        method: 'send',
+                        routeName: '/dashboard/daemons/list',
+                        params: {
+                            'getGroupConfigs': true
+                        }
+                    }, function (error, response) {
+                        if (error) {
+                            currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
+                        } else {
+                            response.forEach(function (oneDaemon) {
+                                if (allowListing(env, oneDaemon)) {
+                                    oneDaemon.type = 'daemon';
+                                    currentScope.services.push(oneDaemon);
+                                }
+                            });
+                        }
+                    });
+                };
+
+                $scope.selectService = function (service) {
+                    currentScope.branches = [];
+                    currentScope.branch = '';
+                    currentScope.groupConfig = '';
+
+                    if (service.type === 'daemon' && service.grpConf) {
+                        currentScope.groupConfigs = service.grpConf;
+                    }
+
+                    currentScope.loadingBranches = true;
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        method: 'get',
+                        routeName: '/dashboard/github/getBranches',
+                        params: {
+                            'name': service.name
+                        }
+                    }, function (error, response) {
+                        if (error) {
+                            currentScope.displayAlert('danger', error.message);
+                        } else {
+                            currentScope.branches = response.branches;
+                            currentScope.serviceOwner = response.owner;
+                            currentScope.serviceRepo = response.repo;
+                            currentScope.loadingBranches = false;
+                        }
+                    });
+                };
+
+                $scope.selectBranch = function (branch) {
+                    currentScope.conflict = false;
+                    currentScope.conflictCommits = {};
+                    if (runningHosts[currentScope.service.name]) {
+                        var versions = Object.keys(runningHosts[currentScope.service.name].ips);
+                        for (var i = 0; i < versions.length; i++) {
+                            var instances = runningHosts[currentScope.service.name].ips[versions[i]];
+                            for (var j = 0; j < instances.length; j++) {
+                                if (instances[j].commit !== branch.commit.sha) {
+                                    currentScope.conflict = true;
+                                    instances[j].version = versions[i];
+                                    if (currentScope.conflictCommits[instances[j].commit]) {
+                                        currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
+                                    } else {
+                                        currentScope.conflictCommits[instances[j].commit] = {};
+                                        currentScope.conflictCommits[instances[j].commit].branch = instances[j].branch;
+                                        currentScope.conflictCommits[instances[j].commit].instances = [];
+                                        currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
+                                    }
+                                }
+                            }
                         }
                     }
+                    console.log (currentScope.conflictCommits);
+                };
+
+                $scope.confirmBranchSelection = function () {
+                    //clear previously selected commit if any
+                    currentScope.commit = '';
+                };
+
+                $scope.onSubmit = function () {
+                    if (!currentScope.commit && !currentScope.confirmBranch) {
+                        currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from from new branch";
+                        $timeout(function () {
+                            currentScope.message.danger = "";
+                        }, 5000);
+                    } else {
+                        var max = currentScope.number;
+                        if (currentScope.service.name === 'controller') {
+                            newController(currentScope, max);
+                        }
+                        else {
+                            newService(currentScope, max);
+                        }
+                    }
+                };
+
+                $scope.closeModal = function () {
+                    $modalInstance.close();
+                };
+
+                $scope.getServices(function () {
+                    $scope.getDaemons();
                 });
+
+                function allowListing(env, service) {
+                    var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+                    var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
+                    if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
+                        return true;
+                    } else if (env.toLowerCase() !== 'dashboard' &&
+                        // service.name !== 'controller' && //controller is added later manually
+                        ((dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) || //not a locked service for dashboard and non dashboard environments
+                        (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
+                        return true;
+                    }
+                    return false;
+                }
+
+                function newController(currentScope, max) {
+                    var params = {
+                        'envCode': env,
+                        "number": max,
+                        "owner": currentScope.serviceOwner,
+                        "repo": currentScope.serviceRepo
+                    };
+
+                    if (currentScope.commit && !currentScope.confirmBranch) {
+                        params.branch = getBranchFromCommit(currentScope.commit);
+                        params.commit = currentScope.commit;
+                    } else {
+                        params.branch = currentScope.branch.name;
+                        params.commit = currentScope.branch.commit.sha;
+                    }
+
+                    if (currentScope.service.latest) {
+                        params.version = currentScope.service.latest;
+                    }
+
+                    if (currentScope.envVariables && currentScope.envVariables !== '') {
+                        params.variables = currentScope.envVariables.split(",");
+                        for (var i = 0; i < params.variables.length; i++) {
+                            params.variables[i] = params.variables[i].trim();
+                        }
+                    }
+
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        "method": "send",
+                        "routeName": "/dashboard/hosts/deployController",
+                        "data": params
+                    }, function (error, response) {
+                        if (error) {
+                            currentScope.generateNewMsg(env, 'danger', error.message);
+                        }
+                        else {
+                            $modalInstance.close();
+
+                            $timeout(function () {
+                                listHosts(currentScope, env);
+                            }, 2000);
+                        }
+                    });
+                }
+
+                function newService(currentScope, max) {
+                    doDeploy(0, max, function () {
+                        $modalInstance.close();
+
+                        currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
+                            reloadRegistry(currentScope, env, oneCtrl, function () {
+                                currentScope.listHosts(env);
+                            });
+                        });
+                    });
+
+                    function doDeploy(counter, max, cb) {
+                        var params = {
+                            'envCode': env,
+                            'owner': currentScope.serviceOwner,
+                            'repo': currentScope.serviceRepo
+                        };
+
+                        if (currentScope.commit && !currentScope.confirmBranch) {
+                            params.branch = getBranchFromCommit(currentScope.commit);
+                            params.commit = currentScope.commit;
+                        } else {
+                            params.branch = currentScope.branch.name;
+                            params.commit = currentScope.branch.commit.sha;
+                        }
+
+                        if (currentScope.service.gcName) {
+                            params.gcName = currentScope.service.gcName;
+                            params.gcVersion = currentScope.service.gcVersion;
+                        } else {
+                            params.name = currentScope.service.name;
+                        }
+
+                        if (currentScope.service.latest) {
+                            params.version = currentScope.service.latest;
+                        }
+                        currentScope.port = currentScope.service.port;
+
+                        if (currentScope.envVariables && currentScope.envVariables !== '') {
+                            params.variables = currentScope.envVariables.split(",");
+                            for (var i = 0; i < params.variables.length; i++) {
+                                params.variables[i] = params.variables[i].trim();
+                            }
+                        }
+
+                        var config = {
+                            "method": "send",
+                            "routeName": "/dashboard/hosts/deployService",
+                            "data": params
+                        };
+
+                        if (currentScope.groupConfig) {
+                            config.routeName = "/dashboard/hosts/deployDaemon";
+                            params.grpConfName = currentScope.groupConfig;
+                        }
+
+                        getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
+                            if (error) {
+                                currentScope.generateNewMsg(env, 'danger', error.message);
+                            }
+                            else {
+                                currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);
+                                if (!runningHosts[currentScope.service.name]) {
+                                    runningHosts[currentScope.service.name] = {
+                                        'name': currentScope.service.name,
+                                        'port': currentScope.port,
+                                        'ips': {},
+                                        'color': 'red',
+                                        'heartbeat': false
+                                    };
+                                }
+
+                                var hosttmpl = {
+                                    'port': currentScope.port,
+                                    'cid': response.cid,
+                                    'hostname': response.hostname,
+                                    'ip': response.ip,
+                                    'name': currentScope.service.name,
+                                    'downCount': 'N/A',
+                                    'downSince': 'N/A',
+                                    'lastCheck': 'N/A',
+                                    'healthy': true,
+                                    'color': 'red',
+                                    'controllers': []
+                                };
+
+                                response.controllers.forEach(function (oneCtrl) {
+                                    hosttmpl.controllers.push({
+                                        'ip': oneCtrl.ip,
+                                        'color': 'green',
+                                        'lastCheck': 'N/A',
+                                        'downSince': 'N/A',
+                                        'downCount': 'N/A'
+                                    });
+                                });
+
+                                if (runningHosts[currentScope.service.name].ips[1]) {
+                                    runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
+                                } else {
+                                    runningHosts[currentScope.service.name].ips = {
+                                        1: []
+                                    };
+                                    runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
+                                }
+
+                                $timeout(function () {
+                                    currentScope.executeHeartbeatTest(env, hosttmpl);
+                                }, 2000);
+
+                                counter++;
+                                if (counter === max) {
+                                    return cb();
+                                }
+                                else {
+                                    doDeploy(counter, max, cb);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                function getBranchFromCommit (commit) {
+                    return currentScope.conflictCommits[commit].branch;
+                }
             }
-        }
-    }
-
-    function createHostNew (currentScope, env, runningHosts) {
-
+        });
     }
 
     return {
