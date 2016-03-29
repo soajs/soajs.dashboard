@@ -202,27 +202,60 @@
 	</div>
 	<div class="modal-body">
 		<div class="form">
-			<alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
-			<form name="grpConf" id="grpConf" novalidate ng-submit="grpConf.$valid && onSubmit()">
+			<alert type="danger" ng-if="currentScope.message.danger">{{currentScope.message.danger}}</alert>
+			<form name="deploy" id="deploy" novalidate ng-submit="deploy.$valid && onSubmit()">
 				<div class="form-group">
 					<label>Service Name</label>
-					<select class="form-control" ng-required="true" ng-options="service as service.name for service in outerScope.servicesList" ng-model="postData.service" ng-change="selectService(service)"></select>
-					<div ng-if="selectedIsDaemon">
+					<select class="form-control" ng-required="true" ng-options="service as service.name for service in currentScope.services" ng-model="currentScope.service" ng-change="selectService(currentScope.service)"></select>
+					<br>
+					<div ng-if="currentScope.groupConfigs">
 						<label>Daemon Group Configuration</label>
-						<select class="form-control" ng-required="true" ng-options="group as group.name for group in outerScope.groupConfigs" ng-model="postData.groupConfig"></select>
+						<select class="form-control" ng-required="true" ng-options="group as group.name for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
+						<br>
 					</div>
-					<div ng-if="branches && branches.length > 0">
-						<label>Branch</label>
+					<div ng-if="currentScope.loadingBranches || currentScope.branches">
+						<label>Branch</label><img class="loadingImage" ng-src="./modules/DASHBOARD/environments/directives/loading.gif" ng-if="currentScope.loadingBranches">
+						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
+						<br>
 					</div>
-					<div ng-if="warning">
-						<label>Warning</label>
+					<div ng-if="currentScope.conflict">
+						<label ng-style="{'color': 'red'}">Warning</label><br>
+						<label>This service has one or more running instances with different commits</label><br>
+						<label>It is recommended that you maintain homogeneity and deploy using an existing commit</label><br>
+						<div class="grid externalKeysGrid">
+							<table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+								<tbody>
+									<tr>
+										<th colspan="1"></th>
+										<th>Commit</th>
+										<th>Branch</th>
+										<th>Hostname(s)</th>
+									</tr>
+									<tr ng-repeat="(commit, data) in currentScope.conflictCommits" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last}">
+										<td>
+											<input type="radio" ng-if="!currentScope.confirmBranch" value="{{commit}}" ng-model="currentScope.commit">
+										</td>
+										<td>{{commit}}</td><!--7-->
+										<td>{{data.branch}}</td>
+										<td>
+											<span ng-repeat="instance in data.instances">{{instance.ip}} v.{{instance.version}}<br></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;I understand the risk and would like to use a new commit to deploy</label><br>
+						<br>
 					</div>
 					<label>Host(s) Number</label>
-					<input type="number" class="form-control" ng-model="postData.number" ng-required="true" placeholder="1"/>
+					<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" placeholder="1"/>
+					<br>
 					<label>Environment Variables</label>
-					<input type="textarea" class="form-control" ng-model="postData.envVariables" ng-required="true" placeholder="{}"/>
+					<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
+					<br>
 					<label>Default Environment Variables</label>
-					<!--bind to html-->
+					<div ng-bind-html="currentScope.defaultEnvVariables"></div>
+					<br>
 				</div>
 			</form>
 		</div>

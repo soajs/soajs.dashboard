@@ -17,8 +17,18 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             } else {
                 $scope.accounts = response;
 
-                var counter = 0;
-                $scope.listRepos($scope.accounts, counter);
+                if ($scope.accounts.length > 0) {
+                    var counter = 0;
+                    var loadingModal = $modal.open({
+                        templateUrl: "loading.tmpl",
+                        backdrop: true,
+                        keyboard: false,
+                        controller: function ($scope, $modalInstance) {
+                            fixBackDrop();
+                        }
+                    });
+                    $scope.listRepos($scope.accounts, counter, loadingModal);
+                }
             }
         });
     };
@@ -36,8 +46,6 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     'label': 'Submit',
                     'btn': 'primary',
                     'action': function (formData) {
-                        console.log (formData);
-                        //name | type | access | password if access
                         var postData = {
                             label: formData.label,
                             username: formData.username,
@@ -146,7 +154,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         }
     };
 
-    $scope.listRepos = function (accounts, counter) {
+    $scope.listRepos = function (accounts, counter, loadingModal) {
         var id = accounts[counter]._id;
 
         getSendDataFromServer($scope, ngDataApi, {
@@ -156,6 +164,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         }, function (error, response) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
+                loadingModal.close();
             } else {
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     if ($scope.accounts[i]._id === id) {
@@ -165,7 +174,9 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
                 counter++;
                 if (counter < accounts.length) {
-                    return $scope.listRepos(accounts, counter);
+                    return $scope.listRepos(accounts, counter, loadingModal);
+                } else {
+                    loadingModal.close();
                 }
             }
         });

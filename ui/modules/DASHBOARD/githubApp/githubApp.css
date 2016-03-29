@@ -37,3 +37,12 @@
 .linkHeader {
     width: 15% !important;
 }
+
+.loadingImageLarge {
+    display: block;
+    margin: 0 auto;
+}
+
+.alignCenter {
+    text-align: center !important;
+}
