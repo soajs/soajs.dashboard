@@ -60,7 +60,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 					}
 				}
 			} else if (oneEntry.name === 'source') {
-				oneEntry.entries.forEach (function (oneSubEntry) {
+				oneEntry.entries.forEach(function (oneSubEntry) {
 					var property = oneSubEntry.name;
 					oneSubEntry.value = service.src[property];
 				});
@@ -299,6 +299,15 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				for (var x = 0; x < l; x++) {
 					if (response[x].apis) {
 						response[x].fixList = $scope.arrGroupByField(response[x].apis, 'group');
+					}
+					else {
+						if (response[x].versions) {
+							var v = returnLatestVersion(response[x].versions);
+							response[x].latest = v;
+							if (response[x].versions[v]) {
+								response[x].fixList = $scope.arrGroupByField(response[x].versions[v].apis, 'group');
+							}
+						}
 					}
 				}
 				$scope.grid = {

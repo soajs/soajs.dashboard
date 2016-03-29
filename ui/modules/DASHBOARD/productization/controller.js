@@ -385,7 +385,6 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 
 				$scope.aclFill = angular.copy($scope.currentPackage.acl);
 				$scope.$evalAsync(function ($scope) {
-
 					aclHelpers.fillAcl($scope);
 				});
 			}
@@ -424,6 +423,14 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 					if (serv.apis) {
 						serv.fixList = aclHelpers.groupApisForDisplay(serv.apis, 'group');
 						delete serv.apis;
+					}
+					else {
+						if (serv.versions) {
+							var v = returnLatestVersion(serv.versions);
+							if (serv.versions[v]) {
+								serv.fixList = aclHelpers.groupApisForDisplay(serv.versions[v].apis, 'group');
+							}
+						}
 					}
 				});
 

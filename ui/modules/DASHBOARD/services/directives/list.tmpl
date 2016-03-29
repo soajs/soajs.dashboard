@@ -19,7 +19,7 @@
 				<a href="" ng-click="showHide(service)">
 					<span class="icon icon-{{service.icon || 'plus'}}"></span>
 				</a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
-				<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service['extKeyRequired']}}</span>
+				<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired']}}</span>
 				<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout']}}</span>
 				<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal']}}</span>
 				<b>{{translation.awareness[LANG]}}</b>:<span>{{service['awareness'] || false}}</span>

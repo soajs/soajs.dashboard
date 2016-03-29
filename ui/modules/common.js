@@ -35,7 +35,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			apiOptions.proxy = true;
 		}
 	}
-	else if($scope.checkAuthEnvCookie()){
+	else if ($scope.checkAuthEnvCookie()) {
 		apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
@@ -219,4 +219,18 @@ function getCodeMessage(code, service, orgMesg) {
 		}
 	}
 	return msg;
+}
+
+function returnLatestVersion(service) {
+	function compareNumbers(a, b) {
+		return b - a;
+	}
+	var keys = Object.keys(service);
+	var keysInt = [];
+	keys.forEach(function (key) {
+		keysInt.push(parseInt(key));
+	});
+	// sort in descending order
+	keysInt = keysInt.sort(compareNumbers);
+	return keysInt[0].toString();
 }
