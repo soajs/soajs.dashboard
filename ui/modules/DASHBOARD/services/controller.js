@@ -26,7 +26,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		var count = 0;
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
 		var apisList = service.apis;
-		console.log(service);
 		if (service.versions) {
 			if (service.latest) {
 				apisList = service.versions[service.latest].apis;
@@ -105,7 +104,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-						console.log(formData);
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
@@ -139,7 +137,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						//}
 
 						var awareness;
-
 						if (Array.isArray(formData.awareness)) {
 							awareness = formData.awareness[0];
 							postData.awareness = awareness;
