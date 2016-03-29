@@ -1259,7 +1259,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 };
 
                 $scope.onSubmit = function () {
-                    if (!currentScope.commit && !currentScope.confirmBranch) {
+                    if (Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
                         currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from from new branch";
                         $timeout(function () {
                             currentScope.message.danger = "";
