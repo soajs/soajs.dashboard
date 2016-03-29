@@ -183,8 +183,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						                if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 							                oneHost.hostname = origHostRec.hostname;
 							                oneHost.cid = origHostRec.cid;
-                                            oneHost.commit = origHostRec.src.commit;
-                                            oneHost.branch = origHostRec.src.branch;
+                                            if (origHostRec.src) {
+                                                oneHost.commit = origHostRec.src.commit;
+                                                oneHost.branch = origHostRec.src.branch;
+                                            }
 						                }
 					                });
 					                if (oneHost.hostname && oneHost.ip) {
