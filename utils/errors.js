@@ -167,6 +167,28 @@ var errors = {
 
 	"750": "Invalid Request.",
 
+	"751": "Unable to login",
+	"752": "User account already exists",
+	"753": "Unable to logout",
+	"754": "Active repositories exist for this user. Please deactivate them to be able to logout",
+	"755": "Authentication failed",
+	"756": "Unable to list accounts",
+	"757": "Unable to get user account",
+	"758": "Unable to get repositories. Please try again.",
+	"759": "Unable to get branches",
+	"760": "Missing source information",
+	"761": "Failed to activate repository",
+	"762": "A service with the same name or port already exists",
+	"763": "A daemon with the same name or port already exists",
+	"764": "Static Content already exists",
+	"765": "Failed to deactivate repository",
+	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
+	"767": "Invalid GitHub account provided",
+	"768": "Failed to sync repository",
+	"769": "Missing config.js data",
+	"770": "Missing config.js source data",
+	"771": "Invalid or no type provided in config.js",
+
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
 	903: "You do not have access to this environment %envCode%"
