@@ -1559,25 +1559,36 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 									var service = servicesList[x];
 									var name = service.name;
 									var newList;
-
+									var apisList;
+									if (service.apis) {
+										apisList = service.apis;
+									}
+									else {
+										if (service.versions) {
+											var v = returnLatestVersion(service.versions);
+											if (service.versions[v]) {
+												apisList = service.versions[v].apis;
+											}
+										}
+									}
 									if ((parentAcl[name]) && (parentAcl[name].apisPermission === 'restricted')) {
 										newList = [];
 										service.forceRestricted = true;
 
-										for (var i = 0; i < service.apis.length; i++) {
-											var v = service.apis[i].v;
+										for (var i = 0; i < apisList.length; i++) {
+											var v = apisList[i].v;
 											if (parentAcl[name].apis) {
 												if (parentAcl[name].apis[v]) {
-													newList.push(service.apis[i]);
+													newList.push(apisList[i]);
 												}
 											}
 										}
 										service.fixList = aclHelper.groupApisForDisplay(newList, 'group');
 									}
 									else {
-										newList = service.apis;
-										service.fixList = aclHelper.groupApisForDisplay(service.apis, 'group');
+										newList = apisList;
 									}
+									service.fixList = aclHelper.groupApisForDisplay(newList, 'group');
 								}
 								$scope.currentApplication.services = servicesList;
 

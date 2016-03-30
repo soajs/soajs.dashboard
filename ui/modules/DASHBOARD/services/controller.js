@@ -25,28 +25,33 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	$scope.editService = function (service) {
 		var count = 0;
 		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
-
+		var apisList = service.apis;
+		if (service.versions) {
+			if (service.latest) {
+				apisList = service.versions[service.latest].apis;
+			}
+		}
 		formConfig.entries.forEach(function (oneEntry) {
 			if (oneEntry.name === 'apis') {
-				if (service.apis && service.apis.length > 0) {
-					for (var i = 0; i < service.apis.length; i++) {
+				if (apisList && apisList.length > 0) {
+					for (var i = 0; i < apisList.length; i++) {
 						var clone = angular.copy(servicesConfig.form.oneApi);
 
 						clone.forEach(function (oneField) {
 							oneField.name = oneField.name.replace("%count%", count);
 
 							if (oneField.name === 'apiV' + count) {
-								oneField.value = service.apis[i].v;
+								oneField.value = apisList[i].v;
 							}
 							if (oneField.name === 'apiL' + count) {
-								oneField.value = service.apis[i].l;
+								oneField.value = apisList[i].l;
 							}
 							if (oneField.name === 'apiG' + count) {
-								oneField.value = service.apis[i].group;
+								oneField.value = apisList[i].group;
 							}
 							if (oneField.name === 'apiMain' + count) {
 								oneField.value.forEach(function (oneV) {
-									if (oneV.v === service.apis[i].groupMain) {
+									if (oneV.v === apisList[i].groupMain) {
 										oneV.selected = true;
 									}
 								});
@@ -59,13 +64,17 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						count++;
 					}
 				}
-			} else if (oneEntry.name === 'source') {
-				oneEntry.entries.forEach (function (oneSubEntry) {
+			}
+			else if (oneEntry.name === 'source') {
+				oneEntry.entries.forEach(function (oneSubEntry) {
 					var property = oneSubEntry.name;
 					oneSubEntry.value = service.src[property];
 				});
 			}
 		});
+		service.extKeyRequired = service.versions[service.latest].extKeyRequired;
+		service.awareness = service.versions[service.latest].awareness;
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -98,16 +107,17 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						var postData = {
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
-							'extKeyRequired': formData.extKeyRequired,
 							"port": formData.port,
-							"awareness": formData.awareness,
+							//'extKeyRequired': formData.extKeyRequired,
+							//"awareness": formData.awareness,
 							'src': {
 								type: formData.type,
 								owner: formData.owner,
 								repo: formData.repo,
 								branch: formData.branch,
 								main: formData.main
-							}
+							},
+							'versions': service.versions
 						};
 						if (formData.token) {
 							postData.src.token = formData.token;
@@ -135,12 +145,15 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							awareness = formData.awareness;
 						}
 						if (awareness === 'true') {
-							postData.awareness = true;
-						} else if (awareness === 'false') {
-							postData.awareness = false;
+							awareness = true;
 						}
+						else if (awareness === 'false') {
+							awareness = false;
+						}
+						postData.versions[service.latest].awareness = awareness;
+						postData.versions[service.latest].extKeyRequired = formData.extKeyRequired;
 
-						postData.apis = [];
+						var apisPost = [];
 						for (var i = 0; i < count; i++) {
 							var tmpObj = {
 								l: formData['apiL' + i],
@@ -152,16 +165,17 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 								delete tmpObj.groupMain;
 							}
 							if (tmpObj.l && tmpObj.v && tmpObj.l !== '' && tmpObj.v !== '') {
-								postData.apis.push(tmpObj);
+								apisPost.push(tmpObj);
 							}
 						}
 
-						if (postData.apis.length === 0) {
+						if (apisPost.length === 0) {
 							$timeout(function () {
 								alert(translation.youNeedProvideOneAPiForService[LANG]);
 							}, 10);
 						}
 						else {
+							postData.versions[service.latest].apis = apisPost;
 							getSendDataFromServer($scope, ngDataApi, {
 								"method": "send",
 								"routeName": "/dashboard/services/update",
@@ -299,6 +313,15 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				for (var x = 0; x < l; x++) {
 					if (response[x].apis) {
 						response[x].fixList = $scope.arrGroupByField(response[x].apis, 'group');
+					}
+					else {
+						if (response[x].versions) {
+							var v = returnLatestVersion(response[x].versions);
+							response[x].latest = v;
+							if (response[x].versions[v]) {
+								response[x].fixList = $scope.arrGroupByField(response[x].versions[v].apis, 'group');
+							}
+						}
 					}
 				}
 				$scope.grid = {
