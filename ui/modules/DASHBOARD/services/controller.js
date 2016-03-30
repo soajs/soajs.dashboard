@@ -108,8 +108,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							'requestTimeout': formData.requestTimeout,
 							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
 							"port": formData.port,
-							//'extKeyRequired': formData.extKeyRequired,
-							//"awareness": formData.awareness,
 							'src': {
 								type: formData.type,
 								owner: formData.owner,
@@ -136,14 +134,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 						//	postData.extKeyRequired = false;
 						//}
 
-						var awareness;
-						if (Array.isArray(formData.awareness)) {
-							awareness = formData.awareness[0];
-							postData.awareness = awareness;
-						}
-						else {
-							awareness = formData.awareness;
-						}
+						var awareness = formData.awareness;
 						if (awareness === 'true') {
 							awareness = true;
 						}
@@ -175,6 +166,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 							}, 10);
 						}
 						else {
+							overlayLoading.show();
 							postData.versions[service.latest].apis = apisPost;
 							getSendDataFromServer($scope, ngDataApi, {
 								"method": "send",
@@ -182,6 +174,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 								"params": {"name": service.name},
 								"data": postData
 							}, function (error) {
+								overlayLoading.hide();
 								if (error) {
 									$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 								}
