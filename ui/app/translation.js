@@ -1509,6 +1509,90 @@ var errorCodes = {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
 		},
+		"751": {
+			"ENG": "Unable to login",
+			"FRA": "Unable to login"
+		},
+		"752": {
+			"ENG": "User account already exists",
+			"FRA": "User account already exists"
+		},
+		"753": {
+			"ENG": "Unable to logout",
+			"FRA": "Unable to logout"
+		},
+		"754": {
+			"ENG": "Active repositories exist for this user. Please deactivate them to be able to logout",
+			"FRA": "Active repositories exist for this user. Please deactivate them to be able to logout"
+		},
+		"755": {
+			"ENG": "Authentication failed",
+			"FRA": "Authentication failed"
+		},
+		"756": {
+			"ENG": "Unable to list accounts",
+			"FRA": "Unable to list accounts"
+		},
+		"757": {
+			"ENG": "Unable to get user account",
+			"FRA": "Unable to get user account"
+		},
+		"758": {
+			"ENG": "Unable to get repositories. Please try again.",
+			"FRA": "Unable to get repositories. Please try again."
+		},
+		"759": {
+			"ENG": "Unable to get branches",
+			"FRA": "Unable to get branches"
+		},
+		"760": {
+			"ENG": "Missing source information",
+			"FRA": "Missing source information"
+		},
+		"761": {
+			"ENG": "Failed to activate repository",
+			"FRA": "Failed to activate repository"
+		},
+		"762": {
+			"ENG": "A service with the same name or port already exists",
+			"FRA": "A service with the same name or port already exists"
+		},
+		"763": {
+			"ENG": "A daemon with the same name or port already exists",
+			"FRA": "A daemon with the same name or port already exists"
+		},
+		"764": {
+			"ENG": "Static Content already exists",
+			"FRA": "Static Content already exists"
+		},
+		"765": {
+			"ENG": "Failed to deactivate repository",
+			"FRA": "Failed to deactivate repository"
+		},
+		"766": {
+			"ENG": "Repository has running hosts. Please stop them to be able to deactivate repository",
+			"FRA": "Repository has running hosts. Please stop them to be able to deactivate repository"
+		},
+		"767": {
+			"ENG": "Invalid GitHub account provided",
+			"FRA": "Invalid GitHub account provided"
+		},
+		"768": {
+			"ENG": "Failed to sync repository",
+			"FRA": "Failed to sync repository"
+		},
+		"769": {
+			"ENG": "Missing config.js data",
+			"FRA": "Missing config.js data"
+		},
+		"770": {
+			"ENG": "Missing config.js source data",
+			"FRA": "Missing config.js source data"
+		},
+		"771": {
+			"ENG": "Invalid or no type provided in config.js",
+			"FRA": "Invalid or no type provided in config.js"
+		},
 
 		"901": {
 			"ENG": "Error Logging out from environments.",

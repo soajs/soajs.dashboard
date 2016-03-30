@@ -1147,7 +1147,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                 currentScope.services = [];
                 currentScope.service = "";
-                currentScope.groupConfig = "";
+                currentScope.groupConfigs = "";
                 currentScope.branch = "";
                 currentScope.serviceOwner = '';
                 currentScope.serviceRepo = '';
@@ -1202,7 +1202,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $scope.selectService = function (service) {
                     currentScope.branches = [];
                     currentScope.branch = '';
-                    currentScope.groupConfig = '';
+                    currentScope.groupConfigs = '';
 
                     if (service.type === 'daemon' && service.grpConf) {
                         currentScope.groupConfigs = service.grpConf;
@@ -1250,7 +1250,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             }
                         }
                     }
-                    console.log (currentScope.conflictCommits);
                 };
 
                 $scope.confirmBranchSelection = function () {
