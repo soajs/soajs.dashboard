@@ -1550,8 +1550,8 @@ var errorCodes = {
 			"FRA": "Missing source information"
 		},
 		"761": {
-			"ENG": "Failed to activate repository",
-			"FRA": "Failed to activate repository"
+			"ENG": "Failed to activate repository. Make sure config.js file is available on your repository's master branch",
+			"FRA": "Failed to activate repository. Make sure config.js file is available on your repository's master branch"
 		},
 		"762": {
 			"ENG": "A service with the same name or port already exists",
