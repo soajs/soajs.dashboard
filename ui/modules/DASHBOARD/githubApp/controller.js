@@ -64,7 +64,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             'data': postData
                         }, function (error) {
                             if (error) {
-                                $scope.displayAlert('danger', error.message);
+                                $scope.form.displayAlert('danger', error.message);
                             } else {
                                 $scope.$parent.displayAlert('success', 'Login Successful');
                                 $scope.modalInstance.close();
