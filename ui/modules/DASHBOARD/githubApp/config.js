@@ -3,6 +3,14 @@ var githubAppConfig = {
         'login': {
             'entries': [
                 {
+                    'name': 'provider',
+                    'label': 'Account Provider',
+                    'type': 'select',
+                    'value': [{'v': 'github', 'l': 'GitHub', 'selected': true}],
+                    'tooltip': 'Choose Account Provider',
+                    'required': true
+                },
+                {
                     'name': 'label',
                     'label': 'Account Name',
                     'type': 'text',

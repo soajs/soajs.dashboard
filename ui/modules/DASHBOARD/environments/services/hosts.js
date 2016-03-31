@@ -13,7 +13,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     "env": env
                 }
             }, function (error, response) {
-                console.log (response);
                 if (error || !response) {
                     currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                 }

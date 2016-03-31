@@ -8,14 +8,14 @@ for (var attrname in gaTranslation) {
 var staticContentNav = [
     {
         'id': 'github-app',
-        'label': "GitHub App",
+        'label': "Git Accounts",
         'checkPermission': {
             'service': 'dashboard',
             'route': '/github/getRepos'
         },
-        'url': '#/github-app',
+        'url': '#/git-accounts',
         'tplPath': 'modules/DASHBOARD/githubApp/directives/list.tmpl',
-        'icon': 'github',
+        'icon': 'git',
         'pillar': {
             'name': 'development',
             'label': translation.develop[LANG],

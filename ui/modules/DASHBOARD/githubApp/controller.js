@@ -47,6 +47,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     'btn': 'primary',
                     'action': function (formData) {
                         var postData = {
+                            provider: formData.provider,
                             label: formData.label,
                             username: formData.username,
                             type: formData.type,
@@ -182,15 +183,16 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         });
     };
 
-    $scope.activateRepo = function (accountId, repo) {
+    $scope.activateRepo = function (account, repo) {
         getSendDataFromServer($scope, ngDataApi, {
             method: 'send',
             routeName: '/dashboard/github/repo/activate',
             params: {
-                id: accountId.toString()
+                id: account._id.toString()
             },
             data: {
-                user: repo.owner.login,
+                provider: account.provider,
+                owner: repo.owner.login,
                 repo: repo.name
             }
         }, function (error, response) {

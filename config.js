@@ -2053,6 +2053,13 @@ module.exports = {
 					"type": "string"
 				}
 			},
+			"provider": {
+				"source": ['body.provider'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"type": {
 				"source": ['body.type'],
 				"required": true,
@@ -2134,8 +2141,15 @@ module.exports = {
 					"type": "string"
 				}
 			},
-			"user": {
-				"source": ['body.user'],
+			"provider": {
+				"source": ['body.provider'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"owner": {
+				"source": ['body.owner'],
 				"required": true,
 				"validation": {
 					"type": "string"
