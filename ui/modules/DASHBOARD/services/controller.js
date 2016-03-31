@@ -50,11 +50,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 								oneField.value = apisList[i].group;
 							}
 							if (oneField.name === 'apiMain' + count) {
-								oneField.value.forEach(function (oneV) {
-									if (oneV.v === apisList[i].groupMain) {
-										oneV.selected = true;
-									}
-								});
+								oneField.value = apisList[i].groupMain || false;
 							}
 							if (oneField.type === 'html') {
 								oneField.value = oneField.value.replace("%count%", count);
@@ -82,112 +78,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			label: translation.updateService[LANG],
 			'data': service,
 			actions: [
-				{
-					'type': 'button',
-					'label': translation.addNewAPI[LANG],
-					'btn': 'success',
-					'action': function () {
-						$scope.form.entries.forEach(function (oneEntry) {
-							if (oneEntry.name === 'apis') {
-								var clone = angular.copy(servicesConfig.form.oneApi);
-								for (var i = 0; i < clone.length; i++) {
-									clone[i].name = clone[i].name.replace("%count%", count);
-								}
-								oneEntry.entries = oneEntry.entries.concat(clone);
-								count++;
-							}
-						});
-					}
-				},
-				{
-					'type': 'submit',
-					'label': translation.submit[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						var postData = {
-							'requestTimeout': formData.requestTimeout,
-							'requestTimeoutRenewal': formData.requestTimeoutRenewal,
-							"port": formData.port,
-							'src': {
-								type: formData.type,
-								owner: formData.owner,
-								repo: formData.repo,
-								branch: formData.branch,
-								main: formData.main
-							},
-							'versions': service.versions
-						};
-						if (formData.token) {
-							postData.src.token = formData.token;
-						}
-						//var extKeyRequired;
-						//if (Array.isArray(formData.extKeyRequired)) {
-						//	extKeyRequired = formData.extKeyRequired[0];
-						//	postData.extKeyRequired = extKeyRequired;
-						//}
-						//else {
-						//	extKeyRequired = formData.extKeyRequired;
-						//}
-						//if (extKeyRequired === 'true') {
-						//	postData.extKeyRequired = true;
-						//} else if (extKeyRequired === 'false') {
-						//	postData.extKeyRequired = false;
-						//}
-
-						var awareness = formData.awareness;
-						if (awareness === 'true') {
-							awareness = true;
-						}
-						else if (awareness === 'false') {
-							awareness = false;
-						}
-						postData.versions[service.latest].awareness = awareness;
-						postData.versions[service.latest].extKeyRequired = formData.extKeyRequired;
-
-						var apisPost = [];
-						for (var i = 0; i < count; i++) {
-							var tmpObj = {
-								l: formData['apiL' + i],
-								v: formData['apiV' + i],
-								group: formData['apiG' + i],
-								groupMain: (formData['apiMain' + i] && formData['apiMain' + i] === 'true')
-							};
-							if (!tmpObj.groupMain) {
-								delete tmpObj.groupMain;
-							}
-							if (tmpObj.l && tmpObj.v && tmpObj.l !== '' && tmpObj.v !== '') {
-								apisPost.push(tmpObj);
-							}
-						}
-
-						if (apisPost.length === 0) {
-							$timeout(function () {
-								alert(translation.youNeedProvideOneAPiForService[LANG]);
-							}, 10);
-						}
-						else {
-							overlayLoading.show();
-							postData.versions[service.latest].apis = apisPost;
-							getSendDataFromServer($scope, ngDataApi, {
-								"method": "send",
-								"routeName": "/dashboard/services/update",
-								"params": {"name": service.name},
-								"data": postData
-							}, function (error) {
-								overlayLoading.hide();
-								if (error) {
-									$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-								}
-								else {
-									$scope.$parent.displayAlert('success', translation.serviceDataUpdatedSuccessFully[LANG]);
-									$scope.modalInstance.close();
-									$scope.form.formData = {};
-									$scope.listServices();
-								}
-							});
-						}
-					}
-				},
 				{
 					'type': 'reset',
 					'label': translation.cancel[LANG],

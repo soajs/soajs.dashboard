@@ -25,9 +25,6 @@
 				<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
 			</div>
 			<div class="entryAction">
-				<a href="" ng-click="editService(service);" ng-if="access.update">
-					<span class="icon icon-pencil2" tooltip="{{translation.editService[LANG]}}"></span>
-				</a>
 			</div>
 			<div class="body grid" style="display:none;">
 				<fieldset ng-repeat="(grp, val) in service.fixList" class="">
