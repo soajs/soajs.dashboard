@@ -102,7 +102,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 		function deployEnvironment(formData) {
 			var branchObj = JSON.parse(formData.branch);
-			console.log (branchObj);
 			var params = {
 				'envCode': envCode,
 				"number": formData.controllers,
@@ -165,8 +164,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			}, function (error, response) {
 				if (error) {
 					currentScope.displayAlert('danger', error.code, true, 'dashboard', error.message);
-				} else {
-					console.log (response);
+				}
+				else {
 					return cb (response);
 				}
 			});
