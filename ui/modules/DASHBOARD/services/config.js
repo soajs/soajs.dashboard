@@ -273,9 +273,7 @@ var servicesConfig = {
 		'listServices': ['dashboard', '/services/list'],
 		'daemons': {
 			'list': ['dashboard', '/daemons/list'],
-			'update': ['dashboard', '/daemons/update'],
-			'delete': ['dashboard', '/daemons/delete'],
-			'add': ['dashboard', '/daemons/add']
+			'delete': ['dashboard', '/daemons/delete']
 		},
 		'daemonGroupConfig': {
 			'list': ['dashboard', '/daemons/groupConfig/list'],

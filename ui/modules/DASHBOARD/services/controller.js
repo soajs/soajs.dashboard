@@ -93,96 +93,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		buildFormWithModal($scope, $modal, options);
 	};
 
-	$scope.uploadService = function () {
-		var formConfig = angular.copy(servicesConfig.form.serviceCustomAdd);
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'addService',
-			label: translation.createCustomService[LANG],
-			actions: [
-				{
-					'type': 'submit',
-					'label': translation.submit[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						$scope.modalInstance.close();
-						var progress = {
-							value: 0
-						};
-
-						var mdm = $modal.open({
-							templateUrl: "serviceInfoBox.html",
-							size: 'lg',
-							backdrop: true,
-							keyboard: true,
-							controller: function ($scope, $modalInstance) {
-								fixBackDrop();
-
-								$scope.title = translation.creatingService[LANG];
-								$scope.text = "<p>" + translate.UploadingServicePleaseWaitTextHtml[LANG] + "</p>";
-								$scope.progress = progress;
-							}
-						});
-						var soajsAuthCookie = $cookieStore.get('soajs_auth');
-						$scope.form.uploadFileToUrl(Upload, {
-							'file': formData.upload_0,
-							'uploadUrl': "/dashboard/services/upload",
-							'headers': {
-								"soajsauth": soajsAuthCookie,
-								"key": $cookieStore.get("soajs_dashboard_key")
-							},
-							'progress': progress
-						}, function (error, response) {
-							if (error) {
-								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-								mdm.close();
-							}
-							else {
-								$scope.form.formData = {};
-								mdm.close();
-								$modal.open({
-									templateUrl: "serviceInfoBox.html",
-									size: 'lg',
-									backdrop: true,
-									keyboard: true,
-									controller: function ($scope, $modalInstance) {
-										fixBackDrop();
-
-										$scope.title = translation.customServiceUploaded[LANG];
-										$scope.text = "<p>" + translation.newServiceCreatedTextHtml[LANG] + "<br />" +
-											translation.proceedEnvironmentsDeployService[LANG] + "<br /></p>";
-										$scope.data = true;
-										$scope.deploy = function () {
-											$modalInstance.dismiss('deploy');
-											window.location.href = "#/environments";
-										};
-										$scope.ok = function () {
-											$modalInstance.dismiss('ok');
-										};
-
-									}
-								});
-								$scope.listServices();
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': translation.cancel[LANG],
-					'btn': 'danger',
-					'action': function () {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
 	$scope.listServices = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -517,114 +427,23 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
+				response.forEach(function (entry) {
+					if (entry.versions) {
+						var v = returnLatestVersion(entry.versions);
+						if (v) {
+							entry.latest = v;
+							entry.jobs = entry.versions[v].jobs;
+						}
+					}
+				});
 				$scope.grid = {
 					rows: response
 				};
-				if (cb) cb();
-			}
-		});
-	};
-
-	$scope.updateDaemon = function (daemon) {
-		var formConfig = angular.copy(servicesConfig.form.daemon);
-		formConfig.entries.forEach(function (oneEntry) {
-			if (oneEntry.name === "daemonName") {
-				oneEntry.value = daemon.name;
-			} else if (oneEntry.name === "daemonPort") {
-				oneEntry.value = daemon.port;
-			}
-		});
-
-		var count = 0;
-		if (daemon.jobs && Object.keys(daemon.jobs).length > 0) {
-			var jobsArr = Object.keys(daemon.jobs);
-			for (var i = 0; i < jobsArr.length; i++) {
-				var clone = angular.copy(servicesConfig.form.oneJob);
-
-				clone.forEach(function (oneJob) {
-					if (oneJob.name === "job%count%") {
-						oneJob.name = oneJob.name.replace("%count%", count);
-						oneJob.value = jobsArr[i];
-					}
-					if (oneJob.name === "removeJob%count%") {
-						oneJob.name = oneJob.name.replace("%count%", count);
-					}
-
-					formConfig.entries[2].entries.push(oneJob);
-				});
-				count++;
-			}
-		}
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editDaemon',
-			label: translation.updateDaemon[LANG],
-			'data': daemon,
-			actions: [
-				{
-					'type': 'button',
-					'label': translation.addJob[LANG],
-					'btn': 'success',
-					'action': function () {
-						$scope.form.entries.forEach(function (oneEntry) {
-							if (oneEntry.name === 'jobs') {
-								var clone = angular.copy(servicesConfig.form.oneJob);
-								for (var i = 0; i < clone.length; i++) {
-									clone[i].name = clone[i].name.replace("%count%", count);
-								}
-								oneEntry.entries = oneEntry.entries.concat(clone);
-								count++;
-							}
-						});
-					}
-				},
-				{
-					'type': 'submit',
-					'label': translation.submit[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						var postData = {};
-						postData.name = formData.name;
-						postData.port = formData.port;
-						postData.jobs = {};
-
-						for (var i = 0; i < count; i++) {
-							var job = formData["job" + i];
-							if (job) {
-								postData.jobs[job] = {};
-							}
-						}
-						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/daemons/update",
-							"params": {"id": daemon._id},
-							"data": postData
-						}, function (error) {
-							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', translation.daemonDataUpdatedSuccessfully[LANG]);
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listDaemons();
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': translation.cancel[LANG],
-					'btn': 'danger',
-					'action': function () {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
+				if (cb) {
+					cb();
 				}
-			]
-		};
-		buildFormWithModal($scope, $modal, options);
+			}
+		});
 	};
 
 	$scope.deleteDaemon = function (daemon) {
@@ -645,92 +464,6 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				});
 			}
 		});
-	};
-
-	$scope.addDaemon = function () {
-		var count = 0;
-
-		//Adding the initial Job Name text field
-		var formConfig = angular.copy(servicesConfig.form.daemon);
-		formConfig.entries.forEach(function (oneEntry) {
-			if (oneEntry.name === "jobs") {
-				var clone = angular.copy(servicesConfig.form.oneJob);
-				for (var i = 0; i < clone.length; i++) {
-					clone[i].name = clone[i].name.replace("%count%", count);
-				}
-				oneEntry.entries = oneEntry.entries.concat(clone);
-				count++;
-			}
-		});
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'addDaemon',
-			label: translation.addDaemon[LANG],
-			actions: [
-				{
-					'type': 'button',
-					'label': translation.addJob[LANG],
-					'btn': 'success',
-					'action': function () {
-						$scope.form.entries.forEach(function (oneEntry) {
-							if (oneEntry.name === 'jobs') {
-								var clone = angular.copy(servicesConfig.form.oneJob);
-								for (var i = 0; i < clone.length; i++) {
-									clone[i].name = clone[i].name.replace("%count%", count);
-								}
-								oneEntry.entries = oneEntry.entries.concat(clone);
-								count++;
-							}
-						});
-					}
-				},
-				{
-					'type': 'submit',
-					'label': translation.submit[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						var postData = {};
-						postData.name = formData.name;
-						postData.port = formData.port;
-						postData.jobs = {};
-
-						for (var i = 0; i < count; i++) {
-							var job = formData["job" + i];
-							if (job) {
-								postData.jobs[job] = {};
-							}
-						}
-						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
-							"routeName": "/dashboard/daemons/add",
-							"data": postData
-						}, function (error) {
-							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', translation.daemonAddedSuccessfully[LANG]);
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listDaemons();
-							}
-						});
-					}
-				},
-				{
-					'type': 'reset',
-					'label': translation.cancel[LANG],
-					'btn': 'danger',
-					'action': function () {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-		buildFormWithModal($scope, $modal, options);
 	};
 
 	$scope.listDaemonGroupConfig = function (cb) {

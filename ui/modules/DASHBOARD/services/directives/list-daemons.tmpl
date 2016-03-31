@@ -20,9 +20,6 @@
                         </fieldset>
                     </div>
                     <div class="entryAction">
-                        <a href="" ng-click="updateDaemon(daemon);" ng-if="access.daemons.update">
-                            <span class="icon icon-pencil2" tooltip="{{translation.editDaemon[LANG]}}"></span>
-                        </a>
                         <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="{{translation.areYouSureWantRemoveDaemon[LANG]}}">
                             <span class="icon icon-cross" tooltip="{{translation.deleteDaemon[LANG]}}"></span>
                         </a>

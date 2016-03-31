@@ -399,15 +399,6 @@ service.init(function() {
 		checkForMongo(req);
 		services.list(config, mongo, req, res);
 	});
-	service.post("/services/update", function(req, res) {
-		checkForMongo(req);
-		services.update(config, mongo, req, res);
-	});
-
-	service.post("/services/upload", function(req, res) {
-		checkForMongo(req);
-		services.upload(config, mongo, req, res);
-	});
 
 	/**
 	 * Daemons features
@@ -415,14 +406,6 @@ service.init(function() {
 	service.post("/daemons/list", function (req, res) {
 		checkForMongo(req);
 		daemons.list (config, mongo, req, res);
-	});
-	service.post("/daemons/add", function (req, res) {
-		checkForMongo(req);
-		daemons.add (config, mongo, req, res);
-	});
-	service.post("/daemons/update", function (req, res) {
-		checkForMongo(req);
-		daemons.update (config, mongo, req, res);
 	});
 	service.get("/daemons/delete", function (req, res) {
 		checkForMongo(req);

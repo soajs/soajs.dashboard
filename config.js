@@ -1458,20 +1458,6 @@ module.exports = {
 				}
 			}
 		},
-		"/daemons/add": {
-			_apiInfo: {
-				"l": "Add Daemon",
-				"group": "Daemons"
-			},
-			'commonFields': ['port', 'name', 'jobs']
-		},
-		"/daemons/update": {
-			_apiInfo: {
-				"l": "Update Daemon",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'port', 'name', 'jobs']
-		},
 		"/daemons/delete": {
 			_apiInfo: {
 				"l": "Delete Daemon",
