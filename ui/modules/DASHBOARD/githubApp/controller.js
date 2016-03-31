@@ -89,13 +89,14 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.deleteAccount = function (account) {
+        console.log (account);
         if (account.access === 'public') {
             getSendDataFromServer($scope, ngDataApi, {
                 'method': 'get',
                 'routeName': '/dashboard/github/logout',
                 'params': {
                     id: account._id.toString(),
-                    username: account.username
+                    username: account.owner
                 }
             }, function (error) {
                 if (error) {
@@ -120,7 +121,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                         'action': function (formData) {
                             var params = {
                                 id: account._id.toString(),
-                                username: account.username,
+                                username: account.owner,
                                 password: formData.password
                             };
                             getSendDataFromServer($scope, ngDataApi, {

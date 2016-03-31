@@ -47,6 +47,7 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
+    "shortid": "^2.2.4",
     "unzip2": "*"
   },
   "peerDependencies": {
