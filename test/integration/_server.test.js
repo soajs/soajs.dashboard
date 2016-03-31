@@ -29,12 +29,13 @@ describe("importing sample data", function () {
             dashboard = helper.requireModule('./index');
             setTimeout(function () {
                 require("./soajs.dashboard.locked.test.js");
+	            require("./soajs.dashboard.test.tenants.js");
                 require("./soajs.dashboard.test.js");
-	            require("./soajs.dashboard.test.services.js");
-                require("./soajs.contentbuilder.test.js");
+	            //require("./soajs.dashboard.test.services.js");
+                //require("./soajs.contentbuilder.test.js");
                 //require("./soajs.uploadService.test.js");
-                require("./soajs.hostsdeploy.test.js");
-                require("./soajs.uploadCertificate.test.js");
+                //require("./soajs.hostsdeploy.test.js");
+                //require("./soajs.uploadCertificate.test.js");
                 done();
             }, 1000);
         }, 4000);

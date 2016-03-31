@@ -449,7 +449,7 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services', 'deployer', 'port'],
+			"commonFields": ['id', 'description', 'services', 'port'],
 			"domain": {
 				"source": ['body.domain'],
 				"required": true,
