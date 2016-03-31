@@ -1,72 +1,32 @@
 var servicesConfig = {
-	form:{
+	form: {
 		"oneApi": [
 			{
 				'name': 'apiV%count%',
 				'label': translation.aPIRoute[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': '/' + translation.routeName[LANG],
-				'required': true
+				'placeholder': '/' + translation.routeName[LANG]
 			},
 			{
 				'name': 'apiL%count%',
 				'label': translation.aPILabel[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': translation.myAPIRoute[LANG],
-				'required': true
+				'placeholder': translation.myAPIRoute[LANG]
 			},
 			{
 				'name': 'apiG%count%',
 				'label': translation.aPIGroup[LANG],
 				'type': 'text',
 				'value': '',
-				'placeholder': translation.myAPIGroup[LANG],
-				'required': true
+				'placeholder': translation.myAPIGroup[LANG]
 			},
 			{
 				'name': 'apiMain%count%',
 				'label': translation.defaultGroupAPI[LANG],
-				'type': 'radio',
-				'value': [{'v': false, "selected": true}, {'v': true}]
-			},
-			{
-				"type": "html",
-				"name": "removeAPI%count%",
-				"value": "<span class='red'><span class='icon icon-cross' title=" + translation.removeAPI[LANG] + "></span></span>",
-				"onAction" : function(id, data, form) {
-					var number = id.replace("removeAPI", "");
-
-					delete form.formData['apiV'+number];
-					delete form.formData['apiL'+number];
-					delete form.formData['apiG'+number];
-					delete form.formData['apiMain'+number];
-
-					form.entries.forEach(function(oneEntry) {
-						if(oneEntry.type === 'group') {
-
-							for(var i = 0; i < oneEntry.entries.length; i++) {
-								if(oneEntry.entries[i].name === 'apiV' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-								if(oneEntry.entries[i].name === 'apiL' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-								if(oneEntry.entries[i].name === 'apiG' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-								if(oneEntry.entries[i].name === 'apiMain' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-
-								if(oneEntry.entries[i].name === 'removeAPI' + number) {
-									oneEntry.entries.splice(i, 1);
-								}
-							}
-						}
-					});
-				}
+				'type': 'readonly',
+				'value': ''
 			}
 		],
 		"serviceCustomAdd": {
@@ -106,7 +66,7 @@ var servicesConfig = {
 				}
 			]
 		},
-		"serviceEdit":{
+		"serviceEdit": {
 			'entries': [
 				{
 					'name': 'name',
@@ -145,16 +105,16 @@ var servicesConfig = {
 				{
 					'name': 'extKeyRequired',
 					'label': translation.extKeyRequired[LANG],
-					'type': 'radio',
-					'value': [{'v': false}, {'v': true}],
+					'type': 'readonly',
+					'value': '',
 					'tooltip': translation.formExtKeyRequiredTooltip[LANG],
 					'required': true
 				},
 				{
 					'name': 'awareness',
 					'label': translation.awareness[LANG],
-					'type': 'radio',
-					'value': [{'v': false}, {'v': true}],
+					'type': 'readonly',
+					'value': '',
 					'tooltip': translation.formAwarenessTooltip[LANG],
 					'required': true
 				},
@@ -267,18 +227,18 @@ var servicesConfig = {
 				"type": "html",
 				"name": "removeJob%count%",
 				"value": "<span class='red'><span class='icon icon-cross' title=" + translation.removeJob[LANG] + "></span></span>",
-				"onAction" : function(id, data, form) {
+				"onAction": function (id, data, form) {
 					var number = id.replace("removeJob", "");
 
 					delete form.formData['job' + number];
 
-					form.entries.forEach(function(oneEntry) {
-						if(oneEntry.type === 'group') {
-							for(var i = 0; i < oneEntry.entries.length; i++) {
-								if(oneEntry.entries[i].name === 'job' + number) {
+					form.entries.forEach(function (oneEntry) {
+						if (oneEntry.type === 'group') {
+							for (var i = 0; i < oneEntry.entries.length; i++) {
+								if (oneEntry.entries[i].name === 'job' + number) {
 									oneEntry.entries.splice(i, 1);
 								}
-								if(oneEntry.entries[i].name === 'removeJob' + number) {
+								if (oneEntry.entries[i].name === 'removeJob' + number) {
 									oneEntry.entries.splice(i, 1);
 								}
 							}
@@ -309,9 +269,8 @@ var servicesConfig = {
 			]
 		}
 	},
-	permissions:{
+	permissions: {
 		'listServices': ['dashboard', '/services/list'],
-		'update': ['dashboard', '/services/update'],
 		'daemons': {
 			'list': ['dashboard', '/daemons/list'],
 			'update': ['dashboard', '/daemons/update'],
