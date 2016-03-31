@@ -22,7 +22,7 @@
 				<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired']}}</span>
 				<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout']}}</span>
 				<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal']}}</span>
-				<b>{{translation.awareness[LANG]}}</b>:<span>{{service['awareness'] || false}}</span>
+				<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
 			</div>
 			<div class="entryAction">
 				<a href="" ng-click="editService(service);" ng-if="access.update">
