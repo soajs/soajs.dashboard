@@ -177,9 +177,9 @@ var errors = {
 	"758": "Unable to get repositories. Please try again.",
 	"759": "Unable to get branches",
 	"760": "Missing source information",
-	"761": "Failed to activate repository. Make sure config.js file is available on your repository's master branch",
-	"762": "A service with the same name or port already exists",
-	"763": "A daemon with the same name or port already exists",
+	"761": "Failed to activate repository. Make sure config.js file is available on your repository's master branch, and it contains prerequisites, servicePort, serviceName fields",
+	"762": "A module with the same name and/or port already exists",
+	
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",
 	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",

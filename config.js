@@ -2089,8 +2089,8 @@ module.exports = {
 					"type": "string"
 				}
 			},
-			"user": {
-				"source": ['query.user'],
+			"owner": {
+				"source": ['query.owner'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2116,8 +2116,8 @@ module.exports = {
 					"type": "string"
 				}
 			},
-			"user": {
-				"source": ['body.user'],
+			"owner": {
+				"source": ['body.owner'],
 				"required": true,
 				"validation": {
 					"type": "string"

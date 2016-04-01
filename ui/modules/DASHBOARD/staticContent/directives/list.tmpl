@@ -1,5 +1,4 @@
 <section ng-controller="staticContentCtrl">
-    <!--<a ng-if="access.add" href="" class="btn btn-primary" ng-click="addSource()">{{translation.addNewSource[LANG]}}</a><br><br>-->
     <div class="entryBoxes entryBoxesGrid">
         <div id="{{source._id}}" ng-repeat="source in staticContentList" class="entryBox customEntryBox">
             <div class="header opened">
@@ -8,17 +7,7 @@
             <div class="body">
                 <label>{{translation.owner[LANG]}}:</label>&nbsp;{{source.src.owner}}<br>
                 <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.src.repo}}<br>
-                <label>{{translation.mainFile[LANG]}}:</label>&nbsp;{{source.src.main}}<br>
                 <label>{{translation.dashUI[LANG]}}:</label>&nbsp;{{source.dashUI}}
-
-                <div class="entryAction">
-                    <a href="" ng-click="updateSource(source);" ng-if="access.update">
-                        <span class="icon icon-pencil2" tooltip="{{translation.updateSource[LANG]}}"></span>
-                    </a>
-                    <a href="" ng-click="deleteSource(source);" ng-if="access.delete" ng-confirm-click="{{translation.areYouSureYouWantToDeleteSource[LANG]}}">
-                        <span class="icon icon-cross" tooltip="{{translation.deleteSource[LANG]}}"></span>
-                    </a>
-                </div>
             </div>
         </div>
     </div>

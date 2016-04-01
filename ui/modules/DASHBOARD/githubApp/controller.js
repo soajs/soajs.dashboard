@@ -25,6 +25,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                         keyboard: false,
                         controller: function ($scope, $modalInstance) {
                             fixBackDrop();
+                            $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
                         }
                     });
                     $scope.listRepos($scope.accounts, counter, loadingModal);
@@ -229,7 +230,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             routeName: '/dashboard/github/repo/deactivate',
             params: {
                 id: accountId.toString(),
-                user: repo.owner.login,
+                owner: repo.owner.login,
                 repo: repo.name
             }
         }, function (error, response) {
@@ -251,15 +252,15 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         });
     };
 
-    $scope.syncRepo = function (accountId, repo) {
+    $scope.syncRepo = function (account, repo) {
         getSendDataFromServer($scope, ngDataApi, {
             method: 'send',
             routeName: '/dashboard/github/repo/sync',
             params: {
-                id: accountId.toString()
+                id: account._id.toString()
             },
             data: {
-                user: repo.owner.login,
+                owner: repo.owner.login,
                 repo: repo.name
             }
         }, function (error, response) {
@@ -271,6 +272,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 }
                 else if (response.status === 'outOfSync') {
                     repo.status = 'outOfSync';
+                    var outerScope = $scope;
                     var repoOutOfSync = $modal.open({
                         templateUrl: 'repoOutOfSync.tmpl',
                         backdrop: true,
@@ -283,31 +285,32 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                     method: 'get',
                                     routeName: '/dashboard/github/repo/deactivate',
                                     params: {
-                                        id: accountId.toString(),
-                                        user: repo.owner.login,
+                                        id: account._id.toString(),
+                                        owner: repo.owner.login,
                                         repo: repo.name
                                     }
                                 }, function (error) {
                                     if (error) {
-                                        // $scope.displayAlert('danger', error.message);
+                                        outerScope.displayAlert('danger', error.message);
                                         repoOutOfSync.close();
                                     } else {
                                         getSendDataFromServer($scope, ngDataApi, {
                                             'method': 'send',
                                             routeName: '/dashboard/github/repo/activate',
                                             params: {
-                                                id: accountId.toString()
+                                                id: account._id.toString()
                                             },
                                             data: {
-                                                user: repo.owner.login,
+                                                provider: account.provider,
+                                                owner: repo.owner.login,
                                                 repo: repo.name
                                             }
                                         }, function (error, result) {
                                             if (error) {
-                                                // $scope.displayAlert('danger', error.message);
+                                                outerScope.displayAlert('danger', error.message);
                                                 repoOutOfSync.close();
                                             } else {
-                                                // $scope.displayAlert('success', 'Repository has been reactivated');
+                                                outerScope.displayAlert('success', 'Repository has been reactivated');
                                                 repo.status = 'active';
                                                 repoOutOfSync.close();
                                             }
@@ -322,8 +325,37 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                         }
                     });
                 }
-                else {
-                    $scope.displayAlert('success', 'Repository has been synced');
+                else if (response.status === 'multiSyncDone'){
+
+                    // var syncSuccess = $modal.open({
+                    //     templateUrl: 'syncSuccess.tmpl',
+                    //     backdrop: true,
+                    //     keyboard: true,
+                    //     controller: function ($scope) {
+                    //         fixBackDrop();}
+                    //
+                    // });
+                    if (response.updated.length === 0 && response.removed.length === 0 && response.added.length === 0) {
+                        $scope.displayAlert('success', 'Repository is up to date');
+                    } else {
+                        var syncSuccess = $modal.open({
+                            templateUrl: 'syncSuccess.tmpl',
+                            backdrop: true,
+                            keyboard: true,
+                            controller: function ($scope) {
+                                fixBackDrop();
+                                $scope.results = {
+                                    updated: response.updated,
+                                    added: response.added,
+                                    removed: response.removed
+                                };
+
+                                $scope.ok = function () {
+                                    syncSuccess.close();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });

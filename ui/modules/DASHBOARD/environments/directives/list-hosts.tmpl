@@ -214,7 +214,7 @@
 						<br>
 					</div>
 					<div ng-if="currentScope.loadingBranches || currentScope.branches">
-						<label>Branch</label><img class="loadingImage" ng-src="./modules/DASHBOARD/environments/directives/loading.gif" ng-if="currentScope.loadingBranches">
+						<label>Branch</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingBranches">
 						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
 						<br>
 					</div>

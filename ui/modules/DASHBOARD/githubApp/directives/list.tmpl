@@ -28,7 +28,7 @@
                                 <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
                                     <span class="icon icon-cross" tooltip="Deactivate"></span>
                                 </a>
-                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}">
+                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                     <span class="icon icon-loop2" tooltip="Sync"></span>
                                 </a>
                             </div>
@@ -47,7 +47,6 @@
 
 <script type="text/ng-template" id="repoAddSuccess.tmpl">
     <div class="modal-body">
-        <!--<div ng-bind-html="text"></div>-->
         <h4 style="text-align: center;">Repository has been activated</h4>
         <label>The following modules were added:</label>
         <ul>
@@ -59,11 +58,26 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="syncSuccess.tmpl">
+    <div class="modal-body">
+        <h4 style="text-align: center;">Repository has been synced</h4>
+        <div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
+            <label>The following modules were {{action}}:</label><br>
+            <ul>
+            <li ng-repeat="entry in entries"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
 <script type="text/ng-template" id="repoOutOfSync.tmpl">
     <div class="modal-body">
         <!--<div ng-bind-html="text"></div>-->
         <h4 style="text-align: center;">Repository is out of sync</h4>
-        <label>Would you like to reactivate this repository?</label>
+        <label style="text-align: center;">Would you like to reactivate this repository?</label>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="reactivate()">Reactivate</button>
@@ -73,7 +87,7 @@
 
 <script type="text/ng-template" id="loading.tmpl">
     <div class="modal-body">
-        <img class="loadingImageLarge" ng-src="./modules/DASHBOARD/environments/directives/loading.gif" width="50px" height="50px"><br>
+        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="50px" height="50px"><br>
         <h4 class="alignCenter">Getting repositories, please wait...</h4>
     </div>
 </script>

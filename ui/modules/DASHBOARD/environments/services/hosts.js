@@ -1142,6 +1142,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 fixBackDrop();
 
                 $scope.title = 'Create New Service Host';
+                $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                 $scope.currentScope = currentScope;
 
                 currentScope.services = [];

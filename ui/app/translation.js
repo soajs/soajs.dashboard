@@ -1550,16 +1550,12 @@ var errorCodes = {
 			"FRA": "Missing source information"
 		},
 		"761": {
-			"ENG": "Failed to activate repository. Make sure config.js file is available on your repository's master branch",
-			"FRA": "Failed to activate repository. Make sure config.js file is available on your repository's master branch"
+			"ENG": "Failed to activate repository. Make sure config.js file is available on your repository's master branch, and it contains prerequisites, servicePort, serviceName fields",
+			"FRA": "Failed to activate repository. Make sure config.js file is available on your repository's master branch, and it contains prerequisites, servicePort, serviceName fields"
 		},
 		"762": {
-			"ENG": "A service with the same name or port already exists",
-			"FRA": "A service with the same name or port already exists"
-		},
-		"763": {
-			"ENG": "A daemon with the same name or port already exists",
-			"FRA": "A daemon with the same name or port already exists"
+			"ENG": "A module with the same name and/or port already exists",
+			"FRA": "A module with the same name and/or port already exists"
 		},
 		"764": {
 			"ENG": "Static Content already exists",
