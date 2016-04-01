@@ -1148,6 +1148,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.services = [];
                 currentScope.service = "";
                 currentScope.groupConfigs = "";
+                currentScope.groupConfig = "";
                 currentScope.branch = "";
                 currentScope.serviceOwner = '';
                 currentScope.serviceRepo = '';
@@ -1259,7 +1260,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                 $scope.onSubmit = function () {
                     if (Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
-                        currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from from new branch";
+                        currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
                         $timeout(function () {
                             currentScope.message.danger = "";
                         }, 5000);
@@ -1394,7 +1395,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                         if (currentScope.groupConfig) {
                             config.routeName = "/dashboard/hosts/deployDaemon";
-                            params.grpConfName = currentScope.groupConfig;
+                            params.grpConfName = currentScope.groupConfig.daemonConfigGroup;
                         }
 
                         getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {

@@ -210,7 +210,7 @@
 					<br>
 					<div ng-if="currentScope.groupConfigs">
 						<label>Daemon Group Configuration</label>
-						<select class="form-control" ng-required="true" ng-options="group as group.name for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
+						<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
 						<br>
 					</div>
 					<div ng-if="currentScope.loadingBranches || currentScope.branches">
