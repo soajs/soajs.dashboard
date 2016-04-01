@@ -16,13 +16,8 @@ var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
 var mongo = new Mongo(dashboardConfig);
 
-var uracConfig = dbConfig();
-uracConfig.name = 'test_urac';
-var uracMongo = new Mongo(uracConfig);
-
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-var wrong_Id = '55375fc26aa74450771a1513';
-// /tenant/application/acl/get
+
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
@@ -95,13 +90,14 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 
 		describe("daemons tests", function () {
 			var daemonId = "";
-			//TODO : get id
+			// to get id
 			describe("list daemon tests", function () {
 
 				it("success - list all daemons", function (done) {
 					executeMyRequest({}, 'daemons/list', 'post', function (body) {
 						assert.ok(body.data);
 						assert.ok(body.data.length > 0);
+						daemonId = body.data[0]._id.toString();
 						done();
 					});
 				});
@@ -154,6 +150,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 						}
 					};
 					executeMyRequest(params, "daemons/delete", "get", function (body) {
+						console.log(body);
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -163,7 +160,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 
 		});
 
-		describe("group configuration tests", function () {
+		describe.skip("group configuration tests", function () {
 			var groupId = "";
 
 			describe("add group config tests", function () {

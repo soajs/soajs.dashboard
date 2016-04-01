@@ -21,7 +21,6 @@ uracConfig.name = 'test_urac';
 var uracMongo = new Mongo(uracConfig);
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-var wrong_Id = '55375fc26aa74450771a1513';
 // /tenant/application/acl/get
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -64,7 +63,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-describe("DASHBOARD UNIT Tests", function () {
+describe("DASHBOARD UNIT Tests:", function () {
 	var expDateValue = new Date().toISOString();
 	var envId;
 	describe("environment tests", function () {
@@ -1364,6 +1363,153 @@ describe("DASHBOARD UNIT Tests", function () {
 
 		});
 
+		describe("mongo check db", function () {
+
+			it('asserting environment record', function (done) {
+				mongo.findOne('environment', {"code": "DEV"}, function (error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					delete record._id;
+					assert.deepEqual(record, {
+						"code": "DEV",
+						"domain": "api.myDomain.com",
+						"port": 8080,
+						"profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
+						"deployer": {
+							"type": "container",
+							"selected": "container.dockermachine.local",
+							"container": {
+								"dockermachine": {
+									"local": {},
+									"cloud": {
+										"joyent": {}
+									}
+								},
+								"docker": {
+									"socket": {},
+									"scoket": {
+										"socketPath": "/var/run/dockerSock.sock"
+									}
+								}
+							}
+						},
+						"description": "this is a dummy description",
+						"services": {
+							"controller": {
+								"maxPoolSize": 100,
+								"authorization": true,
+								"requestTimeout": 30,
+								"requestTimeoutRenewal": 0
+							},
+							"config": {
+								"awareness": {
+									"healthCheckInterval": 5000,
+									"autoRelaodRegistry": 300000,
+									"maxLogCount": 5,
+									"autoRegisterService": true
+								},
+								"agent": {
+									"topologyDir": "/opt/soajs/"
+								},
+								"key": {
+									"algorithm": "aes256",
+									"password": "soajs key lal massa"
+								},
+								"logger": {
+									"src": true,
+									"level": "debug"
+								},
+								"cors": {
+									"enabled": true,
+									"origin": "*",
+									"credentials": "true",
+									"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+									"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+									"maxage": 1728000
+								},
+								"oauth": {
+									"grants": [
+										"password",
+										"refresh_token"
+									],
+									"debug": false
+								},
+								"ports": {
+									"controller": 4000,
+									"maintenanceInc": 1000,
+									"randomInc": 100
+								},
+								"cookie": {
+									"secret": "this is a secret sentence"
+								},
+								"session": {
+									"name": "soajsID",
+									"secret": "this is antoine hage app server",
+									"rolling": false,
+									"unset": "keep",
+									"cookie": {
+										"path": "/",
+										"httpOnly": true,
+										"secure": false,
+										"domain": "soajs.com",
+										"maxAge": null
+									},
+									"resave": false,
+									"saveUninitialized": false
+								}
+							}
+						},
+						"dbs": {
+							"clusters": {
+								"cluster1": {
+									"URLParam": {
+										"connectTimeoutMS": 0,
+										"socketTimeoutMS": 0,
+										"maxPoolSize": 5,
+										"wtimeoutMS": 0,
+										"slaveOk": true
+									},
+									"servers": [
+										{
+											"host": "127.0.0.1",
+											"port": 27017
+										}
+									],
+									"extraParam": {
+										"db": {
+											"native_parser": true
+										},
+										"server": {
+											"auto_reconnect": true
+										}
+									}
+								}
+							},
+							"config": {
+								"session": {
+									"cluster": "cluster1",
+									"name": "core_session",
+									"store": {},
+									"collection": "sessions",
+									"stringify": false,
+									"expireAfter": 1209600000
+								},
+								"prefix": ""
+							},
+							"databases": {
+								"urac": {
+									"cluster": "cluster1",
+									"tenantSpecific": true
+								}
+							}
+						}
+					});
+					done();
+				});
+			});
+
+		});
+
 	});
 	
 	describe("login tests", function () {
@@ -1833,7 +1979,7 @@ describe("DASHBOARD UNIT Tests", function () {
 		});
 	});
 
-	describe("platforms tests", function () {
+	describe.skip("platforms tests", function () {
 
 		describe("add drivers", function () {
 
@@ -2168,7 +2314,7 @@ describe("DASHBOARD UNIT Tests", function () {
 
 	});
 
-	describe("hosts tests", function () {
+	describe.skip("hosts tests", function () {
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {
 			
@@ -2437,300 +2583,6 @@ describe("DASHBOARD UNIT Tests", function () {
 					assert.ok(body.data);
 					done();
 				});
-			});
-		});
-	});
-	
-	describe.skip('mongo check db', function () {
-		it('asserting environment record', function (done) {
-			mongo.findOne('environment', {"code": "DEV"}, function (error, record) {
-				assert.ifError(error);
-				assert.ok(record);
-				delete record._id;
-				assert.deepEqual(record, {
-					"code": "DEV",
-					"domain": "api.myDomain.com",
-					"port": 8080,
-					"profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
-					"deployer": {
-						"type": "container",
-						"selected": "container.dockermachine.local",
-						"container": {
-							"dockermachine": {
-								"local": {},
-								"cloud": {
-									"joyent": {}
-								}
-							},
-							"docker": {
-								"socket": {},
-								"scoket": {
-									"socketPath": "/var/run/dockerSock.sock"
-								}
-							}
-						}
-					},
-					"description": "this is a dummy description",
-					"services": {
-						"controller": {
-							"maxPoolSize": 100,
-							"authorization": true,
-							"requestTimeout": 30,
-							"requestTimeoutRenewal": 0
-						},
-						"config": {
-							"awareness": {
-								"healthCheckInterval": 5000,
-								"autoRelaodRegistry": 300000,
-								"maxLogCount": 5,
-								"autoRegisterService": true
-							},
-							"agent": {
-								"topologyDir": "/opt/soajs/"
-							},
-							"key": {
-								"algorithm": "aes256",
-								"password": "soajs key lal massa"
-							},
-							"logger": {
-								"src": true,
-								"level": "debug"
-							},
-							"cors": {
-								"enabled": true,
-								"origin": "*",
-								"credentials": "true",
-								"methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-								"headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
-								"maxage": 1728000
-							},
-							"oauth": {
-								"grants": [
-									"password",
-									"refresh_token"
-								],
-								"debug": false
-							},
-							"ports": {
-								"controller": 4000,
-								"maintenanceInc": 1000,
-								"randomInc": 100
-							},
-							"cookie": {
-								"secret": "this is a secret sentence"
-							},
-							"session": {
-								"name": "soajsID",
-								"secret": "this is antoine hage app server",
-								"rolling": false,
-								"unset": "keep",
-								"cookie": {
-									"path": "/",
-									"httpOnly": true,
-									"secure": false,
-									"domain": "soajs.com",
-									"maxAge": null
-								},
-								"resave": false,
-								"saveUninitialized": false
-							}
-						}
-					},
-					"dbs": {
-						"clusters": {
-							"cluster1": {
-								"URLParam": {
-									"connectTimeoutMS": 0,
-									"socketTimeoutMS": 0,
-									"maxPoolSize": 5,
-									"wtimeoutMS": 0,
-									"slaveOk": true
-								},
-								"servers": [
-									{
-										"host": "127.0.0.1",
-										"port": 27017
-									}
-								],
-								"extraParam": {
-									"db": {
-										"native_parser": true
-									},
-									"server": {
-										"auto_reconnect": true
-									}
-								}
-							}
-						},
-						"config": {
-							"session": {
-								"cluster": "cluster1",
-								"name": "core_session",
-								"store": {},
-								"collection": "sessions",
-								"stringify": false,
-								"expireAfter": 1209600000
-							},
-							"prefix": ""
-						},
-						"databases": {
-							"urac": {
-								"cluster": "cluster1",
-								"tenantSpecific": true
-							}
-						}
-					}
-				});
-				done();
-			});
-		});
-		
-		it('asserting product record', function (done) {
-			mongo.findOne('products', {"code": "TPROD"}, function (error, record) {
-				assert.ifError(error);
-				assert.ok(record);
-				delete record._id;
-				console.log("************************");
-				console.log(record);
-				console.log("************************");
-				assert.deepEqual(record, {
-					"code": "TPROD",
-					"name": "test product updated",
-					"description": "this is a dummy updated description",
-					"packages": [
-						{
-							"code": "TPROD_BASIC",
-							"name": "basic package 2",
-							"description": "this is a dummy updated description",
-							"acl": {
-								"dev": {
-									"urac": {
-										'access': false,
-										'apis': {
-											'/account/changeEmail': {
-												'access': true
-											}
-										}
-									}
-									//todo: retest this after fixing inputmask data type conversion
-									//,
-									//'apisRegExp': [
-									//	{
-									//		'regExp': /admin\/.*/,
-									//		'access': ['admin']
-									//	}
-									//]
-								}
-							},
-							"_TTL": 24 * 3600 * 1000
-						}
-					]
-				});
-				done();
-			});
-		});
-		
-		it('asserting tenant record', function (done) {
-			//TSTN
-			mongo.findOne('tenants', {"code": 'TSTN'}, function (error, record) {
-				assert.ifError(error);
-				assert.ok(record);
-				delete record._id;
-				delete record.applications[0].appId;
-				
-				assert.ok(record.applications[0].keys[0].key);
-				delete record.applications[0].keys[0].key;
-				
-				assert.ok(record.applications[0].keys[0].extKeys[0].extKey);
-				delete record.applications[0].keys[0].extKeys[0].extKey;
-				
-				assert.ok(record.applications[0].keys[0].extKeys[1].extKey);
-				delete record.applications[0].keys[0].extKeys[1].extKey;
-				
-				assert.deepEqual(record.oauth, {
-					"secret": "my secret key",
-					"redirectURI": "http://www.myredirecturi.com/",
-					"grants": [
-						"password", "refresh_token"
-					]
-				});
-				delete record.oauth;
-				assert.deepEqual(record.applications, [
-					{
-						"product": "TPROD",
-						"package": "TPROD_BASIC",
-						"description": "this is a dummy description",
-						//"acl": {
-						//	"urac": {
-						//		'access': false,
-						//		'apis': {
-						//			'/account/changeEmail': {
-						//				'access': true
-						//			}
-						//		}
-						//	}
-						//},
-						"_TTL": 12 * 3600 * 1000,
-						"acl": {
-							'dev': {
-								'example01': {
-									"access": ["user"],
-									"apis": {}
-								}
-							},
-							'dashboard': {
-								'urac': {
-									"access": false,
-									"apis": {
-										"/account/changeEmail": {
-											"access": true
-										}
-									}
-								},
-								'dashboard': {
-									"access": ["owner"],
-									"apis": {}
-								}
-							}
-						},
-						"keys": [
-							{
-								"extKeys": [
-									{
-										"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
-										"device": {'a': 'b'},
-										"geo": {'x': 'y'},
-										"env": 'DEV'
-									},
-									{
-										"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
-										"device": {'a': 'b'},
-										"geo": {'x': 'y'},
-										"env": 'DASHBOARD'
-									}
-								],
-								"config": {
-									"dev": {
-										"mail": {
-											"a": "b"
-										},
-										"urac": {
-											'x': 'y'
-										}
-									}
-								}
-							}
-						]
-					}
-				]);
-				delete record.applications;
-				assert.deepEqual(record, {
-					"code": "TSTN",
-					"name": "test tenant",
-					"description": "this is a dummy description",
-					"type": "client"
-				});
-				done();
 			});
 		});
 	});

@@ -31,8 +31,8 @@ describe("importing sample data", function () {
                 require("./soajs.dashboard.locked.test.js");
 	            require("./soajs.dashboard.test.tenants.js");
                 require("./soajs.dashboard.test.js");
-	            //require("./soajs.dashboard.test.services.js");
-                //require("./soajs.contentbuilder.test.js");
+	            require("./soajs.dashboard.test.services.js");
+                require("./soajs.contentbuilder.test.js");
                 //require("./soajs.uploadService.test.js");
                 //require("./soajs.hostsdeploy.test.js");
                 //require("./soajs.uploadCertificate.test.js");

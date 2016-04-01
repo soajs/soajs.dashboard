@@ -64,7 +64,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-describe("DASHBOARD UNIT Tests", function () {
+describe("DASHBOARD UNIT Tests:", function () {
 	var expDateValue = new Date().toISOString();
 
 	describe("products tests", function () {
@@ -847,6 +847,47 @@ describe("DASHBOARD UNIT Tests", function () {
 				});
 			});
 		});
+
+		describe("mongo check db", function () {
+			it('asserting product record', function (done) {
+				mongo.findOne('products', {"code": "TPROD"}, function (error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					delete record._id;
+					console.log("************************");
+					console.log(record);
+					console.log("************************");
+					console.log(record.packages);
+					assert.deepEqual(record, {
+						"code": "TPROD",
+						"name": "test product updated",
+						"description": "this is a dummy updated description",
+						"packages": [
+							{
+								"code": "TPROD_BASIC",
+								"name": "basic package 2",
+								"description": "this is a dummy updated description",
+								"acl": {
+									"dev": {
+										"urac": {
+											'access': false,
+											'apis': {
+												'/account/changeEmail': {
+													'access': true
+												}
+											}
+										}
+									}
+								},
+								"_TTL": 24 * 3600 * 1000
+							}
+						]
+					});
+					done();
+				});
+			});
+		});
+
 	});
 
 	describe("tenants tests", function () {
@@ -3091,6 +3132,116 @@ describe("DASHBOARD UNIT Tests", function () {
 				});
 			});
 		});
+
+		describe("mongo check db", function () {
+
+			it('asserting tenant record', function (done) {
+				//TSTN
+				mongo.findOne('tenants', {"code": 'TSTN'}, function (error, record) {
+					assert.ifError(error);
+					assert.ok(record);
+					delete record._id;
+					delete record.applications[0].appId;
+
+					assert.ok(record.applications[0].keys[0].key);
+					delete record.applications[0].keys[0].key;
+
+					assert.ok(record.applications[0].keys[0].extKeys[0].extKey);
+					delete record.applications[0].keys[0].extKeys[0].extKey;
+
+					assert.ok(record.applications[0].keys[0].extKeys[1].extKey);
+					delete record.applications[0].keys[0].extKeys[1].extKey;
+
+					assert.deepEqual(record.oauth, {
+						"secret": "my secret key",
+						"redirectURI": "http://www.myredirecturi.com/",
+						"grants": [
+							"password", "refresh_token"
+						]
+					});
+					delete record.oauth;
+					assert.deepEqual(record.applications, [
+						{
+							"product": "TPROD",
+							"package": "TPROD_BASIC",
+							"description": "this is a dummy description",
+							//"acl": {
+							//	"urac": {
+							//		'access': false,
+							//		'apis': {
+							//			'/account/changeEmail': {
+							//				'access': true
+							//			}
+							//		}
+							//	}
+							//},
+							"_TTL": 12 * 3600 * 1000,
+							"acl": {
+								'dev': {
+									'example01': {
+										"access": ["user"],
+										"apis": {}
+									}
+								},
+								'dashboard': {
+									'urac': {
+										"access": false,
+										"apis": {
+											"/account/changeEmail": {
+												"access": true
+											}
+										}
+									},
+									'dashboard': {
+										"access": ["owner"],
+										"apis": {}
+									}
+								}
+							},
+							"keys": [
+								{
+									"extKeys": [
+										{
+											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
+											"device": {'a': 'b'},
+											"geo": {'x': 'y'},
+											"env": 'DEV'
+										},
+										{
+											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
+											"device": {'a': 'b'},
+											"geo": {'x': 'y'},
+											"env": 'DASHBOARD'
+										}
+									],
+									"config": {
+										"dev": {
+											"mail": {
+												"a": "b"
+											},
+											"urac": {
+												'x': 'y'
+											}
+										}
+									}
+								}
+							]
+						}
+					]);
+					delete record.applications;
+					assert.deepEqual(record, {
+						"code": "TSTN",
+						"name": "test tenant",
+						"description": "this is a dummy description",
+						"type": "client"
+					});
+					done();
+				});
+			});
+
+		});
+
+
 	});
 
 });
