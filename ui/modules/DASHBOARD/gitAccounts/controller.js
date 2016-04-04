@@ -36,6 +36,36 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
     $scope.addAccount = function () {
         var formConfig = angular.copy(githubAppConfig.form.login);
+        var accountType = {
+            'name': 'type',
+            'label': 'Account Type',
+            'type': 'radio',
+            'value': [{'v': 'personal_public', 'l': 'Personal Account - Public', 'selected': true},
+                {'v': 'personal_private', 'l': 'Personal Account - Private'},
+                {'v': 'organization_public', 'l': 'Organization - Public'}],
+            'required': true,
+            onAction: function (label, selected, formConfig) {
+                if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
+                    var password = {
+                        'name': 'password',
+                        'label': 'Password',
+                        'type': 'password',
+                        'value': '',
+                        'tooltip': 'Account Password',
+                        'placeholder': 'Your Password',
+                        'required': true
+                    };
+                    formConfig.entries.splice(4, 0, password);
+                } else {
+                    if (formConfig.entries[4].name === 'password') {
+                        formConfig.entries.splice(4, 1);
+                    }
+                }
+            }
+        };
+
+        formConfig.entries.splice(2, 0, accountType);
+
         var options = {
             timeout: $timeout,
             form: formConfig,
@@ -51,11 +81,11 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             provider: formData.provider,
                             label: formData.label,
                             username: formData.username,
-                            type: formData.type,
-                            access: formData.access
+                            type: formData.type.split('_')[0],
+                            access: formData.type.split('_')[1]
                         };
 
-                        if (formData.access === 'private') {
+                        if (formData.password) {
                             postData.password = formData.password;
                         }
 

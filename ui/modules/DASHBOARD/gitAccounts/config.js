@@ -19,29 +19,15 @@ var githubAppConfig = {
 					'placeholder': 'Example: myAccount',
 					'required': true
 				},
-				{
-					'name': 'type',
-					'label': 'Account Type',
-					'type': 'radio',
-					'value': [{'v': 'personal', 'l': 'Personal Account', 'selected': true}, {
-						'v': 'organization',
-						'l': 'Organization'
-					}],
-					'required': true
-				},
-				{
-					'name': 'access',
-					'label': 'Account Access',
-					'type': 'radio',
-					'value': [{'v': 'public', 'l': 'Public'}, {'v': 'private', 'l': 'Private', 'selected': true}],
-					'required': true,
-					'fieldMsg': 'Public access will only allow public repositories. If you want to use private repositories as well, choose Private'
-				},
-				{
-					"name": "loginMessage",
-					"type": "html",
-					"value": "<p><b>If this account has private repositories, please provide a password:</b></p>"
-				},
+				// {
+				// 	'name': 'type',
+				// 	'label': 'Account Type',
+				// 	'type': 'radio',
+				// 	'value': [{'v': 'personal_private', 'l': 'Personal Account - Private', 'selected': true},
+				// 		{'v': 'personal_public', 'l': 'Personal Account - Public'},
+				// 		{'v': 'organization_public', 'l': 'Organization - Public'}],
+				// 	'required': true
+				// },
 				{
 					'name': 'username',
 					'label': 'Username',
@@ -49,16 +35,7 @@ var githubAppConfig = {
 					'value': '',
 					'tooltip': 'Account Username',
 					'placeholder': 'Your Username',
-					'required': false
-				},
-				{
-					'name': 'password',
-					'label': 'Password',
-					'type': 'password',
-					'value': '',
-					'tooltip': 'Account Password',
-					'placeholder': 'Your Password',
-					'required': false
+					'required': true
 				},
 				{
 					"name": "tokenMessage",
