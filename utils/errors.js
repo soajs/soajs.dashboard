@@ -122,9 +122,6 @@ var errors = {
 	"705": "Tenant already has a key to use the dashboard",
 
 	"710": "A Daemon with the same name and/or port already exists",
-	"711": "Unable to update daemon",
-	"712": "Unable to delete daemon",
-	"713": "Unable to add daemon",
 	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",

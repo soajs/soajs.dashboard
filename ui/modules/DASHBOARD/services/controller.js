@@ -22,77 +22,6 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		}
 	};
 
-	$scope.editService = function (service) {
-		var count = 0;
-		var formConfig = angular.copy(servicesConfig.form.serviceEdit);
-		var apisList = service.apis;
-		if (service.versions) {
-			if (service.latest) {
-				apisList = service.versions[service.latest].apis;
-			}
-		}
-		formConfig.entries.forEach(function (oneEntry) {
-			if (oneEntry.name === 'apis') {
-				if (apisList && apisList.length > 0) {
-					for (var i = 0; i < apisList.length; i++) {
-						var clone = angular.copy(servicesConfig.form.oneApi);
-
-						clone.forEach(function (oneField) {
-							oneField.name = oneField.name.replace("%count%", count);
-
-							if (oneField.name === 'apiV' + count) {
-								oneField.value = apisList[i].v;
-							}
-							if (oneField.name === 'apiL' + count) {
-								oneField.value = apisList[i].l;
-							}
-							if (oneField.name === 'apiG' + count) {
-								oneField.value = apisList[i].group;
-							}
-							if (oneField.name === 'apiMain' + count) {
-								oneField.value = apisList[i].groupMain || false;
-							}
-							if (oneField.type === 'html') {
-								oneField.value = oneField.value.replace("%count%", count);
-							}
-							oneEntry.entries.push(oneField);
-						});
-						count++;
-					}
-				}
-			}
-			else if (oneEntry.name === 'source') {
-				oneEntry.entries.forEach(function (oneSubEntry) {
-					var property = oneSubEntry.name;
-					oneSubEntry.value = service.src[property];
-				});
-			}
-		});
-		service.extKeyRequired = service.versions[service.latest].extKeyRequired;
-		service.awareness = service.versions[service.latest].awareness;
-
-		var options = {
-			timeout: $timeout,
-			form: formConfig,
-			name: 'editService',
-			label: translation.updateService[LANG],
-			'data': service,
-			actions: [
-				{
-					'type': 'reset',
-					'label': translation.cancel[LANG],
-					'btn': 'danger',
-					'action': function () {
-						$scope.modalInstance.dismiss('cancel');
-						$scope.form.formData = {};
-					}
-				}
-			]
-		};
-
-		buildFormWithModal($scope, $modal, options);
-	};
-
 	$scope.listServices = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -442,26 +371,6 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				if (cb) {
 					cb();
 				}
-			}
-		});
-	};
-
-	$scope.deleteDaemon = function (daemon) {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/daemons/delete",
-			"params": {
-				"id": daemon._id
-			}
-		}, function (error) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-			}
-			else {
-				$scope.$parent.displayAlert('success', translation.daemonDeletedSuccessfully[LANG]);
-				$scope.listDaemons(function () {
-					$scope.listDaemonGroupConfig();
-				});
 			}
 		});
 	};

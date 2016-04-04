@@ -1,7 +1,6 @@
 <section ng-controller="daemonsCtrl">
     <tabset>
         <tab heading="Daemons" ng-if="access.daemons.list">
-            <!--<a ng-if="access.daemons.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemon()" class="btn btn-primary">{{translation.addDaemon[LANG]}}</a><br/><br/>-->
             <div class="entryBoxes">
                 <div id="d_{{daemon._id}}" ng-repeat="daemon in grid.rows" class="entryBox" ng-init="daemon.hide = true">
                     <div class="header opened" ng-class="{closed: daemon.hide}">
@@ -18,11 +17,6 @@
                                 </div>
                             </div>
                         </fieldset>
-                    </div>
-                    <div class="entryAction">
-                        <a href="" ng-click="deleteDaemon(daemon);" ng-if="access.daemons.delete" ng-confirm-click="{{translation.areYouSureWantRemoveDaemon[LANG]}}">
-                            <span class="icon icon-cross" tooltip="{{translation.deleteDaemon[LANG]}}"></span>
-                        </a>
                     </div>
                 </div>
             </div>
