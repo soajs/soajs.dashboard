@@ -7,6 +7,9 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     $scope.access = {};
     constructModulePermissions($scope, $scope.access, githubAppConfig.permissions);
 
+    $scope.referToDoc = 'Refer to the online documentation at ' + '<a target="_blank" href="http://soajs.org/#/documentation">SOAJS Website.</a>';
+    $scope.excludedSOAJSRepos = ['soajs/connect-mongo-soajs', 'soajs/soajs', 'soajs/soajs.agent', 'soajs/soajs.composer', 'soajs/soajs.dash.example', 'soajs/soajs.gcs', 'soajs/soajs.mongodb.data', 'soajs/soajs.utilities', 'soajs/soajs.website.contactus'];
+
     $scope.listAccounts = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'get',
@@ -39,6 +42,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         var accountType = {
             'name': 'type',
             'label': 'Account Type',
+            'class': 'accountType',
             'type': 'radio',
             'value': [{'v': 'personal_public', 'l': 'Personal Account - Public', 'selected': true},
                 {'v': 'personal_private', 'l': 'Personal Account - Private'},
@@ -187,6 +191,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.listRepos = function (accounts, counter, loadingModal) {
+
         //in case of one repo only
         if (!Array.isArray(accounts)) {
             accounts = [accounts];
@@ -209,7 +214,17 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             } else {
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     if ($scope.accounts[i]._id === id) {
-                        $scope.accounts[i].repos = response;
+                        //exclude soajs repos that do not contain services/daemons/static content
+                        if ($scope.accounts[i].owner === 'soajs') {
+                            $scope.accounts[i].repos = [];
+                            response.forEach (function (oneRepo) {
+                                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                                    $scope.accounts[i].repos.push(oneRepo);
+                                }
+                            });
+                        } else {
+                            $scope.accounts[i].repos = response;
+                        }
                     }
                 }
 
@@ -272,12 +287,28 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                     }
                                 }, function (error, response) {
                                     if (error) {
-                                        $scope.displayAlert('danger', error.message);
-                                    } else {
-                                        $scope.displayAlert('success', 'Repository has been activated');
-
                                         $scope.modalInstance.dismiss('cancel');
                                         $scope.form.formData = {};
+                                        var outerScope = $scope;
+                                        var errorDisplay = $modal.open({
+                                            templateUrl: 'errorDisplay.tmpl',
+                                            backdrop: true,
+                                            keyboard: true,
+                                            controller: function ($scope) {
+                                                fixBackDrop();
+
+                                                $scope.title = "Repository activation failed";
+                                                $scope.error = error.message + "<br>" + outerScope.referToDoc;
+                                                $scope.ok = function () {
+                                                    errorDisplay.close();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        $scope.modalInstance.dismiss('cancel');
+                                        $scope.form.formData = {};
+
+                                        $scope.displayAlert('success', 'Repository has been activated');
 
                                         repo.status = 'active';
                                         var repoAddSuccess = $modal.open({

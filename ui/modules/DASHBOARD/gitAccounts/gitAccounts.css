@@ -46,3 +46,12 @@
 .alignCenter {
     text-align: center !important;
 }
+
+li.accountType {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+#activeRepos.grid table{
+    min-width:100%
+}

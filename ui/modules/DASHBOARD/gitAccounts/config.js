@@ -19,15 +19,6 @@ var githubAppConfig = {
 					'placeholder': 'Example: myAccount',
 					'required': true
 				},
-				// {
-				// 	'name': 'type',
-				// 	'label': 'Account Type',
-				// 	'type': 'radio',
-				// 	'value': [{'v': 'personal_private', 'l': 'Personal Account - Private', 'selected': true},
-				// 		{'v': 'personal_public', 'l': 'Personal Account - Public'},
-				// 		{'v': 'organization_public', 'l': 'Organization - Public'}],
-				// 	'required': true
-				// },
 				{
 					'name': 'username',
 					'label': 'Username',
