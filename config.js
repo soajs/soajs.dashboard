@@ -1750,7 +1750,9 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"customUIId": {"type": "string", "required": false}
+						"customUIId": {"type": "string", "required": false},
+						"branch": {"type": "string", "required": false},
+						"commit": {"type": "string", "required": false}
 					}
 				}
 			},
@@ -2037,6 +2039,13 @@ module.exports = {
 			},
 			"name": {
 				"source": ['query.name'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"type": {
+				"source": ['query.type'],
 				"required": true,
 				"validation": {
 					"type": "string"

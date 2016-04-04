@@ -1149,11 +1149,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.service = "";
                 currentScope.groupConfigs = "";
                 currentScope.groupConfig = "";
+                currentScope.branches = [];
                 currentScope.branch = "";
                 currentScope.serviceOwner = '';
                 currentScope.serviceRepo = '';
                 currentScope.envVariables = '';
                 currentScope.conflict = false;
+                currentScope.loadingBranches = false;
                 delete currentScope.conflictCommits;
                 currentScope.confirmBranch = '';
                 delete currentScope.number;
@@ -1214,11 +1216,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         method: 'get',
                         routeName: '/dashboard/github/getBranches',
                         params: {
-                            'name': service.name
+                            'name': service.name,
+                            'type':  service.type
                         }
                     }, function (error, response) {
                         if (error) {
-                            currentScope.displayAlert('danger', error.message);
+                            currentScope.message.danger = error.message;
+                            $timeout(function () {
+                                currentScope.message.danger = '';
+                            }, 5000);
                         } else {
                             currentScope.branches = response.branches;
                             currentScope.serviceOwner = response.owner;

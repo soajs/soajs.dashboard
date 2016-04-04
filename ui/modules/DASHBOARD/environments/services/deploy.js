@@ -22,23 +22,56 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 				'required': true,
 				'onAction': function (label, selected, formConfig) {
-					if (selected === 'true') {
+					if (selected === 'true' && formConfig.entries[3].name !== 'selectCustomUI') {
 						listStaticContent(currentScope, function (staticContentSources) {
 							var selectCustomUI = {
 								'name': 'selectCustomUI',
 								'label': 'Choose Static Content',
 								'type': 'select',
 								'value': [],
-								'required': true
+								'required': true,
+								'onAction': function (label, selected, formConfig) {
+									var selectUIBranch = {
+										'name': 'selectUIBranch',
+										'label': 'Choose Static Content Branch',
+										'type': 'select',
+										'value': [],
+										'required': true
+									};
+									selected = JSON.parse(selected);
+									getSendDataFromServer(currentScope, ngDataApi, {
+										method: 'get',
+										routeName: '/dashboard/github/getBranches',
+										params: {
+											name: selected.name,
+											type: 'static'
+										}
+									}, function (error, response) {
+										if (error) {
+											currentScope.generateNewMsg(envCode, 'danger', error.message);
+										}
+										else {
+											response.branches.forEach(function (oneBranch) {
+												selectUIBranch.value.push({'v': oneBranch, 'l': oneBranch.name});
+											});
+
+											formConfig.entries.splice(4, 0, selectUIBranch);
+										}
+									});
+								}
 							};
 							staticContentSources.forEach (function (oneSource) {
-								selectCustomUI.value.push ({'v': oneSource._id, 'l': oneSource.name});
+								selectCustomUI.value.push ({'v': oneSource, 'l': oneSource.name});
 							});
 							formConfig.entries.splice(3, 0, selectCustomUI);
 						});
-					} else {
-						if (formConfig.entries[2].name === 'selectCustomUI') {
+					} else if (selected === 'false' && formConfig.entries[3].name === 'selectCustomUI') {
+						if (formConfig.entries[3].name === 'selectCustomUI') {
 							formConfig.entries.splice(3, 1);
+							delete formConfig.formData.selectCustomUI;
+							if (formConfig.entries[3].name === 'selectUIBranch') {
+								formConfig.entries.splice(3, 1);
+							}
 						}
 					}
 				}
@@ -111,9 +144,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'commit': branchObj.commit.sha
 			};
 
-			if (formData.useCutomUI) {
+			if (formData.useCustomUI) {
+				formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
+				formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
 				params.nginxConfig = {
-					customUIId: formData.selectCustomUI
+					customUIId: formData.selectCustomUI._id,
+					branch: formData.selectUIBranch.name,
+					commit: formData.selectUIBranch.commit.sha
 				};
 			}
 
@@ -147,7 +184,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'routeName': '/dashboard/staticContent/list'
 			}, function (error, response) {
 				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+					currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				} else {
 					cb(response);
 				}
@@ -159,7 +196,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				method: 'get',
 				routeName: '/dashboard/github/getBranches',
 				params: {
-					name: 'controller'
+					name: 'controller',
+					type: 'service'
 				}
 			}, function (error, response) {
 				if (error) {
