@@ -161,9 +161,6 @@ var errors = {
 	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
 
 	"742": "Unable to list static content sources",
-	"743": "Unable to add static content source",
-	"744": "Unable to update static content source",
-	"745": "Unable to delete static content source",
 
 	"750": "Invalid Request.",
 
