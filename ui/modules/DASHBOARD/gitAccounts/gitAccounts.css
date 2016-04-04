@@ -52,6 +52,6 @@ li.accountType {
     padding-left: 10px;
 }
 
-#activeRepos.grid table{
+#activeRepos .grid table{
     min-width:100%
 }
