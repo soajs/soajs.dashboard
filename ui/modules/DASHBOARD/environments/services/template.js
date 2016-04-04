@@ -11,20 +11,19 @@ var env_template = {
 		"container":{
 			"dockermachine":{
 				"local": {
-					"host": "192.168.99.101",
-					"port": 2376,
+					"host": "",
+					"port": 0,
 					"config":{
 						"HostConfig": {
-							"NetworkMode": "soajsnet"
+							"NetworkMode": ""
 						},
 						"MachineName": ""
 					}
 				},
 				"cloud":{
 					"rackspace": {
-						"host": "docker.rackspace.com",
-						"port": 2376
-						//additional info goes here like instances, credentials or keys ....
+						"host": "",
+						"port": 0
 					}
 				}
 			},
