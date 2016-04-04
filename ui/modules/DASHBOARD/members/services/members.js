@@ -232,7 +232,6 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'tId': tenantId,
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
-
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"headers": {

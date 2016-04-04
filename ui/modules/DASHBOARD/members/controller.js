@@ -454,7 +454,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				"headers": {
 					"key": $scope.key
 				},
-				"routeName": "/urac/admin/editUser",
+				"routeName": "/urac/admin/editUser", //editUserConfig
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
 			}, function (error) {

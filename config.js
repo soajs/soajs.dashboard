@@ -435,6 +435,13 @@ module.exports = {
 					"type": "string",
 					"format": "hostname"
 				}
+			},
+			"deployer": {
+				"source": ['body.deployer'],
+				"required": true,
+				"validation": {
+					"type": "object"
+				}
 			}
 		},
 		"/environment/delete": {

@@ -96,10 +96,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						if ($scope.grid.rows.length == 1) {
 							$scope.grid.rows[0].showOptions = true;
 						}
-						$scope.grid.rows.forEach(function (env) {
-							env.profileLabel = env.profile.split("/");
-							env.profileLabel = env.profileLabel[env.profileLabel.length - 1].replace(".js", "");
-						});
+						// $scope.grid.rows.forEach(function (env) {
+							// env.profileLabel = env.profile.split("/");
+							// env.profileLabel = env.profileLabel[env.profileLabel.length - 1].replace(".js", "");
+						// });
 					}
 				}
 			}
