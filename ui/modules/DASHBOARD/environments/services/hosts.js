@@ -1216,7 +1216,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         method: 'get',
                         routeName: '/dashboard/github/getBranches',
                         params: {
-                            'name': service.name
+                            'name': service.name,
+                            'type':  service.type
                         }
                     }, function (error, response) {
                         if (error) {
