@@ -1362,18 +1362,6 @@ var errorCodes = {
 			"ENG": "A Daemon with the same name and/or port already exists",
 			"FRA": "A Daemon with the same name and/or port already exists"
 		},
-		"711": {
-			"ENG": "Unable to update daemon",
-			"FRA": "Unable to update daemon"
-		},
-		"712": {
-			"ENG": "Unable to delete daemon",
-			"FRA": "Unable to delete daemon"
-		},
-		"713": {
-			"ENG": "Unable to add daemon",
-			"FRA": "Unable to add daemon"
-		},
 		"714": {
 			"ENG": "A Group Configuration with the same name already exists",
 			"FRA": "A Group Configuration with the same name already exists"
@@ -1493,18 +1481,7 @@ var errorCodes = {
 			"ENG": "Unable to list static content sources",
 			"FRA": "Unable to list static content sources"
 		},
-		"743": {
-			"ENG": "Unable to add static content source",
-			"FRA": "Unable to add static content source"
-		},
-		"744": {
-			"ENG": "Unable to update static content source",
-			"FRA": "Unable to update static content source"
-		},
-		"745": {
-			"ENG": "Unable to delete static content source",
-			"FRA": "Unable to delete static content source"
-		},
+
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."

@@ -122,9 +122,6 @@ var errors = {
 	"705": "Tenant already has a key to use the dashboard",
 
 	"710": "A Daemon with the same name and/or port already exists",
-	"711": "Unable to update daemon",
-	"712": "Unable to delete daemon",
-	"713": "Unable to add daemon",
 	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",
@@ -161,9 +158,6 @@ var errors = {
 	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
 
 	"742": "Unable to list static content sources",
-	"743": "Unable to add static content source",
-	"744": "Unable to update static content source",
-	"745": "Unable to delete static content source",
 
 	"750": "Invalid Request.",
 
