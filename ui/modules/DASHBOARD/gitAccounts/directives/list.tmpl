@@ -17,10 +17,10 @@
                     </div>
                     <ul class="blueListing" style="overflow:scroll; height:254px; width:100%">
                         <li class="blueLi {{repo.status}}" ng-repeat="repo in account.repos" class="row-list" ng-style="{'width': '98%'}">
-                            {{repo.full_name}}
-                            <span ng-if="repo.status === 'deleted'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
-                            <span ng-if="repo.status === 'active'" ng-style="{'margin-left': '10%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
-                            <span ng-if="repo.status === 'outOfSync'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
+                            <span class="repoFullName">{{repo.full_name}}</span>
+                            <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
+                            <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
+                            <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
                             <div class="rightActions">
                                 <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                     <span class="icon icon-switch" tooltip="Activate"></span>
@@ -49,12 +49,40 @@
 </section>
 
 <script type="text/ng-template" id="repoAddSuccess.tmpl">
-    <div class="modal-body">
+    <div id="activeRepos" class="modal-body">
         <h4 style="text-align: center;">Repository has been activated</h4>
         <label>The following modules were added:</label>
-        <ul>
-            <li ng-repeat="entry in added"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}</li>
-        </ul>
+        <!--<ul>-->
+            <!--<li ng-repeat="entry in added"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}</li>-->
+        <!--</ul>-->
+        <div class="grid" style="width:100%">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Link</th>
+                </tr>
+                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
+                    <td>{{entry.name}}</td>
+                    <td>{{entry.type}}</td>
+                    <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">Link</a></td>
+                    <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">Link</a></td>
+                    <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">Link</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="errorDisplay.tmpl">
+    <div class="modal-body">
+        <h4>{{title}}</h4>
+        <alert type="danger" ng-bind-html="error"></alert>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">OK</button>
