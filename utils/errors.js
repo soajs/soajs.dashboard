@@ -173,7 +173,7 @@ var errors = {
 	"754": "Active repositories exist for this user. Please deactivate them to be able to logout",
 	"755": "Authentication failed",
 	"756": "Unable to list accounts",
-	"757": "Unable to get user account",
+	"757": "Unable to get git user account",
 	"758": "Unable to get repositories. Please try again.",
 	"759": "Unable to get branches",
 	"760": "Missing source information",
