@@ -1,6 +1,10 @@
 "use strict";
 
 var envTranslation ={
+	"code": {
+		"ENG": "Code",
+		"FRA": "Code"
+	},
 	"registries": {
 		"ENG": "Registries",
 		"FRA": "Registries"
