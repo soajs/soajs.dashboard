@@ -1,4 +1,7 @@
 <section ng-controller="staticContentCtrl">
+    <div ng-if="staticContentList && staticContentList.length === 0">
+        <alert type="warning">No static content added yet!</alert>
+    </div>
     <div class="entryBoxes entryBoxesGrid">
         <div id="{{source._id}}" ng-repeat="source in staticContentList" class="entryBox customEntryBox">
             <div class="header opened">

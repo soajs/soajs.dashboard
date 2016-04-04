@@ -44,20 +44,20 @@ var githubAppConfig = {
 				},
 				{
 					'name': 'username',
-					'label': 'Github Username',
+					'label': 'Username',
 					'type': 'text',
 					'value': '',
-					'tooltip': 'Github Account Username',
-					'placeholder': 'Github Username',
+					'tooltip': 'Account Username',
+					'placeholder': 'Your Username',
 					'required': false
 				},
 				{
 					'name': 'password',
-					'label': 'Github Password',
+					'label': 'Password',
 					'type': 'password',
 					'value': '',
-					'tooltip': 'Github Account Password',
-					'placeholder': 'Github Password',
+					'tooltip': 'Account Password',
+					'placeholder': 'Your Password',
 					'required': false
 				},
 				{
@@ -79,6 +79,18 @@ var githubAppConfig = {
 					'required': true
 				}
 			]
+		},
+		'selectConfigBranch': {
+			'entries': [
+				{
+					'name': 'branch',
+					'label': "Please specify the branch to use to read the repository's config file",
+					'type': 'select',
+					'value': [],
+					'tooltip': 'Config File Branch',
+					'required': true
+				}
+			]
 		}
 	},
 	'permissions': {
@@ -86,6 +98,6 @@ var githubAppConfig = {
 		deleteAccount: ['dashboard', '/github/accounts/delete'],
 		updateAccount: ['dashboard', '/github/accounts/update'],
 		login: ['dashboard', '/github/login'],
-		getRepos: ['dashboard', '/github/getRepos']
+		listRepos: ['dashboard', '/github/getRepos']
 	}
 };

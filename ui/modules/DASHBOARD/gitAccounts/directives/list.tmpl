@@ -22,7 +22,7 @@
                             <span ng-if="repo.status === 'active'" ng-style="{'margin-left': '10%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
                             <span ng-if="repo.status === 'outOfSync'" ng-style="{'margin-left': '10%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
                             <div class="rightActions">
-                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to activate this repository?">
+                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                     <span class="icon icon-switch" tooltip="Activate"></span>
                                 </a>
                                 <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
@@ -35,8 +35,11 @@
                         </li>
                     </ul>
                     <div class="entryAction">
+                        <a href="" ng-click="listRepos(account);" ng-if="access.listRepos">
+                            <span class="icon icon-loop2" tooltip="Sync Repository"></span>
+                        </a>
                         <a href="" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
-                            <span class="icon icon-cross" tooltip="{{translation.deleteSource[LANG]}}"></span>
+                            <span class="icon icon-cross" tooltip="Delete Account"></span>
                         </a>
                     </div>
                 </div>

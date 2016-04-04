@@ -5,16 +5,16 @@ for (var attrname in gaTranslation) {
     translation[attrname] = scTranslation[attrname];
 }
 
-var staticContentNav = [
+var gitAccountsNav = [
     {
-        'id': 'github-app',
+        'id': 'git-accounts',
         'label': "Git Accounts",
         'checkPermission': {
             'service': 'dashboard',
-            'route': '/github/getRepos'
+            'route': '/github/listAccounts'
         },
         'url': '#/git-accounts',
-        'tplPath': 'modules/DASHBOARD/githubApp/directives/list.tmpl',
+        'tplPath': 'modules/DASHBOARD/gitAccounts/directives/list.tmpl',
         'icon': 'git',
         'pillar': {
             'name': 'development',
@@ -24,8 +24,8 @@ var staticContentNav = [
         'mainMenu': true,
         'tracker': true,
         'order': 4,
-        'scripts': ['modules/DASHBOARD/githubApp/config.js', 'modules/DASHBOARD/githubApp/controller.js'],
+        'scripts': ['modules/DASHBOARD/gitAccounts/config.js', 'modules/DASHBOARD/gitAccounts/controller.js'],
         'ancestor': [translation.home[LANG]]
     }
 ];
-navigation = navigation.concat(staticContentNav);
+navigation = navigation.concat(gitAccountsNav);

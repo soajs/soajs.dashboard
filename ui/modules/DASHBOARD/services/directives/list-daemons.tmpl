@@ -1,6 +1,9 @@
 <section ng-controller="daemonsCtrl">
     <tabset>
         <tab heading="Daemons" ng-if="access.daemons.list">
+            <div ng-if="grid.rows && grid.rows.length === 0">
+                <alert type="warning">No daemons added yet!</alert>
+            </div>
             <div class="entryBoxes">
                 <div id="d_{{daemon._id}}" ng-repeat="daemon in grid.rows" class="entryBox" ng-init="daemon.hide = true">
                     <div class="header opened" ng-class="{closed: daemon.hide}">

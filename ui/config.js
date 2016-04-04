@@ -18,7 +18,7 @@ var modules = {
 			services: 'modules/DASHBOARD/services/install.js',
 			contentBuilder: 'modules/DASHBOARD/contentBuilder/install.js',
 			staticContent: 'modules/DASHBOARD/staticContent/install.js',
-			githubApp: 'modules/DASHBOARD/githubApp/install.js'
+			githubApp: 'modules/DASHBOARD/gitAccounts/install.js'
 		}
 	},
 	"manage":{

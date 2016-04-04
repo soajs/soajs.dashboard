@@ -39,8 +39,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         var options = {
             timeout: $timeout,
             form: formConfig,
-            name: 'addGithubAccount',
-            label: 'Add New GitHub Account',
+            name: 'addGitAccount',
+            label: 'Add New Git Account',
             actions: [
                 {
                     'type': 'submit',
@@ -90,7 +90,6 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.deleteAccount = function (account) {
-        console.log (account);
         if (account.access === 'public') {
             getSendDataFromServer($scope, ngDataApi, {
                 'method': 'get',
@@ -158,6 +157,13 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.listRepos = function (accounts, counter, loadingModal) {
+        //in case of one repo only
+        if (!Array.isArray(accounts)) {
+            accounts = [accounts];
+            if (!counter) {
+                counter = 0;
+            }
+        }
         var id = accounts[counter]._id;
 
         getSendDataFromServer($scope, ngDataApi, {
@@ -167,7 +173,9 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         }, function (error, response) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
-                loadingModal.close();
+                if (loadingModal) {
+                    loadingModal.close();
+                }
             } else {
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     if ($scope.accounts[i]._id === id) {
@@ -179,47 +187,103 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 if (counter < accounts.length) {
                     return $scope.listRepos(accounts, counter, loadingModal);
                 } else {
-                    loadingModal.close();
+                    if (loadingModal) {
+                        loadingModal.close();
+                    }
+                    else {
+                        $scope.displayAlert('success', 'List of repositories is up to date');
+                    }
                 }
             }
         });
     };
 
     $scope.activateRepo = function (account, repo) {
+        var formConfig = angular.copy(githubAppConfig.form.selectConfigBranch);
         getSendDataFromServer($scope, ngDataApi, {
-            method: 'send',
-            routeName: '/dashboard/github/repo/activate',
+            method: 'get',
+            routeName: '/dashboard/github/getBranches',
             params: {
+                name: repo.full_name,
+                type: 'repo',
                 id: account._id.toString()
-            },
-            data: {
-                provider: account.provider,
-                owner: repo.owner.login,
-                repo: repo.name
             }
-        }, function (error, response) {
+        }, function (error, result) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
-            } else {
-                $scope.displayAlert('success', 'Repository has been activated');
-                repo.status = 'active';
-                var repoAddSuccess = $modal.open({
-                    templateUrl: 'repoAddSuccess.tmpl',
-                    backdrop: true,
-                    keyboard: true,
-                    controller: function ($scope) {
-                        fixBackDrop();
-                        if (Array.isArray(response)) {
-                            $scope.added = response;
-                        } else {
-                            $scope.added = [response];
-                        }
-
-                        $scope.ok = function () {
-                            repoAddSuccess.close();
-                        }
-                    }
+            }
+            else {
+                result.branches.forEach(function (oneBranch) {
+                    formConfig.entries[0].value.push({'v': oneBranch.name, 'l': oneBranch.name});
                 });
+
+                var options = {
+                    timeout: $timeout,
+                    form: formConfig,
+                    name: 'selectConfigBranch',
+                    label: 'Choose Config Branch',
+                    actions: [
+                        {
+                            'type': 'submit',
+                            'label': 'Submit',
+                            'btn': 'primary',
+                            'action': function (formData) {
+                                getSendDataFromServer($scope, ngDataApi, {
+                                    method: 'send',
+                                    routeName: '/dashboard/github/repo/activate',
+                                    params: {
+                                        id: account._id.toString()
+                                    },
+                                    data: {
+                                        provider: account.provider,
+                                        owner: repo.owner.login,
+                                        repo: repo.name,
+                                        configBranch: formData.branch
+                                    }
+                                }, function (error, response) {
+                                    if (error) {
+                                        $scope.displayAlert('danger', error.message);
+                                    } else {
+                                        $scope.displayAlert('success', 'Repository has been activated');
+
+                                        $scope.modalInstance.dismiss('cancel');
+                                        $scope.form.formData = {};
+
+                                        repo.status = 'active';
+                                        var repoAddSuccess = $modal.open({
+                                            templateUrl: 'repoAddSuccess.tmpl',
+                                            backdrop: true,
+                                            keyboard: true,
+                                            controller: function ($scope) {
+                                                fixBackDrop();
+                                                if (Array.isArray(response)) {
+                                                    $scope.added = response;
+                                                } else {
+                                                    $scope.added = [response];
+                                                }
+
+                                                $scope.ok = function () {
+                                                    repoAddSuccess.close();
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            'type': 'reset',
+                            'label': 'Cancel',
+                            'btn': 'danger',
+                            'action': function () {
+                                $scope.modalInstance.dismiss('cancel');
+                                $scope.form.formData = {};
+                            }
+                        }
+                    ]
+                };
+
+                buildFormWithModal($scope, $modal, options);
             }
         });
     };
@@ -326,15 +390,6 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     });
                 }
                 else if (response.status === 'multiSyncDone'){
-
-                    // var syncSuccess = $modal.open({
-                    //     templateUrl: 'syncSuccess.tmpl',
-                    //     backdrop: true,
-                    //     keyboard: true,
-                    //     controller: function ($scope) {
-                    //         fixBackDrop();}
-                    //
-                    // });
                     if (response.updated.length === 0 && response.removed.length === 0 && response.added.length === 0) {
                         $scope.displayAlert('success', 'Repository is up to date');
                     } else {
@@ -361,7 +416,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         });
     };
 
-    injectFiles.injectCss("modules/DASHBOARD/githubApp/githubApp.css");
+    injectFiles.injectCss("modules/DASHBOARD/gitAccounts/gitAccounts.css");
     if ($scope.access.listAccounts) {
         $scope.listAccounts();
     }

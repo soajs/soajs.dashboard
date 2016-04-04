@@ -1946,7 +1946,7 @@ module.exports = {
 		"/github/login": {
 			"_apiInfo": {
 				"l": "Github Login",
-				"group": "Github App"
+				"group": "Git Accounts"
 			},
 			"username": {
 				"source": ['body.username'],
@@ -1994,7 +1994,7 @@ module.exports = {
 		"/github/logout": {
 			"_apiInfo": {
 				"l": "Github Logout",
-				"group": "Github App"
+				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -2020,8 +2020,8 @@ module.exports = {
 		},
 		"/github/getRepos": {
 			"_apiInfo": {
-				"l": "Github Get Repositories",
-				"group": "Github App"
+				"l": "Get Repositories",
+				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -2034,8 +2034,8 @@ module.exports = {
 
 		"/github/getBranches": {
 			"_apiInfo": {
-				"l": "Github Get Repository Branches",
-				"group": "Github App"
+				"l": "Get Repository Branches",
+				"group": "Git Accounts"
 			},
 			"name": {
 				"source": ['query.name'],
@@ -2050,12 +2050,19 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"id": {
+				"source": ['query.id'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/github/repo/activate": {
 			"_apiInfo": {
 				"l": "Activate Repository",
-				"group": "Github App"
+				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -2084,12 +2091,19 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"configBranch": {
+				"source": ['body.configBranch'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/github/repo/deactivate": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
-				"group": "Github App"
+				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -2116,7 +2130,7 @@ module.exports = {
 		"/github/repo/sync": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
-				"group": "Github App"
+				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
