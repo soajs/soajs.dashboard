@@ -2041,6 +2041,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"type": {
+				"source": ['query.type'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/github/repo/activate": {

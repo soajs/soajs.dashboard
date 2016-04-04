@@ -29,7 +29,34 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 								'label': 'Choose Static Content',
 								'type': 'select',
 								'value': [],
-								'required': true
+								'required': true,
+								'onAction': function (label, selected, formConfig) {
+									var selectUIBranch = {
+										'name': 'selectUIBranch',
+										'label': 'Choose Static Content Branch',
+										'type': 'select',
+										'value': [],
+										'required': true
+									};
+									getSendDataFromServer(currentScope, ngDataApi, {
+										method: 'get',
+										routeName: '/dashboard/github/getBranches',
+										params: {
+											name: selected
+										}
+									}, function (error, response) {
+										if (error) {
+											currentScope.generateNewMsg(envCode, 'danger', error.message);
+										}
+										else {
+											response.forEach(function (oneBranch) {
+												selectUIBranch.value.push({'v': oneBranch.name, 'l': oneBranch.name});
+											});
+
+											formConfig.entries.splice(4, 0, selectUIBranch);
+										}
+									});
+								}
 							};
 							staticContentSources.forEach (function (oneSource) {
 								selectCustomUI.value.push ({'v': oneSource._id, 'l': oneSource.name});
