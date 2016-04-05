@@ -988,9 +988,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             params.commit = currentScope.branch.commit.sha;
                         }
 
-                        if (currentScope.service.gcName) {
-                            params.gcName = currentScope.service.gcName;
-                            params.gcVersion = currentScope.service.gcVersion;
+                        if (currentScope.service.gcId) {
+                            params.gcName = currentScope.service.name;
+                            params.gcVersion = currentScope.service.version;
                         } else {
                             params.name = currentScope.service.name;
                         }

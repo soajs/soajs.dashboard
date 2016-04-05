@@ -18,9 +18,9 @@
                     <ul class="blueListing" style="overflow:scroll; height:254px; width:100%">
                         <li class="blueLi {{repo.status}}" ng-repeat="repo in account.repos" class="row-list" ng-style="{'width': '98%'}">
                             <span class="repoFullName">{{repo.full_name}}</span>
-                            <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
-                            <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
-                            <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '8%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
+                            <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
+                            <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
+                            <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
                             <div class="rightActions">
                                 <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                     <span class="icon icon-switch" tooltip="Activate"></span>
