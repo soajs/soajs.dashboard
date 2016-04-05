@@ -1106,10 +1106,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 result.forEach(function (oneContainer) {
                     currentScope.zombieContainers.push({
                         hostname: oneContainer.hostname,
-                        type: oneContainer.type
+                        type: oneContainer.type,
+                        cid: oneContainer.cid
                     });
                 });
-                console.log (result);
             }
         });
     }
