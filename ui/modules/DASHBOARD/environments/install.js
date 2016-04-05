@@ -386,6 +386,22 @@ var envTranslation ={
 		"ENG": "Unable to retrieve services hosts information.",
 		"FRA": "Unable to retrieve services hosts information."
 	},
+	"unableToRetrieveZombieContainers": {
+		"ENG": "Unable to retrieve zombie containers",
+		"FRA": "Unable to retrieve zombie containers"
+	},
+	"unableToDeleteZombieContainer": {
+		"ENG": "Unable to delete zombie container",
+		"FRA": "Unable to delete zombie container"
+	},
+	"zombieContainerRemovedSuccessfully": {
+		"ENG": "Zombie container removed successfully",
+		"FRA": "Zombie container removed succesfully"
+	},
+	"unableToGetZombieContainerLogs": {
+		"ENG": "Unable to zombie container logs",
+		"FRA": "Unable to zombie container logs",
+	},
 	"controllers": {
 		"ENG": "Controllers",
 		"FRA": "Controllers"

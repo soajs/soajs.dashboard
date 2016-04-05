@@ -211,24 +211,24 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }
 
-            buildGroupsDisplay(currentScope, renderedHosts);
+            buildGroupsDisplay(renderedHosts);
         }
-    }
 
-    function buildGroupsDisplay (currentScope, renderedHosts) {
-        currentScope.groups = {};
-        for (var hostName in renderedHosts) {
-            if (!renderedHosts[hostName].group || renderedHosts[hostName].group === "service" || renderedHosts[hostName].group === "daemon" || renderedHosts[hostName].group === "") {
-                renderedHosts[hostName].group = "Misc. Services/Daemons";
-            }
-            if (currentScope.groups[renderedHosts[hostName].group]) {
-                currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
-            } else {
-                currentScope.groups[renderedHosts[hostName].group] = {
-                    services: [],
-                    showContent: true
-                };
-                currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
+        function buildGroupsDisplay (renderedHosts) {
+            currentScope.groups = {};
+            for (var hostName in renderedHosts) {
+                if (!renderedHosts[hostName].group || renderedHosts[hostName].group === "service" || renderedHosts[hostName].group === "daemon" || renderedHosts[hostName].group === "") {
+                    renderedHosts[hostName].group = "Misc. Services/Daemons";
+                }
+                if (currentScope.groups[renderedHosts[hostName].group]) {
+                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
+                } else {
+                    currentScope.groups[renderedHosts[hostName].group] = {
+                        services: [],
+                        showContent: true
+                    };
+                    currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
+                }
             }
         }
     }
@@ -1090,6 +1090,84 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function listZombieContainers (currentScope, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/zombie/list',
+            params: {
+                envCode: env
+            }
+        }, function (error, result) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', translation.unableToRetrieveZombieContainers[LANG]);
+            }
+            else {
+                currentScope.zombieContainers = [];
+                result.forEach(function (oneContainer) {
+                    currentScope.zombieContainers.push({
+                        hostname: oneContainer.hostname,
+                        type: oneContainer.type,
+                        cid: oneContainer.cid
+                    });
+                });
+            }
+        });
+    }
+    
+    function removeZombieContainer(currentScope, container, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/zombie/delete',
+            params: {
+                envCode: env,
+                cid: container.cid
+            }
+        }, function (error, result) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', translation.unableToDeleteZombieContainer[LANG]);
+            }
+            else {
+                currentScope.generateNewMsg(env, 'success', translation.zombieContainerRemovedSuccessfully[LANG]);
+                listZombieContainers(currentScope, env);
+            }
+        });
+    }
+
+    function getZombieContainerLogs(currentScope, container, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/zombie/getLogs',
+            params: {
+                envCode: env,
+                cid: container.cid
+            }
+        }, function (error, result) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', translation.unableToGetZombieContainerLogs[LANG]);
+            }
+            else {
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + container.hostname;
+                        $scope.data = remove_special(result.data);
+                        fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode()
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
     return {
         'listHosts': listHosts,
         'executeHeartbeatTest': executeHeartbeatTest,
@@ -1100,7 +1178,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'removeHost': removeHost,
         'hostLogs': hostLogs,
         'infoHost': infoHost,
-        'createHost': createHost
+        'createHost': createHost,
+        'listZombieContainers': listZombieContainers,
+        'removeZombieContainer': removeZombieContainer,
+        'getZombieContainerLogs': getZombieContainerLogs
     };
 
 }]);

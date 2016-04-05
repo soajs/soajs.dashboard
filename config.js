@@ -1474,6 +1474,14 @@ module.exports = {
 				}
 			}
 		},
+		"/daemons/delete": {
+			_apiInfo: {
+				"l": "Delete Daemon",
+				"group": "Daemons"
+			},
+			'commonFields': ['id']
+		},
+
 		"/daemons/groupConfig/list": {
 			_apiInfo: {
 				"l": "List Daemon Group Configuration",
@@ -1950,9 +1958,9 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/containersNoHost": {
+		"/hosts/container/zombie/list": {
 			"_apiInfo": {
-				"l": "List Containers that have no host.",
+				"l": "List Zombie Containers",
 				"group": "Hosts"
 			},
 			"envCode": {
@@ -1967,6 +1975,46 @@ module.exports = {
 			"_apiInfo": {
 				"l": "Github List Accounts",
 				"group": "Git Accounts"
+			}
+		},
+		"/hosts/container/zombie/delete": {
+			"_apiInfo": {
+				"l": "Delete Zombie Container",
+				"group": "Hosts"
+			},
+			"envCode": {
+				"source": ["query.envCode"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/container/zombie/getLogs": {
+			"_apiInfo": {
+				"l": "Get Zombie Container logs",
+				"group": "Hosts"
+			},
+			"envCode": {
+				"source": ["query.envCode"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 
