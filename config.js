@@ -1963,6 +1963,12 @@ module.exports = {
 				}
 			}
 		},
+		"/github/accounts/list": {
+			"_apiInfo": {
+				"l": "Github List Accounts",
+				"group": "Git Accounts"
+			}
+		},
 
 		"/github/login": {
 			"_apiInfo": {
