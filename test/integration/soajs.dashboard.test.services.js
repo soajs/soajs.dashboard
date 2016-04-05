@@ -130,34 +130,6 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 				});
 			});
 
-			describe("delete daemon tests", function () {
-
-				it("fail - missing required param", function (done) {
-					executeMyRequest({}, "daemons/delete", "get", function (body) {
-						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], {
-							"code": 172,
-							"message": "Missing required field: id"
-						});
-						done();
-					});
-				});
-
-				it("success - deletes daemon", function (done) {
-					var params = {
-						qs: {
-							"id": daemonId
-						}
-					};
-					executeMyRequest(params, "daemons/delete", "get", function (body) {
-						console.log(body);
-						assert.ok(body.data);
-						assert.deepEqual(body.data, true);
-						done();
-					});
-				});
-			});
-
 		});
 
 		describe.skip("group configuration tests", function () {

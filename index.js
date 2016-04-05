@@ -403,11 +403,6 @@ service.init(function() {
 		checkForMongo(req);
 		daemons.list (config, mongo, req, res);
 	});
-	service.get("/daemons/delete", function (req, res) {
-		checkForMongo(req);
-		daemons.delete (config, mongo, req, res);
-	});
-
 	service.post("/daemons/groupConfig/list", function (req, res) {
 		checkForMongo(req);
 		daemons.listGroupConfig (config, mongo, req, res);
