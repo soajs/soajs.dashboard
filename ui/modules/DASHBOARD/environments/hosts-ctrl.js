@@ -91,10 +91,15 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 		envHosts.createHost($scope, env, services);
 	};
 
+	$scope.listZombieContainers = function (env) {
+		envHosts.listZombieContainers($scope, env);
+	};
+
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 		$scope.envCode = $cookieStore.get("myEnv").code;
 		$scope.listHosts($scope.envCode);
+		$scope.listZombieContainers($scope.envCode);
 	}
 }]);
 

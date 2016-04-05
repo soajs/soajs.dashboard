@@ -24,175 +24,198 @@
 	</div>
 	<br/>
 	<div>
-	    <div ng-show="!hosts.controller">
+		<tabset>
+			<tab heading="Active Hosts">
+				<br>
+				<div ng-show="!hosts.controller">
 
-		    <alert type="warning" ng-if="deployer.type ==='manual'">
-			    {{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>. {{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
-		    </alert>
+					<alert type="warning" ng-if="deployer.type ==='manual'">
+						{{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>. {{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
+					</alert>
 
-	        <div ng-if="deployer.type !=='manual'" id="non-deployed-{{envCode}}" style="padding: 10px 0px 25px 5px;">
-	            <alert type="warning">{{translation.thisEnvironmentHasNotBeenDeployedYet[LANG]}}</alert>
-	            <input type="button" value="{{translation.deployEnvironment[LANG]}}" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
-	        </div>
-	    </div>
-	    <div ng-show="hosts.controller">
-	        <input ng-if="deployer.type !== 'manual'" type="button" value="{{translation.addNewHosts[LANG]}}" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
-	        <a href="" ng-click="listHosts(envCode)" class="btn btn-primary f-right">
-	            <span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
-	        </a>
-	    </div>
-	    <br/><br/>
-	    <div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;" ng-show="hosts.controller">
-	        <div ng-repeat="(serviceName, serviceInfo) in hosts">
-	            <div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
-	                <div style="width: 100%;" class="head {{serviceInfo.color}}">
-	                    <span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
-	                </div>
-	                <div class="service-ips clearfix">
-	                    <div ng-repeat="oneIp in serviceInfo.ips" style="float:left; margin:0 1px;">
-	                        <table border="1" cellpadding="2" cellspacing="1" class="OneIpTable hostsGrid">
-	                            <thead>
-	                                <tr>
-	                                    <th colspan="2" class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{oneIp.version}}</b></th>
-	                                    <th class="host-ip">IP:{{translation.port[LANG]}}</th>
-	                                </tr>
-	                            </thead>
-	                            <tbody>
-	                                <tr>
-	                                    <td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
-	                                    <td><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
-	                                    <td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
-	                                </tr>
-	                                <tr>
-	                                    <td colspan="4">
-	                                        <a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
-	                                            <span class="icon icon-heart"></span>&nbsp;
-	                                        </a>
-
-	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(envCode, oneIp)" title="{{translation.executeAwarenessOperation[LANG]}}">
-	                                            <span class="icon icon-connection"></span>&nbsp;
-	                                        </a>
-
-	                                        <a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
-	                                            <span class="icon icon-undo"></span>&nbsp;
-	                                        </a>
-
-	                                        <a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, oneIp)">
-	                                            <span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
-	                                        </a>
-
-	                                        <a href="" ng-show="oneIp.heartbeat && oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
-	                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
-	                                        </a>
-	                                    </td>
-	                                </tr>
-	                            </tbody>
-	                        </table>
-	                        <br/>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-			<div ng-repeat="(groupName, groupContent) in groups">
-				<fieldset ng-style="{'border-color': '#337ab7', 'border-width': '2px'}">
-					<legend><a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}</legend>
-					<div ng-repeat="service in groupContent.services" ng-if="groupContent.showContent">
-						<div ng-if="hosts[service].ips" class="serviceBox">
-							<div style="padding: 10px 0px 25px 5px;" ng-show="(hosts[service].waitMessage && hosts[service].waitMessage.message!=='')">
-								<alert type="{{hosts[service].waitMessage.type}}" close="hosts[service].waitMessage.close(hosts[service])" >{{hosts[service].waitMessage.message}}</alert>
-							</div>
-							<div style="width: 100%;" class="head {{hosts[service].color}}">
-								<span class="icon" ng-if="hosts[service].type === 'service'" ng-class="hosts[service].healthy===true? 'icon-smile2': 'icon-sad2'"></span>
-								<span class="icon icon-evil2" ng-if="hosts[service].type === 'daemon'"></span>
-								&nbsp;{{hosts[service].name}}&nbsp;port:&nbsp;{{hosts[service].port}}
-							</div>
-							<div class="service-ips">
-								<div ng-repeat="(version, ips) in hosts[service].ips">
-									<div ng-repeat="oneIp in ips" class="" style="padding:3px 0 0 0;">
-										<table border="0" width="100%" cellpadding="2" cellspacing="1" valign="middle">
-											<tr>
-												<td width="30%" valign="middle">
-													<table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
-														<thead>
-														<tr>
-															<th class="actions">{{translation.actions[LANG]}}</th>
-															<th class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{version}}</b></th>
-														</tr>
-														</thead>
-														<tr>
-															<td valign="top" width="26%">
-																<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
-																	<span class="icon icon-heart"></span>&nbsp;
-																</a>
-																<a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
-																	<span class="icon icon-undo"></span>&nbsp;
-																</a>
-
-																<a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
-																	<span class="icon icon-download3"></span>&nbsp;
-																</a>
-
-																<a href="" ng-show="oneIp.healthy && serviceInfo.type === 'daemon'" ng-click="loadDaemonStats(envCode, oneIp)" title="{{translation.loadDaemonStatisticsOperation[LANG]}}">
-																	<span class="icon icon-stats-dots"></span>&nbsp;
-																</a>
-
-																<a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, service, oneIp)">
-																	<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
-																</a>
-
-																<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="hostLogs(envCode, hosts[service].name, oneIp, hosts[service])">
-																	<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
-																</a>
-																<!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
-																<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
-																<!--</a>-->
-															</td>
-															<!--<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br /><b>IP:</b>&nbsp;{{oneIp.ip}}<br /><b>Version:</b>&nbsp;{{version}}</span></td>-->
-															<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br />{{oneIp.ip}}</span></td>
-														</tr>
-													</table>
-												</td>
-												<td width="70%">
-													<table width="99%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid" style="margin:0 auto;">
-														<thead>
-														<tr>
-															<th width="15%" colspan="2">{{translation.controllerUpperCase[LANG]}}</th>
-															<th width="15%">{{translation.status[LANG]}}</th>
-															<th class="lastCheck">{{translation.lastCheck[LANG]}}</th>
-															<th class="downSince">{{translation.downSince[LANG]}}</th>
-															<th class="downCount">{{translation.downCount[LANG]}}</th>
-														</tr>
-														</thead>
-														<tr ng-repeat="oneController in oneIp.controllers" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'">
-															<td><span class="{{oneController.color}}">v.{{oneController.version}}</span></td>
-															<td><span class="{{oneController.color}}">{{oneController.ip}}</span></td>
-															<td><span class="{{oneController.color}}">{{oneController.color === 'green' ? translation.healthy[LANG] : translation.notHealthy[LANG]}}</span></td>
-															<td><span>{{oneIp.lastCheck}}</span></td>
-															<td><span>{{oneIp.downSince}}</span></td>
-															<td><span>{{oneIp.downCount}}</span></td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-									</div>
-								</div>
-							</div>
-						</div><br>
+					<div ng-if="deployer.type !=='manual'" id="non-deployed-{{envCode}}" style="padding: 10px 0px 25px 5px;">
+						<alert type="warning">{{translation.thisEnvironmentHasNotBeenDeployedYet[LANG]}}</alert>
+						<input type="button" value="{{translation.deployEnvironment[LANG]}}" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
 					</div>
-					<div class="entryBoxes entryBoxesGrid" ng-if="!groupContent.showContent">
-						<div class="entryBox blueBox" ng-repeat="service in groupContent.services" ng-style="{'width': '20%', 'text-align': 'center'}">
-							<!--<b>{{service}}</b>&nbsp;&nbsp;-->
-							<div style="width: 100%;" class="head {{hosts[service].color}}">
-								<span class="icon" ng-if="hosts[service].type === 'service'" ng-class="hosts[service].healthy===true? 'icon-smile2': 'icon-sad2'"></span>
-								<span class="icon icon-evil2" ng-if="hosts[service].type === 'daemon'"></span>
-								&nbsp;{{hosts[service].name}}&nbsp;port:&nbsp;{{hosts[service].port}}
+				</div>
+				<div ng-show="hosts.controller">
+					<input ng-if="deployer.type !== 'manual'" type="button" value="{{translation.addNewHosts[LANG]}}" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
+					<a href="" ng-click="listHosts(envCode)" class="btn btn-primary f-right">
+						<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
+					</a>
+				</div>
+				<br/><br/>
+				<div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;" ng-show="hosts.controller">
+					<div ng-repeat="(serviceName, serviceInfo) in hosts">
+						<div ng-if="serviceName === 'controller'" class="serviceBox controllerEnvelop">
+							<div style="width: 100%;" class="head {{serviceInfo.color}}">
+								<span class="icon" ng-class="serviceInfo.healthy===true? 'icon-smile2': 'icon-sad2'"></span>&nbsp;{{serviceName}}
+							</div>
+							<div class="service-ips clearfix">
+								<div ng-repeat="oneIp in serviceInfo.ips" style="float:left; margin:0 1px;">
+									<table border="1" cellpadding="2" cellspacing="1" class="OneIpTable hostsGrid">
+										<thead>
+										<tr>
+											<th colspan="2" class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{oneIp.version}}</b></th>
+											<th class="host-ip">IP:{{translation.port[LANG]}}</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td><span class="icon {{oneIp.color}}" ng-class="oneIp.heartbeat === true? 'icon-smile' : 'icon-sad'"></span></td>
+											<td><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
+											<td><span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span></td>
+										</tr>
+										<tr>
+											<td colspan="4">
+												<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
+													<span class="icon icon-heart"></span>&nbsp;
+												</a>
+
+												<a href="" ng-show="oneIp.heartbeat" ng-click="executeAwarenessTest(envCode, oneIp)" title="{{translation.executeAwarenessOperation[LANG]}}">
+													<span class="icon icon-connection"></span>&nbsp;
+												</a>
+
+												<a href="" ng-show="oneIp.heartbeat" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
+													<span class="icon icon-undo"></span>&nbsp;
+												</a>
+
+												<a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, oneIp)">
+													<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
+												</a>
+
+												<a href="" ng-show="oneIp.heartbeat && oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
+													<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+												</a>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+									<br/>
+								</div>
 							</div>
 						</div>
 					</div>
-				</fieldset>
-			</div>
-	    </div>
+					<div ng-repeat="(groupName, groupContent) in groups">
+						<fieldset ng-style="{'border-color': '#337ab7', 'border-width': '2px'}">
+							<legend><a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}</legend>
+							<div ng-repeat="service in groupContent.services" ng-if="groupContent.showContent">
+								<div ng-if="hosts[service].ips" class="serviceBox">
+									<div style="padding: 10px 0px 25px 5px;" ng-show="(hosts[service].waitMessage && hosts[service].waitMessage.message!=='')">
+										<alert type="{{hosts[service].waitMessage.type}}" close="hosts[service].waitMessage.close(hosts[service])" >{{hosts[service].waitMessage.message}}</alert>
+									</div>
+									<div style="width: 100%;" class="head {{hosts[service].color}}">
+										<span class="icon" ng-if="hosts[service].type === 'service'" ng-class="hosts[service].healthy===true? 'icon-smile2': 'icon-sad2'"></span>
+										<span class="icon icon-evil2" ng-if="hosts[service].type === 'daemon'"></span>
+										&nbsp;{{hosts[service].name}}&nbsp;port:&nbsp;{{hosts[service].port}}
+									</div>
+									<div class="service-ips">
+										<div ng-repeat="(version, ips) in hosts[service].ips">
+											<div ng-repeat="oneIp in ips" class="" style="padding:3px 0 0 0;">
+												<table border="0" width="100%" cellpadding="2" cellspacing="1" valign="middle">
+													<tr>
+														<td width="30%" valign="middle">
+															<table width="100%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid">
+																<thead>
+																<tr>
+																	<th class="actions">{{translation.actions[LANG]}}</th>
+																	<th class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{version}}</b></th>
+																</tr>
+																</thead>
+																<tr>
+																	<td valign="top" width="26%">
+																		<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
+																			<span class="icon icon-heart"></span>&nbsp;
+																		</a>
+																		<a href="" ng-show="oneIp.healthy" ng-click="reloadRegistry(envCode, oneIp)" title="{{translation.reloadRegistryOperation[LANG]}}">
+																			<span class="icon icon-undo"></span>&nbsp;
+																		</a>
+
+																		<a href="" ng-show="oneIp.healthy" ng-click="loadProvisioning(envCode, oneIp)" title="{{translation.loadProvisionOperation[LANG]}}">
+																			<span class="icon icon-download3"></span>&nbsp;
+																		</a>
+
+																		<a href="" ng-show="oneIp.healthy && serviceInfo.type === 'daemon'" ng-click="loadDaemonStats(envCode, oneIp)" title="{{translation.loadDaemonStatisticsOperation[LANG]}}">
+																			<span class="icon icon-stats-dots"></span>&nbsp;
+																		</a>
+
+																		<a href="" ng-show="oneIp.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, service, oneIp)">
+																			<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
+																		</a>
+
+																		<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="hostLogs(envCode, hosts[service].name, oneIp, hosts[service])">
+																			<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+																		</a>
+																		<!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
+																		<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
+																		<!--</a>-->
+																	</td>
+																	<!--<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br /><b>IP:</b>&nbsp;{{oneIp.ip}}<br /><b>Version:</b>&nbsp;{{version}}</span></td>-->
+																	<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br />{{oneIp.ip}}</span></td>
+																</tr>
+															</table>
+														</td>
+														<td width="70%">
+															<table width="99%" border="1" cellpadding="2" cellspacing="1" class="hostsGrid" style="margin:0 auto;">
+																<thead>
+																<tr>
+																	<th width="15%" colspan="2">{{translation.controllerUpperCase[LANG]}}</th>
+																	<th width="15%">{{translation.status[LANG]}}</th>
+																	<th class="lastCheck">{{translation.lastCheck[LANG]}}</th>
+																	<th class="downSince">{{translation.downSince[LANG]}}</th>
+																	<th class="downCount">{{translation.downCount[LANG]}}</th>
+																</tr>
+																</thead>
+																<tr ng-repeat="oneController in oneIp.controllers" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'">
+																	<td><span class="{{oneController.color}}">v.{{oneController.version}}</span></td>
+																	<td><span class="{{oneController.color}}">{{oneController.ip}}</span></td>
+																	<td><span class="{{oneController.color}}">{{oneController.color === 'green' ? translation.healthy[LANG] : translation.notHealthy[LANG]}}</span></td>
+																	<td><span>{{oneIp.lastCheck}}</span></td>
+																	<td><span>{{oneIp.downSince}}</span></td>
+																	<td><span>{{oneIp.downCount}}</span></td>
+																</tr>
+															</table>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div><br>
+							</div>
+							<div class="entryBoxes entryBoxesGrid" ng-if="!groupContent.showContent">
+								<div class="entryBox blueBox" ng-repeat="service in groupContent.services" ng-style="{'width': '20%', 'text-align': 'center'}">
+									<!--<b>{{service}}</b>&nbsp;&nbsp;-->
+									<div style="width: 100%;" class="head {{hosts[service].color}}">
+										<span class="icon" ng-if="hosts[service].type === 'service'" ng-class="hosts[service].healthy===true? 'icon-smile2': 'icon-sad2'"></span>
+										<span class="icon icon-evil2" ng-if="hosts[service].type === 'daemon'"></span>
+										&nbsp;{{hosts[service].name}}&nbsp;port:&nbsp;{{hosts[service].port}}
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</tab>
+			<tab heading="Zombie Containers" ng-if="zombieContainers.length > 0">
+				<br>
+				<div class="entryBoxes entryBoxesGrid">
+					<div class="entryBox customEntryBox" ng-repeat="container in zombieContainers">
+						<div class="header closed">
+							{{container.hostname}} [{{container.type}}]
+						</div>
+						<div class="entryAction">
+							<a href="" ng-click="hostLogs(envCode)">
+								<span class="icon icon-terminal" tooltip="Container Logs"></span>
+							</a>
+							<a href="" ng-click="removeZombieContainer(container)">
+								<span class="icon icon-cross" tooltip="Delete Container"></span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</tab>
+		</tabset>
 	</div>
 </section>
 

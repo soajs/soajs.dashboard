@@ -355,9 +355,13 @@ service.init(function() {
 		checkForMongo(req);
 		host.deployDaemon(config, mongo, req, res);
 	});
-	service.get("/hosts/containersNoHost", function (req, res) {
+	service.get("/hosts/container/zombie/list", function (req, res) {
 		checkForMongo(req);
 		host.getContainersNoHost(config, mongo, req, res);
+	});
+	service.get("/hosts/container/zombie/delete", function (req, res) {
+		checkForMongo(req);
+		host.deleteZombieContainer(config, mongo, req, res);
 	});
 
 	/**

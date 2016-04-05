@@ -40,3 +40,8 @@ ul {
     margin-top: -3px !important;
     width: 18px !important;
 }
+
+.customEntryBox {
+    width: 48% !important;
+    padding-left: 0px !important;
+}

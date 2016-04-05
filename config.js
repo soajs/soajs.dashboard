@@ -1949,13 +1949,33 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/containersNoHost": {
+		"/hosts/container/zombie/list": {
 			"_apiInfo": {
 				"l": "List Containers that have no host.",
 				"group": "Hosts"
 			},
 			"envCode": {
 				"source": ["query.envCode"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/container/zombie/delete": {
+			"_apiInfo": {
+				"l": "Delete Containers that have no host.",
+				"group": "Hosts"
+			},
+			"envCode": {
+				"source": ["query.envCode"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
 				"required": true,
 				"validation": {
 					"type": "string"
