@@ -1570,6 +1570,18 @@ var errorCodes = {
 			"ENG": "Invalid or no type provided in config.js",
 			"FRA": "Invalid or no type provided in config.js"
 		},
+		"772": {
+			"ENG": "Unable to list zombie containers",
+			"FRA": "Unable to list zombie containers"
+		},
+		"773": {
+			"ENG": "Unable to delete zombie container",
+			"FRA": "Unable to delete zombie container"
+		},
+		"774": {
+			"ENG": "Unable to get zombie container logs",
+			"FRA": "Unable to get zombie container logs"
+		},
 
 		"901": {
 			"ENG": "Error Logging out from environments.",

@@ -184,6 +184,10 @@ var errors = {
 	"770": "Missing config.js source data",
 	"771": "Invalid or no type provided in config.js",
 
+	"772": "Unable to list zombie containers",
+	"773": "Unable to delete zombie container",
+	"774": "Unable to get zombie container logs",
+
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
 	903: "You do not have access to this environment %envCode%"

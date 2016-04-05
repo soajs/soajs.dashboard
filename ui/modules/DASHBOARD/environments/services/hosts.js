@@ -1143,10 +1143,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         }, function (error, result) {
             if (error) {
-
+                currentScope.generateNewMsg(env, 'danger', translation.unableToGetZombieContainerLogs[LANG]);
             }
             else {
-                console.log (result);
                 $modal.open({
                     templateUrl: "logBox.html",
                     size: 'lg',
