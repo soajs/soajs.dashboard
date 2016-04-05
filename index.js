@@ -355,6 +355,10 @@ service.init(function() {
 		checkForMongo(req);
 		host.deployDaemon(config, mongo, req, res);
 	});
+	service.get("/hosts/containersNoHost", function (req, res) {
+		checkForMongo(req);
+		host.getContainersNoHost(config, mongo, req, res);
+	});
 
 	/**
 	 * Github App features
