@@ -47,8 +47,10 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
-    "soajs": "0.2.*",
     "shortid": "^2.2.4",
     "unzip2": "*"
+  },
+  "peerDependencies": {
+    "soajs": "0.2.*"
   }
 }
