@@ -461,7 +461,7 @@ describe("Certificates tests", function () {
 
     describe("delete certificates when a driver gets deleted", function () {
 
-        it("success - will delete certificates when driver get deleted from dev environment", function (done) {
+        it("success - will delete certificates when driver gets deleted from dev environment", function (done) {
             var params = {
                 qs: {
                     env: 'STG',
@@ -470,7 +470,8 @@ describe("Certificates tests", function () {
             };
 
             executeMyRequest(params, "environment/platforms/driver/delete", 'get', function (body) {
-                assert.ok(body.result);
+                console.log(body);
+	            assert.ok(body.result);
                 assert.ok(body.data);
                 done();
             });

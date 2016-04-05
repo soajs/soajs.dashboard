@@ -311,7 +311,8 @@ describe("Content Builder Tests", function () {
                 }
             };
             executeMyRequest(params, 'cb/add', 'post', function (body) {
-                assert.ok(body.result);
+                console.log(body);
+	            assert.ok(body.result);
                 assert.ok(body.data);
                 done();
             });
