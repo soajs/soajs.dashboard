@@ -173,6 +173,7 @@ var errors = {
 	"760": "Missing source information",
 	"761": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
+	"763": "Unable to reach the GitHub API. Please try again.",
 	
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",

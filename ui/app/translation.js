@@ -1534,6 +1534,10 @@ var errorCodes = {
 			"ENG": "A module with the same name and/or port already exists",
 			"FRA": "A module with the same name and/or port already exists"
 		},
+		"763": {
+			"ENG": "Unable to reach the GitHub API. Please try again.",
+			"FRA": "Unable to reach the GitHub API. Please try again."
+		},
 		"764": {
 			"ENG": "Static Content already exists",
 			"FRA": "Static Content already exists"

@@ -52,9 +52,6 @@
     <div id="activeRepos" class="modal-body">
         <h4 style="text-align: center;">Repository has been activated</h4>
         <label>The following modules were added:</label>
-        <!--<ul>-->
-            <!--<li ng-repeat="entry in added"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}</li>-->
-        <!--</ul>-->
         <div class="grid" style="width:100%">
             <table cellspacing="0" cellpadding="0" border="0">
                 <tbody>
@@ -90,13 +87,28 @@
 </script>
 
 <script type="text/ng-template" id="syncSuccess.tmpl">
-    <div class="modal-body">
+    <div id="syncedRepos" class="modal-body">
         <h4 style="text-align: center;">Repository has been synced</h4>
         <div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
             <label>The following modules were {{action}}:</label><br>
-            <ul>
-            <li ng-repeat="entry in entries"><b>Type: </b>{{entry.type}}&nbsp;&nbsp;&nbsp;<b>Name: </b>{{entry.name}}</li>
-            </ul>
+            <div class="grid" style="width:100%">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
+                        <td>{{entry.name}}</td>
+                        <td>{{entry.type}}</td>
+                        <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">Link</a></td>
+                        <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">Link</a></td>
+                        <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">Link</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="modal-footer">

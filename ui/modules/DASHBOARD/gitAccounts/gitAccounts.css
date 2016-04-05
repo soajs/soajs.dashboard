@@ -55,3 +55,7 @@ li.accountType {
 #activeRepos .grid table{
     min-width:100%
 }
+
+#syncedRepos .grid table{
+    min-width:100%
+}
