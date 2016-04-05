@@ -4,8 +4,14 @@ var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
 
 module.exports = {
+	type: 'service',
+	prerequisites: {
+		cpu: '',
+		memory: ''
+	},
+	"serviceVersion": 1,
 	"serviceName": "dashboard",
-	serviceGroup: "SOAJS Core Services",
+	"serviceGroup": "SOAJS Core Services",
 	"servicePort": 4003,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,
