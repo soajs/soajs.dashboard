@@ -1,0 +1,136 @@
+<section ng-controller="githubAppCtrl">
+    <a href="" class="btn btn-primary" ng-click="addAccount()">Add Account</a>
+    <div ng-if="accounts && accounts.length === 0">
+        <alert type="warning">No GitHub accounts added yet!</alert>
+    </div>
+    <div ng-if="accounts.length > 0">
+        <div class="entryBoxes entryBoxesGrid">
+            <div id="{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+                <div class="header opened">
+                    <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
+                    {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
+                </div>
+                <div class="body">
+                    <label>Repositories</label>
+                    <div ng-if="account.repo && account.repo.length === 0">
+                        <alert type="warning">No repositories found!</alert>
+                    </div>
+                    <ul class="blueListing" style="overflow:scroll; height:254px; width:100%">
+                        <li class="blueLi {{repo.status}}" ng-repeat="repo in account.repos" class="row-list" ng-style="{'width': '98%'}">
+                            <span class="repoFullName">{{repo.full_name}}</span>
+                            <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
+                            <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
+                            <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
+                            <div class="rightActions">
+                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                    <span class="icon icon-switch" tooltip="Activate"></span>
+                                </a>
+                                <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+                                    <span class="icon icon-cross" tooltip="Deactivate"></span>
+                                </a>
+                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                    <span class="icon icon-loop2" tooltip="Sync"></span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="entryAction">
+                        <a href="" ng-click="listRepos(account);" ng-if="access.listRepos">
+                            <span class="icon icon-loop2" tooltip="Sync Repository"></span>
+                        </a>
+                        <a href="" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
+                            <span class="icon icon-cross" tooltip="Delete Account"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/ng-template" id="repoAddSuccess.tmpl">
+    <div id="activeRepos" class="modal-body">
+        <h4 style="text-align: center;">Repository has been activated</h4>
+        <label>The following modules were added:</label>
+        <div class="grid" style="width:100%">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Link</th>
+                </tr>
+                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
+                    <td>{{entry.name}}</td>
+                    <td>{{entry.type}}</td>
+                    <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">Link</a></td>
+                    <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">Link</a></td>
+                    <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">Link</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="errorDisplay.tmpl">
+    <div class="modal-body">
+        <h4>{{title}}</h4>
+        <alert type="danger" ng-bind-html="error"></alert>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="syncSuccess.tmpl">
+    <div id="syncedRepos" class="modal-body">
+        <h4 style="text-align: center;">Repository has been synced</h4>
+        <div ng-repeat="(action, entries) in results" ng-if="entries.length > 0">
+            <label>The following modules were {{action}}:</label><br>
+            <div class="grid" style="width:100%">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Link</th>
+                    </tr>
+                    <tr ng-repeat="entry in entries" ng-class-even="'even'" ng-class-odd="'odd'">
+                        <td>{{entry.name}}</td>
+                        <td>{{entry.type}}</td>
+                        <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">Link</a></td>
+                        <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">Link</a></td>
+                        <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">Link</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="repoOutOfSync.tmpl">
+    <div class="modal-body">
+        <!--<div ng-bind-html="text"></div>-->
+        <h4 style="text-align: center;">Repository is out of sync</h4>
+        <label style="text-align: center;">Would you like to reactivate this repository?</label>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="reactivate()">Reactivate</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="loading.tmpl">
+    <div class="modal-body">
+        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="50px" height="50px"><br>
+        <h4 class="alignCenter">Getting repositories, please wait...</h4>
+    </div>
+</script>

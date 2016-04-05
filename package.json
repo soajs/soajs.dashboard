@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git@github.com:soajs/soajs.dashboard.git"
   },
-  "license" : "Apache-2.0",
+  "license": "Apache-2.0",
   "engines": {
     "node": "*"
   },
@@ -36,15 +36,19 @@
     "docker-mock": "*"
   },
   "dependencies": {
-    "ncp": "*",
-    "dockerode": "*",
-    "object-hash": "*",
+    "async": "*",
     "bcrypt": "*",
+    "dockerode": "*",
     "formidable": "*",
-    "unzip": "*",
+    "github": "^0.2.4",
+    "gridfs-stream": "*",
     "mkdirp": "*",
+    "ncp": "*",
+    "object-hash": "*",
+    "request": "*",
     "rimraf": "*",
-    "request": "*"
+    "shortid": "^2.2.4",
+    "unzip2": "*"
   },
   "peerDependencies": {
     "soajs": "0.2.*"

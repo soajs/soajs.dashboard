@@ -1,102 +1,160 @@
 "use strict";
-var fs = require("fs");
 var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
+var Grid = require('gridfs-stream');
+
+function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
+	var gs = new gfs.mongo.GridStore(db, certs[counter]._id, 'r', {
+		root: 'fs',
+		w: 1,
+		fsync: true
+	});
+
+	gs.open(function (error, gstore) {
+		if (error) {
+			cb(error, null);
+		} else {
+			gstore.read(function (error, filedata) {
+				if (error) {
+					cb(error, null);
+				} else {
+					gstore.close();
+					var certKey = certs[counter].filename.split(".")[0];
+					dockerConfig[certKey] = filedata;
+
+					counter++;
+					if (counter === certs.length) {
+						return cb(null, dockerConfig);
+					} else {
+						getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
+					}
+				}
+			});
+		}
+	});
+}
 
 var lib = {
-    "getDeployer": function (deployerConfig) {
-        var config = utils.cloneObj(deployerConfig);
-        delete config.driver;
-        var docker;
-        if (config.socketPath) {
-            docker = new Docker({socketPath: config.socketPath});
-        }
-        else {
-            var dockerConfig = {
-                host: config.host,
-                port: config.port
-            };
-            //var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || __dirname + '/../../../';
-            //if (fs.existsSync(certsFolderLocation + "certs")) {
-                //dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + 'certs/ca.pem');
-                //dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + 'certs/cert.pem');
-                //dockerConfig['key'] = fs.readFileSync(certsFolderLocation + 'certs/key.pem');
-            //}
-	        var certsFolderLocation = process.env.SOAJS_ENV_WORKDIR || "/Users/soajs/certs";
-	        if (fs.existsSync(certsFolderLocation)) {
-	            dockerConfig['ca'] = fs.readFileSync(certsFolderLocation + '/ca.pem');
-	            dockerConfig['cert'] = fs.readFileSync(certsFolderLocation + '/cert.pem');
-	            dockerConfig['key'] = fs.readFileSync(certsFolderLocation + '/key.pem');
-	        }
-            docker = new Docker(dockerConfig);
-        }
-        return docker;
-    },
+	"getDeployer": function (deployerConfig, mongo, cb) {
+		var config = utils.cloneObj(deployerConfig);
+		delete config.driver;
+		config.envCode = config.envCode.toUpperCase();
+		var docker;
+		if (config.socketPath) {
+			docker = new Docker({socketPath: config.socketPath});
+			return cb(null, docker);
+		}
+		else {
+			var dockerConfig = {
+				host: config.host,
+				port: config.port
+			};
 
-    "container": function (dockerInfo, action, cid, opts, cb) {
-        var deployer = lib.getDeployer(dockerInfo);
-        var container = deployer.getContainer(cid);
-        container[action](opts || null, function (error, response) {
-            if (error) {
-                return cb(error);
-            }
-            if (action === 'start') {
-                container.inspect(cb);
-            }
-            else return cb(null, response);
-        });
-    }
+			var criteria = {};
+			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
+			mongo.find("fs.files", criteria, function (error, certs) {
+				if (error) {
+					return cb(error);
+				}
+
+				if (!certs || certs.length === 0) {
+					return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
+				}
+
+				mongo.getMongoSkinDB(function (error, db) {
+					if (error) {
+						return cb(error, null);
+					}
+					var gfs = Grid(db, mongo.mongoSkin);
+					var counter = 0;
+					getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
+						if (error) {
+							return cb(error, null);
+						}
+
+						docker = new Docker(dockerConfig);
+						return cb(null, docker);
+					});
+				});
+			});
+		}
+	},
+
+	"container": function (dockerInfo, action, cid, mongo, opts, cb) {
+		lib.getDeployer(dockerInfo, mongo, function (error, deployer) {
+			if (error) {
+				cb(error, null);
+			} else {
+				var container = deployer.getContainer(cid);
+				container[action](opts || null, function (error, response) {
+					if (error) {
+						return cb(error);
+					}
+					if (action === 'start') {
+						container.inspect(cb);
+					}
+					else return cb(null, response);
+				});
+			}
+		});
+	}
 };
 var deployer = {
-    "createContainer": function (deployerConfig, params, cb) {
-        var deployer = lib.getDeployer(deployerConfig);
-        deployer.createContainer(params, function (err, container) {
-            if (err) {
-                return cb(err);
-            }
-            container.inspect(cb);
-        });
-    },
+	"createContainer": function (deployerConfig, params, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			if (error) {
+				return cb(error);
+			}
 
-    "start": function (deployerConfig, cid, cb) {
-        lib.container(deployerConfig, "start", cid, null, cb);
-    },
+			deployer.createContainer(params, function (err, container) {
+				if (err) {
+					return cb(err);
+				}
+				container.inspect(cb);
+			});
+		});
+	},
 
-    "remove": function (deployerConfig, cid, cb) {
-        lib.container(deployerConfig, "remove", cid, {"force": true}, cb);
-    },
+	"start": function (deployerConfig, cid, mongo, cb) {
+		lib.container(deployerConfig, "start", cid, mongo, null, cb);
+	},
 
-    "info": function (deployerConfig, cid, req, res) {
-        var deployer = lib.getDeployer(deployerConfig);
-        deployer.getContainer(cid).logs({
-                stderr: true,
-                stdout: true,
-                timestamps: false,
-                tail: 200
-            },
-            function (error, stream) {
-                if (error) {
-                    req.soajs.log.error('logStreamContainer error: ', error);
-                    return res.json(req.soajs.buildResponse({"code": 601, "msg": error.message}));
-                }
-                else {
-                    var data = '';
-                    var chunk;
-                    stream.setEncoding('utf8');
-                    stream.on('readable', function () {
-                        var handle = this;
-                        while ((chunk = handle.read()) != null) {
-                            data += chunk.toString("utf8");
-                        }
-                    });
+	"remove": function (deployerConfig, cid, mongo, cb) {
+		lib.container(deployerConfig, "remove", cid, mongo, {"force": true}, cb);
+	},
 
-                    stream.on('end', function () {
-                        stream.destroy();
-                        var out = req.soajs.buildResponse(null, {'data': data});
-                        return res.json(out);
-                    });
-                }
-            });
-    }
+	"info": function (deployerConfig, cid, req, res, mongo) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			deployer.getContainer(cid).logs({
+					stderr: true,
+					stdout: true,
+					timestamps: false,
+					tail: 200
+				},
+				function (error, stream) {
+					if (error) {
+						req.soajs.log.error('logStreamContainer error: ', error);
+						return res.json(req.soajs.buildResponse({"code": 601, "msg": error.message}));
+					}
+					else {
+						var data = '';
+						var chunk;
+						stream.setEncoding('utf8');
+						stream.on('readable', function () {
+							var handle = this;
+							while ((chunk = handle.read()) != null) {
+								data += chunk.toString("utf8");
+							}
+						});
+
+						stream.on('end', function () {
+							stream.destroy();
+							var out = req.soajs.buildResponse(null, {'data': data});
+							return res.json(out);
+						});
+					}
+				});
+		});
+	}
 };
 module.exports = deployer;

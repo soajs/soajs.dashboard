@@ -122,9 +122,6 @@ var errors = {
 	"705": "Tenant already has a key to use the dashboard",
 
 	"710": "A Daemon with the same name and/or port already exists",
-	"711": "Unable to update daemon",
-	"712": "Unable to delete daemon",
-	"713": "Unable to add daemon",
 	"714": "A Group Configuration with the same name already exists",
 	"715": "Unable to update group configuration",
 	"716": "Unable to delete group configuration",
@@ -140,7 +137,56 @@ var errors = {
 	"725": "Group Configuration not found",
 	"726": "Daemon not found",
 
-	"750": "Invalid Request."
+	"727": "Unable to add certificate(s)",
+	"728": "Unable to get certificate(s)",
+	"729": "Unable to remove certificate",
+	"730": "One or more certificates do not exist",
+	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
+
+	"732": "Unable to list drivers",
+	"733": "Unable to add driver",
+	"734": "Unable to update driver",
+	"735": "Unable to change selected driver",
+	"736": "Unable to delete driver",
+	"737": "You are not allowed to delete a driver that is currently selected",
+	"738": "Unable to change deployer type",
+
+	"739": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name",
+
+	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
+
+	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
+
+	"742": "Unable to list static content sources",
+
+	"750": "Invalid Request.",
+
+	"751": "Unable to login",
+	"752": "User account already exists",
+	"753": "Unable to logout",
+	"754": "Active repositories exist for this user. Please deactivate them to be able to logout",
+	"755": "Authentication failed",
+	"756": "Unable to list accounts",
+	"757": "Unable to get git user account",
+	"758": "Unable to get repositories. Please try again.",
+	"759": "Unable to get branches",
+	"760": "Missing source information",
+	"761": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema.",
+	"762": "A module with the same name and/or port already exists",
+	"763": "Unable to reach the GitHub API. Please try again.",
+	
+	"764": "Static Content already exists",
+	"765": "Failed to deactivate repository",
+	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
+	"767": "Invalid GitHub account provided",
+	"768": "Failed to sync repository",
+	"769": "Missing config.js data",
+	"770": "Missing config.js source data",
+	"771": "Invalid or no type provided in config.js",
+
+	901: "Error Logging out from environments",
+	902: "Error Logging in to environments",
+	903: "You do not have access to this environment %envCode%"
 };
 
 

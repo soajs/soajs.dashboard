@@ -64,8 +64,14 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.alerts.splice(i, 1);
 	};
 
-	context.form.displayAlert = function (type, msg) {
+	context.form.displayAlert = function (type, msg, isCode, service, orgMesg) {
 		context.form.alerts = [];
+		if (isCode) {
+			var msgT = getCodeMessage(msg, service, orgMesg);
+			if (msgT) {
+				msg = msgT;
+			}
+		}
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
 	};
@@ -197,7 +203,7 @@ function buildForm(context, modal, configuration, cb) {
 			for (var j = 0; j < formDataKeys.length; j++) {
 				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
 				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
-					customData.push ({
+					customData.push({
 						label: formDataKeys[j],
 						data: context.form.formData[formDataKeys[j]]
 					});
@@ -233,25 +239,26 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	};
 
-	function doValidateItems(entries, data){
+	function doValidateItems(entries, data) {
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
 			if (oneEntry.type === 'group') {
 				var validation = doValidateItems(oneEntry.entries, data);
-				if(validation === false){
+				if (validation === false) {
 					return false;
 				}
 			}
-			else if(oneEntry.type ==='radio' || oneEntry.type ==='select'){
-				if(Array.isArray(data[oneEntry.name])){
+			else if (oneEntry.type === 'radio' || oneEntry.type === 'select') {
+				if (Array.isArray(data[oneEntry.name])) {
 					data[oneEntry.name] = data[oneEntry.name][0];
 				}
 			}
-			if(data[oneEntry.name] === 'false') data[oneEntry.name] = false;
-			if(data[oneEntry.name] === 'true') data[oneEntry.name] = true;
-
-			if (oneEntry.required && (data[oneEntry.name] === null || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '')) {
-				return false;
+			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
+			if (data[oneEntry.name] === 'true') data[oneEntry.name] = true;
+			if (oneEntry.required) {
+				if (data[oneEntry.name] === null || typeof(data[oneEntry.name]) === 'undefined' || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '') {
+					return false;
+				}
 			}
 		}
 		return true;

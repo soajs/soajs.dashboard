@@ -1,0 +1,61 @@
+.customEntryBox {
+    width: 48% !important;
+    height: 196px !important;
+    padding-left: 0px !important;
+}
+
+.blueLi.active {
+    background-color: #DFF0D8 !important;
+    border-color: #3C763D !important;
+    color: #3c763d !important;
+}
+
+.blueLi.deleted {
+    background-color: #F2DEDE !important;
+    border-color: #a94442 !important;
+    color: #a94442 !important;
+}
+
+.blueLi.outOfSync {
+    background-color: #FCF8E3 !important;
+    border-color: #8a6d3b !important;
+    color: #8a6d3b !important;
+}
+
+.repoHeader {
+    width: 50px !important;
+}
+
+.nameHeader {
+    width: 20% !important;
+}
+
+.typeHeader {
+    width: 15% !important;
+}
+
+.linkHeader {
+    width: 15% !important;
+}
+
+.loadingImageLarge {
+    display: block;
+    margin: 0 auto;
+}
+
+.alignCenter {
+    text-align: center !important;
+}
+
+li.accountType {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+#activeRepos .grid table{
+    min-width:100%
+}
+
+#syncedRepos .grid table{
+    min-width:100%
+}

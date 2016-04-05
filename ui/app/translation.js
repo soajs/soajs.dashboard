@@ -253,7 +253,7 @@ var translation = {
 		"ENG": "Application Added Successfully",
 		"FRA": "Application Added Successfully"
 	},
-
+	
 	"applicationKeyAddedSuccessfully": {
 		"ENG": "Application Key Added Successfully",
 		"FRA": "Application Key Added Successfully"
@@ -811,7 +811,7 @@ var translation = {
 		"ENG": "Manage",
 		"FRA": "Manage"
 	}
-
+	
 };
 
 var errorCodes = {
@@ -904,12 +904,12 @@ var errorCodes = {
 			"ENG": "Group code already exists. Choose another",
 			"FRA": "Le code du group existe deja. Choose another"
 		},
-
+		
 		500: {
 			"ENG": "This record in locked. You cannot modify or delete it",
 			"FRA": "This record in locked. You cannot modify or delete it"
 		},
-
+		
 		600: {
 			"ENG": "Database connection error",
 			"FRA": "Database connection error"
@@ -952,7 +952,7 @@ var errorCodes = {
 			"ENG": "Invalid or no Platform Driver configuration provided!",
 			"FRA": "Invalid or no Platform Driver configuration provided!"
 		},
-
+		
 		"409": {
 			"ENG": "Invalid product id provided",
 			"FRA": "Invalid product id provided"
@@ -997,7 +997,7 @@ var errorCodes = {
 			"ENG": "Unable to remove product package",
 			"FRA": "Unable to remove product package"
 		},
-
+		
 		"420": {
 			"ENG": "Unable to add the tenant record",
 			"FRA": "Unable to add the tenant record"
@@ -1018,7 +1018,7 @@ var errorCodes = {
 			"ENG": "Unable to remove tenant record",
 			"FRA": "Unable to remove tenant record"
 		},
-
+		
 		"425": {
 			"ENG": "Unable to add the tenant OAuth",
 			"FRA": "Unable to add the tenant OAuth"
@@ -1035,7 +1035,7 @@ var errorCodes = {
 			"ENG": "Unable to remove tenant OAuth",
 			"FRA": "Unable to remove tenant OAuth"
 		},
-
+		
 		"429": {
 			"ENG": "Unable to add the tenant application",
 			"FRA": "Unable to add the tenant application"
@@ -1060,7 +1060,7 @@ var errorCodes = {
 			"ENG": "Invalid product code or package code provided",
 			"FRA": "Invalid product code or package code provided"
 		},
-
+		
 		"435": {
 			"ENG": "Unable to get the tenant application keys",
 			"FRA": "Unable to get the tenant application keys"
@@ -1081,7 +1081,7 @@ var errorCodes = {
 			"ENG": "Invalid tenant oauth user Id provided",
 			"FRA": "Invalid tenant oauth user Id provided"
 		},
-
+		
 		"440": {
 			"ENG": "Unable to add the tenant application ext Key",
 			"FRA": "Unable to add the tenant application ext Key"
@@ -1110,7 +1110,7 @@ var errorCodes = {
 			"ENG": "Invalid environment provided",
 			"FRA": "Invalid environment provided"
 		},
-
+		
 		"447": {
 			"ENG": "Unable to get tenant oAuth Users",
 			"FRA": "Unable to get tenant oAuth Users"
@@ -1131,7 +1131,7 @@ var errorCodes = {
 			"ENG": "Unable to updated tenant oAuth User",
 			"FRA": "Unable to updated tenant oAuth User"
 		},
-
+		
 		"452": {
 			"ENG": "Invalid Tenant Code",
 			"FRA": "Invalid Tenant Code"
@@ -1152,7 +1152,7 @@ var errorCodes = {
 			"ENG": "Error adding Tenant Key",
 			"FRA": "Error adding Tenant Key"
 		},
-
+		
 		"460": {
 			"ENG": "Unable to find product",
 			"FRA": "Unable to find product"
@@ -1161,7 +1161,7 @@ var errorCodes = {
 			"ENG": "Unable to find package",
 			"FRA": "Unable to find package"
 		},
-
+		
 		"462": {
 			"ENG": "You are not allowed to remove the tenant you are currently logged in with",
 			"FRA": "You are not allowed to remove the tenant you are currently logged in with"
@@ -1186,7 +1186,7 @@ var errorCodes = {
 			"ENG": "You are not allowed to remove the package you are currently logged in with",
 			"FRA": "You are not allowed to remove the package you are currently logged in with"
 		},
-
+		
 		"500": {
 			"ENG": "This record is locked. You cannot delete it",
 			"FRA": "This record is locked. You cannot delete it"
@@ -1247,7 +1247,7 @@ var errorCodes = {
 			"ENG": "Error removing environment database",
 			"FRA": "Error removing environment database"
 		},
-
+		
 		"600": {
 			"ENG": "Database error",
 			"FRA": "Database error"
@@ -1332,7 +1332,7 @@ var errorCodes = {
 			"ENG": "Make sure upload directory exists:",
 			"FRA": "Make sure upload directory exists:"
 		},
-
+		
 		"700": {
 			"ENG": "This Content Schema already Exist",
 			"FRA": "This Content Schema already Exist"
@@ -1357,22 +1357,10 @@ var errorCodes = {
 			"ENG": "Tenant already has a key to use the dashboard",
 			"FRA": "Tenant already has a key to use the dashboard"
 		},
-
+		
 		"710": {
 			"ENG": "A Daemon with the same name and/or port already exists",
 			"FRA": "A Daemon with the same name and/or port already exists"
-		},
-		"711": {
-			"ENG": "Unable to update daemon",
-			"FRA": "Unable to update daemon"
-		},
-		"712": {
-			"ENG": "Unable to delete daemon",
-			"FRA": "Unable to delete daemon"
-		},
-		"713": {
-			"ENG": "Unable to add daemon",
-			"FRA": "Unable to add daemon"
 		},
 		"714": {
 			"ENG": "A Group Configuration with the same name already exists",
@@ -1398,7 +1386,7 @@ var errorCodes = {
 			"ENG": "Unable to retrieve list of group configurations",
 			"FRA": "Unable to retrieve list of group configurations"
 		},
-
+		
 		"720": {
 			"ENG": "Unable to update job's service configuration",
 			"FRA": "Unable to update job's service configuration"
@@ -1440,8 +1428,8 @@ var errorCodes = {
 			"FRA": "Unable to remove certificate"
 		},
 		"730": {
-			"ENG": "Certificate does not exist",
-			"FRA": "Certificate does not exist"
+			"ENG": "One or more certificates do not exist",
+			"FRA": "One or more certificates do not exist"
 		},
 
 		"731": {
@@ -1477,13 +1465,110 @@ var errorCodes = {
 			"ENG": "Unable to change deployer type",
 			"FRA": "Unable to change deployer type"
 		},
+		"739": {
+			"ENG": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name",
+			"FRA": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name"
+		},
 		"740": {
 			"ENG": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 			"FRA": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment"
 		},
+		"741": {
+			"ENG": "Missing service source information. Make sure you include type, owner, repo, branch, and main",
+			"FRA": "Missing service source information. Make sure you include type, owner, repo, branch, and main"
+		},
+		"742": {
+			"ENG": "Unable to list static content sources",
+			"FRA": "Unable to list static content sources"
+		},
+
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
+		},
+		"751": {
+			"ENG": "Unable to login",
+			"FRA": "Unable to login"
+		},
+		"752": {
+			"ENG": "User account already exists",
+			"FRA": "User account already exists"
+		},
+		"753": {
+			"ENG": "Unable to logout",
+			"FRA": "Unable to logout"
+		},
+		"754": {
+			"ENG": "Active repositories exist for this user. Please deactivate them to be able to logout",
+			"FRA": "Active repositories exist for this user. Please deactivate them to be able to logout"
+		},
+		"755": {
+			"ENG": "Authentication failed",
+			"FRA": "Authentication failed"
+		},
+		"756": {
+			"ENG": "Unable to list accounts",
+			"FRA": "Unable to list accounts"
+		},
+		"757": {
+			"ENG": "Unable to get user account",
+			"FRA": "Unable to get user account"
+		},
+		"758": {
+			"ENG": "Unable to get repositories. Please try again.",
+			"FRA": "Unable to get repositories. Please try again."
+		},
+		"759": {
+			"ENG": "Unable to get branches",
+			"FRA": "Unable to get branches"
+		},
+		"760": {
+			"ENG": "Missing source information",
+			"FRA": "Missing source information"
+		},
+		"761": {
+			"ENG": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema.",
+			"FRA": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema."
+		},
+		"762": {
+			"ENG": "A module with the same name and/or port already exists",
+			"FRA": "A module with the same name and/or port already exists"
+		},
+		"763": {
+			"ENG": "Unable to reach the GitHub API. Please try again.",
+			"FRA": "Unable to reach the GitHub API. Please try again."
+		},
+		"764": {
+			"ENG": "Static Content already exists",
+			"FRA": "Static Content already exists"
+		},
+		"765": {
+			"ENG": "Failed to deactivate repository",
+			"FRA": "Failed to deactivate repository"
+		},
+		"766": {
+			"ENG": "Repository has running hosts. Please stop them to be able to deactivate repository",
+			"FRA": "Repository has running hosts. Please stop them to be able to deactivate repository"
+		},
+		"767": {
+			"ENG": "Invalid GitHub account provided",
+			"FRA": "Invalid GitHub account provided"
+		},
+		"768": {
+			"ENG": "Failed to sync repository",
+			"FRA": "Failed to sync repository"
+		},
+		"769": {
+			"ENG": "Missing config.js data",
+			"FRA": "Missing config.js data"
+		},
+		"770": {
+			"ENG": "Missing config.js source data",
+			"FRA": "Missing config.js source data"
+		},
+		"771": {
+			"ENG": "Invalid or no type provided in config.js",
+			"FRA": "Invalid or no type provided in config.js"
 		},
 
 		"901": {
@@ -1500,3 +1585,11 @@ var errorCodes = {
 		}
 	}
 };
+
+if ($.cookie) {
+	var lnCookie = $.cookie("soajs_LANG");
+	if (lnCookie) {
+		lnCookie = lnCookie.replace(/\"/g, '');
+		LANG = lnCookie;
+	}
+}
