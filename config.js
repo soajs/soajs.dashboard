@@ -1949,6 +1949,13 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/ContainersNoHost": {
+			"_apiInfo": {
+				"l": "List Containers that have no host.",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode']
+		},
 
 		"/github/login": {
 			"_apiInfo": {
