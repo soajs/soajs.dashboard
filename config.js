@@ -18,6 +18,9 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 	"awarenessEnv": true,
+	"oauth": false,
+	"session": true,
+	"roaming": true,
 
 	"hasher": {
 		"hashIterations": 1024,
