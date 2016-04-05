@@ -1133,6 +1133,42 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function getZombieContainerLogs(currentScope, container, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/zombie/getLogs',
+            params: {
+                envCode: env,
+                cid: container.cid
+            }
+        }, function (error, result) {
+            if (error) {
+
+            }
+            else {
+                console.log (result);
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + container.hostname;
+                        $scope.data = remove_special(result.data);
+                        fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode()
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
     return {
         'listHosts': listHosts,
         'executeHeartbeatTest': executeHeartbeatTest,
@@ -1145,7 +1181,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'infoHost': infoHost,
         'createHost': createHost,
         'listZombieContainers': listZombieContainers,
-        'removeZombieContainer': removeZombieContainer
+        'removeZombieContainer': removeZombieContainer,
+        'getZombieContainerLogs': getZombieContainerLogs
     };
 
 }]);

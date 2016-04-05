@@ -99,6 +99,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 		envHosts.removeZombieContainer($scope, container, env);
 	};
 
+	$scope.getZombieContainerLogs = function (container, env) {
+		envHosts.getZombieContainerLogs($scope, container, env);
+	};
+
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 		$scope.envCode = $cookieStore.get("myEnv").code;

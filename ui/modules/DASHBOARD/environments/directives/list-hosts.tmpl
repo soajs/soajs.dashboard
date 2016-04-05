@@ -205,7 +205,7 @@
 							{{container.hostname}} [{{container.type}}]
 						</div>
 						<div class="entryAction">
-							<a href="" ng-click="hostLogs(envCode)">
+							<a href="" ng-click="getZombieContainerLogs(container, envCode)">
 								<span class="icon icon-terminal" tooltip="Container Logs"></span>
 							</a>
 							<a href="" ng-click="removeZombieContainer(container, envCode)">

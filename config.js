@@ -1982,7 +1982,7 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/zombie/hostLogs": {
+		"/hosts/container/zombie/getLogs": {
 			"_apiInfo": {
 				"l": "Get Zombie Container logs",
 				"group": "Hosts"
