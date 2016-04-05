@@ -15,15 +15,7 @@ var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
-var service = new soajs.server.service({
-	"oauth": false,
-	"session": true,
-	"security": true,
-	"multitenant": true,
-	"acl": true,
-    "roaming": true,
-	"config": config
-});
+var service = new soajs.server.service(config);
 
 function checkForMongo(req) {
 	if(!mongo) {
