@@ -624,7 +624,22 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             "params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name, 'hostname': oneHost.hostname}
         }, function (error) {
             if (error) {
-                currentScope.generateNewMsg(env, 'danger', error.message);
+                if (serviceName === 'dashboard') {
+                    var counter = 0;
+                    var max = currentScope.hosts.controller.ips.length;
+                    currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
+                        reloadRegistry(currentScope, env, oneCtrl, function(){
+                            counter++;
+
+                            if(counter === max){
+                                currentScope.listHosts(env);
+                            }
+                        });
+                    });
+                }
+                else {
+                    currentScope.generateNewMsg(env, 'danger', error.message);
+                }
             }
             else {
                 for (var i = 0; i < currentScope.hosts[serviceName].ips.length; i++) {

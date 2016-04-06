@@ -399,8 +399,8 @@ var envTranslation ={
 		"FRA": "Zombie container removed succesfully"
 	},
 	"unableToGetZombieContainerLogs": {
-		"ENG": "Unable to zombie container logs",
-		"FRA": "Unable to zombie container logs",
+		"ENG": "Unable to get zombie container logs",
+		"FRA": "Unable to get zombie container logs"
 	},
 	"controllers": {
 		"ENG": "Controllers",
