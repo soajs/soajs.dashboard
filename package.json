@@ -47,10 +47,8 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
+    "soajs": "soajs/soajs.git#develop",
     "shortid": "^2.2.4",
     "unzip2": "*"
-  },
-  "peerDependencies": {
-    "soajs": "0.2.*"
   }
 }
