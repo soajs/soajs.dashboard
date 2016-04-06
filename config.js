@@ -1474,13 +1474,6 @@ module.exports = {
 				}
 			}
 		},
-		"/daemons/delete": {
-			_apiInfo: {
-				"l": "Delete Daemon",
-				"group": "Daemons"
-			},
-			'commonFields': ['id']
-		},
 
 		"/daemons/groupConfig/list": {
 			_apiInfo: {

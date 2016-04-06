@@ -167,7 +167,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 		describe("github getBranches tests", function () {
 
-			it("success - will getBranches", function (done) {
+			it("success - will get Branches repo", function (done) {
 				var params = {
 					qs: {
 						"id": gitAccId,
@@ -200,13 +200,12 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
 						done();
 					});
 				});
 
-				it("success - will activate personal repo", function (done) {
+				it("success - will activate personal single repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -219,7 +218,87 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						//console.log(body);
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+				it("success - will activate personal multi repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "github",
+							owner: usernamePersonal,
+							repo: repoMultiSuccess,
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+				it("fail - cannot activate again personal multi repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "github",
+							owner: usernamePersonal,
+							repo: repoMultiSuccess,
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
 						console.log(body);
+						assert.equal(body.result, false);
+						assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
+						done();
+					});
+				});
+
+				it("fail - cannot get Branches for service", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId,
+							"name": "sample__Single",
+							"type": "service"
+						}
+					};
+					executeMyRequest(params, 'github/getBranches', 'get', function (body) {
+						assert.deepEqual(body.errors.details[0], {"code": 759, "message": errorCodes[759]});
+						done();
+					});
+				});
+
+				it("success - will get Branches for service", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId,
+							"name": "sampleSuccessSingle",
+							"type": "service"
+						}
+					};
+					executeMyRequest(params, 'github/getBranches', 'get', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+				it("success - will get Branches for daemon", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId,
+							"name": "sampleDaemonSuccess1",
+							"type": "daemon"
+						}
+					};
+					executeMyRequest(params, 'github/getBranches', 'get', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -243,7 +322,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 			});
 
-			describe("repo sync tests", function () {
+			describe.skip("repo sync tests", function () {
 
 				it("success - will sync repo", function (done) {
 					var params = {
@@ -281,6 +360,21 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
+				it("success - will deactivate repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId,
+							owner: usernamePersonal,
+							repo: repoMultiSuccess
+						}
+					};
+					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
+						console.log(body);
+						assert.ok(body.data);
+						done();
+					});
+				});
+
 			});
 
 		});
@@ -289,7 +383,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 	describe.skip("github logout tests", function () {
 
-		it("success - will logout personal acc", function (done) {
+		it("success - will logout personal private acc", function (done) {
 			var params = {
 				qs: {
 					"username": usernamePersonal,
@@ -508,12 +602,29 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		});
 	});
 
-	describe("organization public acc", function () {
+	describe.skip("organization public acc", function () {
 		var orgName = 'soajs';
 
 		var repoName = 'soajs.examples';
 
 		describe("github repo tests", function () {
+
+			describe("public getRepos tests", function () {
+
+				it("success - will getRepos", function (done) {
+					var params = {
+						qs: {
+							"id": soajsAccId
+						}
+					};
+					executeMyRequest(params, 'github/getRepos', 'get', function (body) {
+						//console.log(body);
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+			});
 
 			describe("repo activate tests", function () {
 
@@ -531,6 +642,19 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
 						console.log(body);
+						assert.ok(body.data);
+						done();
+					});
+				});
+
+				it("success - will getRepos again", function (done) {
+					var params = {
+						qs: {
+							"id": soajsAccId
+						}
+					};
+					executeMyRequest(params, 'github/getRepos', 'get', function (body) {
+						//console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -610,7 +734,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		});
 
 		describe("login", function () {
-			// logout first
 			it("clear org account", function (done) {
 				mongo.remove('git_accounts', {'owner': orgName}, function (error) {
 					assert.ifError(error);
