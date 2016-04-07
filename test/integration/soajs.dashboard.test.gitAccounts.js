@@ -460,6 +460,45 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					
 				});
 				
+				it("fail - sync repo - remove", function (done) {
+					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
+						//console.log(record);
+						assert.ok(record);
+						assert.ok(record.repos);
+						record.repos.forEach(function (repo) {
+							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
+								repo.configSHA = [];
+								repo.configSHA[0] = {
+									"contentType": "service",
+									"contentName": "sampleFake1",
+									"path": "/sampleFake1/config.js",
+									"sha": "95b14565e3fdd0048e351493056025a7020ea561"
+								};
+							}
+						});
+						var host = {};
+						mongo.insert("hosts", host, function (error) {
+							mongo.save("git_accounts", record, function (error) {
+								assert.ifError(error);
+								var params = {
+									qs: {
+										"id": gitAccId
+									},
+									form: {
+										owner: usernamePersonal,
+										repo: repoMultiSuccess
+									}
+								};
+								executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
+									console.log(body);
+									assert.ok(body.data);
+									done();
+								});
+							});
+						});
+					});
+				});
+
 				it("success - will sync repo - remove", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
 						//console.log(record);
@@ -588,7 +627,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				
 			});
 			
-			describe("repo deactivate tests", function () {
+			describe.skip("repo deactivate tests", function () {
 				
 				it("success - will deactivate single repo", function (done) {
 					var params = {
@@ -656,7 +695,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 	});
 	
-	describe("github logout tests", function () {
+	describe.skip("github logout tests", function () {
 		
 		it("fail - logout - invalid id", function (done) {
 			var params = {
@@ -704,7 +743,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 	});
 	
-	describe("personal public acc", function () {
+	describe.skip("personal public acc", function () {
 		var gitAccId;
 		
 		describe("login", function () {
@@ -922,7 +961,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		});
 	});
 	
-	describe("organization public acc", function () {
+	describe.skip("organization public acc", function () {
 		var orgName = 'soajs';
 		
 		var repoName = 'soajs.examples';
@@ -1095,41 +1134,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						gitAccId = record._id.toString();
 						done();
 					});
-				});
-			});
-			
-			// activate the oauth, then try to deactivate
-			it.skip("success - will activate oauth repo - org", function (done) {
-				var params = {
-					qs: {
-						"id": gitAccId
-					},
-					form: {
-						provider: "github",
-						owner: orgName,
-						repo: 'soajs.oauth',
-						configBranch: "develop"
-					}
-				};
-				executeMyRequest(params, 'github/repo/activate', 'get', function (body) {
-					console.log(body);
-					assert.ok(body.data);
-					done();
-				});
-			});
-			
-			it.skip("success - will try deactivate oauth repo - org", function (done) {
-				var params = {
-					qs: {
-						"id": gitAccId,
-						owner: orgName,
-						repo: 'soajs.oauth'
-					}
-				};
-				executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-					console.log(body);
-					assert.ok(body.data);
-					done();
 				});
 			});
 			
