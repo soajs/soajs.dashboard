@@ -445,6 +445,22 @@ module.exports = {
 					"format": "hostname"
 				}
 			},
+			"apiPrefix": {
+				"source": ['body.apiPrefix'],
+				"required": false,
+				"default": "api",
+				"validation": {
+					"type": "string"
+				}
+			},
+			"sitePrefix": {
+				"source": ['body.sitePrefix'],
+				"required": false,
+				"default": "site",
+				"validation": {
+					"type": "string"
+				}
+			},
 			"deployer": {
 				"source": ['body.deployer'],
 				"required": true,
