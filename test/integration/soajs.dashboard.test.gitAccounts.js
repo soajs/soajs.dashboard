@@ -69,7 +69,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 	var repoSingleSuccess = 'test.success1';
 	var repoSingleDaemon = 'test.daemon.s';
 	var repoStaticContent = 'testStaticContent';
-	var staticContentName = 'CustomUITest';
 
 	describe("github login tests", function () {
 		
@@ -87,7 +86,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			executeMyRequest(params, 'github/login', 'post', function (body) {
 				console.log(body);
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+				assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 				done();
 			});
 		});
@@ -470,13 +469,18 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								repo.configSHA = [];
 								repo.configSHA[0] = {
 									"contentType": "service",
-									"contentName": "sampleFake1",
-									"path": "/sampleFake1/config.js",
+									"contentName": "sampleFake11",
+									"path": "/sampleFake11/config.js",
 									"sha": "95b14565e3fdd0048e351493056025a7020ea561"
 								};
 							}
 						});
-						var host = {};
+						var host = {
+							env: "dev",
+							name: "sampleFake11",
+							ip: "127.0.0.1",
+							version: 1
+						};
 						mongo.insert("hosts", host, function (error) {
 							mongo.save("git_accounts", record, function (error) {
 								assert.ifError(error);
@@ -490,8 +494,8 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 									}
 								};
 								executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-									console.log(body);
-									assert.ok(body.data);
+									console.log(body.errors);
+									assert.deepEqual(body.errors.details[0], {"code": 768, "message": errorCodes[768]});
 									done();
 								});
 							});
@@ -627,7 +631,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				
 			});
 			
-			describe.skip("repo deactivate tests", function () {
+			describe("repo deactivate tests", function () {
 				
 				it("success - will deactivate single repo", function (done) {
 					var params = {
@@ -695,7 +699,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 	});
 	
-	describe.skip("github logout tests", function () {
+	describe("github logout tests", function () {
 		
 		it("fail - logout - invalid id", function (done) {
 			var params = {
@@ -743,7 +747,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 	});
 	
-	describe.skip("personal public acc", function () {
+	describe("personal public acc", function () {
 		var gitAccId;
 		
 		describe("login", function () {
@@ -759,7 +763,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+					assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 					done();
 				});
 			});
@@ -775,10 +779,9 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					console.log(body);
+					//console.log(body);
 					assert.equal(body.result, true);
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						//console.log(record);
 						assert.ifError(error);
 						assert.ok(record);
 						gitAccId = record._id.toString();
@@ -941,6 +944,31 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 				
+				it("fail - deactivate multi repo", function (done) {
+					var host = {
+						env: "dev",
+						name: "sampleSuccess1",
+						ip: "127.0.0.1",
+						version: 1
+					};
+					mongo.insert("hosts", host, function (error) {
+						var params = {
+							qs: {
+								"id": gitAccId,
+								owner: usernamePersonal,
+								repo: repoMultiSuccess
+							}
+						};
+						executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
+							console.log(body.errors);
+							assert.equal(body.errors.codes[0], 766);
+							mongo.remove("hosts", {name: "sampleSuccess1"}, function (error) {
+								done();
+							});
+						});
+					});
+				});
+
 				it("success - will deactivate multi repo", function (done) {
 					var params = {
 						qs: {
@@ -961,7 +989,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		});
 	});
 	
-	describe.skip("organization public acc", function () {
+	describe("organization public acc", function () {
 		var orgName = 'soajs';
 		
 		var repoName = 'soajs.examples';
@@ -1051,7 +1079,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						done();
 					});
 				});
-				
 			});
 			
 			describe("repo deactivate tests", function () {
@@ -1111,7 +1138,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				executeMyRequest(params, 'github/login', 'post', function (body) {
 					console.log(body);
 					assert.ok(body);
-					assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+					assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 					done();
 				});
 			});
