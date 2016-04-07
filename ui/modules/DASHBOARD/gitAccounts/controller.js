@@ -419,27 +419,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                         outerScope.displayAlert('danger', error.message);
                                         repoOutOfSync.close();
                                     } else {
-                                        getSendDataFromServer($scope, ngDataApi, {
-                                            'method': 'send',
-                                            routeName: '/dashboard/github/repo/activate',
-                                            params: {
-                                                id: account._id.toString()
-                                            },
-                                            data: {
-                                                provider: account.provider,
-                                                owner: repo.owner.login,
-                                                repo: repo.name
-                                            }
-                                        }, function (error, result) {
-                                            if (error) {
-                                                outerScope.displayAlert('danger', error.message);
-                                                repoOutOfSync.close();
-                                            } else {
-                                                outerScope.displayAlert('success', 'Repository has been reactivated');
-                                                repo.status = 'active';
-                                                repoOutOfSync.close();
-                                            }
-                                        });
+                                        repoOutOfSync.close();
+                                        outerScope.activateRepo(account, repo);
                                     }
                                 });
                             };
