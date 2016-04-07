@@ -1067,7 +1067,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 	});
 
-	describe.skip("Test cb", function () {
+	describe("Test cb", function () {
 		var soajsauth;
 		var cbConfig = {
 			"genericService": {
@@ -1302,7 +1302,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			});
 		});
 
-		it("success - add content builder", function (done) {
+		it("fail - add content builder", function (done) {
 			var params = {
 				headers: {
 					'soajsauth': soajsauth
@@ -1318,7 +1318,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				done();
 			});
 		});
-
 	});
-	
+
 });
