@@ -1719,7 +1719,7 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/deployController": {
+			"/hosts/deployController": {
 			"_apiInfo": {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
@@ -1757,9 +1757,9 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
-						"customUIId": {"type": "string", "required": false},
-						"branch": {"type": "string", "required": false},
-						"commit": {"type": "string", "required": false}
+						"customUIId": {"type": "string", "required": true},
+						"branch": {"type": "string", "required": true},
+						"commit": {"type": "string", "required": true}
 					}
 				}
 			},

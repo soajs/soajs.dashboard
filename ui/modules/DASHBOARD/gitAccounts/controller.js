@@ -74,7 +74,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             timeout: $timeout,
             form: formConfig,
             name: 'addGitAccount',
-            label: 'Add New Git Account',
+            label: translation.addNewGitAccount[LANG],
             actions: [
                 {
                     'type': 'submit',
@@ -101,7 +101,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             if (error) {
                                 $scope.form.displayAlert('danger', error.message);
                             } else {
-                                $scope.$parent.displayAlert('success', 'Login Successful');
+                                $scope.$parent.displayAlert('success', translation.loginSuccessful[LANG]);
                                 $scope.modalInstance.close();
                                 $scope.form.formData = {};
                                 $scope.listAccounts();
@@ -136,7 +136,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 if (error) {
                     $scope.displayAlert('danger', error.message);
                 } else {
-                    $scope.displayAlert('success', 'Logout Successfull');
+                    $scope.displayAlert('success', translation.logoutSuccessful[LANG]);
                     $scope.listAccounts();
                 }
             });
@@ -167,7 +167,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                     $scope.$parent.displayAlert('danger', error.message);
                                     $scope.modalInstance.close();
                                 } else {
-                                    $scope.$parent.displayAlert('success', 'Logout Successfull');
+                                    $scope.$parent.displayAlert('success', translation.logoutSuccessful[LANG]);
                                     $scope.modalInstance.close();
                                     $scope.form.formData = {};
                                     $scope.listAccounts();
@@ -236,7 +236,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                         loadingModal.close();
                     }
                     else {
-                        $scope.displayAlert('success', 'List of repositories is up to date');
+                        $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
                     }
                 }
             }
@@ -266,7 +266,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     timeout: $timeout,
                     form: formConfig,
                     name: 'selectConfigBranch',
-                    label: 'Choose Config Branch',
+                    label: translation.chooseConfigBranch[LANG],
                     actions: [
                         {
                             'type': 'submit',
@@ -297,7 +297,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                             controller: function ($scope) {
                                                 fixBackDrop();
 
-                                                $scope.title = "Repository activation failed";
+                                                $scope.title = translation.repoActivationFailed[LANG];
                                                 $scope.error = error.message + "<br>" + outerScope.referToDoc;
                                                 $scope.ok = function () {
                                                     errorDisplay.close();
@@ -308,7 +308,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                         $scope.modalInstance.dismiss('cancel');
                                         $scope.form.formData = {};
 
-                                        $scope.displayAlert('success', 'Repository has been activated');
+                                        $scope.displayAlert('success', translation.repoHasBeenActivated[LANG]);
 
                                         repo.status = 'active';
                                         var repoAddSuccess = $modal.open({
@@ -362,7 +362,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             if (error) {
                 $scope.displayAlert('danger', error.message);
             } else {
-                $scope.displayAlert('success', 'Repository has been deactivated');
+                $scope.displayAlert('success', translation.repoHasBeenDeactivated[LANG]);
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     if ($scope.accounts[i]._id === accountId) {
                         var account = $scope.accounts[i];
