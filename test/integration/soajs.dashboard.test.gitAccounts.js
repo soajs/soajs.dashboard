@@ -207,8 +207,44 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						done();
 					});
 				});
+
+				it("fail 2 - will not activate repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "github",
+							owner: usernamePersonal,
+							repo: repoName2Fail,
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
+						done();
+					});
+				});
+
+				it("fail 3 - will not activate repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "github",
+							owner: usernamePersonal,
+							repo: 'test.MultiEmpty',
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
+						done();
+					});
+				});
 				
-				it("success - will activate personal single repo", function (done) {
+				it("success - will activate single service repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -226,26 +262,8 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						done();
 					});
 				});
-				
-				it("success - will activate personal multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoMultiSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						assert.ok(body.data);
-						done();
-					});
-				});
 
-				it("success - will activate personal static repo", function (done) {
+				it("success - will activate single static repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -281,6 +299,24 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
+				it("success - will activate multi repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "github",
+							owner: usernamePersonal,
+							repo: repoMultiSuccess,
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						assert.ok(body.data);
+						done();
+					});
+				});
+
 				it("fail - cannot activate again personal multi repo", function (done) {
 					var params = {
 						qs: {
@@ -301,7 +337,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 				
-				it("fail - cannot get Branches for service", function (done) {
+				it("fail - cannot get Branches for service - wrong name", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId,
@@ -357,7 +393,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("fail - cant logout active acc", function (done) {
+				it("fail - cant logout active account", function (done) {
 					var params = {
 						qs: {
 							"username": usernamePersonal,
@@ -657,7 +693,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -752,7 +787,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		
 		describe("login", function () {
 
-			it("fail - wrong personal public acc", function (done) {
+			it("fail - wrong personal public acc name", function (done) {
 				var params = {
 					form: {
 						"username": 'xxx_vwq_xx_1gtGHYU_yt_plirf',
@@ -795,61 +830,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 		describe("github repo tests", function () {
 			
 			describe("repo activate tests", function () {
-				
-				it("fail 1 - will not activate repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoName1Fail,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
-				
-				it("fail 2 - will not activate repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoName2Fail,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
 
-				it("fail 3 - will not activate repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: 'test.MultiEmpty',
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
-				
 				it("success - will activate single repo", function (done) {
 					var params = {
 						qs: {
@@ -929,21 +910,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			
 			describe("repo deactivate tests", function () {
 				
-				it("success - will deactivate single repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoSingleSuccess
-						}
-					};
-					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
-						assert.ok(body.data);
-						done();
-					});
-				});
-				
 				it("fail - deactivate multi repo", function (done) {
 					var host = {
 						env: "dev",
@@ -968,21 +934,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						});
 					});
 				});
-
-				it("success - will deactivate multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoMultiSuccess
-						}
-					};
-					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
-						assert.ok(body.data);
-						done();
-					});
-				});
 				
 			});
 			
@@ -991,28 +942,11 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 	
 	describe("organization public acc", function () {
 		var orgName = 'soajs';
-		
 		var repoName = 'soajs.examples';
 		
-		describe("github repo tests", function () {
-			
-			describe("public getRepos tests", function () {
-				
-				it("success - will getRepos", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId
-						}
-					};
-					executeMyRequest(params, 'github/getRepos', 'get', function (body) {
-						assert.ok(body.data);
-						done();
-					});
-				});
-				
-			});
-			
-			describe("repo activate tests", function () {
+		describe("repo tests", function () {
+
+			describe("repo activate and getRepos", function () {
 				
 				it("success org - will activate repo", function (done) {
 					var params = {
@@ -1045,60 +979,11 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 				
-				it("fail - cant logout active acc", function (done) {
-					var params = {
-						qs: {
-							"username": orgName,
-							"id": soajsAccId
-						}
-					};
-					executeMyRequest(params, 'github/logout', 'get', function (body) {
-						assert.equal(body.result, false);
-						assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
-						done();
-					});
-				});
-				
-			});
-			
-			describe("repo sync tests", function () {
-				
-				it("success - will sync repo - org", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId
-						},
-						form: {
-							owner: orgName,
-							repo: repoName
-						}
-					};
-					executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-						console.log(body);
-						assert.ok(body.data);
-						done();
-					});
-				});
 			});
 			
 			describe("repo deactivate tests", function () {
-				
-				it("success - will deactivate repo - org", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId,
-							owner: orgName,
-							repo: repoName
-						}
-					};
-					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
-						assert.ok(body.data);
-						done();
-					});
-				});
-				
-				it("fail - will try deactivate urac repo - org", function (done) {
+
+				it("fail - cannot deactivate urac repo - running service", function (done) {
 					var params = {
 						qs: {
 							"id": soajsAccId,
@@ -1117,14 +1002,14 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			
 		});
 		
-		describe("login", function () {
-			it("clear org account", function (done) {
+		describe("login & logout", function () {
+			before(function (done) {
 				mongo.remove('git_accounts', {'owner': orgName}, function (error) {
 					assert.ifError(error);
 					done();
 				});
 			});
-			
+
 			it("fail - wrong Organization acc", function (done) {
 				var params = {
 					form: {
@@ -1180,6 +1065,260 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			
 		});
 		
+	});
+
+	describe.skip("Test cb", function () {
+		var soajsauth;
+		var cbConfig = {
+			"genericService": {
+				"config": {
+					"errors": {
+						"400": "Database Error",
+						"401": "Invalid Page Id Provided"
+					},
+					"schema": {
+						"commonFields": {
+							"id": {
+								"source": [
+									"query.id"
+								],
+								"validation": {
+									"_type": "string"
+								},
+								"req": true
+							},
+							"title": {
+								"source": [
+									"body.title"
+								],
+								"validation": {
+									"_type": "string"
+								},
+								"req": true
+							},
+							"content": {
+								"source": [
+									"body.content"
+								],
+								"validation": {
+									"_type": "string"
+								},
+								"req": true
+							}
+						},
+						"/list": {
+							"_apiInfo": {
+								"l": "List Entries",
+								"group": "Pages",
+								"groupMain": true
+							}
+						},
+						"/add": {
+							"_apiInfo": {
+								"l": "Add Page",
+								"group": "Pages"
+							},
+							"commonFields": [
+								"title",
+								"content"
+							]
+						},
+						"/update": {
+							"_apiInfo": {
+								"l": "Update Page",
+								"group": "Pages"
+							},
+							"commonFields": [
+								"title",
+								"content",
+								"id"
+							]
+						},
+						"/get": {
+							"_apiInfo": {
+								"l": "Get One Page",
+								"group": "Pages"
+							},
+							"commonFields": [
+								"id"
+							]
+						},
+						"/delete": {
+							"_apiInfo": {
+								"l": "Delete Page",
+								"group": "Pages"
+							},
+							"commonFields": [
+								"id"
+							]
+						}
+					},
+					"serviceName": "gc_myservice",
+					"servicePort": 4500,
+					"requestTimeout": 30,
+					"requestTimeoutRenewal": 5,
+					"awareness": false,
+					"extKeyRequired": true
+				},
+				"options": {
+					"multitenant": true,
+					"security": true,
+					"session": true,
+					"acl": true,
+					"oauth": false
+				}
+			},
+			"soajsService": {
+				"db": {
+					"config": {
+						"DEV": {
+							"gc_myservice": {
+								"tenantSpecific": true,
+								"cluster": "cluster1"
+							}
+						}
+					},
+					"multitenant": true,
+					"collection": "data"
+				},
+				"apis": {
+					"/list": {
+						"method": "get",
+						"mw": {
+							"code": 400
+						},
+						"type": "list",
+						"workflow": {}
+					},
+					"/add": {
+						"method": "post",
+						"mw": {
+							"code": 400,
+							"model": "add"
+						},
+						"type": "add",
+						"workflow": {}
+					},
+					"/update": {
+						"method": "post",
+						"mw": {
+							"code": 401,
+							"model": "update"
+						},
+						"type": "update",
+						"workflow": {}
+					},
+					"/get": {
+						"method": "get",
+						"mw": {
+							"code": 401
+						},
+						"type": "get",
+						"workflow": {}
+					},
+					"/delete": {
+						"method": "get",
+						"mw": {
+							"code": 401
+						},
+						"type": "delete",
+						"workflow": {}
+					}
+				}
+			},
+			"soajsUI": {
+				"list": {
+					"columns": [
+						{
+							"label": "Title",
+							"name": "title",
+							"field": "fields.title",
+							"filter": []
+						}
+					],
+					"defaultSortField": "title",
+					"defaultSortASC": false
+				},
+				"form": {
+					"add": [
+						{
+							"name": "title",
+							"label": "Title",
+							"placeholder": "My Page ...",
+							"tooltip": "Enter the title of the page",
+							"_type": "text",
+							"req": true
+						},
+						{
+							"name": "content",
+							"label": "Content",
+							"placeholder": "",
+							"tooltip": "",
+							"_type": "editor",
+							"req": true
+						}
+					],
+					"update": [
+						{
+							"name": "content",
+							"label": "Content",
+							"placeholder": "",
+							"tooltip": "",
+							"_type": "editor",
+							"req": true
+						}
+					]
+				}
+			}
+		};
+
+		before(function (done) {
+			var options = {
+				uri: 'http://localhost:4001/login',
+				headers: {
+					'Content-Type': 'application/json',
+					key: extKey
+				},
+				body: {
+					"username": "user1",
+					"password": "123456"
+				},
+				json: true
+			};
+			request.post(options, function (error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				soajsauth = body.soajsauth;
+				mongo.remove('gc', {}, function (error) {
+					assert.ifError(error);
+					mongo.remove('gc_versioning', {}, function (error) {
+						assert.ifError(error);
+						mongo.remove('services', {'name': 'gc_myservice'}, function (error) {
+							assert.ifError(error);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it("success - add content builder", function (done) {
+			var params = {
+				headers: {
+					'soajsauth': soajsauth
+				},
+				form: {
+					'name': 'gc_myservice',
+					'config': cbConfig
+				}
+			};
+			executeMyRequest(params, 'cb/add', 'post', function (body) {
+				console.log(body.errors);
+				assert.equal(body.errors.codes[0], 757);
+				done();
+			});
+		});
+
 	});
 	
 });

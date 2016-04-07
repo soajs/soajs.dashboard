@@ -75,36 +75,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			"sitePrefix": "site",
 			"profile": "single",
 			"deployer": {},
-			//"deployer": {
-			//	"type": "manual",
-			//	"selected": "container.dockermachine.local",
-			//	"container": {
-			//		"dockermachine": {
-			//			"local": {
-			//				"host": "localhost",
-			//				"port": 5354,
-			//				"config": {
-			//					"HostConfig": {
-			//						"NetworkMode": "soajsnet"
-			//					},
-			//					"MachineName": "soajs-dev"
-			//				}
-			//			},
-			//			"cloud": {
-			//				"rackspace": {
-			//					"host": "docker.rackspace.com",
-			//					"port": 2376
-			//					//additional info goes here like instances, credentials or keys ....
-			//				}
-			//			}
-			//		},
-			//		"docker": {
-			//			"socket": {
-			//				"socketPath": "/var/run/docker.sock"
-			//			}
-			//		}
-			//	}
-			//},
 			"description": 'this is a dummy description',
 			"dbs": {
 				"clusters": {
@@ -1379,25 +1349,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"apiPrefix": "api",
 						"sitePrefix": "site",
 						"port": 8080,
-						//"profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
-						//"deployer": {
-						//	"type": "container",
-						//	"selected": "container.dockermachine.local",
-						//	"container": {
-						//		"dockermachine": {
-						//			"local": {},
-						//			"cloud": {
-						//				"joyent": {}
-						//			}
-						//		},
-						//		"docker": {
-						//			"socket": {},
-						//			"scoket": {
-						//				"socketPath": "/var/run/dockerSock.sock"
-						//			}
-						//		}
-						//	}
-						//},
 						"description": "this is a dummy description",
 						"services": {
 							"controller": {

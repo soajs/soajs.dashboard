@@ -3,6 +3,13 @@ var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
 
+function checkError(error, cb, fCb) {
+	if (error) {
+		return cb(error, null);
+	}
+	return fCb();
+}
+
 function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 	var gs = new gfs.mongo.GridStore(db, certs[counter]._id, 'r', {
 		root: 'fs',
@@ -11,13 +18,9 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 	});
 
 	gs.open(function (error, gstore) {
-		if (error) {
-			cb(error, null);
-		} else {
+		checkError(error, cb, function () {
 			gstore.read(function (error, filedata) {
-				if (error) {
-					cb(error, null);
-				} else {
+				checkError(error, cb, function () {
 					gstore.close();
 					var certKey = certs[counter].filename.split(".")[0];
 					dockerConfig[certKey] = filedata;
@@ -25,12 +28,13 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 					counter++;
 					if (counter === certs.length) {
 						return cb(null, dockerConfig);
-					} else {
+					}
+					else {
 						getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
 					}
-				}
+				});
 			});
-		}
+		});
 	});
 }
 
@@ -53,27 +57,22 @@ var lib = {
 			var criteria = {};
 			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
 			mongo.find("fs.files", criteria, function (error, certs) {
-				if (error) {
-					return cb(error);
-				}
-
-				if (!certs || certs.length === 0) {
-					return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
-				}
-
-				mongo.getMongoSkinDB(function (error, db) {
-					if (error) {
-						return cb(error, null);
+				checkError(error, cb, function () {
+					if (!certs || certs.length === 0) {
+						return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
 					}
-					var gfs = Grid(db, mongo.mongoSkin);
-					var counter = 0;
-					getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
-						if (error) {
-							return cb(error, null);
-						}
 
-						docker = new Docker(dockerConfig);
-						return cb(null, docker);
+					mongo.getMongoSkinDB(function (error, db) {
+						checkError(error, cb, function () {
+							var gfs = Grid(db, mongo.mongoSkin);
+							var counter = 0;
+							getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
+								checkError(error, cb, function () {
+									docker = new Docker(dockerConfig);
+									return cb(null, docker);
+								});
+							});
+						});
 					});
 				});
 			});
@@ -82,20 +81,18 @@ var lib = {
 
 	"container": function (dockerInfo, action, cid, mongo, opts, cb) {
 		lib.getDeployer(dockerInfo, mongo, function (error, deployer) {
-			if (error) {
-				cb(error, null);
-			} else {
+			checkError(error, cb, function () {
 				var container = deployer.getContainer(cid);
 				container[action](opts || null, function (error, response) {
-					if (error) {
-						return cb(error);
-					}
-					if (action === 'start') {
-						container.inspect(cb);
-					}
-					else return cb(null, response);
+
+					checkError(error, cb, function () {
+						if (action === 'start') {
+							container.inspect(cb);
+						}
+						else return cb(null, response);
+					});
 				});
-			}
+			});
 		});
 	}
 };
@@ -105,12 +102,10 @@ var deployer = {
 			if (error) {
 				return cb(error);
 			}
-
 			deployer.createContainer(params, function (err, container) {
-				if (err) {
-					return cb(err);
-				}
-				container.inspect(cb);
+				checkError(err, cb, function () {
+					container.inspect(cb);
+				});
 			});
 		});
 	},

@@ -7,37 +7,37 @@ var dashboard, controller, urac;
 
 describe("importing sample data", function () {
 
-    it("do import", function (done) {
-        shell.pushd(sampleData.dir);
-        shell.exec("chmod +x " + sampleData.shell, function (code) {
-            assert.equal(code, 0);
-            shell.exec(sampleData.shell, function (code) {
-                assert.equal(code, 0);
-                shell.popd();
-                done();
-            });
-        });
-    });
+	it("do import", function (done) {
+		shell.pushd(sampleData.dir);
+		shell.exec("chmod +x " + sampleData.shell, function (code) {
+			assert.equal(code, 0);
+			shell.exec(sampleData.shell, function (code) {
+				assert.equal(code, 0);
+				shell.popd();
+				done();
+			});
+		});
+	});
 
-    after(function (done) {
-        //todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
-        process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
-        console.log('test data imported.');
-        controller = require("soajs.controller");
-        setTimeout(function () {
-            urac = require("soajs.urac");
-            dashboard = helper.requireModule('./index');
-            setTimeout(function () {
-                require("./soajs.dashboard.locked.test.js");
-	            require("./soajs.dashboard.test.tenants.js");
-                require("./soajs.dashboard.test.js");
-	            require("./soajs.dashboard.test.services.js");
-                require("./soajs.contentbuilder.test.js");
-                require("./soajs.hostsdeploy.test.js");
-                require("./soajs.uploadCertificate.test.js");
-	            require("./soajs.dashboard.test.gitAccounts.js");
-                done();
-            }, 1000);
-        }, 2000);
-    });
+	after(function (done) {
+		//todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
+		process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
+		console.log('test data imported.');
+		controller = require("soajs.controller");
+		setTimeout(function () {
+			urac = require("soajs.urac");
+			dashboard = helper.requireModule('./index');
+			setTimeout(function () {
+				require("./soajs.dashboard.locked.test.js");
+				require("./soajs.dashboard.test.tenants.js");
+				require("./soajs.dashboard.test.js");
+				require("./soajs.dashboard.test.services.js");
+				require("./soajs.contentbuilder.test.js");
+				require("./soajs.hostsdeploy.test.js");
+				require("./soajs.uploadCertificate.test.js");
+				require("./soajs.dashboard.test.gitAccounts.js");
+				done();
+			}, 1000);
+		}, 2000);
+	});
 });
