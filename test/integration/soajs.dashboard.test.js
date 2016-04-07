@@ -71,6 +71,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 			"code": "DEV",
 			"port": 8080,
 			"domain": "api.myDomain.com",
+			"apiPrefix": "api",
+			"sitePrefix": "site",
 			"profile": "single",
 			"deployer": {},
 			//"deployer": {
@@ -1374,6 +1376,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.deepEqual(record, {
 						"code": "DEV",
 						"domain": "api.myDomain.com",
+						"apiPrefix": "api",
+						"sitePrefix": "site",
 						"port": 8080,
 						//"profile": process.env.SOAJS_ENV_WORKDIR + 'soajs/FILES/profiles/single.js',
 						//"deployer": {
