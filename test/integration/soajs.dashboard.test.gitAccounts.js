@@ -148,7 +148,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 	describe("personal private acc", function () {
 
-		describe("github getRepos tests", function () {
+		describe.skip("github getRepos tests", function () {
 
 			it("success - will getRepos", function (done) {
 				var params = {
@@ -165,7 +165,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 		});
 
-		describe("github getBranches tests", function () {
+		describe.skip("github getBranches tests", function () {
 
 			it("success - will get Branches repo", function (done) {
 				var params = {
@@ -200,12 +200,13 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
+						console.log(body);
 						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
 						done();
 					});
 				});
 
-				it("success - will activate personal single repo", function (done) {
+				it.skip("success - will activate personal single repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -224,7 +225,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("success - will activate personal multi repo", function (done) {
+				it.skip("success - will activate personal multi repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -242,7 +243,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("fail - cannot activate again personal multi repo", function (done) {
+				it.skip("fail - cannot activate again personal multi repo", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -262,7 +263,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("fail - cannot get Branches for service", function (done) {
+				it.skip("fail - cannot get Branches for service", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId,
@@ -276,7 +277,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("success - will get Branches for service", function (done) {
+				it.skip("success - will get Branches for service", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId,
@@ -290,7 +291,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("success - will get Branches for daemon", function (done) {
+				it.skip("success - will get Branches for daemon", function (done) {
 					var params = {
 						qs: {
 							"id": gitAccId,
@@ -304,7 +305,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
-				it("fail - cant logout active acc", function (done) {
+				it.skip("fail - cant logout active acc", function (done) {
 					var params = {
 						qs: {
 							"username": usernamePersonal,
@@ -343,7 +344,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 			});
 
-			describe("repo deactivate tests", function () {
+			describe.skip("repo deactivate tests", function () {
 
 				it("success - will deactivate repo", function (done) {
 					var params = {
@@ -383,6 +384,22 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 	describe.skip("github logout tests", function () {
 
+		it("fail - logout - invalid id", function (done) {
+			var params = {
+				qs: {
+					"username": usernamePersonal,
+					"password": passwordPersonal,
+					"id": '1332742364'
+				}
+			};
+			executeMyRequest(params, 'github/logout', 'get', function (body) {
+				console.log(body);
+				assert.ok(body);
+				assert.deepEqual(body.errors.details[0], {"code": 701, "message": errorCodes[701]});
+				done();
+			});
+		});
+
 		it("success - will logout personal private acc", function (done) {
 			var params = {
 				qs: {
@@ -398,7 +415,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			});
 		});
 
-		it("fail logout personal acc", function (done) {
+		it("fail - logout again personal acc", function (done) {
 			var params = {
 				qs: {
 					"username": usernamePersonal,
@@ -413,6 +430,8 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				done();
 			});
 		});
+
+
 
 	});
 
