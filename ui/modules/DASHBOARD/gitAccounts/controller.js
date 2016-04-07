@@ -44,8 +44,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
             'label': 'Account Type',
             'class': 'accountType',
             'type': 'radio',
-            'value': [{'v': 'personal_public', 'l': 'Personal Account - Public', 'selected': true},
-                {'v': 'personal_private', 'l': 'Personal Account - Private'},
+            'value': [{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
+                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
                 {'v': 'organization_public', 'l': 'Organization - Public'}],
             'required': true,
             onAction: function (label, selected, formConfig) {
