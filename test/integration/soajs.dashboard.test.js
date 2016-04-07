@@ -2319,7 +2319,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	});
 
-	describe.skip("hosts tests", function () {
+	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {
@@ -2588,7 +2588,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 			it("deploy controller", function (done) {
 				executeMyRequest({
 					'qs': {},
-					form: {'envCode': 'DEV', 'number': 1}
+					form: {
+						'envCode': 'DEV',
+						'owner': 'soajs',
+						'repo': 'soajs.controller',
+						'branch': 'develop',
+						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
+						'number': 1
+					}
 				}, 'hosts/deployController', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 618,
@@ -2599,7 +2606,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 			
 			it("deploy service", function (done) {
-				executeMyRequest({'form': {'envCode': 'DEV'}}, 'hosts/deployService', 'post', function (body) {
+				executeMyRequest({
+					'form': {
+						'envCode': 'DEV',
+						'owner': 'soajs',
+						'repo': 'soajs.urac',
+						'branch': 'develop',
+						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
+					}
+				}, 'hosts/deployService', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 618,
 						"message": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."
@@ -2626,7 +2641,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 	
-	describe.skip("change tenant security key", function () {
+	describe("change tenant security key", function () {
 		
 		it("success - will change tenant security key", function (done) {
 			
@@ -2652,7 +2667,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 	
-	describe.skip("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
+	describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
 		var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
 		
 		before(function (done) {
@@ -2779,6 +2794,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ifError(body.result);
 				
 				assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
+				done();
+			});
+		});
+	});
+
+	describe("static content tests", function () {
+		it("success - will list static content", function (done) {
+			executeMyRequest({}, "staticContent/list", 'post', function (body) {
+				assert.ok(body.data);
 				done();
 			});
 		});

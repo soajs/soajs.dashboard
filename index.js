@@ -451,18 +451,6 @@ service.init(function() {
 		checkForMongo(req);
 		staticContent.list(config, mongo, req, res);
 	});
-	service.post("/staticContent/add", function (req, res) {
-		checkForMongo(req);
-		staticContent.add(config, mongo, req, res);
-	});
-	service.post("/staticContent/update", function (req, res) {
-		checkForMongo(req);
-		staticContent.update(config, mongo, req, res);
-	});
-	service.get("/staticContent/delete", function (req, res) {
-		checkForMongo(req);
-		staticContent.delete(config, mongo, req, res);
-	});
 
 	/**
 	 * Settings features

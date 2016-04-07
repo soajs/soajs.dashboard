@@ -489,6 +489,22 @@ module.exports = {
 					"type": "string",
 					"format": "hostname"
 				}
+			},
+			"apiPrefix": {
+				"source": ['body.apiPrefix'],
+				"required": false,
+				"default": "api",
+				"validation": {
+					"type": "string"
+				}
+			},
+			"sitePrefix": {
+				"source": ['body.sitePrefix'],
+				"required": false,
+				"default": "site",
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/environment/key/update": {
@@ -1596,40 +1612,6 @@ module.exports = {
 				'validation': {
 					'type': 'array',
 					'items': {'type': 'string'}
-				}
-			}
-		},
-		"/staticContent/add": {
-			_apiInfo: {
-				"l": "Add Static Content",
-				"group": "Static Content"
-			},
-			'commonFields': ['name', 'type', 'owner', 'repo', 'branch', 'main', 'token']
-		},
-		"/staticContent/update": {
-			_apiInfo: {
-				"l": "Update Static Content",
-				"group": "Static Content"
-			},
-			'commonFields': ['name', 'type', 'owner', 'repo', 'branch', 'main', 'token'],
-			'id': {
-				'source': ['query.id'],
-				'required': true,
-				'validation': {
-					'type': 'string'
-				}
-			}
-		},
-		"/staticContent/delete": {
-			_apiInfo: {
-				"l": "Delete Static Content",
-				"group": "Static Content"
-			},
-			'id': {
-				'source': ['query.id'],
-				'required': true,
-				'validation': {
-					'type': 'string'
 				}
 			}
 		},
