@@ -496,7 +496,7 @@ describe("testing hosts deployment", function () {
                     "grpConfName": "group1",
                     "envCode": "DEV",
                     "owner": "soajs",
-                    "repo": "soajs.examples",
+                    "repo": "soajs.dashboard", //dummy value, does not need to be accurate
                     "branch": "develop",
                     "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                     "variables": [
@@ -526,7 +526,7 @@ describe("testing hosts deployment", function () {
                     "grpConfName": "group1",
                     "envCode": "DEV",
                     "owner": "soajs",
-                    "repo": "soajs.examples",
+                    "repo": "soajs.dashboard", //dummy value, does not need to be accurate
                     "branch": "develop",
                     "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                     "variables": [
