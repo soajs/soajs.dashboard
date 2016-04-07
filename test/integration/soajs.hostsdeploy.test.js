@@ -324,6 +324,22 @@ describe("testing hosts deployment", function () {
             });
         });
 
+        before('add static content record', function (done) {
+            var scRecord = {
+                "name": "Custom UI Test",
+                "dashUI": true,
+                "src": {
+                "provider": "github",
+                    "owner": "soajs",
+                    "repo": "soajs.dashboard" //dummy data
+                }
+            };
+            mongo.insert("staticContent", scRecord, function (error) {
+                assert.ifError(error);
+                done();
+            });
+        });
+
         it("success - deploy 2 controller", function (done) {
             var params = {
                 headers: {
@@ -345,6 +361,67 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
+            });
+        });
+
+        it("success - deploy 1 controller with static content", function (done) {
+            mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "number": 1,
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.controller",
+                        "branch": "develop",
+                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ],
+                        "nginxConfig": {
+                            "customUIId": record._id.toString(),
+                            "branch": "develop",
+                            "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
+                        }
+                    }
+                };
+                executeMyRequest(params, "hosts/deployController", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+        });
+
+        it("success - deploy 1 controller and use the main file specified in src", function (done) {
+            mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "number": 1,
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.controller",
+                        "branch": "develop",
+                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployController", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    done();
+                });
             });
         });
     });
@@ -375,6 +452,39 @@ describe("testing hosts deployment", function () {
                     assert.ok(oneContainerRecord);
                     containerInfo = oneContainerRecord;
                     done();
+                });
+            });
+        });
+
+        it("success - deploy 1 core service and use main file specified in src", function (done) {
+            mongo.update('services', {name: 'urac'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "urac",
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.urac",
+                        "branch": "develop",
+                        "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    mongo.findOne("docker", {"hostname": /urac_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                        assert.ifError(error);
+                        assert.ok(oneContainerRecord);
+                        containerInfo = oneContainerRecord;
+                        done();
+                    });
                 });
             });
         });
@@ -511,6 +621,39 @@ describe("testing hosts deployment", function () {
                     assert.ifError(error);
                     assert.ok(oneContainerRecord);
                     done();
+                });
+            });
+        });
+
+        it("success - deploy 1 daemon and use main file specified in src", function (done) {
+            mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "helloDaemon",
+                        "grpConfName": "group1",
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.dashboard", //dummy value, does not need to be accurate
+                        "branch": "develop",
+                        "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                        assert.ifError(error);
+                        assert.ok(oneContainerRecord);
+                        done();
+                    });
                 });
             });
         });
@@ -681,6 +824,138 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
+            });
+        });
+    });
+
+    describe("testing zombie containers", function () {
+        var serviceName = "gc_myservice";
+        var hostname, cid;
+        var env = "dev";
+
+        before("get service container info", function (done) {
+            mongo.findOne("hosts", {name: serviceName}, function (error, hostRecord) {
+                assert.ifError(error);
+                hostname = hostRecord.hostname;
+
+                mongo.findOne("docker", {hostname: hostRecord.hostname}, function (error, record) {
+                    assert.ifError(error);
+                    assert.ok(record);
+                    cid = record.cid;
+                    done();
+                });
+            });
+        });
+
+        describe("list zombie containers tests", function () {
+            it ("success - no zombie containers are available", function (done) {
+                var params = {
+                    qs: {
+                        envCode: env
+                    }
+                };
+                executeMyRequest(params, 'hosts/container/zombie/list', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    assert.equal(body.data.length, 0);
+                    done();
+                });
+            });
+
+            it("success - will identify 1 zombie container", function (done) {
+                mongo.remove("hosts", {hostname: hostname}, function (error, result) {
+                    assert.ifError(error);
+
+                    var params = {
+                        qs: {
+                            envCode: env
+                        }
+                    };
+
+                    executeMyRequest(params, 'hosts/container/zombie/list', 'get', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+                        assert.equal(body.data.length, 1);
+                        assert.equal(body.data[0].hostname, hostname);
+                        done();
+                    });
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                executeMyRequest({}, 'hosts/container/zombie/list', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: envCode'});
+                    done();
+                });
+            });
+        });
+
+        describe("zombie container logs tests", function () {
+            it("success - will get zombie container logs", function (done) {
+                var params = {
+                    qs: {
+                        envCode: env,
+                        cid: cid
+                    }
+                };
+                
+                executeMyRequest(params, 'hosts/container/zombie/getLogs', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    qs: {
+                        envCode: env
+                    }
+                };
+
+                executeMyRequest(params, 'hosts/container/zombie/getLogs', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: cid'});
+                    done();
+                });
+            });
+        });
+
+        describe("delete zombie containers tests", function () {
+            it("fail - missing required params", function (done) {
+                var params = {
+                    qs: {
+                        envCode: env
+                    }
+                };
+
+                executeMyRequest(params, 'hosts/container/zombie/delete', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: cid'});
+                    done();
+                });
+            });
+
+            it("success - will delete zombie container", function (done) {
+                var params = {
+                    qs: {
+                        envCode: env,
+                        cid: cid
+                    }
+                };
+
+                executeMyRequest(params, 'hosts/container/zombie/delete', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    mongo.count("docker", {hostname: hostname}, function (error, count) {
+                        assert.ifError(error);
+                        assert.equal(count, 0);
+
+                        done();
+                    });
+                });
             });
         });
     });

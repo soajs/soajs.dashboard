@@ -234,6 +234,29 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 					});
 				});
 
+				it("fail - invalid id provided", function (done) {
+					var params = {
+						qs: {
+							"id": "123:::321"
+						},
+						form: {
+							"groupName": "test group config 2",
+							"daemon": "orderDaemon",
+							"interval": 200000,
+							"status": 1,
+							"solo": false,
+							"processing": "parallel",
+							"jobs": {},
+							"order": []
+						}
+					};
+					executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {code: 701, message: errorCodes[701]});
+						done();
+					});
+				});
+
 				it("fail - missing required param", function (done) {
 					var params = {
 						form: {
