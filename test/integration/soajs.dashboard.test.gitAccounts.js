@@ -69,7 +69,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 	var repoSingleSuccess = 'test.success1';
 	var repoSingleDaemon = 'test.daemon.s';
 	var repoStaticContent = 'testStaticContent';
-	var staticContentName = 'CustomUITest';
 
 	describe("github login tests", function () {
 		
@@ -87,7 +86,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			executeMyRequest(params, 'github/login', 'post', function (body) {
 				console.log(body);
 				assert.ok(body);
-				assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+				assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 				done();
 			});
 		});
@@ -460,6 +459,50 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					
 				});
 				
+				it("fail - sync repo - remove", function (done) {
+					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
+						//console.log(record);
+						assert.ok(record);
+						assert.ok(record.repos);
+						record.repos.forEach(function (repo) {
+							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
+								repo.configSHA = [];
+								repo.configSHA[0] = {
+									"contentType": "service",
+									"contentName": "sampleFake11",
+									"path": "/sampleFake11/config.js",
+									"sha": "95b14565e3fdd0048e351493056025a7020ea561"
+								};
+							}
+						});
+						var host = {
+							env: "dev",
+							name: "sampleFake11",
+							ip: "127.0.0.1",
+							version: 1
+						};
+						mongo.insert("hosts", host, function (error) {
+							mongo.save("git_accounts", record, function (error) {
+								assert.ifError(error);
+								var params = {
+									qs: {
+										"id": gitAccId
+									},
+									form: {
+										owner: usernamePersonal,
+										repo: repoMultiSuccess
+									}
+								};
+								executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
+									console.log(body.errors);
+									assert.deepEqual(body.errors.details[0], {"code": 768, "message": errorCodes[768]});
+									done();
+								});
+							});
+						});
+					});
+				});
+
 				it("success - will sync repo - remove", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
 						//console.log(record);
@@ -720,7 +763,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+					assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 					done();
 				});
 			});
@@ -736,10 +779,9 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					console.log(body);
+					//console.log(body);
 					assert.equal(body.result, true);
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						//console.log(record);
 						assert.ifError(error);
 						assert.ok(record);
 						gitAccId = record._id.toString();
@@ -902,6 +944,31 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 				
+				it("fail - deactivate multi repo", function (done) {
+					var host = {
+						env: "dev",
+						name: "sampleSuccess1",
+						ip: "127.0.0.1",
+						version: 1
+					};
+					mongo.insert("hosts", host, function (error) {
+						var params = {
+							qs: {
+								"id": gitAccId,
+								owner: usernamePersonal,
+								repo: repoMultiSuccess
+							}
+						};
+						executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
+							console.log(body.errors);
+							assert.equal(body.errors.codes[0], 766);
+							mongo.remove("hosts", {name: "sampleSuccess1"}, function (error) {
+								done();
+							});
+						});
+					});
+				});
+
 				it("success - will deactivate multi repo", function (done) {
 					var params = {
 						qs: {
@@ -1012,7 +1079,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						done();
 					});
 				});
-				
 			});
 			
 			describe("repo deactivate tests", function () {
@@ -1072,7 +1138,7 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				executeMyRequest(params, 'github/login', 'post', function (body) {
 					console.log(body);
 					assert.ok(body);
-					assert.deepEqual(body.errors.details[0], {"code": 763, "message": errorCodes[763]});
+					assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 					done();
 				});
 			});
@@ -1095,41 +1161,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						gitAccId = record._id.toString();
 						done();
 					});
-				});
-			});
-			
-			// activate the oauth, then try to deactivate
-			it.skip("success - will activate oauth repo - org", function (done) {
-				var params = {
-					qs: {
-						"id": gitAccId
-					},
-					form: {
-						provider: "github",
-						owner: orgName,
-						repo: 'soajs.oauth',
-						configBranch: "develop"
-					}
-				};
-				executeMyRequest(params, 'github/repo/activate', 'get', function (body) {
-					console.log(body);
-					assert.ok(body.data);
-					done();
-				});
-			});
-			
-			it.skip("success - will try deactivate oauth repo - org", function (done) {
-				var params = {
-					qs: {
-						"id": gitAccId,
-						owner: orgName,
-						repo: 'soajs.oauth'
-					}
-				};
-				executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-					console.log(body);
-					assert.ok(body.data);
-					done();
 				});
 			});
 			
