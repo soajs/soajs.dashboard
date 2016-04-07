@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', 'Upload', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi, Upload) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', 'Upload', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi, Upload, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -228,6 +228,37 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 		postData.port = parseInt(postData.port);
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
+
+
+		postData.deployer = {
+			"type": "",
+			"selected": "",
+			"container":{
+				"dockermachine":{
+					"local": {
+						"host": "",
+						"port": 0,
+						"config":{
+							"HostConfig": {
+								"NetworkMode": ""
+							},
+							"MachineName": ""
+						}
+					},
+					"cloud":{
+						"rackspace": {
+							"host": "",
+							"port": 0
+						}
+					}
+				},
+				"docker": {
+					"socket": {
+						"socketPath": "/var/run/docker.sock"
+					}
+				}
+			}
+		};
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
@@ -289,6 +320,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
+	injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 	//default operation
 	if ($routeParams.id) {
 		if ($scope.access.editEnvironment) {

@@ -15,25 +15,29 @@
                     <div ng-if="account.repo && account.repo.length === 0">
                         <alert type="warning">No repositories found!</alert>
                     </div>
-                    <ul class="blueListing" style="overflow:scroll; height:254px; width:100%">
-                        <li class="blueLi {{repo.status}}" ng-repeat="repo in account.repos" class="row-list" ng-style="{'width': '98%'}">
-                            <span class="repoFullName">{{repo.full_name}}</span>
-                            <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
-                            <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
-                            <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
-                            <div class="rightActions">
-                                <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-                                    <span class="icon icon-switch" tooltip="Activate"></span>
-                                </a>
-                                <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
-                                    <span class="icon icon-cross" tooltip="Deactivate"></span>
-                                </a>
-                                <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
-                                    <span class="icon icon-loop2" tooltip="Sync"></span>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
+
+                    <div id="reposList" style="overflow:scroll; height:254px; width:100%">
+                        <ul class="blueListing">
+                            <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos" ng-style="{'width': '98%'}">
+                                <span class="repoFullName">{{repo.full_name}}</span>
+                                <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository has been deleted</span>
+                                <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>Active Repository</span>
+                                <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>Repository is out of sync</span>
+                                <div class="rightActions">
+                                    <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                        <span class="icon icon-switch" tooltip="Activate"></span>
+                                    </a>
+                                    <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+                                        <span class="icon icon-cross" tooltip="Deactivate"></span>
+                                    </a>
+                                    <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                        <span class="icon icon-loop2" tooltip="Sync"></span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
                     <div class="entryAction">
                         <a href="" ng-click="listRepos(account);" ng-if="access.listRepos">
                             <span class="icon icon-loop2" tooltip="Sync Repository"></span>

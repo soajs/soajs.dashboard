@@ -132,7 +132,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 
 		});
 
-		describe.skip("group configuration tests", function () {
+		describe("group configuration tests", function () {
 			var groupId = "";
 
 			describe("add group config tests", function () {
