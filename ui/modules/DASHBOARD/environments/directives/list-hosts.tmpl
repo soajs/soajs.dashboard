@@ -226,7 +226,7 @@
 	<div class="modal-body">
 		<div class="form">
 			<alert type="danger" ng-if="currentScope.message.danger">{{currentScope.message.danger}}</alert>
-			<form name="deploy" id="deploy" novalidate ng-submit="deploy.$valid && onSubmit()">
+			<form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
 				<div class="form-group">
 					<label>Service Name</label>
 					<select class="form-control" ng-required="true" ng-options="service as service.name group by service.UIGroup for service in currentScope.services" ng-model="currentScope.service" ng-change="selectService(currentScope.service)"></select>

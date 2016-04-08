@@ -894,7 +894,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 };
 
                 $scope.onSubmit = function () {
-                    if (Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
+                    if (!currentScope.service || ! currentScope.branch || !currentScope.number) {
+                        currentScope.message.danger = "Please select a service, branch, and number of instances";
+                        $timeout(function () {
+                            currentScope.message.danger = "";
+                        }, 5000);
+                    }
+                    else if (Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
                         currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
                         $timeout(function () {
                             currentScope.message.danger = "";
