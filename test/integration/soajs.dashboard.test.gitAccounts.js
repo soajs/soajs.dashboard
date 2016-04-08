@@ -155,7 +155,9 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			it("success - will getRepos", function (done) {
 				var params = {
 					qs: {
-						"id": gitAccId
+						"id": gitAccId,
+						"page": 1,
+						"per_page": 50
 					}
 				};
 				executeMyRequest(params, 'github/getRepos', 'get', function (body) {
@@ -970,7 +972,9 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				it("success - will getRepos again", function (done) {
 					var params = {
 						qs: {
-							"id": soajsAccId
+							"id": soajsAccId,
+							"page": 1,
+							"per_page": 50
 						}
 					};
 					executeMyRequest(params, 'github/getRepos', 'get', function (body) {

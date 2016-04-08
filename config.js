@@ -2095,6 +2095,22 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"page": {
+				"source": ['query.page'],
+				"required": true,
+				"validation": {
+					"type": "number",
+					"minimum": 1
+				}
+			},
+			"per_page": {
+				"source": ['query.per_page'],
+				"required": true,
+				"validation": {
+					"type": "number",
+					"minimum": 1
+				}
 			}
 		},
 

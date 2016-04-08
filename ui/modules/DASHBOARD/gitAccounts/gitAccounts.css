@@ -59,3 +59,12 @@ li.accountType {
 #syncedRepos .grid table{
     min-width:100%
 }
+
+.loadMore{
+    width:98%
+}
+
+.loadMore:hover{
+    border-radius: 5px;
+    border: solid 1px #337ab7;
+}

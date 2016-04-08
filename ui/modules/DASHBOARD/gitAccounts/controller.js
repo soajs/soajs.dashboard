@@ -10,6 +10,9 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     $scope.referToDoc = 'Refer to the online documentation at ' + '<a target="_blank" href="http://soajs.org/#/documentation">SOAJS Website.</a>';
     $scope.excludedSOAJSRepos = ['soajs/connect-mongo-soajs', 'soajs/soajs', 'soajs/soajs.agent', 'soajs/soajs.composer', 'soajs/soajs.dash.example', 'soajs/soajs.gcs', 'soajs/soajs.mongodb.data', 'soajs/soajs.utilities', 'soajs/soajs.website.contactus'];
 
+    $scope.defaultPageNumber = 1;
+    $scope.defaultPerPage = 100;
+
     $scope.listAccounts = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'get',
@@ -31,7 +34,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
                         }
                     });
-                    $scope.listRepos($scope.accounts, counter, loadingModal);
+                    $scope.listRepos($scope.accounts, counter, 'getRepos', loadingModal);
                 }
             }
         });
@@ -190,21 +193,25 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         }
     };
 
-    $scope.listRepos = function (accounts, counter, loadingModal) {
-
+    $scope.listRepos = function (accounts, counter, action, loadingModal) {
         //in case of one repo only
         if (!Array.isArray(accounts)) {
             accounts = [accounts];
-            if (!counter) {
-                counter = 0;
-            }
+            counter = (counter) ? counter : 0;
         }
         var id = accounts[counter]._id;
+        if (!accounts[counter].nextPageNumber) {
+            accounts[counter].nextPageNumber = $scope.defaultPageNumber;
+        }
 
         getSendDataFromServer($scope, ngDataApi, {
             "method": "get",
             "routeName": "/dashboard/github/getRepos",
-            "params": {id: id}
+            "params": {
+                id: id,
+                per_page: $scope.defaultPerPage,
+                page: (action === 'loadMore') ? accounts[counter].nextPageNumber : $scope.defaultPageNumber
+            }
         }, function (error, response) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
@@ -212,35 +219,66 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                     loadingModal.close();
                 }
             } else {
-                for (var i = 0; i < $scope.accounts.length; i++) {
-                    if ($scope.accounts[i]._id === id) {
-                        //exclude soajs repos that do not contain services/daemons/static content
-                        if ($scope.accounts[i].owner === 'soajs') {
-                            $scope.accounts[i].repos = [];
-                            response.forEach (function (oneRepo) {
-                                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
-                                    $scope.accounts[i].repos.push(oneRepo);
-                                }
-                            });
-                        } else {
-                            $scope.accounts[i].repos = response;
-                        }
-                    }
+                if (action === 'loadMore') {
+                    $scope.appendNewRepos(accounts[counter], response);
                 }
+                else if (action === 'getRepos') {
 
-                counter++;
-                if (counter < accounts.length) {
-                    return $scope.listRepos(accounts, counter, loadingModal);
-                } else {
-                    if (loadingModal) {
-                        loadingModal.close();
+                    if (accounts[counter].owner === 'soajs') {
+                        accounts[counter].repos = [];
+                        response.forEach (function (oneRepo) {
+                            if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                                accounts[counter].repos.push(oneRepo);
+                            }
+                        });
                     }
                     else {
-                        $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
+                        accounts[counter].repos = response;
+                    }
+
+                    accounts[counter].nextPageNumber = 2;
+                    accounts[counter].allowLoadMore = (response.length === $scope.defaultPerPage);
+
+                    counter++;
+                    if (counter < accounts.length) {
+                        return $scope.listRepos(accounts, counter, 'getRepos', loadingModal);
+                    } else {
+                        if (loadingModal) {
+                            loadingModal.close();
+                        }
+                        else {
+                            $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
+                        }
                     }
                 }
             }
         });
+    };
+
+    $scope.appendNewRepos = function (account, repos) {
+        account.nextPageNumber++;
+        account.allowLoadMore = (repos.length === $scope.defaultPerPage);
+
+        if (!account.repos) {
+            account.repos = [];
+        }
+
+        if (account.owner === 'soajs') {
+            repos.forEach (function (oneRepo) {
+                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                    account.repos.push(oneRepo);
+                }
+            });
+            setTimeout(function(){
+                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
+            },500);
+        }
+        else {
+            account.repos = account.repos.concat(repos);
+            setTimeout(function(){
+                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
+            },500);
+        }
     };
 
     $scope.activateRepo = function (account, repo) {
