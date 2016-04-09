@@ -47,7 +47,7 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
-    "soajs": "git+https://github.com/soajs/soajs.git#develop"
+    "soajs": "git+https://github.com/soajs/soajs.git#develop",
     "shortid": "^2.2.4",
     "unzip2": "*"
   }
