@@ -24,9 +24,6 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-							"headers": {
-								"key": apiConfiguration.key
-							},
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -80,9 +77,6 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						}
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
-							"headers": {
-								"key": apiConfiguration.key
-							},
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -149,9 +143,6 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 						"method": "send",
 						"routeName": "/urac/account/editProfile",
 						"params": {"uId": $scope.uId},
-						"headers": {
-							"key": apiConfiguration.key
-						},
 						"data": postData
 					}, function (error) {
 						if (error) {
@@ -176,9 +167,6 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 
 	$scope.getProfile = function (username) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"headers": {
-				"key": apiConfiguration.key
-			},
 			"method": "get",
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
@@ -472,9 +460,6 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 				"method": "send",
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
-				"headers": {
-					"key": apiConfiguration.key
-				},
 				"data": postData
 			}, function (error) {
 				if (error) {

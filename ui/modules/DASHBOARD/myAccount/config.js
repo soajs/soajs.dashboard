@@ -120,7 +120,7 @@ var changePwConfig = {
 			{
 				'name': 'oldPassword',
 				'label': translation.oldPassword[LANG],
-				'type': 'text',
+				'type': 'password',
 				'placeholder': translation.EnterOldPassword[LANG],
 				'value': '',
 				'tooltip': translation.passwordsToolTip[LANG],
