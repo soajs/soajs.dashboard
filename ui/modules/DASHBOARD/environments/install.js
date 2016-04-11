@@ -1255,6 +1255,10 @@ var envTranslation ={
 	"defaultEnvVariables": {
 		"ENG": "Default Environment Variables",
 		"FRA": "Default Environment Variables"
+	},
+	"warning": {
+		"ENG": "Warning",
+		"FRA": "Warning"
 	}
 };
 
