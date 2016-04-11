@@ -1210,6 +1210,51 @@ var envTranslation ={
 	"availableCertificates": {
 		"ENG": "Available certificates:",
 		"FRA": "Available certificates:"
+	},
+	//add new host form
+	"serviceName": {
+		"ENG": "Service Name",
+		"FRA": "Service Name"
+	},
+	"daemonGroupConfig": {
+		"ENG": "Daemon Group Configuration",
+		"FRA": "Daemon Group Configuration"
+	},
+	"branch": {
+		"ENG": "Branch",
+		"FRA": "Branch"
+	},
+	"serviceHasRunningInstancesDifferentCommits": {
+		"ENG": "This service has one or more running instances with different commits",
+		"FRA": "This service has one or more running instances with different commits"
+	},
+	"recommendedToMaintainHomogeneity": {
+		"ENG": "It is recommended that you maintain homogeneity and deploy using an existing commit",
+		"FRA": "It is recommended that you maintain homogeneity and deploy using an existing commit"
+	},
+	"commit": {
+		"ENG": "Commit",
+		"FRA": "Commit"
+	},
+	"hostnames": {
+		"ENG": "Hostname(s)",
+		"FRA": "Hostname(s)"
+	},
+	"understandTheRiskToDeploy": {
+		"ENG": "I understand the risk and would like to use a new commit to deploy",
+		"FRA": "I understand the risk and would like to use a new commit to deploy"
+	},
+	"hostsNumber": {
+		"ENG": "Host(s) Number",
+		"FRA": "Host(s) Number"
+	},
+	"envVariables": {
+		"ENG": "Environment Variables",
+		"FRA": "Environment Variables"
+	},
+	"defaultEnvVariables": {
+		"ENG": "Default Environment Variables",
+		"FRA": "Default Environment Variables"
 	}
 };
 
