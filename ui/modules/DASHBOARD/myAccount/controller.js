@@ -442,7 +442,8 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 	}
 	else {
 		$scope.$parent.displayAlert('danger', translation.youAlreadyLoggedInLogOutFirst[LANG]);
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
+		var url = $scope.$parent.mainMenu.links[0].entries[0].url;
+		$scope.$parent.go(url.replace("#", ""));
 	}
 }]);
 
