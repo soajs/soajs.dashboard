@@ -491,6 +491,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             }
                         });
                     }
+                } else {
+                    $scope.displayAlert('success', 'Repository has been synced');
                 }
             }
         });

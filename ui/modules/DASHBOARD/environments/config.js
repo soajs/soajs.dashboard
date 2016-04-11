@@ -36,6 +36,24 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
+					'name': 'apiPrefix',
+					'label': translation.apiPrefix[LANG],
+					'type': 'text',
+					'placeholder': 'api',
+					'value': '',
+					'required': false,
+					'fieldMsg': translation.inCaseAPIPrefixNotSpecified[LANG]
+				},
+				{
+					'name': 'sitePrefix',
+					'label': translation.sitePrefix[LANG],
+					'type': 'text',
+					'placeholder': 'site',
+					'value': '',
+					'required': false,
+					'fieldMsg': translation.inCaseSitePrefixNotSpecified[LANG]
+				},
+				{
 					'name': 'port',
 					'label': translation.environmentGatewayPort[LANG],
 					'type': 'select',
