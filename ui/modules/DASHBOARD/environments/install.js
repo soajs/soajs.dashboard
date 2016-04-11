@@ -246,6 +246,38 @@ var envTranslation ={
 		"ENG": "Provide optional driver configuration",
 		"FRA": "Provide optional driver configuration"
 	},
+	"apiPrefix": {
+		"ENG": "API Prefix",
+		"FRA": "API Prefix"
+	},
+	"sitePrefix": {
+		"ENG": "Site Prefix",
+		"FRA": "Site Prefix"
+	},
+	"inCaseAPIPrefixNotSpecified": {
+		"ENG": 'In case the api prefix was not specified, it will be set to "api" by default',
+		"FRA": 'In case the api prefix was not specified, it will be set to "api" by default'
+	},
+	"inCaseSitePrefixNotSpecified": {
+		"ENG": 'In case the site prefix was not specified, it will be set to "site" by default',
+		"FRA": 'In case the site prefix was not specified, it will be set to "site" by default'
+	},
+	"enterSitePrefix": {
+		"ENG": "Enter Site Prefix",
+		"FRA": "Enter Site Prefix"
+	},
+	"enterAPIPrefix": {
+		"ENG": "Enter API Prefix",
+		"FRA": "Enter API Prefix"
+	},
+	"inCaseAPIOrSitePrefixNotSpecified": {
+		"ENG": 'In case API Prefix and Site Prefix were not specified, they will be set by default to "api" and "site" respectively.',
+		"FRA": 'In case API Prefix and Site Prefix were not specified, they will be set by default to "api" and "site" respectively.'
+	},
+	"inOrderToViewNewEnvYouNeedToReLogin": {
+		"ENG": "However, in order to view the newly created environment you need to re-login",
+		"FRA": "However, in order to view the newly created environment you need to re-login"
+	},
 	//controller
 	"addNewEnvironment": {
 		"ENG": "Add New Environment",

@@ -159,6 +159,8 @@ var errors = {
 
 	"742": "Unable to list static content sources",
 
+	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
+
 	"750": "Invalid Request.",
 
 	"751": "Unable to login",

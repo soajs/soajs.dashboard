@@ -143,6 +143,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						tmpl.port = parseInt(formData.port);
 						tmpl.description = formData.description;
 
+						if (formData.apiPrefix) {
+							tmpl.apiPrefix = formData.apiPrefix;
+						}
+
+						if (formData.sitePrefix) {
+							tmpl.sitePrefix = formData.sitePrefix;
+						}
+
 						tmpl.services.config.key.password = formData.tKeyPass;
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
@@ -156,7 +164,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.environmentCreatedSuccessfully[LANG]);
+								$scope.$parent.displayAlert('warning', translation.environmentCreatedSuccessfully[LANG] + ' ' + translation.inOrderToViewNewEnvYouNeedToReLogin[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
 								$scope.updateEnvironment(data[0]);
@@ -259,7 +267,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 			}
 		};
-		console.log (postData);
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
@@ -270,7 +277,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
-				$scope.$parent.displayAlert('success', translation.environment[LANG] + ' ' + (($scope.newEntry) ? translation.created[LANG] : translation.updated[LANG]) + ' ' + translation.successfully[LANG]);
+				var successMessage = translation.environment[LANG] + ' ' + (($scope.newEntry) ? translation.created[LANG] : translation.updated[LANG]) + ' ' + translation.successfully[LANG];
+				if ($scope.newEntry) {
+					successMessage = successMessage + ' ' + translation.inOrderToViewNewEnvYouNeedToReLogin[LANG];
+				}
+				$scope.$parent.displayAlert(($scope.newEntry) ? 'warning' : 'success', successMessage);
 			}
 		});
 	};

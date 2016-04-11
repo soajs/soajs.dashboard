@@ -783,7 +783,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.confirmBranch = '';
                 delete currentScope.number;
                 currentScope.message = {};
-                currentScope.defaultEnvVariables = "<ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + env + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
+                currentScope.defaultEnvVariables = "<ul><li>SOAJS_SRV_AUTOREGISTERHOST=false</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + env + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
