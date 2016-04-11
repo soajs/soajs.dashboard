@@ -9,7 +9,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
 				"headers": {
-					"key": currentScope.key
+					//"key": currentScope.key
 				},
 				"routeName": "/urac/admin/group/list",
 				"params": {'tId': tenantId}
@@ -98,7 +98,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 						getSendDataFromServer(currentScope, ngDataApi, {
 							"method": "send",
 							"headers": {
-								"key": currentScope.key
+								//"key": currentScope.key
 							},
 							"routeName": "/urac/admin/group/add",
 							"data": postData
@@ -153,7 +153,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 						getSendDataFromServer(currentScope, ngDataApi, {
 							"method": "send",
 							"headers": {
-								"key": currentScope.key
+								//"key": currentScope.key
 							},
 							"routeName": "/urac/admin/group/edit",
 							"params": {"gId": data['_id']},
@@ -207,7 +207,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
-				"key": currentScope.key
+				//"key": currentScope.key
 			},
 			"routeName": "/urac/admin/group/delete",
 			"params": {"gId": data._id, 'tId': tenantId}
@@ -229,7 +229,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
-				"key": currentScope.key
+				//"key": currentScope.key
 			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
@@ -271,7 +271,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"headers": {
-										"key": currentScope.key
+										//"key": currentScope.key
 									},
 									"routeName": "/urac/admin/group/addUsers",
 									"params": {'tId': tenantId},

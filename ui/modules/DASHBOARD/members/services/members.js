@@ -8,7 +8,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
-				"key": currentScope.key
+				//"key": currentScope.key
 			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
@@ -86,7 +86,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
-				"key": currentScope.key
+				//"key": currentScope.key
 			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
@@ -131,7 +131,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"headers": {
-										"key": currentScope.key
+										//"key": currentScope.key
 									},
 									"routeName": "/urac/admin/addUser",
 									"data": postData
@@ -177,7 +177,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"headers": {
-				"key": currentScope.key
+				//"key": currentScope.key
 			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
@@ -235,7 +235,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 								getSendDataFromServer(currentScope, ngDataApi, {
 									"method": "send",
 									"headers": {
-										"key": currentScope.key
+										//"key": currentScope.key
 									},
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
