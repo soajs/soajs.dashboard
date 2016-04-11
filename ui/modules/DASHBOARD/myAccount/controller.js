@@ -483,7 +483,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 	}
 	else {
 		$scope.$parent.displayAlert('danger', translation.youAlreadyLoggedInLogOutFirst[LANG]);
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].url.replace("#", ""));
+		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 }]);
 
