@@ -22,12 +22,14 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						var postData = {
 							'email': formData.email
 						};
+						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
 						}, function (error) {
+							overlayLoading.hide();
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
@@ -75,12 +77,14 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 							$scope.form.displayAlert('danger', translation.errorMessageChangePassword[LANG]);
 							return;
 						}
+						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
 						}, function (error) {
+							overlayLoading.hide();
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
