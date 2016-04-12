@@ -25,6 +25,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					"method": "get",
 					"routeName": "/dashboard/tenant/db/keys/list"
 				}, function (error, tenantDbKeys) {
+					console.log (tenantDbKeys);
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					} else {
