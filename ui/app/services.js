@@ -28,14 +28,14 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			return cb(null, resp.data);
 		}
 		else {
-			if (response.errors.codes[0] === 132) {
-				$cookieStore.remove('soajs_auth');
-				$cookieStore.remove('soajs_user');
-				$localStorage.acl_access = null;
-				scope.$parent.enableInterface = false;
-				scope.$parent.isUserLoggedIn();
-				scope.$parent.go("/login");
-			}
+			// if (response.errors.codes[0] === 132) {
+			// 	$cookieStore.remove('soajs_auth');
+			// 	$cookieStore.remove('soajs_user');
+			// 	$localStorage.acl_access = null;
+			// 	scope.$parent.enableInterface = false;
+			// 	scope.$parent.isUserLoggedIn();
+			// 	scope.$parent.go("/login");
+			// }
 
 			var str = '';
 			for (var i = 0; i < response.errors.details.length; i++) {
