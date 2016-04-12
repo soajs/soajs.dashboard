@@ -1274,14 +1274,28 @@ module.exports = {
 				"l": "Update Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo']
+			"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
+			"extKeyEnv": {
+				"source": ['query.extKeyEnv'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 		"/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
 				"group": "Tenant Application"
 			},
-			"commonFields": ['id', 'appId', 'key', 'extKey']
+			"commonFields": ['id', 'appId', 'key', 'extKey'],
+			"extKeyEnv": {
+				"source": ['body.extKeyEnv'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 
 		"/tenant/application/key/config/list": {
@@ -1445,14 +1459,28 @@ module.exports = {
 				"l": "Update Tenant Application External Key",
 				"group": "Tenant Settings"
 			},
-			"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo']
+			"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
+			"extKeyEnv": {
+				"source": ['query.extKeyEnv'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 		"/settings/tenant/application/key/ext/delete": {
 			_apiInfo: {
 				"l": "Delete Tenant Application External Key",
 				"group": "Tenant Settings"
 			},
-			"commonFields": ['appId', 'key', 'extKey']
+			"commonFields": ['appId', 'key', 'extKey'],
+			"extKeyEnv": {
+				"source": ['body.extKeyEnv'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 
 		"/settings/tenant/application/key/config/list": {

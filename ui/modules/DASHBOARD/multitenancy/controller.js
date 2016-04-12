@@ -1273,7 +1273,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/ext/update",
 							"data": postData,
-							"params": {"id": tId, "appId": appId, "key": key}
+							"params": {"id": tId, "appId": appId, "key": key, 'extKeyEnv': data.env}
 						}, function (error) {
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
@@ -1305,7 +1305,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/ext/delete",
-			"data": {'extKey': data.extKey},
+			"data": {'extKey': data.extKey, 'extKeyEnv': data.env},
 			"params": {"id": tId, "appId": appId, "key": key}
 		}, function (error) {
 			if (error) {

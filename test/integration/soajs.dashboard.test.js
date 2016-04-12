@@ -1820,7 +1820,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
-						key: key
+						key: key,
+						extKeyEnv: 'DASHBOARD'
 					},
 					form: {
 						'extKey': extKey,
@@ -1847,7 +1848,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						key: key
 					},
 					form: {
-						'extKey': extKey
+						'extKey': extKey,
+						'extKeyEnv': 'DASHBOARD'
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function (body) {
@@ -2703,7 +2705,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					"key": key
 				},
 				form: {
-					"extKey": tenantExtKey
+					"extKey": tenantExtKey,
+					"extKeyEnv": "DASHBOARD"
 				}
 			};
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {

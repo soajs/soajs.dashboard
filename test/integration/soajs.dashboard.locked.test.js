@@ -470,7 +470,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: appExtKey
+							key: appExtKey,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'extKey': appExtKey,
@@ -499,7 +500,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							key: key
 						},
 						form: {
-							'extKey': appExtKey
+							'extKey': appExtKey,
+							'extKeyEnv': 'DASHBOARD'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
@@ -522,7 +524,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: key
+							key: key,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'envCode': 'DEV',

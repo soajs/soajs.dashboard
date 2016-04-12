@@ -680,7 +680,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							"method": "send",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/update",
 							"data": postData,
-							"params": {"appId": appId, "key": key}
+							"params": {"appId": appId, "key": key, "extKeyEnv": data.env}
 						}, function (error) {
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
@@ -712,7 +712,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
-			"data": {'extKey': data.extKey},
+			"data": {'extKey': data.extKey, 'extKeyEnv': data.env},
 			"params": {"appId": appId, "key": key}
 		}, function (error) {
 			if (error) {

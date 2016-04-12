@@ -2478,7 +2478,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: key
+							key: key,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'extKey': extKey,
@@ -2502,7 +2503,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: key
+							key: key,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'extKey': 'fdfdgdfgdf',
@@ -2544,7 +2546,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
-							"message": "Missing required field: extKey"
+							"message": "Missing required field: extKeyEnv, extKey"
 						});
 
 						done();
@@ -2588,7 +2590,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							key: key
 						},
 						form: {
-							'extKey': extKey
+							'extKey': extKey,
+							'extKeyEnv': 'DASHBOARD'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
@@ -2604,7 +2607,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 							key: key
 						},
 						form: {
-							'extKey': extKey
+							'extKey': extKey,
+							'extKeyEnv': 'DEV'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
@@ -2629,7 +2633,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
-							"message": "Missing required field: extKey"
+							"message": "Missing required field: extKeyEnv, extKey"
 						});
 
 						done();
@@ -3117,7 +3121,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"key": key
 					},
 					form: {
-						"extKey": tenantExtKey
+						"extKey": tenantExtKey,
+						"extKeyEnv": "DEV"
 					}
 				};
 				executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
