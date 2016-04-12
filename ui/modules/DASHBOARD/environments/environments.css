@@ -1,0 +1,51 @@
+ul {
+    list-style-type: none;
+    padding-left: 15px;
+}
+
+.greyBoxCustom {
+    position: relative !important;
+    width: 15% !important;
+    text-align: center !important;
+}
+
+.greyBoxCustom a {
+    position: absolute;
+    right: 1px;
+    top: 4px;
+}
+
+.mb20 {
+    margin-bottom: 20px !important;
+}
+
+.blueAlert {
+    background-color: #DEF1F7;
+    color: black;
+    border-color: #DEF1F7;
+}
+
+.text-green {
+    color: green;
+}
+
+.selectCustom {
+    width: 15% !important;
+    margin-bottom: 20px !important;
+}
+
+.loadingImage {
+    height: 18px !important;
+    margin-left: 5px !important;
+    margin-top: -3px !important;
+    width: 18px !important;
+}
+
+.customEntryBox {
+    width: 48% !important;
+    padding-left: 0px !important;
+}
+
+.customInput {
+    width:49% !important;
+}

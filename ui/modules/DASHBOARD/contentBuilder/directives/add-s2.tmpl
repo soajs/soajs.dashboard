@@ -1,0 +1,99 @@
+<div id="wizardStep2" ng-show="steps.indexOf(true) === 1">
+    <script type="text/ng-template" id="addInputForm.html">
+        <div class="modal-body wizardForm">
+            <tabset>
+                <tab heading="User Input" ng-click="userInput()" ng-init="userInput()"><br/>
+                    <ngform></ngform>
+                </tab>
+                <tab heading="Computed UI Input" ng-click="computedInputUI()"><br/>
+                    <ngform></ngform>
+                </tab>
+                <tab heading="File Input" ng-click="fileInputUI()"><br/>
+                    <ngform></ngform>
+                </tab>
+            </tabset>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="done()">{{translation.done[LANG]}}</button>
+            <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="editInputForm.html">
+        <div class="modal-body wizardForm">
+            <ngform></ngform>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="done()">{{translation.done[LANG]}}</button>
+            <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
+        </div>
+    </script>
+
+    <div class="w100 table">
+        <div class="table-cell w10">
+            <a href="" ng-click="goBack()"><span class="npicons icon icon-circle-left"></span></a>
+        </div>
+
+        <div class="w80 table-cell">
+            <input type="button" class="btn btn-sm btn-primary" value="Add New Input" ng-click="addInput()"/><br /><br />
+            <em>{{translation.specifyInputsServiceAPIAndUIProperties[LANG]}}<br />{{translation.byDefaultThe[LANG]}} <b class ="lowercase">{{translation.id[LANG]}}</b> {{translation.inputProvidedReferenceDataRecordsLaterAPIsService[LANG]}}</em>
+            <hr/>
+            <div class="entryBoxes entryBoxesGrid" style="height:100px;">
+                <div class="dbBox" style="width:30% !important;" ng-repeat="(fieldName, fieldInfo) in config.genericService.config.schema.commonFields track by $index">
+                    <div class="head">
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-user"></span></b>
+                        <span class="rightActions">
+                            <span ng-show="fieldName === 'id'">({{translation.auto[LANG]}})</span>
+                            <a href="" ng-click="updateInput('user', fieldName, fieldInfo);" ng-show="fieldName !=='id'">
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(fieldName);" ng-show="fieldName !=='id'">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{fieldName}}<br/>
+                    </div>
+                </div>
+
+                <div class="dbBoxGreen w20i" ng-repeat="formField in config.soajsUI.form.add" ng-if="getInputType('fileUI', config, formField)">
+                    <div class="head">
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-user"></span></b>
+                        <span class="rightActions">
+                            <a href="" ng-click="updateInput('fileUI', formField.name, formField);">
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(formField.name);">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{formField.label}}<br/>
+                    </div>
+                </div>
+
+                <div class="dbBoxRed w20i" ng-repeat="columns in config.soajsUI.list.columns" ng-if="getInputType('computedUI', config, columns.name)">
+                    <div class="head">
+                        <b>{{translation.providedBy[LANG]}} <span class="icon icon-laptop"></span></b>
+                        <span class="rightActions">
+                            <a href="" ng-click="updateInput('computedUI', columns.name, columns);">
+                                <span class="icon icon-pencil" tooltip="{{translation.updateInput[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-confirm-click="{{translation.areYouSureYouWantRemoveInput[LANG]}}" ng-click="removeInput(columns.name);">
+                                <span class="icon icon-cross" tooltip="{{translation.removeInput[LANG]}}"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="info">
+                        <b>{{translation.label[LANG]}}:</b>&nbsp;{{columns.label}}<br/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="table-cell w10">
+            <a ng-show="nextStep" href="" ng-click="goForward()"><span class="npicons icon icon-circle-right"></span></a>
+        </div>
+    </div>
+</div>

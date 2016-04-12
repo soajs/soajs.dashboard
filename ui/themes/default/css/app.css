@@ -14,6 +14,7 @@ em {
 
 #overlay {
 }
+
 .overlay {
     width: 100%;
     height: 100%;
@@ -23,6 +24,7 @@ em {
     z-index: 10000;
     display: none;
 }
+
 .overlay .bg {
     background-color: #464543;
     color: #464543;
@@ -30,6 +32,7 @@ em {
     width: 100%;
     height: 100%;
 }
+
 #overlay .bg {
     background-color: black;
     opacity: 0.7;
@@ -46,6 +49,7 @@ em {
     left: 35%;
     top: 10%;
 }
+
 #overlay .content {
     width: 80%;
     opacity: 1.3;
@@ -53,7 +57,7 @@ em {
     overflow: scroll;
 }
 
-#overlayLoading .content .image{
+#overlayLoading .content .image {
     padding-bottom: 50px;
     padding-top: 50px;
 }
@@ -71,7 +75,7 @@ em {
     font-weight: bold;
     font-size: 35px;
     text-transform: uppercase;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 #header #logo img {
@@ -82,37 +86,38 @@ em {
     display: inline;
 }
 
-#header #pillars{
-    float:left;
-    margin:0 0 0 6%;
-    height:35px;
+#header #pillars {
+    float: left;
+    margin: 0 0 0 6%;
+    height: 35px;
 }
 
-#header #pillars .one-pillar{
-    float:left;
-    margin-right:5px;
+#header #pillars .one-pillar {
+    float: left;
+    margin-right: 5px;
 }
 
-#header #pillars .one-pillar button{
+#header #pillars .one-pillar button {
     background-color: #515e67;
-    color:white;
-    font-weight:bold;
-    display:inline-block;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
     border: none;
-    border-right:solid 1px #4f5762;
-    height:50px;
-    float:left;
-    padding-left:10px;
-    padding-right:10px;
-    font-size:16px;
+    border-right: solid 1px #4f5762;
+    height: 50px;
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
 }
 
-#header #pillars .one-pillar button:hover{
-    background-color:#222222;
+#header #pillars .one-pillar button:hover {
+    background-color: #222222;
 }
-#header #pillars .one-pillar button.selected{
-    background-color:white;
-    color:#337ab7;
+
+#header #pillars .one-pillar button.selected {
+    background-color: white;
+    color: #337ab7;
 }
 
 #header #slogan {
@@ -141,7 +146,7 @@ em {
     float: left;
     margin-right: 10px;
     color: #bfc0c1;
-    position:relative;
+    position: relative;
 }
 
 #header #userMenu ul li a {
@@ -155,52 +160,58 @@ em {
     text-decoration: none;
 }
 
-#header #userMenu li .myMenu{
+#header #userMenu li .myMenu {
     font-size: 22px;
     left: 22px;
     position: relative;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-#header #userMenu li .userMenu{
-    display:none;
-    cursor:pointer;
-    position:absolute;
-    background:#424951;
+#header #userMenu li .userMenu {
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    background: #424951;
     right: -25px;
     top: 20px;
-    padding-top:15px;
+    padding-top: 15px;
     font-size: 14px;
 }
-#header #userMenu li:hover{ color:white; }
-#header #userMenu li:hover > .userMenu{
-    display:block;
+
+#header #userMenu li:hover {
+    color: white;
 }
 
-#header #userMenu li .userMenu li{
+#header #userMenu li:hover > .userMenu {
+    display: block;
+}
+
+#header #userMenu li .userMenu li {
     float: none;
     margin: 0;
-    padding:0;
-    border:solid 1px white;
-    border-top:none;
-    border-bottom:none;
+    padding: 0;
+    border: solid 1px white;
+    border-top: none;
+    border-bottom: none;
 }
 
-#header #userMenu li .userMenu li.logout{ border-bottom: solid 1px white; }
+#header #userMenu li .userMenu li.logout {
+    border-bottom: solid 1px white;
+}
 
-#header #userMenu li .userMenu li a{
+#header #userMenu li .userMenu li a {
     padding: 10px 25px 5px 10px;
     white-space: nowrap;
     border-top: 1px solid #606d76;
     border-bottom: 1px solid #4f5762;
 }
 
-#header #userMenu li .userMenu li a.userMenu0{
-    border-top:none;
+#header #userMenu li .userMenu li a.userMenu0 {
+    border-top: none;
 }
 
-#header #userMenu li .userMenu li a:hover{
-    background-color:black;
+#header #userMenu li .userMenu li a:hover {
+    background-color: black;
 }
 
 #page {
@@ -219,7 +230,7 @@ em {
     border-right: solid 1px white;
 }
 
-#mainMenu #myEnvironments{
+#mainMenu #myEnvironments {
     display: block;
     width: 100%;
     height: 28px;
@@ -235,19 +246,19 @@ em {
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
 
-#mainMenu.mainMenu{
+#mainMenu.mainMenu {
     width: 15%;
 }
 
-#mainMenu.mainMenu2{
+#mainMenu.mainMenu2 {
     width: 45px;
 }
 
-#mainMenu .environmentsMenu{
-    margin:5px;
+#mainMenu .environmentsMenu {
+    margin: 5px;
 }
 
-#mainMenu .environmentsMenu input{
+#mainMenu .environmentsMenu input {
     margin: 0 1px;
 }
 
@@ -274,8 +285,8 @@ em {
     min-height: 41px;
 }
 
-#mainMenu li.first{
-    margin-top:4px
+#mainMenu li.first {
+    margin-top: 4px
 }
 
 #mainMenu ul li a {
@@ -287,7 +298,7 @@ em {
     outline: 0;
 }
 
-#mainMenu ul li a span.icon{
+#mainMenu ul li a span.icon {
     display: block;
     float: left;
     height: 40px;
@@ -311,10 +322,10 @@ em {
     text-shadow: none;
 }
 
-#mainMenu .collapser{
+#mainMenu .collapser {
     font-size: 20px;
-    color:white;
-    position:absolute;
+    color: white;
+    position: absolute;
     bottom: 4px;
     right: 2px;
 }
@@ -377,7 +388,7 @@ em {
     padding-left: 5px;
 }
 
-#tracker ul li b{
+#tracker ul li b {
     color: #515e67;
 }
 
@@ -548,9 +559,9 @@ em {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
 
-#header #userMenu ul li a#guestMenu-login{
-    position:absolute;
-    right:-180px;
+#header #userMenu ul li a#guestMenu-login {
+    position: absolute;
+    right: -180px;
     display: block;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
 }
@@ -560,11 +571,13 @@ em {
     display: block;
 }
 
-.large-Modal .modal-dialog{
-    width:80%;
+.large-Modal .modal-dialog {
+    width: 80%;
 }
 
-pre{ padding:0; }
+pre {
+    padding: 0;
+}
 
 /**
     THEME ENDS HERE
@@ -670,9 +683,9 @@ div.entryBox .header {
     background-color: #eeeeee;
 }
 
-div.entryBox .header.closed{
-    border-radius:8px;
-    border-bottom:none;
+div.entryBox .header.closed {
+    border-radius: 8px;
+    border-bottom: none;
 }
 
 div.entryBox .header span {
@@ -907,7 +920,7 @@ fieldset legend {
 }
 
 .listApis tr td {
-    padding: 3px;;
+    padding: 3px;
 }
 
 .service-container {
@@ -951,8 +964,8 @@ ul.grpsListing {
     margin: 0;
     list-style: none;
     display: inline-block;
-    padding-left: 5px;
     padding: 0;
+    padding-left: 5px;
 }
 
 .grpsListing li {
@@ -980,7 +993,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .apiAccess em {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 fieldset .grid table {
@@ -1325,7 +1338,7 @@ div.entryBox .body .btn-primary.noFloat {
     border-radius: 5px;
     list-style-type: none;
     margin-right: 20px;
-    margin-bottom:5px;
+    margin-bottom: 5px;
 }
 
 .npicons {
@@ -1341,4 +1354,28 @@ div.entryBox .body .btn-primary.noFloat {
 
 .view table tr.odd {
     background: #F8F8F8;
+}
+
+.languageSelect {
+    float: right;
+}
+
+.languageSelect a {
+    color: #337ab7;
+}
+
+.languageSelect a.active {
+    color: #000;
+}
+
+.breakAll {
+    word-break: break-all;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
 }

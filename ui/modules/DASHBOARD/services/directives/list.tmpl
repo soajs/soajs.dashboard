@@ -1,0 +1,63 @@
+<section ng-controller="servicesCtrl">
+	<script type="text/ng-template" id="serviceInfoBox.html">
+		<div class="modal-header">
+			<h3 class="modal-title">{{title}}</h3>
+		</div>
+		<div class="modal-body">
+			<div ng-bind-html="text"></div>
+		</div>
+		<div class="modal-footer" ng-if="data">
+			<button class="btn btn-primary" ng-click="deploy()">{{translation.deploy[LANG]}}</button>
+			<button class="btn btn-danger" ng-click="ok()">{{translation.close[LANG]}}</button>
+		</div>
+	</script>
+
+	<div class="entryBoxes" ng-show="grid.rows">
+		<div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">
+			<div class="header closed">
+				<a href="" ng-click="showHide(service)">
+					<span class="icon icon-{{service.icon || 'plus'}}"></span>
+				</a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
+				<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired']}}</span>
+				<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout']}}</span>
+				<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal']}}</span>
+				<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
+			</div>
+			<div class="entryAction">
+			</div>
+			<div class="body grid" style="display:none;">
+				<fieldset ng-repeat="(grp, val) in service.fixList" class="">
+					<legend>{{grp}}</legend>
+					<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
+
+					<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
+						<tbody>
+							<tr>
+								<th class="labelApi">{{translation.label[LANG]}}</th>
+								<th class="routeApi">{{translation.route[LANG]}}</th>
+							</tr>
+							<tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+								<td>{{myApi.l}}
+								</td>
+								<td><span>{{myApi.v}}</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
+						<tbody>
+							<tr>
+								<th class="labelApi">{{translation.label[LANG]}}</th>
+								<th class="routeApi">{{translation.route[LANG]}}</th>
+							</tr>
+							<tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+								<td>{{myApi.l}}</td>
+								<td class=""><span>{{myApi.v}}</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+</section>

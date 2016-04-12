@@ -1,8 +1,8 @@
 <label>{{entry.label}}</label>
 <ul>
 <li ng-repeat="dv in entry.value">
-    <input type="radio" name="{{entry.name}}" id="{{entry.name+'_'+$index}}" ng-model="form.formData[entry.name]" value="{{dv.v}}" tooltip="{{entry.tooltip}}" ng-checked="dv.selected" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form )"/>
-    <span>{{dv.v}}</span>
+    <input type="radio" name="{{entry.name}}" id="{{entry.name+'_'+$index}}" class="{{entry.class}}" ng-model="form.formData[entry.name]" value="{{dv.v}}" tooltip="{{entry.tooltip}}" ng-checked="dv.selected" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form )"/>
+    <span>{{dv.l || dv.v}}</span>
 </li>
 </ul>
 <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>

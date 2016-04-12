@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git@github.com:soajs/soajs.dashboard.git"
   },
-  "license" : "Apache-2.0",
+  "license": "Apache-2.0",
   "engines": {
     "node": "*"
   },
@@ -19,17 +19,17 @@
   },
   "devDependencies": {
     "soajs.mongodb.data": "0.1.*",
-    "soajs.controller": "0.1.*",
-    "soajs.urac": "0.1.*",
-    "grunt": "0.4.5",
-    "grunt-contrib-jshint": "0.10.0",
-    "grunt-jsdoc": "*",
-    "grunt-contrib-clean": "*",
-    "grunt-mocha-test": "*",
-    "grunt-env": "*",
-    "grunt-istanbul": "0.3.0",
-    "grunt-coveralls": "*",
-    "jshint": "*",
+    "soajs.controller": "0.2.*",
+    "soajs.urac": "0.2.*",
+    "grunt":"0.4.5",
+    "grunt-contrib-jshint":"*",
+    "grunt-jsdoc" : "*",
+    "grunt-contrib-clean" : "*",
+    "grunt-mocha-test" : "*",
+    "grunt-env" : "*",
+    "grunt-istanbul" : "*",
+    "grunt-coveralls" : "*",
+    "jshint" : "*",
     "lodash": "*",
     "mocha": "*",
     "shelljs": "*",
@@ -37,17 +37,18 @@
   },
   "dependencies": {
     "async": "*",
-    "ncp": "*",
-    "dockerode": "*",
-    "object-hash": "*",
     "bcrypt": "*",
+    "dockerode": "*",
     "formidable": "*",
-    "unzip": "*",
+    "github": "^0.2.4",
+    "gridfs-stream": "*",
     "mkdirp": "*",
+    "ncp": "*",
+    "object-hash": "*",
+    "request": "*",
     "rimraf": "*",
-    "request": "*"
-  },
-  "peerDependencies": {
-    "soajs": "0.2.*"
+    "soajs": "0.3.*",
+    "shortid": "^2.2.4",
+    "unzip2": "*"
   }
 }

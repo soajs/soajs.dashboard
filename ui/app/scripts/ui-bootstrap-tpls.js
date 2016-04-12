@@ -2276,10 +2276,10 @@ angular.module('ui.bootstrap.pagination', [])
   itemsPerPage: 10,
   boundaryLinks: false,
   directionLinks: true,
-  firstText: 'First',
-  previousText: 'Previous',
-  nextText: 'Next',
-  lastText: 'Last',
+  firstText: translation.first[LANG],
+  previousText: translation.previous[LANG],
+  nextText: translation.next[LANG],
+  lastText: translation.last[LANG],
   rotate: true
 })
 

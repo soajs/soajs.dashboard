@@ -1,72 +1,75 @@
 <fieldset class="{{entry.class}}">
-    <legend><a href="" ng-click="form.showHide(entry)"><span class="icon icon-{{entry.icon}}"></span></a>{{entry.label}}</legend>
-    <div id="{{entry.name}}" ng-show="!entry.collapsed">
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr ng-repeat="entry in entry.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
-                <td ng-switch-when="textarea">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
-                </td>
+	<legend><a href="" ng-click="form.showHide(entry)"><span class="icon icon-{{entry.icon}}"></span></a>{{entry.label}}
+	</legend>
+	<div id="{{entry.name}}" ng-show="!entry.collapsed">
+		<table border="0" cellspacing="0" cellpadding="0" width="100%">
+			<tr ng-repeat="entry in entry.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
+				<td ng-switch-when="textarea">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="editor">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
-                </td>
+				<td ng-switch-when="editor">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="html" class="typeHtml">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
-                </td>
+				<td ng-switch-when="html" class="typeHtml">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="radio">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
-                </td>
+				<td ng-switch-when="radio">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="select" class="form-select">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
-                </td>
+				<td ng-switch-when="select" class="form-select">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="checkbox" class="form-checkbox">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
-                </td>
+				<td ng-switch-when="checkbox" class="form-checkbox">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="multi-select">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/multi-select.tmpl'"></div>
-                </td>
+				<td ng-switch-when="multi-select">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/multi-select.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="readonly">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/readonly.tmpl'"></div>
-                </td>
+				<td ng-switch-when="readonly">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/readonly.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="date-picker">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
-                </td>
+				<td ng-switch-when="date-picker">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="document">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
-                </td>
+				<td ng-switch-when="document">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="audio">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
-                </td>
+				<td ng-switch-when="audio">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="video">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
-                </td>
+				<td ng-switch-when="video">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="image">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
-                </td>
+				<td ng-switch-when="image">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="number">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/number.tmpl'"></div>
-                </td>
+				<td ng-switch-when="number">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/number.tmpl'"></div>
+				</td>
 
-	            <td ng-switch-when="phone">
-		            <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/phone.tmpl'"></div>
-	            </td>
-
-                <td ng-switch-default="">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
-                </td>
-            </tr>
-        </table>
-    </div>
+				<td ng-switch-when="phone">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/phone.tmpl'"></div>
+				</td>
+				<td ng-switch-when="json">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/json.tmpl'"></div>
+				</td>
+				<td ng-switch-default="">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
 </fieldset>

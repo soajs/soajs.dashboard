@@ -1,0 +1,26 @@
+<section ng-controller="environmentCtrl" ng-show="grid.rows">
+    <span ng-if="access.addEnvironment"><a href="" ng-click="addEnvironment()" class="btn btn-primary">{{translation.addNewEnvironment[LANG]}}</a><br/><br/></span>
+
+    <div class="entryBoxes">
+        <div ng-repeat="row in grid.rows" class="entryBox">
+            <div class="header">{{translation.code[LANG]}}: {{row['code']}} / {{translation.domain[LANG]}}: {{row.domain}} / {{translation.port[LANG]}}: {{row.port}}</div>
+            <div class="body">
+                <div class="description">
+                    {{row['description']}}
+                </div>
+                <br/>
+                <div ng-include="'modules/DASHBOARD/environments/directives/list-service-config.tmpl'"></div>
+                <div class="entryAction">
+
+                    <a ng-if="access.editEnvironment" href="" ng-click="updateEnvironment(row);">
+                        <span class="icon icon-pencil2" tooltip="{{translation.editEnvironment[LANG]}}"></span>
+                    </a>
+
+                    <a  ng-if="access.deleteEnvironment" href="" ng-confirm-click="{{translation.areYouSureWantRemoveThisEnvironment[LANG]}}" ng-click="removeEnvironment(row);">
+                        <span class="icon icon-cross" tooltip="{{translation.removeEnvironment[LANG]}}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

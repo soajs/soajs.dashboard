@@ -1,0 +1,21 @@
+<br/>
+<div class="w100 c-both table">
+    <div class="dbBox c-both" style="float:none; display:block; width:100%;" ng-repeat="(entryLabel, entryField) in data.soajsService.apis track by entryLabel">
+        <div class="head">
+            <b><span class="icon icon-cog"></span>{{data.genericService.config.schema[entryLabel]._apiInfo.l}}</b>&nbsp;<span ng-show="data.genericService.config.schema[entryLabel]._apiInfo.groupMain" class="icon icon-star-full"></span>
+        </div>
+        <div class="info">
+            <b>{{translation.group[LANG]}}:</b>&nbsp;{{data.genericService.config.schema[entryLabel]._apiInfo.group}}<br/>
+            <b>{{translation.route[LANG]}}:</b>&nbsp;{{entryLabel}}<br/>
+            <b>{{translation.method[LANG]}}:</b>&nbsp;{{entryField.method}}<br/>
+            <b>{{translation.type[LANG]}}:</b>&nbsp;{{entryField.type}}<br />
+            <b>mw:</b>&nbsp;{{entryField.mw}}<br />
+            <b>{{translation.inputs[LANG]}}:</b>&nbsp;{{data.genericService.config.schema[entryLabel].commonFields}}<br />
+            <b>{{translation.workflow[LANG]}}:</b><br/>
+            <div ng-repeat="(step, code) in entryField.workflow track by step" ng-show="step">
+                <b>{{step}}</b><br />
+                <pre><code class="javascript">{{code}}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>

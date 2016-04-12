@@ -1,86 +1,92 @@
 <form id="{{form.id}}" name="{{form.name}}" class="css-form" novalidate>
-    <div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
-        <span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span>
-    </div>
-    <div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
-        <div ng-show="form.modal">
-            <alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="form.closeAlert($index)">{{alert.msg}}</alert>
-        </div>
-        <div ng-show="form.msgs.header" class="header-msg" ng-bind-html="form.msgs.header|toTrustedHtml"></div>
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
-            <tr ng-repeat="entry in form.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
-                <td ng-switch-when="textarea">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
-                </td>
+	<div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
+		<span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span>
+	</div>
+	<div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
+		<div ng-show="form.modal">
+			<alert ng-repeat="alert in form.alerts" type="{{alert.type}}" close="form.closeAlert($index)">
+				{{alert.msg}}
+			</alert>
+		</div>
+		<div ng-show="form.msgs.header" class="header-msg" ng-bind-html="form.msgs.header|toTrustedHtml"></div>
+		<table border="0" cellspacing="0" cellpadding="0" width="100%">
+			<tr ng-repeat="entry in form.entries" class="form-group tr-{{entry.name}}-wrapper" ng-switch="entry.type">
+				<td ng-switch-when="textarea">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/textarea.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="editor">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
-                </td>
+				<td ng-switch-when="editor">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
+				</td>
 				
 				<td ng-switch-when="html" class="typeHtml">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
-                </td>
-                
-                <td ng-switch-when="radio">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
-                </td>
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="select" class="form-select">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
-                </td>
+				<td ng-switch-when="radio">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/radio.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="checkbox" class="form-checkbox">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
-                </td>
+				<td ng-switch-when="select" class="form-select">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/select.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="multi-select">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/multi-select.tmpl'"></div>
-                </td>
+				<td ng-switch-when="checkbox" class="form-checkbox">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/checkbox.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="readonly">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/readonly.tmpl'"></div>
-                </td>
+				<td ng-switch-when="multi-select">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/multi-select.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="date-picker">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
-                </td>
+				<td ng-switch-when="readonly">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/readonly.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="group">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
-                </td>
+				<td ng-switch-when="date-picker">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/date-picker.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="document">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
-                </td>
+				<td ng-switch-when="group">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="audio">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
-                </td>
+				<td ng-switch-when="document">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="video">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
-                </td>
+				<td ng-switch-when="audio">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/audio.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="image">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
-                </td>
+				<td ng-switch-when="video">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/video.tmpl'"></div>
+				</td>
 
-                <td ng-switch-when="number">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/number.tmpl'"></div>
-                </td>
+				<td ng-switch-when="image">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/image.tmpl'"></div>
+				</td>
 
-	            <td ng-switch-when="phone">
-		            <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/phone.tmpl'"></div>
-	            </td>
+				<td ng-switch-when="number">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/number.tmpl'"></div>
+				</td>
 
-                <td ng-switch-default="">
-                    <div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}"><br/>
-        <div ng-show="form.msgs.footer" class="footer-msg" ng-bind-html="form.msgs.footer|toTrustedHtml"></div>
-        <input ng-repeat="formAction in form.actions" type="{{formAction.type}}" value="{{formAction.label}}" ng-click="form.do(formAction)" class="btn btn-sm btn-{{formAction.btn}}"/>
-    </div>
+				<td ng-switch-when="phone">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/phone.tmpl'"></div>
+				</td>
+				<td ng-switch-when="json">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/json.tmpl'"></div>
+				</td>
+
+				<td ng-switch-default="">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}"><br/>
+
+		<div ng-show="form.msgs.footer" class="footer-msg" ng-bind-html="form.msgs.footer|toTrustedHtml"></div>
+		<input ng-repeat="formAction in form.actions" type="{{formAction.type}}" value="{{formAction.label}}" ng-click="form.do(formAction)" class="btn btn-sm btn-{{formAction.btn}}"/>
+	</div>
 </form>

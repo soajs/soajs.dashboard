@@ -1,0 +1,50 @@
+<br/>
+<div ng-if="row.services">
+    <fieldset>
+        <div class="grid">
+            <h3>{{translation.reloadRegistry[LANG]}}</h3>
+            <p>{{translation.theFollowingConfigurationModifiedEveryTimeReloadRegistryMaintenanceOperation[LANG]}}</p>
+            <table width="100%">
+                <tr class="first odd">
+                    <td width="7%" valign="top"><b>{{translation.awareness[LANG]}}</b></td>
+                    <td width="44%" valign="top" ng-bind-html="row.services.config.awareness|object"></td>
+                    <td width="6%" valign="top"><b>Cors</b></td>
+                    <td width="44%" valign="top" ng-bind-html="row.services.config.cors|object"></td>
+                </tr>
+                <tr class="even">
+                    <td valign="top"><b class="capitalize">{{translation.key[LANG]}}</b></td>
+                    <td valign="top" ng-bind-html="row.services.config.key|object"></td>
+                    <td valign="top"><b></b></td>
+                    <td valign="top"></td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <div class="grid">
+            <h3>{{translation.restartService[LANG]}}</h3>
+            <p>{{translation.theFollowingConfigurationModifiedEveryTimeReloadRegistryMaintenanceOperationRequiresServiceRestartContent[LANG]}}</p>
+            <table width="100%">
+                <tr class="first odd">
+                    <td width="6%" valign="top"><b>{{translation.cookie[LANG]}}</b></td>
+                    <td width="44%" valign="top" ng-bind-html="row.services.config.cookie|object"></td>
+                    <td width="6%" valign="top"><b>oAuth</b></td>
+                    <td width="44%" valign="top" ng-bind-html="row.services.config.oauth|object"></td>
+                </tr>
+                <tr class="even">
+                    <td valign="top"><b>{{translation.logger[LANG]}}</b></td>
+                    <td valign="top" ng-bind-html="row.services.config.logger|object"></td>
+                    <td valign="top"><b>Ports</b></td>
+                    <td valign="top" ng-bind-html="row.services.config.ports|object"></td>
+                </tr>
+                <tr class="odd">
+                    <td valign="top"><b>{{translation.session[LANG]}}</b></td>
+                    <td valign="top" ng-bind-html="row.services.config.session|object"></td>
+                    <td width="7%" valign="top"><b>Controller</b></td>
+                    <td valign="top" ng-bind-html="row.services.controller|object"></td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+</div>

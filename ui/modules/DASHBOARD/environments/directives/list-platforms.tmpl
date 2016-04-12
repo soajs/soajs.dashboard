@@ -1,0 +1,66 @@
+    <section ng-controller="platformsCtrl">
+        <select class="form-control f-left selectCustom" ng-model="deployer.type">
+            <option value="manual">{{translation.manual[LANG]}}</option>
+            <option value="container">{{translation.container[LANG]}}</option>
+        </select>&nbsp;
+        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+        <br><br><br>
+        <div ng-if="allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket']">
+            <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
+            <br><br>
+        </div>
+        <div class="entryBoxes">
+            <div ng-repeat="driver in platforms" class="entryBox mb20">
+                <div class="header">
+                    {{driver.label}}&nbsp;&nbsp;&nbsp;<span ng-if="driver.uiType !== 'socket'"><b>[ {{translation.host[LANG]}}: {{driver.host}} | {{translation.port[LANG]}}: {{driver.port}} ]</b></span>
+                    <span ng-if="uiSelected === driver.label" class="text-green">{{translation.selected[LANG]}}</span>
+                    <span class="rightActions">
+                        <a ng-if="access.platforms.clear" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
+                            <span class="icon icon-cross" tooltip="{{translation.deleteDriver[LANG]}}"></span>
+                        </a>
+                        <a ng-if="access.platforms.update" href="" ng-click="editDriver(driver);">
+                            <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
+                        </a>
+                        <a href="" ng-click="uploadCerts(driver.label)" ng-if="driver.uiType !== 'socket'">
+                            <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
+                        </a>
+                        <a href="" ng-click="selectDriver(driver.label)" ng-if="allowSelect">
+                            <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
+                        </a>
+                    </span>
+                </div>
+                <div class="body" ng-if="driver.uiType !== 'socket'">
+                    <label>{{translation.certificates[LANG]}}:&nbsp;</label><br>
+                    <div class="entryBoxes entryBoxesGrid">
+                        <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in driver.certificates">
+                            <b>{{cert.filename}}</b>
+                            <a href="" ng-click="removeCert(cert._id, driver.label)">
+                                <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <alert type="warning" ng-if="!driver.certificates || driver.certificates.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
+                </div>
+                <div class="body" ng-if="driver.uiType === 'socket'">
+                    <label>{{translation.socketPath[LANG]}}:&nbsp;</label>{{driver.socketPath}}<br>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="text/ng-template" id="uploadCertsInfo.html">
+        <div class="modal-body">
+            <div ng-bind-html="text"></div>
+        </div>
+        <div class="modal-footer" ng-if="data">
+            <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="uploadCerts.tmpl">
+        <div ng-include="'modules/DASHBOARD/environments/directives/uploadCerts.tmpl'"></div>
+    </script>
+
+    <script type="text/ng-template" id="addEditDriver.tmpl">
+        <div ng-include="'modules/DASHBOARD/environments/directives/addEditDriver.tmpl'"></div>
+    </script>

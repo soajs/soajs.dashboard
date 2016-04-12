@@ -1,0 +1,49 @@
+<h4>Listing:</h4>
+<div class="view">
+    <table width="100%">
+    <caption>{{translation.defaultSortingField[LANG]}}: {{data.soajsUI.list.defaultSortField}}</caption>
+        <thead>
+            <tr>
+                <th>{{translation.label[LANG]}}</th>
+                <th>{{translation.field[LANG]}}</th>
+                <th>{{translation.filter[LANG]}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="entry in data.soajsUI.list.columns" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td>{{entry.label}}</td>
+                <td>{{entry.field}}</td>
+                <td ng-if="entry.filter.length > 0">{{entry.filter}}</td>
+                <td ng-if="entry.filter.length === 0">N/A</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<br/>
+<h4>{{translation.add[LANG]}}:</h4>
+<div class="w100 c-both inlineAPIBox" style="display: table">
+    <div class="entryBoxes entryBoxesGrid" style="height:100px;">
+        <div class="dbBox" style="width:100% !important;" ng-repeat="entry in data.soajsUI.form.add">
+            <div class="head">
+                <b>{{entry.label}}</b>
+            </div>
+            <div class="info">
+                <pre><code class="javascript">{{entry.print}}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<h4 class ="capitalize">{{translation.update[LANG]}}:</h4>
+<div class="w100 c-both inlineAPIBox" style="display: table">
+    <div class="entryBoxes entryBoxesGrid" style="height:100px;">
+        <div class="dbBox" style="width:100% !important;" ng-repeat="entry in data.soajsUI.form.update">
+            <div class="head">
+                <b>{{entry.label}}</b>
+            </div>
+            <div class="info">
+                <pre><code class="javascript">{{entry.print}}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>

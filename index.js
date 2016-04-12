@@ -9,18 +9,13 @@ var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 var host = require("./lib/host.js");
+var github = require("./lib/github.js");
 var services = require("./lib/services.js");
+var daemons = require("./lib/daemons.js");
+var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
-var service = new soajs.server.service({
-	"oauth": false,
-	"session": true,
-	"security": true,
-	"multitenant": true,
-	"acl": true,
-    "roaming": true,
-	"config": config
-});
+var service = new soajs.server.service(config);
 
 function checkForMongo(req) {
 	if(!mongo) {
@@ -104,6 +99,42 @@ service.init(function() {
 	service.get("/environment/clusters/list", function(req, res) {
 		checkForMongo(req);
 		environment.listClusters(config, mongo, req, res);
+	});
+	service.get("/environment/platforms/list", function (req, res) {
+		checkForMongo(req);
+		environment.listPlatforms(config, mongo, req, res);
+	});
+	service.post("/environment/platforms/cert/upload", function (req, res) {
+		checkForMongo(req);
+		environment.uploadCerts(config, mongo, req, res);
+	});
+	service.get("/environment/platforms/cert/delete", function (req, res) {
+		checkForMongo(req);
+		environment.removeCert(config, mongo, req, res);
+	});
+	service.post("/environment/platforms/cert/choose", function (req, res) {
+		checkForMongo(req);
+		environment.chooseExistingCerts(config, mongo, req, res);
+	});
+	service.post("/environment/platforms/driver/add", function (req, res) {
+		checkForMongo(req);
+		environment.addDriver(config, mongo, req, res);
+	});
+	service.post('/environment/platforms/driver/edit', function (req, res) {
+		checkForMongo(req);
+		environment.editDriver(config, mongo, req, res);
+	});
+	service.get("/environment/platforms/driver/delete", function (req, res) {
+		checkForMongo(req);
+		environment.deleteDriver(config, mongo, req, res);
+	});
+	service.post("/environment/platforms/driver/changeSelected", function (req, res) {
+		checkForMongo(req);
+		environment.changeSelectedDriver(config, mongo, req, res);
+	});
+	service.post("/environment/platforms/deployer/type/change", function (req, res) {
+		checkForMongo(req);
+		environment.changeDeployerType(config, mongo , req, res);
 	});
 
 	/**
@@ -312,6 +343,59 @@ service.init(function() {
 		host.deployService(config, mongo, req, res);
 	});
 
+	service.post("/hosts/deployDaemon", function (req, res) {
+		checkForMongo(req);
+		host.deployDaemon(config, mongo, req, res);
+	});
+	service.get("/hosts/container/zombie/list", function (req, res) {
+		checkForMongo(req);
+		host.getContainersNoHost(config, mongo, req, res);
+	});
+	service.get("/hosts/container/zombie/delete", function (req, res) {
+		checkForMongo(req);
+		host.deleteZombieContainer(config, mongo, req, res);
+	});
+	service.get("/hosts/container/zombie/getLogs", function (req, res) {
+		checkForMongo(req);
+		host.getZombieContainerLogs(config, mongo, req, res);
+	});
+
+	/**
+	 * Github App features
+	 */
+	service.post("/github/login", function (req, res) {
+		checkForMongo(req);
+		github.login(mongo, config, req, res);
+	});
+	service.get("/github/logout", function (req, res) {
+		checkForMongo(req);
+		github.logout(mongo, config, req, res);
+	});
+	service.get("/github/accounts/list", function (req, res) {
+		checkForMongo(req);
+		github.listAccounts(mongo, config, req, res);
+	});
+	service.get("/github/getRepos", function (req, res) {
+		checkForMongo(req);
+		github.getRepos(mongo, config, req, res);
+	});
+	service.get("/github/getBranches", function (req, res) {
+		checkForMongo(req);
+		github.getBranches(mongo, config, req, res);
+	});
+	service.post("/github/repo/activate", function (req, res) {
+		checkForMongo(req);
+		github.activateRepo(mongo, config, req, res);
+	});
+	service.get('/github/repo/deactivate', function (req, res) {
+		checkForMongo(req);
+		github.deactivateRepo(mongo, config, req, res);
+	});
+	service.post('/github/repo/sync', function (req, res) {
+		checkForMongo(req);
+		github.syncRepo(mongo, config, req, res);
+	});
+
 	/**
 	 * Services features
 	 */
@@ -319,14 +403,53 @@ service.init(function() {
 		checkForMongo(req);
 		services.list(config, mongo, req, res);
 	});
-	service.post("/services/update", function(req, res) {
+
+	/**
+	 * Daemons features
+	 */
+	service.post("/daemons/list", function (req, res) {
 		checkForMongo(req);
-		services.update(config, mongo, req, res);
+		daemons.list (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/add", function (req, res) {
+		checkForMongo(req);
+		daemons.addGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateGroupConfig (config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/delete", function (req, res) {
+		checkForMongo(req);
+		daemons.deleteGroupConfig (config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/serviceConfig/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateServiceConfig(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/serviceConfig/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listServiceConfig(config, mongo, req, res);
+	});
+	service.post("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
+		checkForMongo(req);
+		daemons.updateTenantExtKeys(config, mongo, req, res);
+	});
+	service.get("/daemons/groupConfig/tenantExtKeys/list", function (req, res) {
+		checkForMongo(req);
+		daemons.listTenantExtKeys(config, mongo, req, res);
 	});
 
-	service.post("/services/upload", function(req, res) {
+	/**
+	 * Static Content features
+	 */
+	service.post("/staticContent/list", function (req, res) {
 		checkForMongo(req);
-		services.upload(config, mongo, req, res);
+		staticContent.list(config, mongo, req, res);
 	});
 
 	/**

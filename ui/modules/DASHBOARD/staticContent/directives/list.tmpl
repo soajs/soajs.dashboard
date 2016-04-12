@@ -1,0 +1,17 @@
+<section ng-controller="staticContentCtrl">
+    <div ng-if="staticContentList && staticContentList.length === 0">
+        <alert type="warning">No static content added yet!</alert>
+    </div>
+    <div class="entryBoxes entryBoxesGrid">
+        <div id="{{source._id}}" ng-repeat="source in staticContentList" class="entryBox customEntryBox">
+            <div class="header opened">
+                {{source.name|uppercase}}
+            </div>
+            <div class="body">
+                <label>{{translation.owner[LANG]}}:</label>&nbsp;{{source.src.owner}}<br>
+                <label>{{translation.repository[LANG]}}:</label>&nbsp;{{source.src.repo}}<br>
+                <label>{{translation.dashUI[LANG]}}:</label>&nbsp;{{source.dashUI}}
+            </div>
+        </div>
+    </div>
+</section>

@@ -83,6 +83,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 	var expDateValue = new Date().toISOString();
 	var envId;
+	var productId;
+
 	describe("environment tests", function () {
 		before(function (done) {
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, record) {
@@ -113,7 +115,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 	});
 
 	describe("products tests", function () {
-		var productId;
+
 		before(function (done) {
 			mongo.findOne('products', {'code': 'DSBRD'}, function (error, record) {
 				assert.ifError(error);
@@ -141,7 +143,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 			});
 
-
 			it("Fail - locked - delete product", function (done) {
 				var params = {
 					qs: {'id': productId}
@@ -154,8 +155,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
-
 		});
 
 		describe("package", function () {
@@ -218,7 +217,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
 		});
 	});
 
@@ -451,7 +449,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						form: {
 							'expDate': expDateValue,
 							'device': {},
-							'geo': {}
+							'geo': {},
+							'env': 'DASHBOARD'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -471,7 +470,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: appExtKey
+							key: appExtKey,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'extKey': appExtKey,
@@ -500,7 +500,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							key: key
 						},
 						form: {
-							'extKey': appExtKey
+							'extKey': appExtKey,
+							'extKeyEnv': 'DASHBOARD'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
@@ -523,7 +524,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: key
+							key: key,
+							extKeyEnv: 'DASHBOARD'
 						},
 						form: {
 							'envCode': 'DEV',
@@ -585,18 +587,19 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("will get owner key", function (done) {
-			executeMyRequest({
-				'headers': {
+		it("success - locked. cant delete package", function (done) {
+			var params = {
+				'headers':{
 					'key': newKey,
 					'soajsauth': soajsauth
 				},
-				"qs":{
-					"main": true
+				qs: {
+					'id': productId,
+					"code": "CLIENT"
 				}
-			}, 'key/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
-				assert.equal(body.result, true);
+			};
+			executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+				assert.ok(body);
 				assert.ok(body.data);
 				done();
 			});
@@ -607,6 +610,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				'headers': {
 					'key': newKey,
 					'soajsauth': soajsauth
+				},
+				"qs":{
+					"main": true
 				}
 			}, 'key/get', 'get', function (body) {
 				console.log(JSON.stringify(body));

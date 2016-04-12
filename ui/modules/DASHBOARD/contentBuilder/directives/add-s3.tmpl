@@ -1,0 +1,19 @@
+<div id="wizardStep3" ng-show="steps.indexOf(true) === 2">
+
+    <div class="w100 table">
+        <div class="table-cell w10">
+            <a href="" ng-click="goBack()"><span class="npicons icon icon-circle-left"></span></a>
+        </div>
+
+        <div class="table-cell w80">
+            <div class="w90 wizardForm" style="margin:0 auto;">
+                <em>{{translation.enterGeneralConfigurationSOAJSRequiresInitializeService[LANG]}}</em>
+                <ngform></ngform>
+            </div>
+        </div>
+
+        <div class="table-cell w10">
+            <a href="" ng-click="validateStep3(false)"><span class="npicons icon icon-circle-right"></span></a>
+        </div>
+    </div>
+</div>
