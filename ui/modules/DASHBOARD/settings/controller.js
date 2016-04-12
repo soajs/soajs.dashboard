@@ -25,7 +25,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					"method": "get",
 					"routeName": "/dashboard/tenant/db/keys/list"
 				}, function (error, tenantDbKeys) {
-					console.log (tenantDbKeys);
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					} else {
@@ -50,15 +49,16 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.markTenantDashboardAccess = function (oneTenant, tenantDbKeys, callback) {
 		for (var i = 0; i < tenantDbKeys.length; i++) {
 			if (oneTenant.code === tenantDbKeys[i].code) {
-				oneTenant.dashboardAccess = true;
+				if (!oneTenant.dashboardAccess) {
+					oneTenant.dashboardAccess = true;
+				}
 				for (var j = 0; j < oneTenant.applications.length; j++) {
 					for (var k = 0; k < oneTenant.applications[j].keys.length; k++) {
 						for (var l = 0; l < oneTenant.applications[j].keys[k].extKeys.length; l++) {
-							if (oneTenant.applications[j].keys[k].extKeys[l].extKey === tenantDbKeys[i].key) {
+							if (oneTenant.applications[j].keys[k].extKeys[l].extKey === tenantDbKeys[i].key && oneTenant.applications[j].keys[k].extKeys[l].env === tenantDbKeys[i].env) {
 								oneTenant.applications[j].dashboardAccess = true;
 								oneTenant.applications[j].keys[k].dashboardAccess = true;
 								oneTenant.applications[j].keys[k].extKeys[l].dashboardAccess = true;
-								return callback(oneTenant);
 							}
 						}
 					}
