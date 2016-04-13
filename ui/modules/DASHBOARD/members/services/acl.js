@@ -174,7 +174,7 @@ membersAclService.service('membersAclHelper', [function () {
 						var service = {};
 						for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
 							if (currentScope.tenantApp.services[i].name === serviceName) {
-								if (myAcl[oneEnv.code.toUpperCase()][serviceName]) {
+								if (myAcl[oneEnv.code.toUpperCase()] && myAcl[oneEnv.code.toUpperCase()][serviceName]) {
 									myAcl[oneEnv.code.toUpperCase()][serviceName].name = currentScope.tenantApp.services[i].name;
 									if (currentScope.tenantApp.services[i].apis) {
 										myAcl[oneEnv.code.toUpperCase()][serviceName].apiList = currentScope.tenantApp.services[i].apis;
