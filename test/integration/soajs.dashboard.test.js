@@ -143,8 +143,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"password": "soajs key lal massa"
 					},
 					"logger": {
-						"src": true,
-						"level": "debug"
+						"level": "fatal",
+						"formatter": {
+							"outputMode": "short"
+						}
 					},
 					"cors": {
 						"enabled": true,
@@ -1353,8 +1355,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"password": "soajs key lal massa"
 								},
 								"logger": {
-									"src": true,
-									"level": "debug"
+									"level": "fatal",
+									"formatter": {
+										"outputMode": "short"
+									}
 								},
 								"cors": {
 									"enabled": true,
