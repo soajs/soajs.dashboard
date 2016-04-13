@@ -470,7 +470,6 @@ describe("Certificates tests", function () {
             };
 
             executeMyRequest(params, "environment/platforms/driver/delete", 'get', function (body) {
-                console.log(body);
 	            assert.ok(body.result);
                 assert.ok(body.data);
                 done();

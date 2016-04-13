@@ -84,7 +84,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				}
 			};
 			executeMyRequest(params, 'github/login', 'post', function (body) {
-				console.log(body);
 				assert.ok(body);
 				assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 				done();
@@ -119,7 +118,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				}
 			};
 			executeMyRequest(params, 'github/login', 'post', function (body) {
-				console.log(body);
 				assert.deepEqual(body.errors.details[0], {"code": 752, "message": errorCodes[752]});
 				done();
 			});
@@ -161,7 +159,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/getRepos', 'get', function (body) {
-					//console.log(body);
 					assert.ok(body.data);
 					done();
 				});
@@ -204,7 +201,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
 						done();
 					});
@@ -281,7 +277,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					};
 					mongo.insert("services", srv, function (error) {
 						executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-							console.log(body.errors);
 							assert.equal(body.result, false);
 							assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
 							mongo.remove('services', {'name': 'testService'}, function (error) {
@@ -377,7 +372,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.equal(body.result, false);
 						assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
 						done();
@@ -449,7 +443,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/logout', 'get', function (body) {
-						console.log(body);
 						assert.equal(body.result, false);
 						assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
 						done();
@@ -471,7 +464,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -479,7 +471,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				
 				it("success - will sync single repo - change", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						//console.log(record);
 						assert.ok(record);
 						assert.ok(record.repos);
 						record.repos.forEach(function (repo) {
@@ -499,7 +490,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								}
 							};
 							executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-								console.log(body);
 								assert.ok(body.data);
 								done();
 							});
@@ -511,7 +501,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				
 				it("success - will sync multi repo - add", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						console.log(record);
 						assert.ok(record);
 						assert.ok(record.repos);
 						record.repos.forEach(function (repo) {
@@ -531,7 +520,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								}
 							};
 							executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-								console.log(body);
 								assert.ok(body.data);
 								done();
 							});
@@ -544,7 +532,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				
 				it("fail - sync repo - remove", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						//console.log(record);
 						assert.ok(record);
 						assert.ok(record.repos);
 						record.repos.forEach(function (repo) {
@@ -577,7 +564,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 									}
 								};
 								executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-									console.log(body.errors);
 									assert.deepEqual(body.errors.details[0], {"code": 768, "message": errorCodes[768]});
 									done();
 								});
@@ -588,7 +574,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 
 				it("success - will sync repo - remove", function (done) {
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						//console.log(record);
 						assert.ok(record);
 						assert.ok(record.repos);
 						record.repos.forEach(function (repo) {
@@ -628,7 +613,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								}
 							};
 							executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-								console.log(body);
 								assert.ok(body.data);
 								done();
 							});
@@ -660,7 +644,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								}
 							};
 							executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-								console.log(body);
 								assert.ok(body.data);
 								done();
 							});
@@ -699,7 +682,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 									}
 								};
 								executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-									console.log(body);
 									assert.ok(body.data);
 									assert.equal(body.data.status, 'outOfSync');
 									done();
@@ -725,7 +707,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -754,7 +735,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -769,7 +749,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -861,7 +840,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					//console.log(body);
 					assert.equal(body.result, true);
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
 						assert.ifError(error);
@@ -891,7 +869,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -910,7 +887,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -925,7 +901,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/logout', 'get', function (body) {
-						console.log(body);
 						assert.equal(body.result, false);
 						assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
 						done();
@@ -947,7 +922,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/sync', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -973,7 +947,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 							}
 						};
 						executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-							console.log(body.errors);
 							assert.equal(body.errors.codes[0], 766);
 							mongo.remove("hosts", {name: "sampleSuccess1"}, function (error) {
 								done();
@@ -1008,7 +981,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/activate', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						done();
 					});
@@ -1041,7 +1013,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						}
 					};
 					executeMyRequest(params, 'github/repo/deactivate', 'get', function (body) {
-						console.log(body);
 						assert.deepEqual(body.errors.details[0], {"code": 766, "message": errorCodes[766]});
 						done();
 					});
@@ -1070,7 +1041,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/login', 'post', function (body) {
-					console.log(body);
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {"code": 767, "message": errorCodes[767]});
 					done();
@@ -1106,7 +1076,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					}
 				};
 				executeMyRequest(params, 'github/logout', 'get', function (body) {
-					console.log(body);
 					assert.ok(body.data);
 					done();
 				});
@@ -1362,7 +1331,6 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				}
 			};
 			executeMyRequest(params, 'cb/add', 'post', function (body) {
-				console.log(body.errors);
 				assert.equal(body.errors.codes[0], 757);
 				done();
 			});

@@ -111,7 +111,6 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 					executeMyRequest(params, 'daemons/list', 'post', function (body) {
 						assert.ok(body.data);
 						assert.ok(body.data.length > 0);
-						console.log(body.data[0]);
 						done();
 					});
 				});

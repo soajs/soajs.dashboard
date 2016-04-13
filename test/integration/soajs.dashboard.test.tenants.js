@@ -166,7 +166,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/get', 'get', function (body) {
 						//assert.deepEqual(body.errors.details[0], {"code": 413, "message": errorCodes[413]});
-						console.log(body);
+						assert.ok(body.data);
 						done();
 					});
 				});
@@ -481,7 +481,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/add', 'post', function (body) {
 						assert.ok(body.errors);
-						console.log(body.errors);
 						done();
 					});
 				});
@@ -527,7 +526,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function (body) {
 						//assert.deepEqual(body.errors.details[0], {"code": 413, "message": errorCodes[413]});
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						assert.ok(body.data.code);
 						done();
@@ -541,7 +539,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {"code": 461, "message": errorCodes[461]});
 						done();
 					});
@@ -554,7 +551,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'product/packages/get', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {"code": 460, "message": errorCodes[460]});
 						done();
 					});
@@ -684,7 +680,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
 						assert.ok(body.errors);
-						console.log(body.errors);
 						done();
 					});
 				});
@@ -854,10 +849,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ifError(error);
 					assert.ok(record);
 					delete record._id;
-					console.log("************************");
-					console.log(record);
-					console.log("************************");
-					console.log(record.packages);
 					assert.deepEqual(record, {
 						"code": "TPROD",
 						"name": "test product updated",
@@ -916,7 +907,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -934,7 +924,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						tstgTenantId = body.data.id;
 						done();
@@ -1062,7 +1051,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/get', 'get', function (body) {
-						console.log(body);
 						assert.ok(body.data);
 						delete body.data._id;
 						assert.deepEqual(body.data, {
@@ -1092,7 +1080,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/update', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1188,7 +1175,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 								mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
 									assert.ifError(error);
 									tenantId = tenantRecord._id.toString();
-									console.log(JSON.stringify(tenantRecord));
 									done();
 								});
 							});
@@ -1228,7 +1214,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 						mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
@@ -1271,7 +1256,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 
 					executeMyRequest(params, 'tenant/get', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						assert.ok(body.data.oauth.authorization);
 						done();
@@ -1391,7 +1375,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 
 					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 						mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function (error, tenantRecord) {
@@ -1459,7 +1442,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {}
 					};
 					executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {
 							"code": 451,
 							"message": "Unable to updated tenant oAuth User"
@@ -1542,7 +1524,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 
 					executeMyRequest(params, 'tenant/oauth/users/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 
@@ -1770,7 +1751,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
-						console.log(body);
 						assert.ok(body.errors);
 						done();
 					});
@@ -1877,7 +1857,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ok(body.data);
 						mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
 							assert.ifError(error);
-							console.log(JSON.stringify(records));
 							assert.ok(records.applications);
 							assert.equal(records.applications.length, 1);
 							applicationId = records.applications[0].appId.toString();
@@ -1945,7 +1924,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				it("fail - wrong id", function (done) {
 					executeMyRequest({qs: {id: wrong_Id}}, 'tenant/application/list/', 'get', function (body) {
 						assert.ok(body.errors);
-						console.log(body.errors);
 						done();
 					});
 				});
@@ -2038,7 +2016,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'tenant/application/key/add', 'post', function (body) {
 						assert.ok(body);
-						console.log(body);
 						done();
 					});
 				});
@@ -2192,7 +2169,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -2365,7 +2341,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -2671,7 +2646,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-				it("fail - wrong key", function (done) {
+				it("success - wrong key, will return empty result", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
@@ -2679,12 +2654,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 							key: 'fffdfs'
 						}
 					};
-					console.log(params);
-					///////////// check this . no error msg. just empty data
 					executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function (body) {
-						console.log(body);
-						console.log(' ******************************** ');
-						//assert.ok(body.errors);
+						assert.ok(body.data);
+						assert.equal(body.data.length, 0);
 						done();
 					});
 				});
@@ -2928,7 +2900,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					///// no error msg returned. just empty objct
 					executeMyRequest(params, 'tenant/application/key/config/list', 'get', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						done();
 					});
 				});
@@ -3113,7 +3084,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
-				console.log(tenantExtKey);
 				var params = {
 					qs: {
 						"id": tenantId,
@@ -3127,9 +3097,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 					assert.equal(body.result, true);
-					console.log(body);
 					checkIfKeyExists(tenantCode, function (error, deleted) {
-						console.log('deleted: ' + deleted);
 						assert.ifError(error);
 						//assert.ok(deleted);
 						//assert.equal(deleted, true);

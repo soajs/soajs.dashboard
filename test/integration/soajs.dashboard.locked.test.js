@@ -102,7 +102,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'environment/delete', 'get', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 500,
 						"message": "This record is locked. You cannot delete it"
@@ -135,7 +134,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'product/update', 'post', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 					done();
@@ -149,7 +147,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'product/delete', 'get', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 					done();
@@ -173,7 +170,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'product/packages/add', 'post', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 					done();
@@ -194,7 +190,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'product/packages/update', 'post', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
 						"message": "This record is locked. You cannot modify or delete it"
@@ -209,7 +204,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
 						"message": "This record is locked. You cannot modify or delete it"
@@ -228,11 +222,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				mongo.findOne('tenants', {'code': 'DBTN'}, function (error, tenantRecord) {
 					assert.ifError(error);
 					tenantId = tenantRecord._id.toString();
-					console.log(JSON.stringify(tenantRecord));
 					applicationId = tenantRecord.applications[0].appId.toString();
 					key = tenantRecord.applications[0].keys[0].key;
-					console.log(' ********** tenantRecord.applications[0].keys[0].extKeys');
-					console.log(tenantRecord.applications[0].keys[0].extKeys[0].extKey);
 					appExtKey = tenantRecord.applications[0].keys[0].extKeys[0].extKey;
 					done();
 				});
@@ -257,7 +248,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			it("FAIL - locked. cant delete tenant", function (done) {
 				executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'get', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 					done();
@@ -280,7 +270,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
 						"message": "This record is locked. You cannot modify or delete it"
@@ -299,7 +288,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				};
 				executeMyRequest(params, 'tenant/oauth/update/', 'post', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
 						"message": "This record is locked. You cannot modify or delete it"
@@ -311,7 +299,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			it("FAIL - locked. - cant delete oauth", function (done) {
 				executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'get', function (body) {
 					assert.ok(body);
-					console.log(JSON.stringify(body));
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
 						"message": "This record is locked. You cannot modify or delete it"
@@ -337,7 +324,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/add', 'post', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -362,7 +348,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -381,7 +366,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						}
 					}, 'tenant/application/delete/', 'get', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -402,10 +386,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'appId': applicationId
 						}
 					};
-					console.log(params);
 					executeMyRequest(params, 'tenant/application/key/add', 'post', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -425,7 +407,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -454,7 +435,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -482,7 +462,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -506,7 +485,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/delete/', 'post', function (body) {
 						assert.ok(body);
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 						done();
@@ -534,8 +512,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					};
 					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
 						assert.ok(body);
-						console.log(' applicationId: ' + applicationId);
-						console.log(' key: ' + key);
 						done();
 					});
 				});
@@ -579,7 +555,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
-				console.log(JSON.stringify(body));
 				assert.ok(body);
 				assert.equal(body.result, true);
 				soajsauth = body.soajsauth;
@@ -615,7 +590,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					"main": true
 				}
 			}, 'key/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
@@ -629,7 +603,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					'soajsauth': soajsauth
 				}
 			}, 'permissions/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
@@ -641,7 +614,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				'headers': {'key': newKey, 'soajsauth': soajsauth},
 				'qs': {'id': '551286bce603d7e01ab1688e'}
 			}, 'tenant/acl/get', 'post', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
@@ -650,7 +622,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 		it("fail - will get client acl", function (done) {
 			executeMyRequest({'headers': {'key': newKey}}, 'permissions/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
@@ -659,7 +630,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 		it("fail - get tenant client extKey", function (done) {
 			executeMyRequest({'headers': {'key': extKey}}, 'key/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
@@ -682,7 +652,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
-				console.log(JSON.stringify(body));
 				assert.ok(body);
 				assert.equal(body.result, true);
 				soajsauth2 = body.soajsauth;
@@ -697,7 +666,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					'soajsauth': soajsauth2
 				}
 			}, 'permissions/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, true);
 				assert.ok(body.data);
 				done();
@@ -720,7 +688,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
-				console.log(JSON.stringify(body));
 				assert.ok(body);
 				assert.equal(body.result, true);
 				soajsauth2 = body.soajsauth;
@@ -730,7 +697,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 		it("fail - get tenant client extKey", function (done) {
 			executeMyRequest({'headers': {'key': extKey, 'soajsauth': soajsauth2}}, 'key/get', 'get', function (body) {
-				console.log(JSON.stringify(body));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
