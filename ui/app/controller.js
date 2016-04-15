@@ -33,7 +33,7 @@ function configureRouteNavigation(navigation) {
 }
 
 /* App Module */
-var soajsApp = angular.module('soajsApp', ['ui.bootstrap', 'ngRoute', 'ngCookies', 'ngStorage', 'textAngular', "ngFileUpload"]);
+var soajsApp = angular.module('soajsApp', ['ui.bootstrap','ui.bootstrap.datetimepicker', 'ngRoute', 'ngCookies', 'ngStorage', 'textAngular', "ngFileUpload"]);
 
 soajsApp.config([
 	'$routeProvider',
