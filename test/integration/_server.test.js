@@ -5,6 +5,14 @@ var helper = require("../helper.js");
 var sampleData = require("soajs.mongodb.data/modules/dashboard");
 var dashboard, controller, urac;
 
+var soajs = require('soajs');
+var Mongo = soajs.mongo;
+var dbConfig = require("./db.config.test.js");
+var dashboardConfig = dbConfig();
+dashboardConfig.name = "core_provision";
+var mongo = new Mongo(dashboardConfig);
+
+
 describe("importing sample data", function () {
 
 	it("do import", function (done) {
@@ -16,6 +24,22 @@ describe("importing sample data", function () {
 				shell.popd();
 				done();
 			});
+		});
+	});
+
+	it("update environment before starting service", function(done){
+		var setDoc = {
+			"$set":{
+				"services.config.logger.level": "fatal",
+				"services.config.logger.formatter.outputMode": "short"
+			},
+			"$unset":{
+				"services.config.logger.src": ""
+			}
+		};
+		mongo.update('environment', {'code': 'DEV'}, setDoc, {"multi": false, "upsert": false, "safe": true}, function (error) {
+			assert.ifError(error);
+			done();
 		});
 	});
 

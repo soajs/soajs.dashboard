@@ -269,13 +269,12 @@ describe("testing hosts deployment", function () {
                             "algorithm": "aes256",
                             "password": "soajs key lal massa"
                         },
-                        "logger": {
-                            "src": true,
-                            "level": "debug",
-                            "formatter": {
-                                "outputMode": "long"
-                            }
-                        },
+	                    "logger": {
+		                    "level": "fatal",
+		                    "formatter": {
+			                    "outputMode": "short"
+		                    }
+	                    },
                         "cors": {
                             "enabled": true,
                             "origin": "*",

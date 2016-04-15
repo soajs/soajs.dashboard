@@ -62,20 +62,6 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD UNIT TESTS for locked", function () {
 
-	before(function (done) {
-		shell.pushd(sampleData.dir);
-		shell.exec("chmod +x " + sampleData.shell, function (code) {
-			assert.equal(code, 0);
-			shell.exec(sampleData.shell, function (code) {
-				assert.equal(code, 0);
-				shell.popd();
-				setTimeout(function () {
-					done();
-				}, 500);
-			});
-		});
-	});
-
 	afterEach(function (done) {
 		console.log("=======================================");
 		done();
