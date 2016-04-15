@@ -64,5 +64,18 @@ var githubAppConfig = {
 		updateAccount: ['dashboard', '/github/accounts/update'],
 		login: ['dashboard', '/github/login'],
 		listRepos: ['dashboard', '/github/getRepos']
-	}
+	},
+
+	"blacklistedRepos": [
+		'soajs/connect-mongo-soajs',
+		'soajs/soajs',
+		'soajs/soajs.agent',
+		'soajs/soajs.composer',
+		'soajs/soajs.dash.example',
+		'soajs/soajs.gcs',
+		'soajs/soajs.mongodb.data',
+		'soajs/soajs.utilities',
+		'soajs/soajs.website.contactus',
+		'soajs/soajs.jsconfbeirut'
+	]
 };
