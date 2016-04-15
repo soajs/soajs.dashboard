@@ -36,6 +36,23 @@ module.exports = {
 		"services": "soajsorg/soajs"
 	},
 
+	"gitAccounts": {
+		"github": {
+			"protocol": "https",
+			"domainName": "api.github.com",
+			"apiDomain": gitAccounts.github.protocol + "://" + gitAccounts.github.domainName,
+			"apiVersion": "3.0.0",
+			"userAgent": "SOAJS GitHub App",
+			"urls": {
+				"getReposAuthUser": gitAccounts.github.apiDomain + "/user/repos",
+				"getReposNonAuthUser": gitAccounts.github.apiDomain + "/users/%OWNER%/repos",
+				"getReposPublicOrg": gitAccounts.github.apiDomain + "/orgs/%OWNER%/repos"
+			},
+			"tokenScope": ["repo", "admin:repo_hook"],
+			"defaultConfigFilePath": "config.js"
+		}
+	},
+
 	"errors": require("./utils/errors"),
 	"schema": {
 		"commonFields": {
