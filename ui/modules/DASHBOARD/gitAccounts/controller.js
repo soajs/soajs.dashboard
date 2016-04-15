@@ -311,7 +311,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             'label': 'Submit',
                             'btn': 'primary',
                             'action': function (formData) {
-                                getSendDataFromServer($scope, ngDataApi, {
+                                overlayLoading.show();
+	                            getSendDataFromServer($scope, ngDataApi, {
                                     method: 'send',
                                     routeName: '/dashboard/github/repo/activate',
                                     params: {
@@ -324,7 +325,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                         configBranch: formData.branch
                                     }
                                 }, function (error, response) {
-                                    if (error) {
+		                            overlayLoading.hide();
+		                            if (error) {
                                         $scope.modalInstance.dismiss('cancel');
                                         $scope.form.formData = {};
                                         var outerScope = $scope;
@@ -491,6 +493,8 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             }
                         });
                     }
+                } else {
+                    $scope.displayAlert('success', 'Repository has been synced');
                 }
             }
         });

@@ -26,13 +26,14 @@
                             <td class="">
                                 <span class="customInput f-left">
                                     <label>API Prefix</label>
-                                    <input type="text" ng-required="false" tooltip="Enter API Prefix" placeholder="api" ng-model="formEnvironment.apiPrefix" class="form-control"/>
+                                    <input type="text" ng-required="false" tooltip="{{translation.enterAPIPrefix[LANG]}}" placeholder="api" ng-model="formEnvironment.apiPrefix" class="form-control"/>
                                 </span>
 
                                 <span class="customInput f-right">
                                     <label>Site Prefix</label>
-                                    <input type="text" ng-required="false" tooltip="Enter Site Prefix" placeholder="site" ng-model="formEnvironment.sitePrefix" class="form-control"/>
+                                    <input type="text" ng-required="false" tooltip="{{translation.enterSitePrefix[LANG]}}" placeholder="site" ng-model="formEnvironment.sitePrefix" class="form-control"/>
                                 </span>
+                                <label class="fieldMsg">{{translation.inCaseAPIOrSitePrefixNotSpecified[LANG]}}</label>
                             </td>
                         </tr>
                         <tr class="form-group">

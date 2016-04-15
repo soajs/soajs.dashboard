@@ -315,9 +315,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		getUserGroupInfo(function () {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"headers": {
-					"key": $scope.key
-				},
 				"routeName": "/dashboard/tenant/acl/get",
 				"params": {"id": $scope.user.tenant.id}
 			}, function (error, response) {
@@ -346,13 +343,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		function getUserGroupInfo(cb) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
-				"headers": {
-					"key": $scope.key
-				},
 				"routeName": "/urac/admin/getUser",
 				"params": {"uId": $routeParams.uId}
 			}, function (error, response) {
 				if (error) {
+					overlayLoading.hide();
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
@@ -399,9 +394,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
-			"headers": {
-				"key": $scope.key
-			},
 			"routeName": "/urac/admin/editUser",
 			"params": {"uId": $scope.user['_id']},
 			"data": postData
@@ -447,13 +439,11 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
 			}
 		});
-		overlayLoading.show();
+
 		if (counter === $scope.tenantApp.applications.length) {
+			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"headers": {
-					"key": $scope.key
-				},
 				"routeName": "/urac/admin/editUser", //editUserConfig
 				"params": {"uId": $scope.user['_id']},
 				"data": postData

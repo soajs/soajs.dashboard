@@ -39,6 +39,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 										'required': true
 									};
 									selected = JSON.parse(selected);
+									overlayLoading.show();
 									getSendDataFromServer(currentScope, ngDataApi, {
 										method: 'get',
 										routeName: '/dashboard/github/getBranches',
@@ -47,6 +48,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 											type: 'static'
 										}
 									}, function (error, response) {
+										overlayLoading.hide();
 										if (error) {
 											currentScope.generateNewMsg(envCode, 'danger', error.message);
 										}
@@ -192,6 +194,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		}
 
 		function getControllerBranches (currentScope, cb) {
+			overlayLoading.show();
 			getSendDataFromServer(currentScope, ngDataApi, {
 				method: 'get',
 				routeName: '/dashboard/github/getBranches',
@@ -200,6 +203,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					type: 'service'
 				}
 			}, function (error, response) {
+				overlayLoading.hide();
 				if (error) {
 					currentScope.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}

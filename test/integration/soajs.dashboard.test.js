@@ -143,8 +143,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"password": "soajs key lal massa"
 					},
 					"logger": {
-						"src": true,
-						"level": "debug"
+						"level": "fatal",
+						"formatter": {
+							"outputMode": "short"
+						}
 					},
 					"cors": {
 						"enabled": true,
@@ -226,7 +228,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					done();
 				});
@@ -240,7 +241,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: data2
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					done();
 				});
@@ -254,7 +254,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: data2
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					done();
 				});
@@ -504,7 +503,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/clusters/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -570,7 +568,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/clusters/update', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -648,7 +645,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/clusters/delete', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.deepEqual(body.errors.details[0], {"code": 508, "message": errorCodes[508]});
 						done();
 					});
@@ -700,7 +696,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/clusters/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -734,7 +729,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -759,7 +753,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -776,7 +769,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 						mongo.findOne("environment", {'code': 'DEV'}, function (error, envRecord) {
@@ -923,7 +915,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -941,7 +932,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -966,7 +956,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1174,7 +1163,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1188,7 +1176,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1237,7 +1224,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1255,7 +1241,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 						done();
 					});
@@ -1299,7 +1284,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
@@ -1320,7 +1304,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 					executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function (body) {
-						console.log(JSON.stringify(body));
 						assert.ok(body.data);
 
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
@@ -1372,8 +1355,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"password": "soajs key lal massa"
 								},
 								"logger": {
-									"src": true,
-									"level": "debug"
+									"level": "fatal",
+									"formatter": {
+										"outputMode": "short"
+									}
 								},
 								"cors": {
 									"enabled": true,
@@ -1527,7 +1512,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 		
 		it("fail - should not work for non-logged in users", function (done) {
 			executeMyRequest({}, 'permissions/get', 'get', function (body) {
-				console.log(body);
 				assert.deepEqual(body.errors.details[0],
 					{"code": 601, "message": "No Logged in User found."});
 				done();
@@ -1559,7 +1543,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			var tenantId, applicationId, key, extKey, oauthUserId;
 			it("fail - user not logged in", function (done) {
 				executeMyRequest({}, 'settings/tenant/get', 'get', function (body) {
-					console.log(body);
 					assert.deepEqual(body.errors.details[0],
 						{"code": 601, "message": "No Logged in User found."});
 					done();
@@ -1601,7 +1584,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				
 				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
@@ -1804,7 +1786,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -1820,7 +1801,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					'headers': {'soajsauth': soajsauth},
 					qs: {
 						appId: applicationId,
-						key: key
+						key: key,
+						extKeyEnv: 'DASHBOARD'
 					},
 					form: {
 						'extKey': extKey,
@@ -1847,7 +1829,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						key: key
 					},
 					form: {
-						'extKey': extKey
+						'extKey': extKey,
+						'extKeyEnv': 'DASHBOARD'
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function (body) {
@@ -2300,8 +2283,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			
 			it("success - will get an empty list", function (done) {
 				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
-					console.log(body.data);
-					console.log("=========");
 					assert.ok(body.data);
 					assert.equal(body.data.hosts.length, 0);
 					done();
@@ -2609,7 +2590,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'environment/key/update', 'post', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body.data);
 					assert.ok(body.data.newKey);
 					done();
@@ -2703,7 +2683,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					"key": key
 				},
 				form: {
-					"extKey": tenantExtKey
+					"extKey": tenantExtKey,
+					"extKeyEnv": "DASHBOARD"
 				}
 			};
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {

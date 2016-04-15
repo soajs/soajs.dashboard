@@ -27,6 +27,9 @@
         </tab>
         <tab heading="Group Configurations" ng-if="access.daemonGroupConfig.list">
             <a ng-if="access.daemonGroupConfig.add" href="" ng-style="{'margin-top': '10px'}" ng-click="addDaemonGroupConfig()" class="btn btn-primary">{{translation.addGroupConfiguration[LANG]}}</a><br/><br/>
+            <div ng-if="groupConfigs.rows && groupConfigs.rows.length === 0">
+                <alert type="warning">No daemon group configurations added yet!</alert>
+            </div>
             <div class="entryBoxes">
                 <div ng-repeat="grpConf in groupConfigs.rows" class="entryBox" ng-init="grpConf.hide = true">
                     <div class="header opened" ng-class="{closed: grpConf.hide}">

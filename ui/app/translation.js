@@ -1357,7 +1357,10 @@ var errorCodes = {
 			"ENG": "Tenant already has a key to use the dashboard",
 			"FRA": "Tenant already has a key to use the dashboard"
 		},
-		
+		"706": {
+			"ENG": "Please create a session database for this environment",
+			"FRA": "Please create a session database for this environment"
+		},
 		"710": {
 			"ENG": "A Daemon with the same name and/or port already exists",
 			"FRA": "A Daemon with the same name and/or port already exists"

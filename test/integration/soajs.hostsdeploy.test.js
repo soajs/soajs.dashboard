@@ -66,9 +66,7 @@ describe("testing hosts deployment", function () {
     before(function (done) {
 	    process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
 	    console.log("***************************************************************");
-	    console.log("*");
 	    console.log("* Setting SOAJS_ENV_WORKDIR for test mode as: ", process.env.APP_DIR_FOR_CODE_COVERAGE);
-	    console.log("*");
 	    console.log("***************************************************************");
         mongo.remove('docker', {}, function (error) {
             assert.ifError(error);
@@ -271,13 +269,12 @@ describe("testing hosts deployment", function () {
                             "algorithm": "aes256",
                             "password": "soajs key lal massa"
                         },
-                        "logger": {
-                            "src": true,
-                            "level": "debug",
-                            "formatter": {
-                                "outputMode": "long"
-                            }
-                        },
+	                    "logger": {
+		                    "level": "fatal",
+		                    "formatter": {
+			                    "outputMode": "short"
+		                    }
+	                    },
                         "cors": {
                             "enabled": true,
                             "origin": "*",
@@ -764,7 +761,6 @@ describe("testing hosts deployment", function () {
                     }
                 };
                 executeMyRequest(params, "hosts/delete", "get", function (body) {
-                    console.log(JSON.stringify(body));
                     assert.ok(body.result);
                     assert.ok(body.data);
                     done();
@@ -820,7 +816,6 @@ describe("testing hosts deployment", function () {
                 }
             };
             executeMyRequest(params, "hosts/delete", "get", function (body) {
-                console.log(JSON.stringify(body));
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();

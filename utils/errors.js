@@ -120,6 +120,7 @@ var errors = {
 	"703": "Invalid or no Content Service with this name and version",
 	"704": "Another Service with the same name or port exists. Change the name of this schema or its service port.",
 	"705": "Tenant already has a key to use the dashboard",
+	"706": "Please create a session database for this environment",
 
 	"710": "A Daemon with the same name and/or port already exists",
 	"714": "A Group Configuration with the same name already exists",
@@ -158,6 +159,8 @@ var errors = {
 	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
 
 	"742": "Unable to list static content sources",
+
+	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
 
 	"750": "Invalid Request.",
 

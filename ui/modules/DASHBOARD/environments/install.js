@@ -246,6 +246,38 @@ var envTranslation ={
 		"ENG": "Provide optional driver configuration",
 		"FRA": "Provide optional driver configuration"
 	},
+	"apiPrefix": {
+		"ENG": "API Prefix",
+		"FRA": "API Prefix"
+	},
+	"sitePrefix": {
+		"ENG": "Site Prefix",
+		"FRA": "Site Prefix"
+	},
+	"inCaseAPIPrefixNotSpecified": {
+		"ENG": 'In case the api prefix was not specified, it will be set to "api" by default',
+		"FRA": 'In case the api prefix was not specified, it will be set to "api" by default'
+	},
+	"inCaseSitePrefixNotSpecified": {
+		"ENG": 'In case the site prefix was not specified, it will be set to "site" by default',
+		"FRA": 'In case the site prefix was not specified, it will be set to "site" by default'
+	},
+	"enterSitePrefix": {
+		"ENG": "Enter Site Prefix",
+		"FRA": "Enter Site Prefix"
+	},
+	"enterAPIPrefix": {
+		"ENG": "Enter API Prefix",
+		"FRA": "Enter API Prefix"
+	},
+	"inCaseAPIOrSitePrefixNotSpecified": {
+		"ENG": 'In case API Prefix and Site Prefix were not specified, they will be set by default to "api" and "site" respectively.',
+		"FRA": 'In case API Prefix and Site Prefix were not specified, they will be set by default to "api" and "site" respectively.'
+	},
+	"inOrderToViewNewEnvYouNeedToReLogin": {
+		"ENG": "However, in order to view the newly created environment you need to re-login",
+		"FRA": "However, in order to view the newly created environment you need to re-login"
+	},
 	//controller
 	"addNewEnvironment": {
 		"ENG": "Add New Environment",
@@ -1178,6 +1210,55 @@ var envTranslation ={
 	"availableCertificates": {
 		"ENG": "Available certificates:",
 		"FRA": "Available certificates:"
+	},
+	//add new host form
+	"serviceName": {
+		"ENG": "Service Name",
+		"FRA": "Service Name"
+	},
+	"daemonGroupConfig": {
+		"ENG": "Daemon Group Configuration",
+		"FRA": "Daemon Group Configuration"
+	},
+	"branch": {
+		"ENG": "Branch",
+		"FRA": "Branch"
+	},
+	"serviceHasRunningInstancesDifferentCommits": {
+		"ENG": "This service has one or more running instances with different commits",
+		"FRA": "This service has one or more running instances with different commits"
+	},
+	"recommendedToMaintainHomogeneity": {
+		"ENG": "It is recommended that you maintain homogeneity and deploy using an existing commit",
+		"FRA": "It is recommended that you maintain homogeneity and deploy using an existing commit"
+	},
+	"commit": {
+		"ENG": "Commit",
+		"FRA": "Commit"
+	},
+	"hostnames": {
+		"ENG": "Hostname(s)",
+		"FRA": "Hostname(s)"
+	},
+	"understandTheRiskToDeploy": {
+		"ENG": "I understand the risk and would like to use a new commit to deploy",
+		"FRA": "I understand the risk and would like to use a new commit to deploy"
+	},
+	"hostsNumber": {
+		"ENG": "Host(s) Number",
+		"FRA": "Host(s) Number"
+	},
+	"envVariables": {
+		"ENG": "Environment Variables",
+		"FRA": "Environment Variables"
+	},
+	"defaultEnvVariables": {
+		"ENG": "Default Environment Variables",
+		"FRA": "Default Environment Variables"
+	},
+	"warning": {
+		"ENG": "Warning",
+		"FRA": "Warning"
 	}
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.3.1",
+  "version": "0.3.0",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -21,7 +21,7 @@
     "soajs.mongodb.data": "0.1.*",
     "soajs.controller": "0.2.*",
     "soajs.urac": "0.2.*",
-    "grunt":"*",
+    "grunt":"0.4.5",
     "grunt-contrib-jshint":"*",
     "grunt-jsdoc" : "*",
     "grunt-contrib-clean" : "*",
@@ -47,7 +47,7 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
-    "soajs": "git+https://github.com/soajs/soajs.git#develop",
+    "soajs": "0.3.*",
     "shortid": "^2.2.4",
     "unzip2": "*"
   }
