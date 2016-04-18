@@ -1,6 +1,6 @@
 "use strict";
 var multiTenantApp = soajsApp.components;
-multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', '$cookieStore', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, $cookieStore, injectFiles) {
+multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, $cookies, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -24,7 +24,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		}
 	];
 
-	$scope.currentEnv = $cookieStore.get('myEnv').code.toLowerCase();
+	$scope.currentEnv = $cookies.getObject('myEnv').code.toLowerCase();
 
 	$scope.mt = {};
 	$scope.mt.displayAlert = function (type, msg, id, isCode, service, orgMesg) {

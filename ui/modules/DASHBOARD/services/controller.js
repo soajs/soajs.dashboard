@@ -1,7 +1,7 @@
 "use strict";
 
 var servicesApp = soajsApp.components;
-servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookieStore', 'Upload', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookieStore, Upload) {
+servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -84,7 +84,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		}
 		return result;
 	};
-
+	
 	if ($scope.access.listServices) {
 		injectFiles.injectCss("modules/DASHBOARD/services/services.css");
 		$scope.listServices();

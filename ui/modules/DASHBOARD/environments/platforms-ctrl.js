@@ -1,6 +1,6 @@
 "use strict";
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('platformsCtrl', ['$scope', '$cookieStore', 'envPlatforms', 'injectFiles', function ($scope, $cookieStore, envPlatforms, injectFiles) {
+environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms', 'injectFiles', function ($scope, $cookies, envPlatforms, injectFiles) {
     $scope.$parent.isUserLoggedIn();
 
     $scope.access = {};
@@ -57,7 +57,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookieStore', 'envPlatf
     };
 
     if ($scope.access.platforms.list) {
-        $scope.envCode = $cookieStore.get("myEnv").code;
+        $scope.envCode = $cookies.getObject("myEnv").code;
         injectFiles.injectCss("modules/DASHBOARD/environments/environments.css");
         $scope.listPlatforms($scope.envCode);
     }

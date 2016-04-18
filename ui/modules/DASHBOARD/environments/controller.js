@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookieStore', 'ngDataApi', 'Upload', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $cookieStore, ngDataApi, Upload, injectFiles) {
+environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$cookies', 'ngDataApi', 'Upload', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $cookies, ngDataApi, Upload, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.newEntry = true;
 	$scope.envId = null;
@@ -83,9 +83,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					$scope.formEnvironment.services.config.session.unset = ($scope.formEnvironment.services.config.session.unset === 'keep') ? false : true;
 				}
 				else {
-					if ($cookieStore.get('myEnv')) {
+					if ($cookies.getObject('myEnv')) {
 						for (var i = response.length - 1; i >= 0; i--) {
-							if (response[i].code !== $cookieStore.get('myEnv').code) {
+							if (response[i].code !== $cookies.getObject('myEnv').code) {
 								response.splice(i, 1);
 							}
 						}

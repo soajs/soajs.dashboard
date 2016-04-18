@@ -1,12 +1,12 @@
 "use strict";
 var membersApp = soajsApp.components;
-membersApp.controller('mainMembersCtrl', ['$scope', '$cookieStore', function ($scope, $cookieStore) {
+membersApp.controller('mainMembersCtrl', ['$scope', '$cookies', function ($scope, $cookies) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
-	$scope.userCookie = $cookieStore.get('soajs_user');
+	$scope.userCookie = $cookies.getObject('soajs_user');
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function ($scope, membersHelper) {
@@ -240,7 +240,7 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookieStore', 'membersAclHelper', '$route', function ($scope, $routeParams, ngDataApi, $cookieStore, membersAclHelper, $route) {
+membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'membersAclHelper', '$route', function ($scope, $routeParams, ngDataApi, $cookies, membersAclHelper, $route) {
 	$scope.key = apiConfiguration.key;
 	$scope.$parent.isUserLoggedIn();
 	$scope.msg = {};
@@ -250,7 +250,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 	$scope.pckName = '';
 	$scope.environments_codes = [];
 
-	$scope.userCookie = $cookieStore.get('soajs_user');
+	$scope.userCookie = $cookies.getObject('soajs_user');
 
 	$scope.minimize = function (application, service, oneEnv) {
 		application.aclFill[oneEnv][service.name].collapse = true;

@@ -111,10 +111,10 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 	};
 }]);
 
-myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', '$cookieStore', function ($scope, $timeout, $modal, ngDataApi, $cookies, $cookieStore) {
+myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', function ($scope, $timeout, $modal, ngDataApi, $cookies) {
 	$scope.$parent.isUserLoggedIn();
-	var userCookie = $cookieStore.get('soajs_user');
-
+	var userCookie = $cookies.getObject('soajs_user');
+	
 	var formConfig = {
 		'timeout': $timeout,
 		'name': 'editProfile',
@@ -159,7 +159,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							userCookie.lastName = formData.lastName;
 							userCookie.profile = profileObj;
 
-							$cookieStore.put('soajs_user', userCookie);
+							$cookies.putObject('soajs_user', userCookie);
 							$scope.$parent.$emit('refreshWelcome', {});
 						}
 					});
@@ -274,7 +274,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 	$scope.validateChangeEmail();
 }]);
 
-myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cookieStore', 'isUserLoggedIn', '$localStorage', function ($scope, ngDataApi, $cookies, $cookieStore, isUserLoggedIn, $localStorage) {
+myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUserLoggedIn', '$localStorage', function ($scope, ngDataApi, $cookies, isUserLoggedIn, $localStorage) {
 	var formConfig = loginConfig.formConf;
 	formConfig.actions = [{
 		'type': 'submit',
@@ -295,9 +295,9 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
-					$cookieStore.put('soajs_user', response);
+					$cookies.putObject('soajs_user', response);
 					if(response.soajsauth){
-						$cookieStore.put("soajs_auth", response.soajsauth);
+						$cookies.put("soajs_auth", response.soajsauth);
 					}
 					//get dashboard keys
 					getKeys();
@@ -315,7 +315,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
-						$cookieStore.put("soajs_dashboard_key", response.extKey);
+						$cookies.put("soajs_dashboard_key", response.extKey);
 						getPermissions();
 					}
 				});
@@ -343,12 +343,12 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', '$cooki
 						}
 						$localStorage.environments = response.environments;
 						if(response.envauth){
-							$cookieStore.put("soajs_envauth", response.envauth);
+							$cookies.put("soajs_envauth", response.envauth);
 						}
 
 						response.environments.forEach(function(oneEnv){
 							if(oneEnv.code.toLowerCase() === 'dashboard'){
-								$cookieStore.put("myEnv", oneEnv);
+								$cookies.putObject("myEnv", oneEnv);
 							}
 						});
 						$scope.$parent.$emit("loadUserInterface", {});

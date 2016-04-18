@@ -2,7 +2,7 @@
 
 var environmentsApp = soajsApp.components;
 
-environmentsApp.controller('databaseCtrl', ['$scope','$cookieStore', 'envDB', function ($scope, $cookieStore, envDB) {
+environmentsApp.controller('databaseCtrl', ['$scope','$cookies', 'envDB', function ($scope, $cookies, envDB) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -30,7 +30,7 @@ environmentsApp.controller('databaseCtrl', ['$scope','$cookieStore', 'envDB', fu
 
 	//default operation
 	if ($scope.access.dbs.list) {
-		$scope.envCode = $cookieStore.get("myEnv").code;
+		$scope.envCode = $cookies.getObject("myEnv").code;
 		$scope.listDatabases($scope.envCode);
 	}
 }]);

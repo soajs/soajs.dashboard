@@ -1,6 +1,6 @@
 "use strict";
 var settingsApp = soajsApp.components;
-settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', '$cookieStore', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $compile, ngDataApi, $cookieStore, injectFiles) {
+settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeParams', '$compile', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $timeout, $modal, $routeParams, $compile, ngDataApi, $cookies, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -10,7 +10,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.oAuthUsers.list = [];
 	$scope.availableEnv = [];
 	$scope.packagesAcl = {};
-	$scope.currentEnv = $cookieStore.get('myEnv').code.toLowerCase();
+	$scope.currentEnv = $cookies.getObject('myEnv').code.toLowerCase();
 
 	$scope.getTenant = function (first) {
 		getSendDataFromServer($scope, ngDataApi, {

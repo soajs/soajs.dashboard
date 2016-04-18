@@ -1,6 +1,6 @@
 "use strict";
 var platformsServices = soajsApp.components;
-platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookieStore', 'Upload', function (ngDataApi, $timeout, $modal, $cookieStore, Upload) {
+platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookies', 'Upload', function (ngDataApi, $timeout, $modal, $cookies, Upload) {
 
 	function listPlatforms(currentScope, env) {
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -209,8 +209,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function uploadFiles(currentScope, formData, driverName, prefix, counter, modal, cb) {
-		var soajsauthCookie = $cookieStore.get('soajs_auth');
-		var dashKeyCookie = $cookieStore.get('soajs_dashboard_key');
+		var soajsauthCookie = $cookies.get('soajs_auth');
+		var dashKeyCookie = $cookies.get('soajs_dashboard_key');
 		var progress = {
 			value: 0
 		};
