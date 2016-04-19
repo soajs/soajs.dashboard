@@ -81,9 +81,17 @@ var config = {
 														"required": true
 													},
 													"validation": {
-														"type": "object",
-														"required": true,
-														"additionalProperties": true
+														"oneOf":[
+															{
+																"type": "object",
+																"required": true,
+																"additionalProperties": true
+															},
+															{
+																"type": "string",
+																"required": true
+															}
+														]
 													}
 												}
 											}
@@ -135,9 +143,17 @@ var config = {
 																		"required": true
 																	},
 																	"validation": {
-																		"type": "object",
-																		"required": true,
-																		"additionalProperties": true
+																		"oneOf":[
+																			{
+																				"type": "object",
+																				"required": true,
+																				"additionalProperties": true
+																			},
+																			{
+																				"type": "string",
+																				"required": true
+																			}
+																		]
 																	}
 																}
 															}
@@ -166,9 +182,17 @@ var config = {
 														"required": true
 													},
 													"validation": {
-														"type": "object",
-														"required": true,
-														"additionalProperties": true
+														"oneOf":[
+															{
+																"type": "object",
+																"required": true,
+																"additionalProperties": true
+															},
+															{
+																"type": "string",
+																"required": true
+															}
+														]
 													}
 												}
 											}
