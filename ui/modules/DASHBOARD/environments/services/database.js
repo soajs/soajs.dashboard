@@ -1,19 +1,19 @@
 "use strict";
 var dbServices = soajsApp.components;
-dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
+dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
 	function listDatabases(currentScope, env) {
-		if(currentScope.access.dbs.list) {
+		if (currentScope.access.dbs.list) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/environment/dbs/list",
 				"params": {"env": env}
-			}, function(error, response) {
-				if(error) {
+			}, function (error, response) {
+				if (error) {
 					currentScope.$parent.displayAlert('danger', error.message);
 				}
 				else {
-					if(response) {
+					if (response) {
 						currentScope.dbs = response;
 					}
 					else {
@@ -29,12 +29,12 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			"method": "get",
 			"routeName": "/dashboard/environment/dbs/delete",
 			"params": {"env": env, 'name': name}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				if(response) {
+				if (response) {
 					currentScope.$parent.displayAlert('success', translation.selectedEnvironmentDatabaseRemoved[LANG]);
 					currentScope.listDatabases(env);
 				}
@@ -56,12 +56,12 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 					'type': 'submit',
 					'label': translation.submit[LANG],
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'name': formData.name,
 							'cluster': formData.cluster
 						};
-						if(session) {
+						if (session) {
 							postData['name'] = 'session';
 							postData['sessionInfo'] = {
 								'store': JSON.parse(formData.store),
@@ -80,8 +80,8 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 							"routeName": "/dashboard/environment/dbs/add",
 							"params": {"env": env},
 							"data": postData
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -97,7 +97,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						currentScope.modalInstance.dismiss('cancel');
 						currentScope.form.formData = {};
 					}
@@ -110,7 +110,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 
 	function editDatabase(currentScope, env, name, data) {
 		var formData, formConfig;
-		if(name === 'session') {
+		if (name === 'session') {
 			var t = angular.copy(data);
 			delete t.cluster;
 			formData = {
@@ -127,8 +127,8 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			formData = angular.copy(data);
 			formData.name = name;
 
-			formConfig = environmentsConfig.form.database;
-			formConfig.entries.forEach (function (oneEntry) {
+			formConfig = angular.copy(environmentsConfig.form.database);
+			formConfig.entries.forEach(function (oneEntry) {
 				if (oneEntry.name === 'name') {
 					oneEntry.type = 'readonly';
 				}
@@ -145,12 +145,12 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 					'type': 'submit',
 					'label': translation.submit[LANG],
 					'btn': 'primary',
-					'action': function(formData) {
+					'action': function (formData) {
 						var postData = {
 							'name': formData.name,
 							'cluster': formData.cluster
 						};
-						if(name === 'session') {
+						if (name === 'session') {
 							postData['name'] = 'session';
 							postData['sessionInfo'] = {
 								'store': JSON.parse(formData.store),
@@ -169,8 +169,8 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 							"routeName": "/dashboard/environment/dbs/update",
 							"params": {"env": env},
 							"data": postData
-						}, function(error) {
-							if(error) {
+						}, function (error) {
+							if (error) {
 								currentScope.form.displayAlert('danger', error.message);
 							}
 							else {
@@ -186,7 +186,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
-					'action': function() {
+					'action': function () {
 						currentScope.modalInstance.dismiss('cancel');
 						currentScope.form.formData = {};
 					}
@@ -203,12 +203,12 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function(ngDataA
 			"routeName": "/dashboard/environment/dbs/updatePrefix",
 			"params": {"env": env},
 			"data": {'prefix': prefix}
-		}, function(error, response) {
-			if(error) {
+		}, function (error, response) {
+			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			}
 			else {
-				if(response) {
+				if (response) {
 					currentScope.$parent.displayAlert('success', translation.environmentDatabasePrefixRemoved[LANG]);
 				}
 				else {
