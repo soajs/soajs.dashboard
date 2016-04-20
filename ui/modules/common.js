@@ -6,17 +6,12 @@
 function constructModulePermissions(scope, access, permissionsObj) {
 	for (var permission in permissionsObj) {
 		if (Array.isArray(permissionsObj[permission])) {
-			scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1], function(access){
-				access[permission] = access;
-			});
+			access[permission] = scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1]);
 		}
 		else if (typeof(permissionsObj[permission]) === 'object') {
 			access[permission] = {};
 			constructModulePermissions(scope, access[permission], permissionsObj[permission]);
 		}
-	}
-	if(!scope.digest){
-		scope.$apply();
 	}
 }
 
@@ -131,6 +126,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 		}
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": method,
+			"headers": options.headers,
 			"routeName": options.routeName,
 			"params": options.params,
 			"data": options.data,
