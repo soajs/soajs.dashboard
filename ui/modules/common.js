@@ -6,12 +6,17 @@
 function constructModulePermissions(scope, access, permissionsObj) {
 	for (var permission in permissionsObj) {
 		if (Array.isArray(permissionsObj[permission])) {
-			access[permission] = scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1]);
+			scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1], function(access){
+				access[permission] = access;
+			});
 		}
 		else if (typeof(permissionsObj[permission]) === 'object') {
 			access[permission] = {};
 			constructModulePermissions(scope, access[permission], permissionsObj[permission]);
 		}
+	}
+	if(!scope.digest){
+		scope.$apply();
 	}
 }
 
