@@ -843,7 +843,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     currentScope.loadingBranches = true;
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'get',
-                        routeName: '/dashboard/github/getBranches',
+                        routeName: '/dashboard/gitAccounts/getBranches',
                         params: {
                             'name': service.name,
                             'type':  service.type
@@ -1134,7 +1134,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         });
     }
-    
+
     function removeZombieContainer(currentScope, container, env) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',

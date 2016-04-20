@@ -42,6 +42,7 @@ module.exports = {
 			"domainName": "api.github.com",
 			"apiDomain": "https://api.github.com",
 			"apiVersion": "3.0.0",
+			"timeout": 30000,
 			"userAgent": "SOAJS GitHub App",
 			"urls": {
 				"getReposAuthUser": "https://api.github.com/user/repos",
@@ -49,7 +50,8 @@ module.exports = {
 				"getReposPublicOrg": "https://api.github.com/orgs/%OWNER%/repos"
 			},
 			"tokenScope": ["repo", "admin:repo_hook"],
-			"defaultConfigFilePath": "config.js"
+			"defaultConfigFilePath": "config.js",
+			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
 
@@ -2054,7 +2056,7 @@ module.exports = {
 			}
 		},
 
-		"/github/login": {
+		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",
 				"group": "Git Accounts"
@@ -2102,13 +2104,20 @@ module.exports = {
 				}
 			}
 		},
-		"/github/logout": {
+		"/gitAccounts/logout": {
 			"_apiInfo": {
 				"l": "Github Logout",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['query.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2129,13 +2138,26 @@ module.exports = {
 				}
 			}
 		},
-		"/github/getRepos": {
+		"/gitAccounts/accounts/list": {
+			"_apiInfo": {
+				"l": "List Git Accounts",
+				"group": "Git Accounts"
+			}
+		},
+		"/gitAccounts/getRepos": {
 			"_apiInfo": {
 				"l": "Get Repositories",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['query.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2159,7 +2181,7 @@ module.exports = {
 			}
 		},
 
-		"/github/getBranches": {
+		"/gitAccounts/getBranches": {
 			"_apiInfo": {
 				"l": "Get Repository Branches",
 				"group": "Git Accounts"
@@ -2184,9 +2206,16 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"provider": {
+				"source": ['query.provider'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
-		"/github/repo/activate": {
+		"/gitAccounts/repo/activate": {
 			"_apiInfo": {
 				"l": "Activate Repository",
 				"group": "Git Accounts"
@@ -2227,7 +2256,7 @@ module.exports = {
 				}
 			}
 		},
-		"/github/repo/deactivate": {
+		"/gitAccounts/repo/deactivate": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
 				"group": "Git Accounts"
@@ -2254,13 +2283,20 @@ module.exports = {
 				}
 			}
 		},
-		"/github/repo/sync": {
+		"/gitAccounts/repo/sync": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['query.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"

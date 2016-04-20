@@ -157,7 +157,7 @@ var gaTranslation = {
         ENG: "Please specify the branch to use to read the repository's config file",
         FRA: "Please specify the branch to use to read the repository's config file"
     },
-    
+
     logoutSuccessful: {
         ENG: "Logout Successful",
         FRA: "Logout Successful"
@@ -199,7 +199,7 @@ var gitAccountsNav = [
         'label': "Git Accounts",
         'checkPermission': {
             'service': 'dashboard',
-            'route': '/github/listAccounts'
+            'route': '/gitAccounts/accounts/list'
         },
         'url': '#/git-accounts',
         'tplPath': 'modules/DASHBOARD/gitAccounts/directives/list.tmpl',

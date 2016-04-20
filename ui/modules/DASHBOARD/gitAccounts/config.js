@@ -1,4 +1,4 @@
-var githubAppConfig = {
+var gitAccountsAppConfig = {
 	'form': {
 		'login': {
 			'entries': [

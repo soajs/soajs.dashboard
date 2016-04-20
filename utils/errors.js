@@ -177,11 +177,11 @@ var errors = {
 	"761": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
 	"763": "Unable to reach the GitHub API. Please try again.",
-	
+
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",
 	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
-	"767": "Invalid GitHub account provided",
+	"767": "Invalid GitHub information provided",
 	"768": "Failed to sync repository",
 	"769": "Missing config.js data",
 	"770": "Missing config.js source data",
@@ -190,6 +190,9 @@ var errors = {
 	"772": "Unable to list zombie containers",
 	"773": "Unable to delete zombie container",
 	"774": "Unable to get zombie container logs",
+
+	"775": "Missing account provider param",
+	"776": "GitHub API returned an error: API rate limit exceeded for this IP. It is advised to use an authenticated account to proceed or try again later",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
