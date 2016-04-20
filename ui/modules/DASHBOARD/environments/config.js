@@ -1,4 +1,67 @@
 "use strict";
+var modelObj = {
+	cluster: {
+		server: [
+			{
+				'name': 'host%count%',
+				'label': 'Hostname',
+				'type': 'text',
+				'placeholder': '127.0.0.1',
+				'required': true
+			},
+			{
+				'name': 'port%count%',
+				'label': 'Port',
+				'type': 'text',
+				'placeholder': '4000',
+				'required': true
+			},
+			{
+				"name": "removeServer%count%",
+				"type": "html",
+				"value": "<span class='red'><span class='icon icon-cross' title='Remove'></span></span>",
+				"onAction": function (id, data, form) {
+					var number = id.replace("removeServer", "");
+					// need to decrease count
+					delete form.formData['port' + number];
+					delete form.formData['host' + number];
+					form.entries.forEach(function (oneEntry) {
+						if (oneEntry.type === 'group' && oneEntry.name === 'servers') {
+							for (var i = oneEntry.entries.length - 1; i >= 0; i--) {
+								if (oneEntry.entries[i].name === 'port' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+								else if (oneEntry.entries[i].name === 'host' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+								else if (oneEntry.entries[i].name === 'removeServer' + number) {
+									oneEntry.entries.splice(i, 1);
+								}
+							}
+						}
+					});
+				}
+			}
+		],
+		credentials: [
+			{
+				'name': 'username',
+				'label': translation.username[LANG],
+				'type': 'text',
+				'placeholder': translation.username[LANG],
+				'required': false
+			},
+			{
+				'name': 'password',
+				'label': translation.password[LANG],
+				'type': 'text',
+				'placeholder': translation.password[LANG],
+				'required': false
+			}
+		]
+	}
+
+};
 var environmentsConfig = {
 	form: {
 		template: {
@@ -176,7 +239,7 @@ var environmentsConfig = {
 				}
 			]
 		},
-		cluster: {
+		clusterType: {
 			'name': '',
 			'label': '',
 			'actions': {},
@@ -186,76 +249,273 @@ var environmentsConfig = {
 					'label': translation.clusterType[LANG],
 					'type': 'select',
 					'placeholder': translation.clusterTypePlaceHolder[LANG],
-					'value': [{v: 'sql', l: 'My SQL'}, {v: 'oracle', l: 'Oracle'}],
+					'value': [
+						{v: 'mongo', l: 'Mongo db'},
+						{v: 'es', l: 'Elasticsearch'},
+						{v: 'sql', l: 'My SQL'},
+						{v: 'oracle', l: 'Oracle'}
+					],
 					'tooltip': translation.clusterTypePlaceHolderTooltip[LANG],
-					'required': true
-				},
-				{
-					'name': 'name',
-					'label': translation.clusterName[LANG],
-					'type': 'text',
-					'placeholder': translation.cluster1[LANG],
-					'value': '',
-					'tooltip': translation.enterEnvironmentClusterName[LANG],
-					'required': true
-				},
-				{
-					'name': 'servers',
-					'label': translation.serversList[LANG],
-					'type': 'textarea',
-					'rows': 2,
-					'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
-					'value': '',
-					'tooltip': translation.enterListServersSeparatedComma[LANG],
-					'required': true
-				},
-				{
-					'name': 'credentials',
-					'label': translation.credentials[LANG],
-					'type': 'textarea',
-					'rows': 4,
-					'placeholder': JSON.stringify({
-						"username": translation.admin[LANG],
-						"password": translation.password[LANG]
-					}, null, "\t"),
-					'value': '',
-					'tooltip': translation.enterCredentialsCluster[LANG],
-					'required': false
-				},
-				{
-					'name': 'urlParam',
-					'label': translation.URLParameters[LANG],
-					'type': 'textarea',
-					'rows': 7,
-					'placeholder': JSON.stringify({
-						"connectTimeoutMS": 0,
-						"socketTimeoutMS": 0,
-						"maxPoolSize": 5,
-						"wtimeoutMS": 0,
-						"slaveOk": true
-					}, null, "\t"),
-					'value': '',
-					'tooltip': translation.enterURLParametersCluster[LANG],
-					'required': true
-				},
-				{
-					'name': 'extraParam',
-					'label': 'Extra Parameters',
-					'type': 'textarea',
-					'rows': 8,
-					'placeholder': JSON.stringify({
-						"db": {
-							"native_parser": true
-						},
-						"server": {
-							"auto_reconnect": true
-						}
-					}, null, "\t"),
-					'value': '',
-					'tooltip': translation.enterExtraParametersCluster[LANG],
 					'required': true
 				}
 			]
+		},
+		clusters: {
+			'default': {
+				'name': '',
+				'label': '',
+				'actions': {},
+				'entries': [
+					{
+						'name': 'name',
+						'label': translation.clusterName[LANG],
+						'type': 'text',
+						'placeholder': translation.cluster1[LANG],
+						'value': '',
+						'tooltip': translation.enterEnvironmentClusterName[LANG],
+						'required': true
+					},
+					{
+						'name': 'servers',
+						'label': translation.serversList[LANG],
+						'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
+						'value': '',
+						'tooltip': translation.enterListServersSeparatedComma[LANG],
+						"type": "group",
+						'collapsed': false,
+						"class": "serversList",
+						"entries": []
+					},
+					{
+						"name": "addServer",
+						"type": "html",
+						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
+					},
+					{
+						'name': 'credentials',
+						'label': translation.credentials[LANG],
+						'tooltip': translation.enterCredentialsCluster[LANG],
+						"type": "group",
+						'collapsed': false,
+						'required': false,
+						"class": "floatGroup",
+						"entries": modelObj.cluster.credentials
+					},
+					{
+						'name': 'urlParam',
+						'label': translation.URLParameters[LANG],
+						'type': 'textarea',
+						'rows': 7,
+						'placeholder': JSON.stringify({
+							"connectTimeoutMS": 0,
+							"socketTimeoutMS": 0,
+							"maxPoolSize": 5,
+							"wtimeoutMS": 0,
+							"slaveOk": true
+						}, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterURLParametersCluster[LANG],
+						'required': true
+					},
+					{
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'textarea',
+						'rows': 8,
+						'placeholder': JSON.stringify({
+							"db": {
+								"native_parser": true
+							},
+							"server": {
+								"auto_reconnect": true
+							}
+						}, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterExtraParametersCluster[LANG],
+						'required': true
+					}
+				]
+			},
+			mongo: {
+				'name': '',
+				'label': '',
+				'actions': {},
+				'entries': [
+					{
+						'name': 'name',
+						'label': translation.clusterName[LANG],
+						'type': 'text',
+						'placeholder': translation.cluster1[LANG],
+						'value': '',
+						'tooltip': translation.enterEnvironmentClusterName[LANG],
+						'required': true
+					},
+					{
+						'name': 'servers',
+						'label': translation.serversList[LANG],
+						'tooltip': translation.enterListServersSeparatedComma[LANG],
+						'required': true,
+						"type": "group",
+						'collapsed': false,
+						"class": "serversList",
+						"entries": []
+					},
+					{
+						"name": "addServer",
+						"type": "html",
+						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
+					},
+					{
+						'name': 'credentials',
+						'label': translation.credentials[LANG],
+						'tooltip': translation.enterCredentialsCluster[LANG],
+						"type": "group",
+						'collapsed': true,
+						'required': false,
+						"class": "floatGroup",
+						"entries": modelObj.cluster.credentials
+					},
+					{
+						'name': 'urlParam',
+						'label': translation.URLParameters[LANG],
+						'tooltip': translation.enterURLParametersCluster[LANG],
+						'required': true,
+						"type": "group",
+						'collapsed': false,
+						"class": "urlParams",
+						"entries": [
+							{
+								'name': 'connectTimeoutMS',
+								'label': 'connectTimeoutMS',
+								'type': 'number',
+								'placeholder': '0',
+								'required': false
+							},
+							{
+								'name': 'socketTimeoutMS',
+								'label': 'socketTimeoutMS',
+								'type': 'number',
+								'placeholder': '0',
+								'required': false
+							},
+							{
+								'name': 'maxPoolSize',
+								'label': 'maxPoolSize',
+								'type': 'number',
+								'placeholder': '5',
+								'required': false
+							},
+							{
+								'name': 'wtimeoutMS',
+								'label': 'wtimeoutMS',
+								'type': 'number',
+								'placeholder': '0',
+								'required': false
+							},
+							{
+								'name': 'slaveOk',
+								'label': 'slaveOk',
+								'type': 'boolean',
+								'placeholder': 'true',
+								'required': false
+							}
+
+						]
+					},
+					{
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'textarea',
+						'rows': 8,
+						'placeholder': JSON.stringify({
+							"db": {
+								"native_parser": true
+							},
+							"server": {
+								"auto_reconnect": true
+							}
+						}, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterExtraParametersCluster[LANG],
+						'required': true
+					}
+				]
+			},
+			es: {
+				'name': '',
+				'label': '',
+				'actions': {},
+				'entries': [
+					{
+						'name': 'name',
+						'label': translation.clusterName[LANG],
+						'type': 'text',
+						'placeholder': translation.cluster1[LANG],
+						'value': '',
+						'tooltip': translation.enterEnvironmentClusterName[LANG],
+						'required': true
+					},
+					{
+						'name': 'servers',
+						'label': translation.serversList[LANG],
+						'type': 'textarea',
+						'rows': 2,
+						'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
+						'value': '',
+						'tooltip': translation.enterListServersSeparatedComma[LANG],
+						'required': true
+					},
+					{
+						"name": "addServer",
+						"type": "html",
+						"value": '<span class=""><input type="button" class="btn btn-sm btn-success" value="Add New Server"></span>'
+					},
+					{
+						'name': 'credentials',
+						'label': translation.credentials[LANG],
+						'tooltip': translation.enterCredentialsCluster[LANG],
+						"type": "group",
+						'collapsed': false,
+						'required': false,
+						"class": "floatGroup",
+						"entries": modelObj.cluster.credentials
+					},
+					{
+						'name': 'urlParam',
+						'label': translation.URLParameters[LANG],
+						'tooltip': translation.enterURLParametersCluster[LANG],
+						'required': true,
+						"type": "group",
+						'collapsed': false,
+						"class": "urlParams",
+						"entries": [
+							{
+								'name': 'protocol',
+								'label': 'protocol',
+								'type': 'text',
+								'placeholder': 'http',
+								'required': false
+							}
+						]
+					},
+					{
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'textarea',
+						'rows': 8,
+						'placeholder': JSON.stringify(
+							{
+								"requestTimeout": 30000,
+								"keepAlive": true,
+								"maxSockets": 300
+							}
+							, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterExtraParametersCluster[LANG],
+						'required': true
+					}
+				]
+			}
 		},
 		host: {
 			'name': '',

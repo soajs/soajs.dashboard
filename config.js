@@ -89,6 +89,7 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
+						"clusterType": {"type": "string"},
 						"URLParam": {"type": "object", "properties": {}},
 						"servers": {"type": "array", "items": {"type": "object", "required": true}},
 						"extraParam": {"type": "object", "properties": {}}
@@ -1747,7 +1748,7 @@ module.exports = {
 				}
 			}
 		},
-			"/hosts/deployController": {
+		"/hosts/deployController": {
 			"_apiInfo": {
 				"l": "Deploy New Controller",
 				"group": "Hosts"

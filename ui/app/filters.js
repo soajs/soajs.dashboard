@@ -101,11 +101,16 @@ soajsApp.filter('object', ['$sce', function ($sce) {
 		for (var i in obj) {
 			if (obj.hasOwnProperty(i)) {
 				if (Array.isArray(obj[i])) {
-					string += "<b>" + stringifyCamelNotation(i) + "</b>:&nbsp;";
+					string += "<b>" + stringifyCamelNotation(i) + "</b>: <br/>";
 					var t = [];
 					for (var e = 0; e < obj[i].length; e++) {
 						if (typeof(obj[i][e]) === 'object') {
-							t.push('<span class="noWrap">' + iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g, " ") + '</span>');
+							if (e === 0) {
+								t.push('<span class="noWrap"> &nbsp; ' + iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g, " ") + '</span>');
+							}
+							else {
+								t.push('<br/><span class="noWrap"> &nbsp; ' + iterateAndPrintObj(obj[i][e]).replace(/<br \/>/g, " ") + '</span>');
+							}
 						}
 						else {
 							t.push(obj[i][e]);

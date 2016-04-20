@@ -296,7 +296,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				}
 				else {
 					$cookies.putObject('soajs_user', response);
-					if(response.soajsauth){
+					if (response.soajsauth) {
 						$cookies.put("soajs_auth", response.soajsauth);
 					}
 					//get dashboard keys
@@ -338,21 +338,21 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					else {
 						$localStorage.acl_access = {};
 						var se = Object.keys(response.acl);
-						if(response.acl[se[0]].access || response.acl[se[0]].apis || response.acl[se[0]].apisRegExp || response.acl[se[0]].apisPermission){
-							for(var i in response.environments){
+						if (response.acl[se[0]].access || response.acl[se[0]].apis || response.acl[se[0]].apisRegExp || response.acl[se[0]].apisPermission) {
+							for (var i in response.environments) {
 								$localStorage.acl_access[response.environments[i].code.toLowerCase()] = response.acl;
 							}
 						}
-						else{
+						else {
 							$localStorage.acl_access = response.acl;
 						}
 						$localStorage.environments = response.environments;
-						if(response.envauth){
+						if (response.envauth) {
 							$cookies.put("soajs_envauth", response.envauth);
 						}
 
-						response.environments.forEach(function(oneEnv){
-							if(oneEnv.code.toLowerCase() === 'dashboard'){
+						response.environments.forEach(function (oneEnv) {
+							if (oneEnv.code.toLowerCase() === 'dashboard') {
 								$cookies.putObject("myEnv", oneEnv);
 							}
 						});
