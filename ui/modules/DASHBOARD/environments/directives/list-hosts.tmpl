@@ -11,9 +11,21 @@
 
 	<script type="text/ng-template" id="logBox.html">
 		<div class="modal-header">
-		    <h3 class="modal-title">{{title}}</h3>
+			<table width="100%">
+				<tr>
+					<td width="40%">
+						<h3 class="modal-title">{{title}}</h3>
+					</td>
+					<td width="40%"></td>
+					<td width="20%" align="center">
+						<span><text-size-slider min="10" max="36" unit="px" value="12" idt="code"></text-size-slider></span>
+					</td>
+				</tr>
+			</table>
 		</div>
-		<div class="modal-body"><pre><code class="sh">{{data}}</code></pre></div>
+		<div class="modal-body">
+			<pre id="code" class="preBox"><code style="white-space: pre !important;" class="sh">{{data}}</code></pre>
+		</div>
 		<div class="modal-footer">
 		    <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
 		</div>

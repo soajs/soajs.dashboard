@@ -677,6 +677,31 @@ soajsApp.directive('phoneInput', function ($filter, $browser) {
 	};
 });
 
+soajsApp.directive('textSizeSlider', ['$document', function ($document) {
+	return {
+		restrict: 'E',
+		template: '<table class="text-size-slider"><tr><td class="small-letter" ng-style="{ fontSize: min + unit }">A</td> <td><input type="range" min="{{ min }}" max="{{ max }}" ng-model="textSize" class="slider" value="{{ value }}" /></td> <td class="big-letter" ng-style="{ fontSize: max + unit}">A</td></tr></table>',
+		scope: {
+			min: '@',
+			max: '@',
+			unit: '@',
+			value: '@',
+			idt: '@'
+		},
+		link: function (scope, element, attr) {
+			scope.textSize = scope.value;
+			scope.$watch('textSize', function (size) {
+				if(scope.idt){
+					document.getElementById(scope.idt).style.fontSize = size + scope.unit;
+				}
+				else {
+					$document[0].body.style.fontSize = size + scope.unit;
+				}
+			});
+		}
+	}
+}]);
+
 var overlay = {
 	show: function (cb) {
 		var overlayHeight = jQuery(document).height();

@@ -1379,3 +1379,60 @@ div.entryBox .body .btn-primary.noFloat {
 .capitalize {
     text-transform: capitalize;
 }
+
+.preBox {
+    width: 100%;
+    overflow: auto;
+    list-style-type: none;
+    position: relative;
+    max-height: 400px;
+    min-height: 100px;
+}
+
+.preBox:hover {
+    overflow: scroll;
+}
+
+.text-size-slider {
+    line-height: 100%;
+    font-size: 14px;
+}
+
+
+.text-size-slider .big-letter {
+    font-weight: bold;
+    padding-left: 10%;
+}
+
+.text-size-slider .small-letter{
+    font-weight: bold;
+    padding-right: 10%;
+}
+
+.text-size-slider .slider {
+    -webkit-appearance: none;
+    margin: 0 8px;
+}
+
+.text-size-slider .slider:focus {
+    outline: none;
+}
+
+.text-size-slider .slider::-webkit-slider-thumb {
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background-color: black;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-top: -6px;
+}
+
+.text-size-slider .slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    background: black;
+    border: 0;
+}
