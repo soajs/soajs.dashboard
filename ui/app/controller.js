@@ -563,10 +563,17 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 			});
 		}
 
-		if (typeof(user) != 'undefined') {
+		if (typeof(user) !== 'undefined') {
 			logout();
-		} else {
+		}
+		else {
 			$cookies.remove('soajs_auth');
+			$cookies.remove('myEnv');
+			$cookies.remove('soajs_dashboard_key');
+			$cookies.remove('soajsID');
+			$cookies.remove('soajs_user');
+			$cookies.remove('soajs_current_route');
+			$cookies.remove('soajs_envauth');
 			$scope.$parent.isUserLoggedIn();
 		}
 	};
