@@ -110,6 +110,18 @@ var envTranslation ={
 		"ENG": "cluster 1...",
 		"FRA": "cluster 1..."
 	},
+	"clusterType":{
+		"ENG": "Cluster Type",
+		"FRA": "Cluster Type"
+	},
+	"clusterTypePlaceHolder":{
+		"ENG": "Cluster Type",
+		"FRA": "Cluster Type"
+	},
+	"clusterTypePlaceHolderTooltip":{
+		"ENG": "Choose the Cluster Type",
+		"FRA": "Choose the Cluster Type"
+	},
 	"enterTheClusterName": {
 		"ENG": "Enter the cluster name",
 		"FRA": "Enter the cluster name"
