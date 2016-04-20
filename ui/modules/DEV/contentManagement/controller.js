@@ -110,7 +110,7 @@ contentManagementApp.controller("ContentManagementCtrl", ['$scope', 'ngDataApi',
         }
         else {
             var el = angular.element(document.getElementById("contentGridContainer"));
-            el.html("<br/><a href=\"\" ng-click=\"goBack()\" class=\"f-right btn btn-primary\">" + translation.goBack[LANG] + "</a><p>" + translation.youDoNotHaveAccessContentModule[LANG] + "</p>");
+            el.html("<br/><p>" + translation.youDoNotHaveAccessContentModule[LANG] + "</p>");
             $compile(el.contents())($scope);
         }
     };
