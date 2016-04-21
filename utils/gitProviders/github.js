@@ -22,8 +22,6 @@ var github = new githubApi({
 	}
 });
 
-var collName = "git_accounts";
-
 function checkIfError(error, options, cb, callback) {
     if (error) {
         if (options && options.code) {
@@ -283,46 +281,9 @@ var lib = {
     }
 };
 
-var data = {
-    "getAccount": function (mongo, options, cb) {
-        if (options.accountId) {
-            mongo.findOne(collName, {_id: options.accountId}, function (error, accountRecord) {
-                return cb(error, accountRecord);
-            });
-        }
-        else if (options.owner && options.repo) {
-            data.searchForAccount(mongo, options, cb);
-        }
-    },
-
-    "searchForAccount": function (mongo, options, cb) {
-        var repoLabel = options.owner + '/' + options.repo;
-        mongo.findOne(collName, {'repos.name': repoLabel}, function (error, accountRecord) {
-            return cb(error, accountRecord);
-        });
-    },
-
-    "saveNewAccount": function (mongo, record, cb) {
-        mongo.insert(collName, record, function (error) {
-            return (error) ? cb (error) : cb (null, true);
-        });
-    },
-
-    "removeAccount": function (mongo, recordId, cb) {
-        mongo.remove(collName, {_id: recordId}, function (error) {
-            return (error) ? cb (error) : cb (null, true);
-        });
-    },
-
-    "checkIfAccountExists": function (mongo, record, cb) {
-        mongo.count(collName, {owner: record.owner, provider: record.provider}, function (error, count) {
-            return cb (error, count);
-        });
-    }
-};
 
 module.exports = {
-    "login": function (mongo, options, cb) {
+    "login": function (data, mongo, options, cb) {
         data.checkIfAccountExists(mongo, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
                 if (count > 0) {
@@ -359,7 +320,7 @@ module.exports = {
         });
     },
 
-    "logout": function (mongo, options, cb) {
+    "logout": function (data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {code: 754}, cb, function () {
@@ -379,7 +340,7 @@ module.exports = {
         });
     },
 
-    "getRepos": function (mongo, options, cb) {
+    "getRepos": function (data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 if (accountRecord.token) {
@@ -398,7 +359,7 @@ module.exports = {
         });
     },
 
-    "getBranches": function (mongo, options, cb) {
+    "getBranches": function (data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.token = accountRecord.token;
