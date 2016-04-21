@@ -31,7 +31,7 @@ function checkIfError(error, options, cb, callback) {
             else {
                 error = {
                     code: options.code,
-                    message: error
+                    message: options.message || error
                 };
             }
         }
@@ -144,8 +144,8 @@ var lib = {
                 user: repoInfo[0],
                 repo: repoInfo[1]
             }, function (error, response) {
-                checkIfError(error && error.indexOf('API rate limit exceeded') !== -1, {code: 776}, cb, function () {//in case limit was exceeded
-                    checkIfError(error && error.indexOf('Not Found') !== -1, {code: 767}, cb, function () {//in case of invalid repo info
+                checkIfError(error && error.indexOf('API rate limit exceeded') !== -1, {code: 776, message: 'GitHub API limit exceeded for this IP'}, cb, function () {//in case limit was exceeded
+                    checkIfError(error && error.indexOf('Not Found') !== -1, {code: 767, message: 'Repository not found'}, cb, function () {//in case of invalid repo info
                         checkIfError(error, {code: 763}, cb, function () {//generic case
                             return cb (null, response);
                         });
@@ -159,8 +159,6 @@ var lib = {
         lib.authenticate(options, function () {
             github.repos.getContent(options, function (error, response) {
         		if (error) {
-        			// req.soajs.log.error('Error for [' + gitConfigObj.repo + ']: ' + gitConfigObj.path);
-        			// req.soajs.log.error(error);
         			if (error.code === 404) {
         				error.code = 761;//in case config file was not found in the remote repo
         			}
@@ -210,7 +208,7 @@ var lib = {
     			reqOptions.qs.type = 'all';
 
     			request.get(reqOptions, function (error, response, body) {
-                    checkIfError(body && body.indexOf('API rate limit exceeded') !== -1, {code: 776}, cb, function () {
+                    checkIfError(body && body.indexOf('API rate limit exceeded') !== -1, {code: 776, message: 'API rate limit exceeded for this IP'}, cb, function () {
                         return cb(error, (body) ? JSON.parse(body) : []);
                     });
     			});
@@ -219,9 +217,12 @@ var lib = {
     },
 
     "addReposStatus": function (allRepos, activeRepos, cb) {
-        if (!allRepos || allRepos.length === 0 || !activeRepos || activeRepos.length === 0) {
-            return cb(allRepos);
-        }
+		if (!Array.isArray(allRepos)) {
+			allRepos = [];
+		}
+		if (!activeRepos || activeRepos.length === 0) {
+			return cb(allRepos);
+		}
 
         var found;
         activeRepos.forEach(function (oneRepo) {
@@ -286,36 +287,34 @@ module.exports = {
     "login": function (data, mongo, options, cb) {
         data.checkIfAccountExists(mongo, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
-                if (count > 0) {
-                    return cb({code: 752, message: 'Account already exists'});
-                }
-
-                if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
-                    if (options.type === 'personal') {
-                        lib.checkUserRecord(options, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                data.saveNewAccount(mongo, options, cb);
-                            });
-                        });
-                    }
-                    else if (options.type === 'organization') {
-                        lib.checkOrgRecord(options, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                data.saveNewAccount(mongo, options, cb);
-                            });
-                        });
-                    }
-                }
-                else if (options.access === 'private') {//create token for account and save
-                    lib.createAuthToken(options, function (error, tokenInfo) {
-                        checkIfError(error, {}, cb, function () {
-                            delete options.password;
-                            options.token = tokenInfo.token;
-                            options.authId = tokenInfo.authId;
-                            data.saveNewAccount(mongo, options, cb);
-                        });
-                    });
-                }
+				checkIfError(count > 0, {code: 752, message: 'Account already exists'}, cb, function () {
+					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
+	                    if (options.type === 'personal') {
+	                        lib.checkUserRecord(options, function (error) {
+	                            checkIfError(error, {}, cb, function () {
+	                                data.saveNewAccount(mongo, options, cb);
+	                            });
+	                        });
+	                    }
+	                    else if (options.type === 'organization') {
+	                        lib.checkOrgRecord(options, function (error) {
+	                            checkIfError(error, {}, cb, function () {
+	                                data.saveNewAccount(mongo, options, cb);
+	                            });
+	                        });
+	                    }
+	                }
+	                else if (options.access === 'private') {//create token for account and save
+	                    lib.createAuthToken(options, function (error, tokenInfo) {
+	                        checkIfError(error, {}, cb, function () {
+	                            delete options.password;
+	                            options.token = tokenInfo.token;
+	                            options.authId = tokenInfo.authId;
+	                            data.saveNewAccount(mongo, options, cb);
+	                        });
+	                    });
+	                }
+				});
             });
         });
     },
@@ -323,7 +322,7 @@ module.exports = {
     "logout": function (data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
-                checkIfError(accountRecord.repos.length > 0, {code: 754}, cb, function () {
+                checkIfError(accountRecord.repos.length > 0, {code: 754, message: 'Active repositories exist for this user'}, cb, function () {
                     if (accountRecord.access === 'public') {
                         data.removeAccount(mongo, accountRecord._id, cb);
                     }
