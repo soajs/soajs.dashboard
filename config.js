@@ -1678,6 +1678,19 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/nginx/list": {
+			_apiInfo: {
+				'l': 'List Nginx Hosts',
+				'group': 'Hosts'
+			},
+			'env': {
+				'source': ['query.env'],
+				'required': true,
+				'validation': {
+					'type': 'string'
+				}
+			}
+		},
 		"/hosts/delete": {
 			_apiInfo: {
 				"l": "Delete Hosts",

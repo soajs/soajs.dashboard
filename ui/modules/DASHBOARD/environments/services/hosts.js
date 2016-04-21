@@ -233,6 +233,24 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         }
     }
 
+    function listNginxHosts(currentScope, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/nginx/list',
+            params: {
+                env: env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                currentScope.nginxHosts = response;
+                console.log (currentScope.nginxHosts);
+            }
+        });
+    }
+
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "send",

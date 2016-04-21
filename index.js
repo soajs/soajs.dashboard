@@ -325,6 +325,10 @@ service.init(function() {
 		checkForMongo(req);
 		host.list(config, mongo, req, res);
 	});
+	service.get("/hosts/nginx/list", function (req, res) {
+		checkForMongo(req);
+		host.listNginx(config, mongo, req, res);
+	});
 	service.get("/hosts/delete", function(req, res) {
 		checkForMongo(req);
 		host.delete(config, mongo, req, res);
