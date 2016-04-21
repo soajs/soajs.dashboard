@@ -1,6 +1,6 @@
 "use strict";
 
-soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', function ($http, $cookieStore, $localStorage) {
+soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($http, $cookies, $localStorage) {
 
 	function returnAPIError(scope, opts, status, headers, config, cb) {
 		console.log("Error: ngDataApi->" + opts.api);
@@ -13,8 +13,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 			return cb(null, response);
 		}
 		else if (response && response.result === true) {
-			if (response.soajsauth && $cookieStore.get('soajs_auth')) {
-				$cookieStore.put("soajs_auth", response.soajsauth);
+			if (response.soajsauth && $cookies.get('soajs_auth')) {
+				$cookies.put("soajs_auth", response.soajsauth);
 			}
 			var resp = {};
 			for (var i in response) {
@@ -29,8 +29,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		}
 		else {
 			// if (response.errors.codes[0] === 132) {
-			// 	$cookieStore.remove('soajs_auth');
-			// 	$cookieStore.remove('soajs_user');
+			// 	$cookies.remove('soajs_auth');
+			// 	$cookies.remove('soajs_user');
 			// 	$localStorage.acl_access = null;
 			// 	scope.$parent.enableInterface = false;
 			// 	scope.$parent.isUserLoggedIn();
@@ -68,19 +68,19 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 		};
 
 		if (opts.proxy) {
-			config.params['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
+			config.params['__envauth'] = $cookies.get('soajs_envauth').replace(/\"/g, '')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
 		}
 
-		var soajsAuthCookie = $cookieStore.get('soajs_auth');
+		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
-			config.headers.soajsauth = soajsAuthCookie;
+			config.headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
 		}
 
 		if (opts.headers.key) {
 			config.headers.key = opts.headers.key;
 		}
-		else if ($cookieStore.get("soajs_dashboard_key")) {
-			config.headers.key = $cookieStore.get("soajs_dashboard_key");
+		else if ($cookies.get("soajs_dashboard_key")) {
+			config.headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
 		}
 		else {
 			config.headers.key = apiConfiguration.key;
@@ -88,8 +88,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 
 		if(opts.proxy){
 			if(!config.params.__env || !config.params.__envauth){
-				var envauth = $cookieStore.get('soajs_envauth');
-				var env = $cookieStore.get('myEnv').code;
+				var envauth = $cookies.get('soajs_envauth').replace(/\"/g, '');
+				var env = $cookies.getObject('myEnv').code.replace(/\"/g, '');
 				config.params.__envauth = envauth[env.toLowerCase()];
 				config.params.__env = env.toUpperCase();
 			}
@@ -126,14 +126,14 @@ soajsApp.service('ngDataApi', ['$http', '$cookieStore', '$localStorage', functio
 	};
 }]);
 
-soajsApp.service('isUserLoggedIn', ['$cookieStore', function ($cookieStore) {
+soajsApp.service('isUserLoggedIn', ['$cookies', function ($cookies) {
 	return function () {
-		if ($cookieStore.get('soajs_user') && $cookieStore.get('soajs_auth')) {
+		if ($cookies.getObject('soajs_user') && $cookies.get('soajs_auth')) {
 			return true;
 		}
 		else {
-			$cookieStore.remove('soajs_auth');
-			$cookieStore.remove('soajs_user');
+			$cookies.remove('soajs_auth');
+			$cookies.remove('soajs_user');
 			return false;
 		}
 	}

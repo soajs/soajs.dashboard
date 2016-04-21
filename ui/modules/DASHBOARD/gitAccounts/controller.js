@@ -8,7 +8,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     constructModulePermissions($scope, $scope.access, gitAccountsAppConfig.permissions);
 
     $scope.referToDoc = 'Refer to the online documentation at ' + '<a target="_blank" href="http://soajs.org/#/documentation">SOAJS Website.</a>';
-    $scope.excludedSOAJSRepos = ['soajs/connect-mongo-soajs', 'soajs/soajs', 'soajs/soajs.agent', 'soajs/soajs.composer', 'soajs/soajs.dash.example', 'soajs/soajs.gcs', 'soajs/soajs.mongodb.data', 'soajs/soajs.utilities', 'soajs/soajs.website.contactus'];
+    $scope.excludedSOAJSRepos = githubAppConfig.blacklistedRepos;
 
     $scope.defaultPageNumber = 1;
     $scope.defaultPerPage = 100;

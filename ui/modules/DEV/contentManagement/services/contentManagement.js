@@ -1,6 +1,6 @@
 "use strict";
 var cmService = soajsApp.components;
-cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', '$compile', function (ngDataApi, $cookieStore, $http, Upload, $compile) {
+cmService.service('cmService', ['ngDataApi', '$cookies', '$http', 'Upload', '$compile', function (ngDataApi, $cookies, $http, Upload, $compile) {
 
     function loadServices(currentScope) {
         var services = [];
@@ -31,7 +31,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
             method: 'get',
             headers: {
                 "Accept": oneFile.contentType,
-	            "key": $cookieStore.get("soajs_dashboard_key")
+	            "key": $cookies.get("soajs_dashboard_key")
             },
             responseType: 'arraybuffer',
             params: {
@@ -85,7 +85,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
     }
 
     function UploadFile(currentScope, config, method, files, apiData, url, cb) {
-        var soajsAuthCookie = $cookieStore.get('soajs_auth');
+        var soajsAuthCookie = $cookies.get('soajs_auth');
 
         var max = 0, counter = 0;
         var err = [];
@@ -118,7 +118,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
 		                    'uploadUrl': url,
 		                    'headers': {
 			                    "soajsauth": soajsAuthCookie,
-			                    "key": $cookieStore.get("soajs_dashboard_key")
+			                    "key": $cookies.get("soajs_dashboard_key")
 		                    },
 		                    'progress': progress,
 		                    "data": {
@@ -136,7 +136,7 @@ cmService.service('cmService', ['ngDataApi', '$cookieStore', '$http', 'Upload', 
 	                    if (exclude.indexOf(pathParams[3]) === -1) {
 		                    uploadParams.uploadUrl = "/proxy/redirect";
 		                    uploadParams.data['proxyRoute'] = encodeURIComponent(url);
-		                    uploadParams.data['__envauth'] = $cookieStore.get('soajs_envauth')[$cookieStore.get('myEnv').code.toLowerCase()];
+		                    uploadParams.data['__envauth'] = $cookies.get('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase()];
 	                    }
                         currentScope.form.uploadFileToUrl(Upload, uploadParams,
                             function (error, response) {

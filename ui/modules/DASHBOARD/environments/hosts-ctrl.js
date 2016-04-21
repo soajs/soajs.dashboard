@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', 'envHosts', 'deploySrv', 'injectFiles', function ($scope, $cookieStore, $timeout,  envHosts, deploySrv, injectFiles) {
+environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envHosts', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout,  envHosts, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -105,7 +105,7 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookieStore', '$timeout', '
 
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
-		$scope.envCode = $cookieStore.get("myEnv").code;
+		$scope.envCode = $cookies.getObject("myEnv").code;
 		$scope.listHosts($scope.envCode);
 		$scope.listZombieContainers($scope.envCode);
 	}

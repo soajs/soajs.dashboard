@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('clustersCtrl', ['$scope', '$cookieStore', 'envClusters', function ($scope, $cookieStore, envClusters) {
+environmentsApp.controller('clustersCtrl', ['$scope', '$cookies', 'envClusters', function ($scope, $cookies, envClusters) {
 
 	$scope.$parent.isUserLoggedIn();
 
@@ -26,7 +26,7 @@ environmentsApp.controller('clustersCtrl', ['$scope', '$cookieStore', 'envCluste
 
 	//default operation
 	if ($scope.access.clusters.list) {
-		$scope.envCode = $cookieStore.get("myEnv").code;
+		$scope.envCode = $cookies.getObject("myEnv").code;
 		$scope.listClusters($scope.envCode);
 	}
 }]);
