@@ -1212,25 +1212,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
-    function removeZombieContainer(currentScope, container, env) {
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/hosts/container/zombie/delete',
-            params: {
-                envCode: env,
-                cid: container.cid
-            }
-        }, function (error, result) {
-            if (error) {
-                currentScope.generateNewMsg(env, 'danger', translation.unableToDeleteZombieContainer[LANG]);
-            }
-            else {
-                currentScope.generateNewMsg(env, 'success', translation.zombieContainerRemovedSuccessfully[LANG]);
-                listZombieContainers(currentScope, env);
-            }
-        });
-    }
-
     return {
         'listHosts': listHosts,
         'listNginxHosts': listNginxHosts,
@@ -1244,8 +1225,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'infoHost': infoHost,
         'createHost': createHost,
         'containerLogs': containerLogs,
-        'listZombieContainers': listZombieContainers,
-        'removeZombieContainer': removeZombieContainer
+        'deleteContainer': deleteContainer,
+        'listZombieContainers': listZombieContainers
     };
 
 }]);

@@ -99,12 +99,12 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.containerLogs($scope, env, container);
 	};
 
-	$scope.listZombieContainers = function (env) {
-		envHosts.listZombieContainers($scope, env);
+	$scope.deleteContainer = function (env, container) {
+		envHosts.deleteContainer($scope, env, container);
 	};
 
-	$scope.removeZombieContainer = function (container, env) {
-		envHosts.removeZombieContainer($scope, container, env);
+	$scope.listZombieContainers = function (env) {
+		envHosts.listZombieContainers($scope, env);
 	};
 
 	if ($scope.access.listHosts) {

@@ -69,11 +69,7 @@
 											</tr>
 											<tr>
 												<td colspan="4">
-													<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
-														<span class="icon icon-heart"></span>&nbsp;
-													</a>
-
-													<a href="" ng-show="nginxHost.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, nginxHost)">
+													<a href="" ng-show="nginxHost.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="deleteContainer(envCode, nginxHost)">
 														<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
 													</a>
 
@@ -253,7 +249,7 @@
 							<a href="" ng-click="containerLogs(envCode, container)">
 								<span class="icon icon-terminal" tooltip="Container Logs"></span>
 							</a>
-							<a href="" ng-click="removeZombieContainer(container, envCode)">
+							<a href="" ng-click="deleteContainer(envCode, container)">
 								<span class="icon icon-cross" tooltip="Delete Container"></span>
 							</a>
 						</div>
