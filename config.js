@@ -2062,26 +2062,7 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/zombie/getLogs": {
-			"_apiInfo": {
-				"l": "Get Zombie Container logs",
-				"group": "Hosts"
-			},
-			"envCode": {
-				"source": ["query.envCode"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
+		 
 		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",

@@ -1129,6 +1129,41 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function containerLogs (currentScope, env, container) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/logs',
+            params: {
+                env: env,
+                cid: container.cid
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + container.hostname;
+                        $scope.data = remove_special(response.data);
+                        fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode();
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
     function listZombieContainers (currentScope, env) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
@@ -1172,41 +1207,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
-    function getZombieContainerLogs(currentScope, container, env) {
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/hosts/container/zombie/getLogs',
-            params: {
-                envCode: env,
-                cid: container.cid
-            }
-        }, function (error, result) {
-            if (error) {
-                currentScope.generateNewMsg(env, 'danger', translation.unableToGetZombieContainerLogs[LANG]);
-            }
-            else {
-                $modal.open({
-                    templateUrl: "logBox.html",
-                    size: 'lg',
-                    backdrop: true,
-                    keyboard: false,
-                    windowClass: 'large-Modal',
-                    controller: function ($scope, $modalInstance) {
-                        $scope.title = "Host Logs of " + container.hostname;
-                        $scope.data = remove_special(result.data);
-                        fixBackDrop();
-                        setTimeout(function () {
-                            highlightMyCode()
-                        }, 500);
-                        $scope.ok = function () {
-                            $modalInstance.dismiss('ok');
-                        };
-                    }
-                });
-            }
-        });
-    }
-
     return {
         'listHosts': listHosts,
         'listNginxHosts': listNginxHosts,
@@ -1219,9 +1219,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'hostLogs': hostLogs,
         'infoHost': infoHost,
         'createHost': createHost,
+        'containerLogs': containerLogs,
         'listZombieContainers': listZombieContainers,
-        'removeZombieContainer': removeZombieContainer,
-        'getZombieContainerLogs': getZombieContainerLogs
+        'removeZombieContainer': removeZombieContainer
     };
 
 }]);

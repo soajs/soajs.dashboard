@@ -95,6 +95,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.createHost($scope, env, services);
 	};
 
+	$scope.containerLogs = function (env, container) {
+		envHosts.containerLogs($scope, env, container);
+	};
+
 	$scope.listZombieContainers = function (env) {
 		envHosts.listZombieContainers($scope, env);
 	};
@@ -103,13 +107,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.removeZombieContainer($scope, container, env);
 	};
 
-	$scope.getZombieContainerLogs = function (container, env) {
-		envHosts.getZombieContainerLogs($scope, container, env);
-	};
-
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;
+		//list nginx container, hosts, and zombie containers in parallel
 		$scope.listNginxHosts($scope.envCode);
 		$scope.listHosts($scope.envCode);
 		$scope.listZombieContainers($scope.envCode);

@@ -77,7 +77,7 @@
 														<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
 													</a>
 
-													<a href="" ng-show="nginxHost.cid" ng-click="hostLogs(envCode, serviceName, nginxHost)">
+													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 													</a>
 												</td>
@@ -250,7 +250,7 @@
 							{{container.hostname}} [{{container.type}}]
 						</div>
 						<div class="entryAction">
-							<a href="" ng-click="getZombieContainerLogs(container, envCode)">
+							<a href="" ng-click="containerLogs(envCode, container)">
 								<span class="icon icon-terminal" tooltip="Container Logs"></span>
 							</a>
 							<a href="" ng-click="removeZombieContainer(container, envCode)">

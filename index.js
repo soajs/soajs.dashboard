@@ -361,10 +361,6 @@ service.init(function() {
 		checkForMongo(req);
 		host.deleteZombieContainer(config, mongo, req, res);
 	});
-	service.get("/hosts/container/zombie/getLogs", function (req, res) {
-		checkForMongo(req);
-		host.getZombieContainerLogs(config, mongo, req, res);
-	});
 
 	/**
 	 * Github App features
