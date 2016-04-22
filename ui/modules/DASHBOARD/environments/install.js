@@ -555,6 +555,18 @@ var envTranslation ={
 		"ENG": " new controllers for environment ",
 		"FRA": " new controllers for environment "
 	},
+	"zombieContainer": {
+		"ENG": "Zombie Containers",
+		"FRA": "Zombie Containers"
+	},
+	"containerLogs": {
+		"ENG": "Container Logs",
+		"FRA": "Container Logs"
+	},
+	"deleteContainer": {
+		"ENG": "Delete Container",
+		"FRA": "Delete Container"
+	},
 	//database
 	"unableFetchEnvironmentDatabase": {
 		"ENG": "Unable to fetch Environment Database.",

@@ -174,6 +174,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 				else {
 					overlay.hide(function(){
+						currentScope.listNginxHosts(envCode);
 						currentScope.listHosts(envCode);
 					});
 				}

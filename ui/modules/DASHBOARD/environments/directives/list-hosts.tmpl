@@ -46,8 +46,8 @@
 				</div>
 				<br/><br/>
 				<div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;" ng-show="hosts.controller">
-					<fieldset class="groupFieldset">
-						<legend>Nginx</legend>
+					<fieldset class="groupFieldset" ng-if="nginxHosts.length > 0">
+						<legend>Nginx Instances</legend>
 						<div class="serviceBox controllerEnvelop">
 							<div style="width: 100%;" class="head">
 								nginx
@@ -238,7 +238,7 @@
 					</div>
 				</div>
 			</tab>
-			<tab heading="Zombie Containers" ng-if="zombieContainers.length > 0">
+			<tab heading="{{translation.zombieContainers[LANG]}}" ng-if="zombieContainers.length > 0">
 				<br>
 				<div class="entryBoxes entryBoxesGrid">
 					<div class="entryBox customEntryBox" ng-repeat="container in zombieContainers">
@@ -247,10 +247,10 @@
 						</div>
 						<div class="entryAction">
 							<a href="" ng-click="containerLogs(envCode, container)">
-								<span class="icon icon-terminal" tooltip="Container Logs"></span>
+								<span class="icon icon-terminal" tooltip="{{translation.containerLogs[LANG]}}"></span>
 							</a>
 							<a href="" ng-click="deleteContainer(envCode, container)">
-								<span class="icon icon-cross" tooltip="Delete Container"></span>
+								<span class="icon icon-cross" tooltip="{{translation.deleteContainer[LANG]}}"></span>
 							</a>
 						</div>
 					</div>
