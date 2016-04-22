@@ -47,6 +47,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.listHosts($scope, env, noPopulate);
 	};
 
+	$scope.listNginxHosts = function (env) {
+		envHosts.listNginxHosts($scope, env);
+	};
+
 	$scope.executeHeartbeatTest = function (env, oneHost) {
 		envHosts.executeHeartbeatTest($scope, env, oneHost);
 	};
@@ -106,8 +110,8 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;
+		$scope.listNginxHosts($scope.envCode);
 		$scope.listHosts($scope.envCode);
 		$scope.listZombieContainers($scope.envCode);
 	}
 }]);
-

@@ -48,7 +48,45 @@
 				<div class="entryBoxes entryBoxesGrid" ng-init=""  style="padding-left: 5px;" ng-show="hosts.controller">
 					<fieldset class="groupFieldset">
 						<legend>Nginx</legend>
-						
+						<div class="serviceBox controllerEnvelop">
+							<div style="width: 100%;" class="head">
+								nginx
+							</div>
+							<div class="service-ips clearfix">
+								<div ng-repeat="nginxHost in nginxHosts" style="float:left; margin:0 1px;">
+									<table boder="1" cellpadding="2" cellspacing="1" class="OneIpTable hostsGrid">
+										<thead>
+											<tr>
+												<th colspan="2" class="host-ip">{{translation.hostname[LANG]}}</th>
+												<!-- <th class="host-ip">IP:{{translation.port[LANG]}}</th> -->
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td><span class="icon {{oneIp.color}}" ng-class="nginxHost.running === true? 'icon-smile' : 'icon-sad'"></span></td>
+												<td><span class="{{oneIp.color}}">{{nginxHost.hostname}}</span></td>
+												<!-- <td><span class="{{oneIp.color}}">{{nginxHost.ip} }:{{nginxHost.port}}</span></td> -->
+											</tr>
+											<tr>
+												<td colspan="4">
+													<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
+														<span class="icon icon-heart"></span>&nbsp;
+													</a>
+
+													<a href="" ng-show="nginxHost.cid" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}" ng-click="removeHost(envCode, serviceName, nginxHost)">
+														<span class="icon icon-cross" title="{{translation.removeHostIP[LANG]}}"></span>&nbsp;
+													</a>
+
+													<a href="" ng-show="nginxHost.cid" ng-click="hostLogs(envCode, serviceName, nginxHost)">
+														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 					</fieldset>
 					<fieldset class="groupFieldset">
 						<legend>SOAJS Controllers</legend>

@@ -341,15 +341,17 @@ service.init(function() {
 		checkForMongo(req);
 		host.deployController(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployService", function(req, res){
 		checkForMongo(req);
 		host.deployService(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployDaemon", function (req, res) {
 		checkForMongo(req);
 		host.deployDaemon(config, mongo, req, res);
+	});
+	service.get("/hosts/container/logs", function (req, res) {
+		checkForMongo(req);
+		host.getContainerLogs(config, mongo, req, res);
 	});
 	service.get("/hosts/container/zombie/list", function (req, res) {
 		checkForMongo(req);

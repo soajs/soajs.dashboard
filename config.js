@@ -1779,7 +1779,7 @@ module.exports = {
 				}
 			}
 		},
-			"/hosts/deployController": {
+		"/hosts/deployController": {
 			"_apiInfo": {
 				"l": "Deploy New Controller",
 				"group": "Hosts"
@@ -2009,6 +2009,26 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/container/logs": {
+			"_apiInfo": {
+				"l": "Get Container Logs",
+				"group": "Hosts"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
 		"/hosts/container/zombie/list": {
 			"_apiInfo": {
 				"l": "List Zombie Containers",
@@ -2020,12 +2040,6 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
-			}
-		},
-		"/github/accounts/list": {
-			"_apiInfo": {
-				"l": "Github List Accounts",
-				"group": "Git Accounts"
 			}
 		},
 		"/hosts/container/zombie/delete": {
@@ -2068,7 +2082,6 @@ module.exports = {
 				}
 			}
 		},
-
 		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",

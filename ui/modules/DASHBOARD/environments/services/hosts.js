@@ -246,7 +246,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
             else {
                 currentScope.nginxHosts = response;
-                console.log (currentScope.nginxHosts);
+                console.log (response);
             }
         });
     }
@@ -1209,6 +1209,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
     return {
         'listHosts': listHosts,
+        'listNginxHosts': listNginxHosts,
         'executeHeartbeatTest': executeHeartbeatTest,
         'executeAwarenessTest': executeAwarenessTest,
         'reloadRegistry': reloadRegistry,
