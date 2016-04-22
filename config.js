@@ -2029,26 +2029,13 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/zombie/list": {
+		"/hosts/container/delete": {
 			"_apiInfo": {
-				"l": "List Zombie Containers",
+				"l": "Delete Container",
 				"group": "Hosts"
 			},
-			"envCode": {
-				"source": ["query.envCode"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/container/zombie/delete": {
-			"_apiInfo": {
-				"l": "Delete Zombie Container",
-				"group": "Hosts"
-			},
-			"envCode": {
-				"source": ["query.envCode"],
+			"env": {
+				"source": ['query.env'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2062,7 +2049,40 @@ module.exports = {
 				}
 			}
 		},
-		 
+		"/hosts/container/zombie/list": {
+			"_apiInfo": {
+				"l": "List Zombie Containers",
+				"group": "Hosts"
+			},
+			"env": {
+				"source": ["query.env"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/container/zombie/delete": {
+			"_apiInfo": {
+				"l": "Delete Zombie Container",
+				"group": "Hosts"
+			},
+			"env": {
+				"source": ["query.env"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
 		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",

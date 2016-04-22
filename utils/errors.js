@@ -174,7 +174,7 @@ var errors = {
 	"758": "Unable to get repositories. Please try again.",
 	"759": "Unable to get branches",
 	"760": "Missing source information",
-	"761": "Failed to activate repository, make sure config.js file is available in your repository and/or it has the right schema.",
+	"761": "Failed to activate repository, make sure config.js file is available in your repository and it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
 	"763": "Unable to reach the GitHub API. Please try again.",
 
@@ -188,11 +188,13 @@ var errors = {
 	"771": "Invalid or no type provided in config.js",
 
 	"772": "Unable to list zombie containers",
-	"773": "Unable to delete zombie container",
-	"774": "Unable to get zombie container logs",
+	"773": "Unable to delete container",
+	"774": "Unable to get container logs",
 
 	"775": "Missing account provider param",
 	"776": "GitHub API returned an error: API rate limit exceeded for this IP. It is advised to use an authenticated account to proceed or try again later",
+
+	"777": "You are not allowed to delete this container. At least one instance of nginx must be available",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",

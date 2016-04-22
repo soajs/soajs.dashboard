@@ -1164,12 +1164,36 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function deleteContainer(currentScope, env, container) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/delete',
+            params: {
+                env: env,
+                cid: container.cid
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                currentScope.generateNewMsg(env, 'success', 'Container deleted successfully');
+                if (container.type === nginx) {
+                    listNginxHosts(currentScope, env);
+                }
+                else {
+                    listZombieContainers(currentScope, env);
+                }
+            }
+        });
+    }
+
     function listZombieContainers (currentScope, env) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/hosts/container/zombie/list',
             params: {
-                envCode: env
+                env: env
             }
         }, function (error, result) {
             if (error) {

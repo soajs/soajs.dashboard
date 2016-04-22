@@ -353,13 +353,17 @@ service.init(function() {
 		checkForMongo(req);
 		host.getContainerLogs(config, mongo, req, res);
 	});
+	service.get("/hosts/container/delete", function (req, res) {
+		checkForMongo(req);
+		host.deleteContainer(config, mongo, req, res);
+	});
 	service.get("/hosts/container/zombie/list", function (req, res) {
 		checkForMongo(req);
 		host.getContainersNoHost(config, mongo, req, res);
 	});
 	service.get("/hosts/container/zombie/delete", function (req, res) {
 		checkForMongo(req);
-		host.deleteZombieContainer(config, mongo, req, res);
+		host.deleteContainer(config, mongo, req, res);
 	});
 
 	/**
