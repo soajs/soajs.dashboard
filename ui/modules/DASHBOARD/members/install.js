@@ -227,6 +227,10 @@ var membersNav = [
 		'url': '#/members/:uId/editUserAcl',
 		'tplPath': 'modules/DASHBOARD/members/directives/editUserAcl.tmpl',
 		'tracker': true,
+		'checkPermission': {
+			'service': 'urac',
+			'route': '/admin/editUser'
+		},
 		'pillar': {
 			'name': 'management',
 			'label': translation.manage[LANG],

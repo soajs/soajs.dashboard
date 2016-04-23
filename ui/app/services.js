@@ -141,93 +141,100 @@ soajsApp.service('isUserLoggedIn', ['$cookies', function ($cookies) {
 
 soajsApp.service('checkApiHasAccess', function () {
 
-	return function (aclObject, serviceName, routePath, userGroups, envCode, cb) {
-		envCode = envCode.toLowerCase();
-		// get acl of the service name
-		if (aclObject[envCode]) {
-			var system = aclObject[envCode][serviceName];
-			if (!system) {
-				return cb(false);
-			}
-		}
-		// else {
-		// 	return cb(false);
-		// }
+	return function (aclObject, serviceName, routePath, userGroups, callback) {
+		var environments = Object.keys(aclObject);
+		return validateAccess(environments, 0, callback);
 
-		var api = (system && system.apis ? system.apis[routePath] : null);
-
-		if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
-			for (var jj = 0; jj < system.apisRegExp.length; jj++) {
-				if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
-					api = system.apisRegExp[jj];
-					break;
-				}
-			}
-		}
-		//return true;
-		if (system && system.access) {
-			if (system.access instanceof Array) {
-				var checkAPI = false;
-				if (userGroups) {
-					for (var ii = 0; ii < userGroups.length; ii++) {
-						if (system.access.indexOf(userGroups[ii]) !== -1) {
-							checkAPI = true;
-							break;
-						}
-					}
-				}
-				if (!checkAPI) {
+		function validateAccess(environments, i, cb){
+			var envCode = environments[i].toLowerCase();
+			if(!aclObject[envCode] || !aclObject[envCode][serviceName]){
+				i++;
+				if(i === environments.length){
 					return cb(false);
 				}
-			}
-
-			api_checkPermission(system, userGroups, api, cb);
-		}
-		else if (api || (system && (system.apisPermission === 'restricted'))) {
-			api_checkPermission(system, userGroups, api, cb);
-		}
-		else {
-			return cb(true);
-		}
-
-		function api_checkPermission(system, userGroups, api, callback) {
-			if ('restricted' === system.apisPermission) {
-				if (!api) {
-					return callback(false);
-				}
 				else{
-					api_checkAccess(api.access, userGroups, callback);
+					validateAccess(environments, i, cb);
 				}
-			}
-			if (!api) {
-				return callback(true);
 			}
 			else{
-				api_checkAccess(api.access, userGroups, callback);
+				var system = aclObject[envCode][serviceName];
+				var access = checkSystem(system) || false;
+				return cb(access);
 			}
 		}
 
-		function api_checkAccess(apiAccess, userGroups, callback) {
-			if (!apiAccess) {
-				return callback(true);
-			}
-			else if (apiAccess instanceof Array) {
-				if (!userGroups) {
-					return callback(false);
+		function checkSystem(system){
+			var api = (system && system.apis ? system.apis[routePath] : null);
+
+			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
+					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
+						api = system.apisRegExp[jj];
+						break;
+					}
 				}
-				else{
-					var found = false;
-					for (var ii = 0; ii < userGroups.length; ii++) {
-						if (apiAccess.indexOf(userGroups[ii]) !== -1) {
-							found = true;
-							break;
+			}
+			if (system && system.access) {
+				if (Array.isArray(system.access)) {
+					var checkAPI = false;
+					if (userGroups) {
+						for (var ii = 0; ii < userGroups.length; ii++) {
+							if (system.access.indexOf(userGroups[ii]) !== -1) {
+								checkAPI = true;
+								break;
+							}
 						}
 					}
-					return callback(found);
+					if (!checkAPI) {
+						return false;
+					}
 				}
+				return api_checkPermission(system, userGroups, api);
+			}
+
+			if (api || (system && (system.apisPermission === 'restricted'))) {
+				return api_checkPermission(system, userGroups, api);
 			}
 			else {
-				return callback(true);
+				return true;
+			}
+		}
+
+		function api_checkPermission(system, userGroups, api) {
+			if ('restricted' === system.apisPermission) {
+				if (!api) {
+					return false;
+				}
+				return api_checkAccess(api.access, userGroups);
+			}
+			if (!api) {
+				return true;
+			}
+
+			return api_checkAccess(api.access, userGroups);
+		}
+
+		function api_checkAccess(apiAccess, userGroups) {
+			if (!apiAccess) {
+				return true;
+			}
+
+			if (apiAccess instanceof Array) {
+				if (!userGroups) {
+					return false;
+				}
+
+				var found = false;
+				for (var ii = 0; ii < userGroups.length; ii++) {
+					if (apiAccess.indexOf(userGroups[ii]) !== -1) {
+						found = true;
+						break;
+					}
+				}
+				return found;
+			}
+			else {
+				return true;
 			}
 		}
 	}

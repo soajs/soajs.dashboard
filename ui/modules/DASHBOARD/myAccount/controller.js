@@ -378,7 +378,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
+		//$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 	

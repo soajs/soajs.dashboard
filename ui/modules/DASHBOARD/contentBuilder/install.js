@@ -888,6 +888,10 @@ var cbNav = [
 		'url': '#/content-builder/add',
 		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/add.tmpl',
 		'tracker': true,
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/cb/add'
+		},
 		'pillar': {
 			'name': 'development',
 			'label': translation.develop[LANG],
@@ -902,6 +906,10 @@ var cbNav = [
 		'url': '#/content-builder/edit/:id',
 		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/edit.tmpl',
 		'tracker': true,
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/cb/update'
+		},
 		'pillar': {
 			'name': 'development',
 			'label': translation.develop[LANG],
