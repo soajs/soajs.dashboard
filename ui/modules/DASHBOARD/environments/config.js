@@ -49,6 +49,7 @@ var modelObj = {
 				'label': translation.username[LANG],
 				'type': 'text',
 				'placeholder': translation.username[LANG],
+				'tooltip': translation.enterCredentialsCluster[LANG],
 				'required': false
 			},
 			{
@@ -56,6 +57,7 @@ var modelObj = {
 				'label': translation.password[LANG],
 				'type': 'text',
 				'placeholder': translation.password[LANG],
+				'tooltip': translation.enterCredentialsCluster[LANG],
 				'required': false
 			}
 		]
@@ -278,8 +280,6 @@ var environmentsConfig = {
 					{
 						'name': 'servers',
 						'label': translation.serversList[LANG],
-						'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
-						'value': '',
 						'tooltip': translation.enterListServersSeparatedComma[LANG],
 						"type": "group",
 						'collapsed': false,
@@ -458,12 +458,11 @@ var environmentsConfig = {
 					{
 						'name': 'servers',
 						'label': translation.serversList[LANG],
-						'type': 'textarea',
-						'rows': 2,
-						'placeholder': '127.0.0.1:4000, 127.0.0.1:5000 ...',
-						'value': '',
 						'tooltip': translation.enterListServersSeparatedComma[LANG],
-						'required': true
+						"type": "group",
+						'collapsed': false,
+						"class": "serversList",
+						"entries": []
 					},
 					{
 						"name": "addServer",
@@ -473,7 +472,6 @@ var environmentsConfig = {
 					{
 						'name': 'credentials',
 						'label': translation.credentials[LANG],
-						'tooltip': translation.enterCredentialsCluster[LANG],
 						"type": "group",
 						'collapsed': false,
 						'required': false,

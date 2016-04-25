@@ -30,7 +30,14 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 
 		function addType(type) {
 			count = 0;
-			var formConf = environmentsConfig.form.clusters[type];
+			var formConf;
+			if (environmentsConfig.form.clusters[type]) {
+				formConf = environmentsConfig.form.clusters[type];
+			}
+			else {
+				formConf = environmentsConfig.form.clusters['default'];
+			}
+
 			formConf.entries.forEach(function (entry) {
 				if (entry.name === 'servers') {
 					var oneClone = angular.copy(modelObj.cluster.server);
@@ -60,7 +67,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				timeout: $timeout,
 				form: formConf,
 				name: 'addCluster',
-				label: translation.addNewCluster[LANG],
+				label: translation.addNewCluster[LANG] + ': ' + type,
 				actions: [
 					{
 						'type': 'submit',
@@ -178,13 +185,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 						'label': translation.submit[LANG],
 						'btn': 'primary',
 						'action': function (formData) {
-							if (environmentsConfig.form.clusters[formData.type]) {
-								currentScope.modalInstance.dismiss('cancel');
-								addType(formData.type);
-							}
-							else {
-								currentScope.form.displayAlert('danger', 'Invalid Type');
-							}
+							currentScope.modalInstance.dismiss('cancel');
+							addType(formData.type);
 						}
 					},
 					{
@@ -202,14 +204,20 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			buildFormWithModal(currentScope, $modal, options1);
 		}
 
-		//getClusterType(currentScope, env);
+		getClusterType(currentScope, env);
 
-		addType('default');
+		//addType('default');
 	}
 
 	function editCluster(currentScope, env, name, data) {
 		var count = 0;
 		var formConfig = angular.copy(environmentsConfig.form.clusters.default);
+
+		if (data.clusterType) {
+			if (environmentsConfig.form.clusters['data.clusterType']) {
+
+			}
+		}
 		formConfig.entries.forEach(function (entry) {
 			if (entry.name === 'name') {
 				entry.type = 'readonly';
