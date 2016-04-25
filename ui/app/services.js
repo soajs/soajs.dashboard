@@ -141,18 +141,18 @@ soajsApp.service('isUserLoggedIn', ['$cookies', function ($cookies) {
 
 soajsApp.service('checkApiHasAccess', function () {
 
-	return function (aclObject, serviceName, routePath, userGroups, envCode) {
+	return function (aclObject, serviceName, routePath, userGroups, envCode, cb) {
 		envCode = envCode.toLowerCase();
 		// get acl of the service name
 		if (aclObject[envCode]) {
 			var system = aclObject[envCode][serviceName];
 			if (!system) {
-				return false;
+				return cb(false);
 			}
 		}
-		else {
-			return false;
-		}
+		// else {
+		// 	return cb(false);
+		// }
 
 		var api = (system && system.apis ? system.apis[routePath] : null);
 
@@ -160,11 +160,11 @@ soajsApp.service('checkApiHasAccess', function () {
 			for (var jj = 0; jj < system.apisRegExp.length; jj++) {
 				if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
 					api = system.apisRegExp[jj];
+					break;
 				}
 			}
 		}
 		//return true;
-		var apiRes = null;
 		if (system && system.access) {
 			if (system.access instanceof Array) {
 				var checkAPI = false;
@@ -172,49 +172,50 @@ soajsApp.service('checkApiHasAccess', function () {
 					for (var ii = 0; ii < userGroups.length; ii++) {
 						if (system.access.indexOf(userGroups[ii]) !== -1) {
 							checkAPI = true;
+							break;
 						}
 					}
 				}
 				if (!checkAPI) {
-					return false;
+					return cb(false);
 				}
 			}
 
-			apiRes = api_checkPermission(system, userGroups, api);
-			return (apiRes) ? true : false;
+			api_checkPermission(system, userGroups, api, cb);
 		}
-
-		if (api || (system && (system.apisPermission === 'restricted'))) {
-			apiRes = api_checkPermission(system, userGroups, api);
-			return (apiRes) ? true : false;
+		else if (api || (system && (system.apisPermission === 'restricted'))) {
+			api_checkPermission(system, userGroups, api, cb);
 		}
 		else {
-			return true;
+			return cb(true);
 		}
 
-		function api_checkPermission(system, userGroups, api) {
+		function api_checkPermission(system, userGroups, api, callback) {
 			if ('restricted' === system.apisPermission) {
 				if (!api) {
-					return false;
+					return callback(false);
 				}
-				return api_checkAccess(api.access, userGroups);
+				else{
+					api_checkAccess(api.access, userGroups, callback);
+				}
 			}
 			if (!api) {
-				return true;
+				return callback(true);
 			}
+			else{
+				api_checkAccess(api.access, userGroups, callback);
+			}
+		}
 
-			return api_checkAccess(api.access, userGroups);
-
-			function api_checkAccess(apiAccess, userGroups) {
-				if (!apiAccess) {
-					return true;
+		function api_checkAccess(apiAccess, userGroups, callback) {
+			if (!apiAccess) {
+				return callback(true);
+			}
+			else if (apiAccess instanceof Array) {
+				if (!userGroups) {
+					return callback(false);
 				}
-
-				if (apiAccess instanceof Array) {
-					if (!userGroups) {
-						return false;
-					}
-
+				else{
 					var found = false;
 					for (var ii = 0; ii < userGroups.length; ii++) {
 						if (apiAccess.indexOf(userGroups[ii]) !== -1) {
@@ -222,11 +223,11 @@ soajsApp.service('checkApiHasAccess', function () {
 							break;
 						}
 					}
-					return found;
+					return callback(found);
 				}
-				else {
-					return true;
-				}
+			}
+			else {
+				return callback(true);
 			}
 		}
 	}

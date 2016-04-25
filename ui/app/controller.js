@@ -307,18 +307,27 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 			$scope.dashboard = [];
 
-			function doPermissions(navigation) {
-				var hasAccess = true;
+			function doPermissions(navigation, i, cb) {
 				var p = {};
-				for (var i = 0; i < navigation.length; i++) {
-					hasAccess = true;
-					if (navigation[i].hasOwnProperty('checkPermission')) {
-						p = navigation[i].checkPermission;
-						if (p.service && p.route) {
-							hasAccess = $scope.buildPermittedOperation(p.service, p.route);
-						}
+				if (navigation[i].hasOwnProperty('checkPermission')) {
+					p = navigation[i].checkPermission;
+					if (p.service && p.route) {
+						$scope.buildPermittedOperation(p.service, p.route, function(access){
+							if(p.service === 'order'){
+								console.log(p.route, access);
+							}
+							step2(access);
+						});
 					}
+					else{
+						step2(true);
+					}
+				}
+				else{
+					step2(true);
+				}
 
+				function step2(hasAccess){
 					if (hasAccess) {
 						$scope.dashboard.push(navigation[i].id);
 						if (navigation[i].mainMenu) {
@@ -346,23 +355,31 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 							$scope.guestMenu.links.push(navigation[i]);
 						}
 					}
-				}
-				for (var x in $scope.mainMenu.links) {
-					$scope.mainMenu.links[x].entries.sort(function (a, b) {
-						if (a.order > b.order) {
-							return 1;
+					i++;
+					if(i === navigation.length){
+						for (var x in $scope.mainMenu.links) {
+							$scope.mainMenu.links[x].entries.sort(function (a, b) {
+								if (a.order > b.order) {
+									return 1;
+								}
+								if (a.order < b.order) {
+									return -1;
+								}
+								// a must be equal to b
+								return 0;
+							});
 						}
-						if (a.order < b.order) {
-							return -1;
-						}
-						// a must be equal to b
-						return 0;
-					});
+						return cb();
+					}
+					else{
+						doPermissions(navigation, i, cb);
+					}
 				}
 			}
 
-			doPermissions($scope.appNavigation);
-			$scope.updateSelectedMenus();
+			doPermissions($scope.appNavigation, 0, function(){
+				$scope.updateSelectedMenus();
+			});
 		};
 
 		$scope.buildNavigation();
@@ -453,8 +470,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.isUserLoggedIn();
 		});
 
-		$scope.buildPermittedOperation = function (serviceName, routePath) {
-			var access = false;
+		$scope.buildPermittedOperation = function (serviceName, routePath, cb) {
 			var user = $cookies.getObject('soajs_user');
 			if (user) {
 				var userGroups = user.groups;
@@ -466,9 +482,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				else {
 					envCode = ($scope.pillar === 'operate') ? $cookies.getObject('myEnv').code : "DASHBOARD";
 				}
-				access = checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode);
+				checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode, cb);
 			}
-			return access;
+			else{
+				return cb(false);
+			}
 		};
 
 		$scope.switchLanguage = function (lang) {

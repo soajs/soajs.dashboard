@@ -126,6 +126,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 		}
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": method,
+			"headers": options.headers,
 			"routeName": options.routeName,
 			"params": options.params,
 			"data": options.data,
