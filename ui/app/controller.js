@@ -73,6 +73,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;
 			if (path) {
+				$cookies.put("soajs_current_route", path.replace("#", ""));
 				$location.path(path.replace("#", ""));
 			}
 		};
@@ -237,13 +238,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.leftMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			}
 
-			if($scope.mainMenu && Array.isArray($scope.mainMenu.links) && $scope.mainMenu.links.length > 0){
-				updateMyMenus($scope.mainMenu.links, 0, function(){
+			if ($scope.mainMenu && Array.isArray($scope.mainMenu.links) && $scope.mainMenu.links.length > 0) {
+				updateMyMenus($scope.mainMenu.links, 0, function () {
 					return cb();
 				});
 			}
 
-			function updateMyMenus(links, count, cb){
+			function updateMyMenus(links, count, cb) {
 				var oneLink = links[count];
 				for (var i = 0; i < oneLink.entries.length; i++) {
 					if (oneLink.entries[i].url === $scope.mainMenu.selectedMenu) {
@@ -253,10 +254,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					}
 				}
 				count++;
-				if(count >= links.length){
+				if (count >= links.length) {
 					return cb();
 				}
-				else{
+				else {
 					updateMyMenus(links, count, cb);
 				}
 			}
@@ -322,53 +323,61 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.dashboard = [];
 
 			function doPermissions(navigation, i, cb) {
+				function pushEntry(i) {
+					navigation[i].checkPermission.access = true;
+					$scope.dashboard.push(navigation[i].id);
+					if (navigation[i].mainMenu) {
+						var found = false;
+						for (var j = 0; j < $scope.mainMenu.links.length; j++) {
+							if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
+								if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
+									found = j;
+									break;
+								}
+							}
+						}
+						if (found === false) {
+							$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
+							found = $scope.mainMenu.links.length - 1;
+						}
+						$scope.mainMenu.links[found].entries.push(navigation[i]);
+					}
+
+					if (navigation[i].userMenu) {
+						$scope.userMenu.links.push(navigation[i]);
+					}
+
+					if (navigation[i].guestMenu) {
+						$scope.guestMenu.links.push(navigation[i]);
+					}
+				}
+
 				var p = {};
 				if (navigation[i].checkPermission) {
 					p = navigation[i].checkPermission;
 					if (p.service && p.route) {
-						$scope.buildPermittedOperation(p.service, p.route, function(hasAccess){
+						$scope.buildPermittedOperation(p.service, p.route, function (hasAccess) {
 							if (hasAccess) {
-								navigation[i].checkPermission.access = true;
-								$scope.dashboard.push(navigation[i].id);
-								if (navigation[i].mainMenu) {
-									var found = false;
-									for (var j = 0; j < $scope.mainMenu.links.length; j++) {
-										if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
-											if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
-												found = j;
-												break;
-											}
-										}
-									}
-									if (found === false) {
-										$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
-										found = $scope.mainMenu.links.length - 1;
-									}
-									$scope.mainMenu.links[found].entries.push(navigation[i]);
-								}
-
-								if (navigation[i].userMenu) {
-									$scope.userMenu.links.push(navigation[i]);
-								}
-
-								if (navigation[i].guestMenu) {
-									$scope.guestMenu.links.push(navigation[i]);
-								}
+								pushEntry(i);
 							}
 							step2();
 						});
 					}
-					else{
+					else {
+						navigation[i].checkPermission = {};
+						pushEntry(i);
 						step2();
 					}
 				}
-				else{
+				else {
+					navigation[i].checkPermission = {};
+					pushEntry(i);
 					step2();
 				}
 
-				function step2(){
+				function step2() {
 					i++;
-					if(i === navigation.length){
+					if (i === navigation.length) {
 						for (var x in $scope.mainMenu.links) {
 							$scope.mainMenu.links[x].entries.sort(function (a, b) {
 								if (a.order > b.order) {
@@ -383,15 +392,16 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 						return cb();
 					}
-					else{
+					else {
 						doPermissions(navigation, i, cb);
 					}
 				}
 			}
+
 			$scope.navigation = $scope.appNavigation;
-			doPermissions($scope.navigation, 0, function(){
+			doPermissions($scope.navigation, 0, function () {
 				$scope.dashboard.unshift(navigation[0].id);
-				$scope.updateSelectedMenus(function(){
+				$scope.updateSelectedMenus(function () {
 					return cb();
 				});
 			});
@@ -404,23 +414,23 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			if (!current) {
 				//console.log("page reload event invoked ...");
 				doEnvPerNav();
-				$timeout(function(){
+				$timeout(function () {
 					$location.path(gotourl);
-				},500);
+				}, 500);
 			}
 		});
 
 		$scope.$on('$routeChangeSuccess', function () {
 			$scope.tracker = [];
 			doEnvPerNav();
-			$scope.rebuildMenus(function(){
+			$scope.rebuildMenus(function () {
 				for (var i = 0; i < $scope.navigation.length; i++) {
 					if ($scope.navigation[i].tracker && $scope.navigation[i].url === '#' + $route.current.originalPath) {
 						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
 
 							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
 								$scope.displayAlert('danger', 'You do not have permissions to access this section');
-								$timeout(function(){
+								$timeout(function () {
 									$scope.closeAlert();
 									$scope.go("/dashboard");
 								}, 7200);
@@ -503,15 +513,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				var firstEnv = Object.keys(acl)[0];
 
 				//check if old system
-				if (acl[firstEnv] && (acl[firstEnv].access  || acl[firstEnv].apis || acl[firstEnv].apisRegExp || acl[firstEnv].apisPermission)){
+				if (acl[firstEnv] && (acl[firstEnv].access || acl[firstEnv].apis || acl[firstEnv].apisRegExp || acl[firstEnv].apisPermission)) {
 					acl['dashboard'] = acl;
 				}
-				checkApiHasAccess(acl, serviceName, routePath, userGroups, function(access){
+				checkApiHasAccess(acl, serviceName, routePath, userGroups, function (access) {
 					//console.log(acl, serviceName, routePath, userGroups, access);
 					return cb(access);
 				});
 			}
-			else{
+			else {
 				return cb(false);
 			}
 		};
@@ -528,7 +538,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			$scope.appNavigation = $scope.navigation = navigation;
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				var strNav = $scope.appNavigation[i].tplPath.split("/");
-				if($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0){
+				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
 					for (var e = 0; e < $localStorage.environments.length; e++) {
 						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
 
