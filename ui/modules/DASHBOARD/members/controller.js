@@ -315,6 +315,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		getUserGroupInfo(function () {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+				"headers": {
+					"key": $scope.key
+				},
 				"routeName": "/dashboard/tenant/acl/get",
 				"params": {"id": $scope.user.tenant.id}
 			}, function (error, response) {
@@ -444,6 +447,9 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+				"headers": {
+					"key": $scope.key
+				},
 				"routeName": "/urac/admin/editUser", //editUserConfig
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
