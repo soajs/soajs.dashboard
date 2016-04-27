@@ -1,27 +1,12 @@
 <section ng-controller="dahsboardCtrl">
-    <div ng-if="access.environment">
-        <h3>Environments</h3>
-        <div ng-controller="environmentsCtrl">
-            <nglist></nglist>
-        </div>
-        <hr/>
-    </div>
-
-    <div ng-if="access.product">
-        <h3>Productization</h3>
-        <div ng-controller="productsCtrl">
-            <nglist></nglist>
-        </div>
-        <hr/>
-    </div>
-
-    <div ng-if="access.tenant">
-        <h3>Multi-Tenancy</h3>
-        <div ng-controller="tenantsCtrl">
-            <nglist></nglist>
-        </div>
-        <hr/>
-    </div>
+	<hr>
+	<ul class="c-both poweredby">
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/nodejs.png" alt="nodejs"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/mongodb.png" alt="mongodb"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/angularjs.png" alt="angularjs"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/gruntjs.png" alt="grunt"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/logstash.png" alt="logstash"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/elasticsearch.png" alt="elasticsearch"/></a></li>
+		<li class="f-left"><a href=""><img ng-src="modules/DASHBOARD/home/images/kibana.png" alt="kibana"/></a></li>
+	</ul>
 </section>
-	
-    

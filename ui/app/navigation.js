@@ -3,21 +3,21 @@
  */
 
 var navigation = [
-	{
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/list'
-		},
-		'id': 'home',
-		'label': translation.home[LANG],
-		'url': '#/dashboard',
-		'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
-		'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
-		'icon': 'home',
-		//'userMenu': true,
-		//'mainMenu': true,
-		'tracker': true
-	},
+	// {
+	// 	// 'checkPermission': {
+	// 	// 	'service': 'dashboard',
+	// 	// 	'route': '/environment/list'
+	// 	// },
+	// 	'id': 'home',
+	// 	'label': translation.home[LANG],
+	// 	'url': '#/dashboard',
+	// 	'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
+	// 	'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
+	// 	'icon': 'home',
+	// 	//'userMenu': true,
+	// 	//'mainMenu': true,
+	// 	'tracker': true
+	// },
 	{
 		'id': 'home',
 		'label': translation.home[LANG],

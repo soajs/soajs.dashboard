@@ -160,6 +160,10 @@ var productizationNav =[
 		'url': '#/productization/:pid/editAcl/:code',
 		'tplPath': 'modules/DASHBOARD/productization/directives/editAcl.tmpl',
 		'tracker': true,
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/product/packages/update'
+		},
 		'pillar':{
 			'name': 'management',
 			'label': translation.manage[LANG],

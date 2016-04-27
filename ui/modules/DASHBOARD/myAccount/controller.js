@@ -25,6 +25,9 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
+							"headers": {
+								"key": apiConfiguration.key
+							},
 							"routeName": "/urac/account/changeEmail",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -80,6 +83,9 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
+							"headers": {
+								"key": apiConfiguration.key
+							},
 							"routeName": "/urac/account/changePassword",
 							"params": {"uId": $scope.memberData._id},
 							"data": postData
@@ -146,6 +152,9 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "send",
 						"routeName": "/urac/account/editProfile",
+						"headers": {
+							"key": apiConfiguration.key
+						},
 						"params": {"uId": $scope.uId},
 						"data": postData
 					}, function (error) {
@@ -172,6 +181,9 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	$scope.getProfile = function (username) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
+			"headers": {
+				"key": apiConfiguration.key
+			},
 			"routeName": "/urac/account/getUser",
 			"params": {"username": username}
 		}, function (error, response) {
@@ -366,7 +378,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 		buildForm($scope, null, formConfig);
 	}
 	else {
-		$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
+		//$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 	
@@ -425,6 +437,9 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 			}
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
+				"headers": {
+					"key": apiConfiguration.key
+				},
 				"routeName": "/urac/resetPassword",
 				"params": {"token": $routeParams.token},
 				"data": postData

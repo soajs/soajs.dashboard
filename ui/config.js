@@ -36,7 +36,8 @@ var modules = {
 	},
 	"operate": {
 		"DEV":{
-			contentManagement: 'modules/DEV/contentManagement/install.js'
+			contentManagement: 'modules/DEV/contentManagement/install.js',
+			order: 'modules/DEV/order/install.js'
 		}
 	},
 	"common": {

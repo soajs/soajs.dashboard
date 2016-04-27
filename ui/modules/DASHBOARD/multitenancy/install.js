@@ -199,6 +199,10 @@ var multitenancyNav = [
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
 		'tplPath': 'modules/DASHBOARD/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,
+		'checkPermission':{
+			'service':'dashboard',
+			'route':'/tenant/application/update'
+		},
 		'pillar': {
 			'name': 'management',
 			'label': translation.manage[LANG],

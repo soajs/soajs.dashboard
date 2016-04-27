@@ -43,10 +43,10 @@ var configDashbrd = {
 		}
 	},
 	'form': {},
-	'permissions': {
-		'environment': ['dashboard', '/environment/list'],
-		'tenant': ['dashboard', '/tenant/list'],
-		'product': ['dashboard', '/product/list'],
-		'services': ['dashboard', '/services/list']
-	}
+	// 'permissions': {
+	// 	'environment': ['dashboard', '/environment/list'],
+	// 	'tenant': ['dashboard', '/tenant/list'],
+	// 	'product': ['dashboard', '/product/list'],
+	// 	'services': ['dashboard', '/services/list']
+	// }
 };
