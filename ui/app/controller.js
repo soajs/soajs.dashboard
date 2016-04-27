@@ -438,6 +438,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 
 						if ($scope.navigation[i].tracker && $scope.navigation[i].ancestor && Array.isArray($scope.navigation[i].ancestor) && $scope.navigation[i].ancestor.length > 0) {
+							$scope.tracker = [];
 							for (var j = $scope.navigation[i].ancestor.length - 1; j >= 0; j--) {
 								findAndcestorProperties($scope.tracker, $scope.navigation[i].ancestor[j], $route.current.params);
 							}
@@ -751,7 +752,7 @@ soajsApp.directive('textSizeSlider', ['$document', function ($document) {
 		link: function (scope, element, attr) {
 			scope.textSize = scope.value;
 			scope.$watch('textSize', function (size) {
-				if(scope.idt){
+				if (scope.idt) {
 					document.getElementById(scope.idt).style.fontSize = size + scope.unit;
 				}
 				else {
