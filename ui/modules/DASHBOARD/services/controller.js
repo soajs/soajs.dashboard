@@ -100,7 +100,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				}
 			}
 		}
-		result.version = version;
+		result._ver = version;
 		return result;
 	};
 	

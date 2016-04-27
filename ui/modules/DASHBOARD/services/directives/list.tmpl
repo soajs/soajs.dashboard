@@ -27,8 +27,8 @@
 			</div>
 			<div class="body grid" style="display:none;">
 				<tabset>
-					<tab ng-repeat="oneList in service.fixList" heading="Version {{oneList.version}} {{(service.latest === oneList.version)?': Latest':null}}">
-				<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='version'">
+					<tab ng-repeat="oneList in service.fixList" heading="Version {{oneList._ver}} {{(service.latest === oneList._ver)?': Latest':null}}">
+				<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='_ver'">
 					<legend>{{grp}}</legend>
 					<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
 
