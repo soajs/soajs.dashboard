@@ -418,6 +418,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					if (gotourl) {
 						console.log('gotourl: ' + gotourl);
 						$cookies.put("soajs_current_route", gotourl);
+						console.log(navigation);
 						$location.path(gotourl);
 					}
 					else {
@@ -461,7 +462,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
-				console.log('location.path: ' + $location.path());
+				console.log('route ChangeSuccess location.path: ' + $location.path());
 				$cookies.put("soajs_current_route", $location.path());
 			});
 			//$cookies.put("soajs_current_route", $location.path());
