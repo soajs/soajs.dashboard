@@ -417,12 +417,13 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$timeout(function () {
 					if (gotourl) {
 						console.log('gotourl: ' + gotourl);
+						$cookies.put("soajs_current_route", gotourl);
 						$location.path(gotourl);
 					}
 					else {
 						console.log('not found gotourl');
 					}
-				}, 1000);
+				}, 500);
 			}
 		});
 
