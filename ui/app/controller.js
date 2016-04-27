@@ -460,8 +460,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
+				console.log('location.path: ' + $location.path());
+				$cookies.put("soajs_current_route", $location.path());
 			});
-			$cookies.put("soajs_current_route", $location.path());
+			//$cookies.put("soajs_current_route", $location.path());
 		});
 
 		$scope.isUserLoggedIn = function (stopRedirect) {
