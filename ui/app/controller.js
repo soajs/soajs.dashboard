@@ -410,13 +410,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-			var gotourl = $cookies.get("soajs_current_route");
 			if (!current) {
+				var gotourl = $cookies.get("soajs_current_route");
 				//console.log("page reload event invoked ...");
 				doEnvPerNav();
 				$timeout(function () {
-					$location.path(gotourl);
-				}, 500);
+					if (gotourl) {
+						console.log('gotourl: ' + gotourl);
+						$location.path(gotourl);
+					}
+					else {
+						console.log('not found gotourl');
+					}
+				}, 1000);
 			}
 		});
 
@@ -536,7 +542,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		function doEnvPerNav() {
 			configureRouteNavigation(navigation);
-			$scope.appNavigation = $scope.navigation = navigation;
+			$scope.appNavigation = navigation;
+			$scope.navigation = navigation;
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				var strNav = $scope.appNavigation[i].tplPath.split("/");
 				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
