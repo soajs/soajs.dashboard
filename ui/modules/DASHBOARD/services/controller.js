@@ -38,10 +38,14 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 					}
 					else {
 						if (response[x].versions) {
-							var v = returnLatestVersion(response[x].versions);
-							response[x].latest = v;
-							if (response[x].versions[v]) {
-								response[x].fixList = $scope.arrGroupByField(response[x].versions[v].apis, 'group');
+							var v = $scope.sortByDescending(response[x].versions);
+							response[x].latest = v[0].toString();
+							response[x].fixList = [];
+							for (var y = 0; y < v.length; y++) {
+								var k = v[y].toString();
+								if (response[x].versions[k]) {
+									response[x].fixList.push($scope.arrGroupByField(response[x].versions[k].apis, 'group', k));
+								}
 							}
 						}
 					}
@@ -53,7 +57,21 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		});
 	};
 
-	$scope.arrGroupByField = function (arr, f) {
+	$scope.sortByDescending = function (versions) {
+		function compareNumbers(a, b) {
+			return b - a;
+		}
+		var keys = Object.keys(versions);
+		var keysInt = [];
+		keys.forEach(function (key) {
+			keysInt.push(parseInt(key));
+		});
+		// sort in descending order
+		keysInt = keysInt.sort(compareNumbers);
+		return keysInt
+	};
+
+	$scope.arrGroupByField = function (arr, f, version) {
 		var result = {};
 		var l = arr.length;
 		var g = 'General';
@@ -82,6 +100,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 				}
 			}
 		}
+		result.version = version;
 		return result;
 	};
 	
