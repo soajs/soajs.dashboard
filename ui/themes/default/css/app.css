@@ -1436,3 +1436,7 @@ div.entryBox .body .btn-primary.noFloat {
     background: black;
     border: 0;
 }
+.servicesList td {
+    width : 20%;
+    white-space: nowrap;
+}

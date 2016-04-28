@@ -15,51 +15,65 @@
 	<div class="entryBoxes" ng-show="grid.rows">
 		<div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">
 			<div class="header closed">
-				<a href="" ng-click="showHide(service)">
-					<span class="icon icon-{{service.icon || 'plus'}}"></span>
-				</a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
-				<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired']}}</span>
-				<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout']}}</span>
-				<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal']}}</span>
-				<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
+				<table width="100%" class="servicesList">
+					<tr>
+						<td>
+							<a href="" ng-click="showHide(service)">
+								<span class="icon icon-{{service.icon || 'plus'}}"></span>
+							</a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
+						</td>
+						<td>
+							<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired'] || false}}</span>
+						</td>
+						<td>
+							<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout'] || 0}}</span>
+						</td>
+						<td>
+							<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal'] || 0}}</span>
+						</td>
+						<td>
+							<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div class="entryAction">
 			</div>
 			<div class="body grid" style="display:none;">
 				<tabset>
 					<tab ng-repeat="oneList in service.fixList" heading="Version {{oneList._ver}} {{(service.latest === oneList._ver)?': Latest':null}}">
-				<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='_ver'">
-					<legend>{{grp}}</legend>
-					<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
+						<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='_ver'">
+							<legend>{{grp}}</legend>
+							<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
 
-					<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
-						<tbody>
-							<tr>
-								<th class="labelApi">{{translation.label[LANG]}}</th>
-								<th class="routeApi">{{translation.route[LANG]}}</th>
-							</tr>
-							<tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-								<td>{{myApi.l}}
-								</td>
-								<td><span>{{myApi.v}}</span>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
-						<tbody>
-							<tr>
-								<th class="labelApi">{{translation.label[LANG]}}</th>
-								<th class="routeApi">{{translation.route[LANG]}}</th>
-							</tr>
-							<tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-								<td>{{myApi.l}}</td>
-								<td class=""><span>{{myApi.v}}</span></td>
-							</tr>
-						</tbody>
-					</table>
-				</fieldset>
-						</tab>
+							<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
+								<tbody>
+									<tr>
+										<th class="labelApi">{{translation.label[LANG]}}</th>
+										<th class="routeApi">{{translation.route[LANG]}}</th>
+									</tr>
+									<tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+										<td>{{myApi.l}}
+										</td>
+										<td><span>{{myApi.v}}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
+								<tbody>
+									<tr>
+										<th class="labelApi">{{translation.label[LANG]}}</th>
+										<th class="routeApi">{{translation.route[LANG]}}</th>
+									</tr>
+									<tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+										<td>{{myApi.l}}</td>
+										<td class=""><span>{{myApi.v}}</span></td>
+									</tr>
+								</tbody>
+							</table>
+						</fieldset>
+					</tab>
 				</tabset>
 			</div>
 		</div>
