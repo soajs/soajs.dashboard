@@ -410,18 +410,12 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-			console.log(current);
-			console.log(JSON.stringify(next, null, 2));
-			console.log("-------")
 			if (!current) {
 				var gotourl = $cookies.get("soajs_current_route");
-				if(next && next.$$route.originalPath){
-					gotourl = next.$$route.originalPath;
-				}
+
 				//console.log("page reload event invoked ...");
 				doEnvPerNav();
 				$timeout(function () {
-					console.log("redirecting ....... ")
 					if (gotourl) {
 						$cookies.put("soajs_current_route", gotourl);
 						$location.path(gotourl);
