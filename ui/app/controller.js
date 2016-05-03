@@ -410,7 +410,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-			overlayLoading.show();
 			if (!current) {
 				$cookies.put("soajs_current_route", $location.path());
 				var gotourl = $cookies.get("soajs_current_route");
@@ -418,13 +417,12 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				doEnvPerNav(function () {
 					if (gotourl) {
 						$cookies.put("soajs_current_route", gotourl);
-						overlayLoading.hide();
 						$location.path(gotourl);
 					}
 				});
 			}
 			else {
-				overlayLoading.hide();
+				overlayLoading.hide(10);
 			}
 		});
 
@@ -545,6 +543,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		function doEnvPerNav(cb) {
+			overlayLoading.show();
 			configureRouteNavigation(navigation);
 			$scope.appNavigation = navigation;
 			$scope.navigation = navigation;
@@ -571,6 +570,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					}
 
 					if (counter === max) {
+						overlayLoading.hide(1);
 						if (!$scope.$$phase) {
 							$scope.$apply();
 						}
@@ -818,9 +818,13 @@ var overlayLoading = {
 			cb();
 		}
 	},
-	hide: function (cb) {
+	hide: function (t, cb) {
+		var fT = 200;
+		if (t && typeof(t) === 'number') {
+			fT = t;
+		}
 		jQuery("#overlayLoading .content").hide();
-		jQuery("#overlayLoading").fadeOut(200);
+		jQuery("#overlayLoading").fadeOut(fT);
 		if (cb && typeof(cb) === 'function') {
 			cb();
 		}
