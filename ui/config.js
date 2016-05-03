@@ -37,6 +37,9 @@ var modules = {
 	"operate": {
 		"DEV":{
 			contentManagement: 'modules/DEV/contentManagement/install.js'
+		},
+		"STG":{
+			contentManagement: 'modules/STG/contentManagement/install.js'
 		}
 	},
 	"common": {

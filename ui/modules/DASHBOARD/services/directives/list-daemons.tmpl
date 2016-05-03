@@ -1,8 +1,8 @@
 <section ng-controller="daemonsCtrl">
     <tabset>
         <tab heading="Daemons" ng-if="access.daemons.list">
+            <br>
             <div ng-if="grid.rows && grid.rows.length === 0">
-                <br>
                 <alert type="warning">No daemons added yet!</alert>
             </div>
             <div class="entryBoxes">

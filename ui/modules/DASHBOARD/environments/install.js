@@ -1383,6 +1383,10 @@ var environmentsNav = [
 		'id': 'oneEnvironment',
 		'label': translation.environments[LANG],
 		'url': '#/environments/environment/:id?',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/update'
+		},
 		'tplPath': 'modules/DASHBOARD/environments/directives/edit.tmpl',
 		'tracker': true,
 		'pillar':{

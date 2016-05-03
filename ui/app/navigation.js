@@ -3,21 +3,21 @@
  */
 
 var navigation = [
-	{
-		'checkPermission': {
-			'service': 'dashboard',
-			'route': '/environment/list'
-		},
-		'id': 'home',
-		'label': translation.home[LANG],
-		'url': '#/dashboard',
-		'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
-		'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
-		'icon': 'home',
-		//'userMenu': true,
-		//'mainMenu': true,
-		'tracker': true
-	},
+	// {
+	// 	// 'checkPermission': {
+	// 	// 	'service': 'dashboard',
+	// 	// 	'route': '/environment/list'
+	// 	// },
+	// 	'id': 'home',
+	// 	'label': translation.home[LANG],
+	// 	'url': '#/dashboard',
+	// 	'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
+	// 	'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
+	// 	'icon': 'home',
+	// 	//'userMenu': true,
+	// 	//'mainMenu': true,
+	// 	'tracker': true
+	// },
 	{
 		'id': 'home',
 		'label': translation.home[LANG],
@@ -83,11 +83,18 @@ var navigation = [
 				}
 			}
 		}
-		for (var j = 0; j < allFiles.length; j++) {
+
+		var head = document.getElementsByTagName("head")[0];
+		function getFile(entry) {
 			var x = document.createElement("script");
 			x.type = "text/javascript";
-			x.src = allFiles[j];
-			document.getElementsByTagName("head")[0].appendChild(x);
+			x.src = entry;
+			//head.appendChild(x);
+			head.insertBefore(x, head.firstChild);
+		}
+
+		for (var j = 0; j < allFiles.length; j++) {
+			getFile(allFiles[j]);
 		}
 	}
 })();

@@ -73,6 +73,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.go = function (path) {
 			$scope.previousPage = $route.current.originalPath;
 			if (path) {
+				$cookies.put("soajs_current_route", path.replace("#", ""));
 				$location.path(path.replace("#", ""));
 			}
 		};
@@ -210,13 +211,14 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						"params": {"envCode": envRecord.code}
 					}, function (error, response) {
 						if (error) {
-							$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+							$scope.displayAlert('danger', error.code, true, 'dashboard', error.message);
 						}
 						else {
 							if (response.acl) {
 								$localStorage.acl_access[envRecord.code.toLowerCase()] = response.acl;
 							}
-							$scope.$parent.$emit("loadUserInterface", {});
+							doEnvPerNav();
+							$scope.isUserLoggedIn();
 							$route.reload();
 						}
 					});
@@ -227,7 +229,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			}
 		};
 
-		$scope.updateSelectedMenus = function () {
+		$scope.updateSelectedMenus = function (cb) {
 			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
@@ -236,7 +238,14 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.leftMenu.selectedMenu = '#/' + $location.path().split("/")[1];
 			}
 
-			$scope.mainMenu.links.forEach(function (oneLink) {
+			if ($scope.mainMenu && Array.isArray($scope.mainMenu.links) && $scope.mainMenu.links.length > 0) {
+				updateMyMenus($scope.mainMenu.links, 0, function () {
+					return cb();
+				});
+			}
+
+			function updateMyMenus(links, count, cb) {
+				var oneLink = links[count];
 				for (var i = 0; i < oneLink.entries.length; i++) {
 					if (oneLink.entries[i].url === $scope.mainMenu.selectedMenu) {
 						oneLink.selected = true;
@@ -244,8 +253,14 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						break;
 					}
 				}
-			});
-
+				count++;
+				if (count >= links.length) {
+					return cb();
+				}
+				else {
+					updateMyMenus(links, count, cb);
+				}
+			}
 		};
 
 		$scope.buildNavigation = function () {
@@ -295,7 +310,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			}
 		};
 
-		$scope.rebuildMenus = function () {
+		$scope.rebuildMenus = function (cb) {
 			$scope.mainMenu = {};
 			$scope.mainMenu.links = [];
 
@@ -307,115 +322,151 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 			$scope.dashboard = [];
 
-			function doPermissions(navigation) {
-				var hasAccess = true;
-				var p = {};
-				for (var i = 0; i < navigation.length; i++) {
-					hasAccess = true;
-					if (navigation[i].hasOwnProperty('checkPermission')) {
-						p = navigation[i].checkPermission;
-						if (p.service && p.route) {
-							hasAccess = $scope.buildPermittedOperation(p.service, p.route);
-						}
-					}
-
-					if (hasAccess) {
-						$scope.dashboard.push(navigation[i].id);
-						if (navigation[i].mainMenu) {
-							var found = false;
-							for (var j = 0; j < $scope.mainMenu.links.length; j++) {
-								if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
-									if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
-										found = j;
-										break;
-									}
+			function doPermissions(navigation, i, cb) {
+				function pushEntry(i) {
+					navigation[i].checkPermission.access = true;
+					$scope.dashboard.push(navigation[i].id);
+					if (navigation[i].mainMenu) {
+						var found = false;
+						for (var j = 0; j < $scope.mainMenu.links.length; j++) {
+							if ($scope.mainMenu.links[j] && $scope.mainMenu.links[j].pillar) {
+								if (navigation[i].pillar.name === $scope.mainMenu.links[j].pillar.name) {
+									found = j;
+									break;
 								}
 							}
-							if (found === false) {
-								$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
-								found = $scope.mainMenu.links.length - 1;
-							}
-							$scope.mainMenu.links[found].entries.push(navigation[i]);
 						}
+						if (found === false) {
+							$scope.mainMenu.links.push({"pillar": navigation[i].pillar, "entries": []});
+							found = $scope.mainMenu.links.length - 1;
+						}
+						$scope.mainMenu.links[found].entries.push(navigation[i]);
+					}
 
-						if (navigation[i].userMenu) {
-							$scope.userMenu.links.push(navigation[i]);
-						}
+					if (navigation[i].userMenu) {
+						$scope.userMenu.links.push(navigation[i]);
+					}
 
-						if (navigation[i].guestMenu) {
-							$scope.guestMenu.links.push(navigation[i]);
-						}
+					if (navigation[i].guestMenu) {
+						$scope.guestMenu.links.push(navigation[i]);
 					}
 				}
-				for (var x in $scope.mainMenu.links) {
-					$scope.mainMenu.links[x].entries.sort(function (a, b) {
-						if (a.order > b.order) {
-							return 1;
+
+				var p = {};
+				if (navigation[i].checkPermission) {
+					p = navigation[i].checkPermission;
+					if (p.service && p.route) {
+						$scope.buildPermittedOperation(p.service, p.route, function (hasAccess) {
+							if (hasAccess) {
+								pushEntry(i);
+							}
+							step2();
+						});
+					}
+					else {
+						navigation[i].checkPermission = {};
+						pushEntry(i);
+						step2();
+					}
+				}
+				else {
+					navigation[i].checkPermission = {};
+					pushEntry(i);
+					step2();
+				}
+
+				function step2() {
+					i++;
+					if (i === navigation.length) {
+						for (var x in $scope.mainMenu.links) {
+							$scope.mainMenu.links[x].entries.sort(function (a, b) {
+								if (a.order > b.order) {
+									return 1;
+								}
+								if (a.order < b.order) {
+									return -1;
+								}
+								// a must be equal to b
+								return 0;
+							});
 						}
-						if (a.order < b.order) {
-							return -1;
-						}
-						// a must be equal to b
-						return 0;
-					});
+						return cb();
+					}
+					else {
+						doPermissions(navigation, i, cb);
+					}
 				}
 			}
 
-			doPermissions($scope.appNavigation);
-			$scope.updateSelectedMenus();
+			$scope.navigation = $scope.appNavigation;
+			doPermissions($scope.navigation, 0, function () {
+				$scope.dashboard.unshift(navigation[0].id);
+				$scope.updateSelectedMenus(function () {
+					return cb();
+				});
+			});
 		};
 
 		$scope.buildNavigation();
 
-		$scope.$on('$routeChangeStart', function (event) {
-			//console.log($cookies.get("soajs_current_route"));
-			//console.log($location.path());
-			if ($cookies.get("soajs_current_route") === $location.path()) {
-				//event.preventDefault();
-			}
-			if ($scope.enableInterface) {
+		$scope.$on('$routeChangeStart', function (event, next, current) {
+			if (!current) {
 				$cookies.put("soajs_current_route", $location.path());
+				var gotourl = $cookies.get("soajs_current_route");
+				//console.log("page reload event invoked ...");
+				$timeout(function () {
+					overlayLoading.show();
+				}, 200);
+				$timeout(function () {
+					doEnvPerNav(function () {
+						overlayLoading.hide();
+						if (gotourl) {
+							$cookies.put("soajs_current_route", gotourl);
+							$location.path(gotourl);
+						}
+					});
+				}, 2000);
 			}
 		});
 
 		$scope.$on('$routeChangeSuccess', function () {
 			$scope.tracker = [];
-			//$scope.updateSelectedMenus();
-			for (var i = 0; i < $scope.appNavigation.length; i++) {
-				if ($scope.appNavigation[i].tracker && $scope.appNavigation[i].url === '#' + $route.current.originalPath) {
-					if (!$scope.appNavigation[i].hasOwnProperty('private') && !$scope.appNavigation[i].hasOwnProperty('guestMenu') && !$scope.appNavigation[i].hasOwnProperty('footerMenu')) {
-						if ($scope.dashboard && $scope.dashboard.indexOf($scope.appNavigation[i].id) === -1) {
-							$scope.displayAlert('danger', 'You do not have permissions to access this section');
-							$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
-						}
-					}
+			doEnvPerNav();
+			$scope.rebuildMenus(function () {
+				for (var i = 0; i < $scope.navigation.length; i++) {
+					if ($scope.navigation[i].tracker && $scope.navigation[i].url === '#' + $route.current.originalPath) {
+						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
 
-					if ($scope.appNavigation[i].tracker && $scope.appNavigation[i].ancestor && Array.isArray($scope.appNavigation[i].ancestor) && $scope.appNavigation[i].ancestor.length > 0) {
-						for (var j = $scope.appNavigation[i].ancestor.length - 1; j >= 0; j--) {
-							findAndcestorProperties($scope.tracker, $scope.appNavigation[i].ancestor[j], $route.current.params);
+							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
+								$scope.displayAlert('danger', 'You do not have permissions to access this section');
+								$timeout(function () {
+									$scope.closeAlert();
+									$scope.go("/dashboard");
+								}, 7200);
+							}
 						}
-						$scope.tracker.push({
-							pillar: ($scope.appNavigation[i].pillar) ? $scope.appNavigation[i].pillar.label : null,
-							label: $scope.appNavigation[i].label,
-							link: $scope.appNavigation[i].url,
-							current: true
-						});
-						if ($scope.appNavigation[i].pillar) {
-							$scope.pillar = $scope.appNavigation[i].pillar.name;
+
+						if ($scope.navigation[i].tracker && $scope.navigation[i].ancestor && Array.isArray($scope.navigation[i].ancestor) && $scope.navigation[i].ancestor.length > 0) {
+							$scope.tracker = [];
+							for (var j = $scope.navigation[i].ancestor.length - 1; j >= 0; j--) {
+								findAndcestorProperties($scope.tracker, $scope.navigation[i].ancestor[j], $route.current.params);
+							}
+							$scope.tracker.push({
+								pillar: ($scope.navigation[i].pillar) ? $scope.navigation[i].pillar.label : null,
+								label: $scope.navigation[i].label,
+								link: $scope.navigation[i].url,
+								current: true
+							});
+							if ($scope.navigation[i].pillar) {
+								$scope.pillar = $scope.navigation[i].pillar.name;
+							}
 						}
 					}
 				}
-			}
-			if (navigation.length > $scope.appNavigation.length) {
-				$scope.appNavigation = navigation;
-				if (!$scope.$$phase) {
-					$scope.$apply();
-				}
-				configureRouteNavigation(navigation);
-				if ($cookies.get("soajs_current_route") && $location.path() !== $cookies.get("soajs_current_route").replace(/\"/g, '')) {
-					$location.path($cookies.get("soajs_current_route").replace(/\"/g, ''));
-				}
-			}
+
+				$cookies.put("soajs_current_route", $location.path());
+			});
+			//$cookies.put("soajs_current_route", $location.path());
 		});
 
 		$scope.isUserLoggedIn = function (stopRedirect) {
@@ -444,31 +495,47 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;
 				$scope.userLastName = user.lastName;
-				$scope.rebuildMenus();
 			}
 		};
 
 		$scope.$on("loadUserInterface", function (event, args) {
 			doEnvPerNav();
-			$scope.isUserLoggedIn();
+			$scope.footerMenu.links.forEach(function (oneMenuEntry) {
+				if (oneMenuEntry.id === 'home') {
+					oneMenuEntry.url = '#/dashboard';
+				}
+			});
+			if ($scope.footerMenu.selectedMenu === '#/login') {
+				$scope.footerMenu.selectedMenu = '#/dashboard';
+			}
+
+			var user = $cookies.getObject('soajs_user');
+
+			$scope.enableInterface = true;
+			$scope.userFirstName = user.firstName;
+			$scope.userLastName = user.lastName;
+			$scope.go("/dashboard");
 		});
 
-		$scope.buildPermittedOperation = function (serviceName, routePath) {
-			var access = false;
+		$scope.buildPermittedOperation = function (serviceName, routePath, cb) {
 			var user = $cookies.getObject('soajs_user');
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
-				var envCode;
-				if (serviceName.toLowerCase() === 'dashboard') {
-					envCode = 'DASHBOARD';
+				var firstEnv = Object.keys(acl)[0];
+
+				//check if old system
+				if (acl[firstEnv] && (acl[firstEnv].access || acl[firstEnv].apis || acl[firstEnv].apisRegExp || acl[firstEnv].apisPermission)) {
+					acl['dashboard'] = acl;
 				}
-				else {
-					envCode = ($scope.pillar === 'operate') ? $cookies.getObject('myEnv').code : "DASHBOARD";
-				}
-				access = checkApiHasAccess(acl, serviceName, routePath, userGroups, envCode);
+				checkApiHasAccess(acl, serviceName, routePath, userGroups, function (access) {
+					//console.log(acl, serviceName, routePath, userGroups, access);
+					return cb(access);
+				});
 			}
-			return access;
+			else {
+				return cb(false);
+			}
 		};
 
 		$scope.switchLanguage = function (lang) {
@@ -478,18 +545,37 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			window.location.reload();
 		};
 
-		function doEnvPerNav() {
+		function doEnvPerNav(cb) {
+			configureRouteNavigation(navigation);
+			$scope.appNavigation = navigation;
+			$scope.navigation = navigation;
+
+			var counter = 0;
+			var max = $scope.appNavigation.length;
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				var strNav = $scope.appNavigation[i].tplPath.split("/");
-				for (var e = 0; e < $localStorage.environments.length; e++) {
-					if (strNav[1] === $localStorage.environments[e].code) {
-						if ($scope.navigation[strNav[1]]) {
-							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
+				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
+					for (var e = 0; e < $localStorage.environments.length; e++) {
+						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+
+							if (!$scope.navigation[strNav[1]]) {
+								$scope.navigation[strNav[1]] = [];
+							}
+							$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
 						}
-						else {
-							$scope.navigation[strNav[1]] = [];
-							$scope.navigation[strNav[1]].push($scope.appNavigation[i]);
-						}
+					}
+					counter++;
+				}
+				else {
+					counter++;
+				}
+
+				if (counter === max) {
+					if (!$scope.$$phase) {
+						$scope.$apply();
+					}
+					if (cb && typeof(cb) === 'function') {
+						return cb();
 					}
 				}
 			}
@@ -515,13 +601,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localStorage', function ($scope, ngDataApi, $cookies, $localStorage) {
 	$scope.$parent.$on('refreshWelcome', function (event, args) {
 		$scope.setUser();
-
-		if ($scope.$parent.mainMenu.links.length > 0) {
-			$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
-		}
-		else {
-			$scope.$parent.go("/myaccount");
-		}
 	});
 
 	$scope.setUser = function () {
@@ -684,6 +763,31 @@ soajsApp.directive('phoneInput', function ($filter, $browser) {
 	};
 });
 
+soajsApp.directive('textSizeSlider', ['$document', function ($document) {
+	return {
+		restrict: 'E',
+		template: '<table class="text-size-slider"><tr><td class="small-letter" ng-style="{ fontSize: min + unit }">A</td> <td><input type="range" min="{{ min }}" max="{{ max }}" ng-model="textSize" class="slider" value="{{ value }}" /></td> <td class="big-letter" ng-style="{ fontSize: max + unit}">A</td></tr></table>',
+		scope: {
+			min: '@',
+			max: '@',
+			unit: '@',
+			value: '@',
+			idt: '@'
+		},
+		link: function (scope, element, attr) {
+			scope.textSize = scope.value;
+			scope.$watch('textSize', function (size) {
+				if (scope.idt) {
+					document.getElementById(scope.idt).style.fontSize = size + scope.unit;
+				}
+				else {
+					$document[0].body.style.fontSize = size + scope.unit;
+				}
+			});
+		}
+	}
+}]);
+
 var overlay = {
 	show: function (cb) {
 		var overlayHeight = jQuery(document).height();
@@ -713,9 +817,13 @@ var overlayLoading = {
 			cb();
 		}
 	},
-	hide: function (cb) {
+	hide: function (t, cb) {
+		var fT = 200;
+		if (t && typeof(t) === 'number') {
+			fT = t;
+		}
 		jQuery("#overlayLoading .content").hide();
-		jQuery("#overlayLoading").fadeOut(200);
+		jQuery("#overlayLoading").fadeOut(fT);
 		if (cb && typeof(cb) === 'function') {
 			cb();
 		}

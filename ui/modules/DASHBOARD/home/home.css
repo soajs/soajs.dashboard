@@ -1,0 +1,15 @@
+.poweredby{
+    margin: 10px auto 0 auto ;
+    padding: 0;
+    list-style-type:none;
+    width:80%;
+}
+
+.poweredby li{
+    margin: 0 5px;
+    width:13%;
+}
+
+.poweredby li a img{
+    width:64px;
+}
