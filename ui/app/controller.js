@@ -410,17 +410,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
+			// console.log(current);
+			// console.log(JSON.stringify(next, null, 2));
+			// console.log("-------")
 			if (!current) {
 				var gotourl = $cookies.get("soajs_current_route");
 
 				//console.log("page reload event invoked ...");
-				doEnvPerNav();
-				$timeout(function () {
+				doEnvPerNav(function(){
 					if (gotourl) {
 						$cookies.put("soajs_current_route", gotourl);
 						$location.path(gotourl);
 					}
-				}, 2500);
+				});
 			}
 		});
 
@@ -540,27 +542,42 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			window.location.reload();
 		};
 
-		function doEnvPerNav() {
+		function doEnvPerNav(cb) {
 			configureRouteNavigation(navigation);
 			$scope.appNavigation = navigation;
 			$scope.navigation = navigation;
-			for (var i = 0; i < $scope.appNavigation.length; i++) {
-				var strNav = $scope.appNavigation[i].tplPath.split("/");
-				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
-					for (var e = 0; e < $localStorage.environments.length; e++) {
-						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
 
-							if (!$scope.navigation[strNav[1]]) {
-								$scope.navigation[strNav[1]] = [];
+			$timeout(function () {
+				var counter = 0;
+				var max = $scope.appNavigation.length;
+				for (var i = 0; i < $scope.appNavigation.length; i++) {
+					var strNav = $scope.appNavigation[i].tplPath.split("/");
+					if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
+						for (var e = 0; e < $localStorage.environments.length; e++) {
+							if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+
+								if (!$scope.navigation[strNav[1]]) {
+									$scope.navigation[strNav[1]] = [];
+								}
+								$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
 							}
-							$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
+						}
+						counter++;
+					}
+					else {
+						counter++;
+					}
+
+					if (counter === max) {
+						if (!$scope.$$phase) {
+							$scope.$apply();
+						}
+						if (cb && typeof(cb) === 'function') {
+							return cb();
 						}
 					}
 				}
-			}
-			if (!$scope.$$phase) {
-				$scope.$apply();
-			}
+			}, 2000);
 		}
 
 		function findAndcestorProperties(tracker, ancestorName, params) {
