@@ -410,13 +410,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-			var gotourl = $cookies.get("soajs_current_route");
 			if (!current) {
+				$cookies.put("soajs_current_route", $location.path());
+				var gotourl = $cookies.get("soajs_current_route");
 				//console.log("page reload event invoked ...");
-				doEnvPerNav();
-				$timeout(function () {
-					$location.path(gotourl);
-				}, 500);
+				doEnvPerNav(function () {
+					if (gotourl) {
+						$cookies.put("soajs_current_route", gotourl);
+						$location.path(gotourl);
+					}
+				});
+			}
+			else {
+				overlayLoading.hide(10);
 			}
 		});
 
@@ -438,6 +444,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 
 						if ($scope.navigation[i].tracker && $scope.navigation[i].ancestor && Array.isArray($scope.navigation[i].ancestor) && $scope.navigation[i].ancestor.length > 0) {
+							$scope.tracker = [];
 							for (var j = $scope.navigation[i].ancestor.length - 1; j >= 0; j--) {
 								findAndcestorProperties($scope.tracker, $scope.navigation[i].ancestor[j], $route.current.params);
 							}
@@ -453,8 +460,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
+
+				$cookies.put("soajs_current_route", $location.path());
 			});
-			$cookies.put("soajs_current_route", $location.path());
+			//$cookies.put("soajs_current_route", $location.path());
 		});
 
 		$scope.isUserLoggedIn = function (stopRedirect) {
@@ -533,26 +542,44 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			window.location.reload();
 		};
 
-		function doEnvPerNav() {
+		function doEnvPerNav(cb) {
+			overlayLoading.show();
 			configureRouteNavigation(navigation);
-			$scope.appNavigation = $scope.navigation = navigation;
-			for (var i = 0; i < $scope.appNavigation.length; i++) {
-				var strNav = $scope.appNavigation[i].tplPath.split("/");
-				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
-					for (var e = 0; e < $localStorage.environments.length; e++) {
-						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+			$scope.appNavigation = navigation;
+			$scope.navigation = navigation;
 
-							if (!$scope.navigation[strNav[1]]) {
-								$scope.navigation[strNav[1]] = [];
+			$timeout(function () {
+				var counter = 0;
+				var max = $scope.appNavigation.length;
+				for (var i = 0; i < $scope.appNavigation.length; i++) {
+					var strNav = $scope.appNavigation[i].tplPath.split("/");
+					if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
+						for (var e = 0; e < $localStorage.environments.length; e++) {
+							if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+
+								if (!$scope.navigation[strNav[1]]) {
+									$scope.navigation[strNav[1]] = [];
+								}
+								$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
 							}
-							$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
+						}
+						counter++;
+					}
+					else {
+						counter++;
+					}
+
+					if (counter === max) {
+						overlayLoading.hide(1);
+						if (!$scope.$$phase) {
+							$scope.$apply();
+						}
+						if (cb && typeof(cb) === 'function') {
+							return cb();
 						}
 					}
 				}
-			}
-			if (!$scope.$$phase) {
-				$scope.$apply();
-			}
+			}, 2000);
 		}
 
 		function findAndcestorProperties(tracker, ancestorName, params) {
@@ -751,7 +778,7 @@ soajsApp.directive('textSizeSlider', ['$document', function ($document) {
 		link: function (scope, element, attr) {
 			scope.textSize = scope.value;
 			scope.$watch('textSize', function (size) {
-				if(scope.idt){
+				if (scope.idt) {
 					document.getElementById(scope.idt).style.fontSize = size + scope.unit;
 				}
 				else {
@@ -791,9 +818,13 @@ var overlayLoading = {
 			cb();
 		}
 	},
-	hide: function (cb) {
+	hide: function (t, cb) {
+		var fT = 200;
+		if (t && typeof(t) === 'number') {
+			fT = t;
+		}
 		jQuery("#overlayLoading .content").hide();
-		jQuery("#overlayLoading").fadeOut(200);
+		jQuery("#overlayLoading").fadeOut(fT);
 		if (cb && typeof(cb) === 'function') {
 			cb();
 		}
