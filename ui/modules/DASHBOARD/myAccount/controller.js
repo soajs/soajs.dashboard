@@ -359,12 +359,12 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 							$localStorage.acl_access = response.acl;
 						}
 						$localStorage.environments = response.environments;
-						if(response.envauth){
+						if (response.envauth) {
 							$cookies.putObject("soajs_envauth", response.envauth);
 						}
 
-						response.environments.forEach(function(oneEnv){
-							if(oneEnv.code.toLowerCase() === 'dashboard'){
+						response.environments.forEach(function (oneEnv) {
+							if (oneEnv.code.toLowerCase() === 'dashboard') {
 								$cookies.putObject("myEnv", oneEnv);
 							}
 						});
