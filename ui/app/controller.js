@@ -414,15 +414,18 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$cookies.put("soajs_current_route", $location.path());
 				var gotourl = $cookies.get("soajs_current_route");
 				//console.log("page reload event invoked ...");
-				doEnvPerNav(function () {
-					if (gotourl) {
-						$cookies.put("soajs_current_route", gotourl);
-						$location.path(gotourl);
-					}
-				});
-			}
-			else {
-				overlayLoading.hide(10);
+				$timeout(function () {
+					overlayLoading.show();
+				}, 200);
+				$timeout(function () {
+					doEnvPerNav(function () {
+						overlayLoading.hide();
+						if (gotourl) {
+							$cookies.put("soajs_current_route", gotourl);
+							$location.path(gotourl);
+						}
+					});
+				}, 2000);
 			}
 		});
 
@@ -543,43 +546,39 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		function doEnvPerNav(cb) {
-			overlayLoading.show();
 			configureRouteNavigation(navigation);
 			$scope.appNavigation = navigation;
 			$scope.navigation = navigation;
 
-			$timeout(function () {
-				var counter = 0;
-				var max = $scope.appNavigation.length;
-				for (var i = 0; i < $scope.appNavigation.length; i++) {
-					var strNav = $scope.appNavigation[i].tplPath.split("/");
-					if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
-						for (var e = 0; e < $localStorage.environments.length; e++) {
-							if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+			var counter = 0;
+			var max = $scope.appNavigation.length;
+			for (var i = 0; i < $scope.appNavigation.length; i++) {
+				var strNav = $scope.appNavigation[i].tplPath.split("/");
+				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
+					for (var e = 0; e < $localStorage.environments.length; e++) {
+						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
 
-								if (!$scope.navigation[strNav[1]]) {
-									$scope.navigation[strNav[1]] = [];
-								}
-								$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
+							if (!$scope.navigation[strNav[1]]) {
+								$scope.navigation[strNav[1]] = [];
 							}
+							$scope.navigation[strNav[1]] = $scope.navigation[strNav[1]].concat($scope.appNavigation[i]);
 						}
-						counter++;
 					}
-					else {
-						counter++;
-					}
+					counter++;
+				}
+				else {
+					counter++;
+				}
 
-					if (counter === max) {
-						overlayLoading.hide(1);
-						if (!$scope.$$phase) {
-							$scope.$apply();
-						}
-						if (cb && typeof(cb) === 'function') {
-							return cb();
-						}
+				if (counter === max) {
+					if (!$scope.$$phase) {
+						$scope.$apply();
+					}
+					if (cb && typeof(cb) === 'function') {
+						return cb();
 					}
 				}
-			}, 2000);
+			}
 		}
 
 		function findAndcestorProperties(tracker, ancestorName, params) {
