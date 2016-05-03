@@ -410,9 +410,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-			// console.log(current);
-			// console.log(JSON.stringify(next, null, 2));
-			// console.log("-------")
+
 			if (!current) {
 				var gotourl = $cookies.get("soajs_current_route");
 
