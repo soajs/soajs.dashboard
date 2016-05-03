@@ -410,17 +410,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		$scope.buildNavigation();
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
-
+			overlayLoading.show();
 			if (!current) {
+				$cookies.put("soajs_current_route", $location.path());
 				var gotourl = $cookies.get("soajs_current_route");
-
 				//console.log("page reload event invoked ...");
-				doEnvPerNav(function(){
+				doEnvPerNav(function () {
 					if (gotourl) {
 						$cookies.put("soajs_current_route", gotourl);
+						overlayLoading.hide();
 						$location.path(gotourl);
 					}
 				});
+			}
+			else {
+				overlayLoading.hide();
 			}
 		});
 
