@@ -1178,7 +1178,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
             else {
                 currentScope.generateNewMsg(env, 'success', 'Container deleted successfully');
-                if (container.type === nginx) {
+                if (container.type === 'nginx') {
                     listNginxHosts(currentScope, env);
                 }
                 else {

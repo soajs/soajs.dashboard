@@ -555,7 +555,7 @@ var envTranslation ={
 		"ENG": " new controllers for environment ",
 		"FRA": " new controllers for environment "
 	},
-	"zombieContainer": {
+	"zombieContainers": {
 		"ENG": "Zombie Containers",
 		"FRA": "Zombie Containers"
 	},

@@ -181,7 +181,7 @@ var errors = {
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",
 	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
-	"767": "Invalid GitHub information provided",
+	"767": "Invalid Git information provided",
 	"768": "Failed to sync repository",
 	"769": "Missing config.js data",
 	"770": "Missing config.js source data",

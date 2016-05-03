@@ -692,7 +692,7 @@ module.exports = {
 		"/environment/platforms/cert/delete": {
 			_apiInfo: {
 				"l": "Remove Certificate",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -719,7 +719,7 @@ module.exports = {
 		"/environment/platforms/cert/choose": {
 			_apiInfo: {
 				"l": "Choose Existing Certificates",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -747,7 +747,7 @@ module.exports = {
 		"/environment/platforms/driver/add": {
 			_apiInfo: {
 				"l": "Add Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -789,7 +789,7 @@ module.exports = {
 		"/environment/platforms/driver/edit": {
 			_apiInfo: {
 				"l": "Update Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -831,7 +831,7 @@ module.exports = {
 		"/environment/platforms/driver/delete": {
 			_apiInfo: {
 				"l": "Delete Driver Configuration",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -852,7 +852,7 @@ module.exports = {
 		"/environment/platforms/driver/changeSelected": {
 			_apiInfo: {
 				"l": "Change Selected Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -873,7 +873,7 @@ module.exports = {
 		"/environment/platforms/deployer/type/change": {
 			_apiInfo: {
 				"l": "Change Deployer Type",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
