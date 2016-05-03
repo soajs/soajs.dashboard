@@ -358,7 +358,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 						}
 						$localStorage.environments = response.environments;
 						if(response.envauth){
-							$cookies.put("soajs_envauth", response.envauth);
+							$cookies.putObject("soajs_envauth", response.envauth);
 						}
 
 						response.environments.forEach(function(oneEnv){

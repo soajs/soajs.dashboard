@@ -68,7 +68,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 		};
 
 		if (opts.proxy) {
-			config.params['__envauth'] = $cookies.get('soajs_envauth').replace(/\"/g, '')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
+			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
 		}
 
 		var soajsAuthCookie = $cookies.get('soajs_auth');
