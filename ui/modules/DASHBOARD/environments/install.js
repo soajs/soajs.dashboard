@@ -1125,6 +1125,14 @@ var envTranslation ={
 		"ENG": "Actions",
 		"FRA": "Actions"
 	},
+	"group": {
+		"ENG": "Group",
+		"FRA": "Groupe"
+	},
+	"version": {
+		"ENG": "Version",
+		"FRA": "Version"
+	},
 	"loadProvisionOperation": {
 		"ENG": "Load Provisioning Operation",
 		"FRA": "Load Provisioning Operation"

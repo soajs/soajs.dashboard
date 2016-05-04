@@ -30,7 +30,6 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 		else {
 			// if (response.errors.codes[0] === 132) {
 			// 	$cookies.remove('soajs_auth');
-			// 	$cookies.remove('soajs_user');
 			// 	$localStorage.acl_access = null;
 			// 	scope.$parent.enableInterface = false;
 			// 	scope.$parent.isUserLoggedIn();
@@ -86,8 +85,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 			config.headers.key = apiConfiguration.key;
 		}
 
-		if(opts.proxy){
-			if(!config.params.__env || !config.params.__envauth){
+		if (opts.proxy) {
+			if (!config.params.__env || !config.params.__envauth) {
 				var envauth = $cookies.get('soajs_envauth').replace(/\"/g, '');
 				var env = $cookies.getObject('myEnv').code.replace(/\"/g, '');
 				config.params.__envauth = envauth[env.toLowerCase()];
@@ -126,14 +125,14 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 	};
 }]);
 
-soajsApp.service('isUserLoggedIn', ['$cookies', function ($cookies) {
+soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cookies, $localStorage) {
 	return function () {
-		if ($cookies.getObject('soajs_user') && $cookies.get('soajs_auth')) {
+		if ($localStorage.soajs_user && $cookies.get('soajs_auth')) {
 			return true;
 		}
 		else {
 			$cookies.remove('soajs_auth');
-			$cookies.remove('soajs_user');
+			$localStorage.soajs_user = null;
 			return false;
 		}
 	}
@@ -145,25 +144,25 @@ soajsApp.service('checkApiHasAccess', function () {
 		var environments = Object.keys(aclObject);
 		return validateAccess(environments, 0, callback);
 
-		function validateAccess(environments, i, cb){
+		function validateAccess(environments, i, cb) {
 			var envCode = environments[i].toLowerCase();
-			if(!aclObject[envCode] || !aclObject[envCode][serviceName]){
+			if (!aclObject[envCode] || !aclObject[envCode][serviceName]) {
 				i++;
-				if(i === environments.length){
+				if (i === environments.length) {
 					return cb(false);
 				}
-				else{
+				else {
 					validateAccess(environments, i, cb);
 				}
 			}
-			else{
+			else {
 				var system = aclObject[envCode][serviceName];
 				var access = checkSystem(system) || false;
 				return cb(access);
 			}
 		}
 
-		function checkSystem(system){
+		function checkSystem(system) {
 			var api = (system && system.apis ? system.apis[routePath] : null);
 
 			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
