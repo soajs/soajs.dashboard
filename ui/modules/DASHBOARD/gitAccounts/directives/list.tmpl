@@ -1,11 +1,11 @@
 <section ng-controller="gitAccountsAppCtrl">
-    <a href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
+    <a ng-if="access.login" href="" class="btn btn-primary" ng-click="addAccount()">{{translation.addAccount[LANG]}}</a>
     <div ng-if="accounts && accounts.length === 0">
         <alert type="warning">{{translation.noGitAccountsAdded[LANG]}}</alert>
     </div>
     <div ng-if="accounts.length > 0">
         <div class="entryBoxes entryBoxesGrid">
-            <div id="{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
+            <div ng-if="access.listAccounts" id="{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
                 <div class="header opened">
                     <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
                     {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
@@ -16,7 +16,7 @@
                         <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
                     </div>
 
-                    <div id="reposList" style="overflow:scroll; height:265px; width:100%">
+                    <div ng-if="access.getRepos" id="reposList" style="overflow:scroll; height:265px; width:100%">
                         <ul class="blueListing">
                             <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos" ng-style="{'width': '98%'}">
                                 <span class="repoFullName">{{repo.full_name}}</span>
@@ -24,13 +24,13 @@
                                 <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
                                 <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
                                 <div class="rightActions">
-                                    <a href="" ng-if="!repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                    <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                         <span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
                                     </a>
-                                    <a href="" ng-if="repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
+                                    <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
                                         <span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
                                     </a>
-                                    <a href="" ng-if="repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+                                    <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                         <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
                                     </a>
                                 </div>
@@ -40,10 +40,10 @@
                     </div>
 
                     <div class="entryAction">
-                        <a href="" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.listRepos">
+                        <a href="" ng-if="access.getRepos" ng-click="listRepos(account, 0, 'getRepos');" ng-if="access.getRepos">
                             <span class="icon icon-loop2" tooltip="{{translation.syncRepo[LANG]}}"></span>
                         </a>
-                        <a href="" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
+                        <a href="" ng-if="access.logout" ng-click="deleteAccount(account);" ng-if="access.deleteAccount" ng-confirm-click="Are you sure you want to delete this account?">
                             <span class="icon icon-cross" tooltip="{{translation.deleteAccount[LANG]}}"></span>
                         </a>
                     </div>

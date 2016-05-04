@@ -427,10 +427,10 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             method: 'send',
             routeName: '/dashboard/gitAccounts/repo/sync',
             params: {
-                id: account._id.toString(),
-                provider: account.provider
+                id: account._id.toString()
             },
             data: {
+                provider: account.provider,
                 owner: repo.owner.login,
                 repo: repo.name
             }

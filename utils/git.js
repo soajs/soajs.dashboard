@@ -7,7 +7,6 @@ function getGitDriver (config) {
         gitDriver = require(__dirname + "/gitProviders/" + config.provider + ".js");
     }
     catch (e) {
-        console.log (e);
         gitDriver = null;
     }
 
@@ -21,6 +20,7 @@ var git = {
         if (!driver) {
             return cb ({message: 'Git driver does not exist'});
         }
+
         driver.login(data, mongo, options, cb);
     },
 
@@ -29,6 +29,7 @@ var git = {
         if (!driver) {
             return cb ({message: 'Git driver does not exist'});
         }
+
         driver.logout(data, mongo, options, cb);
     },
 
@@ -37,6 +38,7 @@ var git = {
         if (!driver) {
             return cb ({message: 'Git driver does not exist'});
         }
+
         driver.getRepos(data, mongo, options, cb);
     },
 
@@ -45,6 +47,7 @@ var git = {
         if (!driver) {
             return cb ({message: 'Git driver does not exist'});
         }
+
         driver.getBranches(data, mongo, options, cb);
     },
 
@@ -53,6 +56,7 @@ var git = {
         if (!driver) {
             return cb ({message: 'Git driver does not exist'});
         }
+
         driver.getContent(options, cb);
     }
 };
