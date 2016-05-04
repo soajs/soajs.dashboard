@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
     <tabset>
-        <tab heading="{{translation.upload[LANG]}}" ng-if="access.platforms.certs.upload">
+        <tab heading="{{translation.upload[LANG]}}">
             <br>
             <div class="form">
                 <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
@@ -22,7 +22,7 @@
                 </form>
             </div>
         </tab>
-        <tab heading="Choose Existing" ng-click="getAvailableCerts()" ng-if="access.platforms/certs/choose && certsToDisplay.length > 0">
+        <tab heading="Choose Existing" ng-click="getAvailableCerts()" ng-if="certsToDisplay.length > 0">
             <div class="form">
                 <form name="chooseExisting" id="chooseExisting" novalidate ng-submit="chooseCerts()">
                     <label>{{translation.availableCertificates[LANG]}} </label>
