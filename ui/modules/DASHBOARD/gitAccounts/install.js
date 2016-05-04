@@ -199,7 +199,7 @@ var gitAccountsNav = [
         'label': "Git Accounts",
         'checkPermission': {
             'service': 'dashboard',
-            'route': '/github/listAccounts'
+            'route': '/github/accounts/list'
         },
         'url': '#/git-accounts',
         'tplPath': 'modules/DASHBOARD/gitAccounts/directives/list.tmpl',

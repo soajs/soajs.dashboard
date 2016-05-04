@@ -44,6 +44,7 @@ var deployer = {
             if (params.port) {
                 port = {};
                 port["" + params.port + "/tcp"] = [{"HostPort": "" + params.port}];
+	            port["443/tcp"] = [{"HostPort": "443"}];
             }
 
             deployerConfig.envCode = environment;

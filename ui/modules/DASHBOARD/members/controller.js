@@ -1,12 +1,12 @@
 "use strict";
 var membersApp = soajsApp.components;
-membersApp.controller('mainMembersCtrl', ['$scope', '$cookies', function ($scope, $cookies) {
+membersApp.controller('mainMembersCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
-	$scope.userCookie = $cookies.getObject('soajs_user');
+	$scope.userCookie = $localStorage.soajs_user;
 }]);
 
 membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function ($scope, membersHelper) {
@@ -240,217 +240,165 @@ membersApp.controller('tenantGroupsCtrl', ['$scope', 'groupsHelper', '$timeout',
 
 }]);
 
-membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'membersAclHelper', '$route', function ($scope, $routeParams, ngDataApi, $cookies, membersAclHelper, $route) {
-	$scope.key = apiConfiguration.key;
-	$scope.$parent.isUserLoggedIn();
-	$scope.msg = {};
-	$scope.user = {};
-	$scope.tenantApp = {};
-	$scope.allGroups = [];
-	$scope.pckName = '';
-	$scope.environments_codes = [];
+membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'membersAclHelper', '$route', '$localStorage',
+	function ($scope, $routeParams, ngDataApi, $cookies, membersAclHelper, $route, $localStorage) {
+		$scope.key = apiConfiguration.key;
+		$scope.$parent.isUserLoggedIn();
+		$scope.msg = {};
+		$scope.user = {};
+		$scope.tenantApp = {};
+		$scope.allGroups = [];
+		$scope.pckName = '';
+		$scope.environments_codes = [];
 
-	$scope.userCookie = $cookies.getObject('soajs_user');
+		$scope.userCookie = $localStorage.soajs_user;
 
-	$scope.minimize = function (application, service, oneEnv) {
-		application.aclFill[oneEnv][service.name].collapse = true;
-	};
+		$scope.minimize = function (application, service, oneEnv) {
+			application.aclFill[oneEnv][service.name].collapse = true;
+		};
 
-	$scope.expand = function (application, service, oneEnv) {
-		application.aclFill[oneEnv][service.name].collapse = false;
-	};
-	//TODO: need more work
-	$scope.selectService = function (application, service, oneEnv) {
-		if (application.aclFill[oneEnv][service.name]) {
-			if (application.aclFill[oneEnv][service.name].include) {
-				if (application.aclFill[oneEnv][service.name].forceRestricted) {
-					application.aclFill[oneEnv][service.name].apisRestrictPermission = true;
+		$scope.expand = function (application, service, oneEnv) {
+			application.aclFill[oneEnv][service.name].collapse = false;
+		};
+		//TODO: need more work
+		$scope.selectService = function (application, service, oneEnv) {
+			if (application.aclFill[oneEnv][service.name]) {
+				if (application.aclFill[oneEnv][service.name].include) {
+					if (application.aclFill[oneEnv][service.name].forceRestricted) {
+						application.aclFill[oneEnv][service.name].apisRestrictPermission = true;
+					}
+					application.aclFill[oneEnv][service.name].collapse = false;
 				}
-				application.aclFill[oneEnv][service.name].collapse = false;
-			}
-			else {
-				application.aclFill[oneEnv][service.name].collapse = true;
-			}
-		}
-	};
-
-	$scope.getEnvironments = function () {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/list",
-			"params": {"short": true}
-		}, function (error, response) {
-			if (error) {
-				overlayLoading.hide();
-				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-			}
-			else {
-				$scope.environments_codes = response;
-				$scope.getTenantAppInfo();
-			}
-		});
-	};
-
-	$scope.openApi = function (application, serviceName, oneEnv) {
-		var status = false;
-		for (var oneService in application.aclFill[oneEnv]) {
-			if (oneService === serviceName) {
-				if (application.aclFill[oneEnv][oneService].include && !application.aclFill[oneEnv][oneService].collapse) {
-					status = true;
+				else {
+					application.aclFill[oneEnv][service.name].collapse = true;
 				}
 			}
-		}
-		return status;
-	};
+		};
 
-	$scope.checkForGroupDefault = function (aclFill, service, grp, val, myApi) {
-		membersAclHelper.checkForGroupDefault(aclFill, service, grp, val, myApi);
-	};
-
-	$scope.applyRestriction = function (aclFill, service) {
-		membersAclHelper.applyRestriction(aclFill, service);
-	};
-
-	$scope.getTenantAppInfo = function () {
-		getUserGroupInfo(function () {
+		$scope.getEnvironments = function () {
 			getSendDataFromServer($scope, ngDataApi, {
-				"method": "send",
-				"headers": {
-					"key": $scope.key
-				},
-				"routeName": "/dashboard/tenant/acl/get",
-				"params": {"id": $scope.user.tenant.id}
+				"method": "get",
+				"routeName": "/dashboard/environment/list",
+				"params": {"short": true}
 			}, function (error, response) {
 				if (error) {
 					overlayLoading.hide();
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
 				else {
-					$scope.tenantApp = response;
-					$scope.tenantApp.applications.forEach(function (oneApplication) {
-						if ($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
-							if ($scope.user.config.packages[oneApplication.package].acl) {
-								oneApplication.userPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
-								//oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
-							}
-						}
-						membersAclHelper.renderPermissionsWithServices($scope, oneApplication);
+					$scope.environments_codes = response;
+					$scope.getTenantAppInfo();
+				}
+			});
+		};
+
+		$scope.openApi = function (application, serviceName, oneEnv) {
+			var status = false;
+			for (var oneService in application.aclFill[oneEnv]) {
+				if (oneService === serviceName) {
+					if (application.aclFill[oneEnv][oneService].include && !application.aclFill[oneEnv][oneService].collapse) {
+						status = true;
+					}
+				}
+			}
+			return status;
+		};
+
+		$scope.checkForGroupDefault = function (aclFill, service, grp, val, myApi) {
+			membersAclHelper.checkForGroupDefault(aclFill, service, grp, val, myApi);
+		};
+
+		$scope.applyRestriction = function (aclFill, service) {
+			membersAclHelper.applyRestriction(aclFill, service);
+		};
+
+		$scope.getTenantAppInfo = function () {
+			getUserGroupInfo(function () {
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "send",
+					"headers": {
+						"key": $scope.key
+					},
+					"routeName": "/dashboard/tenant/acl/get",
+					"params": {"id": $scope.user.tenant.id}
+				}, function (error, response) {
+					if (error) {
 						overlayLoading.hide();
-					});
-					delete $scope.tenantApp.services;
-
-				}
-			});
-		});
-
-		function getUserGroupInfo(cb) {
-			getSendDataFromServer($scope, ngDataApi, {
-				"method": "get",
-				"routeName": "/urac/admin/getUser",
-				"params": {"uId": $routeParams.uId}
-			}, function (error, response) {
-				if (error) {
-					overlayLoading.hide();
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
-				}
-				else {
-					$scope.user = response;
-					getSendDataFromServer($scope, ngDataApi, {
-						"method": "get",
-						"routeName": "/urac/admin/group/list",
-						"params": {'tId': $scope.user.tenant.id}
-					}, function (error, response) {
-						if (error) {
+						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+					}
+					else {
+						$scope.tenantApp = response;
+						$scope.tenantApp.applications.forEach(function (oneApplication) {
+							if ($scope.user.config && $scope.user.config.packages && $scope.user.config.packages[oneApplication.package]) {
+								if ($scope.user.config.packages[oneApplication.package].acl) {
+									oneApplication.userPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
+									//oneApplication.parentPackageAcl = angular.copy($scope.user.config.packages[oneApplication.package].acl);
+								}
+							}
+							membersAclHelper.renderPermissionsWithServices($scope, oneApplication);
 							overlayLoading.hide();
-							$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
-						}
-						else {
-							response.forEach(function (grpObj) {
-								$scope.allGroups.push(grpObj.code);
-							});
-							cb();
-						}
-					});
+						});
+						delete $scope.tenantApp.services;
+
+					}
+				});
+			});
+
+			function getUserGroupInfo(cb) {
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "get",
+					"routeName": "/urac/admin/getUser",
+					"params": {"uId": $routeParams.uId}
+				}, function (error, response) {
+					if (error) {
+						overlayLoading.hide();
+						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
+					}
+					else {
+						$scope.user = response;
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "get",
+							"routeName": "/urac/admin/group/list",
+							"params": {'tId': $scope.user.tenant.id}
+						}, function (error, response) {
+							if (error) {
+								overlayLoading.hide();
+								$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
+							}
+							else {
+								response.forEach(function (grpObj) {
+									$scope.allGroups.push(grpObj.code);
+								});
+								cb();
+							}
+						});
+					}
+				});
+			}
+		};
+
+		$scope.clearUserAcl = function () {
+			var postData = $scope.user;
+
+			if (typeof(postData.config) !== 'object') {
+				postData.config = {};
+			}
+
+			if (typeof(postData.config.packages) !== 'object') {
+				postData.config.packages = {};
+			}
+
+			$scope.tenantApp.applications.forEach(function (oneApplication) {
+				if (postData.config.packages[oneApplication.package]) {
+					if (postData.config.packages[oneApplication.package].acl) {
+						delete postData.config.packages[oneApplication.package].acl;
+					}
 				}
 			});
-		}
-	};
-
-	$scope.clearUserAcl = function () {
-		var postData = $scope.user;
-
-		if (typeof(postData.config) !== 'object') {
-			postData.config = {};
-		}
-
-		if (typeof(postData.config.packages) !== 'object') {
-			postData.config.packages = {};
-		}
-
-		$scope.tenantApp.applications.forEach(function (oneApplication) {
-			if (postData.config.packages[oneApplication.package]) {
-				if (postData.config.packages[oneApplication.package].acl) {
-					delete postData.config.packages[oneApplication.package].acl;
-				}
-			}
-		});
-		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
-			"routeName": "/urac/admin/editUser",
-			"params": {"uId": $scope.user['_id']},
-			"data": postData
-		}, function (error) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
-			}
-			else {
-				$scope.msg.type = '';
-				$scope.msg.msg = '';
-				$scope.$parent.displayAlert('success', translation.userAclDeletedSuccessfully[LANG]);
-				$route.reload();
-			}
-		});
-	};
-
-	$scope.saveUserAcl = function () {
-		var postData = $scope.user;
-		if (typeof(postData.config) !== 'object') {
-			postData.config = {};
-		}
-		if (typeof(postData.config.packages) !== 'object') {
-			postData.config.packages = {};
-		}
-
-		var counter = 0;
-		$scope.tenantApp.applications.forEach(function (oneApplication) {
-			var tmpObj = {services: oneApplication.aclFill};
-			var result = membersAclHelper.prepareAclObjToSave(tmpObj);
-			if (result.valid) {
-				var packageName = oneApplication.package;
-				if (!postData.config.packages[packageName]) {
-					postData.config.packages[packageName] = {};
-				}
-				if (!postData.config.packages[packageName].acl) {
-					postData.config.packages[packageName].acl = {};
-				}
-				postData.config.packages[packageName].acl = result.data;
-				counter++;
-			}
-			else {
-				$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
-			}
-		});
-
-		if (counter === $scope.tenantApp.applications.length) {
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"headers": {
-					"key": $scope.key
-				},
-				"routeName": "/urac/admin/editUser", //editUserConfig
+				"routeName": "/urac/admin/editUser",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
 			}, function (error) {
@@ -461,14 +409,67 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 				else {
 					$scope.msg.type = '';
 					$scope.msg.msg = '';
-					$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
+					$scope.$parent.displayAlert('success', translation.userAclDeletedSuccessfully[LANG]);
+					$route.reload();
 				}
 			});
-		}
-	};
-	//call default method
-	overlayLoading.show(function () {
-		$scope.getEnvironments();
-	});
+		};
 
-}]);
+		$scope.saveUserAcl = function () {
+			var postData = $scope.user;
+			if (typeof(postData.config) !== 'object') {
+				postData.config = {};
+			}
+			if (typeof(postData.config.packages) !== 'object') {
+				postData.config.packages = {};
+			}
+
+			var counter = 0;
+			$scope.tenantApp.applications.forEach(function (oneApplication) {
+				var tmpObj = {services: oneApplication.aclFill};
+				var result = membersAclHelper.prepareAclObjToSave(tmpObj);
+				if (result.valid) {
+					var packageName = oneApplication.package;
+					if (!postData.config.packages[packageName]) {
+						postData.config.packages[packageName] = {};
+					}
+					if (!postData.config.packages[packageName].acl) {
+						postData.config.packages[packageName].acl = {};
+					}
+					postData.config.packages[packageName].acl = result.data;
+					counter++;
+				}
+				else {
+					$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
+				}
+			});
+
+			if (counter === $scope.tenantApp.applications.length) {
+				overlayLoading.show();
+				getSendDataFromServer($scope, ngDataApi, {
+					"method": "send",
+					"headers": {
+						"key": $scope.key
+					},
+					"routeName": "/urac/admin/editUser", //editUserConfig
+					"params": {"uId": $scope.user['_id']},
+					"data": postData
+				}, function (error) {
+					overlayLoading.hide();
+					if (error) {
+						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
+					}
+					else {
+						$scope.msg.type = '';
+						$scope.msg.msg = '';
+						$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
+					}
+				});
+			}
+		};
+		//call default method
+		overlayLoading.show(function () {
+			$scope.getEnvironments();
+		});
+
+	}]);

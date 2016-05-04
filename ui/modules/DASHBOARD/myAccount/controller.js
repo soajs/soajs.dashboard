@@ -117,151 +117,153 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 	};
 }]);
 
-myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', function ($scope, $timeout, $modal, ngDataApi, $cookies) {
-	$scope.$parent.isUserLoggedIn();
-	var userCookie = $cookies.getObject('soajs_user');
-	
-	var formConfig = {
-		'timeout': $timeout,
-		'name': 'editProfile',
-		'label': translation.editProfile[LANG],
-		'entries': [],
-		'data': {},
-		'actions': [
-			{
-				'type': 'submit',
-				'label': translation.editProfile[LANG],
-				'btn': 'primary',
-				'action': function (formData) {
-					var profileObj = {};
-					if (formData.profile && (formData.profile != "")) {
-						try {
-							profileObj = JSON.parse(formData.profile);
+myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', '$cookies', '$localStorage',
+	function ($scope, $timeout, $modal, ngDataApi, $cookies, $localStorage) {
+		$scope.$parent.isUserLoggedIn();
+		var userCookie = $localStorage.soajs_user;
+
+		var formConfig = {
+			'timeout': $timeout,
+			'name': 'editProfile',
+			'label': translation.editProfile[LANG],
+			'entries': [],
+			'data': {},
+			'actions': [
+				{
+					'type': 'submit',
+					'label': translation.editProfile[LANG],
+					'btn': 'primary',
+					'action': function (formData) {
+						var profileObj = {};
+						if (formData.profile && (formData.profile != "")) {
+							try {
+								profileObj = JSON.parse(formData.profile);
+							}
+							catch (e) {
+								$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG]);
+								return;
+							}
 						}
-						catch (e) {
-							$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG]);
-							return;
-						}
+
+						var postData = {
+							'username': formData.username,
+							'firstName': formData.firstName,
+							'lastName': formData.lastName,
+							'profile': profileObj
+						};
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "send",
+							"routeName": "/urac/account/editProfile",
+							"headers": {
+								"key": apiConfiguration.key
+							},
+							"params": {"uId": $scope.uId},
+							"data": postData
+						}, function (error) {
+							if (error) {
+								$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG]);
+								userCookie.firstName = formData.firstName;
+								userCookie.username = formData.username;
+								userCookie.lastName = formData.lastName;
+								userCookie.profile = profileObj;
+
+								$localStorage.soajs_user = userCookie;
+								$scope.$parent.$emit('refreshWelcome', {});
+							}
+						});
 					}
-
-					var prof = JSON.stringify(profileObj);
-					var postData = {
-						'username': formData.username, 'firstName': formData.firstName, 'lastName': formData.lastName,
-						'profile': prof
-					};
-					getSendDataFromServer($scope, ngDataApi, {
-						"method": "send",
-						"routeName": "/urac/account/editProfile",
-						"headers": {
-							"key": apiConfiguration.key
-						},
-						"params": {"uId": $scope.uId},
-						"data": postData
-					}, function (error) {
-						if (error) {
-							$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', translation.profileUpdatedSuccessfully[LANG]);
-							userCookie.firstName = formData.firstName;
-							userCookie.username = formData.username;
-							userCookie.lastName = formData.lastName;
-							userCookie.profile = profileObj;
-
-							$cookies.putObject('soajs_user', userCookie);
-							$scope.$parent.$emit('refreshWelcome', {});
-						}
-					});
 				}
-			}
-		],
-		form: profileConfig.formConf
-	};
+			],
+			form: profileConfig.formConf
+		};
 
-	$scope.getProfile = function (username) {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"headers": {
-				"key": apiConfiguration.key
-			},
-			"routeName": "/urac/account/getUser",
-			"params": {"username": username}
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
-			}
-			else {
-				$scope.uId = response._id;
-				var p = JSON.stringify(response.profile, null, "\t");
-				formConfig.entries = [
-					{
-						'name': 'firstName',
-						'label': translation.firstName[LANG],
-						'type': 'text',
-						'placeholder': translation.enterFirstName[LANG],
-						'value': response.firstName,
-						'tooltip': translation.enterFirstNameUser[LANG],
-						'required': true
-					},
-					{
-						'name': 'lastName',
-						'label': translation.lastName[LANG],
-						'type': 'text',
-						'placeholder': translation.enterLastName[LANG],
-						'value': response.lastName,
-						'tooltip': translation.enterLastNameUser[LANG],
-						'required': true
-					},
-					{
-						'name': 'email',
-						'label': translation.email[LANG],
-						'type': 'readonly',
-						'placeholder': translation.enterEmail[LANG],
-						'value': response.email,
-						'tooltip': translation.emailToolTip[LANG],
-						'required': true
-					},
-					{
-						'name': 'username',
-						'label': translation.username[LANG],
-						'type': 'text',
-						'placeholder': translation.enterUsername[LANG],
-						'value': response.username,
-						'tooltip': translation.usernamesToolTip[LANG],
-						'required': true
-					},
-					{
-						'name': 'profile',
-						'label': translation.profile[LANG],
-						'type': 'textarea',
-						'value': p,
-						'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
-						'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
-						'required': false,
-						'rows': 10
-					}
-				];
-				//formConfig.data = response;
-				formConfig.data.profile = p;
-				//buildFormWithModal($scope, null, formConfig);
-				buildForm($scope, null, formConfig);
-				
-				$scope.$parent.$emit('xferData', {'memberData': response});
-				
-			}
-		});
-	};
+		$scope.getProfile = function (username) {
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"headers": {
+					"key": apiConfiguration.key
+				},
+				"routeName": "/urac/account/getUser",
+				"params": {"username": username}
+			}, function (error, response) {
+				if (error) {
+					$scope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
+				}
+				else {
+					$scope.uId = response._id;
+					var p = JSON.stringify(response.profile, null, "\t");
+					formConfig.entries = [
+						{
+							'name': 'firstName',
+							'label': translation.firstName[LANG],
+							'type': 'text',
+							'placeholder': translation.enterFirstName[LANG],
+							'value': response.firstName,
+							'tooltip': translation.enterFirstNameUser[LANG],
+							'required': true
+						},
+						{
+							'name': 'lastName',
+							'label': translation.lastName[LANG],
+							'type': 'text',
+							'placeholder': translation.enterLastName[LANG],
+							'value': response.lastName,
+							'tooltip': translation.enterLastNameUser[LANG],
+							'required': true
+						},
+						{
+							'name': 'email',
+							'label': translation.email[LANG],
+							'type': 'readonly',
+							'placeholder': translation.enterEmail[LANG],
+							'value': response.email,
+							'tooltip': translation.emailToolTip[LANG],
+							'required': true
+						},
+						{
+							'name': 'username',
+							'label': translation.username[LANG],
+							'type': 'text',
+							'placeholder': translation.enterUsername[LANG],
+							'value': response.username,
+							'tooltip': translation.usernamesToolTip[LANG],
+							'required': true
+						},
+						{
+							'name': 'profile',
+							'label': translation.profile[LANG],
+							'type': 'textarea',
+							'value': p,
+							'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
+							'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
+							'required': false,
+							'rows': 10
+						}
+					];
+					//formConfig.data = response;
+					formConfig.data.profile = p;
+					//buildFormWithModal($scope, null, formConfig);
+					buildForm($scope, null, formConfig);
 
-	if ((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
-		var uname = userCookie.username;
-		$scope.getProfile(uname);
-	}
-	else {
-		$scope.$parent.displayAlert("danger", translation.youNeedToLoginFirst[LANG]);
-		$scope.$parent.go("/");
-	}
+					$scope.$parent.$emit('xferData', {'memberData': response});
 
-}]);
+				}
+			});
+		};
+
+		if ((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
+			var uname = userCookie.username;
+			$scope.getProfile(uname);
+		}
+		else {
+			$scope.$parent.displayAlert("danger", translation.youNeedToLoginFirst[LANG]);
+			$scope.$parent.go("/");
+		}
+
+	}]);
 
 myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function ($scope, ngDataApi, $route, isUserLoggedIn) {
 
@@ -307,7 +309,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 				}
 				else {
-					$cookies.putObject('soajs_user', response);
+					$localStorage.soajs_user = response;
 					if (response.soajsauth) {
 						$cookies.put("soajs_auth", response.soajsauth);
 					}
@@ -342,7 +344,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				}, function (error, response) {
 					overlayLoading.hide();
 					if (error) {
-						$cookies.remove('soajs_user');
+						$localStorage.soajs_user = null;
 						$cookies.remove('soajs_auth');
 						$cookies.remove('soajs_dashboard_key');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
