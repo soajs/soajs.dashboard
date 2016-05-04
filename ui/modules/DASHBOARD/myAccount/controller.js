@@ -145,12 +145,11 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 							}
 						}
 
-						var prof = JSON.stringify(profileObj);
 						var postData = {
 							'username': formData.username,
 							'firstName': formData.firstName,
 							'lastName': formData.lastName,
-							'profile': prof
+							'profile': profileObj
 						};
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
