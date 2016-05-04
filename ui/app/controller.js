@@ -470,9 +470,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		});
 
 		$scope.isUserLoggedIn = function (stopRedirect) {
-			if (!$cookies.get('soajs_auth') || !$cookies.get('soajs_user')) {
+			if (!$cookies.get('soajs_auth') || !$localStorage.soajs_user) {
 				$cookies.remove('soajs_auth');
-				$cookies.remove('soajs_user');
+				$localStorage.soajs_user = null;
 				$localStorage.acl_access = null;
 				$scope.enableInterface = false;
 				if (!stopRedirect) {
@@ -490,7 +490,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
 
-				var user = $cookies.getObject('soajs_user');
+				var user = $localStorage.soajs_user;
 
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;
@@ -509,16 +509,20 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.footerMenu.selectedMenu = '#/dashboard';
 			}
 
-			var user = $cookies.getObject('soajs_user');
-
+			var user = $localStorage.soajs_user;
+			if (user) {
+				$scope.userFirstName = user.firstName;
+				$scope.userLastName = user.lastName;
+			}
+			else {
+				console.log('Missing user object');
+			}
 			$scope.enableInterface = true;
-			$scope.userFirstName = user.firstName;
-			$scope.userLastName = user.lastName;
 			$scope.go("/dashboard");
 		});
 
 		$scope.buildPermittedOperation = function (serviceName, routePath, cb) {
-			var user = $cookies.getObject('soajs_user');
+			var user = $localStorage.soajs_user;
 			if (user) {
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
@@ -604,7 +608,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 	});
 
 	$scope.setUser = function () {
-		var user = $cookies.getObject('soajs_user');
+		var user = $localStorage.soajs_user;
 		if (user) {
 			$scope.userFirstName = user.firstName;
 			$scope.userLastName = user.lastName;
@@ -612,7 +616,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 	};
 
 	$scope.logoutUser = function () {
-		var user = $cookies.getObject('soajs_user');
+		var user = $localStorage.soajs_user;
 
 		function logout() {
 			overlayLoading.show();
@@ -631,7 +635,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 				$cookies.remove('soajs_dashboard_key');
 				$cookies.remove('soajsID');
 				$cookies.remove('soajs_auth');
-				$cookies.remove('soajs_user');
+				$localStorage.soajs_user = null;
 				$cookies.remove('soajs_current_route');
 				$cookies.remove('soajs_envauth');
 				$localStorage.acl_access = null;
@@ -650,7 +654,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 			$cookies.remove('myEnv');
 			$cookies.remove('soajs_dashboard_key');
 			$cookies.remove('soajsID');
-			$cookies.remove('soajs_user');
+			$localStorage.soajs_user = null;
 			$cookies.remove('soajs_current_route');
 			$cookies.remove('soajs_envauth');
 			$scope.$parent.isUserLoggedIn();
