@@ -1,30 +1,30 @@
     <section ng-controller="platformsCtrl">
-        <select class="form-control f-left selectCustom" ng-model="deployer.type">
+        <select class="form-control f-left selectCustom" ng-model="deployer.type" ng-if="access.platforms.deployer.changeDeployerType">
             <option value="manual">{{translation.manual[LANG]}}</option>
             <option value="container">{{translation.container[LANG]}}</option>
         </select>&nbsp;
-        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="access.platforms.deployer.changeDeployerType && deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
         <br><br><br>
-        <div ng-if="allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket']">
+        <div ng-if="access.platforms.drivers.add && (allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket'])">
             <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
             <br><br>
         </div>
         <div class="entryBoxes">
-            <div ng-repeat="driver in platforms" class="entryBox mb20">
+            <div ng-repeat="driver in platforms" class="entryBox mb20" ng-if="access.platforms.list">
                 <div class="header">
                     {{driver.label}}&nbsp;&nbsp;&nbsp;<span ng-if="driver.uiType !== 'socket'"><b>[ {{translation.host[LANG]}}: {{driver.host}} | {{translation.port[LANG]}}: {{driver.port}} ]</b></span>
                     <span ng-if="uiSelected === driver.label" class="text-green">{{translation.selected[LANG]}}</span>
                     <span class="rightActions">
-                        <a ng-if="access.platforms.clear" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
+                        <a ng-if="access.platforms.drivers.delete" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
                             <span class="icon icon-cross" tooltip="{{translation.deleteDriver[LANG]}}"></span>
                         </a>
-                        <a ng-if="access.platforms.update" href="" ng-click="editDriver(driver);">
+                        <a ng-if="access.platforms.drivers.edit" href="" ng-click="editDriver(driver);">
                             <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
                         </a>
-                        <a href="" ng-click="uploadCerts(driver.label)" ng-if="driver.uiType !== 'socket'">
+                        <a href="" ng-if="access.platforms.certs.upload && driver.uiType !== 'socket'" ng-click="uploadCerts(driver.label)">
                             <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                         </a>
-                        <a href="" ng-click="selectDriver(driver.label)" ng-if="allowSelect">
+                        <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(driver.label)">
                             <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
                         </a>
                     </span>
@@ -34,7 +34,7 @@
                     <div class="entryBoxes entryBoxesGrid">
                         <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in driver.certificates">
                             <b>{{cert.filename}}</b>
-                            <a href="" ng-click="removeCert(cert._id, driver.label)">
+                            <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, driver.label)">
                                 <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
                             </a>
                         </div>
@@ -58,9 +58,9 @@
     </script>
 
     <script type="text/ng-template" id="uploadCerts.tmpl">
-        <div ng-include="'modules/DASHBOARD/environments/directives/uploadCerts.tmpl'"></div>
+        <div ng-if="access.platforms.certs.upload" ng-include="'modules/DASHBOARD/environments/directives/uploadCerts.tmpl'"></div>
     </script>
 
     <script type="text/ng-template" id="addEditDriver.tmpl">
-        <div ng-include="'modules/DASHBOARD/environments/directives/addEditDriver.tmpl'"></div>
+        <div ng-if="access.platforms.drivers.add || access.platforms.drivers.edit" ng-include="'modules/DASHBOARD/environments/directives/addEditDriver.tmpl'"></div>
     </script>

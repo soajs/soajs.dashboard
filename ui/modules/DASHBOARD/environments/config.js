@@ -12,6 +12,7 @@ var environmentsConfig = {
 					'type': 'select',
 					'value': [
 						{'v': 'DEV', 'l': 'DEV'},
+						{'v': 'QA', 'l': 'QA'},
 						{'v': 'CAT', 'l': 'CAT'},
 						{'v': 'STG', 'l': 'STG'},
 						{'v': 'PROD', 'l': 'PROD'}
@@ -388,8 +389,20 @@ var environmentsConfig = {
 		},
 		"platforms": {
 			"list": ['dashboard', '/environment/platforms/list'],
-			"update": ['dashboard', '/environment/platforms/update'],
-			"clear": ['dashboard', '/environment/platforms/clear']
+			"drivers": {
+				"add": ['dashboard', '/environment/platforms/driver/add'],
+				"edit": ['dashboard', '/environment/platforms/driver/edit'],
+				"delete": ['dashboard', '/environment/platforms/driver/delete'],
+				"changeSelected": ['dashboard', '/environment/platforms/driver/changeSelected']
+			},
+			"deployer": {
+				"changeDeployerType": ['dashboard', '/environment/platforms/deployer/type/change']
+			},
+			"certs": {
+				"upload": ['dashboard', '/environment/platforms/cert/upload'],
+				"choose": ['dashboard', '/environment/platforms/cert/choose'],
+				"delete": ['dashboard', '/environment/platforms/cert/delete']
+			}
 		}
 	}
 };

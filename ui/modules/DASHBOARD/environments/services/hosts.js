@@ -4,6 +4,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
     function listHosts(currentScope, env, noPopulate) {
         var controllers = [];
+        currentScope.showCtrlHosts = true;
         currentScope.hostList = [];
         if (currentScope.access.listHosts) {
             getSendDataFromServer(currentScope, ngDataApi, {
@@ -245,8 +246,29 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
             else {
+                //collect network information to be displayed in UI
+                currentScope.showNginxHosts = true;
+                response.forEach(function (oneHost) {
+                    oneHost.networkInfo = {
+                        ips: [],
+                        ports: []
+                    };
+                    for (var network in oneHost.info.NetworkSettings.Networks) {
+                        oneHost.networkInfo.ips.push({
+                            networkName: network,
+                            ipAdd: oneHost.info.NetworkSettings.Networks[network].IPAddress
+                        });
+                    }
+                    for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
+                        oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
+                            oneHost.networkInfo.ports.push({
+                                host: oneMapping.HostPort,
+                                container: mappedPort
+                            });
+                        });
+                    }
+                });
                 currentScope.nginxHosts = response;
-                console.log (response);
             }
         });
     }

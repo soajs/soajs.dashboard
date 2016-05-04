@@ -330,6 +330,10 @@ var srTranslation = {
 	"noSearchResultsFoundFor": {
 		"ENG": "No search results found for",
 		"FRA": "No search results found for"
+	},
+	"externalKeyEnv": {
+		"ENG": "Ext Key Environment",
+		"FRA": "Ext Key Environment"
 	}
 };
 

@@ -196,6 +196,8 @@ var errors = {
 
 	"777": "You are not allowed to delete this container. At least one instance of nginx must be available",
 
+	"778": "The git account provider is missing or not supported",
+
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
 	903: "You do not have access to this environment %envCode%"

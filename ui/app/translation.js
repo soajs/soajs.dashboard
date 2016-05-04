@@ -1589,12 +1589,16 @@ var errorCodes = {
 			"ENG": "You are not allowed to delete this container. At least one instance of nginx must be available",
 			"FRA": "You are not allowed to delete this container. At least one instance of nginx must be available"
 		},
+		"778": {
+			"ENG": "The git account provider is missing or not supported",
+			"FRA": "The git account provider is missing or not supported"
+		},
 
 		"901": {
 			"ENG": "Error Logging out from environments.",
 			"FRA": "Error Logging out from environments."
 		},
-		902: {
+		"902": {
 			"ENG": "Error Logging in to environments.",
 			"FRA": "Error Logging in to environments."
 		},

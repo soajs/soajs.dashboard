@@ -689,6 +689,12 @@ module.exports = {
 				}
 			}
 		},
+		"/environment/platforms/cert/upload": {
+			_apiInfo: {
+				"l": "Upload Certificate",
+				"group": "Environment Platforms"
+			}
+		},
 		"/environment/platforms/cert/delete": {
 			_apiInfo: {
 				"l": "Remove Certificate",
@@ -2323,7 +2329,7 @@ module.exports = {
 				}
 			},
 			"provider": {
-				"source": ['query.provider'],
+				"source": ['body.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"

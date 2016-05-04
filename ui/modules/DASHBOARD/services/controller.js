@@ -103,7 +103,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		result._ver = version;
 		return result;
 	};
-	
+
 	if ($scope.access.listServices) {
 		injectFiles.injectCss("modules/DASHBOARD/services/services.css");
 		$scope.listServices();
@@ -140,7 +140,8 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 										name: oneTenant.name,
 										appDescription: oneApp.description,
 										package: oneApp.package,
-										extKey: oneExtKey.extKey
+										extKey: oneExtKey.extKey,
+										extKeyEnv: oneExtKey.env
 									});
 								}
 							});
@@ -290,7 +291,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 
 				$scope.markSelectedTenants = function () {
 					grpConf.jobs[jobName].tenantsInfo.forEach(function (oneTenant) {
-						$scope.selectedTenants[oneTenant.extKey] = oneTenant;
+						$scope.selectedTenants[oneTenant.extKeyEnv + '.' + oneTenant.extKey] = oneTenant;
 					});
 				};
 				$scope.markSelectedTenants();
@@ -301,7 +302,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						var filtered = [];
 						var tenants = outerScope.tenantsList;
 						for (var i = 0; i < tenants.length; i++) {
-							if (tenants[i].name.toLowerCase().indexOf(query) !== -1 || tenants[i].package.toLowerCase().indexOf(query) !== -1 || tenants[i].appDescription.toLowerCase().indexOf(query) !== -1) {
+							if (tenants[i].name.toLowerCase().indexOf(query) !== -1 || tenants[i].package.toLowerCase().indexOf(query) !== -1 || tenants[i].appDescription.toLowerCase().indexOf(query) !== -1 || tenants[i].extKeyEnv.toLowerCase().indexOf(query) !== -1) {
 								filtered.push(tenants[i]);
 							}
 						}
