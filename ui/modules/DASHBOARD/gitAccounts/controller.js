@@ -1,14 +1,14 @@
 'use strict';
 
-var githubApp = soajsApp.components;
-githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, ngDataApi, injectFiles) {
+var gitAccountsApp = soajsApp.components;
+gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, ngDataApi, injectFiles) {
     $scope.$parent.isUserLoggedIn();
 
     $scope.access = {};
-    constructModulePermissions($scope, $scope.access, githubAppConfig.permissions);
+    constructModulePermissions($scope, $scope.access, gitAccountsAppConfig.permissions);
 
     $scope.referToDoc = 'Refer to the online documentation at ' + '<a target="_blank" href="http://soajs.org/#/documentation">SOAJS Website.</a>';
-    $scope.excludedSOAJSRepos = githubAppConfig.blacklistedRepos;
+    $scope.excludedSOAJSRepos = gitAccountsAppConfig.blacklistedRepos;
 
     $scope.defaultPageNumber = 1;
     $scope.defaultPerPage = 100;
@@ -16,7 +16,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     $scope.listAccounts = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'get',
-            'routeName': '/dashboard/github/accounts/list'
+            'routeName': '/dashboard/gitAccounts/accounts/list'
         }, function (error, response) {
             if (error) {
                 $scope.displayAlert('danger', error.message);
@@ -41,7 +41,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.addAccount = function () {
-        var formConfig = angular.copy(githubAppConfig.form.login);
+        var formConfig = angular.copy(gitAccountsAppConfig.form.login);
         var accountType = {
             'name': 'type',
             'label': 'Account Type',
@@ -98,7 +98,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
                         getSendDataFromServer($scope, ngDataApi, {
                             'method': 'send',
-                            'routeName': '/dashboard/github/login',
+                            'routeName': '/dashboard/gitAccounts/login',
                             'data': postData
                         }, function (error) {
                             if (error) {
@@ -130,9 +130,10 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
         if (account.access === 'public') {
             getSendDataFromServer($scope, ngDataApi, {
                 'method': 'get',
-                'routeName': '/dashboard/github/logout',
+                'routeName': '/dashboard/gitAccounts/logout',
                 'params': {
                     id: account._id.toString(),
+                    provider: account.provider,
                     username: account.owner
                 }
             }, function (error) {
@@ -144,7 +145,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                 }
             });
         } else if (account.access === 'private') {
-            var formConfig = angular.copy(githubAppConfig.form.logout);
+            var formConfig = angular.copy(gitAccountsAppConfig.form.logout);
             var options = {
                 timeout: $timeout,
                 form: formConfig,
@@ -158,12 +159,13 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                         'action': function (formData) {
                             var params = {
                                 id: account._id.toString(),
+                                provider: account.provider,
                                 username: account.owner,
                                 password: formData.password
                             };
                             getSendDataFromServer($scope, ngDataApi, {
                                 'method': 'get',
-                                'routeName': '/dashboard/github/logout',
+                                'routeName': '/dashboard/gitAccounts/logout',
                                 'params': params
                             }, function (error) {
                                 if (error) {
@@ -206,9 +208,10 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
 
         getSendDataFromServer($scope, ngDataApi, {
             "method": "get",
-            "routeName": "/dashboard/github/getRepos",
+            "routeName": "/dashboard/gitAccounts/getRepos",
             "params": {
                 id: id,
+                provider: accounts[counter].provider,
                 per_page: $scope.defaultPerPage,
                 page: (action === 'loadMore') ? accounts[counter].nextPageNumber : $scope.defaultPageNumber
             }
@@ -282,14 +285,15 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     };
 
     $scope.activateRepo = function (account, repo) {
-        var formConfig = angular.copy(githubAppConfig.form.selectConfigBranch);
+        var formConfig = angular.copy(gitAccountsAppConfig.form.selectConfigBranch);
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
-            routeName: '/dashboard/github/getBranches',
+            routeName: '/dashboard/gitAccounts/getBranches',
             params: {
                 name: repo.full_name,
                 type: 'repo',
-                id: account._id.toString()
+                id: account._id.toString(),
+                provider: account.provider
             }
         }, function (error, result) {
             if (error) {
@@ -314,9 +318,10 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                                 overlayLoading.show();
 	                            getSendDataFromServer($scope, ngDataApi, {
                                     method: 'send',
-                                    routeName: '/dashboard/github/repo/activate',
+                                    routeName: '/dashboard/gitAccounts/repo/activate',
                                     params: {
-                                        id: account._id.toString()
+                                        id: account._id.toString(),
+                                        provider: account.provider
                                     },
                                     data: {
                                         provider: account.provider,
@@ -392,7 +397,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     $scope.deactivateRepo = function (accountId, repo) {
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
-            routeName: '/dashboard/github/repo/deactivate',
+            routeName: '/dashboard/gitAccounts/repo/deactivate',
             params: {
                 id: accountId.toString(),
                 owner: repo.owner.login,
@@ -420,11 +425,12 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
     $scope.syncRepo = function (account, repo) {
         getSendDataFromServer($scope, ngDataApi, {
             method: 'send',
-            routeName: '/dashboard/github/repo/sync',
+            routeName: '/dashboard/gitAccounts/repo/sync',
             params: {
                 id: account._id.toString()
             },
             data: {
+                provider: account.provider,
                 owner: repo.owner.login,
                 repo: repo.name
             }
@@ -448,7 +454,7 @@ githubApp.controller ('githubAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataA
                             $scope.reactivate = function () {
                                 getSendDataFromServer($scope, ngDataApi, {
                                     method: 'get',
-                                    routeName: '/dashboard/github/repo/deactivate',
+                                    routeName: '/dashboard/gitAccounts/repo/deactivate',
                                     params: {
                                         id: account._id.toString(),
                                         owner: repo.owner.login,

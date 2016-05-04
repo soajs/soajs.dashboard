@@ -32,12 +32,22 @@
 }
 
 .externalKeysGrid .name {
-    width: 17%;
+    width: 20%;
 }
 
 .externalKeysGrid .package {
     min-width: 12%;
     width: 12%;
+}
+
+.externalKeysGrid .description {
+    min-width: 58%;
+    width: 58%;
+}
+
+.externalKeysGrid .extKeyEnv {
+    min-width: 5%;
+    width: 5%;
 }
 
 .form-group .order-text {

@@ -4,6 +4,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
     function listHosts(currentScope, env, noPopulate) {
         var controllers = [];
+        currentScope.showCtrlHosts = true;
         currentScope.hostList = [];
         if (currentScope.access.listHosts) {
             getSendDataFromServer(currentScope, ngDataApi, {
@@ -234,6 +235,45 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
             }
         }
+    }
+
+    function listNginxHosts(currentScope, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/nginx/list',
+            params: {
+                env: env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                //collect network information to be displayed in UI
+                currentScope.showNginxHosts = true;
+                response.forEach(function (oneHost) {
+                    oneHost.networkInfo = {
+                        ips: [],
+                        ports: []
+                    };
+                    for (var network in oneHost.info.NetworkSettings.Networks) {
+                        oneHost.networkInfo.ips.push({
+                            networkName: network,
+                            ipAdd: oneHost.info.NetworkSettings.Networks[network].IPAddress
+                        });
+                    }
+                    for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
+                        oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
+                            oneHost.networkInfo.ports.push({
+                                host: oneMapping.HostPort,
+                                container: mappedPort
+                            });
+                        });
+                    }
+                });
+                currentScope.nginxHosts = response;
+            }
+        });
     }
 
     function executeHeartbeatTest(currentScope, env, oneHost) {
@@ -846,7 +886,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     currentScope.loadingBranches = true;
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'get',
-                        routeName: '/dashboard/github/getBranches',
+                        routeName: '/dashboard/gitAccounts/getBranches',
                         params: {
                             'name': service.name,
                             'type':  service.type
@@ -1114,12 +1154,71 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function containerLogs (currentScope, env, container) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/logs',
+            params: {
+                env: env,
+                cid: container.cid
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + container.hostname;
+                        $scope.data = remove_special(response.data);
+                        fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode();
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    function deleteContainer(currentScope, env, container) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/delete',
+            params: {
+                env: env,
+                cid: container.cid
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                currentScope.generateNewMsg(env, 'success', 'Container deleted successfully');
+                if (container.type === 'nginx') {
+                    listNginxHosts(currentScope, env);
+                }
+                else {
+                    listZombieContainers(currentScope, env);
+                }
+            }
+        });
+    }
+
     function listZombieContainers (currentScope, env) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/hosts/container/zombie/list',
             params: {
-                envCode: env
+                env: env
             }
         }, function (error, result) {
             if (error) {
@@ -1137,63 +1236,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             }
         });
     }
-    
-    function removeZombieContainer(currentScope, container, env) {
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/hosts/container/zombie/delete',
-            params: {
-                envCode: env,
-                cid: container.cid
-            }
-        }, function (error, result) {
-            if (error) {
-                currentScope.generateNewMsg(env, 'danger', translation.unableToDeleteZombieContainer[LANG]);
-            }
-            else {
-                currentScope.generateNewMsg(env, 'success', translation.zombieContainerRemovedSuccessfully[LANG]);
-                listZombieContainers(currentScope, env);
-            }
-        });
-    }
-
-    function getZombieContainerLogs(currentScope, container, env) {
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/hosts/container/zombie/getLogs',
-            params: {
-                envCode: env,
-                cid: container.cid
-            }
-        }, function (error, result) {
-            if (error) {
-                currentScope.generateNewMsg(env, 'danger', translation.unableToGetZombieContainerLogs[LANG]);
-            }
-            else {
-                $modal.open({
-                    templateUrl: "logBox.html",
-                    size: 'lg',
-                    backdrop: true,
-                    keyboard: false,
-                    windowClass: 'large-Modal',
-                    controller: function ($scope, $modalInstance) {
-                        $scope.title = "Host Logs of " + container.hostname;
-                        $scope.data = remove_special(result.data);
-                        fixBackDrop();
-                        setTimeout(function () {
-                            highlightMyCode()
-                        }, 500);
-                        $scope.ok = function () {
-                            $modalInstance.dismiss('ok');
-                        };
-                    }
-                });
-            }
-        });
-    }
 
     return {
         'listHosts': listHosts,
+        'listNginxHosts': listNginxHosts,
         'executeHeartbeatTest': executeHeartbeatTest,
         'executeAwarenessTest': executeAwarenessTest,
         'reloadRegistry': reloadRegistry,
@@ -1203,9 +1249,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'hostLogs': hostLogs,
         'infoHost': infoHost,
         'createHost': createHost,
-        'listZombieContainers': listZombieContainers,
-        'removeZombieContainer': removeZombieContainer,
-        'getZombieContainerLogs': getZombieContainerLogs
+        'containerLogs': containerLogs,
+        'deleteContainer': deleteContainer,
+        'listZombieContainers': listZombieContainers
     };
 
 }]);

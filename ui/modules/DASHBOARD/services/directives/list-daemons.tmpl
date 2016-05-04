@@ -74,11 +74,13 @@
                                                 <th>{{translation.name[LANG]}}</th>
                                                 <th>{{translation.package[LANG]}}</th>
                                                 <th>{{translation.applicationDescription[LANG]}}</th>
+                                                <th>{{translation.externalKeyEnv[LANG]}}</th>
                                             </tr>
                                             <tr ng-repeat="tenant in object.tenantsInfo" ng-class-even="'even'" ng-class-odd="'odd'">
                                                 <td>{{tenant.name}}</td>
                                                 <td>{{tenant.package}}</td>
                                                 <td>{{tenant.appDescription}}</td>
+                                                <td>{{tenant.extKeyEnv}}</td>
                                             </tr>
                                             </tbody>
                                         </table>

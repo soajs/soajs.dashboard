@@ -42,7 +42,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 									overlayLoading.show();
 									getSendDataFromServer(currentScope, ngDataApi, {
 										method: 'get',
-										routeName: '/dashboard/github/getBranches',
+										routeName: '/dashboard/gitAccounts/getBranches',
 										params: {
 											name: selected.name,
 											type: 'static'
@@ -174,6 +174,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 				else {
 					overlay.hide(function(){
+						currentScope.listNginxHosts(envCode);
 						currentScope.listHosts(envCode);
 					});
 				}
@@ -197,7 +198,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			overlayLoading.show();
 			getSendDataFromServer(currentScope, ngDataApi, {
 				method: 'get',
-				routeName: '/dashboard/github/getBranches',
+				routeName: '/dashboard/gitAccounts/getBranches',
 				params: {
 					name: 'controller',
 					type: 'service'

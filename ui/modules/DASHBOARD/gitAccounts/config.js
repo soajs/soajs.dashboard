@@ -1,4 +1,4 @@
-var githubAppConfig = {
+var gitAccountsAppConfig = {
 	'form': {
 		'login': {
 			'entries': [
@@ -59,11 +59,14 @@ var githubAppConfig = {
 		}
 	},
 	'permissions': {
-		listAccounts: ['dashboard', '/github/accounts/list'],
-		deleteAccount: ['dashboard', '/github/accounts/delete'],
-		updateAccount: ['dashboard', '/github/accounts/update'],
-		login: ['dashboard', '/github/login'],
-		listRepos: ['dashboard', '/github/getRepos']
+		listAccounts: ['dashboard', '/gitAccounts/accounts/list'],
+		login: ['dashboard', '/gitAccounts/login'],
+		logout: ['dashboard', '/gitAccounts/logout'],
+		activateRepo: ['dashboard', '/gitAccounts/repo/activate'],
+		deactivateRepo: ['dashboard', '/gitAccounts/repo/deactivate'],
+		syncRepo: ['dashboard', '/gitAccounts/repo/sync'],
+		getRepos: ['dashboard', '/gitAccounts/getRepos'],
+		getBranches: ['dashboard', '/gitAccounts/getBranches']
 	},
 
 	"blacklistedRepos": [

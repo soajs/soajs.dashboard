@@ -9,7 +9,7 @@ var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 var host = require("./lib/host.js");
-var github = require("./lib/github.js");
+var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
@@ -325,6 +325,10 @@ service.init(function() {
 		checkForMongo(req);
 		host.list(config, mongo, req, res);
 	});
+	service.get("/hosts/nginx/list", function (req, res) {
+		checkForMongo(req);
+		host.listNginx(config, mongo, req, res);
+	});
 	service.get("/hosts/delete", function(req, res) {
 		checkForMongo(req);
 		host.delete(config, mongo, req, res);
@@ -337,15 +341,21 @@ service.init(function() {
 		checkForMongo(req);
 		host.deployController(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployService", function(req, res){
 		checkForMongo(req);
 		host.deployService(config, mongo, req, res);
 	});
-
 	service.post("/hosts/deployDaemon", function (req, res) {
 		checkForMongo(req);
 		host.deployDaemon(config, mongo, req, res);
+	});
+	service.get("/hosts/container/logs", function (req, res) {
+		checkForMongo(req);
+		host.getContainerLogs(config, mongo, req, res);
+	});
+	service.get("/hosts/container/delete", function (req, res) {
+		checkForMongo(req);
+		host.deleteContainer(config, mongo, req, res);
 	});
 	service.get("/hosts/container/zombie/list", function (req, res) {
 		checkForMongo(req);
@@ -353,47 +363,43 @@ service.init(function() {
 	});
 	service.get("/hosts/container/zombie/delete", function (req, res) {
 		checkForMongo(req);
-		host.deleteZombieContainer(config, mongo, req, res);
-	});
-	service.get("/hosts/container/zombie/getLogs", function (req, res) {
-		checkForMongo(req);
-		host.getZombieContainerLogs(config, mongo, req, res);
+		host.deleteContainer(config, mongo, req, res);
 	});
 
 	/**
 	 * Github App features
 	 */
-	service.post("/github/login", function (req, res) {
+	service.post("/gitAccounts/login", function (req, res) {
 		checkForMongo(req);
-		github.login(mongo, config, req, res);
+		gitAccounts.login(mongo, config, req, res);
 	});
-	service.get("/github/logout", function (req, res) {
+	service.get("/gitAccounts/logout", function (req, res) {
 		checkForMongo(req);
-		github.logout(mongo, config, req, res);
+		gitAccounts.logout(mongo, config, req, res);
 	});
-	service.get("/github/accounts/list", function (req, res) {
+	service.get("/gitAccounts/accounts/list", function (req, res) {
 		checkForMongo(req);
-		github.listAccounts(mongo, config, req, res);
+		gitAccounts.listAccounts(mongo, config, req, res);
 	});
-	service.get("/github/getRepos", function (req, res) {
+	service.get("/gitAccounts/getRepos", function (req, res) {
 		checkForMongo(req);
-		github.getRepos(mongo, config, req, res);
+		gitAccounts.getRepos(mongo, config, req, res);
 	});
-	service.get("/github/getBranches", function (req, res) {
+	service.get("/gitAccounts/getBranches", function (req, res) {
 		checkForMongo(req);
-		github.getBranches(mongo, config, req, res);
+		gitAccounts.getBranches(mongo, config, req, res);
 	});
-	service.post("/github/repo/activate", function (req, res) {
+	service.post("/gitAccounts/repo/activate", function (req, res) {
 		checkForMongo(req);
-		github.activateRepo(mongo, config, req, res);
+		gitAccounts.activateRepo(mongo, config, req, res);
 	});
-	service.get('/github/repo/deactivate', function (req, res) {
+	service.get('/gitAccounts/repo/deactivate', function (req, res) {
 		checkForMongo(req);
-		github.deactivateRepo(mongo, config, req, res);
+		gitAccounts.deactivateRepo(mongo, config, req, res);
 	});
-	service.post('/github/repo/sync', function (req, res) {
+	service.post('/gitAccounts/repo/sync', function (req, res) {
 		checkForMongo(req);
-		github.syncRepo(mongo, config, req, res);
+		gitAccounts.syncRepo(mongo, config, req, res);
 	});
 
 	/**

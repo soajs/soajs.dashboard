@@ -49,3 +49,8 @@ ul {
 .customInput {
     width:49% !important;
 }
+
+.groupFieldset {
+    border-color: #337ab7;
+    border-width: 2px;
+}

@@ -36,6 +36,25 @@ module.exports = {
 		"services": "soajsorg/soajs"
 	},
 
+	"gitAccounts": {
+		"github": {
+			"protocol": "https",
+			"domainName": "api.github.com",
+			"apiDomain": "https://api.github.com",
+			"apiVersion": "3.0.0",
+			"timeout": 30000,
+			"userAgent": "SOAJS GitHub App",
+			"urls": {
+				"getReposAuthUser": "https://api.github.com/user/repos",
+				"getReposNonAuthUser": "https://api.github.com/users/%OWNER%/repos",
+				"getReposPublicOrg": "https://api.github.com/orgs/%OWNER%/repos"
+			},
+			"tokenScope": ["repo", "admin:repo_hook"],
+			"defaultConfigFilePath": "config.js",
+			"repoConfigsFolder": __dirname + '/repoConfigs'
+		}
+	},
+
 	"errors": require("./utils/errors"),
 	"schema": {
 		"commonFields": {
@@ -671,10 +690,16 @@ module.exports = {
 				}
 			}
 		},
+		"/environment/platforms/cert/upload": {
+			_apiInfo: {
+				"l": "Upload Certificate",
+				"group": "Environment Platforms"
+			}
+		},
 		"/environment/platforms/cert/delete": {
 			_apiInfo: {
 				"l": "Remove Certificate",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"id": {
 				"source": ['query.id'],
@@ -701,7 +726,7 @@ module.exports = {
 		"/environment/platforms/cert/choose": {
 			_apiInfo: {
 				"l": "Choose Existing Certificates",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -729,7 +754,7 @@ module.exports = {
 		"/environment/platforms/driver/add": {
 			_apiInfo: {
 				"l": "Add Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -771,7 +796,7 @@ module.exports = {
 		"/environment/platforms/driver/edit": {
 			_apiInfo: {
 				"l": "Update Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -813,7 +838,7 @@ module.exports = {
 		"/environment/platforms/driver/delete": {
 			_apiInfo: {
 				"l": "Delete Driver Configuration",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -834,7 +859,7 @@ module.exports = {
 		"/environment/platforms/driver/changeSelected": {
 			_apiInfo: {
 				"l": "Change Selected Driver",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -855,7 +880,7 @@ module.exports = {
 		"/environment/platforms/deployer/type/change": {
 			_apiInfo: {
 				"l": "Change Deployer Type",
-				"group": "Environment"
+				"group": "Environment Platforms"
 			},
 			"env": {
 				"source": ['query.env'],
@@ -1660,6 +1685,19 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/nginx/list": {
+			_apiInfo: {
+				'l': 'List Nginx Hosts',
+				'group': 'Hosts'
+			},
+			'env': {
+				'source': ['query.env'],
+				'required': true,
+				'validation': {
+					'type': 'string'
+				}
+			}
+		},
 		"/hosts/delete": {
 			_apiInfo: {
 				"l": "Delete Hosts",
@@ -1978,32 +2016,13 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/zombie/list": {
+		"/hosts/container/logs": {
 			"_apiInfo": {
-				"l": "List Zombie Containers",
+				"l": "Get Container Logs",
 				"group": "Hosts"
 			},
-			"envCode": {
-				"source": ["query.envCode"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/github/accounts/list": {
-			"_apiInfo": {
-				"l": "Github List Accounts",
-				"group": "Git Accounts"
-			}
-		},
-		"/hosts/container/zombie/delete": {
-			"_apiInfo": {
-				"l": "Delete Zombie Container",
-				"group": "Hosts"
-			},
-			"envCode": {
-				"source": ["query.envCode"],
+			"env": {
+				"source": ['query.env'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2017,13 +2036,46 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/zombie/getLogs": {
+		"/hosts/container/delete": {
 			"_apiInfo": {
-				"l": "Get Zombie Container logs",
+				"l": "Delete Container",
 				"group": "Hosts"
 			},
-			"envCode": {
-				"source": ["query.envCode"],
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/container/zombie/list": {
+			"_apiInfo": {
+				"l": "List Zombie Containers",
+				"group": "Hosts"
+			},
+			"env": {
+				"source": ["query.env"],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/container/zombie/delete": {
+			"_apiInfo": {
+				"l": "Delete Zombie Container",
+				"group": "Hosts"
+			},
+			"env": {
+				"source": ["query.env"],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2038,7 +2090,7 @@ module.exports = {
 			}
 		},
 
-		"/github/login": {
+		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",
 				"group": "Git Accounts"
@@ -2086,13 +2138,20 @@ module.exports = {
 				}
 			}
 		},
-		"/github/logout": {
+		"/gitAccounts/logout": {
 			"_apiInfo": {
 				"l": "Github Logout",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['query.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2113,13 +2172,26 @@ module.exports = {
 				}
 			}
 		},
-		"/github/getRepos": {
+		"/gitAccounts/accounts/list": {
+			"_apiInfo": {
+				"l": "List Git Accounts",
+				"group": "Git Accounts"
+			}
+		},
+		"/gitAccounts/getRepos": {
 			"_apiInfo": {
 				"l": "Get Repositories",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['query.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2143,7 +2215,7 @@ module.exports = {
 			}
 		},
 
-		"/github/getBranches": {
+		"/gitAccounts/getBranches": {
 			"_apiInfo": {
 				"l": "Get Repository Branches",
 				"group": "Git Accounts"
@@ -2168,9 +2240,16 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"provider": {
+				"source": ['query.provider'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
-		"/github/repo/activate": {
+		"/gitAccounts/repo/activate": {
 			"_apiInfo": {
 				"l": "Activate Repository",
 				"group": "Git Accounts"
@@ -2211,7 +2290,7 @@ module.exports = {
 				}
 			}
 		},
-		"/github/repo/deactivate": {
+		"/gitAccounts/repo/deactivate": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
 				"group": "Git Accounts"
@@ -2238,13 +2317,20 @@ module.exports = {
 				}
 			}
 		},
-		"/github/repo/sync": {
+		"/gitAccounts/repo/sync": {
 			"_apiInfo": {
 				"l": "Deactivate Repository",
 				"group": "Git Accounts"
 			},
 			"id": {
 				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"provider": {
+				"source": ['body.provider'],
 				"required": true,
 				"validation": {
 					"type": "string"

@@ -18,6 +18,15 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		}
 	};
 
+	$scope.showHideContent = function (type) {
+		if (type === 'nginx') {
+			$scope.showNginxHosts = !$scope.showNginxHosts;
+		}
+		else if (type === 'controller') {
+			$scope.showCtrlHosts = !$scope.showCtrlHosts;
+		}
+	};
+
 	$scope.showHideGroupContent = function (groupName) {
 		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
 	};
@@ -45,6 +54,11 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 	$scope.listHosts = function (env, noPopulate) {
 		$scope.waitMessage.close();
 		envHosts.listHosts($scope, env, noPopulate);
+		$scope.listZombieContainers($scope.envCode);
+	};
+
+	$scope.listNginxHosts = function (env) {
+		envHosts.listNginxHosts($scope, env);
 	};
 
 	$scope.executeHeartbeatTest = function (env, oneHost) {
@@ -91,23 +105,24 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.createHost($scope, env, services);
 	};
 
+	$scope.containerLogs = function (env, container) {
+		envHosts.containerLogs($scope, env, container);
+	};
+
+	$scope.deleteContainer = function (env, container) {
+		envHosts.deleteContainer($scope, env, container);
+	};
+
 	$scope.listZombieContainers = function (env) {
 		envHosts.listZombieContainers($scope, env);
-	};
-
-	$scope.removeZombieContainer = function (container, env) {
-		envHosts.removeZombieContainer($scope, container, env);
-	};
-
-	$scope.getZombieContainerLogs = function (container, env) {
-		envHosts.getZombieContainerLogs($scope, container, env);
 	};
 
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;
+		//list nginx container, hosts, and zombie containers in parallel
+		$scope.listNginxHosts($scope.envCode);
 		$scope.listHosts($scope.envCode);
-		$scope.listZombieContainers($scope.envCode);
+		// $scope.listZombieContainers($scope.envCode);
 	}
 }]);
-

@@ -546,6 +546,22 @@ var envTranslation ={
 		"ENG": "Choose a daemon group configuration for selected daemon",
 		"FRA": "Choose a daemon group configuration for selected daemon"
 	},
+	"portMapping": {
+		"ENG": "Port Mapping",
+		"FRA": "Port Mapping"
+	},
+	"network": {
+		"ENG": "Network",
+		"FRA": "Network"
+	},
+	"instances": {
+		"ENG": "Instances",
+		"FRA": "Instances"
+	},
+	"activeHosts": {
+		"ENG": "Active Hosts",
+		"FRA": "Active Hosts"
+	},
 	//deploy
 	"deployEnvironment": {
 		"ENG": "Deploy Environment",
@@ -566,6 +582,18 @@ var envTranslation ={
 	"newControllersEnvironment": {
 		"ENG": " new controllers for environment ",
 		"FRA": " new controllers for environment "
+	},
+	"zombieContainers": {
+		"ENG": "Zombie Containers",
+		"FRA": "Zombie Containers"
+	},
+	"containerLogs": {
+		"ENG": "Container Logs",
+		"FRA": "Container Logs"
+	},
+	"deleteContainer": {
+		"ENG": "Delete Container",
+		"FRA": "Delete Container"
 	},
 	//database
 	"unableFetchEnvironmentDatabase": {

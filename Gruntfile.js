@@ -121,7 +121,7 @@ module.exports = function (grunt) {
 		},
 
 		instrument: {
-			files: ['config.js', 'index.js', 'lib/*.js', 'schemas/*.js', 'utils/*.js', 'utils/*/*.js', 'test/*.js'],
+			files: ['config.js', 'index.js', 'lib/*.js', 'models/*.js', 'schemas/*.js', 'utils/*.js', 'utils/*/*.js', 'test/*.js'],
 			options: {
 				lazy: false,
 				basePath: 'test/coverage/instrument/'
@@ -186,4 +186,3 @@ module.exports = function (grunt) {
 	//grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 
 };
-
