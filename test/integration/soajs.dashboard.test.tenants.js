@@ -67,6 +67,11 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("DASHBOARD UNIT Tests:", function () {
 	var expDateValue = new Date().toISOString();
 
+	after(function (done) {
+        mongo.closeDb();
+        done();
+    });
+
 	describe("products tests", function () {
 		var productId;
 

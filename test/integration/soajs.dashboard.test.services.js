@@ -61,6 +61,11 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 
+	after(function (done) {
+        mongo.closeDb();
+        done();
+    });
+
 	describe("services tests", function () {
 
 		describe("list services test", function () {

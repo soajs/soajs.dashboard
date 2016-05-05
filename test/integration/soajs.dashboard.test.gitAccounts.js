@@ -459,10 +459,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				it("success - will sync repo - no change", function (done) {
 					var params = {
 						qs: {
-							"id": gitAccId,
-							"provider": "github"
+							"id": gitAccId
 						},
 						form: {
+							"provider": "github",
 							owner: usernamePersonal,
 							repo: repoSingleSuccess
 						}
@@ -486,10 +486,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 							assert.ifError(error);
 							var params = {
 								qs: {
-									"id": gitAccId,
-									"provider": "github"
+									"id": gitAccId
 								},
 								form: {
+									"provider": "github",
 									owner: usernamePersonal,
 									repo: repoSingleSuccess
 								}
@@ -517,10 +517,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 							assert.ifError(error);
 							var params = {
 								qs: {
-									"id": gitAccId,
-									"provider": "github"
+									"id": gitAccId
 								},
 								form: {
+									"provider": "github",
 									owner: usernamePersonal,
 									repo: repoMultiSuccess
 								}
@@ -562,10 +562,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								assert.ifError(error);
 								var params = {
 									qs: {
-										"id": gitAccId,
-										"provider": "github"
+										"id": gitAccId
 									},
 									form: {
+										"provider": "github",
 										owner: usernamePersonal,
 										repo: repoMultiSuccess
 									}
@@ -612,10 +612,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 							assert.ifError(error);
 							var params = {
 								qs: {
-									"id": gitAccId,
-									"provider": "github"
+									"id": gitAccId
 								},
 								form: {
+									"provider": "github",
 									owner: usernamePersonal,
 									repo: repoMultiSuccess
 								}
@@ -644,10 +644,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 							assert.ifError(error);
 							var params = {
 								qs: {
-									"id": gitAccId,
-									"provider": "github"
+									"id": gitAccId
 								},
 								form: {
+									"provider": "github",
 									owner: usernamePersonal,
 									repo: repoMultiSuccess
 								}
@@ -683,10 +683,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 								assert.ifError(error);
 								var params = {
 									qs: {
-										"id": gitAccId,
-										"provider": "github"
+										"id": gitAccId
 									},
 									form: {
+										"provider": "github",
 										owner: usernamePersonal,
 										repo: repoSingleSuccess
 									}
@@ -928,10 +928,10 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				it("success - will sync repo", function (done) {
 					var params = {
 						qs: {
-							"id": gitAccId,
-							"provider": "github"
+							"id": gitAccId
 						},
 						form: {
+							"provider": "github",
 							owner: usernamePersonal,
 							repo: repoSingleSuccess
 						}
@@ -1353,5 +1353,4 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			});
 		});
 	});
-
 });
