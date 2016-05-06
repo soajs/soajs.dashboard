@@ -1,24 +1,26 @@
 'use strict';
 var routeProvider;
 
-function configureRouteNavigation(navigation) {
+function configureRouteNavigation(navigation, scope) {
 	navigation.forEach(function (navigationEntry) {
 		if (navigationEntry.scripts && navigationEntry.scripts.length > 0) {
 			navigationEntry.env = navigationEntry.scripts[0].split("/")[1];
-			routeProvider.when(navigationEntry.url.replace('#', ''), {
-				templateUrl: navigationEntry.tplPath,
-				resolve: {
-					load: ['$q', '$rootScope', function ($q, $rootScope) {
-						var deferred = $q.defer();
-						require(navigationEntry.scripts, function () {
-							$rootScope.$apply(function () {
-								deferred.resolve();
+			if (navigationEntry.env === 'DASHBOARD' || (navigationEntry.env !== 'DASHBOARD' && scope && (navigationEntry.env === scope.currentSelectedEnvironment))) {
+				routeProvider.when(navigationEntry.url.replace('#', ''), {
+					templateUrl: navigationEntry.tplPath,
+					resolve: {
+						load: ['$q', '$rootScope', function ($q, $rootScope) {
+							var deferred = $q.defer();
+							require(navigationEntry.scripts, function () {
+								$rootScope.$apply(function () {
+									deferred.resolve();
+								});
 							});
-						});
-						return deferred.promise;
-					}]
-				}
-			});
+							return deferred.promise;
+						}]
+					}
+				});
+			}
 		}
 		else {
 			routeProvider.when(navigationEntry.url.replace('#', ''), {
@@ -569,7 +571,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		function doEnvPerNav(cb) {
-			configureRouteNavigation(navigation);
+			configureRouteNavigation(navigation, $scope);
 			$scope.appNavigation = navigation;
 			$scope.navigation = navigation;
 
