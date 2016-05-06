@@ -623,7 +623,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		}
 
 		if (!$scope.currentSelectedEnvironment) {
-			$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code;
+			if ($cookies.getObject("myEnv")) {
+				$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code;
+			}
 		}
 	}]);
 
