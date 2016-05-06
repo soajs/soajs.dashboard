@@ -118,7 +118,7 @@ var deployer = {
 		lib.container(deployerConfig, "remove", cid, mongo, {"force": true}, cb);
 	},
 
-	"info": function (deployerConfig, cid, req, res, mongo) {
+	"info": function (deployerConfig, cid, soajs, res, mongo) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			deployer.getContainer(cid).logs({
 					stderr: true,
@@ -128,8 +128,8 @@ var deployer = {
 				},
 				function (error, stream) {
 					if (error) {
-						req.soajs.log.error('logStreamContainer error: ', error);
-						return res.json(req.soajs.buildResponse({"code": 601, "msg": error.message}));
+						soajs.log.error('logStreamContainer error: ', error);
+						return res.json(soajs.buildResponse({"code": 601, "msg": error.message}));
 					}
 					else {
 						var data = '';
@@ -144,7 +144,7 @@ var deployer = {
 
 						stream.on('end', function () {
 							stream.destroy();
-							var out = req.soajs.buildResponse(null, {'data': data});
+							var out = soajs.buildResponse(null, {'data': data});
 							return res.json(out);
 						});
 					}

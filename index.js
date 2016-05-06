@@ -8,7 +8,7 @@ var config = require('./config.js');
 var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
-var host = require("./lib/host.js");
+var hostBL = require("./lib/host.js");
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
@@ -35,6 +35,18 @@ function checkMyAccess(req, res, cb) {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
 		return cb();
 	}
+}
+
+function initBLModel(req, res, BLModule, modelName, cb) {
+	BLModule.init(modelName, function (error, BL) {
+		if (error) {
+			req.soajs.log.error(error);
+			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
+		}
+		else {
+			return cb(BL);
+		}
+	});
 }
 
 service.init(function() {
@@ -322,48 +334,59 @@ service.init(function() {
 	 * Hosts features
 	 */
 	service.get("/hosts/list", function(req, res) {
-		checkForMongo(req);
-		host.list(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL){
+			BL.list(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/nginx/list", function (req, res) {
-		checkForMongo(req);
-		host.listNginx(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.listNginx(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/delete", function(req, res) {
-		checkForMongo(req);
-		host.delete(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.delete(config, req.soajs, res);
+		});
 	});
 	service.post("/hosts/maintenanceOperation", function(req, res) {
-		checkForMongo(req);
-		host.maintenanceOperation(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL){
+			BL.maintenanceOperation(config, req.soajs, res);
+		});
 	});
 	service.post("/hosts/deployController", function(req, res){
-		checkForMongo(req);
-		host.deployController(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.deployController(config, req.soajs, res);
+		});
 	});
 	service.post("/hosts/deployService", function(req, res){
-		checkForMongo(req);
-		host.deployService(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.deployService(config, req.soajs, res);
+		});
 	});
 	service.post("/hosts/deployDaemon", function (req, res) {
-		checkForMongo(req);
-		host.deployDaemon(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.deployDaemon(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/container/logs", function (req, res) {
-		checkForMongo(req);
-		host.getContainerLogs(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.getContainerLogs(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/container/delete", function (req, res) {
-		checkForMongo(req);
-		host.deleteContainer(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.deleteContainer(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/container/zombie/list", function (req, res) {
-		checkForMongo(req);
-		host.getContainersNoHost(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL){
+			BL.getContainersNoHost(config, req.soajs, res);
+		});
 	});
 	service.get("/hosts/container/zombie/delete", function (req, res) {
-		checkForMongo(req);
-		host.deleteContainer(config, mongo, req, res);
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.deleteContainer(config, req.soajs, res);
+		});
 	});
 
 	/**

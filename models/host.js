@@ -1,18 +1,55 @@
 "use strict";
+var soajs = require('soajs');
+var Mongo = soajs.mongo;
+var mongo = null;
+
+function checkForMongo(soajs) {
+	if(!mongo) {
+		mongo = new Mongo(soajs.registry.coreDB.provision);
+	}
+}
 
 var hostsColl = "hosts";
 var dockerColl = "docker";
 var envColl = "environment";
+var servicesColl = "services";
+var daemonsColl = "daemons";
+var gitColl = "git_accounts";
+var staticColl = "staticContent";
 
 var model = {
-	"getEnvironment": function (mongo, code, cb) {
+	"getDB" : function(){
+		return mongo;
+	},
+
+	"makeObjectId": function(id){
+		return mongo.ObjectId(id);
+	},
+
+	"getEnvironment": function (soajs, code, cb) {
+		checkForMongo(soajs);
 		mongo.findOne(envColl, {code: code.toUpperCase()}, cb);
+	},
+
+	"getDashboardEnvironment": function (soajs, cb) {
+		checkForMongo(soajs);
+		mongo.findOne(envColl, {code: "DASHBOARD"}, cb);
 	},
 
 	/**
 	 * DOCKER COLLECTION
 	 */
-	"getContainers": function (mongo, env, type, running, cb) {
+	"countContainers": function (soajs, env, type, cb) {
+		var condition = {
+			"env": env.toLowerCase(),
+			"type": type
+		};
+
+		checkForMongo(soajs);
+		mongo.count(dockerColl, condition, cb);
+	},
+
+	"getContainers": function (soajs, env, type, running, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
 			"type": type
@@ -20,31 +57,39 @@ var model = {
 		if (running) {
 			condition.running = running;
 		}
+		checkForMongo(soajs);
 		mongo.find(dockerColl, condition, cb);
 	},
 
-	"findOneContainer": function (mongo, env, hostname, cb) {
+	"getOneContainer": function (soajs, env, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
-			"hostname": hostname + "_" + env.toLowerCase()
+			"$or" : [
+				{"hostname": hostname + "_" + env.toLowerCase()},
+				{"cid": hostname}
+			]
 		};
+		checkForMongo(soajs);
 		mongo.findOne(dockerColl, condition, cb);
 	},
 
-	"removeContainer": function (mongo, env, hostname, cb) {
+	"removeContainer": function (soajs, env, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
 			"hostname": hostname + "_" + env.toLowerCase()
 		};
+		checkForMongo(soajs);
 		mongo.remove(dockerColl, condition, cb);
 	},
 
-	"insertContainer": function (mongo, record, cb) {
+	"insertContainer": function (soajs, record, cb) {
+		checkForMongo(soajs);
 		record.hostname = record.hostname.replace("/", "");
 		mongo.insert(dockerColl, record, cb);
 	},
 
-	"udpateContainer": function (mongo, containerId, data, cb) {
+	"updateContainer": function (soajs, containerId, data, cb) {
+		checkForMongo(soajs);
 		mongo.update(dockerColl, {"cid": containerId}, {'$set': {"info": data}}, {
 			multi: false,
 			upsert: false,
@@ -55,7 +100,7 @@ var model = {
 	/**
 	 * HOSTS COLLECTION
 	 */
-	"getHosts": function (mongo, env, type, cb) {
+	"getHosts": function (soajs, env, type, cb) {
 		var condition = {
 			"env": env.toLowerCase()
 		};
@@ -63,10 +108,11 @@ var model = {
 		if (type && type !== '') {
 			condition["name"] = type;
 		}
+		checkForMongo(soajs);
 		mongo.find(hostsColl, condition, cb);
 	},
 
-	"getOneHost": function (mongo, env, type, ip, hostname, cb) {
+	"getOneHost": function (soajs, env, type, ip, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
 			"name": type
@@ -79,11 +125,11 @@ var model = {
 		if (hostname && hostname !== '') {
 			condition["hostname"] = hostname;
 		}
-
+		checkForMongo(soajs);
 		mongo.findOne(hostsColl, condition, cb);
 	},
 
-	"removeHost": function (mongo, env, type, ip, cb) {
+	"removeHost": function (soajs, env, type, ip, cb) {
 		var condition = {
 			"env": env.toLowerCase()
 		};
@@ -95,12 +141,34 @@ var model = {
 		if (ip && ip !== '') {
 			condition["ip"] = ip;
 		}
+		checkForMongo(soajs);
 		mongo.remove(hostsColl, condition, cb);
 	},
 
-	"insertHost": function (mongo, record, cb) {
+	"insertHost": function (soajs, record, cb) {
+		checkForMongo(soajs);
 		record.hostname = record.hostname.replace("/", "");
 		mongo.insert(hostsColl, record, cb);
+	},
+
+	"getService": function(soajs, condition,cb) {
+		checkForMongo(soajs);
+		mongo.findOne(servicesColl, condition, cb);
+	},
+
+	"getDaemon": function(soajs, condition,cb){
+		checkForMongo(soajs);
+		mongo.findOne(daemonsColl, condition, cb);
+	},
+
+	"getGitAccounts": function(soajs, repoName, cb){
+		checkForMongo(soajs);
+		mongo.findOne(gitColl, {"repos.name": repoName}, { token: 1, 'repos.$': 1 }, cb);
+	},
+
+	"getStaticContent": function(soajs, id, cb){
+		checkForMongo(soajs);
+		mongo.findOne(staticColl, {'_id': id}, cb);
 	}
 };
 
