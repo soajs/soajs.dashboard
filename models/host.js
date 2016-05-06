@@ -4,7 +4,7 @@ var Mongo = soajs.mongo;
 var mongo = null;
 
 function checkForMongo(soajs) {
-	if(!mongo) {
+	if (!mongo) {
 		mongo = new Mongo(soajs.registry.coreDB.provision);
 	}
 }
@@ -18,11 +18,11 @@ var gitColl = "git_accounts";
 var staticColl = "staticContent";
 
 var model = {
-	"getDB" : function(){
+	"getDB": function () {
 		return mongo;
 	},
 
-	"makeObjectId": function(id){
+	"makeObjectId": function (id) {
 		return mongo.ObjectId(id);
 	},
 
@@ -53,8 +53,11 @@ var model = {
 		var condition = {
 			"env": env.toLowerCase()
 		};
-		if(type){
-			condition["type"] = type;
+		if (type) {
+			condition["$or"] = [
+				{"type": type},
+				{"type": type + "_" + env.toLowerCase()}
+			];
 		}
 		if (running) {
 			condition.running = running;
@@ -66,7 +69,7 @@ var model = {
 	"getOneContainer": function (soajs, env, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
-			"$or" : [
+			"$or": [
 				{"hostname": hostname},
 				{"hostname": hostname + "_" + env.toLowerCase()},
 				{"cid": hostname}
@@ -80,9 +83,9 @@ var model = {
 		var condition = {
 			"env": env.toLowerCase(),
 			'$or': [
-				{ "hostname": hostname + "_" + env.toLowerCase() },
-				{ "hostname": hostname },
-				{ "cid": hostname }
+				{"hostname": hostname + "_" + env.toLowerCase()},
+				{"hostname": hostname},
+				{"cid": hostname}
 			]
 		};
 		checkForMongo(soajs);
@@ -158,22 +161,22 @@ var model = {
 		mongo.insert(hostsColl, record, cb);
 	},
 
-	"getService": function(soajs, condition,cb) {
+	"getService": function (soajs, condition, cb) {
 		checkForMongo(soajs);
 		mongo.findOne(servicesColl, condition, cb);
 	},
 
-	"getDaemon": function(soajs, condition,cb){
+	"getDaemon": function (soajs, condition, cb) {
 		checkForMongo(soajs);
 		mongo.findOne(daemonsColl, condition, cb);
 	},
 
-	"getGitAccounts": function(soajs, repoName, cb){
+	"getGitAccounts": function (soajs, repoName, cb) {
 		checkForMongo(soajs);
-		mongo.findOne(gitColl, {"repos.name": repoName}, { token: 1, 'repos.$': 1 }, cb);
+		mongo.findOne(gitColl, {"repos.name": repoName}, {token: 1, 'repos.$': 1}, cb);
 	},
 
-	"getStaticContent": function(soajs, id, cb){
+	"getStaticContent": function (soajs, id, cb) {
 		checkForMongo(soajs);
 		mongo.findOne(staticColl, {'_id': id}, cb);
 	}
