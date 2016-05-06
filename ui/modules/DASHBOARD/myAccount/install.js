@@ -189,11 +189,11 @@ var myAccountNav = [
 		'guestMenu': false
 	},
 	{
+		'id': 'myAccount',
 		'checkPermission': {
 			'service': 'urac',
 			'route': '/account/editProfile'
 		},
-		'id': 'myAccount',
 		'label': translation.myAccount[LANG],
 		'url': '#/myaccount',
 		'icon': 'smile',
