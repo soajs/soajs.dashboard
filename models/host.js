@@ -79,7 +79,11 @@ var model = {
 	"removeContainer": function (soajs, env, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),
-			"hostname": hostname + "_" + env.toLowerCase()
+			'$or': [
+				{ "hostname": hostname + "_" + env.toLowerCase() },
+				{ "hostname": hostname },
+				{ "cid": hostname }
+			]
 		};
 		checkForMongo(soajs);
 		mongo.remove(dockerColl, condition, cb);
