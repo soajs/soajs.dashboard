@@ -67,6 +67,7 @@ var model = {
 		var condition = {
 			"env": env.toLowerCase(),
 			"$or" : [
+				{"hostname": hostname},
 				{"hostname": hostname + "_" + env.toLowerCase()},
 				{"cid": hostname}
 			]
