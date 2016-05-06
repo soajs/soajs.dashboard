@@ -51,9 +51,11 @@ var model = {
 
 	"getContainers": function (soajs, env, type, running, cb) {
 		var condition = {
-			"env": env.toLowerCase(),
-			"type": type
+			"env": env.toLowerCase()
 		};
+		if(type){
+			condition["type"] = type;
+		}
 		if (running) {
 			condition.running = running;
 		}
