@@ -11,9 +11,7 @@ var model = {
 
     "getAccount": function (mongo, options, cb) {
         if (options.accountId) {
-            mongo.findOne(collName, {_id: options.accountId}, function (error, accountRecord) {
-                return cb(error, accountRecord);
-            });
+            mongo.findOne(collName, {_id: options.accountId}, cb);
         }
         else if (options.owner && options.repo) {
             model.searchForAccount(mongo, options, cb);
@@ -21,52 +19,40 @@ var model = {
     },
 
     "getRepo": function (mongo, options, cb) {
-        mongo.findOne(collName, {_id: options.accountId, 'repos.name': options.repoLabel}, {'repos.$': 1}, function (error, record) {
-            return cb(error, record);
-        });
+        mongo.findOne(collName, {_id: options.accountId, 'repos.name': options.repoLabel}, {'repos.$': 1}, cb);
     },
 
     "searchForAccount": function (mongo, options, cb) {
         var repoLabel = options.owner + '/' + options.repo;
-        mongo.findOne(collName, {'repos.name': repoLabel}, function (error, accountRecord) {
-            return cb(error, accountRecord);
-        });
+        mongo.findOne(collName, {'repos.name': repoLabel}, cb);
     },
 
     "saveNewAccount": function (mongo, record, cb) {
         mongo.insert(collName, record, function (error) {
-            return (error) ? cb (error) : cb (null, true);
+            return cb(error, true);
         });
     },
 
     "removeAccount": function (mongo, recordId, cb) {
         mongo.remove(collName, {_id: recordId}, function (error) {
-            return (error) ? cb (error) : cb (null, true);
+	        return cb(error, true);
         });
     },
 
     "checkIfAccountExists": function (mongo, record, cb) {
-        mongo.count(collName, {owner: record.owner, provider: record.provider}, function (error, count) {
-            return cb (error, count);
-        });
+        mongo.count(collName, {owner: record.owner, provider: record.provider}, cb);
     },
 
     "listGitAccounts": function (mongo, cb) {
-        mongo.find(collName, {}, {token: 0, repos: 0}, function (error, records) {
-            return cb(error, records);
-        });
+        mongo.find(collName, {}, {token: 0, repos: 0}, cb);
     },
 
     "addRepoToAccount": function (mongo, options, cb) {
-        mongo.update(collName, {_id: options.accountId}, {'$addToSet': {'repos': options.repo}}, function (error, result) {
-            return cb(error, result);
-        });
+        mongo.update(collName, {_id: options.accountId}, {'$addToSet': {'repos': options.repo}}, cb);
     },
 
     "removeRepoFromAccount": function (mongo, options, cb) {
-        mongo.update(collName, {_id: options.accountId}, {'$pull': {'repos': {'name': options.repoLabel}}}, function (error, result) {
-            return cb(error, result);
-        });
+        mongo.update(collName, {_id: options.accountId}, {'$pull': {'repos': {'name': options.repoLabel}}}, cb);
     },
 
     "updateRepoInfo": function (mongo, options, cb) {
@@ -75,9 +61,7 @@ var model = {
         };
         set['$set']['repos.$.' + options.property] = options.value;
         var propName = 'repos.$.' + options.property;
-        mongo.update(collName, {_id: options.accountId, 'repos.name': options.repoLabel}, set, function (error, result) {
-            return cb(error, result);
-        });
+        mongo.update(collName, {_id: options.accountId, 'repos.name': options.repoLabel}, set, cb);
     }
 };
 
