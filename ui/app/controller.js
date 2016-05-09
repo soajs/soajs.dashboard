@@ -173,13 +173,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
-				console.log($scope.currentSelectedEnvironment);
 				for (var x = 0; x < link.entries.length; x++) {
-					console.log(link.entries[x]);
 					if (link.entries[x].env === $scope.currentSelectedEnvironment) {
 						if (link.entries[x].checkPermission && link.entries[x].checkPermission.access === true) {
 							url = link.entries[x].url;
-							console.log('Go to: ' + url);
 							break;
 						}
 					}
