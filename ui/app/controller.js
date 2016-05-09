@@ -459,6 +459,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
 
 							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
+								console.log($scope.navigation[i]);
+								console.log($scope.currentSelectedEnvironment);
+								console.log($cookies.getObject('myEnv'));console.log($scope.currentSelectedEnvironment);
 								$scope.displayAlert('danger', 'You do not have permissions to access this section');
 								$timeout(function () {
 									$scope.closeAlert();
