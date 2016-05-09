@@ -2,24 +2,33 @@
 var routeProvider;
 
 function configureRouteNavigation(navigation, scope) {
+	function addRoute(navigationEntry) {
+		routeProvider.when(navigationEntry.url.replace('#', ''), {
+			templateUrl: navigationEntry.tplPath,
+			resolve: {
+				load: ['$q', '$rootScope', function ($q, $rootScope) {
+					var deferred = $q.defer();
+					require(navigationEntry.scripts, function () {
+						$rootScope.$apply(function () {
+							deferred.resolve();
+						});
+					});
+					return deferred.promise;
+				}]
+			}
+		});
+	}
+
 	navigation.forEach(function (navigationEntry) {
 		if (navigationEntry.scripts && navigationEntry.scripts.length > 0) {
 			navigationEntry.env = navigationEntry.scripts[0].split("/")[1];
-			if (navigationEntry.env === 'DASHBOARD' || (navigationEntry.env !== 'DASHBOARD' && scope && (navigationEntry.env === scope.currentSelectedEnvironment))) {
-				routeProvider.when(navigationEntry.url.replace('#', ''), {
-					templateUrl: navigationEntry.tplPath,
-					resolve: {
-						load: ['$q', '$rootScope', function ($q, $rootScope) {
-							var deferred = $q.defer();
-							require(navigationEntry.scripts, function () {
-								$rootScope.$apply(function () {
-									deferred.resolve();
-								});
-							});
-							return deferred.promise;
-						}]
-					}
-				});
+			if (navigationEntry.env === 'DASHBOARD') {
+				addRoute(navigationEntry);
+			}
+			else if (scope) {
+				if (navigationEntry.env === scope.currentSelectedEnvironment) {
+					addRoute(navigationEntry);
+				}
 			}
 		}
 		else {
@@ -153,6 +162,16 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			var pillarName = link.pillar.name;
 			$scope.pillar = pillarName;
 			if (pillarName === "operate") {
+				if (!$scope.currentSelectedEnvironment || $scope.currentSelectedEnvironment === 'DASHBOARD') {
+					if ($localStorage.environments) {
+						for (var x = 0; x < $localStorage.environments.length; x++) {
+							if ($localStorage.environments[x].code !== 'DASHBOARD') {
+								$scope.currentSelectedEnvironment = $localStorage.environments[x].code;
+								break;
+							}
+						}
+					}
+				}
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
