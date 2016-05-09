@@ -1,24 +1,26 @@
 'use strict';
 var routeProvider;
 
-function configureRouteNavigation(navigation) {
+function configureRouteNavigation(navigation, scope) {
 	navigation.forEach(function (navigationEntry) {
 		if (navigationEntry.scripts && navigationEntry.scripts.length > 0) {
 			navigationEntry.env = navigationEntry.scripts[0].split("/")[1];
-			routeProvider.when(navigationEntry.url.replace('#', ''), {
-				templateUrl: navigationEntry.tplPath,
-				resolve: {
-					load: ['$q', '$rootScope', function ($q, $rootScope) {
-						var deferred = $q.defer();
-						require(navigationEntry.scripts, function () {
-							$rootScope.$apply(function () {
-								deferred.resolve();
+			if (navigationEntry.env === 'DASHBOARD' || (navigationEntry.env !== 'DASHBOARD' && scope && (navigationEntry.env === scope.currentSelectedEnvironment))) {
+				routeProvider.when(navigationEntry.url.replace('#', ''), {
+					templateUrl: navigationEntry.tplPath,
+					resolve: {
+						load: ['$q', '$rootScope', function ($q, $rootScope) {
+							var deferred = $q.defer();
+							require(navigationEntry.scripts, function () {
+								$rootScope.$apply(function () {
+									deferred.resolve();
+								});
 							});
-						});
-						return deferred.promise;
-					}]
-				}
-			});
+							return deferred.promise;
+						}]
+					}
+				});
+			}
 		}
 		else {
 			routeProvider.when(navigationEntry.url.replace('#', ''), {
@@ -356,7 +358,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if (navigation[i].checkPermission) {
 					p = navigation[i].checkPermission;
 					if (p.service && p.route) {
-						$scope.buildPermittedOperation(p.service, p.route, function (hasAccess) {
+						$scope.buildPermittedEnvOperation(p.service, p.route, navigation[i].env, function (hasAccess) {
 							if (hasAccess) {
 								pushEntry(i);
 							}
@@ -527,13 +529,32 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				var userGroups = user.groups;
 				var acl = $localStorage.acl_access;
 				var firstEnv = Object.keys(acl)[0];
-
 				//check if old system
 				if (acl[firstEnv] && (acl[firstEnv].access || acl[firstEnv].apis || acl[firstEnv].apisRegExp || acl[firstEnv].apisPermission)) {
 					acl['dashboard'] = acl;
 				}
 				checkApiHasAccess(acl, serviceName, routePath, userGroups, function (access) {
 					//console.log(acl, serviceName, routePath, userGroups, access);
+					return cb(access);
+				});
+			}
+			else {
+				return cb(false);
+			}
+		};
+
+		$scope.buildPermittedEnvOperation = function (serviceName, routePath, env, cb) {
+			var user = $localStorage.soajs_user;
+			if (user) {
+				var userGroups = user.groups;
+				var acl = {};
+				acl[env.toLowerCase()] = $localStorage.acl_access[env.toLowerCase()];
+				var firstEnv = Object.keys(acl)[0];
+				//check if old system
+				if (acl[firstEnv] && (acl[firstEnv].access || acl[firstEnv].apis || acl[firstEnv].apisRegExp || acl[firstEnv].apisPermission)) {
+					acl['dashboard'] = acl;
+				}
+				checkApiHasAccess(acl, serviceName, routePath, userGroups, function (access) {
 					return cb(access);
 				});
 			}
@@ -550,7 +571,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 
 		function doEnvPerNav(cb) {
-			configureRouteNavigation(navigation);
+			configureRouteNavigation(navigation, $scope);
 			$scope.appNavigation = navigation;
 			$scope.navigation = navigation;
 
@@ -598,6 +619,12 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 					});
 
 				}
+			}
+		}
+
+		if (!$scope.currentSelectedEnvironment) {
+			if ($cookies.getObject("myEnv")) {
+				$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code;
 			}
 		}
 	}]);
