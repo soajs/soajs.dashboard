@@ -3,7 +3,7 @@
 
     <div class="entryBoxes">
         <div ng-repeat="row in grid.rows" class="entryBox">
-            <div class="header">{{translation.code[LANG]}}: {{row['code']}} / {{translation.domain[LANG]}}: {{row.domain}} / {{translation.port[LANG]}}: {{row.port}}</div>
+            <div class="header">{{translation.code[LANG]}}: {{row['code']}} / {{translation.siteDomain[LANG]}}: {{row['sitePrefix']}}.{{row.domain}} / {{translation.apiDomain[LANG]}} : {{row['apiPrefix']}}.{{row.domain}}</div>
             <div class="body">
                 <div class="description">
                     {{row['description']}}

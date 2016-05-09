@@ -55,19 +55,6 @@ var environmentsConfig = {
 					'fieldMsg': translation.inCaseSitePrefixNotSpecified[LANG]
 				},
 				{
-					'name': 'port',
-					'label': translation.environmentGatewayPort[LANG],
-					'type': 'select',
-					'value': [
-                        {'v': 80, 'l': '80', 'selected': true},
-                        {'v': 8080, 'l': '8080'},
-                        {'v': 8081, 'l': '8081'},
-                        {'v': 8082, 'l': '8082'},
-                        {'v': 8083, 'l': '8083'}
-                    ],
-					'required': true
-				},
-				{
 					'name': 'tKeyPass',
 					'label': translation.tenantKeySecurityPassword[LANG],
 					'type': 'text',
