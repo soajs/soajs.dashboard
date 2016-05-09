@@ -138,7 +138,7 @@ var environmentsConfig = {
 					'type': 'text',
 					'value': '',
 					'placeholder': translation.myTenantKeyAES256Password[LANG],
-					'required': false
+					'required': true
 				},
 				{
 					'name': 'sessionCookiePass',
@@ -146,7 +146,7 @@ var environmentsConfig = {
 					'type': 'text',
 					'value': '',
 					'placeholder': translation.myPasswordDoNotTellAnyone[LANG],
-					'required': false
+					'required': true
 				}
 			]
 		},

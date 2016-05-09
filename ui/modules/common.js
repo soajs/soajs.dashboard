@@ -4,9 +4,14 @@
  * build the access permissions of a module from permissionsObj
  */
 function constructModulePermissions(scope, access, permissionsObj) {
+	var exclude = ['urac', 'dashboard'];
 	for (var permission in permissionsObj) {
 		if (Array.isArray(permissionsObj[permission])) {
-			scope.buildPermittedOperation(permissionsObj[permission][0], permissionsObj[permission][1], function (hasAccess){
+			var env = 'dashboard';
+			if (exclude.indexOf(permissionsObj[permission][0]) === -1) {
+				env = scope.$parent.currentSelectedEnvironment.toLowerCase();
+			}
+			scope.buildPermittedEnvOperation(permissionsObj[permission][0], permissionsObj[permission][1], env, function (hasAccess) {
 				access[permission] = hasAccess;
 				if (!scope.$$phase) {
 					scope.$apply();
@@ -74,7 +79,6 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		}
 	}
 
-	//console.log(apiOptions);
 	ngDataApi[options.method]($scope, apiOptions, callback);
 }
 
@@ -231,6 +235,7 @@ function returnLatestVersion(service) {
 	function compareNumbers(a, b) {
 		return b - a;
 	}
+
 	var keys = Object.keys(service);
 	var keysInt = [];
 	keys.forEach(function (key) {

@@ -67,6 +67,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 		done();
 	});
 
+	after(function (done) {
+        mongo.closeDb();
+        done();
+    });
+
 	var expDateValue = new Date().toISOString();
 	var envId;
 	var productId;

@@ -298,6 +298,11 @@ describe("Content Builder Tests", function () {
         });
     });
 
+    after(function (done) {
+        mongo.closeDb();
+        done();
+    });
+
     describe("Add Content Builder Tests", function () {
 
         it("success - add content builder", function (done) {

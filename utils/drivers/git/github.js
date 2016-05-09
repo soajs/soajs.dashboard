@@ -5,7 +5,7 @@ var fs = require("fs");
 var mkdirp = require("mkdirp");
 var rimraf = require("rimraf");
 
-var config = require("../../config.js");
+var config = require("../../../config.js");
 
 var shortid = require("shortid");
 shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_');

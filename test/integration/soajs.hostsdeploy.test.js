@@ -165,6 +165,11 @@ describe("testing hosts deployment", function () {
         server.close(done);
     });
 
+    after(function (done) {
+        mongo.closeDb();
+        done();
+    });
+
     describe("testing controller deployment", function () {
         before('create dashboard environment record', function (done) {
             var dashEnv = {
@@ -486,6 +491,40 @@ describe("testing hosts deployment", function () {
             });
         });
 
+        it("success - deploy 1 core service that contains cmd values in src", function (done) {
+            var cmdArray = ['ls -l', 'pwd'];
+            mongo.update('services', {name: 'urac'}, {'$set': {'src.cmd': cmdArray}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "urac",
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.urac",
+                        "branch": "develop",
+                        "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    mongo.findOne("docker", {"hostname": /urac_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                        assert.ifError(error);
+                        assert.ok(oneContainerRecord);
+                        containerInfo = oneContainerRecord;
+                        done();
+                    });
+                });
+            });
+        });
+
         it("success - deploy 1 gc service", function (done) {
             mongo.findOne('gc', {}, function (error, gcRecord) {
                 assert.ifError(error);
@@ -624,6 +663,40 @@ describe("testing hosts deployment", function () {
 
         it("success - deploy 1 daemon and use main file specified in src", function (done) {
             mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "helloDaemon",
+                        "grpConfName": "group1",
+                        "envCode": "DEV",
+                        "owner": "soajs",
+                        "repo": "soajs.dashboard", //dummy value, does not need to be accurate
+                        "branch": "develop",
+                        "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ]
+                    }
+                };
+                executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                        assert.ifError(error);
+                        assert.ok(oneContainerRecord);
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("success - deploy 1 daemon that contians cmd info in its src", function (done) {
+            var cmdArray = ['ls -l', 'pwd'];
+            mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.cmd': cmdArray}}, function (error) {
                 assert.ifError(error);
 
                 var params = {
@@ -846,7 +919,7 @@ describe("testing hosts deployment", function () {
             it ("success - no zombie containers are available", function (done) {
                 var params = {
                     qs: {
-                        envCode: env
+                        env: env
                     }
                 };
                 executeMyRequest(params, 'hosts/container/zombie/list', 'get', function (body) {
@@ -863,7 +936,7 @@ describe("testing hosts deployment", function () {
 
                     var params = {
                         qs: {
-                            envCode: env
+                            env: env
                         }
                     };
 
@@ -880,7 +953,7 @@ describe("testing hosts deployment", function () {
             it("fail - missing required params", function (done) {
                 executeMyRequest({}, 'hosts/container/zombie/list', 'get', function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: envCode'});
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
                     done();
                 });
             });
@@ -890,12 +963,12 @@ describe("testing hosts deployment", function () {
             it("success - will get zombie container logs", function (done) {
                 var params = {
                     qs: {
-                        envCode: env,
+                        env: env,
                         cid: cid
                     }
                 };
-                
-                executeMyRequest(params, 'hosts/container/zombie/getLogs', 'get', function (body) {
+
+                executeMyRequest(params, 'hosts/container/logs', 'get', function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
                     done();
@@ -905,11 +978,11 @@ describe("testing hosts deployment", function () {
             it("fail - missing required params", function (done) {
                 var params = {
                     qs: {
-                        envCode: env
+                        env: env
                     }
                 };
 
-                executeMyRequest(params, 'hosts/container/zombie/getLogs', 'get', function (body) {
+                executeMyRequest(params, 'hosts/container/logs', 'get', function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: cid'});
                     done();
@@ -921,7 +994,7 @@ describe("testing hosts deployment", function () {
             it("fail - missing required params", function (done) {
                 var params = {
                     qs: {
-                        envCode: env
+                        env: env
                     }
                 };
 
@@ -935,7 +1008,7 @@ describe("testing hosts deployment", function () {
             it("success - will delete zombie container", function (done) {
                 var params = {
                     qs: {
-                        envCode: env,
+                        env: env,
                         cid: cid
                     }
                 };
@@ -950,6 +1023,145 @@ describe("testing hosts deployment", function () {
 
                         done();
                     });
+                });
+            });
+        });
+    });
+
+    describe("testing nginx containers", function () {
+        var nginxDockerRecord = {
+            "env": "dev",
+            "cid": "da42c756def695471acb1e1391746f1b9d82e5f925e41b3d02b0759b1a257b87",
+            "hostname": "nginx_dev",
+            "type": "nginx",
+            "running": true,
+            "deployer": {
+                "host": "192.168.99.103",
+                "port": 2376,
+                "config": {
+                    "HostConfig": {
+                        "NetworkMode": "soajsnet"
+                    },
+                    "MachineName": "soajs-dev"
+                },
+                "driver": {
+                    "type": "container",
+                    "driver": "docker"
+                },
+                "selectedDriver": "dockermachine - local",
+                "envCode": "dev"
+            },
+            "info": {}
+        };
+
+        before("clean docker collection and inject nginx records in docker collection", function (done) {
+            mongo.remove("docker", {type: 'nginx'}, function (error) {
+                assert.ifError(error);
+
+                mongo.insert("docker", nginxDockerRecord, function (error) {
+                    assert.ifError(error);
+                    done();
+                });
+            });
+        });
+
+        describe("list nginx hosts", function () {
+
+            it("success - will list nginx hosts", function (done) {
+                var params = {
+                    qs: {
+                        env: nginxDockerRecord.env
+                    }
+                };
+                executeMyRequest(params, 'hosts/nginx/list', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    assert.equal(body.data.length, 1);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                executeMyRequest({}, 'hosts/nginx/list', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+                    done();
+                });
+            });
+
+            it("mongo check", function (done) {
+                mongo.count("docker", {type: 'nginx'}, function (error, count) {
+                    assert.ifError(error);
+                    assert.equal(count, 1);
+                    done();
+                });
+            });
+        });
+
+        describe("delete nginx hosts", function () {
+            var nginxDockerRecordTwo = {
+                "env": "dev",
+                "cid": "da42c756def695471acb1e1391746f1b9d82e5f925e41b3d02b0759b1a257b99",
+                "hostname": "nginx_345_dev",
+                "type": "nginx",
+                "running": true,
+                "deployer": {
+                    "host": "192.168.99.103",
+                    "port": 2376,
+                    "config": {
+                        "HostConfig": {
+                            "NetworkMode": "soajsnet"
+                        },
+                        "MachineName": "soajs-dev"
+                    },
+                    "driver": {
+                        "type": "container",
+                        "driver": "docker"
+                    },
+                    "selectedDriver": "dockermachine - local",
+                    "envCode": "dev"
+                },
+                "info": {}
+            };
+
+            it("fail - only one nginx container is available", function (done) {
+                var params = {
+                    qs: {
+                        env: nginxDockerRecord.env,
+                        cid: nginxDockerRecord.cid
+                    }
+                };
+                executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': '777', 'message': errorCodes[777]});
+                    done();
+                });
+            });
+
+            it("success - will delete nginx container", function (done) {
+                //inject another nginx record in docker collection
+                mongo.insert("docker", nginxDockerRecordTwo, function (error) {
+                    assert.ifError(error);
+
+                    var params = {
+                        qs: {
+                            env: nginxDockerRecordTwo.env,
+                            cid: nginxDockerRecordTwo.cid
+                        }
+                    };
+                    executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+                        done();
+                    });
+                });
+            });
+
+            it("mongo check", function (done) {
+                mongo.count("docker", {type: 'nginx'}, function (error, count) {
+                    assert.ifError(error);
+                    assert.equal(count, 1);
+                    done();
                 });
             });
         });

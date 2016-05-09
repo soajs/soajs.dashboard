@@ -4,7 +4,7 @@ function getGitDriver (config) {
     var gitDriver;
 
     try {
-        gitDriver = require(__dirname + "/gitProviders/" + config.provider + ".js");
+        gitDriver = require(__dirname + "/git/" + config.provider + ".js");
     }
     catch (e) {
         gitDriver = null;
