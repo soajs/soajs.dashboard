@@ -160,6 +160,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.pillarChange = function (link) {
 			var pillarName = link.pillar.name;
+			var url = link.entries[0].url;
 			$scope.pillar = pillarName;
 			if (pillarName === "operate") {
 				if (!$scope.currentSelectedEnvironment || $scope.currentSelectedEnvironment === 'DASHBOARD') {
@@ -172,11 +173,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
+				for (var x = 0; x < link.entries.length; x++) {
+					if (link.entries[x].env === $scope.currentSelectedEnvironment) {
+						if (link.entries[x].checkPermission && link.entries[x].checkPermission === true) {
+							url = link.entries[x].url;
+							break;
+						}
+					}
+				}
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
 			}
-			$scope.go(link.entries[0].url);
+			$scope.go(url);
 		};
 
 		$scope.checkAuthEnvCookie = function () {
