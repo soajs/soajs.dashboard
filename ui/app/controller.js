@@ -460,13 +460,16 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
 								console.log($scope.navigation[i]);
-								console.log($scope.currentSelectedEnvironment);
-								console.log($cookies.getObject('myEnv'));console.log($scope.currentSelectedEnvironment);
-								$scope.displayAlert('danger', 'You do not have permissions to access this section');
-								$timeout(function () {
-									$scope.closeAlert();
-									$scope.go("/dashboard");
-								}, 7200);
+								console.log('currentSelectedEnvironment:' + $scope.currentSelectedEnvironment);
+								if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'DASHBOARD') {
+									if ($scope.navigation[i].env === $scope.currentSelectedEnvironment) {
+										$scope.displayAlert('danger', 'You do not have permissions to access this section');
+										$timeout(function () {
+											$scope.closeAlert();
+											$scope.go("/dashboard");
+										}, 7200);
+									}
+								}
 							}
 						}
 
