@@ -62,7 +62,6 @@ var modelObj = {
 			}
 		]
 	}
-
 };
 var environmentsConfig = {
 	form: {
@@ -251,7 +250,7 @@ var environmentsConfig = {
 			]
 		},
 		clusters: {
-			'default': {
+			default: {
 				'name': '',
 				'label': '',
 				'actions': {},

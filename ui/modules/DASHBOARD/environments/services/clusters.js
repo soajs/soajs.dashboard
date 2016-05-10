@@ -37,9 +37,9 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			else {
 				formConf = environmentsConfig.form.clusters['default'];
 			}
-
 			formConf.entries.forEach(function (entry) {
 				if (entry.name === 'servers') {
+					entry.entries = [];
 					var oneClone = angular.copy(modelObj.cluster.server);
 					for (var i = 0; i < oneClone.length; i++) {
 						oneClone[i].name = oneClone[i].name.replace("%count%", count);
@@ -204,20 +204,20 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			buildFormWithModal(currentScope, $modal, options1);
 		}
 
-		getClusterType(currentScope, env);
+		//getClusterType(currentScope, env);
 
-		//addType('default');
+		addType('default');
 	}
 
 	function editCluster(currentScope, env, name, data) {
 		var count = 0;
 		var formConfig = angular.copy(environmentsConfig.form.clusters.default);
 
-		if (data.clusterType) {
-			if (environmentsConfig.form.clusters['data.clusterType']) {
-
-			}
-		}
+		// TODO: edit by type
+		// if (data.clusterType) {
+		// 	if (environmentsConfig.form.clusters['data.clusterType']) {
+		// 	}
+		// }
 		formConfig.entries.forEach(function (entry) {
 			if (entry.name === 'name') {
 				entry.type = 'readonly';
