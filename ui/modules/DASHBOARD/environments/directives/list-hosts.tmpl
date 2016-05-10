@@ -206,6 +206,7 @@
 													<th colspan="2" class="host-ip">{{translation.hostname[LANG]}}&nbsp;<b>v.{{oneIp.version}}</b>
 													</th>
 													<th class="host-ip">IP:{{translation.port[LANG]}}</th>
+													<th class="host-branch" ng-if="oneIp.branch">{{translation.branch[LANG]}}</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -216,6 +217,9 @@
 													<td><span class="{{oneIp.color}}">{{oneIp.hostname}}</span></td>
 													<td>
 														<span class="{{oneIp.color}}">{{oneIp.ip}}:{{serviceInfo.port}}</span>
+													</td>
+													<td ng-if="oneIp.branch">
+														<span class="{{oneIp.color}}">{{oneIp.branch}}</span>
 													</td>
 												</tr>
 												<tr>
@@ -290,8 +294,9 @@
 																		</th>
 																		<td valign="top" rowspan="2" class="{{oneIp.color}}">
 																			<span><b>{{translation.hostname[LANG]}}:</b>&nbsp;{{oneIp.hostname}}<br/></span>
-																			<span ng-if="oneIp.grpConfName"><b>{{translation.group[LANG]}}:</b>&nbsp;{{oneIp.grpConfName}} <br/></span>
 																			<span><b>{{translation.version[LANG]}}:</b>&nbsp;{{version}} <br/></span>
+																			<span ng-if="oneIp.branch"><b>{{translation.branch[LANG]}}:</b>&nbsp;{{oneIp.branch}} <br/></span>
+																			<span ng-if="oneIp.grpConfName"><b>{{translation.group[LANG]}}:</b>&nbsp;{{oneIp.grpConfName}} <br/></span>
 																			<span><b>IP:</b>&nbsp;{{oneIp.ip}}</span>
 																		</td>
 																	</tr>
