@@ -140,7 +140,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						var tmpl = angular.copy(env_template);
 						tmpl.code = formData.code;
 						tmpl.domain = formData.domain;
-						tmpl.port = parseInt(formData.port);
 						tmpl.description = formData.description;
 
 						if (formData.apiPrefix) {
@@ -234,7 +233,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		}
 
-		postData.port = parseInt(postData.port);
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
 
 

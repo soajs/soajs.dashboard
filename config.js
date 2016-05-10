@@ -272,13 +272,6 @@ module.exports = {
 				}
 			},
 
-			"port": {
-				"required": true,
-				"source": ["body.port"],
-				"validation": {
-					"type": "integer"
-				}
-			},
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
@@ -447,7 +440,7 @@ module.exports = {
 				"l": "Add Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['description', 'services', 'port'],
+			"commonFields": ['description', 'services'],
 			"code": {
 				"source": ['body.code'],
 				"required": true,
@@ -501,7 +494,7 @@ module.exports = {
 				"l": "Update Environment",
 				"group": "Environment"
 			},
-			"commonFields": ['id', 'description', 'services', 'port'],
+			"commonFields": ['id', 'description', 'services'],
 			"domain": {
 				"source": ['body.domain'],
 				"required": true,

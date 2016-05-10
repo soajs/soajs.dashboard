@@ -173,7 +173,7 @@ var model = {
 
 	"getGitAccounts": function (soajs, repoName, cb) {
 		checkForMongo(soajs);
-		mongo.findOne(gitColl, {"repos.name": repoName}, {token: 1, 'repos.$': 1}, cb);
+		mongo.findOne(gitColl, {"repos.name": repoName}, {provider: 1, token: 1, 'repos.$': 1}, cb);
 	},
 
 	"getStaticContent": function (soajs, id, cb) {

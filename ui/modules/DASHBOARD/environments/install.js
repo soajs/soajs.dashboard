@@ -258,6 +258,14 @@ var envTranslation ={
 		"ENG": "Provide optional driver configuration",
 		"FRA": "Provide optional driver configuration"
 	},
+	"siteDomain": {
+		"ENG": "Site Domain",
+		"FRA": "Site Domain"
+	},
+	"apiDomain": {
+		"ENG": "API Domain",
+		"FRA": "API Domain"
+	},
 	"apiPrefix": {
 		"ENG": "API Prefix",
 		"FRA": "API Prefix"

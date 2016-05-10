@@ -36,9 +36,7 @@ var modules = {
 	},
 	"operate": {
 		"DEV":{
-			contentManagement: 'modules/DEV/contentManagement/install.js',
-			order: 'modules/DEV/order/install.js',
-			knowledgebase: 'modules/DEV/knowledgebase/install.js'
+			contentManagement: 'modules/DEV/contentManagement/install.js'
 		},
 		"STG":{
 			contentManagement: 'modules/STG/contentManagement/install.js'

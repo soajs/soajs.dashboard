@@ -2,7 +2,6 @@
 var env_template = {
 	"code": "",
 	"domain": "",
-	"port": 0,
 	"profile": "",
 	"description": "",
 	"deployer": {
