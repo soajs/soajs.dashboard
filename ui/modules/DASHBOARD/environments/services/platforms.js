@@ -2,7 +2,7 @@
 var platformsServices = soajsApp.components;
 platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookies', 'Upload', function (ngDataApi, $timeout, $modal, $cookies, Upload) {
 
-	function listPlatforms(currentScope, env) {
+	function listPlatforms(currentScope, env, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/platforms/list",
@@ -13,12 +13,12 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.message);
 			} else {
-				renderDisplay(currentScope, response);
+				renderDisplay(currentScope, response, cb);
 			}
 		});
 	}
 
-	function renderDisplay(currentScope, record) {
+	function renderDisplay(currentScope, record, cb) {
 		currentScope.deployer.type = record.type;
 		currentScope.originalDeployerType = record.type;//used to detect changes in type on UI level
 
@@ -28,7 +28,10 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		}
 		currentScope.allowSelect = currentScope.deployer.type === 'container';
 
-		currentScope.availableCerts = record.certs; //used later to view available certificates and allow user to choose them for other drivers
+		currentScope.availableCerts = { //used later to view available certificates and allow user to choose them for other drivers
+			docker: record.certs,
+			nginx: []
+		};
 
 		currentScope.platforms = [];
 
@@ -97,14 +100,65 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		for (var i = 0; i < currentScope.platforms.length; i++) {
 			var driver = currentScope.platforms[i];
 			for (var j = 0; j < record.certs.length; j++) {
-				if (record.certs[j].metadata.env[currentScope.envCode] && record.certs[j].metadata.env[currentScope.envCode].indexOf(driver.label) !== -1) {
-					driver.certificates.push({
-						_id: record.certs[j]._id,
-						filename: record.certs[j].filename
-					});
+				if (record.certs[j].metadata.type === 'docker') {
+					if (record.certs[j].metadata.env[currentScope.envCode] && record.certs[j].metadata.env[currentScope.envCode].indexOf(driver.label) !== -1) {
+						driver.certificates.push({
+							_id: record.certs[j]._id,
+							filename: record.certs[j].filename
+						});
+					}
 				}
 			}
 		}
+
+		if (cb) {
+			return cb();
+		}
+	}
+
+	function listNginxCerts(currentScope) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/environment/nginx/cert/list'
+		}, function (error, certs) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.nginx = {
+					certs: []
+				};
+				certs.forEach(function (oneCert) {
+					if (oneCert.metadata.env.indexOf(currentScope.envCode) !== -1) {
+						currentScope.nginx.certs.push(oneCert);
+					}
+				});
+				if (!currentScope.availableCerts.nginx) {
+					currentScope.availableCerts.nginx = [];
+				}
+
+				currentScope.availableCerts.nginx = certs;
+			}
+		});
+	}
+
+	function deleteNginxCert(currentScope, certId) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/environment/nginx/cert/delete',
+			params: {
+				id: certId,
+				env: currentScope.envCode
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.$parent.displayAlert('success', 'Certificate deleted successfully');
+				listNginxCerts(currentScope);
+			}
+		});
 	}
 
 	function uploadCerts(currentScope, driverName) {
@@ -123,6 +177,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				$scope.certs = {
 					selected: {}
 				};
+
+				var type = (driverName.indexOf('docker') !== -1) ? 'docker' : 'nginx';
 
 				$scope.onSubmit = function () {
 					if ($scope.formData && $scope.formData.certificates && Object.keys($scope.formData.certificates).length > 0) {
@@ -167,7 +223,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					});
 
-					getSendDataFromServer(currentScope, ngDataApi, {
+					var options = {
 						method: "send",
 						routeName: "/dashboard/environment/platforms/cert/choose",
 						params: {
@@ -177,26 +233,41 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						data: {
 							certIds: certIds
 						}
-					}, function (error, response) {
+					};
+
+					if (driverName === 'nginx') {
+						options.routeName = '/dashboard/environment/nginx/cert/choose';
+						delete options.params.driverName;
+					}
+
+					getSendDataFromServer(currentScope, ngDataApi, options, function (error, response) {
 						if (error) {
 							currentScope.$parent.displayAlert('danger', error.message);
 							upload.close();
 						} else {
 							currentScope.$parent.displayAlert('success', translation.chosenCertificatesSavedSuccessfully[LANG]);
 							upload.close();
-							currentScope.listPlatforms(currentScope.envCode);
+							if (driverName === 'nginx') {
+								currentScope.listNginxCerts(currentScope);
+							}
+							else {
+								currentScope.listPlatforms(currentScope.envCode);
+							}
 						}
 					});
 				};
 
 				$scope.getAvailableCerts = function () {
+					var certsType = (driverName === 'nginx') ? 'nginx' : 'docker';
 					$scope.certsToDisplay = [];
-					currentScope.availableCerts.forEach(function (oneCert) {
-						$scope.certsToDisplay.push({
-							_id: oneCert._id,
-							name: oneCert.filename,
-							env: Object.keys(oneCert.metadata.env)
-						});
+					currentScope.availableCerts[certsType].forEach(function (oneCert) {
+						if (oneCert.metadata.type === type) {
+							$scope.certsToDisplay.push({
+								_id: oneCert._id,
+								name: oneCert.filename,
+								env: (driverName === 'nginx') ? oneCert.metadata.env : Object.keys(oneCert.metadata.env)
+							});
+						}
 					});
 				};
 				$scope.getAvailableCerts();
@@ -487,6 +558,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 	return {
 		'listPlatforms': listPlatforms,
+		'listNginxCerts': listNginxCerts,
+		'deleteNginxCert': deleteNginxCert,
 		'uploadCerts': uploadCerts,
 		'removeCert': removeCert,
 		'selectDriver': selectDriver,

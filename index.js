@@ -148,6 +148,18 @@ service.init(function() {
 		checkForMongo(req);
 		environment.changeDeployerType(config, mongo , req, res);
 	});
+	service.get("/environment/nginx/cert/list", function (req, res) {
+		checkForMongo(req);
+		environment.listNginxCerts(config, mongo, req, res);
+	});
+	service.get("/environment/nginx/cert/delete", function (req, res) {
+		checkForMongo(req);
+		environment.removeNginxCert(config, mongo, req, res);
+	});
+	service.post("/environment/nginx/cert/choose", function (req, res) {
+		checkForMongo(req);
+		environment.chooseExistingNginxCerts(config, mongo, req, res);
+	});
 
 	/**
 	 * Products features
