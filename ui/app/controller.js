@@ -160,6 +160,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.pillarChange = function (link) {
 			var pillarName = link.pillar.name;
+			var url = link.entries[0].url;
 			$scope.pillar = pillarName;
 			if (pillarName === "operate") {
 				if (!$scope.currentSelectedEnvironment || $scope.currentSelectedEnvironment === 'DASHBOARD') {
@@ -172,11 +173,19 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						}
 					}
 				}
+				for (var x = 0; x < link.entries.length; x++) {
+					if (link.entries[x].env === $scope.currentSelectedEnvironment) {
+						if (link.entries[x].checkPermission && link.entries[x].checkPermission.access === true) {
+							url = link.entries[x].url;
+							break;
+						}
+					}
+				}
 				if (Object.keys($scope.navigation).length === 0) {
 					doEnvPerNav();
 				}
 			}
-			$scope.go(link.entries[0].url);
+			$scope.go(url);
 		};
 
 		$scope.checkAuthEnvCookie = function () {
@@ -252,6 +261,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.updateSelectedMenus = function (cb) {
 			$scope.mainMenu.selectedMenu = '#/' + $location.path().split("/")[1];
+			$localStorage.mainMenu = $scope.mainMenu;
 			$scope.footerMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.userMenu.selectedMenu = $scope.mainMenu.selectedMenu;
 			$scope.guestMenu.selectedMenu = $scope.mainMenu.selectedMenu;
@@ -459,11 +469,15 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
 
 							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
-								$scope.displayAlert('danger', 'You do not have permissions to access this section');
-								$timeout(function () {
-									$scope.closeAlert();
-									$scope.go("/dashboard");
-								}, 7200);
+								if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'DASHBOARD') {
+									if ($scope.navigation[i].env === $scope.currentSelectedEnvironment) {
+										$scope.displayAlert('danger', 'You do not have permissions to access this section');
+										$timeout(function () {
+											$scope.closeAlert();
+											$scope.go("/dashboard");
+										}, 9000);
+									}
+								}
 							}
 						}
 
