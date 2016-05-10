@@ -453,7 +453,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						overlayLoading.hide();
 						if (gotourl) {
 							$cookies.put("soajs_current_route", gotourl);
-							$location.path(gotourl);
+							$location.url(gotourl);
 						}
 					});
 				}, 2000);
