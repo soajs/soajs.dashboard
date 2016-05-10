@@ -266,7 +266,7 @@ var environmentsConfig = {
 				}
 			]
 		},
-		"deploy": {
+		deploy: {
 			'name': '',
 			'label': '',
 			'actions': {},
@@ -353,6 +353,17 @@ var environmentsConfig = {
 					'value': ''
 				}
 			]
+		}
+	},
+	nginxRequiredCerts: {
+		certificate: {
+			label: 'Chained Certificate',
+			extension: '.crt'
+		},
+		privateKey: {
+			label: 'Private Key',
+			extension: '.key',
+			msg: 'Key from SSL Provider'
 		}
 	},
 	permissions: {

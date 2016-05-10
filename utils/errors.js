@@ -152,7 +152,7 @@ var errors = {
 	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
 
-	"739": "Missing required param(s). Make sure you specify certificate filename, environment code, and driver name",
+	"739": "Missing required param(s). Make sure you specify certificate filename, type, and environment code. If type is docker, specify driver name and if type is nginx, specify certificate label",
 
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
 

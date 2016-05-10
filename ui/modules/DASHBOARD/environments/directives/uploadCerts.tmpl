@@ -5,7 +5,7 @@
     <tabset>
         <tab heading="{{translation.upload[LANG]}}">
             <br>
-            <div class="form">
+            <div class="form" ng-if="type !== 'nginx'">
                 <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
                     <input type="file" file-model-multi="formData.certificates" multiple="multiple">
                     <div ng-if="formData.certificates && formData.certificates.length > 0">
@@ -21,9 +21,26 @@
                     </div><br/><br/><br/>
                 </form>
             </div>
+            <div class="form" ng-if="type === 'nginx'">
+                <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
+                    <div ng-if="nginxRequiredCertsLength === 0">
+                        <alert type="success">No additional certificates are required</alert>
+                        <br />
+                    </div>
+                    <div ng-repeat="(type, certInfo) in nginxRequiredCerts" ng-if="nginxRequiredCertsLength > 0">
+                        <label>{{certInfo.label}}: </label>
+                        <input type="file" accept="{{certInfo.extension}}" file-model="formData.certificates[$index]">
+                        <label class="fieldMsg" ng-if="certInfo.msg">{{certInfo.msg}}</label>
+                    </div>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" type="submit" value="Upload" ng-if="nginxRequiredCertsLength > 0">{{translation.upload[LANG]}}</button>
+                        <button class="btn btn-danger" type="button" value="Cancel" ng-click="closeModal()">{{translation.cancel[LANG]}}</button>
+                    </div><br/><br/><br/>
+                </form>
+            </div>
         </tab>
         <tab heading="Choose Existing" ng-click="getAvailableCerts()" ng-if="certsToDisplay.length > 0">
-            <div class="form">
+            <div class="form" ng-if="type !== 'nginx'">
                 <form name="chooseExisting" id="chooseExisting" novalidate ng-submit="chooseCerts()">
                     <label>{{translation.availableCertificates[LANG]}} </label>
                     <ul>
@@ -31,6 +48,22 @@
                             <input type="checkbox" name="selectedCerts" ng-model="certs.selected[cert._id]">&nbsp;&nbsp;{{cert.name}} {{cert.env}}
                         </li>
                     </ul>
+                    <div class="pull-right">
+                        <button class="btn btn-primary" type="submit" value="Select">{{translation.select[LANG]}}</button>
+                        <button class="btn btn-danger" type="button" value="Cancel" ng-click="closeModal()">{{translation.cancel[LANG]}}</button>
+                    </div><br/><br/><br/>
+                </form>
+            </div>
+            <div class="form" ng-if="type === 'nginx'">
+                <form name="chooseExisting" id="chooseExisting" novalidate ng-submit="chooseCerts()">
+                    <div ng-repeat="(label, certsList) in certsToDisplay" ng-if="certsList.length > 0">
+                        <label>Available files of type: {{label}}</label>
+                        <ul>
+                            <li ng-repeat="cert in certsList">
+                                <input type="checkbox" name="selectedCerts" ng-model="certs.selected[cert._id]">&nbsp;&nbsp;{{cert.name}} {{cert.env}}
+                            </li>
+                        </ul>
+                    </div>
                     <div class="pull-right">
                         <button class="btn btn-primary" type="submit" value="Select">{{translation.select[LANG]}}</button>
                         <button class="btn btn-danger" type="button" value="Cancel" ng-click="closeModal()">{{translation.cancel[LANG]}}</button>
