@@ -148,6 +148,10 @@ service.init(function() {
 		checkForMongo(req);
 		environment.changeDeployerType(config, mongo , req, res);
 	});
+	service.post("/environment/nginx/cert/upload", function (req, res) {
+		checkForMongo(req);
+		environment.uploadCerts(config, mongo, req, res);
+	});
 	service.get("/environment/nginx/cert/list", function (req, res) {
 		checkForMongo(req);
 		environment.listNginxCerts(config, mongo, req, res);

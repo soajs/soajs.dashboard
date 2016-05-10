@@ -891,6 +891,12 @@ module.exports = {
 				}
 			}
 		},
+		"/environment/nginx/cert/upload": {
+			_apiInfo: {
+				"l": "Upload Nginx Certificates",
+				"group": "Environment Platforms"
+			}
+		},
 		"/environment/nginx/cert/list": {
 			_apiInfo: {
 				"l": "List Nginx Certificates",

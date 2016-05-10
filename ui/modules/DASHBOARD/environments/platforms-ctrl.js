@@ -33,8 +33,8 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         envPlatforms.editDriverConfig($scope, driver);
     };
 
-    $scope.uploadCerts = function (driverName) {
-        envPlatforms.uploadCerts($scope, driverName);
+    $scope.uploadCerts = function (type, driverName) {
+        envPlatforms.uploadCerts($scope, type, driverName);
     };
 
     $scope.removeCert = function (certId, driverName) {

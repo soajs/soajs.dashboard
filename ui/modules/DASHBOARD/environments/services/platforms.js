@@ -161,7 +161,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function uploadCerts(currentScope, driverName) {
+	function uploadCerts(currentScope, type, driverName) {
 		var upload = $modal.open({
 			templateUrl: "uploadCerts.tmpl",
 			backdrop: true,
@@ -178,7 +178,16 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					selected: {}
 				};
 
-				var type = (driverName.indexOf('docker') !== -1) ? 'docker' : 'nginx';
+				$scope.type = type;
+				if (type === 'nginx') {
+					$scope.nginxRequiredCerts = angular.copy(environmentsConfig.nginxRequiredCerts);
+					currentScope.nginx.certs.forEach(function (oneCert) {
+						if ($scope.nginxRequiredCerts[oneCert.metadata.label]) {
+							delete $scope.nginxRequiredCerts[oneCert.metadata.label];
+						}
+					});
+					$scope.nginxRequiredCertsLength = Object.keys($scope.nginxRequiredCerts).length;
+				}
 
 				$scope.onSubmit = function () {
 					if ($scope.formData && $scope.formData.certificates && Object.keys($scope.formData.certificates).length > 0) {
@@ -192,9 +201,15 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 								$scope.text = "<h4 style='text-align:center;'>" + translation.uploadingCertificates[LANG] + "</h4><p style='text-align:center;'>" + translation.thisMightTakeFewMinutesPleaseWait[LANG] + "</p>";
 							}
 						});
+						//create array index to go through certificates list
+						$scope.index = [];
+						for (var i in $scope.formData.certificates) {
+							$scope.index.push(i);
+						}
 
-						uploadFiles(currentScope, $scope.formData.certificates, driverName, "uploadCerts", 0, uploadInfo, function () {
+						$scope.uploadFiles(type, driverName, 0, uploadInfo, function () {
 							$scope.formData.certificates = {};
+							$scope.index = [];
 							uploadInfo.close();
 							var uploadDone = $modal.open({
 								templateUrl: 'uploadCertsInfo.html',
@@ -235,7 +250,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					};
 
-					if (driverName === 'nginx') {
+					if (type === 'nginx') {
 						options.routeName = '/dashboard/environment/nginx/cert/choose';
 						delete options.params.driverName;
 					}
@@ -247,7 +262,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						} else {
 							currentScope.$parent.displayAlert('success', translation.chosenCertificatesSavedSuccessfully[LANG]);
 							upload.close();
-							if (driverName === 'nginx') {
+							if (type === 'nginx') {
 								currentScope.listNginxCerts(currentScope);
 							}
 							else {
@@ -258,68 +273,103 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				};
 
 				$scope.getAvailableCerts = function () {
-					var certsType = (driverName === 'nginx') ? 'nginx' : 'docker';
-					$scope.certsToDisplay = [];
-					currentScope.availableCerts[certsType].forEach(function (oneCert) {
-						if (oneCert.metadata.type === type) {
-							$scope.certsToDisplay.push({
-								_id: oneCert._id,
-								name: oneCert.filename,
-								env: (driverName === 'nginx') ? oneCert.metadata.env : Object.keys(oneCert.metadata.env)
-							});
-						}
-					});
+					if (type === 'nginx') {
+						$scope.certsToDisplay = {};
+						currentScope.availableCerts[$scope.type].forEach(function (oneCert) {
+							if (oneCert.metadata.type === $scope.type) {
+								if (!$scope.certsToDisplay[oneCert.metadata.label]) {
+									$scope.certsToDisplay[oneCert.metadata.label] = [];
+								}
+								$scope.certsToDisplay[oneCert.metadata.label].push({
+									_id: oneCert._id,
+									name: oneCert.filename,
+									env: oneCert.metadata.env
+								});
+							}
+						});
+						currentScope.nginx.certs.forEach(function (oneCert) {
+							if ($scope.certsToDisplay[oneCert.metadata.label]) {
+								delete $scope.certsToDisplay[oneCert.metadata.label];
+							}
+						});
+						$scope.certsToDisplay.length = Object.keys($scope.certsToDisplay).length;
+					}
+					else if (type === 'docker') {
+						$scope.certsToDisplay = [];
+						currentScope.availableCerts[$scope.type].forEach(function (oneCert) {
+							if (oneCert.metadata.type === $scope.type) {
+								$scope.certsToDisplay.push({
+									_id: oneCert._id,
+									name: oneCert.filename,
+									env: Object.keys(oneCert.metadata.env)
+								});
+							}
+						});
+					}
 				};
 				$scope.getAvailableCerts();
 
 				$scope.closeModal = function () {
 					upload.close();
 				};
-			}
-		});
-	}
 
-	function uploadFiles(currentScope, formData, driverName, prefix, counter, modal, cb) {
-		var soajsauthCookie = $cookies.get('soajs_auth');
-		var dashKeyCookie = $cookies.get('soajs_dashboard_key');
-		var progress = {
-			value: 0
-		};
+				$scope.uploadFiles = function(type, driverName, counter, modal, cb) {
+					var soajsauthCookie = $cookies.get('soajs_auth');
+					var dashKeyCookie = $cookies.get('soajs_dashboard_key');
+					var progress = {
+						value: 0
+					};
 
-		var options = {
-			url: apiConfiguration.domain + "/dashboard/environment/platforms/cert/upload",
-			params: {
-				envCode: currentScope.envCode,
-				filename: formData[counter].name,
-				driver: driverName
-			},
-			file: formData[counter],
-			headers: {
-				'soajsauth': soajsauthCookie,
-				'key': dashKeyCookie
-			}
-		};
+					var options = {
+						url: apiConfiguration.domain + "/dashboard/environment/platforms/cert/upload",
+						params: {
+							envCode: currentScope.envCode,
+							filename: $scope.formData.certificates[$scope.index[counter]].name,
+							type: type,
+							driver: driverName
+						},
+						file: $scope.formData.certificates[$scope.index[counter]],
+						headers: {
+							'soajsauth': soajsauthCookie,
+							'key': dashKeyCookie
+						}
+					};
 
-		Upload.upload(options).progress(function (evt) {
-			var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-			progress.value = progressPercentage;
-		}).success(function (response, status, headers, config) {
-			if (!response.result) {
-				currentScope.$parent.displayAlert('danger', response.errors.details[0].message);
-				modal.close();
-			}
-			else {
-				counter++;
+					if (type === 'nginx') {
+						options.url = apiConfiguration.domain + "/dashboard/environment/nginx/cert/upload";
 
-				if (counter === Object.keys(formData).length) {
-					return cb();
-				} else {
-					uploadFiles(currentScope, formData, driverName, prefix, counter, modal, cb);
+						delete options.params.driver;
+						if ($scope.formData.certificates[$scope.index[counter]].type === 'application/x-x509-ca-cert') {
+							options.params.label = "certificate";
+						}
+						else {
+							options.params.label = "privateKey";
+						}
+					}
+
+					Upload.upload(options).progress(function (evt) {
+						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+						progress.value = progressPercentage;
+					}).success(function (response, status, headers, config) {
+						if (!response.result) {
+							currentScope.$parent.displayAlert('danger', response.errors.details[0].message);
+							currentScope.listPlatforms(currentScope.envCode); //refresh view in case some files were uploaded successfully
+							modal.close();
+						}
+						else {
+							counter++;
+							if (counter === Object.keys($scope.formData.certificates).length) {
+								return cb();
+							} else {
+								$scope.uploadFiles(type, driverName, counter, modal, cb);
+							}
+						}
+					}).error(function (data, status, header, config) {
+						currentScope.$parent.displayAlert('danger', translation.errorOccurredWhileUploadingFile[LANG] + " " + options.params.filename);
+						modal.close();
+					});
 				}
 			}
-		}).error(function (data, status, header, config) {
-			currentScope.$parent.displayAlert('danger', translation.errorOccurredWhileUploadingFile[LANG] + " " + options.params.filename);
-			modal.close();
 		});
 	}
 

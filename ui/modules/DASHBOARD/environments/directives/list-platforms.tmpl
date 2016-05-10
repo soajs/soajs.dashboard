@@ -25,7 +25,7 @@
                             <a ng-if="access.platforms.drivers.edit" href="" ng-click="editDriver(driver);">
                                 <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
                             </a>
-                            <a href="" ng-if="access.platforms.certs.upload && driver.uiType !== 'socket'" ng-click="uploadCerts(driver.label)">
+                            <a href="" ng-if="access.platforms.certs.upload && driver.uiType !== 'socket'" ng-click="uploadCerts('docker', driver.label)">
                                 <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                             </a>
                             <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(driver.label)">
