@@ -71,7 +71,7 @@ describe("DASHBOARD UNIT Tests:", function () {
         mongo.closeDb();
         done();
     });
-	
+
 	describe("environment tests", function () {
 		var validEnvRecord = {
 			"code": "DEV",
@@ -275,7 +275,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 172,
-						"message": "Missing required field: domain, deployer, services, port"
+						"message": "Missing required field: domain, deployer, services"
 					});
 					done();
 				});

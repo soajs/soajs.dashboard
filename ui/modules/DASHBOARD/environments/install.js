@@ -9,9 +9,9 @@ var envTranslation ={
 		"ENG": "Registries",
 		"FRA": "Registries"
 	},
-	"platforms": {
-		"ENG": "Platforms",
-		"FRA": "Platforms"
+	"platformsAndCertificates": {
+		"ENG": "Platforms & Certificates",
+		"FRA": "Platforms & Certificates"
 	},
 	"clusters": {
 		"ENG": "Clusters",
@@ -1349,7 +1349,7 @@ var environmentsNav = [
 			'service': 'dashboard',
 			'route': '/environment/platforms/list'
 		},
-		'label': translation.platforms[LANG],
+		'label': translation.platformsAndCertificates[LANG],
 		'url': '#/environments-platforms',
 		'tplPath': 'modules/DASHBOARD/environments/directives/list-platforms.tmpl',
 		'icon': 'download3',
