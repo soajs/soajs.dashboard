@@ -442,7 +442,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.$on('$routeChangeStart', function (event, next, current) {
 			if (!current) {
-				$cookies.put("soajs_current_route", $location.path());
+				$cookies.put("soajs_current_route", $location.url());
 				var gotourl = $cookies.get("soajs_current_route");
 				//console.log("page reload event invoked ...");
 				$timeout(function () {
