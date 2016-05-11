@@ -57,7 +57,7 @@
                 <div class="entryBox mb20">
                     <div class="header">
                         Nginx {{translation.certificates[LANG]}}
-                        <span class="rightActions">
+                        <span class="rightActions" ng-show="nginx.certs.length < 2">
                             <a href="" ng-if="access.platforms.certs.upload" ng-click="uploadCerts('nginx')">
                                 <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                             </a>
@@ -67,8 +67,10 @@
                         <label>{{translation.certificates[LANG]}}:&nbsp;</label>
                         <alert type="warning" ng-if="nginx.certs.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
                         <div class="entryBoxes entryBoxesGrid">
-                            <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in nginx.certs">
-                                <b>{{cert.filename}}</b>
+                            <div class="entryBox blueBox greyBoxCustom greyBoxCustom2" ng-repeat="cert in nginx.certs">
+                                <span ng-if="cert.metadata.label === 'certificate'"><b>{{translation.chainedCertificate[LANG]}}: </b></span>
+                                <span ng-if="cert.metadata.label === 'privateKey'"><b>{{translation.privateKey[LANG]}}: </b></span>
+                                &nbsp;{{cert.filename}}&nbsp;&nbsp;&nbsp;
                                 <a href="" ng-if="access.platforms.certs.delete" ng-click="deleteNginxCert(cert._id)">
                                     <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
                                 </a>

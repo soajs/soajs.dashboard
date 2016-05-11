@@ -1222,6 +1222,14 @@ var envTranslation ={
 		"ENG": "Upload optional SSL certificates for Nginx in order to enable HTTPS",
 		"FRA": "Upload optional SSL certificates for Nginx in order to enable HTTPS"
 	},
+	"chainedCertificate": {
+		"ENG": "Chained Certificate",
+		"FRA": "Chained Certificate"
+	},
+	"privateKey": {
+		"ENG": "Private Key",
+		"FRA": "Private Key"
+	},
 
 	//list-service-config
 	"reloadRegistry": {
