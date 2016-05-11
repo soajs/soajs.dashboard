@@ -86,6 +86,16 @@ var deployer = {
         deployer.start(deployerConfig, cid, mongo, cb);
     },
 
+	"exec": function (deployerConfig, cid, mongo, opts, cb) {
+		var deployer = getDeployer(deployerConfig);
+		deployer.exec(deployerConfig, cid, mongo, opts, cb);
+	},
+
+	"restart": function (deployerConfig, cid, mongo, cb) {
+		var deployer = getDeployer(deployerConfig);
+		deployer.restart(deployerConfig, cid, mongo, cb);
+	},
+
     "remove": function (deployerConfig, cid, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.remove(deployerConfig, cid, mongo, cb);
