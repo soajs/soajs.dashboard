@@ -24,7 +24,7 @@
             <div class="form" ng-if="type === 'nginx'">
                 <form name="upload" id="upload" novalidate ng-submit="onSubmit()">
                     <div ng-if="nginxRequiredCertsLength === 0">
-                        <alert type="success">No additional certificates are required</alert>
+                        <alert type="success">{{translation.noAdditionalCertificatesRequired[LANG]}}</alert>
                         <br />
                     </div>
                     <div ng-repeat="(type, certInfo) in nginxRequiredCerts" ng-if="nginxRequiredCertsLength > 0">
@@ -57,7 +57,7 @@
             <div class="form" ng-if="type === 'nginx'">
                 <form name="chooseExisting" id="chooseExisting" novalidate ng-submit="chooseCerts()">
                     <div ng-repeat="(label, certsList) in certsToDisplay" ng-if="certsList.length > 0">
-                        <label>Available files of type: {{label}}</label>
+                        <label>{{translation.availableFilesOfType[LANG]}}: {{label}}</label>
                         <ul>
                             <li ng-repeat="cert in certsList">
                                 <input type="checkbox" name="selectedCerts" ng-model="certs.selected[cert._id]">&nbsp;&nbsp;{{cert.name}} {{cert.env}}

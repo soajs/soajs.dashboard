@@ -56,7 +56,7 @@
                 </legend>
                 <div class="entryBox mb20">
                     <div class="header">
-                        Nginx Certificates
+                        Nginx {{translation.certificates[LANG]}}
                         <span class="rightActions">
                             <a href="" ng-if="access.platforms.certs.upload" ng-click="uploadCerts('nginx')">
                                 <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
@@ -74,7 +74,7 @@
                                 </a>
                             </div>
                         </div>
-                        <label class="fieldMsg">Upload optional SSL certificate for Nginx in order to enable HTTPS</label>
+                        <label class="fieldMsg">{{translation.uploadSSLCertificatesMsg[LANG]}}</label>
                     </div>
                 </div>
             </fieldset>

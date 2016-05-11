@@ -11,7 +11,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				renderDisplay(currentScope, response, cb);
 			}
@@ -122,7 +122,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			routeName: '/dashboard/environment/nginx/cert/list'
 		}, function (error, certs) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			}
 			else {
 				currentScope.nginx = {
@@ -152,10 +152,10 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			}
 			else {
-				currentScope.$parent.displayAlert('success', 'Certificate deleted successfully');
+				currentScope.$parent.displayAlert('success', translation.selectedCertificateRemoved[LANG]);
 				listNginxCerts(currentScope);
 			}
 		});
@@ -257,7 +257,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 					getSendDataFromServer(currentScope, ngDataApi, options, function (error, response) {
 						if (error) {
-							currentScope.$parent.displayAlert('danger', error.message);
+							currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 							upload.close();
 						} else {
 							currentScope.$parent.displayAlert('success', translation.chosenCertificatesSavedSuccessfully[LANG]);
@@ -384,7 +384,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				currentScope.$parent.displayAlert('success', translation.selectedCertificateRemoved[LANG]);
 				currentScope.listPlatforms(currentScope.envCode);
@@ -401,7 +401,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			"data": {selected: driver}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				currentScope.$parent.displayAlert('success', translation.selectedDriverUpdated[LANG]);
 				currentScope.originalDeployer = currentScope.deployer.selected;
@@ -420,7 +420,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				currentScope.$parent.displayAlert('success', translation.driverConfigurationClearedSuccessfully[LANG]);
 				currentScope.listPlatforms(currentScope.envCode);
@@ -461,7 +461,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						"data": postData
 					}, function (error, response) {
 						if (error) {
-							currentScope.$parent.displayAlert('danger', error.message);
+							currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 							$modalInstance.close();
 						} else {
 							currentScope.$parent.displayAlert('success', translation.driverCreatedSuccessfully[LANG]);
@@ -532,7 +532,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						"data": postData
 					}, function (error, response) {
 						if (error) {
-							currentScope.$parent.displayAlert('danger', error.message);
+							currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 							$modalInstance.close();
 						} else {
 							currentScope.$parent.displayAlert('success', 'Driver edited successfully');
@@ -563,7 +563,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			"data": postData
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				currentScope.$parent.displayAlert('success', 'Deployer type changed successfully');
 				currentScope.allowSelect = currentScope.deployer.type === 'container';

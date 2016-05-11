@@ -1218,6 +1218,11 @@ var envTranslation ={
 		"ENG": "Change",
 		"FRA": "Change"
 	},
+	"uploadSSLCertificatesMsg": {
+		"ENG": "Upload optional SSL certificates for Nginx in order to enable HTTPS",
+		"FRA": "Upload optional SSL certificates for Nginx in order to enable HTTPS"
+	},
+
 	//list-service-config
 	"reloadRegistry": {
 		"ENG": "Reload Registry",
@@ -1303,6 +1308,15 @@ var envTranslation ={
 	"warning": {
 		"ENG": "Warning",
 		"FRA": "Warning"
+	},
+	//upload certificates modal
+	"noAdditionalCertificatesRequired": {
+		"ENG": "No additional certificates are required",
+		"FRA": "No additional certificates are required"
+	},
+	"availableFilesOfType": {
+		"ENG": "Available files of type",
+		"FRA": "Available files of type"
 	}
 };
 
