@@ -33,16 +33,19 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                         for (var j = 0; j < response.hosts.length; j++) {
                             if (response.hosts[j].name === 'controller') {
-                                controllers.push({
-                                    'name': 'controller',
-                                    'hostname': response.hosts[j].hostname,
-                                    'ip': response.hosts[j].ip,
-                                    'cid': response.hosts[j].cid,
-	                                'version': response.hosts[j].version,
-                                    'color': 'red',
-                                    'port': 4000
-                                });
-
+	                            var info = {
+		                            'name': 'controller',
+		                            'hostname': response.hosts[j].hostname,
+		                            'ip': response.hosts[j].ip,
+		                            'cid': response.hosts[j].cid,
+		                            'version': response.hosts[j].version,
+		                            'color': 'red',
+		                            'port': 4000
+	                            };
+	                            if(response.hosts[j].src && response.hosts[j].src.branch){
+		                            info.branch = response.hosts[j].src.branch;
+	                            }
+                                controllers.push(info);
                             }
                         }
                         if (controllers.length > 0) {
