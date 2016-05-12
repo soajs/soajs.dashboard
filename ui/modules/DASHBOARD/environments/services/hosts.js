@@ -40,7 +40,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		                            'cid': response.hosts[j].cid,
 		                            'version': response.hosts[j].version,
 		                            'color': 'red',
-		                            'port': 4000
+		                            'port': 4000,
+                                    'type': 'service'
 	                            };
 	                            if(response.hosts[j].src && response.hosts[j].src.branch){
 		                            info.branch = response.hosts[j].src.branch;
@@ -179,7 +180,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						                'color': 'red',
 						                'downCount': 'N/A',
 						                'downSince': 'N/A',
-						                'port': regServices[serviceName].port
+						                'port': regServices[serviceName].port,
+                                        'type': regServices[serviceName].type
 					                };
 
 					                currentScope.hostList.forEach(function (origHostRec) {
@@ -1165,7 +1167,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             routeName: '/dashboard/gitAccounts/getBranches',
             params: {
                 'name': oneHost.name,
-                'type':  'service'//oneHost.type
+                'type': oneHost.type
             }
         }, function (error, response) {
             overlayLoading.hide();
