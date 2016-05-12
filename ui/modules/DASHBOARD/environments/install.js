@@ -1240,9 +1240,9 @@ var envTranslation ={
 		"ENG": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service.",
 		"FRA": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service."
 	},
-	"restartService": {
-		"ENG": "Restart Service",
-		"FRA": "Restart Service"
+	"restartHost": {
+		"ENG": "Restart Host",
+		"FRA": "Restart Host"
 	},
 	"theFollowingConfigurationModifiedEveryTimeReloadRegistryMaintenanceOperationRequiresServiceRestartContent": {
 		"ENG": "The following configuration is not affected by reloadRegistry maintenance operation and requires a service restart so that its content is modified.",
