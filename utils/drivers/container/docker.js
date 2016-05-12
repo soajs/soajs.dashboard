@@ -158,6 +158,20 @@ var deployer = {
 					}
 				});
 		});
+	},
+
+	"copy": function(deployerConfig, cid, mongo, src, dest, cb){
+		lib.getDeployer(deployerConfig, mongo, function(error, deployer){
+			checkError(error, cb, function(){
+				var container = deployer.getContainer(cid);
+				container.cp({
+					"SRC_PATH": src,
+					"DEST_PATH": dest
+				}, function(error){
+					return cb(error, true);
+				});
+			});
+		});
 	}
 };
 module.exports = deployer;
