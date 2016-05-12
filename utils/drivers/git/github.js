@@ -144,8 +144,8 @@ var lib = {
                 user: repoInfo[0],
                 repo: repoInfo[1]
             }, function (error, response) {
-                checkIfError(error && error.indexOf('API rate limit exceeded') !== -1, {code: 776, message: 'GitHub API limit exceeded for this IP'}, cb, function () {//in case limit was exceeded
-                    checkIfError(error && error.indexOf('Not Found') !== -1, {code: 767, message: 'Repository not found'}, cb, function () {//in case of invalid repo info
+                checkIfError(error && error.message && error.message.indexOf('API rate limit exceeded') !== -1, {code: 776, message: 'GitHub API limit exceeded for this IP'}, cb, function () {//in case limit was exceeded
+                    checkIfError(error && error.message && error.message.indexOf('Not Found') !== -1, {code: 767, message: 'Repository not found'}, cb, function () {//in case of invalid repo info
                         checkIfError(error, {code: 763}, cb, function () {//generic case
                             return cb (null, response);
                         });

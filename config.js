@@ -1979,6 +1979,41 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/redeployService": {
+			"_apiInfo": {
+				"l": "Redeploy Service",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode'],
+			"name": {
+				"required": false,
+				"source": ['body.name'],
+				"validation": {
+					"type": "string"
+				}
+			},
+			"hostname": {
+				"source": ['body.hostname'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"ip": {
+				"source": ['body.ip'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"branch": {
+				"source": ['body.branch'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
 		"/hosts/deployDaemon": {
 			"_apiInfo": {
 				"l": "Deploy New Daemon",

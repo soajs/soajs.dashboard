@@ -126,7 +126,54 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			'timeout': $timeout,
 			'name': 'editProfile',
 			'label': translation.editProfile[LANG],
-			'entries': [],
+			'entries': [
+				{
+					'name': 'firstName',
+					'label': translation.firstName[LANG],
+					'type': 'text',
+					'placeholder': translation.enterFirstName[LANG],
+					'value': '',
+					'tooltip': translation.enterFirstNameUser[LANG],
+					'required': true
+				},
+				{
+					'name': 'lastName',
+					'label': translation.lastName[LANG],
+					'type': 'text',
+					'placeholder': translation.enterLastName[LANG],
+					'value': '',
+					'tooltip': translation.enterLastNameUser[LANG],
+					'required': true
+				},
+				{
+					'name': 'email',
+					'label': translation.email[LANG],
+					'type': 'readonly',
+					'placeholder': translation.enterEmail[LANG],
+					'value': '',
+					'tooltip': translation.emailToolTip[LANG],
+					'required': true
+				},
+				{
+					'name': 'username',
+					'label': translation.username[LANG],
+					'type': 'text',
+					'placeholder': translation.enterUsername[LANG],
+					'value': '',
+					'tooltip': translation.usernamesToolTip[LANG],
+					'required': true
+				},
+				{
+					'name': 'profile',
+					'label': translation.profile[LANG],
+					'type': 'textarea',
+					'value': '',
+					'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
+					'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
+					'required': false,
+					'rows': 10
+				}
+			],
 			'data': {},
 			'actions': [
 				{
@@ -195,61 +242,11 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				else {
 					$scope.uId = response._id;
 					var p = JSON.stringify(response.profile, null, "\t");
-					formConfig.entries = [
-						{
-							'name': 'firstName',
-							'label': translation.firstName[LANG],
-							'type': 'text',
-							'placeholder': translation.enterFirstName[LANG],
-							'value': response.firstName,
-							'tooltip': translation.enterFirstNameUser[LANG],
-							'required': true
-						},
-						{
-							'name': 'lastName',
-							'label': translation.lastName[LANG],
-							'type': 'text',
-							'placeholder': translation.enterLastName[LANG],
-							'value': response.lastName,
-							'tooltip': translation.enterLastNameUser[LANG],
-							'required': true
-						},
-						{
-							'name': 'email',
-							'label': translation.email[LANG],
-							'type': 'readonly',
-							'placeholder': translation.enterEmail[LANG],
-							'value': response.email,
-							'tooltip': translation.emailToolTip[LANG],
-							'required': true
-						},
-						{
-							'name': 'username',
-							'label': translation.username[LANG],
-							'type': 'text',
-							'placeholder': translation.enterUsername[LANG],
-							'value': response.username,
-							'tooltip': translation.usernamesToolTip[LANG],
-							'required': true
-						},
-						{
-							'name': 'profile',
-							'label': translation.profile[LANG],
-							'type': 'textarea',
-							'value': p,
-							'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
-							'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
-							'required': false,
-							'rows': 10
-						}
-					];
-					//formConfig.data = response;
+					formConfig.data = response;
 					formConfig.data.profile = p;
-					//buildFormWithModal($scope, null, formConfig);
 					buildForm($scope, null, formConfig);
 
 					$scope.$parent.$emit('xferData', {'memberData': response});
-
 				}
 			});
 		};

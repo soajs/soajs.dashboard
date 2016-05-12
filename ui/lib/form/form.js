@@ -160,6 +160,16 @@ function buildForm(context, modal, configuration, cb) {
 		}
 
 		if (oneEntry.type === 'select') {
+			var lastObj;
+			for (var x = 0; x < oneEntry.value.length; x++) {
+				if (oneEntry.value[x].selected) {
+					lastObj = oneEntry.value[x];
+					oneEntry.value.splice(x, 1);
+					break;
+				}
+			}
+			oneEntry.value.push(lastObj);
+
 			if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
 				oneEntry.action = oneEntry.onChange;
 			}
@@ -231,6 +241,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 	};
+
 	context.form.call = function (action, id, data, form) {
 		if (action) {
 			if (typeof(action) == 'function') {
@@ -283,11 +294,6 @@ function buildForm(context, modal, configuration, cb) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
-	if (cb && (typeof(cb) == 'function')) {
-		context.form.timeout(function () {
-			cb();
-		}, 1000);
-	}
 
 	context.form.showHide = function (oneEntry) {
 		if (oneEntry.collapsed) {
@@ -377,6 +383,18 @@ function buildForm(context, modal, configuration, cb) {
 			return cb(new Error("Error Occured while uploading file: " + config.file));
 		});
 	};
+
+	context.form.timeout(function () {
+		if (!context.$$phase) {
+			context.$apply();
+		}
+	}, 500);
+
+	if (cb && (typeof(cb) == 'function')) {
+		context.form.timeout(function () {
+			cb();
+		}, 1000);
+	}
 }
 
 soajsApp.directive('ngform', function () {

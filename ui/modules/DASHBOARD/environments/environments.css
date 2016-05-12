@@ -15,6 +15,11 @@ ul {
     top: 4px;
 }
 
+.greyBoxCustom2 {
+    width: 40% !important;
+    text-align:left !important;
+}
+
 .mb20 {
     margin-bottom: 20px !important;
 }

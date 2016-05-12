@@ -1220,6 +1220,10 @@ tr.sApisEven {
     min-width: 154px;
 }
 
+.host-branch {
+    min-width: 154px;
+}
+
 .downSince {
     min-width: 180px;
 }
