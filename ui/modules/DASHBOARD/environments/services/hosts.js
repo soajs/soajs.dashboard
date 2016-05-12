@@ -1241,6 +1241,33 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function restartNginx (currentScope, env, nginxHost) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'send',
+            routeName: '/dashboard/hosts/nginx/redeploy',
+            params: {
+                envCode: env,
+                cid: nginxHost.cid
+            },
+            data: {
+                //hard coded data for testing purposes only
+                ssl: true,
+                nginxConfig: {
+                    customUIId: '57347f6f3584c81800d0da93',
+                    branch: 'master',
+                    commit: '415fb525dc5cd8d86fe2dd9c0639addb6142f055'
+                }
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
+            }
+            else {
+                currentScope.$parent.displayAlert('success', 'Nginx Host has been restarted successfully');
+            }
+        });
+    }
+
     function containerLogs (currentScope, env, container) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
@@ -1337,6 +1364,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'infoHost': infoHost,
         'createHost': createHost,
         'restartHost': restartHost,
+        'restartNginx': restartNginx,
         'containerLogs': containerLogs,
         'deleteContainer': deleteContainer,
         'listZombieContainers': listZombieContainers

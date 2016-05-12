@@ -178,6 +178,9 @@
 													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 													</a>
+													<a href="" ng-if="access.platforms.containers.restartNginx" ng-show="nginxHost.cid" ng-click="restartNginx(envCode, nginxHost)">
+														<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
+													</a>
 												</td>
 											</tr>
 										</tbody>
@@ -240,7 +243,7 @@
 														<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
 															<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 														</a>
-														<a href="" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
+														<a href="" ng-if="access.platforms.containers.restartHost" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
 															<span class="icon icon-loop2" title="{{translation.restartService[LANG]}}"></span>&nbsp;
 														</a>
 													</td>
