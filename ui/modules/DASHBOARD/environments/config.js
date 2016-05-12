@@ -414,7 +414,7 @@ var environmentsConfig = {
 				"delete": ['dashboard', '/environment/platforms/cert/delete']
 			},
 			"containers": {
-				"restartContainer": ['dashboard', '/environment/nginx/redeploy'],
+				"restartHost": ['dashboard', '/environment/nginx/redeploy'],
 				"restartNginx": ['dashboard', '/environment/hosts/redeployService']
 			}
 		}

@@ -1185,6 +1185,10 @@ var envTranslation ={
 		"ENG": "Host has been restarted successfully",
 		"FRA": "Host has been restarted successfully"
 	},
+	"restart": {
+		"ENG": "Restart",
+		"FRA": "Restart"
+	},
 	//list-platforms
 	"selected": {
 		"ENG": "Selected",
