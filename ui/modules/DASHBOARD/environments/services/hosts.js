@@ -1334,7 +1334,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         };
 
                         $scope.checkIfSSLIsEnabled = function () {
-                            $scope.nginxCerts.enabled = (nginxHost.info.Config.Env.indexOf('SOAJS_NX_API_HTTPS') !== -1 && nginxHost.info.Config.Env.indexOf('SOAJS_NX_SITE_HTTPS') !== -1);
+                            $scope.nginxCerts.enabled = (nginxHost.info.Config.Env.indexOf('SOAJS_NX_API_HTTPS=1') !== -1 && nginxHost.info.Config.Env.indexOf('SOAJS_NX_SITE_HTTPS=1') !== -1);
                         };
                         $scope.checkIfSSLIsEnabled();
 
