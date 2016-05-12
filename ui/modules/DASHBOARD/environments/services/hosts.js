@@ -1218,7 +1218,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                         currentScope.form.formData = {};
                                     }
                                     else {
-                                        currentScope.$parent.displayAlert('success', 'Host has been restarted successfully');
+                                        currentScope.$parent.displayAlert('success', translation.hostHasBeenRestartedSuccessfully[LANG]);
                                         currentScope.modalInstance.dismiss('cancel');
                                         currentScope.form.formData = {};
                                     }
@@ -1263,7 +1263,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
             }
             else {
-                currentScope.$parent.displayAlert('success', 'Nginx Host has been restarted successfully');
+                currentScope.$parent.displayAlert('success', translation.hostHasBeenRestartedSuccessfully[LANG]);
             }
         });
     }
