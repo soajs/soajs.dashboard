@@ -381,7 +381,7 @@ service.init(function() {
 	});
 	service.post("/hosts/redeployService", function(req, res){
 		initBLModel(req, res, hostBL, "host", function(BL) {
-			BL.deployService(config, req.soajs, res);
+			BL.redeployService(config, req.soajs, res);
 		});
 	});
 	service.post("/hosts/deployDaemon", function (req, res) {
