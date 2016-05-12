@@ -86,7 +86,7 @@ var lib = {
 				container[action](opts || null, function (error, response) {
 
 					checkError(error, cb, function () {
-						if (action === 'start') {
+						if (action === 'start' || action === 'restart') {
 							container.inspect(cb);
 						}
 						else return cb(null, response);
@@ -112,6 +112,14 @@ var deployer = {
 
 	"start": function (deployerConfig, cid, mongo, cb) {
 		lib.container(deployerConfig, "start", cid, mongo, null, cb);
+	},
+
+	"exec": function (deployerConfig, cid, mongo, opts, cb) {
+		lib.container(deployerConfig, "exec", cid, mongo, opts, cb);
+	},
+
+	"restart": function (deployerConfig, cid, mongo, cb) {
+		lib.container(deployerConfig, "restart", cid, mongo, null, cb);
 	},
 
 	"remove": function (deployerConfig, cid, mongo, cb) {

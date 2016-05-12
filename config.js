@@ -891,6 +891,58 @@ module.exports = {
 				}
 			}
 		},
+		"/environment/nginx/cert/upload": {
+			_apiInfo: {
+				"l": "Upload Nginx Certificates",
+				"group": "Environment Platforms"
+			}
+		},
+		"/environment/nginx/cert/list": {
+			_apiInfo: {
+				"l": "List Nginx Certificates",
+				"group": "Environment Platforms"
+			}
+		},
+		"/environment/nginx/cert/delete": {
+			_apiInfo: {
+				"l": "Delete Nginx Certificates",
+				"group": "Environment Platforms"
+			},
+			"id": {
+				"source": ['query.id'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/environment/nginx/cert/choose": {
+			_apiInfo: {
+				"l": "Choose Existing Nginx Certificates",
+				"group": "Environment Platforms"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"certIds": {
+				"source": ['body.certIds'],
+				"required": true,
+				"validation": {
+					"type": "array"
+				}
+			}
+		},
 
 		"/product/list": {
 			_apiInfo: {
@@ -1920,6 +1972,41 @@ module.exports = {
 			},
 			"commit": {
 				"source": ['body.commit'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hosts/redeployService": {
+			"_apiInfo": {
+				"l": "Redeploy Service",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode'],
+			"name": {
+				"required": false,
+				"source": ['body.name'],
+				"validation": {
+					"type": "string"
+				}
+			},
+			"hostname": {
+				"source": ['body.hostname'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"ip": {
+				"source": ['body.ip'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"branch": {
+				"source": ['body.branch'],
 				"required": true,
 				"validation": {
 					"type": "string"

@@ -8,6 +8,9 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
 
     $scope.platforms = [];
 
+    $scope.dockerImagePath = "./themes/" + themeToUse + "/img/docker_logo.png";
+    $scope.nginxImagePath = "./themes/" + themeToUse + "/img/nginx_logo.png";
+
     $scope.deployer = {
         type: "",
         selected: ""
@@ -21,15 +24,17 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
     };
 
     $scope.listPlatforms = function (envCode) {
-        envPlatforms.listPlatforms($scope, envCode);
+        envPlatforms.listPlatforms($scope, envCode, function () {
+            $scope.listNginxCerts();
+        });
     };
 
     $scope.editDriverConfig = function (driver) {
         envPlatforms.editDriverConfig($scope, driver);
     };
 
-    $scope.uploadCerts = function (driverName) {
-        envPlatforms.uploadCerts($scope, driverName);
+    $scope.uploadCerts = function (type, driverName) {
+        envPlatforms.uploadCerts($scope, type, driverName);
     };
 
     $scope.removeCert = function (certId, driverName) {
@@ -54,6 +59,14 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
 
     $scope.changeDeployerType = function () {
         envPlatforms.changeDeployerType ($scope);
+    };
+
+    $scope.listNginxCerts = function () {
+        envPlatforms.listNginxCerts($scope);
+    };
+
+    $scope.deleteNginxCert = function (certId) {
+        envPlatforms.deleteNginxCert($scope, certId);
     };
 
     if ($scope.access.platforms.list) {

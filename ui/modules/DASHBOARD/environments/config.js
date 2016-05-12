@@ -266,7 +266,7 @@ var environmentsConfig = {
 				}
 			]
 		},
-		"deploy": {
+		deploy: {
 			'name': '',
 			'label': '',
 			'actions': {},
@@ -353,6 +353,29 @@ var environmentsConfig = {
 					'value': ''
 				}
 			]
+		},
+		restartHost: {
+			'entries': [
+				{
+					'name': 'branch',
+					'label': 'Select branch to be used in order to restart host',
+					'type': 'select',
+					'tooltip': 'Select Branch',
+					'required': true,
+					'value': []
+				}
+			]
+		}
+	},
+	nginxRequiredCerts: {
+		certificate: {
+			label: 'Chained Certificate',
+			extension: '.crt'
+		},
+		privateKey: {
+			label: 'Private Key',
+			extension: '.key',
+			msg: 'Key from SSL Provider'
 		}
 	},
 	permissions: {

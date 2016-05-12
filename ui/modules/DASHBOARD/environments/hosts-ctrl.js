@@ -93,6 +93,10 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
 	};
 
+	$scope.restartHost = function (env, oneHost) {
+		envHosts.restartHost($scope, env, oneHost);
+	}
+
 	$scope.hostLogs = function (env, serviceName, oneHost, serviceInfo) {
 		envHosts.hostLogs($scope, env, serviceName, oneHost, serviceInfo);
 	};

@@ -9,9 +9,9 @@ var envTranslation ={
 		"ENG": "Registries",
 		"FRA": "Registries"
 	},
-	"platforms": {
-		"ENG": "Platforms",
-		"FRA": "Platforms"
+	"platformsAndCertificates": {
+		"ENG": "Platforms & Certificates",
+		"FRA": "Platforms & Certificates"
 	},
 	"clusters": {
 		"ENG": "Clusters",
@@ -1218,6 +1218,19 @@ var envTranslation ={
 		"ENG": "Change",
 		"FRA": "Change"
 	},
+	"uploadSSLCertificatesMsg": {
+		"ENG": "Upload optional SSL certificates for Nginx in order to enable HTTPS",
+		"FRA": "Upload optional SSL certificates for Nginx in order to enable HTTPS"
+	},
+	"chainedCertificate": {
+		"ENG": "Chained Certificate",
+		"FRA": "Chained Certificate"
+	},
+	"privateKey": {
+		"ENG": "Private Key",
+		"FRA": "Private Key"
+	},
+
 	//list-service-config
 	"reloadRegistry": {
 		"ENG": "Reload Registry",
@@ -1227,9 +1240,9 @@ var envTranslation ={
 		"ENG": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service.",
 		"FRA": "The following configuration is modified every time a reloadRegistry maintenance operation is executed on a service."
 	},
-	"restartService": {
-		"ENG": "Restart Service",
-		"FRA": "Restart Service"
+	"restartHost": {
+		"ENG": "Restart Host",
+		"FRA": "Restart Host"
 	},
 	"theFollowingConfigurationModifiedEveryTimeReloadRegistryMaintenanceOperationRequiresServiceRestartContent": {
 		"ENG": "The following configuration is not affected by reloadRegistry maintenance operation and requires a service restart so that its content is modified.",
@@ -1303,6 +1316,15 @@ var envTranslation ={
 	"warning": {
 		"ENG": "Warning",
 		"FRA": "Warning"
+	},
+	//upload certificates modal
+	"noAdditionalCertificatesRequired": {
+		"ENG": "No additional certificates are required",
+		"FRA": "No additional certificates are required"
+	},
+	"availableFilesOfType": {
+		"ENG": "Available files of type",
+		"FRA": "Available files of type"
 	}
 };
 
@@ -1337,7 +1359,7 @@ var environmentsNav = [
 			'service': 'dashboard',
 			'route': '/environment/platforms/list'
 		},
-		'label': translation.platforms[LANG],
+		'label': translation.platformsAndCertificates[LANG],
 		'url': '#/environments-platforms',
 		'tplPath': 'modules/DASHBOARD/environments/directives/list-platforms.tmpl',
 		'icon': 'download3',
