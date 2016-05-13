@@ -168,10 +168,18 @@ var deployer = {
 				var container = deployer.getContainer(cid);
 
 				var d = dest.split("/");
-				d.pop();
+				var filename = d.pop();
 				d = d.join("/") + "/";
 
-				// var file = fs.createReadStream(src, "utf8");
+				var file = fs.createReadStream(src, "utf8");
+				var packer = tar.Pack({}).on('error', function (error) {
+					console.log (error);
+				}).on('end', function () {
+					console.log ('done');
+				});
+				var tarWriteStream = fs.createWriteStream(src + '.tar');
+				file.pipe(packer).pipe(tarWriteStream);
+				var tarFile = fs.createReadStream(src + '.tar');
 
 				var opts = {
 					"path": d,
@@ -179,7 +187,7 @@ var deployer = {
 				};
 
 				console.log(opts);
-				container.putArchive(file, opts, function(error, data){
+				container.putArchive(tarFile, opts, function(error, data){
 					console.log(error);
 					console.log(data);
 					console.log("-----------");
