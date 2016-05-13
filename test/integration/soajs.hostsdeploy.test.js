@@ -142,6 +142,7 @@ describe("testing hosts deployment", function () {
                                 qs: {
                                     filename: 'test_cert.pem',
                                     envCode: 'DEV',
+                                    type: 'docker',
                                     driver: 'dockermachine - local'
                                 },
                                 formData: {

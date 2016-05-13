@@ -98,6 +98,7 @@ describe("Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
+                    type: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -117,6 +118,7 @@ describe("Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
+                    type: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -135,7 +137,8 @@ describe("Certificates tests", function () {
             var params = {
                 qs: {
                     filename: 'test_cert.pem',
-                    driver: 'dockermachine - local'
+                    driver: 'dockermachine - local',
+                    type: 'docker'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -162,6 +165,7 @@ describe("Certificates tests", function () {
                     "chunkSize":261120,
                     "aliases":null,
                     "metadata": {
+                        "type": "docker",
                         "env": {
                             "DEV": ["dockermachine - local"]
                         }
@@ -279,6 +283,7 @@ describe("Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
+                    type: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -294,6 +299,7 @@ describe("Certificates tests", function () {
                     qs: {
                         filename: 'test_cert_2.pem',
                         envCode: 'DEV',
+                        type: 'docker',
                         driver: 'dockermachine - local'
                     },
                     formData: {
@@ -419,6 +425,7 @@ describe("Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
+                                "type": "docker",
                                 "env": {
                                     "DEV": [
                                         "dockermachine - local"
@@ -438,6 +445,7 @@ describe("Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
+                                "type": "docker",
                                 "env": {
                                     "DEV": [
                                         "dockermachine - local"
