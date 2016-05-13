@@ -359,6 +359,13 @@ service.init(function() {
 			BL.listNginx(config, req.soajs, res);
 		});
 	});
+
+	service.post("/hosts/nginx/redeploy", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.redeployNginx(config, req.soajs, res);
+		});
+	});
+
 	service.get("/hosts/delete", function(req, res) {
 		initBLModel(req, res, hostBL, "host", function(BL) {
 			BL.delete(config, req.soajs, res);

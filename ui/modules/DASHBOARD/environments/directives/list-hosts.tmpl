@@ -113,6 +113,47 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="restartNginx.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body">
+		<div ng-if="notification.message">
+			<alert type="{{notification.type}}">{{notification.message}}</alert>
+			<br />
+		</div>
+		<fieldset>
+			<legend>
+				SSL Configuration
+			</legend>
+			<label ng-if="nginxCerts.allowActivate">
+				<input type="checkbox" ng-model="nginxCerts.enabled" ng-true-value="true" ng-false-value="false" />&nbsp;Enable SSL
+			</label>
+			<alert ng-if="!nginxCerts.allowActivate" type="warning">You need to upload a Chained Certificate and Private Key in the Platforms & Certificates section in order to be able to enable SSL</alert>
+		</fieldset>
+		<fieldset>
+			<legend>
+				UI Configuration
+			</legend>
+			<label>
+				<input type="checkbox" ng-model="staticContent.enabled" ng-true-value="true" ng-false-value="false" ng-change="toggleStaticContent()" />&nbsp;Include Static Content
+			</label>
+			<div ng-if="staticContent.enabled">
+				<br />
+				<label>Static Content Name</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loading.staticContent" />
+				<select class="form-control" ng-required="true" ng-options="sc as sc.name for sc in staticContent.list" ng-model="staticContent.selected" ng-change="getStaticContentBranches()"></select>
+				<br />
+				<label>Branch</label><img class="loadingImage" ng-src={{imagePath}} ng-if="loading.branches" />
+				<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in staticContent.branches" ng-model="staticContent.selectedBranch"></select>
+			</div>
+		</fieldset>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">{{translation.restart[LANG]}}</button>
+		<button class="btn btn-danger" ng-click="closeModal()">{{translation.cancel[LANG]}}</button>
+	</div>
+</script>
+
 <section ng-controller="hostsCtrl">
 	<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
 		<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
@@ -178,6 +219,9 @@
 													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 													</a>
+													<a href="" ng-if="access.platforms.containers.restartNginx" ng-show="nginxHost.cid" ng-click="restartNginx(envCode, nginxHost)">
+														<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
+													</a>
 												</td>
 											</tr>
 										</tbody>
@@ -220,7 +264,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td valign="top" width="7.0%">
+													<td valign="top" width="6.5%">
 														<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
 															<span class="icon icon-heart"></span>&nbsp;
 														</a>
@@ -240,8 +284,8 @@
 														<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
 															<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 														</a>
-														<a href="" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
-															<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
+														<a href="" ng-if="access.platforms.containers.restartHost" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
+															<span class="icon icon-loop2" title="{{translation.restartService[LANG]}}"></span>&nbsp;
 														</a>
 													</td>
 												</tr>
@@ -301,7 +345,7 @@
 																		</td>
 																	</tr>
 																	<tr>
-																		<td valign="top" width="26%">
+																		<td valign="top" width="24%">
 																			<a href="" ng-click="executeHeartbeatTest(envCode, oneIp)" title="{{translation.executeHeartbeatOperation[LANG]}}">
 																				<span class="icon icon-heart"></span>&nbsp;
 																			</a>
@@ -328,7 +372,7 @@
 																			<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
 																			<!--</a>-->
 																			<a href="" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
-																				<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
+																				<span class="icon icon-loop2" title="{{translation.restartService[LANG]}}"></span>&nbsp;
 																			</a>
 																		</td>
 																		<!--<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br /><b>IP:</b>&nbsp;{{oneIp.ip}}<br /><b>Version:</b>&nbsp;{{version}}</span></td>-->

@@ -678,6 +678,10 @@ var environmentsConfig = {
 				"upload": ['dashboard', '/environment/platforms/cert/upload'],
 				"choose": ['dashboard', '/environment/platforms/cert/choose'],
 				"delete": ['dashboard', '/environment/platforms/cert/delete']
+			},
+			"containers": {
+				"restartHost": ['dashboard', '/environment/nginx/redeploy'],
+				"restartNginx": ['dashboard', '/environment/hosts/redeployService']
 			}
 		}
 	}
