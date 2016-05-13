@@ -186,6 +186,14 @@ function buildForm(context, modal, configuration, cb) {
 					rebuildData(oneSubEntry);
 				});
 			}
+			else if (context.form.entries[i].type === 'tabset') {
+				console.log(context.form.entries[i]);
+				context.form.entries[i].tabs.forEach(function (oneTab) {
+					oneTab.entries.forEach(function(oneSubEntry){
+						rebuildData(oneSubEntry);
+					});
+				});
+			}
 			else {
 				rebuildData(context.form.entries[i]);
 			}
@@ -257,6 +265,11 @@ function buildForm(context, modal, configuration, cb) {
 				var validation = doValidateItems(oneEntry.entries, data);
 				if (validation === false) {
 					return false;
+				}
+			}
+			if (oneEntry.type === 'tabset') {
+				for (var i = 0; i < oneEntry.tabs.length; i++) {
+
 				}
 			}
 			else if (oneEntry.type === 'radio' || oneEntry.type === 'select') {

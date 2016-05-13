@@ -51,6 +51,10 @@
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/group.tmpl'"></div>
 				</td>
 
+				<td ng-switch-when="tabset">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/tabSet.tmpl'"></div>
+				</td>
+
 				<td ng-switch-when="document">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/document.tmpl'"></div>
 				</td>
