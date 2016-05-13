@@ -1,5 +1,6 @@
 "use strict";
-var shelljs = require("shelljs");
+var fs = require("fs");
+var tar = require("tar");
 var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
@@ -162,19 +163,30 @@ var deployer = {
 	},
 
 	"copy": function(deployerConfig, cid, mongo, src, dest, cb){
-		// lib.getDeployer(deployerConfig, mongo, function(error, deployer){
-		// 	checkError(error, cb, function(){
-		// 		var container = deployer.getContainer(cid);
-		// 		container.cp({
-		// 			"SRC_PATH": src,
-		// 			"DEST_PATH": dest
-		// 		}, function(error){
-		// 			return cb(error, true);
-		// 		});
-		// 	});
-		// });
-		shelljs.exec("docker cp " + cid + ":" + src + " " + dest);
-		return cb(null, true);
+		lib.getDeployer(deployerConfig, mongo, function(error, deployer){
+			checkError(error, cb, function(){
+				var container = deployer.getContainer(cid);
+
+				var d = dest.split("/");
+				d.pop();
+				d = d.join("/") + "/";
+
+				// var file = fs.createReadStream(src, "utf8");
+
+				var opts = {
+					"path": d,
+					"noOverwriteDirNonDir": false //override existing files
+				};
+
+				console.log(opts);
+				container.putArchive(file, opts, function(error, data){
+					console.log(error);
+					console.log(data);
+					console.log("-----------");
+					return cb(error, true);
+				});
+			});
+		});
 	}
 };
 module.exports = deployer;
