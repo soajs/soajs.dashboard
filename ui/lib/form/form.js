@@ -384,12 +384,6 @@ function buildForm(context, modal, configuration, cb) {
 		});
 	};
 
-	context.form.timeout(function () {
-		if (!context.$$phase) {
-			context.$apply();
-		}
-	}, 500);
-
 	if (cb && (typeof(cb) == 'function')) {
 		context.form.timeout(function () {
 			cb();
