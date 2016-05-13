@@ -1,4 +1,5 @@
 "use strict";
+var shelljs = require("shelljs");
 var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
@@ -161,17 +162,19 @@ var deployer = {
 	},
 
 	"copy": function(deployerConfig, cid, mongo, src, dest, cb){
-		lib.getDeployer(deployerConfig, mongo, function(error, deployer){
-			checkError(error, cb, function(){
-				var container = deployer.getContainer(cid);
-				container.cp({
-					"SRC_PATH": src,
-					"DEST_PATH": dest
-				}, function(error){
-					return cb(error, true);
-				});
-			});
-		});
+		// lib.getDeployer(deployerConfig, mongo, function(error, deployer){
+		// 	checkError(error, cb, function(){
+		// 		var container = deployer.getContainer(cid);
+		// 		container.cp({
+		// 			"SRC_PATH": src,
+		// 			"DEST_PATH": dest
+		// 		}, function(error){
+		// 			return cb(error, true);
+		// 		});
+		// 	});
+		// });
+		shelljs.exec("docker cp " + cid + ":" + src + " " + dest);
+		return cb(null, true);
 	}
 };
 module.exports = deployer;
