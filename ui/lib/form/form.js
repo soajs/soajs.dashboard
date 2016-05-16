@@ -168,7 +168,10 @@ function buildForm(context, modal, configuration, cb) {
 					break;
 				}
 			}
-			oneEntry.value.push(lastObj);
+
+			if (lastObj) {
+				oneEntry.value.push(lastObj);
+			}
 
 			if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
 				oneEntry.action = oneEntry.onChange;

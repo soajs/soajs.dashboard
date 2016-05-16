@@ -198,6 +198,9 @@ var errors = {
 
 	"778": "The git account provider is missing or not supported",
 
+	"779": "Unable to complete Reload Registry operation for controllers",
+	"780": "Unable to redeploy service",
+
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
 	903: "You do not have access to this environment %envCode%"

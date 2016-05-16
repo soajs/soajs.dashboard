@@ -612,27 +612,6 @@ describe("testing hosts deployment", function () {
 
     describe("testing daemon deployment", function () {
         var gcRecord;
-        before("add a gc daemon", function (done) {
-            mongo.findOne('gc', {}, function (error, gcr) {
-                assert.ifError(error);
-                assert.ok(gcr);
-
-                gcRecord = gcr;
-                var daemonGcRecord = {
-                    name: gcRecord.name,
-                    gcId: gcRecord._id.toString(),
-                    gcV: gcRecord.v,
-                    port: 1111,
-                    jobs: {}
-                };
-                mongo.insert("daemons", daemonGcRecord, function (error, result) {
-                    assert.ifError(error);
-                    assert.ok(result);
-                    done();
-                });
-            });
-        });
-
         it("success - deploy 1 daemon", function (done) {
             var params = {
                 headers: {
@@ -728,32 +707,6 @@ describe("testing hosts deployment", function () {
                 });
             });
         });
-
-        // it("success - deploy 1 gc daemon", function (done) {
-        //     var params = {
-        //         headers: {
-        //             soajsauth: soajsauth
-        //         },
-        //         "form": {
-        //             "gcName": gcRecord.name,
-        //             "gcVersion": gcRecord.v,
-        //             "grpConfName": "group1",
-        //             "envCode": "DEV",
-        //             "owner": "soajs",
-        //             "repo": "soajs.dashboard", //dummy value, does not need to be accurate
-        //             "branch": "develop",
-        //             "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-        //             "variables": [
-        //                 "TEST_VAR=mocha"
-        //             ]
-        //         }
-        //     };
-        //     executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
-        //         assert.ok(body.result);
-        //         assert.ok(body.data);
-        //         done();
-        //     });
-        // });
 
         it("fail - missing required params", function (done) {
             var params = {
@@ -1163,6 +1116,35 @@ describe("testing hosts deployment", function () {
                     assert.ifError(error);
                     assert.equal(count, 1);
                     done();
+                });
+            });
+        });
+    });
+
+    describe.skip("testing redeployment", function () {
+        it("success - will redeploy service", function (done) {
+            //Test case is failing because the api /containers/:id/exec is not yet implemented in docker-mock
+            //update controller hosts record, change ip to 127.0.0.1 to avoid error performing maintenance operation
+            mongo.update("hosts", {name: 'controller'}, {'$set': {ip: '127.0.0.1'}}, {multi: true}, function (error) {
+                assert.ifError(error);
+
+                mongo.findOne("hosts", {env: 'dev', hostname: /urac_[0-9a-z]*_dev/}, function (error, hostRecord) {
+                    assert.ifError(error);
+                    assert.ok(hostRecord);
+
+                    var params = {
+                        form: {
+                            envCode: 'DEV',
+                            name: hostRecord.name,
+                            hostname: hostRecord.hostname,
+                            ip: hostRecord.ip,
+                            branch: hostRecord.src.branch
+                        }
+                    };
+                    executeMyRequest(params, 'hosts/redeployService', 'post', function (body) {
+                        assert.ok(body.result);
+                        done();
+                    });
                 });
             });
         });
