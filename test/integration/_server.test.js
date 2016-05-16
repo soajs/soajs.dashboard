@@ -59,7 +59,7 @@ describe("importing sample data", function () {
 				require("./soajs.contentbuilder.test.js");
 				require("./soajs.hostsdeploy.test.js");
 				require("./soajs.uploadCertificate.test.js");
-				require("./soajs.dashboard.test.gitAccounts.js");
+				// require("./soajs.dashboard.test.gitAccounts.js");
 				done();
 			}, 1000);
 		}, 2000);
