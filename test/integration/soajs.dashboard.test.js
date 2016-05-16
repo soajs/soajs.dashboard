@@ -75,7 +75,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 	describe("environment tests", function () {
 		var validEnvRecord = {
 			"code": "DEV",
-			"port": 8080,
 			"domain": "api.myDomain.com",
 			"apiPrefix": "api",
 			"sitePrefix": "site",
@@ -354,7 +353,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						"domain": "api.myDomain.com",
 						"profile": validEnvRecord.profile,
-						"port": validEnvRecord.port,
 						"description": 'this is a dummy updated description',
 						"services": validEnvRecord.services
 					}
@@ -376,7 +374,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'environment/update', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 172,
-						"message": "Missing required field: domain, services, port"
+						"message": "Missing required field: domain, services"
 					});
 					done();
 				});
@@ -388,7 +386,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					form: {
 						"domain": validEnvRecord.profile,
 						"profile": validEnvRecord.profile,
-						"port": validEnvRecord.port,
 						"description": 'this is a dummy description',
 						"services": validEnvRecord.services
 					}
@@ -1337,7 +1334,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"apiPrefix": "api",
 						"sitePrefix": "site",
-						"port": 8080,
 						"description": "this is a dummy description",
 						"services": {
 							"controller": {

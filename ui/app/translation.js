@@ -1593,7 +1593,14 @@ var errorCodes = {
 			"ENG": "The git account provider is missing or not supported",
 			"FRA": "The git account provider is missing or not supported"
 		},
-
+		"779": {
+			"ENG": "Unable to complete Reload Registry operation for controllers",
+			"FRA": "Unable to complete Reload Registry operation for controllers"
+		},
+		"780": {
+			"ENG": "Unable to redeploy service",
+			"FRA": "Unable to redeploy service"
+		},
 		"901": {
 			"ENG": "Error Logging out from environments.",
 			"FRA": "Error Logging out from environments."
