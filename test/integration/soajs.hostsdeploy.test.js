@@ -1121,14 +1121,12 @@ describe("testing hosts deployment", function () {
         });
     });
 
-    describe.skip("testing redeployment", function () {
+    describe("testing redeployment", function () {
         it("success - will redeploy service", function (done) {
-            //Test case is failing because the api /containers/:id/exec is not yet implemented in docker-mock
-            //update controller hosts record, change ip to 127.0.0.1 to avoid error performing maintenance operation
-            mongo.update("hosts", {name: 'controller'}, {'$set': {ip: '127.0.0.1'}}, {multi: true}, function (error) {
+            mongo.remove("hosts", {hostname: /controller_[0-9a-z]*_dev/}, function (error) {
                 assert.ifError(error);
 
-                mongo.findOne("hosts", {env: 'dev', hostname: /urac_[0-9a-z]*_dev/}, function (error, hostRecord) {
+                mongo.findOne("hosts", {env: 'dev', hostname: /helloDaemon_[0-9a-z]*_dev/}, function (error, hostRecord) {
                     assert.ifError(error);
                     assert.ok(hostRecord);
 
@@ -1143,6 +1141,8 @@ describe("testing hosts deployment", function () {
                     };
                     executeMyRequest(params, 'hosts/redeployService', 'post', function (body) {
                         assert.ok(body.result);
+                        assert.ok(body.data);
+
                         done();
                     });
                 });
