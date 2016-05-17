@@ -33,7 +33,7 @@
     "lodash": "*",
     "mocha": "*",
     "shelljs": "*",
-    "docker-mock": "*"
+    "docker-mock": "aff04/docker-mock.git"
   },
   "dependencies": {
     "async": "*",
