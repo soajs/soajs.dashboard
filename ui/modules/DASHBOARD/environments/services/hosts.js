@@ -883,6 +883,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     currentScope.branches = [];
                     currentScope.branch = '';
                     currentScope.groupConfigs = '';
+                    currentScope.conflict = '';
+                    currentScope.conflictCommits = {};
 
                     if (service.type === 'daemon' && service.grpConf) {
                         currentScope.groupConfigs = service.grpConf;
