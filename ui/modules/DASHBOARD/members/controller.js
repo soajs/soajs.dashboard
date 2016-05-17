@@ -380,25 +380,28 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 		$scope.clearUserAcl = function () {
 			var postData = $scope.user;
 
-			if (typeof(postData.config) !== 'object') {
+			if (typeof(postData.config) === 'object') {
+				if (typeof(postData.config.packages) === 'object') {
+					$scope.tenantApp.applications.forEach(function (oneApplication) {
+						if (postData.config.packages[oneApplication.package]) {
+							if (postData.config.packages[oneApplication.package].acl) {
+								delete postData.config.packages[oneApplication.package].acl;
+							}
+						}
+					});
+				}
+				else {
+					postData.config.packages = {};
+				}
+			}
+			else {
 				postData.config = {};
 			}
 
-			if (typeof(postData.config.packages) !== 'object') {
-				postData.config.packages = {};
-			}
-
-			$scope.tenantApp.applications.forEach(function (oneApplication) {
-				if (postData.config.packages[oneApplication.package]) {
-					if (postData.config.packages[oneApplication.package].acl) {
-						delete postData.config.packages[oneApplication.package].acl;
-					}
-				}
-			});
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "send",
-				"routeName": "/urac/admin/editUser",
+				"routeName": "/urac/admin/editUserConfig",
 				"params": {"uId": $scope.user['_id']},
 				"data": postData
 			}, function (error) {
@@ -417,11 +420,15 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		$scope.saveUserAcl = function () {
 			var postData = $scope.user;
-			if (typeof(postData.config) !== 'object') {
-				postData.config = {};
+			if (typeof(postData.config) === 'object') {
+				if (typeof(postData.config.packages) !== 'object') {
+					postData.config.packages = {};
+				}
 			}
-			if (typeof(postData.config.packages) !== 'object') {
-				postData.config.packages = {};
+			else {
+				postData.config = {
+					packages: {}
+				};
 			}
 
 			var counter = 0;
@@ -451,7 +458,7 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 					"headers": {
 						"key": $scope.key
 					},
-					"routeName": "/urac/admin/editUser", //editUserConfig
+					"routeName": "/urac/admin/editUserConfig",
 					"params": {"uId": $scope.user['_id']},
 					"data": postData
 				}, function (error) {

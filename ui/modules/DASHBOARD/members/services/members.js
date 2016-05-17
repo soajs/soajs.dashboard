@@ -52,7 +52,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				'handler': 'editMember'
 			});
 		}
-		if (currentScope.access.adminUser.editUserAcl) {
+		if (currentScope.access.adminUser.editUserConfig) {
 			options.left.push({
 				'label': translation.editACL[LANG],
 				'icon': 'unlocked',

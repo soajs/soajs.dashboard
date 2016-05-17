@@ -8,15 +8,15 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 	formConfig.buttonLabels = opts.buttonLabels;
 	formConfig.data = opts.data;
 	formConfig.ngDataApi = opts.ngDataApi;
-
+	
 	var m = ($modal && $modal !== null) ? true : false;
-
+	
 	buildForm($scope, m, formConfig, function () {
 		if (opts.postBuild && (typeof(opts.postBuild) == 'function')) {
 			opts.postBuild();
 		}
 	});
-
+	
 	if ($modal && $modal !== null) {
 		var formContext = $scope;
 		$scope.form.openForm = function () {
@@ -38,11 +38,11 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 			});
 		};
 		$scope.form.openForm();
-
+		
 		$scope.form.closeModal = function () {
 			$scope.modalInstance.close();
 		};
-
+		
 	}
 }
 
@@ -59,11 +59,11 @@ function buildForm(context, modal, configuration, cb) {
 		labels: {},
 		formData: {}
 	};
-
+	
 	context.form.closeAlert = function (i) {
 		context.form.alerts.splice(i, 1);
 	};
-
+	
 	context.form.displayAlert = function (type, msg, isCode, service, orgMesg) {
 		context.form.alerts = [];
 		if (isCode) {
@@ -75,7 +75,7 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.alerts.push({'type': type, 'msg': msg});
 		context.form.closeAllAlerts();
 	};
-
+	
 	context.form.closeAllAlerts = function (instant) {
 		if (instant) {
 			context.form.alerts = [];
@@ -86,10 +86,11 @@ function buildForm(context, modal, configuration, cb) {
 			}, 7000);
 		}
 	};
-
+	
 	function rebuildData(fieldEntry) {
 		var keys = Object.keys(configuration.data);
-		keys.forEach(function (inputName) {
+		for (var x = 0; x < keys.length; x++) {
+			var inputName = keys[x];
 			if (fieldEntry.name === inputName) {
 				if (Array.isArray(fieldEntry.value)) {
 					fieldEntry.value.forEach(function (oneValue) {
@@ -105,13 +106,16 @@ function buildForm(context, modal, configuration, cb) {
 					});
 				}
 				else {
-					fieldEntry.value = configuration.data[inputName];
-					context.form.formData[inputName] = configuration.data[inputName];
+					if (configuration.data[inputName]) {
+						fieldEntry.value = configuration.data[inputName];
+						context.form.formData[inputName] = configuration.data[inputName];
+					}
 				}
+				break;
 			}
-		});
+		}
 	}
-
+	
 	function updateFormData(oneEntry) {
 		if (oneEntry.value) {
 			if (Array.isArray(oneEntry.value)) {
@@ -131,7 +135,7 @@ function buildForm(context, modal, configuration, cb) {
 				context.form.formData[oneEntry.name] = oneEntry.value;
 			}
 		}
-
+		
 		if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
 			if (oneEntry.limit === undefined) {
 				oneEntry.limit = 0;
@@ -139,26 +143,26 @@ function buildForm(context, modal, configuration, cb) {
 			else if (oneEntry.limit === 0) {
 				oneEntry.addMore = true;
 			}
-
+			
 			if (oneEntry.value && Array.isArray(oneEntry.value) && oneEntry.value.length > 0) {
 				if (oneEntry.limit < oneEntry.value.length) {
 					oneEntry.limit = oneEntry.value.length;
 				}
 			}
 		}
-
+		
 		if (oneEntry.type === 'date-picker') {
 			if (typeof(oneEntry.min) === 'object') {
 				oneEntry.min = oneEntry.min.getTime();
 			}
-
+			
 			oneEntry.openDate = function ($event, index) {
 				$event.preventDefault();
 				$event.stopPropagation();
 				context.form.entries[index].opened = true;
 			};
 		}
-
+		
 		if (oneEntry.type === 'select') {
 			var lastObj;
 			for (var x = 0; x < oneEntry.value.length; x++) {
@@ -168,11 +172,10 @@ function buildForm(context, modal, configuration, cb) {
 					break;
 				}
 			}
-
 			if (lastObj) {
 				oneEntry.value.push(lastObj);
 			}
-
+			
 			if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
 				oneEntry.action = oneEntry.onChange;
 			}
@@ -181,12 +184,19 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 	}
-
+	
 	if (configuration.data) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
 				context.form.entries[i].entries.forEach(function (oneSubEntry) {
 					rebuildData(oneSubEntry);
+				});
+			}
+			else if (context.form.entries[i].type === 'tabset') {
+				context.form.entries[i].tabs.forEach(function (oneTab) {
+					oneTab.entries.forEach(function (oneSubEntry) {
+						rebuildData(oneSubEntry);
+					});
 				});
 			}
 			else {
@@ -195,7 +205,7 @@ function buildForm(context, modal, configuration, cb) {
 		}
 		context.form.refData = configuration.data;
 	}
-
+	
 	for (var i = 0; i < context.form.entries.length; i++) {
 		if (context.form.entries[i].type === 'group') {
 			context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
@@ -203,11 +213,18 @@ function buildForm(context, modal, configuration, cb) {
 				updateFormData(oneSubEntry);
 			});
 		}
+		else if (context.form.entries[i].type === 'tabset') {
+			context.form.entries[i].tabs.forEach(function (oneTab) {
+				oneTab.entries.forEach(function (oneSubEntry) {
+					updateFormData(oneSubEntry);
+				});
+			});
+		}
 		else {
 			updateFormData(context.form.entries[i]);
 		}
 	}
-
+	
 	context.form.do = function (functionObj) {
 		var formDataKeys = Object.keys(context.form.formData);
 		var fileTypes = ['document', 'image', 'audio', 'video'];
@@ -236,7 +253,7 @@ function buildForm(context, modal, configuration, cb) {
 			functionObj.action();
 		}
 	};
-
+	
 	context.form.callObj = function (functionObj) {
 		if (functionObj) {
 			if (functionObj.action) {
@@ -244,7 +261,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 	};
-
+	
 	context.form.call = function (action, id, data, form) {
 		if (action) {
 			if (typeof(action) == 'function') {
@@ -252,7 +269,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		}
 	};
-
+	
 	function doValidateItems(entries, data) {
 		for (var i = 0; i < entries.length; i++) {
 			var oneEntry = entries[i];
@@ -260,6 +277,16 @@ function buildForm(context, modal, configuration, cb) {
 				var validation = doValidateItems(oneEntry.entries, data);
 				if (validation === false) {
 					return false;
+				}
+			}
+			else if (oneEntry.type === 'tabset') {
+				for (var x = 0; x < oneEntry.tabs.length; x++) {
+					for (var k = 0; k < oneEntry.tabs[x].entries.length; k++) {
+						var validation = doValidateItems(oneEntry.tabs[x].entries[k], data);
+						if (validation === false) {
+							return false;
+						}
+					}
 				}
 			}
 			else if (oneEntry.type === 'radio' || oneEntry.type === 'select') {
@@ -277,18 +304,18 @@ function buildForm(context, modal, configuration, cb) {
 		}
 		return true;
 	}
-
+	
 	// testAction
 	context.form.itemsAreValid = function (data) {
 		var entries = context.form.entries;
 		return doValidateItems(entries, data);
 	};
-
+	
 	context.form.toggleSelection = function (fieldName, value) {
 		if (!context.form.formData[fieldName]) {
 			context.form.formData[fieldName] = [];
 		}
-
+		
 		if (context.form.formData[fieldName].indexOf(value) === -1) {
 			context.form.formData[fieldName].push(value);
 		}
@@ -297,7 +324,7 @@ function buildForm(context, modal, configuration, cb) {
 			context.form.formData[fieldName].splice(idx, 1);
 		}
 	};
-
+	
 	context.form.showHide = function (oneEntry) {
 		if (oneEntry.collapsed) {
 			oneEntry.collapsed = false;
@@ -308,7 +335,7 @@ function buildForm(context, modal, configuration, cb) {
 			oneEntry.icon = "plus";
 		}
 	};
-
+	
 	context.form.addNewInput = function (input) {
 		if (input.limit === 0) {
 			input.limit = 1;
@@ -316,7 +343,7 @@ function buildForm(context, modal, configuration, cb) {
 		input.limit++;
 		input.addMore = true;
 	};
-
+	
 	context.form.downloadFile = function (config, mediaType) {
 		var options = {
 			routeName: config.routeName,
@@ -338,7 +365,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		});
 	};
-
+	
 	context.form.removeFile = function (entry, i) {
 		getSendDataFromServer(context, configuration.ngDataApi, {
 			"method": "get",
@@ -356,7 +383,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		});
 	};
-
+	
 	context.form.uploadFileToUrl = function (Upload, config, cb) {
 		var options = {
 			url: apiConfiguration.domain + config.uploadUrl,
@@ -371,7 +398,7 @@ function buildForm(context, modal, configuration, cb) {
 				options.headers[i] = config.headers[i];
 			}
 		}
-
+		
 		Upload.upload(options).progress(function (evt) {
 			var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
 			config.progress.value = progressPercentage;
@@ -386,7 +413,7 @@ function buildForm(context, modal, configuration, cb) {
 			return cb(new Error("Error Occured while uploading file: " + config.file));
 		});
 	};
-
+	
 	if (cb && (typeof(cb) == 'function')) {
 		context.form.timeout(function () {
 			cb();
@@ -407,7 +434,7 @@ soajsApp.directive('fileModel', ['$parse', function ($parse) {
 		link: function (scope, element, attrs) {
 			var model = $parse(attrs.fileModel);
 			var modelSetter = model.assign;
-
+			
 			element.bind('change', function () {
 				scope.$apply(function () {
 					modelSetter(scope, element[0].files[0]);
@@ -423,7 +450,7 @@ soajsApp.directive('fileModelMulti', ['$parse', function ($parse) {
 		link: function (scope, element, attrs) {
 			var model = $parse(attrs.fileModelMulti);
 			var modelSetter = model.assign;
-
+			
 			element.bind('change', function () {
 				scope.$apply(function () {
 					modelSetter(scope, element[0].files);
