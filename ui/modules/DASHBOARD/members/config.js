@@ -16,7 +16,7 @@ var membersConfig = {
 		'defaultSortField': '',
 		'defaultLimit': 10
 	},
-
+	
 	form: {
 		'name': '',
 		'label': '',
@@ -60,14 +60,14 @@ var membersConfig = {
 			}
 		]
 	},
-
+	
 	permissions: {
 		"adminAll": ['urac', '/admin/all'],
 		'adminUser': {
 			'list': ['urac', '/admin/listUsers'],
 			'changeStatusAccess': ['urac', '/admin/changeStatusAccess'],
 			'editUser': ['urac', '/admin/editUser'],
-			'editUserAcl': ['urac', '/admin/editUser'], //editUserConfig
+			'editUserConfig': ['urac', '/admin/editUserConfig'],
 			'addUser': ['urac', '/admin/addUser']
 		},
 		'adminGroup': {
@@ -96,7 +96,7 @@ var groupsConfig = {
 		'defaultSortField': '',
 		'defaultLimit': 10
 	},
-
+	
 	form: {
 		'name': '',
 		'label': '',
