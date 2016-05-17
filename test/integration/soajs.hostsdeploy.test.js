@@ -142,6 +142,7 @@ describe("testing hosts deployment", function () {
                                 qs: {
                                     filename: 'test_cert.pem',
                                     envCode: 'DEV',
+                                    type: 'docker',
                                     driver: 'dockermachine - local'
                                 },
                                 formData: {
@@ -611,27 +612,6 @@ describe("testing hosts deployment", function () {
 
     describe("testing daemon deployment", function () {
         var gcRecord;
-        before("add a gc daemon", function (done) {
-            mongo.findOne('gc', {}, function (error, gcr) {
-                assert.ifError(error);
-                assert.ok(gcr);
-
-                gcRecord = gcr;
-                var daemonGcRecord = {
-                    name: gcRecord.name,
-                    gcId: gcRecord._id.toString(),
-                    gcV: gcRecord.v,
-                    port: 1111,
-                    jobs: {}
-                };
-                mongo.insert("daemons", daemonGcRecord, function (error, result) {
-                    assert.ifError(error);
-                    assert.ok(result);
-                    done();
-                });
-            });
-        });
-
         it("success - deploy 1 daemon", function (done) {
             var params = {
                 headers: {
@@ -725,32 +705,6 @@ describe("testing hosts deployment", function () {
                         done();
                     });
                 });
-            });
-        });
-
-        it("success - deploy 1 gc daemon", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                "form": {
-                    "gcName": gcRecord.name,
-                    "gcVersion": gcRecord.v,
-                    "grpConfName": "group1",
-                    "envCode": "DEV",
-                    "owner": "soajs",
-                    "repo": "soajs.dashboard", //dummy value, does not need to be accurate
-                    "branch": "develop",
-                    "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-                    "variables": [
-                        "TEST_VAR=mocha"
-                    ]
-                }
-            };
-            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
-                assert.ok(body.result);
-                assert.ok(body.data);
-                done();
             });
         });
 
@@ -1133,7 +1087,7 @@ describe("testing hosts deployment", function () {
                 };
                 executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': '777', 'message': errorCodes[777]});
+                    assert.deepEqual(body.errors.details[0], {'code': 777, 'message': errorCodes[777]});
                     done();
                 });
             });
@@ -1162,6 +1116,35 @@ describe("testing hosts deployment", function () {
                     assert.ifError(error);
                     assert.equal(count, 1);
                     done();
+                });
+            });
+        });
+    });
+
+    describe("testing redeployment", function () {
+        it("success - will redeploy service", function (done) {
+            mongo.remove("hosts", {hostname: /controller_[0-9a-z]*_dev/}, function (error) {
+                assert.ifError(error);
+
+                mongo.findOne("hosts", {env: 'dev', hostname: /helloDaemon_[0-9a-z]*_dev/}, function (error, hostRecord) {
+                    assert.ifError(error);
+                    assert.ok(hostRecord);
+
+                    var params = {
+                        form: {
+                            envCode: 'DEV',
+                            name: hostRecord.name,
+                            hostname: hostRecord.hostname,
+                            ip: hostRecord.ip,
+                            branch: hostRecord.src.branch
+                        }
+                    };
+                    executeMyRequest(params, 'hosts/redeployService', 'post', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+
+                        done();
+                    });
                 });
             });
         });

@@ -18,7 +18,7 @@ var git = {
     "login": function (data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
-            return cb ({message: 'Git driver does not exist'});
+            return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
         driver.login(data, mongo, options, cb);
@@ -27,7 +27,7 @@ var git = {
     "logout": function (data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
-            return cb ({message: 'Git driver does not exist'});
+            return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
         driver.logout(data, mongo, options, cb);
@@ -36,7 +36,7 @@ var git = {
     "getRepos": function (data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
-            return cb ({message: 'Git driver does not exist'});
+            return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
         driver.getRepos(data, mongo, options, cb);
@@ -45,7 +45,7 @@ var git = {
     "getBranches": function (data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
-            return cb ({message: 'Git driver does not exist'});
+            return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
         driver.getBranches(data, mongo, options, cb);
@@ -54,7 +54,7 @@ var git = {
     "getContent": function (options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
-            return cb ({message: 'Git driver does not exist'});
+            return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
         driver.getContent(options, cb);

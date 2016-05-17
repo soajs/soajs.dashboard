@@ -90,6 +90,24 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			});
 		});
 
+		it("fail - wrong provider", function (done) {
+			var params = {
+				form: {
+					"username": usernamePersonal,
+					"password": passwordPersonal,
+					"label": "soajs Test Account",
+					"provider": "bitbucket",
+					"type": "personal",
+					"access": "private"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/login', 'post', function (body) {
+				assert.ok(body.errors);
+				assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
+				done();
+			});
+		});
+
 		it("success - will login - personal private acc", function (done) {
 			var params = {
 				form: {
@@ -180,6 +198,22 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 				};
 				executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
 					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("fail - get Branches wrong provider", function (done) {
+				var params = {
+					qs: {
+						"id": gitAccId,
+						"provider": "bitbucket",
+						"name": "soajsTestAccount/testMulti",
+						"type": "repo"
+					}
+				};
+				executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
 					done();
 				});
 			});
@@ -288,6 +322,26 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 						});
 					});
 				});
+
+				it("fail - wrong provider", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							provider: "bitbucket",
+							owner: usernamePersonal,
+							repo: repoSingleSuccess,
+							configBranch: "master"
+						}
+					};
+					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
+						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
+						done();
+					});
+				});
+
 
 				it("success - will activate single service repo", function (done) {
 					var params = {
@@ -788,6 +842,22 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 			});
 		});
 
+		it("fail - logout - wrong provider", function (done) {
+			var params = {
+				qs: {
+					"username": usernamePersonal,
+					"password": passwordPersonal,
+					"id": gitAccId,
+					"provider": "bitbucket"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+				assert.ok(body.errors);
+				assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
+				done();
+			});
+		});
+
 		it("success - will logout personal private acc", function (done) {
 			var params = {
 				qs: {
@@ -1016,6 +1086,21 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 					});
 				});
 
+				it("fail - getRepos wrong provider", function (done) {
+					var params = {
+						qs: {
+							"id": soajsAccId,
+							"page": 1,
+							"per_page": 50,
+							"provider": "bitbucket"
+						}
+					};
+					executeMyRequest(params, 'gitAccounts/getRepos', 'get', function (body) {
+						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
+						done();
+					});
+				});
 			});
 
 			describe("repo deactivate tests", function () {
