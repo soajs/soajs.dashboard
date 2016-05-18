@@ -70,6 +70,13 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	if (options.responseType) {
 		apiOptions.responseType = options.responseType;
 	}
+	
+	if (options.upload) {
+		apiOptions.upload = options.upload;
+		if (options.file) {
+			apiOptions.file = options.file;
+		}
+	}
 
 	if (options.headers) {
 		for (var i in options.headers) {
