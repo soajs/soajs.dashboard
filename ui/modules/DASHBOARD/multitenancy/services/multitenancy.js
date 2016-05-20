@@ -85,6 +85,8 @@ multiTenantService.service('aclHelper', function () {
 		var parentAcl = currentScope.currentApplication.parentPckgAcl;
 		var envCodes = currentScope.environments_codes;
 		var tenantAcl = currentScope.currentApplication.acl;
+		currentScope.currentApplication.servicesEnv = {};
+		var servicesEnv = {};
 		var acl;
 		var count = 0;
 		var myAcl = {};
@@ -97,14 +99,15 @@ multiTenantService.service('aclHelper', function () {
 		else {
 			acl = parentAcl;
 		}
-
 		envCodes.forEach(function (oneEnv) {
 			if (acl[oneEnv.code.toLowerCase()] && (!acl[oneEnv.code.toLowerCase()].access && !acl[oneEnv.code.toLowerCase()].apis && !acl[oneEnv.code.toLowerCase()].apisRegExp && !acl[oneEnv.code.toLowerCase()].apisPermission)) {
-				for (var envCode in acl) {
+				for (var envCode in parentAcl) {
 					envCode = envCode.toLowerCase();
 					count++;
-					myAcl[envCode.toUpperCase()] = acl[envCode];
-					servNamesNew = Object.keys(myAcl[envCode.toUpperCase()]);
+					if (acl[envCode]) {
+						myAcl[envCode.toUpperCase()] = acl[envCode];
+					}
+					servNamesNew = Object.keys(parentAcl[envCode]);
 					if (servNamesOld.length === 0) {
 						servNamesOld = servNamesNew;
 					}
@@ -114,6 +117,7 @@ multiTenantService.service('aclHelper', function () {
 							for (var j = 0; j < servNamesOld.length; j++) {
 								if (servNamesOld[j] === servNamesNew[i]) {
 									ct = 1;
+									break;
 								}
 							}
 							if (ct === 0) {
@@ -134,14 +138,51 @@ multiTenantService.service('aclHelper', function () {
 					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
 				}
 			});
-
 			currentScope.msg.type = 'warning';
 			currentScope.msg.msg = translation.warningMsgAcl[LANG];
 		}
 
+		envCodes.forEach(function (oneEnv) {
+			servicesEnv[oneEnv.code.toUpperCase()] = {};
+			for (var s in parentAcl[oneEnv.code.toLowerCase()]) {
+				servicesEnv[oneEnv.code.toUpperCase()][s] = {};
+			}
+		});
+
 		currentScope.currentApplication.serviceNames = servNamesOld;
 		currentScope.currentApplication.aclFill = myAcl;
+		currentScope.currentApplication.servicesEnv = servicesEnv;
+	}
 
+	function prepareServices(currentScope) {
+		var service = {};
+		var services = currentScope.currentApplication.services;
+		var envCodes = currentScope.environments_codes;
+		var parentAcl = currentScope.currentApplication.parentPckgAcl;
+		for (var i = 0; i < services.length; i++) {
+			service = services[i];
+			service.fixList = groupApisForDisplay(service.apisList, 'group');
+			var newList;
+			envCodes.forEach(function (oneEnv) {
+				var parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
+				if (currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name]) {
+					if (parentEnvAcl && (parentEnvAcl.apisPermission === 'restricted')) {
+						newList = [];
+						service.forceRestricted = true;
+						for (var i = 0; i < service.apisList.length; i++) {
+							var v = service.apisList[i].v;
+							if (parentEnvAcl.apis) {
+								if (parentEnvAcl.apis[v]) {
+									newList.push(service.apisList[i]);
+								}
+							}
+						}
+						service.fixList = groupApisForDisplay(service.apisList, 'group');
+					}
+					currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name] = angular.copy(service);
+				}
+			});
+		}
 	}
 
 	function prepareViewAclObj(aclFill) {
@@ -274,6 +315,7 @@ multiTenantService.service('aclHelper', function () {
 	}
 
 	return {
+		'prepareServices': prepareServices,
 		'prepareAclObjToSave': prepareAclObjToSave,
 		'fillAcl': fillAcl,
 		'prepareViewAclObj': prepareViewAclObj,
