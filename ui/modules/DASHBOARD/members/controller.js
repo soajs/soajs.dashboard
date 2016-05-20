@@ -348,7 +348,6 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 							overlayLoading.hide();
 						});
 						delete $scope.tenantApp.services;
-
 					}
 				});
 			});
