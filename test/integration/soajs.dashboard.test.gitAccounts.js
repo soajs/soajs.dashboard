@@ -70,6 +70,22 @@ describe("DASHBOARD UNIT Tests: Git Accounts", function () {
 	var repoSingleDaemon = 'test.daemon.s';
 	var repoStaticContent = 'testStaticContent';
 
+	before(function (done) {
+		mongo.findOne("git_accounts", {owner: "soajs"}, function (error, record) {
+			assert.ifError(error);
+			assert.ok(record);
+
+			record.repos.forEach(function (oneRepo) {
+				oneRepo.configBranch = "develop";
+			})
+
+			mongo.save("git_accounts", record, function (error) {
+				assert.ifError(error);
+				done();
+			});
+		});
+	});
+
 	describe("github login tests", function () {
 
 		it("fail - wrong pw", function (done) {
