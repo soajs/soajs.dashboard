@@ -26,7 +26,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		assert.ok(body);
 		return cb(body);
 	});
-
+	
 	function requester(apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
@@ -36,7 +36,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-
+		
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers[h]) {
@@ -44,11 +44,11 @@ function executeMyRequest(params, apiPath, method, cb) {
 				}
 			}
 		}
-
+		
 		if (params.form) {
 			options.body = params.form;
 		}
-
+		
 		if (params.qs) {
 			options.qs = params.qs;
 		}
@@ -61,21 +61,21 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD UNIT TESTS for locked", function () {
-
+	
 	afterEach(function (done) {
 		console.log("=======================================");
 		done();
 	});
-
+	
 	after(function (done) {
-        mongo.closeDb();
-        done();
-    });
-
+		mongo.closeDb();
+		done();
+	});
+	
 	var expDateValue = new Date().toISOString();
 	var envId;
 	var productId;
-
+	
 	describe("environment tests", function () {
 		before(function (done) {
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, record) {
@@ -85,7 +85,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		describe("delete environment tests", function () {
 			it("FAIL locked - cant delete environment", function (done) {
 				var params = {
@@ -101,11 +101,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				});
 			});
 		});
-
+		
 	});
-
+	
 	describe("products tests", function () {
-
+		
 		before(function (done) {
 			mongo.findOne('products', {'code': 'DSBRD'}, function (error, record) {
 				assert.ifError(error);
@@ -113,7 +113,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		describe("product", function () {
 			it("Fail - locked. Cant update product", function (done) {
 				var params = {
@@ -129,9 +129,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
 					done();
 				});
-
+				
 			});
-
+			
 			it("Fail - locked - delete product", function (done) {
 				var params = {
 					qs: {'id': productId}
@@ -144,7 +144,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				});
 			});
 		});
-
+		
 		describe("package", function () {
 			it("FAIL - locked. cant add package", function (done) {
 				var params = {
@@ -166,7 +166,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 			it("FAIL - locked. cant update package", function (done) {
 				var params = {
 					qs: {'id': productId, "code": "DEFLT"},
@@ -188,7 +188,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 			it("FAIL - locked. cant delete package", function (done) {
 				var params = {
 					qs: {"id": productId, 'code': 'DEFLT'}
@@ -204,7 +204,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 	});
-
+	
 	describe("tenants tests", function () {
 		var tenantId, applicationId, key;
 		var appExtKey;
@@ -218,9 +218,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					appExtKey = tenantRecord.applications[0].keys[0].extKeys[0].extKey;
 					done();
 				});
-
+				
 			});
-
+			
 			it("FAIL - locked. - cant update tenant", function (done) {
 				var params = {
 					qs: {"id": tenantId},
@@ -233,9 +233,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					assert.ok(body);
 					done();
 				});
-
+				
 			});
-
+			
 			it("FAIL - locked. cant delete tenant", function (done) {
 				executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'get', function (body) {
 					assert.ok(body);
@@ -244,11 +244,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("oauth", function () {
-
+			
 			it("FAIL - locked. cant add oauth", function (done) {
 				var params = {
 					qs: {
@@ -268,7 +268,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 			it("FAIL - locked. cant update oauth", function (done) {
 				var params = {
 					qs: {id: tenantId},
@@ -286,7 +286,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 			it("FAIL - locked. - cant delete oauth", function (done) {
 				executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'get', function (body) {
 					assert.ok(body);
@@ -297,11 +297,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 		describe("applications", function () {
-
+			
 			describe("add applications tests", function () {
 				it("FAIL - locked. - cant add application", function (done) {
 					var params = {
@@ -320,9 +320,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("update applications tests", function () {
 				it("FAIL - locked. - cant update application", function (done) {
 					var params = {
@@ -344,11 +344,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete applications tests", function () {
-
+				
 				it("FAIL - locked. - will delete application", function (done) {
 					executeMyRequest({
 						qs: {
@@ -362,12 +362,12 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
-
+			
+			
 		});
-
+		
 		describe("application keys", function () {
 			describe("add application keys", function () {
 				it("FAIL - cant add key", function (done) {
@@ -384,9 +384,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete application keys", function () {
 				it("FAIL - cant delete key", function (done) {
 					var params = {
@@ -403,13 +403,13 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 		});
-
+		
 		describe("application ext keys", function () {
-
+			
 			describe("add application ext keys", function () {
 				it("FAIL - cant add ext key", function (done) {
 					var params = {
@@ -432,9 +432,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("update application ext keys", function () {
 				it("FAIL - cant update ext key", function (done) {
 					var params = {
@@ -458,9 +458,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 			describe("delete application ext keys", function () {
 				it("FAIL - cant delete ext key", function (done) {
 					var params = {
@@ -482,10 +482,10 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					});
 				});
 			});
-
-
+			
+			
 		});
-
+		
 		describe("application config", function () {
 			describe("update application config", function () {
 				it("FAIL - cant update configuration", function (done) {
@@ -506,14 +506,14 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						done();
 					});
 				});
-
+				
 			});
-
+			
 		});
 	});
-
+	
 	describe("dashboard keys tests", function () {
-
+		
 		var keys = [];
 		it("success - ext Key list", function (done) {
 			executeMyRequest({}, 'tenant/db/keys/list', 'get', function (body) {
@@ -525,7 +525,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 	});
-
+	
 	describe("owner tests", function () {
 		var request = require("request");
 		var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
@@ -543,7 +543,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				},
 				json: true
 			};
-
+			
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
@@ -552,10 +552,10 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("success - locked. cant delete package", function (done) {
 			var params = {
-				'headers':{
+				'headers': {
 					'key': newKey,
 					'soajsauth': soajsauth
 				},
@@ -570,14 +570,14 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("will get owner key", function (done) {
 			executeMyRequest({
 				'headers': {
 					'key': newKey,
 					'soajsauth': soajsauth
 				},
-				"qs":{
+				"qs": {
 					"main": true
 				}
 			}, 'key/get', 'get', function (body) {
@@ -586,7 +586,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("will get owner permissions", function (done) {
 			executeMyRequest({
 				'headers': {
@@ -599,7 +599,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("get tenant acl owner", function (done) {
 			executeMyRequest({
 				'headers': {'key': newKey, 'soajsauth': soajsauth},
@@ -610,7 +610,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - will get client acl", function (done) {
 			executeMyRequest({'headers': {'key': newKey}}, 'permissions/get', 'get', function (body) {
 				assert.equal(body.result, false);
@@ -618,7 +618,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - get tenant client extKey", function (done) {
 			executeMyRequest({'headers': {'key': extKey}}, 'key/get', 'get', function (body) {
 				assert.equal(body.result, false);
@@ -626,7 +626,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("login test user", function (done) {
 			var options = {
 				uri: 'http://localhost:4001/login',
@@ -640,7 +640,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				},
 				json: true
 			};
-
+			
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
@@ -649,7 +649,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("will get user permissions", function (done) {
 			executeMyRequest({
 				'headers': {
@@ -662,7 +662,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("login test user2", function (done) {
 			var options = {
 				uri: 'http://localhost:4001/login',
@@ -676,7 +676,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				},
 				json: true
 			};
-
+			
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
@@ -685,7 +685,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				done();
 			});
 		});
-
+		
 		it("fail - get tenant client extKey", function (done) {
 			executeMyRequest({'headers': {'key': extKey, 'soajsauth': soajsauth2}}, 'key/get', 'get', function (body) {
 				assert.equal(body.result, false);
