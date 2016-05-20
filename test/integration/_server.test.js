@@ -27,20 +27,37 @@ describe("importing sample data", function () {
 		});
 	});
 
-	it("update environment before starting service", function(done){
+	it("update environment before starting service", function (done) {
 		var setDoc = {
-			"$set":{
+			"$set": {
 				"services.config.logger.level": "fatal",
 				"services.config.logger.formatter.outputMode": "short"
 			},
-			"$unset":{
+			"$unset": {
 				"services.config.logger.src": ""
 			}
 		};
-		mongo.update('environment', {'code': 'DEV'}, setDoc, {"multi": false, "upsert": false, "safe": true}, function (error) {
+		mongo.update('environment', {'code': 'DEV'}, setDoc, {
+			"multi": false,
+			"upsert": false,
+			"safe": true
+		}, function (error) {
 			assert.ifError(error);
 			done();
 		});
+	});
+
+	it("update requestTimeout", function (done) {
+		var setDoc = {
+			"$set": {
+				"requestTimeout": 70
+			}
+		};
+		mongo.update('services', {'name': 'dashboard'}, setDoc,
+			{"multi": false, "upsert": false, "safe": true}, function (error) {
+				assert.ifError(error);
+				done();
+			});
 	});
 
 	after(function (done) {
