@@ -1,18 +1,21 @@
 "use strict";
 var membersService = soajsApp.components;
 membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
-
+	
 	function listMembers(currentScope, moduleConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (callback) ? currentScope.tId : userCookie.tenant.id;
-		getSendDataFromServer(currentScope, ngDataApi, {
+		var opts = {
 			"method": "get",
-			"headers": {
-				"key": currentScope.key
-			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
-		}, function (error, response) {
+		};
+		if (currentScope.key) {
+			opts.headers = {
+				"key": currentScope.key
+			}
+		}
+		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 			}
@@ -44,7 +47,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			left: [],
 			top: []
 		};
-
+		
 		if (currentScope.access.adminUser.editUser) {
 			options.left.push({
 				'label': translation.edit[LANG],
@@ -76,21 +79,24 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		}
 		buildGrid(currentScope, options);
 	}
-
+	
 	function addMember(currentScope, moduleConfig, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
 		overlayLoading.show();
-		getSendDataFromServer(currentScope, ngDataApi, {
+		var opts ={
 			"method": "get",
-			"headers": {
-				"key": currentScope.key
-			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
-		}, function (error, response) {
+		};
+		if (currentScope.key) {
+			opts.headers = {
+				"key": currentScope.key
+			}
+		}
+		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
 				currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -128,14 +134,17 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'tCode': tenantCode
 								};
 								overlayLoading.show();
-								getSendDataFromServer(currentScope, ngDataApi, {
+								var opts = {
 									"method": "send",
-									"headers": {
-										"key": currentScope.key
-									},
 									"routeName": "/urac/admin/addUser",
 									"data": postData
-								}, function (error) {
+								};
+								if (currentScope.key) {
+									opts.headers = {
+										"key": currentScope.key
+									}
+								}
+								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									overlayLoading.hide();
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -165,25 +174,28 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 		});
 
 	}
-
+	
 	function editAcl(currentScope, data) {
 		currentScope.$parent.go('/members/' + data._id + '/editUserAcl');
 	}
-
+	
 	function editMember(currentScope, moduleConfig, data, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
-		getSendDataFromServer(currentScope, ngDataApi, {
+		var opts = {
 			"method": "get",
-			"headers": {
-				"key": currentScope.key
-			},
 			"routeName": "/urac/admin/group/list",
 			"params": {'tId': tenantId}
-		}, function (error, response) {
+		};
+		if (currentScope.key) {
+			opts.headers = {
+				"key": currentScope.key
+			}
+		}
+		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
-				currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
+				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
 				var grps = [];
@@ -210,7 +222,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 					'value': [{'v': 'pendingNew'}, {'v': 'active'}, {'v': 'inactive'}],
 					'tooltip': translation.selectStatusUser[LANG]
 				});
-
+				
 				var options = {
 					timeout: $timeout,
 					form: config,
@@ -232,15 +244,18 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'tId': tenantId,
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
-								getSendDataFromServer(currentScope, ngDataApi, {
+								var opts = {
 									"method": "send",
-									"headers": {
-										"key": currentScope.key
-									},
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
 									"data": postData
-								}, function (error) {
+								};
+								if (currentScope.key) {
+									opts.headers = {
+										"key": currentScope.key
+									}
+								}
+								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 									}
@@ -268,7 +283,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			}
 		});
 	}
-
+	
 	function activateMembers(currentScope) {
 		overlayLoading.show();
 		var config = {
@@ -282,13 +297,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				'success': translation.successMessageActivateMembers[LANG]
 			}
 		};
-
+		
 		multiRecordUpdate(ngDataApi, currentScope, config, function () {
 			overlayLoading.hide();
 			currentScope.listMembers();
 		});
 	}
-
+	
 	function deactivateMembers(currentScope) {
 		overlayLoading.show();
 		var config = {
@@ -302,13 +317,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 				'success': translation.successMessageDeactivateMembers[LANG]
 			}
 		};
-
+		
 		multiRecordUpdate(ngDataApi, currentScope, config, function () {
 			overlayLoading.hide();
 			currentScope.listMembers();
 		});
 	}
-
+	
 	return {
 		'listMembers': listMembers,
 		'printMembers': printMembers,

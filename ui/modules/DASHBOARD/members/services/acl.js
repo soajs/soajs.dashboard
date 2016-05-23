@@ -2,9 +2,9 @@
 var membersAclService = soajsApp.components;
 membersAclService.service('membersAclHelper', [function () {
 
-	function prepareViewAclObj(aclFill) {
+	function prepareViewAclObj(aclFill, parentAcl) {
 		var service, serviceName;
-		for (serviceName in aclFill) {
+		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
 				service = aclFill[serviceName];
 				service.include = true;
@@ -52,6 +52,18 @@ membersAclService.service('membersAclHelper', [function () {
 								}
 							}
 						}
+					}
+				}
+			}
+			else {
+				if (parentAcl[serviceName]) {
+					if (parentAcl[serviceName].apisPermission === 'restricted') {
+						aclFill[serviceName] = {
+							include: false,
+							forceRestricted: true,
+							apisRestrictPermission: true,
+							apisPermission: 'restricted'
+						};
 					}
 				}
 			}
@@ -156,20 +168,23 @@ membersAclService.service('membersAclHelper', [function () {
 		}
 		var myAcl = {};
 		oneApplication.services = {};
+
 		envCodes.forEach(function (oneEnv) {
 			oneApplication.services[oneEnv.code.toUpperCase()] = {};
 			if (objectIsEnv(aclObj[oneEnv.code.toLowerCase()])) {
 				oneApplication.aclFill = {};
 				if (aclObj[oneEnv.code.toLowerCase()]) {
-					for (var serviceName in aclObj[oneEnv.code.toLowerCase()]) {
+					var aclEnv = aclObj[oneEnv.code.toLowerCase()];
+					for (var serviceName in aclEnv) {
 						oneApplication.services[oneEnv.code.toUpperCase()][serviceName] = {};
 					}
 				}
 
 				for (var envCode in aclObj) {
 					envCode = envCode.toLowerCase();
-					myAcl[envCode.toUpperCase()] = aclObj[envCode];
 					if (oneEnv.code === envCode.toUpperCase()) {
+						myAcl[envCode.toUpperCase()] = aclObj[envCode];
+
 						for (var serviceName in myAcl[envCode.toUpperCase()]) {
 							var service = {};
 							for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
@@ -194,10 +209,11 @@ membersAclService.service('membersAclHelper', [function () {
 									}
 								}
 							}
+
 							if (Object.hasOwnProperty.call(myAcl[envCode.toUpperCase()], serviceName)) {
+								var newList;
+								var apiList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
 								if (oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName] && myAcl[oneEnv.code.toUpperCase()][serviceName].apiList) {
-									var newList;
-									var apiList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
 									if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
 										newList = [];
 										oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName].forceRestricted = true;
@@ -219,24 +235,29 @@ membersAclService.service('membersAclHelper', [function () {
 											service.fixList = groupApisForDisplay(newList, 'group');
 										}
 									}
-
 								}
-
+								else {
+									if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
+										newList = [];
+										for (var apiInfo = 0; apiInfo < apiList.length; apiInfo++) {
+											if (aclObj[envCode][serviceName].apis) {
+												if (aclObj[envCode][serviceName].apis[apiList[apiInfo].v]) {
+													newList.push(apiList[apiInfo]);
+												}
+											}
+										}
+										service.fixList = groupApisForDisplay(newList, 'group');
+									}
+								}
 							}
-
 						}
 					}
 				}
-
-				//oneApplication.aclFill = myAcl;
-				//prepareViewAclObj(oneApplication.aclFill[oneEnv.code.toUpperCase()]);
-				for (var e in oneApplication.userPackageAcl) {
-					oneApplication.aclFill[e.toUpperCase()] = oneApplication.userPackageAcl[e];
-				}
-				prepareViewAclObj(oneApplication.aclFill[oneEnv.code.toUpperCase()]);
+				
+				oneApplication.aclFill[oneEnv.code.toUpperCase()] = oneApplication.userPackageAcl[oneEnv.code.toLowerCase()];
+				prepareViewAclObj(oneApplication.aclFill[oneEnv.code.toUpperCase()], aclObj[oneEnv.code.toLowerCase()]);
 			}
 		});
-
 	}
 
 	function prepareAclObjToSave(aclPriviledges) {

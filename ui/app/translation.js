@@ -382,6 +382,10 @@ var translation = {
 		"ENG": "Save",
 		"FRA": "Save"
 	},
+	"saveChanges": {
+		"ENG": "Save Changes",
+		"FRA": "Save Changes"
+	},
 	"close": {
 		"ENG": "Close",
 		"FRA": "Fermer"

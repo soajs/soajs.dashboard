@@ -40,8 +40,8 @@ var membersTranslation = {
 		"FRA": "Group codes are alphanumeric. Maximum length 20 characters"
 	},
 	"formGroupNamePlaceHolder": {
-		"ENG": "Enter the Name of the group'",
-		"FRA": "Enter the Name of the group'"
+		"ENG": "Enter the Name of the group",
+		"FRA": "Enter the Name of the group"
 	},
 	"formGroupDescriptionPlaceholder": {
 		"ENG": "Enter the Description of the Group",

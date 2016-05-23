@@ -2,10 +2,10 @@
 var multiTenantApp = soajsApp.components;
 multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, $cookies, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, tenantConfig.permissions);
-
+	
 	$scope.tenantTabs = [
 		/*{
 		 'label': 'Administration',
@@ -23,9 +23,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			'tenants': []
 		}
 	];
-
+	
 	$scope.currentEnv = $cookies.getObject('myEnv').code.toLowerCase();
-
+	
 	$scope.mt = {};
 	$scope.mt.displayAlert = function (type, msg, id, isCode, service, orgMesg) {
 		$scope.mt[id] = {};
@@ -42,25 +42,25 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		$scope.mt[id].alerts.push({'type': type, 'msg': msg});
 		$scope.mt.closeAllAlerts(id);
 	};
-
+	
 	$scope.mt.closeAlert = function (index, id) {
 		$scope.mt[id].alerts.splice(index, 1);
 	};
-
+	
 	$scope.mt.closeAllAlerts = function (id) {
 		$timeout(function () {
 			$scope.mt[id].alerts = [];
 		}, 7000);
 	};
-
+	
 	$scope.openKeys = function (id, app) {
 		app.showKeys = true;
 	};
-
+	
 	$scope.closeKeys = function (id, app) {
 		app.showKeys = false;
 	};
-
+	
 	$scope.removeAppKey = function (id, app, key, event) {
 		//check if key has dashboard access, if yes: set dashboardAccess of tenant to false
 		$scope.tenantsList.rows.forEach(function (oneTenant) {
@@ -77,7 +77,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				});
 			}
 		});
-
+		
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/delete",
@@ -95,7 +95,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			event.stopPropagation();
 		}
 	};
-
+	
 	$scope.getProds = function (cb) {
 		$scope.availablePackages = [];
 		$scope.availableLockedPackages = [];
@@ -123,7 +123,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'l': p.packages[i].code,
 							'acl': p.packages[i].acl
 						});
-
+						
 						if (p.locked) {
 							lockedProds.push({
 								'pckCode': p.packages[i].code,
@@ -141,7 +141,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.getEnvironments = function (cb) {
 		$scope.availableEnv = [];
 		getSendDataFromServer($scope, ngDataApi, {
@@ -159,7 +159,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.listTenants = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -178,7 +178,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
-
+					
 					$scope.markTenantsWithDashboardAccess(response, tenantDbKeys, function () {
 						$scope.splitTenantsByType(response, function () {
 							$scope.tenantsList = {
@@ -205,7 +205,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.splitTenantsByType = function (tenants, callback) {
 		//Clearing previously filled tenants arrays
 		for (var i = 0; i < $scope.tenantTabs.length; i++) {
@@ -224,7 +224,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		$scope.originalTenants = angular.copy($scope.tenantTabs);
 		callback();
 	};
-
+	
 	$scope.markTenantsWithDashboardAccess = function (tenants, tenantDbKeys, callback) {
 		tenants.forEach(function (oneTenant) {
 			for (var i = 0; i < tenantDbKeys.length; i++) {
@@ -248,7 +248,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 		callback();
 	};
-
+	
 	$scope.listOauthUsers = function (row) {
 		var tId = row['_id'];
 		if (!row.alreadyGotAuthUsers) {
@@ -274,13 +274,13 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			});
 		}
 	};
-
+	
 	$scope.edit_Tenant = function (data) {
 		var formConfig = angular.copy(tenantConfig.form.tenantEdit);
 		//formConfig.entries[0].type = 'readonly';
 		//formConfig.label = 'Edit Basic Tenant Information';
 		formConfig.timeout = $timeout;
-
+		
 		var oAuth = data.oauth;
 		if (oAuth.secret) {
 			data.secret = oAuth.secret;
@@ -291,7 +291,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		 }
 		 */
 		var keys = Object.keys(data);
-
+		
 		for (var i = 0; i < formConfig.entries.length; i++) {
 			keys.forEach(function (inputName) {
 				if (formConfig.entries[i].name === inputName) {
@@ -307,7 +307,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			});
 		}
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -331,7 +331,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					'action': function (formData) {
 						if (Array.isArray(formData.type)) var tType = formData.type[0];
 						else var tType = formData.type;
-
+						
 						var postData = {
 							'type': tType,
 							'name': formData.name,
@@ -353,7 +353,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										'secret': formData.secret
 										//'redirectURI': formData.redirectURI
 									};
-
+									
 									getSendDataFromServer($scope, ngDataApi, {
 										"method": "send",
 										"routeName": "/dashboard/tenant/oauth/update",
@@ -383,7 +383,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			]
 		};
-
+		
 		if ($scope.access.tenant.oauth.delete) {
 			options.actions.push(
 				{
@@ -412,7 +412,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		}
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.removeTenant = function (row) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -428,14 +428,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.addTenant = function () {
 		var formConfig = angular.copy(tenantConfig.form.tenantAdd);
 		formConfig.entries.forEach(function (oneEntry) {
 			if (oneEntry.name === "package")
 				oneEntry.value = $scope.availableLockedPackages;
 		});
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -452,7 +452,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						var tType = "";
 						if (Array.isArray(formData.type)) tType = formData.type[0];
 						else tType = formData.type;
-
+						
 						var postData = {
 							'type': tType,
 							'code': tCode,
@@ -466,7 +466,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							"routeName": "/dashboard/tenant/add",
 							"data": postData
 						}, function (error, response) {
-
+							
 							if (error) {
 								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 								$scope.modalInstance.close();
@@ -483,7 +483,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										'productCode': formData.package.split("_")[0],
 										'packageCode': formData.package.split("_")[1]
 									};
-
+									
 									getSendDataFromServer($scope, ngDataApi, {
 										"method": "send",
 										"routeName": "/dashboard/tenant/application/add",
@@ -536,10 +536,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 															$scope.listTenants();
 														}
 													});
-
+													
 												}
 											});
-
+											
 										}
 									});
 								} else {
@@ -550,7 +550,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								}
 							}
 						});
-
+						
 					}
 				},
 				{
@@ -564,15 +564,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			]
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.generateTenantCode = function (tName) {
 		var tCode = "";
 		var nameArray = tName.split(" ");
 		var index = Math.ceil(4 / nameArray.length);
-
+		
 		for (var i = 0; i < nameArray.length && tCode.length < 4; i++) {
 			nameArray[i] = nameArray[i].replace(/[!@#$%^&*()_+,.<>;'?]/, "");
 			if (tCode.length === 3) {
@@ -586,18 +586,18 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				index++;
 			}
 		}
-
+		
 		if (tCode.length < 4) {
 			tCode += "tenant".slice(0, 4 - tCode.length);
 		} else if (tCode.length > 4) {
 			tCode = tCode.slice(0, 4);
 		}
 		tCode = tCode.toUpperCase();
-
+		
 		var counter = 1;
 		return $scope.checkTenantCodeAvailability(tName, tCode, counter);
 	};
-
+	
 	$scope.checkTenantCodeAvailability = function (tName, tCode, counter) {
 		$scope.tenantsList.rows.forEach(function (oneTenant) {
 			if (oneTenant.code === tCode && oneTenant.name !== tName) {
@@ -607,7 +607,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 		return tCode;
 	};
-
+	
 	$scope.reloadOauthUsers = function (tId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -627,7 +627,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.removeTenantOauthUser = function (tId, user) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -643,7 +643,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.editTenantOauthUser = function (tId, user) {
 		user.password = null;
 		user.confirmPassword = null;
@@ -699,10 +699,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			]
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.addOauthUser = function (tId) {
 		var options = {
 			timeout: $timeout,
@@ -727,7 +727,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							$scope.form.displayAlert('danger', translation.passwordConfirmFieldsNotMatch[LANG]);
 							return;
 						}
-
+						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/oauth/users/add",
@@ -759,7 +759,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.addTenantApplication = function (tId) {
 		var formConfig = angular.copy(tenantConfig.form.application);
 		formConfig.entries.forEach(function (oneEn) {
@@ -774,7 +774,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				oneEn.name = 'Prod';
 			}
 		});
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -787,7 +787,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					'label': translation.addApplication[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-
+						
 						var postData = {
 							'description': formData.description,
 							'_TTL': Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString()
@@ -832,21 +832,21 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			]
 		};
-
+		
 		formConfig.entries.splice(0, 1);
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.editAppAcl = function (tId, appId) {
 		$scope.$parent.go("/multi-tenancy/" + tId + "/editAcl/" + appId);
 	};
-
+	
 	$scope.editTenantApplication = function (tId, data) {
 		var formConfig = angular.copy(tenantConfig.form.application);
 		var recordData = angular.copy(data);
 		recordData._TTL = recordData._TTL / 3600000;
-
+		
 		formConfig.entries[1].type = "html";
 		formConfig.entries[0].type = "html";
 		var options = {
@@ -867,11 +867,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'packageCode': formData.package,
 							'description': formData.description
 						};
-
+						
 						if (formData._TTL) {
 							postData._TTL = Array.isArray(formData._TTL) ? formData._TTL.join("") : formData._TTL.toString();
 						}
-
+						
 						postData.packageCode = packageCode;
 						postData.acl = recordData.acl;
 						getSendDataFromServer($scope, ngDataApi, {
@@ -890,7 +890,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.reloadApplications(tId);
 							}
 						});
-
+						
 					}
 				},
 				{
@@ -904,10 +904,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			]
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.reloadApplications = function (tId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -936,7 +936,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.removeTenantApplication = function (tId, appId) {
 		//check if application has dashboard access, if yes: set dashboardAccess of tenant to false
 		$scope.tenantsList.rows.forEach(function (oneTenant) {
@@ -948,7 +948,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				});
 			}
 		});
-
+		
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/delete",
@@ -963,7 +963,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.addNewKey = function (tId, appId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -979,14 +979,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.emptyConfiguration = function (tId, appId, key, env) {
 		var configObj = {};
 		var postData = {
 			'envCode': env,
 			'config': configObj
 		};
-
+		
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/tenant/application/key/config/update",
@@ -1001,9 +1001,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				$scope.reloadConfiguration(tId, appId, key);
 			}
 		});
-
+		
 	};
-
+	
 	$scope.updateConfiguration = function (tId, appId, key, env, value) {
 		var data = {};
 		if (value) {
@@ -1038,12 +1038,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						else {
 							configObj = {};
 						}
-
+						
 						var postData = {
 							'envCode': formData.envCode,
 							'config': configObj
 						};
-
+						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/config/update",
@@ -1071,15 +1071,15 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						$scope.form.formData = {};
 					}
 				}]
-
+			
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.addNewExtKey = function (tId, appId, key, packageCode) {
 		var formConfig = tenantConfig.form.extKey;
-
+		
 		//check if old or new acl
 		//if new acl, list env in acl
 		//if old acl, list all available env
@@ -1120,7 +1120,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			}
 		});
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -1158,14 +1158,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						else {
 							geoObj = {};
 						}
-
+						
 						var postData = {
 							'expDate': formData.expDate,
 							'device': deviceObj,
 							'geo': geoObj,
 							'env': formData.environment
 						};
-
+						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/ext/add",
@@ -1194,10 +1194,10 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					}
 				}]
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.editExtKey = function (tId, appId, data, key) {
 		var dataForm = angular.copy(data);
 		if (data.geo) {
@@ -1206,7 +1206,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		if (data.device) {
 			dataForm.device = JSON.stringify(data.device, null, "\t");
 		}
-
+		
 		var formConfig = angular.copy(tenantConfig.form.extKey);
 		for (var i = 0; i < formConfig.entries.length; i++) {
 			if (formConfig.entries[i].name === 'environment') {
@@ -1259,7 +1259,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						else {
 							geoObj = {};
 						}
-
+						
 						var postData = {
 							'device': deviceObj,
 							'geo': geoObj,
@@ -1268,7 +1268,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						if (formData.expDate) {
 							postData.expDate = new Date(formData.expDate).toISOString();
 						}
-
+						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/tenant/application/key/ext/update",
@@ -1285,7 +1285,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 								$scope.listExtKeys(tId, appId, key);
 							}
 						});
-
+						
 					}
 				},
 				{
@@ -1300,7 +1300,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.removeExtKey = function (tId, appId, data, key) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -1319,7 +1319,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.listExtKeys = function (tId, appId, key) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -1334,12 +1334,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 					if ($scope.tenantsList.rows[i]['_id'] === tId) {
 						var apps = $scope.tenantsList.rows[i].applications;
 						for (var j = 0; j < apps.length; j++) {
-
+							
 							if (apps[j].appId === appId) {
 								var app = apps[j];
 								var keys = app.keys;
 								for (var v = 0; v < keys.length; v++) {
-
+									
 									if (keys[v].key === key) {
 										delete response['soajsauth'];
 										//$scope.tenantsList.rows[i].applications[j].keys[v]=
@@ -1352,14 +1352,14 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 												dashboardAccess = true;
 											}
 										});
-
+										
 										//in case tenant previously had an external key with dashboard access but now is deleted
 										if (!dashboardAccess && $scope.tenantsList.rows[i].dashboardAccess) {
 											$scope.tenantsList.rows[i].dashboardAccess = false;
 											$scope.tenantsList.rows[i].applications[j].dashboardAccess = false;
 											$scope.tenantsList.rows[i].applications[j].keys[v].dashboardAccess = false;
 										}
-
+										
 										$scope.tenantsList.rows[i].applications[j].keys[v].extKeys = response;
 									}
 								}
@@ -1371,7 +1371,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.listKeys = function (tId, appId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -1387,7 +1387,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						delete response['soajsauth'];
 						var apps = $scope.tenantsList.rows[i].applications;
 						for (var j = 0; j < apps.length; j++) {
-
+							
 							if (apps[j].appId === appId) {
 								var currentKeys = $scope.tenantsList.rows[i].applications[j].keys;
 								response.forEach(function (keyObj) {
@@ -1407,11 +1407,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.reloadConfiguration = function (tId, appId, key, index) {
 		$scope.currentApplicationKey = key;
 		$scope.currentApplicationKeyIndex = index;
-
+		
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/tenant/application/key/config/list",
@@ -1423,7 +1423,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			else {
 				if (JSON.stringify(response) !== '{}') {
 					delete response['soajsauth'];
-
+					
 					for (var i = 0; i < $scope.tenantsList.rows.length; i++) {
 						if ($scope.tenantsList.rows[i]['_id'] === tId) {
 							var apps = $scope.tenantsList.rows[i].applications;
@@ -1445,7 +1445,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		});
 	};
-
+	
 	$scope.filterData = function (query, tabIndex) {
 		if (query && query !== "") {
 			query = query.toLowerCase();
@@ -1460,11 +1460,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		} else {
 			if ($scope.tenantTabs && $scope.originalTenants) {
 				$scope.tenantTabs[tabIndex].tenants = $scope.originalTenants[tabIndex].tenants;
-
+				
 			}
 		}
 	};
-
+	
 	//default operation
 	if ($scope.access.tenant.list && $scope.access.product.list && $scope.access.environment.list) {
 		$scope.getProds(function () {
@@ -1473,7 +1473,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			});
 		});
 	}
-
+	
 	injectFiles.injectCss("modules/DASHBOARD/multitenancy/multitenancy.css");
 }]);
 
@@ -1484,7 +1484,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	$scope.allGroups = [];
 	$scope.msg = {};
 	$scope.environments_codes = [];
-
+	
 	$scope.getEnvironments = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -1501,7 +1501,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			}
 		});
 	};
-
+	
 	$scope.getApplicationInfo = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
@@ -1526,7 +1526,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 						break;
 					}
 				}
-
+				
 				// get product info
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
@@ -1535,7 +1535,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 						"productCode": $scope.currentApplication.product,
 						"packageCode": $scope.currentApplication.package
 					}
-
+					
 				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
@@ -1557,42 +1557,22 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 							else {
 								var servicesList = response;
 								for (var x = 0; x < servicesList.length; x++) {
-									var service = servicesList[x];
-									var name = service.name;
-									var newList;
-									var apisList;
-									if (service.apis) {
-										apisList = service.apis;
+									if (servicesList[x].apis) {
+										servicesList[x].apisList = servicesList[x].apis;
 									}
 									else {
-										if (service.versions) {
-											var v = returnLatestVersion(service.versions);
-											if (service.versions[v]) {
-												apisList = service.versions[v].apis;
+										if (servicesList[x].versions) {
+											var v = returnLatestVersion(servicesList[x].versions);
+											if (servicesList[x].versions[v]) {
+												servicesList[x].apisList = servicesList[x].versions[v].apis;
 											}
 										}
 									}
-									if ((parentAcl[name]) && (parentAcl[name].apisPermission === 'restricted')) {
-										newList = [];
-										service.forceRestricted = true;
-
-										for (var i = 0; i < apisList.length; i++) {
-											var v = apisList[i].v;
-											if (parentAcl[name].apis) {
-												if (parentAcl[name].apis[v]) {
-													newList.push(apisList[i]);
-												}
-											}
-										}
-										service.fixList = aclHelper.groupApisForDisplay(newList, 'group');
-									}
-									else {
-										newList = apisList;
-									}
-									service.fixList = aclHelper.groupApisForDisplay(newList, 'group');
 								}
+								
 								$scope.currentApplication.services = servicesList;
-
+								aclHelper.prepareServices($scope);
+								
 								// get groups list
 								getSendDataFromServer($scope, ngDataApi, {
 									"method": "get",
@@ -1620,15 +1600,15 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			}
 		});
 	};
-
+	
 	$scope.minimize = function (service, envCode) {
 		$scope.currentApplication.aclFill[envCode][service.name].collapse = true;
 	};
-
+	
 	$scope.expand = function (service, envCode) {
 		$scope.currentApplication.aclFill[envCode][service.name].collapse = false;
 	};
-
+	
 	$scope.selectService = function (service, envCode) {
 		if ($scope.currentApplication.aclFill[envCode][service.name].include) {
 			if (service.forceRestricted) {
@@ -1639,20 +1619,20 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			$scope.currentApplication.aclFill[envCode][service.name].collapse = true;
 		}
 	};
-
+	
 	$scope.checkForGroupDefault = function (service, grp, val, myApi, envCode) {
 		aclHelper.checkForGroupDefault($scope.currentApplication.aclFill[envCode], service, grp, val, myApi)
 	};
-
+	
 	$scope.applyRestriction = function (service, envCode) {
 		aclHelper.applyRestriction($scope.currentApplication.aclFill[envCode], service);
 	};
-
+	
 	$scope.clearAcl = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
 		var postData = $scope.currentApplication;
-
+		
 		postData.productCode = $scope.currentApplication.product;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		postData.clearAcl = true;
@@ -1675,15 +1655,15 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			}
 		});
 	};
-
+	
 	$scope.saveACL = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
 		var postData = $scope.currentApplication;
-
+		
 		postData.productCode = $scope.currentApplication.product;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
-
+		
 		var result = aclHelper.prepareAclObjToSave($scope.currentApplication.aclFill);
 		if (result.valid) {
 			overlayLoading.show();
@@ -1702,7 +1682,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 					$scope.msg.type = '';
 					$scope.msg.msg = '';
 					$scope.$parent.displayAlert('success', translation.ACLUpdatedSuccessfully[LANG]);
-
+					
 				}
 			});
 		}
@@ -1710,7 +1690,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 			$scope.$parent.displayAlert('danger', translation.youNeedToChangeOneGroupAccessTypeGroups[LANG]);
 		}
 	};
-
+	
 	//default operation
 	overlayLoading.show(function () {
 		$scope.getEnvironments();

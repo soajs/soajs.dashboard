@@ -1,13 +1,13 @@
 "use strict";
 
-soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($http, $cookies, $localStorage) {
-
+soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', function ($http, $cookies, $localStorage, Upload) {
+	
 	function returnAPIError(scope, opts, status, headers, config, cb) {
 		console.log("Error: ngDataApi->" + opts.api);
 		console.log(status, headers, config);
 		return cb(new Error("Unable Fetching data from " + config.url));
 	}
-
+	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
 			return cb(null, response);
@@ -20,7 +20,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 			for (var i in response) {
 				resp[i] = response[i];
 			}
-
+			
 			if (typeof(resp.data) !== 'object') {
 				resp.data = {};
 			}
@@ -35,7 +35,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 			// 	scope.$parent.isUserLoggedIn();
 			// 	scope.$parent.go("/login");
 			// }
-
+			
 			var str = '';
 			for (var i = 0; i < response.errors.details.length; i++) {
 				str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
@@ -51,7 +51,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 			return cb(errorObj);
 		}
 	}
-
+	
 	function executeRequest(scope, opts, cb) {
 		var config = {
 			url: opts.url,
@@ -65,16 +65,16 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 			data: opts.data || {},
 			json: true
 		};
-
+		
 		if (opts.proxy) {
 			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
 		}
-
+		
 		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
 			config.headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
 		}
-
+		
 		if (opts.headers.key) {
 			config.headers.key = opts.headers.key;
 		}
@@ -84,7 +84,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 		else {
 			config.headers.key = apiConfiguration.key;
 		}
-
+		
 		if (opts.proxy) {
 			if (!config.params.__env || !config.params.__envauth) {
 				var envauth = $cookies.get('soajs_envauth').replace(/\"/g, '');
@@ -93,32 +93,54 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', function ($
 				config.params.__env = env.toUpperCase();
 			}
 		}
-
+		
 		if (opts.jsonp === true) {
 			config.url += (config.url.indexOf('?') === -1) ? '?' : '&';
 			config.url += "callback=JSON_CALLBACK";
 			config.method = (config.method.toLowerCase() === 'get') ? 'jsonp' : config.method;
 		}
-
-		$http(config).success(function (response, status, headers, config) {
-			returnAPIResponse(scope, response, config, cb);
-		}).error(function (errData, status, headers, config) {
-			returnAPIError(scope, opts, status, headers, config, cb);
-		});
+		
+		if (opts.upload) {
+			config.progress = {
+				value: 0
+			};
+			if (opts.file) {
+				config.file = opts.file;
+			}
+			else {
+				console.log('Missing File for Upload');
+			}
+			Upload.upload(config).progress(function (evt) {
+				var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+				config.progress.value = progressPercentage;
+			}).success(function (response, status, headers, config) {
+				returnAPIResponse(scope, response, config, cb);
+			}).error(function (data, status, header, config) {
+				returnAPIError(scope, opts, status, headers, config, cb);
+			});
+		}
+		else {
+			$http(config).success(function (response, status, headers, config) {
+				returnAPIResponse(scope, response, config, cb);
+			}).error(function (errData, status, headers, config) {
+				returnAPIError(scope, opts, status, headers, config, cb);
+			});
+		}
+		
 	}
-
+	
 	function getData(scope, opts, cb) {
 		opts.method = 'GET';
 		opts.api = 'getData';
 		executeRequest(scope, opts, cb);
 	}
-
+	
 	function sendData(scope, opts, cb) {
 		opts.method = 'POST';
 		opts.api = 'sendData';
 		executeRequest(scope, opts, cb);
 	}
-
+	
 	return {
 		'get': getData,
 		'send': sendData
@@ -139,11 +161,11 @@ soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cook
 }]);
 
 soajsApp.service('checkApiHasAccess', function () {
-
+	
 	return function (aclObject, serviceName, routePath, userGroups, callback) {
 		var environments = Object.keys(aclObject);
 		return validateAccess(environments, 0, callback);
-
+		
 		function validateAccess(environments, i, cb) {
 			var envCode = environments[i].toLowerCase();
 			if (!aclObject[envCode] || !aclObject[envCode][serviceName]) {
@@ -161,10 +183,10 @@ soajsApp.service('checkApiHasAccess', function () {
 				return cb(access);
 			}
 		}
-
+		
 		function checkSystem(system) {
 			var api = (system && system.apis ? system.apis[routePath] : null);
-
+			
 			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
 				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
 					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
@@ -190,7 +212,7 @@ soajsApp.service('checkApiHasAccess', function () {
 				}
 				return api_checkPermission(system, userGroups, api);
 			}
-
+			
 			if (api || (system && (system.apisPermission === 'restricted'))) {
 				return api_checkPermission(system, userGroups, api);
 			}
@@ -198,7 +220,7 @@ soajsApp.service('checkApiHasAccess', function () {
 				return true;
 			}
 		}
-
+		
 		function api_checkPermission(system, userGroups, api) {
 			if ('restricted' === system.apisPermission) {
 				if (!api) {
@@ -209,20 +231,20 @@ soajsApp.service('checkApiHasAccess', function () {
 			if (!api) {
 				return true;
 			}
-
+			
 			return api_checkAccess(api.access, userGroups);
 		}
-
+		
 		function api_checkAccess(apiAccess, userGroups) {
 			if (!apiAccess) {
 				return true;
 			}
-
+			
 			if (apiAccess instanceof Array) {
 				if (!userGroups) {
 					return false;
 				}
-
+				
 				var found = false;
 				for (var ii = 0; ii < userGroups.length; ii++) {
 					if (apiAccess.indexOf(userGroups[ii]) !== -1) {
@@ -240,12 +262,12 @@ soajsApp.service('checkApiHasAccess', function () {
 });
 
 soajsApp.service("injectFiles", function () {
-
+	
 	function injectCss(filePath) {
 		var csstag = "<link rel='stylesheet' type='text/css' href='" + filePath + "' />";
 		jQuery("head").append(csstag);
 	}
-
+	
 	return {
 		'injectCss': injectCss
 	}

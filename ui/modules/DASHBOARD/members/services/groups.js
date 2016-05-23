@@ -1,19 +1,23 @@
 "use strict";
 var groupsService = soajsApp.components;
 groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
-
+	
 	function listGroups(currentScope, groupsConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (callback) ? currentScope.tId : userCookie.tenant.id;
+		
 		if (currentScope.access.adminGroup.list) {
-			getSendDataFromServer(currentScope, ngDataApi, {
+			var opts = {
 				"method": "get",
-				"headers": {
-					"key": currentScope.key
-				},
 				"routeName": "/urac/admin/group/list",
 				"params": {'tId': tenantId}
-			}, function (error, response) {
+			};
+			if (currentScope.key) {
+				opts.headers = {
+					"key": currentScope.key
+				};
+			}
+			getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 				if (error) {
 					currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 				}
@@ -28,7 +32,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			});
 		}
 	}
-
+	
 	function printGroups(currentScope, groupsConfig, response) {
 		var options = {
 			grid: groupsConfig.grid,
@@ -66,10 +70,10 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				'handler': 'delete1Group'
 			});
 		}
-
+		
 		buildGrid(currentScope, options);
 	}
-
+	
 	function addGroup(currentScope, groupsConfig, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(groupsConfig.form);
@@ -94,15 +98,17 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							'tId': tenantId,
 							'tCode': tenantCode
 						};
-
-						getSendDataFromServer(currentScope, ngDataApi, {
+						var opts = {
 							"method": "send",
-							"headers": {
-								"key": currentScope.key
-							},
 							"routeName": "/urac/admin/group/add",
 							"data": postData
-						}, function (error) {
+						};
+						if (currentScope.key) {
+							opts.headers = {
+								"key": currentScope.key
+							}
+						}
+						getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 							if (error) {
 								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
@@ -127,9 +133,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			]
 		};
 		buildFormWithModal(currentScope, $modal, options);
-
+		
 	}
-
+	
 	function editGroup(currentScope, groupsConfig, data, useCookie) {
 		var config = angular.copy(groupsConfig.form);
 		config.entries[0].type = 'readonly';
@@ -149,16 +155,18 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							'name': formData.name,
 							'description': formData.description
 						};
-
-						getSendDataFromServer(currentScope, ngDataApi, {
+						var opts = {
 							"method": "send",
-							"headers": {
-								"key": currentScope.key
-							},
 							"routeName": "/urac/admin/group/edit",
 							"params": {"gId": data['_id']},
 							"data": postData
-						}, function (error) {
+						};
+						if (currentScope.key) {
+							opts.headers = {
+								"key": currentScope.key
+							}
+						}
+						getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 							if (error) {
 								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 							}
@@ -198,23 +206,29 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 				'success': translation.successMessageDeleteGroup[LANG]
 			}
 		};
-
+		
 		multiRecordUpdate(ngDataApi, currentScope, config, function () {
 			currentScope.listGroups();
 		});
 	}
-
+	
 	function delete1Group(currentScope, data, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
-		getSendDataFromServer(currentScope, ngDataApi, {
+		var opts = {
 			"method": "get",
-			"headers": {
-				"key": currentScope.key
-			},
 			"routeName": "/urac/admin/group/delete",
-			"params": {"gId": data._id, 'tId': tenantId}
-		}, function (error) {
+			"params": {
+				"gId": data._id,
+				'tId': tenantId
+			}
+		};
+		if (currentScope.key) {
+			opts.headers = {
+				"key": currentScope.key
+			}
+		}
+		getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
@@ -224,19 +238,21 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			}
 		});
 	}
-
+	
 	function assignUsers(currentScope, groupsConfig, data, event, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
-
-		getSendDataFromServer(currentScope, ngDataApi, {
+		var opts = {
 			"method": "get",
-			"headers": {
-				"key": currentScope.key
-			},
 			"routeName": "/urac/admin/listUsers",
 			"params": {'tId': tenantId}
-		}, function (error, response) {
+		};
+		if (currentScope.key) {
+			opts.headers = {
+				"key": currentScope.key
+			}
+		}
+		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
@@ -251,7 +267,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 						'selected': sel
 					});
 				}
-
+				
 				var config = angular.copy(groupsConfig.users);
 				config.entries[0].value = value;
 
@@ -271,15 +287,18 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 									'groupCode': data.code,
 									'users': formData.users
 								};
-								getSendDataFromServer(currentScope, ngDataApi, {
+								var opts = {
 									"method": "send",
-									"headers": {
-										"key": currentScope.key
-									},
 									"routeName": "/urac/admin/group/addUsers",
 									"params": {'tId': tenantId},
 									"data": postData
-								}, function (error) {
+								};
+								if (currentScope.key) {
+									opts.headers = {
+										"key": currentScope.key
+									}
+								}
+								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
 									}
@@ -291,7 +310,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 										currentScope.$parent.$emit(event.name, event.params);
 									}
 								});
-
+								
 							}
 						},
 						{
@@ -309,7 +328,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 			}
 		});
 	}
-
+	
 	return {
 		'listGroups': listGroups,
 		'printGroups': printGroups,
