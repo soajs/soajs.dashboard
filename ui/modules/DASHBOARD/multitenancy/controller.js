@@ -1544,7 +1544,6 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 					else {
 						$scope.currentApplication.parentPckgAcl = response.acl;
 						aclHelper.fillAcl($scope);
-						var parentAcl = $scope.currentApplication.parentPckgAcl;
 						var serviceNames = $scope.currentApplication.serviceNames;
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
@@ -1555,22 +1554,21 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 								$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
-								var servicesList = response;
-								for (var x = 0; x < servicesList.length; x++) {
-									if (servicesList[x].apis) {
-										servicesList[x].apisList = servicesList[x].apis;
+								for (var x = 0; x < response.length; x++) {
+									if (response[x].apis) {
+										response[x].apisList = response[x].apis;
 									}
 									else {
-										if (servicesList[x].versions) {
-											var v = returnLatestVersion(servicesList[x].versions);
-											if (servicesList[x].versions[v]) {
-												servicesList[x].apisList = servicesList[x].versions[v].apis;
+										if (response[x].versions) {
+											var v = returnLatestVersion(response[x].versions);
+											if (response[x].versions[v]) {
+												response[x].apisList = response[x].versions[v].apis;
 											}
 										}
 									}
 								}
 								
-								$scope.currentApplication.services = servicesList;
+								$scope.currentApplication.services = response;
 								aclHelper.prepareServices($scope);
 								
 								// get groups list
@@ -1631,8 +1629,10 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	$scope.clearAcl = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
-		var postData = $scope.currentApplication;
-		
+		var postData = {
+			description: $scope.currentApplication.description,
+			_TTL: $scope.currentApplication._TTL
+		};
 		postData.productCode = $scope.currentApplication.product;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		postData.clearAcl = true;
@@ -1659,8 +1659,10 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 	$scope.saveACL = function () {
 		var tId = $routeParams.tId;
 		var appId = $routeParams.appId;
-		var postData = $scope.currentApplication;
-		
+		var postData = {
+			description: $scope.currentApplication.description,
+			_TTL: $scope.currentApplication._TTL
+		};
 		postData.productCode = $scope.currentApplication.product;
 		postData.packageCode = $scope.currentApplication.package.split("_")[1];
 		
@@ -1672,7 +1674,9 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 				"method": "send",
 				"routeName": "/dashboard/tenant/application/update",
 				"data": postData,
-				"params": {"id": tId, "appId": appId}
+				"params": {
+					"id": tId, "appId": appId
+				}
 			}, function (error) {
 				overlayLoading.hide();
 				if (error) {

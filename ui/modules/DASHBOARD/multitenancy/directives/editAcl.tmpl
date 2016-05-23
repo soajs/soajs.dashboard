@@ -11,7 +11,7 @@
                 <tab ng-repeat="oneEnv in environments_codes" heading="{{oneEnv.code}}"><br>
                 <label>{{translation.productPackage[LANG]}}:</label> {{currentApplication.package}}<br /><br />
                 <div id="application-ApiList" class="entryServiceBoxes">
-                    <div ng-repeat="service in currentApplication.services" class="clearfix service-container">
+                    <div ng-repeat="(sName, service) in currentApplication.servicesEnv[oneEnv.code]" class="clearfix service-container">
                         <div class="clearfix serviceNameHead">
                             <div ng-include="'modules/DASHBOARD/multitenancy/directives/service-name.tmpl'"></div>
                         </div>
