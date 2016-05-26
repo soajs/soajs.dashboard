@@ -41,9 +41,9 @@ var deployer = {
             }
 
             var port = null;
-            if (params.port) {
+            if (params.exposePorts) {
                 port = {};
-                port["" + params.port + "/tcp"] = [{"HostPort": "" + params.port}];
+                port["80/tcp"] = [{"HostPort": "80"}];
 	            port["443/tcp"] = [{"HostPort": "443"}];
             }
 
