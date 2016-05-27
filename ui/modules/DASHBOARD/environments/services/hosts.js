@@ -1211,7 +1211,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                         name: oneHost.name,
                                         hostname: oneHost.hostname,
                                         ip: oneHost.ip,
-                                        branch: oneHost.branch
+                                        branch: formData.branch.name
                                     }
                                 }, function (error, response) {
                                     if (error) {
