@@ -1910,6 +1910,13 @@ module.exports = {
 				}
 			}
 		},
+		"/hosts/updateNginx": {
+			"_apiInfo": {
+				"l": "Deploy New Nginx",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode']
+		},
 		"/hosts/deployService": {
 			"_apiInfo": {
 				"l": "Deploy New Service",

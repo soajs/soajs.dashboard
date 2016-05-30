@@ -1024,11 +1024,24 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             currentScope.generateNewMsg(env, 'danger', error.message);
                         }
                         else {
-                            $modalInstance.close();
+	                        getSendDataFromServer(currentScope, ngDataApi, {
+		                        "method": "send",
+		                        "routeName": "/dashboard/hosts/updateNginx",
+		                        "data": {
+			                        'envCode': env
+		                        }
+	                        }, function (error, response) {
+		                        if (error) {
+			                        currentScope.generateNewMsg(env, 'danger', error.message);
+		                        }
+		                        else {
+			                        $modalInstance.close();
 
-                            $timeout(function () {
-                                listHosts(currentScope, env);
-                            }, 2000);
+			                        $timeout(function () {
+				                        listHosts(currentScope, env);
+			                        }, 2000);
+		                        }
+	                        });
                         }
                     });
                 }
