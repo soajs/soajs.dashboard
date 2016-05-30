@@ -374,6 +374,11 @@ service.init(function() {
 			BL.deployController(config, req.soajs, res);
 		});
 	});
+	service.post("/hosts/deployNginx", function(req, res){
+		initBLModel(req, res, hostBL, "host", function(BL) {
+			BL.nginx(config, req.soajs, true, res);
+		});
+	});
 	service.post("/hosts/deployService", function(req, res){
 		initBLModel(req, res, hostBL, "host", function(BL) {
 			BL.deployService(config, req.soajs, res);

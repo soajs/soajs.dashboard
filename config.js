@@ -1862,18 +1862,6 @@ module.exports = {
 					"items": {"type": "string"}
 				}
 			},
-			"nginxConfig": {
-				"source": ["body.nginxConfig"],
-				"required": false,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"customUIId": {"type": "string", "required": true},
-						"branch": {"type": "string", "required": true},
-						"commit": {"type": "string", "required": true}
-					}
-				}
-			},
 			"owner": {
 				"source": ['body.owner'],
 				"required": true,
@@ -1900,6 +1888,25 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "string"
+				}
+			}
+		},
+		"/hosts/deployNginx": {
+			"_apiInfo": {
+				"l": "Deploy New Nginx",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode'],
+			"nginxConfig": {
+				"source": ["body.nginxConfig"],
+				"required": false,
+				"validation": {
+					"type": "object",
+					"properties": {
+						"customUIId": {"type": "string", "required": true},
+						"branch": {"type": "string", "required": true},
+						"commit": {"type": "string", "required": true}
+					}
 				}
 			}
 		},

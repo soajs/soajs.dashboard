@@ -173,9 +173,22 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					overlay.hide();
 				}
 				else {
-					overlay.hide(function(){
-						currentScope.listNginxHosts(envCode);
-						currentScope.listHosts(envCode);
+
+					getSendDataFromServer(currentScope, ngDataApi, {
+						"method": "send",
+						"routeName": "/dashboard/hosts/deployNginx",
+						"data": params
+					}, function(error, response) {
+						if(error) {
+							currentScope.generateNewMsg(envCode, 'danger', error.message);
+							overlay.hide();
+						}
+						else {
+							overlay.hide(function(){
+								currentScope.listNginxHosts(envCode);
+								currentScope.listHosts(envCode);
+							});
+						}
 					});
 				}
 			});
