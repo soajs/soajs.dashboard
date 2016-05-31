@@ -268,12 +268,14 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         });
                     }
                     for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
-                        oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
-                            oneHost.networkInfo.ports.push({
-                                host: oneMapping.HostPort,
-                                container: mappedPort
+                        if (oneHost.info.NetworkSettings.Ports[mappedPort] && mappedPort !== "443/tcp") {
+                            oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
+                                oneHost.networkInfo.ports.push({
+                                    host: oneMapping.HostPort,
+                                    container: mappedPort
+                                });
                             });
-                        });
+                        }
                     }
                 });
                 currentScope.nginxHosts = response;
@@ -830,6 +832,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 delete currentScope.conflictCommits;
                 currentScope.confirmBranch = '';
                 delete currentScope.number;
+                delete currentScope.exposedPort;
                 currentScope.message = {};
                 currentScope.defaultEnvVariables = "<ul><li>SOAJS_SRV_AUTOREGISTERHOST=false</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + env + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 
@@ -879,12 +882,22 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     });
                 };
 
+                $scope.addNginx = function () {
+                    currentScope.services.unshift({
+                        UIGroup: 'Web Servers',
+                        name: 'Nginx',
+                        type: 'nginx'
+                    });
+                };
+
                 $scope.selectService = function (service) {
                     currentScope.branches = [];
                     currentScope.branch = '';
                     currentScope.groupConfigs = '';
                     currentScope.conflict = '';
                     currentScope.conflictCommits = {};
+
+                    if (service.type === 'nginx') return;
 
                     if (service.type === 'daemon' && service.grpConf) {
                         currentScope.groupConfigs = service.grpConf;
@@ -944,24 +957,29 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 };
 
                 $scope.onSubmit = function () {
-                    if (!currentScope.service || ! currentScope.branch || !currentScope.number) {
+                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || !currentScope.number))) {
                         currentScope.message.danger = "Please select a service, branch, and number of instances";
                         $timeout(function () {
                             currentScope.message.danger = "";
                         }, 5000);
                     }
-                    else if (Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
+                    else if (currentScope.conflictCommits && Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
                         currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
                         $timeout(function () {
                             currentScope.message.danger = "";
                         }, 5000);
                     } else {
-                        var max = currentScope.number;
-                        if (currentScope.service.name === 'controller') {
-                            newController(currentScope, max);
+                        if (currentScope.service.type === 'nginx') {
+                            newNginx(currentScope);
                         }
                         else {
-                            newService(currentScope, max);
+                            var max = currentScope.number;
+                            if (currentScope.service.name === 'controller') {
+                                newController(currentScope, max);
+                            }
+                            else {
+                                newService(currentScope, max);
+                            }
                         }
                     }
                 };
@@ -969,10 +987,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $scope.closeModal = function () {
                     $modalInstance.close();
                 };
-
-                $scope.getServices(function () {
-                    $scope.getDaemons();
-                });
 
                 function allowListing(env, service) {
                     var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
@@ -1022,13 +1036,28 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }, function (error, response) {
                         if (error) {
                             currentScope.generateNewMsg(env, 'danger', error.message);
+                            $modalInstance.close();
                         }
                         else {
-                            $modalInstance.close();
+	                        getSendDataFromServer(currentScope, ngDataApi, {
+		                        "method": "send",
+		                        "routeName": "/dashboard/hosts/updateNginx",
+		                        "data": {
+			                        'envCode': env
+		                        }
+	                        }, function (error, response) {
+		                        if (error) {
+			                        currentScope.generateNewMsg(env, 'danger', error.message);
+                                    $modalInstance.close();
+		                        }
+		                        else {
+			                        $modalInstance.close();
 
-                            $timeout(function () {
-                                listHosts(currentScope, env);
-                            }, 2000);
+			                        $timeout(function () {
+				                        listHosts(currentScope, env);
+			                        }, 2000);
+		                        }
+	                        });
                         }
                     });
                 }
@@ -1154,91 +1183,50 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     }
                 }
 
+                function newNginx(currentScope) {
+                    var params = {
+                        envCode: env
+                    };
+
+                    if (currentScope.exposedPort) {
+                        params.exposedPort = currentScope.exposedPort;
+                    }
+
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        method: 'send',
+                        routeName: '/dashboard/hosts/deployNginx',
+                        data: params
+                    }, function (error, response) {
+                        if (error) {
+                            $modalInstance.close();
+                            currentScope.generateNewMsg(env, 'danger', error.message);
+                        }
+                        else {
+                            $modalInstance.close();
+                            currentScope.generateNewMsg(env, 'success', 'Nginx instance deployed successfully');
+                            listNginxHosts(currentScope, env);
+                        }
+                    });
+                }
+
                 function getBranchFromCommit (commit) {
                     return currentScope.conflictCommits[commit].branch;
                 }
-            }
-        });
-    }
 
-    function restartHost (currentScope, env, oneHost) {
-        overlayLoading.show();
-        var formConfig = angular.copy(environmentsConfig.form.restartHost);
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/gitAccounts/getBranches',
-            params: {
-                'name': oneHost.name,
-                'type': oneHost.type
-            }
-        }, function (error, response) {
-            overlayLoading.hide();
-            if (error) {
-                currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
-            } else {
-                currentScope.branches = response.branches;
-                currentScope.serviceOwner = response.owner;
-                currentScope.serviceRepo = response.repo;
-
-                response.branches.forEach(function (oneBranch) {
-                    formConfig.entries[0].value.push({
-                        'l': oneBranch.name,
-                        'v': oneBranch,
-                        'selected': (oneBranch.name === oneHost.branch)
+                //Start here
+                if (currentScope.hosts.controller) {
+                    $scope.getServices(function () {
+                        $scope.getDaemons();
+                        $scope.addNginx();
                     });
-                });
-
-                var options = {
-                    timeout: $timeout,
-                    form: formConfig,
-                    name: 'restartHost',
-                    label: 'Restart Host',
-                    actions: [
-                        {
-                            'type': 'submit',
-                            'label': translation.submit[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                if (typeof(formData.branch) === 'string') {
-                                    formData.branch = JSON.parse(formData.branch);
-                                }
-
-                                getSendDataFromServer(currentScope, ngDataApi, {
-                                    method: 'send',
-                                    routeName: '/dashboard/hosts/redeployService',
-                                    data: {
-                                        envCode: env,
-                                        name: oneHost.name,
-                                        hostname: oneHost.hostname,
-                                        ip: oneHost.ip,
-                                        branch: formData.branch.name
-                                    }
-                                }, function (error, response) {
-                                    if (error) {
-                                        currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                    else {
-                                        currentScope.$parent.displayAlert('success', 'Host has been restarted successfully');
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                });
-                            }
-                        },
-                        {
-        					'type': 'reset',
-        					'label': translation.cancel[LANG],
-        					'btn': 'danger',
-        					'action': function() {
-        						currentScope.modalInstance.dismiss('cancel');
-        						currentScope.form.formData = {};
-        					}
-        				}
-                    ]
-                };
-                buildFormWithModal(currentScope, $modal, options);
+                }
+                else {
+                    currentScope.services.push({
+                        name: 'controller',
+                        UIGroup: 'Controllers',
+                        type: 'service'
+                    });
+                }
             }
         });
     }
@@ -1338,7 +1326,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'hostLogs': hostLogs,
         'infoHost': infoHost,
         'createHost': createHost,
-        'restartHost': restartHost,
         'containerLogs': containerLogs,
         'deleteContainer': deleteContainer,
         'listZombieContainers': listZombieContainers

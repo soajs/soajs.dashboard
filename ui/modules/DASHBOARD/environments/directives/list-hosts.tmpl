@@ -16,10 +16,15 @@
 						<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
 						<br>
 					</div>
-					<div ng-if="currentScope.loadingBranches || currentScope.branches">
+					<div ng-if="(currentScope.loadingBranches || currentScope.branches) && currentScope.service.type !== 'nginx'">
 						<label>{{translation.branch[LANG]}}</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingBranches">
 						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
 						<br>
+					</div>
+					<div ng-if="currentScope.service.type === 'nginx'">
+						<label>Exposed Port</label>
+						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort" />
+						<br />
 					</div>
 					<div ng-if="currentScope.conflict">
 						<label ng-style="{'color': 'red'}">{{translation.warning[LANG]}}</label><br>
@@ -51,16 +56,20 @@
 						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;{{translation.understandTheRiskToDeploy[LANG]}}</label><br>
 						<br>
 					</div>
-					<label>{{translation.hostsNumber[LANG]}}</label>
-					<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" placeholder="1"/>
-					<br>
-					<label>{{translation.envVariables[LANG]}}</label>
-					<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
-					<br>
-					<label>{{translation.defaultEnvVariables[LANG]}}</label>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label>{{translation.hostsNumber[LANG]}}</label>
+						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" placeholder="1"/>
+						<br>
+					</div>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label>{{translation.envVariables[LANG]}}</label>
+						<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
+						<br>
+						<label>{{translation.defaultEnvVariables[LANG]}}</label>
 
-					<div ng-bind-html="currentScope.defaultEnvVariables"></div>
-					<br>
+						<div ng-bind-html="currentScope.defaultEnvVariables"></div>
+						<br>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -123,7 +132,7 @@
 		<tabset>
 			<tab heading="{{translation.activeHosts[LANG]}}">
 				<br>
-				<div ng-show="!hosts.controller">
+				<div ng-show="!hosts.controller && nginxHosts.length === 0">
 					<alert type="warning" ng-if="deployer.type ==='manual'">
 						{{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>.
 						{{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
@@ -134,7 +143,7 @@
 						<input type="button" value="{{translation.deployEnvironment[LANG]}}" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
 					</div>
 				</div>
-				<div ng-show="hosts.controller">
+				<div ng-show="hosts.controller || nginxHosts.length > 0">
 					<input ng-if="deployer.type !== 'manual'" type="button" value="{{translation.addNewHosts[LANG]}}" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
 					<a href="" ng-click="listHosts(envCode)" class="btn btn-primary f-right">
 						<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
@@ -142,7 +151,7 @@
 				</div>
 				<br/><br/>
 
-				<div class="entryBoxes entryBoxesGrid" ng-init="" style="padding-left: 5px;" ng-show="hosts.controller">
+				<div class="entryBoxes entryBoxesGrid" ng-init="" style="padding-left: 5px;" ng-show="hosts.controller || nginxHosts.length > 0">
 					<fieldset class="groupFieldset" ng-if="nginxHosts.length > 0">
 						<legend>
 							<a href="" class="icon" ng-class="{'icon-minus': showNginxHosts, 'icon-plus': !showNginxHosts}" ng-click="showHideContent('nginx')"></a>Nginx
@@ -167,16 +176,23 @@
 												<td>
 													<span class="icon green" ng-class="nginxHost.running === true? 'icon-smile' : 'icon-sad'"></span>
 												</td>
-												<td><span class="green">{{nginxHost.hostname}}</span></td>
-												<td><span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span>
+												<td>
+													<span class="green">{{nginxHost.hostname}}</span>
 												</td>
-												<td><span class="green" ng-repeat="port in nginxHost.networkInfo.ports">{{port.host}} --> {{port.container}}<span ng-if="!$last">, </span></span>
+												<td>
+													<span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span>
+												</td>
+												<td>
+													<span class="green" ng-repeat="port in nginxHost.networkInfo.ports">{{port.host}} --> {{port.container}}<span ng-if="!$last">, </span></span>
 												</td>
 											</tr>
 											<tr>
 												<td colspan="4">
 													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+													</a>
+													<a href="" ng-show="nginxHost.cid" ng-click="deleteContainer(envCode, nginxHost)" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}">
+														<span class="icon icon-cross" title="Remove Nginx"></span>&nbsp;
 													</a>
 												</td>
 											</tr>
@@ -194,7 +210,7 @@
 							</div>
 						</div>
 					</fieldset>
-					<fieldset class="groupFieldset">
+					<fieldset class="groupFieldset" ng-if="hosts.controller">
 						<legend>
 							<a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>SOAJS
 							Controllers
@@ -239,9 +255,6 @@
 
 														<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
 															<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
-														</a>
-														<a href="" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
-															<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
 														</a>
 													</td>
 												</tr>
@@ -327,9 +340,6 @@
 																			<!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
 																			<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
 																			<!--</a>-->
-																			<a href="" ng-show="oneIp.cid" ng-click="restartHost(envCode, oneIp)">
-																				<span class="icon icon-loop2" title="{{translation.restartHost[LANG]}}"></span>&nbsp;
-																			</a>
 																		</td>
 																		<!--<td valign="top"><span class="{{oneIp.color}}">{{oneIp.hostname}}<br /><b>IP:</b>&nbsp;{{oneIp.ip}}<br /><b>Version:</b>&nbsp;{{version}}</span></td>-->
 

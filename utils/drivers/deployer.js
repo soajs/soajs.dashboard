@@ -41,10 +41,9 @@ var deployer = {
             }
 
             var port = null;
-            if (params.exposePorts) {
+            if (params.exposedPort) {
                 port = {};
-                port["80/tcp"] = [{"HostPort": "80"}];
-	            port["443/tcp"] = [{"HostPort": "443"}];
+                port["80/tcp"] = [{"HostPort": "" + params.exposedPort}];
             }
 
             deployerConfig.envCode = environment;
@@ -57,10 +56,16 @@ var deployer = {
                 "Tty": false,
                 "Hostname": containerName,
                 "HostConfig": {
-	                "PortBindings": port,
-                    "PublishAllPorts": true
+                    // "PublishAllPorts": true //todo: enable this when https is supported
                 }
             };
+
+	        if(port){
+		        options.HostConfig["PortBindings"] = port;
+	        }
+            else {
+                options.HostConfig.PublishAllPorts = true;
+            }
 
             if (deployerConfig.config && deployerConfig.config.HostConfig && deployerConfig.config.HostConfig.NetworkMode) {
                 options.HostConfig.NetworkMode = deployerConfig.config.HostConfig.NetworkMode;
