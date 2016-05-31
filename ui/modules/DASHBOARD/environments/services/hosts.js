@@ -1174,88 +1174,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
-    function restartHost (currentScope, env, oneHost) {
-        overlayLoading.show();
-        var formConfig = angular.copy(environmentsConfig.form.restartHost);
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
-            routeName: '/dashboard/gitAccounts/getBranches',
-            params: {
-                'name': oneHost.name,
-                'type': oneHost.type
-            }
-        }, function (error, response) {
-            overlayLoading.hide();
-            if (error) {
-                currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
-            } else {
-                currentScope.branches = response.branches;
-                currentScope.serviceOwner = response.owner;
-                currentScope.serviceRepo = response.repo;
-
-                response.branches.forEach(function (oneBranch) {
-                    formConfig.entries[0].value.push({
-                        'l': oneBranch.name,
-                        'v': oneBranch,
-                        'selected': (oneBranch.name === oneHost.branch)
-                    });
-                });
-
-                var options = {
-                    timeout: $timeout,
-                    form: formConfig,
-                    name: 'restartHost',
-                    label: 'Restart Host',
-                    actions: [
-                        {
-                            'type': 'submit',
-                            'label': translation.submit[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                if (typeof(formData.branch) === 'string') {
-                                    formData.branch = JSON.parse(formData.branch);
-                                }
-
-                                getSendDataFromServer(currentScope, ngDataApi, {
-                                    method: 'send',
-                                    routeName: '/dashboard/hosts/redeployService',
-                                    data: {
-                                        envCode: env,
-                                        name: oneHost.name,
-                                        hostname: oneHost.hostname,
-                                        ip: oneHost.ip,
-                                        branch: formData.branch.name
-                                    }
-                                }, function (error, response) {
-                                    if (error) {
-                                        currentScope.displayAlert("danger", error.code, true, 'dashboard', error.message);
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                    else {
-                                        currentScope.$parent.displayAlert('success', 'Host has been restarted successfully');
-                                        currentScope.modalInstance.dismiss('cancel');
-                                        currentScope.form.formData = {};
-                                    }
-                                });
-                            }
-                        },
-                        {
-        					'type': 'reset',
-        					'label': translation.cancel[LANG],
-        					'btn': 'danger',
-        					'action': function() {
-        						currentScope.modalInstance.dismiss('cancel');
-        						currentScope.form.formData = {};
-        					}
-        				}
-                    ]
-                };
-                buildFormWithModal(currentScope, $modal, options);
-            }
-        });
-    }
-
     function containerLogs (currentScope, env, container) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
@@ -1351,7 +1269,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'hostLogs': hostLogs,
         'infoHost': infoHost,
         'createHost': createHost,
-        'restartHost': restartHost,
         'containerLogs': containerLogs,
         'deleteContainer': deleteContainer,
         'listZombieContainers': listZombieContainers
