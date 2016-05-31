@@ -43,7 +43,7 @@ var deployer = {
             var port = null;
             if (params.exposedPort) {
                 port = {};
-                port["80/tcp"] = [{"HostPort": params.exposedPort}];
+                port["80/tcp"] = [{"HostPort": "" + params.exposedPort}];
             }
 
             deployerConfig.envCode = environment;
@@ -56,7 +56,7 @@ var deployer = {
                 "Tty": false,
                 "Hostname": containerName,
                 "HostConfig": {
-                    "PublishAllPorts": true
+                    // "PublishAllPorts": true //todo: enable this when https is supported
                 }
             };
 
