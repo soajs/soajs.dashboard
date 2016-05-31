@@ -290,6 +290,14 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
+					'name': 'exposedPort',
+					'label': 'Exposed Port',
+					'type': 'number',
+					'value': "",
+					'fieldMsg': 'Optional: Specify a Nginx port to be exposed',
+					'required': false
+				},
+				{
 					'name': 'variables',
 					"label": translation.environmentVariables[LANG],
 					"type": "textarea",

@@ -146,6 +146,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'commit': branchObj.commit.sha
 			};
 
+			if (formData.exposedPort) {
+				params.exposedPort = formData.exposedPort;
+			}
+
 			if (formData.useCustomUI) {
 				formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
 				formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
