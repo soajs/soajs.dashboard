@@ -132,7 +132,7 @@
 		<tabset>
 			<tab heading="{{translation.activeHosts[LANG]}}">
 				<br>
-				<div ng-show="!hosts.controller">
+				<div ng-show="!hosts.controller && nginxHosts.length === 0">
 					<alert type="warning" ng-if="deployer.type ==='manual'">
 						{{translation.thisEnvironmentConfiguredDeployed[LANG]}} <b>{{translation.manually[LANG]}}</b>.
 						{{translation.allServicesRunningEnvironmentHaveStartedStoppedAdministrator[LANG]}}
@@ -143,7 +143,7 @@
 						<input type="button" value="{{translation.deployEnvironment[LANG]}}" class="btn btn-primary" ng-click="deployEnvironment(envCode)" style="float:none; top:0; display:block; margin:20px auto 0;"/>
 					</div>
 				</div>
-				<div ng-show="hosts.controller">
+				<div ng-show="hosts.controller || nginxHosts.length > 0">
 					<input ng-if="deployer.type !== 'manual'" type="button" value="{{translation.addNewHosts[LANG]}}" ng-click="createHost(envCode, hosts);" class="btn btn-primary" style="float:left !important;"/>
 					<a href="" ng-click="listHosts(envCode)" class="btn btn-primary f-right">
 						<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
@@ -151,7 +151,7 @@
 				</div>
 				<br/><br/>
 
-				<div class="entryBoxes entryBoxesGrid" ng-init="" style="padding-left: 5px;" ng-show="hosts.controller">
+				<div class="entryBoxes entryBoxesGrid" ng-init="" style="padding-left: 5px;" ng-show="hosts.controller || nginxHosts.length > 0">
 					<fieldset class="groupFieldset" ng-if="nginxHosts.length > 0">
 						<legend>
 							<a href="" class="icon" ng-class="{'icon-minus': showNginxHosts, 'icon-plus': !showNginxHosts}" ng-click="showHideContent('nginx')"></a>Nginx
@@ -210,7 +210,7 @@
 							</div>
 						</div>
 					</fieldset>
-					<fieldset class="groupFieldset">
+					<fieldset class="groupFieldset" ng-if="hosts.controller">
 						<legend>
 							<a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>SOAJS
 							Controllers

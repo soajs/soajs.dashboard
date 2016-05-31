@@ -929,7 +929,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $scope.selectBranch = function (branch) {
                     currentScope.conflict = false;
                     currentScope.conflictCommits = {};
-                    console.log (runningHosts[currentScope.service.name]);
                     if (runningHosts[currentScope.service.name]) {
                         var versions = Object.keys(runningHosts[currentScope.service.name].ips);
                         for (var i = 0; i < versions.length; i++) {
@@ -988,11 +987,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $scope.closeModal = function () {
                     $modalInstance.close();
                 };
-
-                $scope.getServices(function () {
-                    $scope.getDaemons();
-                    $scope.addNginx();
-                });
 
                 function allowListing(env, service) {
                     var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
@@ -1217,6 +1211,21 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                 function getBranchFromCommit (commit) {
                     return currentScope.conflictCommits[commit].branch;
+                }
+
+                //Start here
+                if (currentScope.hosts.controller) {
+                    $scope.getServices(function () {
+                        $scope.getDaemons();
+                        $scope.addNginx();
+                    });
+                }
+                else {
+                    currentScope.services.push({
+                        name: 'controller',
+                        UIGroup: 'Controllers',
+                        type: 'service'
+                    });
                 }
             }
         });
