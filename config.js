@@ -1908,6 +1908,13 @@ module.exports = {
 						"commit": {"type": "string", "required": true}
 					}
 				}
+			},
+			"exposedPort": {
+				"source": ["body.exposedPort"],
+				"required": false,
+				"validation":{
+					"type":"number"
+				}
 			}
 		},
 		"/hosts/updateNginx": {
