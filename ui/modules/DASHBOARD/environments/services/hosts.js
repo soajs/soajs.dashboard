@@ -929,7 +929,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 $scope.selectBranch = function (branch) {
                     currentScope.conflict = false;
                     currentScope.conflictCommits = {};
-                    if (runningHosts[currentScope.service.name]) {
+                    if (runningHosts && runningHosts[currentScope.service.name]) {
                         var versions = Object.keys(runningHosts[currentScope.service.name].ips);
                         for (var i = 0; i < versions.length; i++) {
                             var instances = runningHosts[currentScope.service.name].ips[versions[i]];
@@ -1214,7 +1214,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 }
 
                 //Start here
-                if (currentScope.hosts.controller) {
+                if (currentScope.hosts && currentScope.hosts.controller) {
                     $scope.getServices(function () {
                         $scope.getDaemons();
                         $scope.addNginx();
