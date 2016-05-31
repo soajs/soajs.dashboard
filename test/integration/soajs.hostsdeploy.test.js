@@ -343,7 +343,7 @@ describe("testing hosts deployment", function () {
             });
         });
 
-        it("success - deploy 2 controller", function (done) {
+        it("success - deploy 1 controller", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
@@ -367,41 +367,36 @@ describe("testing hosts deployment", function () {
             });
         });
 
+	    it("success - deploy 1 controller and use the main file specified in src", function (done) {
+		    mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+			    assert.ifError(error);
+
+			    var params = {
+				    headers: {
+					    soajsauth: soajsauth
+				    },
+				    "form": {
+					    "number": 1,
+					    "envCode": "DEV",
+					    "owner": "soajs",
+					    "repo": "soajs.controller",
+					    "branch": "develop",
+					    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+					    "variables": [
+						    "TEST_VAR=mocha"
+					    ]
+				    }
+			    };
+			    executeMyRequest(params, "hosts/deployController", "post", function (body) {
+				    assert.ok(body.result);
+				    assert.ok(body.data);
+				    done();
+			    });
+		    });
+	    });
+
         it("success - deploy 1 controller with static content", function (done) {
             mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
-                assert.ifError(error);
-
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "form": {
-                        "number": 1,
-                        "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.controller",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "nginxConfig": {
-                            "customUIId": record._id.toString(),
-                            "branch": "develop",
-                            "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
-                        }
-                    }
-                };
-                executeMyRequest(params, "hosts/deployController", "post", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-
-        it("success - deploy 1 controller and use the main file specified in src", function (done) {
-            mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
                 assert.ifError(error);
 
                 var params = {
@@ -423,10 +418,31 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployController", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    done();
+
+	                var params2 = {
+		                headers: {
+			                soajsauth: soajsauth
+		                },
+		                "form":{
+			                "envCode": "DEV",
+			                "nginxConfig": {
+				                "customUIId": record._id.toString(),
+				                "branch": "develop",
+				                "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
+			                }
+		                }
+	                };
+
+	                executeMyRequest(params2, "hosts/deployNginx", "post", function(body){
+		                assert.ok(body.result);
+		                assert.ok(body.data);
+                        done();
+	                });
                 });
             });
         });
+
+
     });
 
     describe("testing service deployment", function () {
