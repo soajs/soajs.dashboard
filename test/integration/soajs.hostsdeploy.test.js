@@ -163,12 +163,9 @@ describe("testing hosts deployment", function () {
     });
 
     after(function (done) {
-        server.close(done);
-    });
-
-    after(function (done) {
         mongo.closeDb();
-        done();
+        server.close();
+	    done();
     });
 
     describe("testing controller deployment", function () {
