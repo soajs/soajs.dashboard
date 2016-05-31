@@ -123,6 +123,5 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		//list nginx container, hosts, and zombie containers in parallel
 		$scope.listNginxHosts($scope.envCode);
 		$scope.listHosts($scope.envCode);
-		// $scope.listZombieContainers($scope.envCode);
 	}
 }]);

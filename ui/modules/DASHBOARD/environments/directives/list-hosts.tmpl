@@ -16,10 +16,15 @@
 						<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
 						<br>
 					</div>
-					<div ng-if="currentScope.loadingBranches || currentScope.branches">
+					<div ng-if="(currentScope.loadingBranches || currentScope.branches) && currentScope.service.type !== 'nginx'">
 						<label>{{translation.branch[LANG]}}</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingBranches">
 						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
 						<br>
+					</div>
+					<div ng-if="currentScope.service.type === 'nginx'">
+						<label>Exposed Port</label>
+						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort" />
+						<br />
 					</div>
 					<div ng-if="currentScope.conflict">
 						<label ng-style="{'color': 'red'}">{{translation.warning[LANG]}}</label><br>
@@ -51,16 +56,20 @@
 						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;{{translation.understandTheRiskToDeploy[LANG]}}</label><br>
 						<br>
 					</div>
-					<label>{{translation.hostsNumber[LANG]}}</label>
-					<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" placeholder="1"/>
-					<br>
-					<label>{{translation.envVariables[LANG]}}</label>
-					<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
-					<br>
-					<label>{{translation.defaultEnvVariables[LANG]}}</label>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label>{{translation.hostsNumber[LANG]}}</label>
+						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" placeholder="1"/>
+						<br>
+					</div>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label>{{translation.envVariables[LANG]}}</label>
+						<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
+						<br>
+						<label>{{translation.defaultEnvVariables[LANG]}}</label>
 
-					<div ng-bind-html="currentScope.defaultEnvVariables"></div>
-					<br>
+						<div ng-bind-html="currentScope.defaultEnvVariables"></div>
+						<br>
+					</div>
 				</div>
 			</form>
 		</div>
@@ -182,7 +191,7 @@
 													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 													</a>
-													<a href="" ng-show="nginxHost.cid" ng-click="deleteContainer(envCode, nginxHost)">
+													<a href="" ng-show="nginxHost.cid" ng-click="deleteContainer(envCode, nginxHost)" ng-confirm-click="{{translation.areYouSureYouWantRemoveHost[LANG]}}">
 														<span class="icon icon-cross" title="Remove Nginx"></span>&nbsp;
 													</a>
 												</td>

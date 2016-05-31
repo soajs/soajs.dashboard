@@ -63,6 +63,9 @@ var deployer = {
 	        if(port){
 		        options.HostConfig["PortBindings"] = port;
 	        }
+            else {
+                options.HostConfig.PublishAllPorts = true;
+            }
 
             if (deployerConfig.config && deployerConfig.config.HostConfig && deployerConfig.config.HostConfig.NetworkMode) {
                 options.HostConfig.NetworkMode = deployerConfig.config.HostConfig.NetworkMode;
