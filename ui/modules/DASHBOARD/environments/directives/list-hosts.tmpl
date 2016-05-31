@@ -167,16 +167,23 @@
 												<td>
 													<span class="icon green" ng-class="nginxHost.running === true? 'icon-smile' : 'icon-sad'"></span>
 												</td>
-												<td><span class="green">{{nginxHost.hostname}}</span></td>
-												<td><span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span>
+												<td>
+													<span class="green">{{nginxHost.hostname}}</span>
 												</td>
-												<td><span class="green" ng-repeat="port in nginxHost.networkInfo.ports">{{port.host}} --> {{port.container}}<span ng-if="!$last">, </span></span>
+												<td>
+													<span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span>
+												</td>
+												<td>
+													<span class="green" ng-repeat="port in nginxHost.networkInfo.ports">{{port.host}} --> {{port.container}}<span ng-if="!$last">, </span></span>
 												</td>
 											</tr>
 											<tr>
 												<td colspan="4">
 													<a href="" ng-show="nginxHost.cid" ng-click="containerLogs(envCode, nginxHost)">
 														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+													</a>
+													<a href="" ng-show="nginxHost.cid" ng-click="deleteContainer(envCode, nginxHost)">
+														<span class="icon icon-cross" title="Remove Nginx"></span>&nbsp;
 													</a>
 												</td>
 											</tr>
