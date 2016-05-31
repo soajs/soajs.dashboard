@@ -1067,33 +1067,5 @@ describe("testing hosts deployment", function () {
                 });
             });
         });
-
-        describe("delete nginx hosts", function () {
-            it("success - will delete nginx container", function (done) {
-                mongo.findOne("docker", {type: 'nginx'}, function (error, record) {
-                    assert.ifError(error);
-
-                    var params = {
-                        qs: {
-                            env: record.env,
-                            cid: record.cid
-                        }
-                    };
-                    executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
-                        assert.ok(body.result);
-                        assert.ok(body.data);
-                        done();
-                    });
-                });
-            });
-
-            it("mongo check", function (done) {
-                mongo.count("docker", {type: 'nginx'}, function (error, count) {
-                    assert.ifError(error);
-                    assert.equal(count, 0);
-                    done();
-                });
-            });
-        });
     });
 });
