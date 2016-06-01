@@ -343,7 +343,7 @@ describe("testing hosts deployment", function () {
             });
         });
 
-        it("success - deploy 2 controller", function (done) {
+        it("success - deploy 1 controller", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
@@ -367,41 +367,36 @@ describe("testing hosts deployment", function () {
             });
         });
 
+	    it("success - deploy 1 controller and use the main file specified in src", function (done) {
+		    mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+			    assert.ifError(error);
+
+			    var params = {
+				    headers: {
+					    soajsauth: soajsauth
+				    },
+				    "form": {
+					    "number": 1,
+					    "envCode": "DEV",
+					    "owner": "soajs",
+					    "repo": "soajs.controller",
+					    "branch": "develop",
+					    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+					    "variables": [
+						    "TEST_VAR=mocha"
+					    ]
+				    }
+			    };
+			    executeMyRequest(params, "hosts/deployController", "post", function (body) {
+				    assert.ok(body.result);
+				    assert.ok(body.data);
+				    done();
+			    });
+		    });
+	    });
+
         it("success - deploy 1 controller with static content", function (done) {
             mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
-                assert.ifError(error);
-
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "form": {
-                        "number": 1,
-                        "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.controller",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "nginxConfig": {
-                            "customUIId": record._id.toString(),
-                            "branch": "develop",
-                            "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
-                        }
-                    }
-                };
-                executeMyRequest(params, "hosts/deployController", "post", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-
-        it("success - deploy 1 controller and use the main file specified in src", function (done) {
-            mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
                 assert.ifError(error);
 
                 var params = {
@@ -423,10 +418,31 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployController", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    done();
+
+	                var params2 = {
+		                headers: {
+			                soajsauth: soajsauth
+		                },
+		                "form":{
+			                "envCode": "DEV",
+			                "nginxConfig": {
+				                "customUIId": record._id.toString(),
+				                "branch": "develop",
+				                "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
+			                }
+		                }
+	                };
+
+	                executeMyRequest(params2, "hosts/deployNginx", "post", function(body){
+		                assert.ok(body.result);
+		                assert.ok(body.data);
+                        done();
+	                });
                 });
             });
         });
+
+
     });
 
     describe("testing service deployment", function () {
@@ -982,169 +998,72 @@ describe("testing hosts deployment", function () {
         });
     });
 
-    // describe("testing nginx containers", function () {
-    //     var nginxDockerRecord = {
-    //         "env": "dev",
-    //         "cid": "da42c756def695471acb1e1391746f1b9d82e5f925e41b3d02b0759b1a257b87",
-    //         "hostname": "nginx_dev",
-    //         "type": "nginx",
-    //         "running": true,
-    //         "deployer": {
-    //             "host": "192.168.99.103",
-    //             "port": 2376,
-    //             "config": {
-    //                 "HostConfig": {
-    //                     "NetworkMode": "soajsnet"
-    //                 },
-    //                 "MachineName": "soajs-dev"
-    //             },
-    //             "driver": {
-    //                 "type": "container",
-    //                 "driver": "docker"
-    //             },
-    //             "selectedDriver": "dockermachine - local",
-    //             "envCode": "dev"
-    //         },
-    //         "info": {}
-    //     };
-    //
-    //     before("clean docker collection and inject nginx records in docker collection", function (done) {
-    //         mongo.remove("docker", {type: 'nginx'}, function (error) {
-    //             assert.ifError(error);
-    //
-    //             mongo.insert("docker", nginxDockerRecord, function (error) {
-    //                 assert.ifError(error);
-    //                 done();
-    //             });
-    //         });
-    //     });
-    //
-    //     describe("list nginx hosts", function () {
-    //
-    //         it("success - will list nginx hosts", function (done) {
-    //             var params = {
-    //                 qs: {
-    //                     env: nginxDockerRecord.env
-    //                 }
-    //             };
-    //             executeMyRequest(params, 'hosts/nginx/list', 'get', function (body) {
-    //                 assert.ok(body.result);
-    //                 assert.ok(body.data);
-    //                 assert.equal(body.data.length, 1);
-    //                 done();
-    //             });
-    //         });
-    //
-    //         it("fail - missing required params", function (done) {
-    //             executeMyRequest({}, 'hosts/nginx/list', 'get', function (body) {
-    //                 assert.ok(body.errors);
-    //                 assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
-    //                 done();
-    //             });
-    //         });
-    //
-    //         it("mongo check", function (done) {
-    //             mongo.count("docker", {type: 'nginx'}, function (error, count) {
-    //                 assert.ifError(error);
-    //                 assert.equal(count, 1);
-    //                 done();
-    //             });
-    //         });
-    //     });
-    //
-    //     describe("delete nginx hosts", function () {
-    //         var nginxDockerRecordTwo = {
-    //             "env": "dev",
-    //             "cid": "da42c756def695471acb1e1391746f1b9d82e5f925e41b3d02b0759b1a257b99",
-    //             "hostname": "nginx_345_dev",
-    //             "type": "nginx",
-    //             "running": true,
-    //             "deployer": {
-    //                 "host": "192.168.99.103",
-    //                 "port": 2376,
-    //                 "config": {
-    //                     "HostConfig": {
-    //                         "NetworkMode": "soajsnet"
-    //                     },
-    //                     "MachineName": "soajs-dev"
-    //                 },
-    //                 "driver": {
-    //                     "type": "container",
-    //                     "driver": "docker"
-    //                 },
-    //                 "selectedDriver": "dockermachine - local",
-    //                 "envCode": "dev"
-    //             },
-    //             "info": {}
-    //         };
-    //
-    //         it("fail - only one nginx container is available", function (done) {
-    //             var params = {
-    //                 qs: {
-    //                     env: nginxDockerRecord.env,
-    //                     cid: nginxDockerRecord.cid
-    //                 }
-    //             };
-    //             executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
-    //                 assert.ok(body.errors);
-    //                 assert.deepEqual(body.errors.details[0], {'code': 777, 'message': errorCodes[777]});
-    //                 done();
-    //             });
-    //         });
-    //
-    //         it("success - will delete nginx container", function (done) {
-    //             //inject another nginx record in docker collection
-    //             mongo.insert("docker", nginxDockerRecordTwo, function (error) {
-    //                 assert.ifError(error);
-    //
-    //                 var params = {
-    //                     qs: {
-    //                         env: nginxDockerRecordTwo.env,
-    //                         cid: nginxDockerRecordTwo.cid
-    //                     }
-    //                 };
-    //                 executeMyRequest(params, 'hosts/container/delete', 'get', function (body) {
-    //                     assert.ok(body.result);
-    //                     assert.ok(body.data);
-    //                     done();
-    //                 });
-    //             });
-    //         });
-    //
-    //         it("mongo check", function (done) {
-    //             mongo.count("docker", {type: 'nginx'}, function (error, count) {
-    //                 assert.ifError(error);
-    //                 assert.equal(count, 1);
-    //                 done();
-    //             });
-    //         });
-    //     });
-    // });
+    describe("testing nginx containers", function () {
+        var nginxDockerRecord = {
+            "env": "dev",
+            "cid": "da42c756def695471acb1e1391746f1b9d82e5f925e41b3d02b0759b1a257b87",
+            "hostname": "nginx_dev",
+            "type": "nginx",
+            "running": true,
+            "deployer": {
+                "host": "192.168.99.103",
+                "port": 2376,
+                "config": {
+                    "HostConfig": {
+                        "NetworkMode": "soajsnet"
+                    },
+                    "MachineName": "soajs-dev"
+                },
+                "driver": {
+                    "type": "container",
+                    "driver": "docker"
+                },
+                "selectedDriver": "dockermachine - local",
+                "envCode": "dev"
+            },
+            "info": {}
+        };
 
-    describe("testing redeployment", function () {
-        it("success - will redeploy service", function (done) {
-            mongo.remove("hosts", {hostname: /controller_[0-9a-z]*_dev/}, function (error) {
+        before("clean docker collection and inject nginx records in docker collection", function (done) {
+            mongo.remove("docker", {type: 'nginx'}, function (error) {
                 assert.ifError(error);
 
-                mongo.findOne("hosts", {env: 'dev', hostname: /helloDaemon_[0-9a-z]*_dev/}, function (error, hostRecord) {
+                mongo.insert("docker", nginxDockerRecord, function (error) {
                     assert.ifError(error);
-                    assert.ok(hostRecord);
+                    done();
+                });
+            });
+        });
 
-                    var params = {
-                        form: {
-                            envCode: 'DEV',
-                            name: hostRecord.name,
-                            hostname: hostRecord.hostname,
-                            ip: hostRecord.ip,
-                            branch: hostRecord.src.branch
-                        }
-                    };
-                    executeMyRequest(params, 'hosts/redeployService', 'post', function (body) {
-                        assert.ok(body.result);
-                        assert.ok(body.data);
+        describe("list nginx hosts", function () {
 
-                        done();
-                    });
+            it("success - will list nginx hosts", function (done) {
+                var params = {
+                    qs: {
+                        env: nginxDockerRecord.env
+                    }
+                };
+                executeMyRequest(params, 'hosts/nginx/list', 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    assert.equal(body.data.length, 1);
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                executeMyRequest({}, 'hosts/nginx/list', 'get', function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
+                    done();
+                });
+            });
+
+            it("mongo check", function (done) {
+                mongo.count("docker", {type: 'nginx'}, function (error, count) {
+                    assert.ifError(error);
+                    assert.equal(count, 1);
+                    done();
                 });
             });
         });

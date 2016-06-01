@@ -1902,18 +1902,6 @@ module.exports = {
 					"items": {"type": "string"}
 				}
 			},
-			"nginxConfig": {
-				"source": ["body.nginxConfig"],
-				"required": false,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"customUIId": {"type": "string", "required": true},
-						"branch": {"type": "string", "required": true},
-						"commit": {"type": "string", "required": true}
-					}
-				}
-			},
 			"owner": {
 				"source": ['body.owner'],
 				"required": true,
@@ -1942,6 +1930,39 @@ module.exports = {
 					"type": "string"
 				}
 			}
+		},
+		"/hosts/deployNginx": {
+			"_apiInfo": {
+				"l": "Deploy New Nginx",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode'],
+			"nginxConfig": {
+				"source": ["body.nginxConfig"],
+				"required": false,
+				"validation": {
+					"type": "object",
+					"properties": {
+						"customUIId": {"type": "string", "required": true},
+						"branch": {"type": "string", "required": true},
+						"commit": {"type": "string", "required": true}
+					}
+				}
+			},
+			"exposedPort": {
+				"source": ["body.exposedPort"],
+				"required": false,
+				"validation":{
+					"type":"number"
+				}
+			}
+		},
+		"/hosts/updateNginx": {
+			"_apiInfo": {
+				"l": "Deploy New Nginx",
+				"group": "Hosts"
+			},
+			"commonFields": ['envCode']
 		},
 		"/hosts/deployService": {
 			"_apiInfo": {
@@ -2012,41 +2033,6 @@ module.exports = {
 			},
 			"commit": {
 				"source": ['body.commit'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/redeployService": {
-			"_apiInfo": {
-				"l": "Redeploy Service",
-				"group": "Hosts"
-			},
-			"commonFields": ['envCode'],
-			"name": {
-				"required": false,
-				"source": ['body.name'],
-				"validation": {
-					"type": "string"
-				}
-			},
-			"hostname": {
-				"source": ['body.hostname'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"ip": {
-				"source": ['body.ip'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"branch": {
-				"source": ['body.branch'],
 				"required": true,
 				"validation": {
 					"type": "string"

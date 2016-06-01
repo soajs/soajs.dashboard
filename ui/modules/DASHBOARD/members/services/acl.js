@@ -169,10 +169,10 @@ membersAclService.service('membersAclHelper', [function () {
 		var myAcl = {};
 		oneApplication.services = {};
 
+		oneApplication.aclFill = {};
 		envCodes.forEach(function (oneEnv) {
 			oneApplication.services[oneEnv.code.toUpperCase()] = {};
 			if (objectIsEnv(aclObj[oneEnv.code.toLowerCase()])) {
-				oneApplication.aclFill = {};
 				if (aclObj[oneEnv.code.toLowerCase()]) {
 					var aclEnv = aclObj[oneEnv.code.toLowerCase()];
 					for (var serviceName in aclEnv) {
@@ -258,6 +258,7 @@ membersAclService.service('membersAclHelper', [function () {
 				prepareViewAclObj(oneApplication.aclFill[oneEnv.code.toUpperCase()], aclObj[oneEnv.code.toLowerCase()]);
 			}
 		});
+		return;
 	}
 
 	function prepareAclObjToSave(aclPriviledges) {
