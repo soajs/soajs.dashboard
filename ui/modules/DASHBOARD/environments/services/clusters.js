@@ -67,7 +67,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				timeout: $timeout,
 				form: formConf,
 				name: 'addCluster',
-				label: translation.addNewCluster[LANG] + ': ' + type,
+				label: translation.addNewCluster[LANG], // + ': ' + type,
 				actions: [
 					{
 						'type': 'submit',
