@@ -337,6 +337,9 @@
 																			<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, hosts[service].name, oneIp, hosts[service])">
 																				<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 																			</a>
+																			<a href="" ng-show="oneIp.cid" ng-click="hostPackages(envCode, oneIp)">
+																				<span class="icon icon-box-add" title="Get Host Packages"></span>&nbsp;
+																			</a>
 																			<!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
 																			<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
 																			<!--</a>-->

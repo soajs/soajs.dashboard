@@ -1266,6 +1266,25 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         });
     }
 
+    function hostPackages (currentScope, env, host) {
+        console.log (host);
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hosts/container/packages/list',
+            params: {
+                env: env,
+                cid: host.cid
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', error.message);
+            }
+            else {
+                console.log (response);
+            }
+        });
+    }
+
     function deleteContainer(currentScope, env, container) {
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
@@ -1327,6 +1346,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         'infoHost': infoHost,
         'createHost': createHost,
         'containerLogs': containerLogs,
+        'hostPackages': hostPackages,
         'deleteContainer': deleteContainer,
         'listZombieContainers': listZombieContainers
     };
