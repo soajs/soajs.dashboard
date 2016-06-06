@@ -172,11 +172,28 @@ var deployer = {
 					return cb(error);
 				}
 				else {
-					var tarArchive = fs.createWriteStream('packages.tar');
-					stream.pipe(tarArchive);
+					var tarArchive = fs.createWriteStream(__dirname + '/packages.tar');
+					var chunk;
+					stream.on('readable', function () {
+						var handle = this;
+						while ((chunk = handle.read()) != null) {
+							tarArchive.write(chunk);
+						}
+					});
 
-					fs.createReadStream('packages.tar').pipe(tar.extract('./packages'));
-					fs.readFile('./packages/packages.txt', cb);
+					stream.on('end', function () {
+						stream.destroy();
+
+						fs.createReadStream(__dirname + '/packages.tar').pipe(tar.extract(__dirname + '/packages'));
+						fs.readFile(__dirname + '/packages/packages.txt', function (error, data) {
+							if (error) {
+								return cb (error);
+							}
+							else {
+								return cb (null, data.toString());
+							}
+						});
+					});
 				}
 			});
 		});

@@ -1279,7 +1279,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
             else {
-                response.packages = remove_special(response.packages);
+                response.packages = JSON.parse(response.packages);
                 console.log (response.packages);
             }
         });
