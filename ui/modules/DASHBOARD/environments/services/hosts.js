@@ -1308,12 +1308,16 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                             }
                             return arr;
                         };
-                        $scope.packages.list = $scope.addToIndex($scope.data, 0);
+                        $scope.packages.list = $scope.addToIndex($scope.data, 1);
 
                         $scope.addPackageDependencies = function (packIndex) {
                             var addedDep = $scope.addToIndex($scope.packages.list[packIndex].dependencies, $scope.packages.list[packIndex].level + 1);
                             $scope.packages.list[packIndex].allowExpand = false;
                             $scope.packages.list.splice.apply($scope.packages.list, [packIndex + 1, 0].concat(addedDep));
+                        };
+
+                        $scope.tempArr = function (num) {
+                            return new Array(num);
                         };
 
                         $scope.ok = function () {

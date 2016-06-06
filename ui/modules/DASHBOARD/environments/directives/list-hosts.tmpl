@@ -136,9 +136,9 @@
                     <th>Name</th>
                     <th>Version</th>
                 </tr>
-                <tr ng-repeat="packInfo in packages.list" ng-class-even="'even'" ng-class-odd="'odd'">
+                <tr ng-repeat="packInfo in packages.list track by $index" ng-class-even="'even'" ng-class-odd="'odd'">
 					<td><a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-down" ng-click="addPackageDependencies($index)"></span></td>
-					<td>{{packInfo.name}}</td>
+					<td><span ng-repeat="i in tempArr(packInfo.level) track by $index"><b>---</b></span><b>></b> {{packInfo.name}}</td>
                     <td>{{packInfo.version}}</td>
                 </tr>
                 </tbody>
