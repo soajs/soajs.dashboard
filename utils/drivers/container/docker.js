@@ -3,6 +3,9 @@ var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
 
+var tar = require('tar-fs');
+var fs = require('fs');
+
 function checkError(error, cb, fCb) {
 	if (error) {
 		return cb(error, null);
@@ -157,6 +160,25 @@ var deployer = {
 						});
 					}
 				});
+		});
+	},
+
+	"getFile": function (deployerConfig, cid, soajs, path, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			var container = deployer.getContainer(cid);
+
+			container.getArchive({path: path}, function (error, stream) {
+				if (error) {
+					return cb(error);
+				}
+				else {
+					var tarArchive = fs.createWriteStream('packages.tar');
+					stream.pipe(tarArchive);
+
+					fs.createReadStream('packages.tar').pipe(tar.extract('./packages'));
+					fs.readFile('./packages/packages.txt', cb);
+				}
+			});
 		});
 	}
 };

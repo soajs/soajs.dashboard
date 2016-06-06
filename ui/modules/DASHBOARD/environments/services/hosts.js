@@ -1267,7 +1267,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function hostPackages (currentScope, env, host) {
-        console.log (host);
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/hosts/container/packages/list',
@@ -1280,7 +1279,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
             else {
-                console.log (response);
+                response.packages = remove_special(response.packages);
+                console.log (response.packages);
             }
         });
     }
