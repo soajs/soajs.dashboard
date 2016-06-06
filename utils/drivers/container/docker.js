@@ -5,6 +5,7 @@ var Grid = require('gridfs-stream');
 
 var tar = require('tar-fs');
 var fs = require('fs');
+var rimraf = require('rimraf');
 
 function checkError(error, cb, fCb) {
 	if (error) {
@@ -184,14 +185,30 @@ var deployer = {
 					stream.on('end', function () {
 						stream.destroy();
 
-						fs.createReadStream(__dirname + '/packages.tar').pipe(tar.extract(__dirname + '/packages'));
-						fs.readFile(__dirname + '/packages/packages.txt', function (error, data) {
+						fs.createReadStream(__dirname + '/packages.tar').pipe(tar.extract(__dirname + '/packages')).on('finish', function (error) {
 							if (error) {
 								return cb (error);
 							}
-							else {
-								return cb (null, data.toString());
-							}
+
+							fs.readFile(__dirname + '/packages/packages.txt', function (error, data) {
+								if (error) {
+									return cb (error);
+								}
+								else {
+									fs.unlink(__dirname + '/packages.tar', function (error) {
+										if (error) {
+											return cb (error);
+										}
+										rimraf(__dirname + '/packages', function (error) {
+											if (error) {
+												return cb (error);
+											}
+
+											return cb (null, data.toString());
+										});
+									});
+								}
+							});
 						});
 					});
 				}
