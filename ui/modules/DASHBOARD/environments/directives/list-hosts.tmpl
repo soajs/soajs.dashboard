@@ -122,6 +122,34 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="packagesList.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body">
+		<div class="grid" style="width:100%">
+			<input type="text" class="form-control f-right" ng-style="{'width': '30%'}" placeholder="Search..." /><br /><br />
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+					<th ng-style="{'width': '10px'}"></th>
+                    <th>Name</th>
+                    <th>Version</th>
+                </tr>
+                <tr ng-repeat="packInfo in packages.list" ng-class-even="'even'" ng-class-odd="'odd'">
+					<td><a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-down" ng-click="addPackageDependencies($index)"></span></td>
+					<td>{{packInfo.name}}</td>
+                    <td>{{packInfo.version}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
+</script>
+
 <section ng-controller="hostsCtrl">
 	<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
 		<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
@@ -255,6 +283,9 @@
 
 														<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
 															<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+														</a>
+														<a href="" ng-show="oneIp.cid" ng-click="hostPackages(envCode, oneIp)">
+															<span class="icon icon-box-add" title="Get Host Packages"></span>&nbsp;
 														</a>
 													</td>
 												</tr>

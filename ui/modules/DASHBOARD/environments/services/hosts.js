@@ -1279,7 +1279,48 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
             else {
-                console.log (JSON.parse(response.packages));
+                var packagesModal = $modal.open({
+                    templateUrl: "packagesList.tmpl",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: true,
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Packages & Dependencies of " + host.hostname;
+                        $scope.data = JSON.parse(response.packages).dependencies;
+                        $scope.packages = {};
+                        $scope.packages.list = [];
+
+                        $scope.addToIndex = function (dependencies, level) {
+                            var onePack = {}, arr = [];
+                            for (var i in dependencies) {
+                                onePack = dependencies[i];
+                                var oneEntry = {
+                                    name: i,
+                                    version: onePack.version,
+                                    level: level
+                                };
+                                if (onePack.dependencies) {
+                                    oneEntry.dependencies = onePack.dependencies;
+                                    oneEntry.allowExpand = true;
+                                }
+
+                                arr.push(oneEntry);
+                            }
+                            return arr;
+                        };
+                        $scope.packages.list = $scope.addToIndex($scope.data, 0);
+
+                        $scope.addPackageDependencies = function (packIndex) {
+                            var addedDep = $scope.addToIndex($scope.packages.list[packIndex].dependencies, $scope.packages.list[packIndex].level + 1);
+                            $scope.packages.list[packIndex].allowExpand = false;
+                            $scope.packages.list.splice.apply($scope.packages.list, [packIndex + 1, 0].concat(addedDep));
+                        };
+
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
             }
         });
     }
