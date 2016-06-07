@@ -137,8 +137,11 @@
                     <th>Version</th>
                 </tr>
                 <tr ng-repeat="packInfo in packages.list track by $index" ng-class-even="'even'" ng-class-odd="'odd'">
-					<td><a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-down" ng-click="addPackageDependencies($index)"></span></td>
-					<td><span ng-repeat="i in tempArr(packInfo.level) track by $index"><b>---</b></span><b>></b> {{packInfo.name}}</td>
+					<td>
+						<a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-right" ng-click="showPackageDependencies($index)"></a>
+						<a href="" ng-if="packInfo.allowCollapse" class="icon icon-circle-down" ng-click="hidePackageDependencies($index)"></a>
+					</td>
+					<td><span ng-repeat="i in counterArr(packInfo.level) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;</span>|__ {{packInfo.name}}</td>
                     <td>{{packInfo.version}}</td>
                 </tr>
                 </tbody>

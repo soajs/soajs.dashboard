@@ -1310,13 +1310,33 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         };
                         $scope.packages.list = $scope.addToIndex($scope.data, 1);
 
-                        $scope.addPackageDependencies = function (packIndex) {
+                        $scope.showPackageDependencies = function (packIndex) {
                             var addedDep = $scope.addToIndex($scope.packages.list[packIndex].dependencies, $scope.packages.list[packIndex].level + 1);
                             $scope.packages.list[packIndex].allowExpand = false;
+                            $scope.packages.list[packIndex].allowCollapse = true;
                             $scope.packages.list.splice.apply($scope.packages.list, [packIndex + 1, 0].concat(addedDep));
                         };
 
-                        $scope.tempArr = function (num) {
+                        $scope.hidePackageDependencies = function (packIndex) {
+                            var currentPack = $scope.packages.list[packIndex];
+                            for (var i = packIndex + 1; i < $scope.packages.list.length; i++) {
+                                if ($scope.packages.list[i].level > currentPack.level) {
+                                    $scope.packages.list.splice(i, 1);
+                                    i--;
+                                }
+                                else if ($scope.packages.list[i].level === currentPack.level) {
+                                    break;
+                                }
+                            }
+                            $scope.packages.list[packIndex].allowExpand = true;
+                            $scope.packages.list[packIndex].allowCollapse = false;
+                        };
+
+                        $scope.searchPackages = function (query) {
+
+                        };
+
+                        $scope.counterArr = function (num) {
                             return new Array(num);
                         };
 
