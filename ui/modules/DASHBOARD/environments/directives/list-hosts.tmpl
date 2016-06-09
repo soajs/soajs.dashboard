@@ -128,7 +128,7 @@
 	</div>
 	<div class="modal-body">
 		<div class="grid" style="width:100%">
-			<input type="text" class="form-control f-right" ng-style="{'width': '30%'}" placeholder="Search..." /><br /><br />
+			<input type="text" class="form-control f-right" ng-model="query" ng-style="{'width': '30%'}" ng-keyup="searchPackages(query)" placeholder="Search Packages..." /><br /><br />
             <table cellspacing="0" cellpadding="0" border="0">
                 <tbody>
                 <tr>
@@ -141,7 +141,14 @@
 						<a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-right" ng-click="showPackageDependencies($index)"></a>
 						<a href="" ng-if="packInfo.allowCollapse" class="icon icon-circle-down" ng-click="hidePackageDependencies($index)"></a>
 					</td>
-					<td><span ng-repeat="i in counterArr(packInfo.level) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;</span>|__ {{packInfo.name}}</td>
+					<td>
+						<span ng-repeat="i in counterArr(packInfo.level) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span ng-if="packInfo.level === 1 && packInfo.allowCollapse">&#9487</span>
+						<span ng-if="packInfo.level !== 1 && packInfo.isLast">&#9495</span>
+						<span ng-if="packInfo.level !== 1 && !packInfo.isLast">&#9507</span>
+						<span ng-if="!packInfo.isSearchResult">{{packInfo.name}}</span>
+						<span ng-if="packInfo.isSearchResult"><mark>{{packInfo.name}}</mark></span>
+					</td>
                     <td>{{packInfo.version}}</td>
                 </tr>
                 </tbody>

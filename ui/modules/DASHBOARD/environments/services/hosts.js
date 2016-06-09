@@ -1306,9 +1306,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                                 arr.push(oneEntry);
                             }
+                            arr[arr.length - 1].isLast = true;
                             return arr;
                         };
                         $scope.packages.list = $scope.addToIndex($scope.data, 1);
+                        $scope.packages.original = angular.copy($scope.packages.list); //used later for search
 
                         $scope.showPackageDependencies = function (packIndex) {
                             var addedDep = $scope.addToIndex($scope.packages.list[packIndex].dependencies, $scope.packages.list[packIndex].level + 1);
@@ -1333,8 +1335,111 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         };
 
                         $scope.searchPackages = function (query) {
-
+                            if (query && query.length >= 2) {
+                                $scope.packages.list = [];
+                                var test = [];
+                                for (var i = 0; i < $scope.searchIndexArray.length; i++) {
+                                    if ($scope.searchIndexArray[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
+                                        var packageName = $scope.searchIndexArray[i];
+                                        var packageInfo = $scope.searchIndex[$scope.searchIndexArray[i]];
+                                        $scope.displaySearchResult(packageName, packageInfo);
+                                    }
+                                }
+                            }
+                            else {
+                                $scope.packages.list = angular.copy($scope.packages.original);
+                            }
                         };
+
+                        $scope.displaySearchResult = function (packageName, packageInfo) {
+                            if (packageInfo.parents && packageInfo.parents.length > 0) {
+                                var list = [], object;
+                                packageInfo.parents.forEach(function (oneList) {
+                                    if (oneList[oneList.length - 1] !== packageName) {
+                                        oneList.push(packageName);
+                                    }
+                                    var oneEntry = $scope.data[oneList[0]];
+                                    for (var i = 0; i < oneList.length; i++) {
+                                        var newEntry = {
+                                            name: oneList[i],
+                                            version: oneEntry.version,
+                                            level: i + 1,
+                                            parents: oneList.slice(0, i).join('.')
+                                        };
+                                        if (oneList[i] === packageName) {
+                                            newEntry.isLast = true;
+                                            newEntry.isSearchResult = true;
+                                        }
+
+                                        if (oneEntry.dependencies) {
+                                            newEntry.allowCollapse = true;
+                                            oneEntry = oneEntry.dependencies[oneList[i+1]];
+                                        }
+                                        list.push(newEntry);
+                                    }
+
+                                    var exists, previousIndex = 0;
+                                    for (i = 0; i < list.length; i++) {
+                                        exists = false;
+                                        for (var j = 0; j < $scope.packages.list.length; j++) {
+                                            if ($scope.packages.list[j].name === list[i].name && $scope.packages.list[j].parents === list[i].parents) {
+                                                exists = true;
+                                                previousIndex = j;
+                                                list = list.splice(i + 1, list.length);
+                                            }
+                                        }
+
+                                        if (!exists) {
+                                            if (list[0].level === 1) {
+                                                $scope.packages.list.splice.apply($scope.packages.list, [$scope.packages.list.length, 0].concat(list));
+                                                list = [];
+                                                break;
+                                            }
+                                            else {
+                                                $scope.packages.list.splice.apply($scope.packages.list, [previousIndex + 1, 0].concat(list));
+                                                list = [];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                //ROOT ENTRIES HERE
+                            }
+                        };
+
+                        $scope.collectDependencies = function (parents, pack) {
+                            for (var i in pack.dependencies) {
+                                if (!$scope.searchIndex[i]) {
+                                    $scope.searchIndex[i] = {
+                                        parents: [parents]
+                                    };
+                                }
+                                else {
+                                    $scope.searchIndex[i].parents.push(parents);
+                                }
+
+                                if (pack.dependencies[i].dependencies) {
+                                    var newParents = parents.concat([i]);
+                                    $scope.collectDependencies(newParents, pack.dependencies[i]);
+                                }
+                            }
+                        };
+
+                        $scope.buildSearchIndex = function () {
+                            $scope.searchIndex = {};
+                            for (var i in $scope.data) {
+                                $scope.searchIndex[i] = {
+                                    parents: []
+                                };
+                                if ($scope.data[i].dependencies) {
+                                    $scope.collectDependencies([i], $scope.data[i]);
+                                }
+                            }
+                            $scope.searchIndexArray = Object.keys($scope.searchIndex);
+                        };
+                        $scope.buildSearchIndex();
 
                         $scope.counterArr = function (num) {
                             return new Array(num);

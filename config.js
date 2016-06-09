@@ -2021,21 +2021,6 @@ module.exports = {
 					"minimum": 1
 				}
 			},
-			"gcName": {
-				"required": false,
-				"source": ['body.gcName'],
-				"validation": {
-					"type": "string"
-				}
-			},
-			"gcVersion": {
-				"required": false,
-				"source": ['body.gcVersion'],
-				"validation": {
-					"type": "integer",
-					"minimum": 1
-				}
-			},
 			"variables": {
 				"required": false,
 				"source": ['body.variables'],
