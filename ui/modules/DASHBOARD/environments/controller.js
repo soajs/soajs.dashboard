@@ -300,35 +300,40 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.waitMessage.message = getCodeMessage(error.code, 'dashboard', error.message);
 			}
 			else {
-				$scope.newKeys = [];
-				for (var app in response.newKeys) {
-					response.newKeys[app].newKeys.forEach(function (oneKey) {
-						oneKey.extKeys.forEach(function (oneExtKey) {
-							$scope.newKeys.push({
-								appPackage: response.newKeys[app].package,
-								key: oneKey.key,
-								extKey: oneExtKey.extKey
+				if (response.newKeys) {
+					$scope.newKeys = [];
+					for (var app in response.newKeys) {
+						response.newKeys[app].newKeys.forEach(function (oneKey) {
+							oneKey.extKeys.forEach(function (oneExtKey) {
+								$scope.newKeys.push({
+									appPackage: response.newKeys[app].package,
+									key: oneKey.key,
+									extKey: oneExtKey.extKey
+								});
 							});
 						});
+					}
+
+					var currentScope = $scope;
+					var keyUpdateSuccess = $modal.open({
+						templateUrl: 'keyUpdateSuccess.tmpl',
+						size: 'lg',
+						backdrop: true,
+						keyboard: true,
+						controller: function ($scope) {
+							fixBackDrop();
+							$scope.currentScope = currentScope;
+
+							$scope.reloadDashboard = function () {
+								location.reload(true);
+								keyUpdateSuccess.close();
+							};
+						}
 					});
 				}
-
-				var currentScope = $scope;
-				var keyUpdateSuccess = $modal.open({
-					templateUrl: 'keyUpdateSuccess.tmpl',
-					size: 'lg',
-					backdrop: true,
-					keyboard: true,
-					controller: function ($scope) {
-						fixBackDrop();
-						$scope.currentScope = currentScope;
-
-						$scope.reloadDashboard = function () {
-							location.reload(true);
-							keyUpdateSuccess.close();
-						};
-					}
-				});
+				else {
+					$scope.$parent.displayAlert('success', 'Key security updated successfully. Pleaes generate new external keys for your tenants');
+				}
 			}
 		});
 	};
