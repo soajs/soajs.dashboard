@@ -26,3 +26,15 @@
 .tenantTab {
     position: relative;
 }
+
+.w100 {
+    width: 100px !important;
+}
+
+.deprecated {
+    color: red !important;
+}
+
+.valid {
+    color: green !important;
+}

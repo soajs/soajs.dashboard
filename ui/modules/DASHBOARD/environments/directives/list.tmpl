@@ -24,3 +24,29 @@
         </div>
     </div>
 </section>
+
+<script type="text/ng-template" id="keyUpdateSuccess.tmpl">
+    <div class="modal-body">
+        <h4 style="text-align: center;">Tenant Security Configuration has been updated</h4>
+        <label>The following external keys were generated:</label>
+        <div class="grid" style="width:100%">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <th>Application Package</th>
+                    <th>Key</th>
+                    <th>External Key</th>
+                </tr>
+                <tr ng-repeat="entry in currentScope.newKeys" ng-class-even="'even'" ng-class-odd="'odd'">
+                    <td>{{entry.appPackage}}</td>
+                    <td>{{entry.key}}</td>
+                    <td>{{entry.extKey}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="reloadDashboard()">Reload Dashboard</button>
+    </div>
+</script>

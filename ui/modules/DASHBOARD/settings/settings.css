@@ -1,3 +1,15 @@
 .text-align-center {
     text-align: center !important;
 }
+
+.deprecated {
+    color: red !important;
+}
+
+.valid {
+    color: green !important;
+}
+
+.w100 {
+    width: 100px !important;
+}
