@@ -27,15 +27,15 @@
 
 <script type="text/ng-template" id="keyUpdateSuccess.tmpl">
     <div class="modal-body">
-        <h4 style="text-align: center;">Tenant Security Configuration has been updated</h4>
-        <label>The following external keys were generated:</label>
+        <h4 style="text-align: center;">{{translation.tenantSecurityUpdated[LANG]}}</h4>
+        <label>{{translation.theFollowingKeysWereGenerated[LANG]}}:</label>
         <div class="grid" style="width:100%">
             <table cellspacing="0" cellpadding="0" border="0">
                 <tbody>
                 <tr>
-                    <th>Application Package</th>
-                    <th>Key</th>
-                    <th>External Key</th>
+                    <th>{{translation.appPackage[LANG]}}</th>
+                    <th>{{translation.key[LANG]}}</th>
+                    <th>{{translation.externalKey[LANG]}}</th>
                 </tr>
                 <tr ng-repeat="entry in currentScope.newKeys" ng-class-even="'even'" ng-class-odd="'odd'">
                     <td>{{entry.appPackage}}</td>
@@ -45,8 +45,9 @@
                 </tbody>
             </table>
         </div>
+        <label class="fieldMsg">{{translation.securityKeyUpdateSuccessMessage[LANG]}}</label>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="reloadDashboard()">Reload Dashboard</button>
+        <button class="btn btn-primary" ng-click="reloadDashboard()">{{translation.reloadDashboard[LANG]}}</button>
     </div>
 </script>
