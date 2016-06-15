@@ -332,7 +332,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					});
 				}
 				else {
-					$scope.$parent.displayAlert('success', 'Key security updated successfully. Pleaes generate new external keys for your tenants');
+					$scope.$parent.displayAlert('success', 'Key security updated successfully. Please generate new external keys for your tenants');
 				}
 			}
 		});

@@ -612,6 +612,10 @@ var envTranslation ={
 		"ENG": "Update Database",
 		"FRA": "Update Database"
 	},
+	"environmentDatabasePrefixUpdated": {
+		"ENG": "Environment Database Prefix has been updated.",
+		"FRA": "Environment Database Prefix has been updated."
+	},
 	"environmentDatabasePrefixRemoved": {
 		"ENG": "Environment Database Prefix has been removed.",
 		"FRA": "Environment Database Prefix has been removed."
