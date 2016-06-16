@@ -1290,33 +1290,44 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         $scope.packages = {};
                         $scope.packages.list = [];
 
-                        $scope.addToIndex = function (dependencies, level) {
-                            var onePack = {}, arr = [];
+                        $scope.addToIndex = function (parents, dependencies, level) {
+                            var onePack = {}, oneEntry = {}, index, newParents;
                             for (var i in dependencies) {
                                 onePack = dependencies[i];
-                                var oneEntry = {
+                                oneEntry = {
                                     name: i,
                                     version: onePack.version,
-                                    level: level
+                                    level: level,
+                                    dependencies: []
                                 };
-                                if (onePack.dependencies) {
-                                    oneEntry.dependencies = onePack.dependencies;
-                                    oneEntry.allowExpand = true;
+                                oneEntry.allowExpand = (onePack.dependencies) ? true : false;
+
+                                if (parents.length === 0 && $scope.packages.list.length === 0) {
+                                    index = $scope.packages.list.push(oneEntry) - 1;
+                                }
+                                else {
+                                    //search for parent and inject dependencies into its object
+                                    var parentPack = $scope.packages.list;
+                                    parents.forEach(function (oneParentIndex) {
+                                        parentPack = parentPack[oneParentIndex].dependencies;
+                                    });
+                                    index = parentPack.push(oneEntry) - 1;
                                 }
 
-                                arr.push(oneEntry);
+                                if (onePack.dependencies) {
+                                    newParents = angular.copy(parents);
+                                    newParents.push(index);
+                                    $scope.addToIndex(newParents, onePack.dependencies, level + 1);
+                                }
                             }
-                            arr[arr.length - 1].isLast = true;
-                            return arr;
                         };
-                        $scope.packages.list = $scope.addToIndex($scope.data, 1);
-                        $scope.packages.original = angular.copy($scope.packages.list); //used later for search
+                        $scope.addToIndex([], $scope.data, 0);
+                        // console.log ($scope.packages.list);
 
                         $scope.showPackageDependencies = function (packIndex) {
-                            var addedDep = $scope.addToIndex($scope.packages.list[packIndex].dependencies, $scope.packages.list[packIndex].level + 1);
                             $scope.packages.list[packIndex].allowExpand = false;
-                            $scope.packages.list[packIndex].allowCollapse = true;
-                            $scope.packages.list.splice.apply($scope.packages.list, [packIndex + 1, 0].concat(addedDep));
+                            $scope.packages.list[packIndex].allowCollapse = true
+                            $scope.packages.list.splice.apply($scope.packages.list, [packIndex + 1, 0].concat($scope.packages.list[packIndex].dependencies));
                         };
 
                         $scope.hidePackageDependencies = function (packIndex) {
