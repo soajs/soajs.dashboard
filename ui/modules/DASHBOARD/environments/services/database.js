@@ -205,15 +205,10 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 			"data": {'prefix': prefix}
 		}, function (error, response) {
 			if (error) {
-				currentScope.$parent.displayAlert('danger', error.message);
+				currentScope.$parent.displayAlert('danger', translation.unableUpdateEnvironmentDatabasePrefix[LANG]);
 			}
 			else {
-				if (response) {
-					currentScope.$parent.displayAlert('success', translation.environmentDatabasePrefixRemoved[LANG]);
-				}
-				else {
-					currentScope.$parent.displayAlert('danger', translation.unableUpdateEnvironmentDatabasePrefix[LANG]);
-				}
+				currentScope.$parent.displayAlert('success', translation.environmentDatabasePrefixUpdated[LANG]);
 			}
 		});
 	}
