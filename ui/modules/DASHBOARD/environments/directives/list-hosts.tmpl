@@ -133,8 +133,8 @@
                 <tbody>
                 <tr>
 					<th ng-style="{'width': '10px'}"></th>
-                    <th>Name</th>
-                    <th>Version</th>
+                    <th ng-style="{'width': '70%'}">Name</th>
+                    <th ng-style="{'width': '30%'}">Version</th>
                 </tr>
                 <tr ng-repeat="packInfo in packages.list track by $index" ng-class-even="'even'" ng-class-odd="'odd'">
 					<td>
@@ -143,7 +143,7 @@
 					</td>
 					<td>
 						<span ng-repeat="i in counterArr(packInfo.level) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						<span ng-if="packInfo.level === 1 && packInfo.allowCollapse">&#9487</span>
+						<span ng-if="packInfo.level === 1 && packInfo.allowAllowCollapse">&#9487</span>
 						<span ng-if="packInfo.level !== 1 && packInfo.isLast">&#9495</span>
 						<span ng-if="packInfo.level !== 1 && !packInfo.isLast">&#9507</span>
 						<span ng-if="!packInfo.isSearchResult">{{packInfo.name}}</span>
@@ -153,6 +153,8 @@
                 </tr>
                 </tbody>
             </table>
+			<alert type="warning" ng-if="packages.list.length === 0 && !query">This service/daemon does not have any dependencies.</alert>
+			<alert type="warning" ng-if="packages.list.length === 0 && query">No search results found for {{query}}.</alert>
         </div>
 	</div>
 	<div class="modal-footer">

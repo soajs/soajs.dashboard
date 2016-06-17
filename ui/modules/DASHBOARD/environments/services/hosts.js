@@ -1121,6 +1121,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
                             if (error) {
                                 currentScope.generateNewMsg(env, 'danger', error.message);
+                                $modalInstance.close();
                             }
                             else {
                                 currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);
@@ -1267,6 +1268,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
     }
 
     function hostPackages (currentScope, env, host) {
+        overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/hosts/container/packages/list',
@@ -1275,6 +1277,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 cid: host.cid
             }
         }, function (error, response) {
+            overlayLoading.hide();
             if (error) {
                 currentScope.generateNewMsg(env, 'danger', error.message);
             }
@@ -1285,6 +1288,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     backdrop: true,
                     keyboard: true,
                     controller: function ($scope, $modalInstance) {
+                        fixBackDrop();
+
                         $scope.title = "Packages & Dependencies of " + host.hostname;
                         $scope.data = JSON.parse(response.packages).dependencies;
                         $scope.packages = {};
@@ -1292,6 +1297,9 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                         $scope.addToIndex = function (parents, dependencies, level) {
                             var onePack = {}, oneEntry = {}, index, newParents;
+                            var last = Object.keys(dependencies);
+                            last = last[last.length - 1];
+
                             for (var i in dependencies) {
                                 onePack = dependencies[i];
                                 oneEntry = {
@@ -1301,16 +1309,20 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                     dependencies: []
                                 };
                                 oneEntry.allowExpand = (onePack.dependencies) ? true : false;
+                                oneEntry.isLast = (oneEntry.name === last) ? true : false;
 
                                 if (parents.length === 0 && $scope.packages.list.length === 0) {
                                     index = $scope.packages.list.push(oneEntry) - 1;
                                 }
                                 else {
                                     //search for parent and inject dependencies into its object
-                                    var parentPack = $scope.packages.list;
-                                    parents.forEach(function (oneParentIndex) {
-                                        parentPack = parentPack[oneParentIndex].dependencies;
-                                    });
+                                    var parentPack = $scope.packages.list, parentsLabel = [];
+                                    for (var j = 0; j < parents.length; j++) {
+                                        parentsLabel.push(parentPack[parents[j]].name);
+                                        parentPack = parentPack[parents[j]].dependencies;
+                                    }
+
+                                    oneEntry.parents = parentsLabel.join(".");
                                     index = parentPack.push(oneEntry) - 1;
                                 }
 
@@ -1321,8 +1333,8 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 }
                             }
                         };
-                        $scope.addToIndex([], $scope.data, 0);
-                        // console.log ($scope.packages.list);
+                        $scope.addToIndex([], $scope.data, 1);
+                        $scope.packages.original = angular.copy($scope.packages.list);
 
                         $scope.showPackageDependencies = function (packIndex) {
                             $scope.packages.list[packIndex].allowExpand = false;
@@ -1348,7 +1360,6 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         $scope.searchPackages = function (query) {
                             if (query && query.length >= 2) {
                                 $scope.packages.list = [];
-                                var test = [];
                                 for (var i = 0; i < $scope.searchIndexArray.length; i++) {
                                     if ($scope.searchIndexArray[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
                                         var packageName = $scope.searchIndexArray[i];
@@ -1364,51 +1375,24 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
                         $scope.displaySearchResult = function (packageName, packageInfo) {
                             if (packageInfo.parents && packageInfo.parents.length > 0) {
-                                var list = [], object;
-                                packageInfo.parents.forEach(function (oneList) {
-                                    if (oneList[oneList.length - 1] !== packageName) {
-                                        oneList.push(packageName);
-                                    }
-                                    var oneEntry = $scope.data[oneList[0]];
-                                    for (var i = 0; i < oneList.length; i++) {
-                                        var newEntry = {
-                                            name: oneList[i],
-                                            version: oneEntry.version,
-                                            level: i + 1,
-                                            parents: oneList.slice(0, i).join('.')
-                                        };
-                                        if (oneList[i] === packageName) {
-                                            newEntry.isLast = true;
-                                            newEntry.isSearchResult = true;
-                                        }
+                                packageInfo.parents.forEach(function (oneParent) {
+                                    var depList = $scope.packages.original;
+                                    for (var i = 0; i < oneParent.length; i++) {
+                                        for (var j = 0; j < depList.length; j++) {
+                                            if (depList[j].name === oneParent[i]) {
+                                                if (!checkIfDisplayed(depList[j])) {
+                                                    var parentEntry = angular.copy(depList[j]);
+                                                    parentEntry.allowExpand = false; //prevent the user from expanding/collapsing parents of search results
+                                                    $scope.packages.list.push(parentEntry);
+                                                }
+                                                depList = depList[j].dependencies;
 
-                                        if (oneEntry.dependencies) {
-                                            newEntry.allowCollapse = true;
-                                            oneEntry = oneEntry.dependencies[oneList[i+1]];
-                                        }
-                                        list.push(newEntry);
-                                    }
-
-                                    var exists, previousIndex = 0;
-                                    for (i = 0; i < list.length; i++) {
-                                        exists = false;
-                                        for (var j = 0; j < $scope.packages.list.length; j++) {
-                                            if ($scope.packages.list[j].name === list[i].name && $scope.packages.list[j].parents === list[i].parents) {
-                                                exists = true;
-                                                previousIndex = j;
-                                                list = list.splice(i + 1, list.length);
-                                            }
-                                        }
-
-                                        if (!exists) {
-                                            if (list[0].level === 1) {
-                                                $scope.packages.list.splice.apply($scope.packages.list, [$scope.packages.list.length, 0].concat(list));
-                                                list = [];
-                                                break;
-                                            }
-                                            else {
-                                                $scope.packages.list.splice.apply($scope.packages.list, [previousIndex + 1, 0].concat(list));
-                                                list = [];
+                                                if (i === oneParent.length - 1) { //last parent, add search result
+                                                    var result = getSearchResult(packageName, depList);
+                                                    if (!checkIfDisplayed(result)) {
+                                                        $scope.packages.list.push(result);
+                                                    }
+                                                }
                                                 break;
                                             }
                                         }
@@ -1416,7 +1400,39 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                                 });
                             }
                             else {
-                                //ROOT ENTRIES HERE
+                                //root entry
+                                var depList = $scope.packages.original;
+                                for (var k = 0; k < depList.length; k++) {
+                                    if (depList[k].name === packageName) {
+                                        if (!checkIfDisplayed(depList[k])) {
+                                            var result = angular.copy(depList[k]);
+                                            result.isSearchResult = true;
+                                            $scope.packages.list.push(result);
+                                        }
+                                    }
+                                }
+                            }
+
+                            function checkIfDisplayed(pack) {
+                                for (var i = 0; i < $scope.packages.list.length; i++) {
+                                    if ($scope.packages.list[i].name === pack.name && $scope.packages.list[i].parents === pack.parents) {
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            function getSearchResult(packageName, depList) {
+                                for (var i = 0; i < depList.length; i++) {
+                                    if (depList[i].name === packageName) {
+                                        var found = angular.copy(depList[i]);
+                                        found.isLast = true;
+                                        found.isSearchResult = true;
+                                        return found;
+                                    }
+                                }
+                                return null;
                             }
                         };
 
