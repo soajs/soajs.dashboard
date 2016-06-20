@@ -163,8 +163,22 @@ var mtTranslation = {
 	"haveBeenAddedYet": {
 		"ENG": "have been added yet",
 		"FRA": "have been added yet"
-	}
+	},
 	//}
+
+	//listKeys
+	"status": {
+		"ENG": "Status",
+		"FRA": "Status"
+	},
+	"valid": {
+		"ENG": "Valid",
+		"FRA": "Valid"
+	},
+	"deprecated": {
+		"ENG": "Deprecated",
+		"FRA": "Deprecated"
+	}
 };
 
 for (var attrname in mtTranslation) {

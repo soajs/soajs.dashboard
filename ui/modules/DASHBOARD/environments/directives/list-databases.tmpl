@@ -6,7 +6,7 @@
 	            <tr>
 	                <td>
 	                    <b>Prefix</b><br/>
-	                    <input type="text" name="prefix" ng-model="row.dbs.config.prefix" value="{{dbs.config.prefix}}" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
+	                    <input type="text" name="prefix" ng-model="dbs.config.prefix" class="form-control" placeholder="soajs_" tooltip="set or remove the database prefix value then click update."/>
 	                </td>
 	                <td valign="bottom" align="left">
 	                    <input type="submit" class="btn btn-sm btn-primary f-left" value="Update" style="top:-2px;" ng-click="updateDbPrefix(envCode, dbs.config.prefix)"/></td>

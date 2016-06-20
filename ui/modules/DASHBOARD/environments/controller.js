@@ -265,7 +265,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 			}
 		};
-		console.log (postData);
+
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
@@ -300,12 +300,40 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				$scope.waitMessage.message = getCodeMessage(error.code, 'dashboard', error.message);
 			}
 			else {
-				var text = "<p>" + translation.tenantSecurityConfigurationUpdated[LANG] + "<br />" + translation.pleaseCopyBelowKeyValueMarkedRed[LANG] + "<span class='red'>" +
-					response.newKey +
-					"</span> " + translation.andPlace[LANG] + " <b>config.js</b> " + translation.fileOfApplicationWhereItSays[LANG] + " <b>apiConfiguration.key</b>.<br />" + translation.onceYouHaveUpdatedAndSaved[LANG] + " <b>config.js</b>" + translation.clickOnTheButtonBelowDashboardWillOpen[LANG] + "</p><p>" + translation.onceThePageOpensUpNavigate[LANG] + " <b>" + translation.multiTenancy[LANG] + "</b> " + translation.andGenerateExternalKeysTenantsApplications[LANG] + "</p><br/><input type='button' onclick='overlay.hide(function(){location.reload();});' value='Reload Dashboard' class='btn btn-success'/><br /><br />";
+				if (response.newKeys) {
+					$scope.newKeys = [];
+					for (var app in response.newKeys) {
+						response.newKeys[app].newKeys.forEach(function (oneKey) {
+							oneKey.extKeys.forEach(function (oneExtKey) {
+								$scope.newKeys.push({
+									appPackage: response.newKeys[app].package,
+									key: oneKey.key,
+									extKey: oneExtKey.extKey
+								});
+							});
+						});
+					}
 
-				jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-				overlay.show();
+					var currentScope = $scope;
+					var keyUpdateSuccess = $modal.open({
+						templateUrl: 'keyUpdateSuccess.tmpl',
+						size: 'lg',
+						backdrop: true,
+						keyboard: true,
+						controller: function ($scope) {
+							fixBackDrop();
+							$scope.currentScope = currentScope;
+
+							$scope.reloadDashboard = function () {
+								location.reload(true);
+								keyUpdateSuccess.close();
+							};
+						}
+					});
+				}
+				else {
+					$scope.$parent.displayAlert('success', translation.keySecurityHasBeenUpdated[LANG]);
+				}
 			}
 		});
 	};
