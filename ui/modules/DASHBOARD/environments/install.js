@@ -331,41 +331,9 @@ var envTranslation ={
 		"ENG": "Successfully.",
 		"FRA": "Successfully."
 	},
-	/*The Tenant Security Configuration has been updated.Please copy the below key value marked in red  +response.newKey +
-	 and place it in the config.js file of this application where it says apiConfiguration.key.Once you have updated and saved the config.js
-	 Click on the button below and your dashboard will open up.
-	 Once the page opens up, navigate to Multi-Tenancy and generate new external keys for all your tenants applications*/
-	"tenantSecurityConfigurationUpdated": {
-		"ENG": "The Tenant Security Configuration has been updated",
-		"FRA": "The Tenant Security Configuration has been updated"
-	},
-	"pleaseCopyBelowKeyValueMarkedRed": {
-		"ENG": "Please copy the below key value marked in red",
-		"FRA": "Please copy the below key value marked in red"
-	},
-	"andPlace": {
-		"ENG": "and place it in the",
-		"FRA": "and place it in the"
-	},
-	"fileOfApplicationWhereItSays": {
-		"ENG": "file of this application where it says",
-		"FRA": "file of this application where it says"
-	},
-	"onceYouHaveUpdatedAndSaved": {
-		"ENG": "Once you have updated and saved the",
-		"FRA": "Once you have updated and saved the"
-	},
-	"clickOnTheButtonBelowDashboardWillOpen": {
-		"ENG": ", Click on the button below and your dashboard will open up.",
-		"FRA": ", Click on the button below and your dashboard will open up."
-	},
-	"onceThePageOpensUpNavigate": {
-		"ENG": "Once the page opens up, navigate to",
-		"FRA": "Once the page opens up, navigate to"
-	},
-	"andGenerateExternalKeysTenantsApplications": {
-		"ENG": "and generate new external keys for all your tenants applications.",
-		"FRA": "and generate new external keys for all your tenants applications."
+	"securityKeyUpdateSuccessMessage": {
+		"ENG": "It is mandatory that you copy the external key of the default login package for the dashboard environment and paste it in the config.js file [apiConfiguration.key field]. By default, the login package for dashboard is called DSBRD_MAIN. When done, re-login to dashboard and generate new external keys for all your tenants for this environment.",
+		"FRA": "It is mandatory that you copy the external key of the default login package for the dashboard environment and paste it in the config.js file [apiConfiguration.key field]. By default, the login package for dashboard is called DSBRD_MAIN. When done, re-login to dashboard and generate new external keys for all your tenants for this environment."
 	},
 	"selectedEnvironmentRemoved": {
 		"ENG": "Selected Environment has been removed.",
@@ -623,6 +591,10 @@ var envTranslation ={
 	"updateDatabase": {
 		"ENG": "Update Database",
 		"FRA": "Update Database"
+	},
+	"environmentDatabasePrefixUpdated": {
+		"ENG": "Environment Database Prefix has been updated.",
+		"FRA": "Environment Database Prefix has been updated."
 	},
 	"environmentDatabasePrefixRemoved": {
 		"ENG": "Environment Database Prefix has been removed.",
@@ -1040,6 +1012,22 @@ var envTranslation ={
 	"areYouSureWantRemoveThisEnvironment": {
 		"ENG": "Are you sure you want to remove this environment?",
 		"FRA": "Are you sure you want to remove this environment?"
+	},
+	"tenantSecurityUpdated": {
+		"ENG": "Tenant Security Configuration has been updated",
+		"FRA": "Tenant Security Configuration has been updated"
+	},
+	"theFollowingKeysWereGenerated": {
+		"ENG": "The following external keys were generated",
+		"FRA": "The following external keys were generated"
+	},
+	"appPackage": {
+		"ENG": "Application Package",
+		"FRA": "Application Package"
+	},
+	"reloadDashboard": {
+		"ENG": "Reload Dashboard",
+		"FRA": "Reload Dashboard"
 	},
 	//list-clusters
 	"removeCluster": {

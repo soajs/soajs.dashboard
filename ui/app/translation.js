@@ -1605,6 +1605,10 @@ var errorCodes = {
 			"ENG": "Unable to redeploy service",
 			"FRA": "Unable to redeploy service"
 		},
+		"781": {
+			"ENG": "You are not the owner of this application. You cannot perform this operation.",
+			"FRA": "You are not the owner of this application. You cannot perform this operation."
+		},
 		"901": {
 			"ENG": "Error Logging out from environments.",
 			"FRA": "Error Logging out from environments."
