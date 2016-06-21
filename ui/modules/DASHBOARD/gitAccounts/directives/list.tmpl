@@ -12,13 +12,14 @@
                 </div>
                 <div class="body">
                     <label>{{translation.repositories[LANG]}}</label>
+	                <span style="float: right; padding-right: 2%"><label>{{translation.search[LANG]}}:</label>&nbsp;<input ng-model="searchKeyword"></span>
                     <div ng-if="account.repo && account.repo.length === 0">
                         <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
                     </div>
 
                     <div ng-if="access.getRepos" id="reposList" style="overflow:scroll; height:265px; width:100%">
                         <ul class="blueListing">
-                            <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos" ng-style="{'width': '98%'}">
+                            <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '98%'}">
                                 <span class="repoFullName">{{repo.full_name}}</span>
                                 <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
                                 <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>

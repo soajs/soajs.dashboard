@@ -13,6 +13,12 @@
 	</script>
 
 	<div class="entryBoxes" ng-show="grid.rows">
+		<div ng-if="access.listServices">
+			<a href="" ng-click="listServices()" class="btn btn-primary f-right">
+				<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
+			</a>
+			<br /><br />
+		</div>
 		<div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">
 			<div class="header closed">
 				<table width="100%" class="servicesList">

@@ -1,4 +1,10 @@
 <section ng-controller="staticContentCtrl">
+	<div ng-if="access.list">
+		<a href="" ng-click="listSources()" class="btn btn-primary f-right">
+			<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
+		</a>
+		<br /><br />
+	</div>
     <div ng-if="staticContentList && staticContentList.length === 0">
         <alert type="warning">No static content added yet!</alert>
     </div>

@@ -1,7 +1,13 @@
 <section ng-controller="daemonsCtrl">
     <tabset>
         <tab heading="Daemons" ng-if="access.daemons.list">
-            <br>
+	        <br>
+	        <div ng-if="access.daemons.list && access.daemonGroupConfig.list">
+		        <a href="" ng-click="refreshListing()" class="btn btn-primary f-right">
+			        <span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
+		        </a>
+		        <br /><br />
+	        </div>
             <div ng-if="grid.rows && grid.rows.length === 0">
                 <alert type="warning">No daemons added yet!</alert>
             </div>

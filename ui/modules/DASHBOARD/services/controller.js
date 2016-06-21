@@ -693,6 +693,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
+	
+	$scope.refreshListing = function (){
+		if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
+			$scope.listDaemons(function () {
+				$scope.listDaemonGroupConfig();
+			});
+		}
+	};
 
 	if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 		$scope.listDaemons(function () {
