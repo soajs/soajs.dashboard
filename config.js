@@ -517,6 +517,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"custom": {
+				"source": ['body.custom'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
 			}
 		},
 		"/environment/key/update": {

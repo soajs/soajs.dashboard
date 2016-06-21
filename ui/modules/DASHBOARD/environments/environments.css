@@ -63,3 +63,7 @@ ul {
 .grid table {
     min-width: 100% !important;
 }
+
+.modeSelect {
+    width: 15%;
+}

@@ -19,6 +19,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 	};
 
+	$scope.jsonEditor = {
+		options: {
+			mode: 'tree',
+		},
+		data: {},
+		dataIsReady: false
+	};
+
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.grid.rows.forEach(function (oneEnvRecord) {
 			if (oneEnvRecord.code === env) {
@@ -90,20 +98,37 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							}
 						}
 					}
-
 					$scope.grid = {rows: response};
 					if ($scope.grid.rows) {
 						if ($scope.grid.rows.length == 1) {
 							$scope.grid.rows[0].showOptions = true;
+							$scope.jsonEditor.dataIsReady = true;
 						}
-						// $scope.grid.rows.forEach(function (env) {
-							// env.profileLabel = env.profile.split("/");
-							// env.profileLabel = env.profileLabel[env.profileLabel.length - 1].replace(".js", "");
-						// });
 					}
 				}
 			}
 		});
+	};
+
+	$scope.editorLoaded = function (instance) {
+		if (!$scope.grid.rows[0].custom) {
+			$scope.grid.rows[0].custom = {};
+		}
+		$scope.jsonEditor.data = angular.copy ($scope.grid.rows[0].custom);
+		//bug in jsoneditor: setting default mode to 'code' does not display data
+		//to fix this, use another mode, load data, wait, switch mode
+		$timeout(function () {
+			$scope.jsonEditor.options.mode = 'code';
+		}, 500);
+	};
+
+	$scope.saveCustomRegistry = function () {
+		$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
+		$scope.formEnvironment.custom = $scope.jsonEditor.data;
+		$scope.newEntry = false;
+		$scope.envId = $scope.formEnvironment._id;
+
+		$scope.save();
 	};
 
 	$scope.getDeploymentMode = function (deployer, value) {
