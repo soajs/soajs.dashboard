@@ -1384,6 +1384,61 @@ div.entryBox .body .btn-primary.noFloat {
     text-transform: capitalize;
 }
 
+#credentials-wrapper {
+    margin-top: 10px;
+}
+
+.urlParams tr.form-group {
+    float: left;
+    width: 32%;
+    margin-left: 8px;
+    margin-bottom: 5px;
+}
+
+.urlParams tr.form-group td {
+    width: 90%;
+    display: block;
+}
+
+.floatGroup tr {
+    float: left;
+    width: 50%;
+}
+
+.floatGroup tr td {
+    width: 95%;
+    display: block;
+}
+
+.serversList tr {
+    float: left;
+    width: 20%;
+    margin-bottom: 0px;
+}
+
+.serversList tr td {
+    display: block;
+    width: 95%;
+}
+
+.serversList tr[class^="form-group tr-removeServer"] {
+    width: 5%;
+}
+
+.serversList tr[class^="form-group tr-removeServer"] td {
+    text-align: right;
+    padding-top: 45px;
+}
+
+.serversList tr[class^="form-group tr-host"] {
+    width: 75%;
+}
+
+.serversList .red {
+    color: #a94442;
+    cursor: pointer;
+}
+
 .preBox {
     width: 100%;
     overflow: auto;
@@ -1401,7 +1456,6 @@ div.entryBox .body .btn-primary.noFloat {
     line-height: 100%;
     font-size: 14px;
 }
-
 
 .text-size-slider .big-letter {
     font-weight: bold;

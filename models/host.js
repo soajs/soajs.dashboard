@@ -1,7 +1,10 @@
 "use strict";
 var soajs = require('soajs');
+var Grid = require('gridfs-stream');
 var Mongo = soajs.mongo;
 var mongo = null;
+var gfs = null;
+var gfsdb = null;
 
 function checkForMongo(soajs) {
 	if (!mongo) {
@@ -179,6 +182,61 @@ var model = {
 	"getStaticContent": function (soajs, id, cb) {
 		checkForMongo(soajs);
 		mongo.findOne(staticColl, {'_id': id}, cb);
+	},
+
+	/*
+		grid fs
+	 */
+	"getGFS": function(soajs, cb){
+		if(gfs){
+			return cb(null);
+		}
+
+		checkForMongo(soajs);
+		mongo.getMongoSkinDB(function (error, db) {
+			if(error){
+				return cb(error);
+			}
+
+			gfs = Grid(db, mongo.mongoSkin);
+			gfsdb = db;
+			return cb(null);
+		});
+	},
+
+	"getFiles": function(soajs, criteria, cb){
+		checkForMongo(soajs);
+		mongo.find("fs.files", criteria, cb);
+	},
+
+	"getOneFile": function(soajs, id, cb){
+		checkForMongo(soajs);
+		model.getGFS(soajs, function(error){
+			if(error){
+				return cb(error);
+			}
+
+			var gs = new gfs.mongo.GridStore(gfsdb, id, 'r', {
+				root: 'fs',
+				w: 1,
+				fsync: true
+			});
+
+			gs.open(function (error, gstore) {
+				if(error){
+					return cb(error);
+				}
+
+				gstore.read(function (error, filedata) {
+					if(error){
+						return cb(error);
+					}
+
+					gstore.close();
+					return cb(null, filedata);
+				});
+			});
+		});
 	}
 };
 

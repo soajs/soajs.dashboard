@@ -323,6 +323,8 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
+						$cookies.remove('soajs_user');
+						$cookies.remove('soajs_auth');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {

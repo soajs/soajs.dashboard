@@ -96,6 +96,11 @@ var deployer = {
 		deployer.exec(deployerConfig, cid, mongo, opts, cb);
 	},
 
+	"copy": function (deployerConfig, cid, mongo, src, dest, cb) {
+		var deployer = getDeployer(deployerConfig);
+		deployer.copy(deployerConfig, cid, mongo, src, dest, cb);
+	},
+
 	"restart": function (deployerConfig, cid, mongo, cb) {
 		var deployer = getDeployer(deployerConfig);
 		deployer.restart(deployerConfig, cid, mongo, cb);

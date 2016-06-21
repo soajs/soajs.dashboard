@@ -108,6 +108,7 @@ module.exports = {
 				"validation": {
 					"type": "object",
 					"properties": {
+						"clusterType": {"type": "string"},
 						"URLParam": {"type": "object", "properties": {}},
 						"servers": {"type": "array", "items": {"type": "object", "required": true}},
 						"extraParam": {"type": "object", "properties": {}}
@@ -1739,6 +1740,45 @@ module.exports = {
 				'required': true,
 				'validation': {
 					'type': 'string'
+				}
+			}
+		},
+		"/hosts/nginx/redeploy": {
+			_apiInfo: {
+				'l': 'Redeploy Nginx Hosts',
+				'group': 'Hosts'
+			},
+			'envCode': {
+				'source': ['query.envCode'],
+				'required': true,
+				'validation': {
+					'type': 'string'
+				}
+			},
+			"ssl":{
+				'source': ['body.ssl'],
+				'required': true,
+				'validation': {
+					'type': 'boolean'
+				}
+			},
+			"nginxConfig": {
+				"source": ["body.nginxConfig"],
+				"required": false,
+				"validation": {
+					"type": "object",
+					"properties": {
+						"customUIId": {"type": "string", "required": true},
+						"branch": {"type": "string", "required": true},
+						"commit": {"type": "string", "required": true}
+					}
+				}
+			},
+			"cid": {
+				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
