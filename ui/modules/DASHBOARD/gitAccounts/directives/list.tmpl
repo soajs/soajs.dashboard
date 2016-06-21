@@ -12,7 +12,7 @@
                 </div>
                 <div class="body">
                     <label>{{translation.repositories[LANG]}}</label>
-	                <span style="float: right; padding-right: 2%"><label>{{translation.search[LANG]}}:</label>&nbsp;<input ng-model="searchKeyword"></span>
+	                <span style="float: right; padding-right: 2%" class="icon icon-search">&nbsp;<input ng-model="searchKeyword"></span>
                     <div ng-if="account.repo && account.repo.length === 0">
                         <alert type="warning">{{translation.noReposFound[LANG]}}</alert>
                     </div>
