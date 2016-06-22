@@ -258,33 +258,42 @@ var lib = {
 
     "writeFile": function (options, cb) {
         fs.exists(options.configDirPath, function (exists) {
-            if (!exists) {
-                mkdirp(options.configDirPath, function (error) {
+			if (exists) {
+				lib.clearDir({soajs: options.soajs, repoConfigsFolder: options.configDirPath}, function () {
+					write();
+				});
+			}
+			else {
+				write();
+			}
+
+			function write() {
+				mkdirp(options.configDirPath, function (error) {
                     checkIfError(error, {}, cb, function () {
                         fs.writeFile(options.configFilePath, options.configFile, function (error) {
                             return (error) ? cb (error) : cb ();
                         });
                     });
                 });
-            }
-            else {
-                fs.writeFile(options.configFilePath, config.configFile, function (error) {
-                    return (error) ? cb (error) : cb ();
-                });
-            }
+			};
         });
     },
 
     "clearDir": function (options, cb) {
         rimraf(options.repoConfigsFolder, function (error) {
-            return (error) ? cb(error) : cb();
+			if (error) {
+				options.soajs.log.warn("Failed to clean repoConfigs directory, proceeding ...");
+				options.soajs.log.error(error);
+			}
+
+            return cb();
     	});
     }
 };
 
 
 module.exports = {
-    "login": function (data, mongo, options, cb) {
+    "login": function (soajs, data, mongo, options, cb) {
         data.checkIfAccountExists(mongo, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, {code: 752, message: 'Account already exists'}, cb, function () {
@@ -319,7 +328,7 @@ module.exports = {
         });
     },
 
-    "logout": function (data, mongo, options, cb) {
+    "logout": function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {code: 754, message: 'Active repositories exist for this user'}, cb, function () {
@@ -339,7 +348,7 @@ module.exports = {
         });
     },
 
-    "getRepos": function (data, mongo, options, cb) {
+    "getRepos": function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 if (accountRecord.token) {
@@ -358,7 +367,7 @@ module.exports = {
         });
     },
 
-    "getBranches": function (data, mongo, options, cb) {
+    "getBranches": function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.token = accountRecord.token;
@@ -376,40 +385,40 @@ module.exports = {
         });
     },
 
-    "getContent": function (options, cb) {
+    "getContent": function (soajs, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
-                var configSHA = response.sha;
-                var configFile = new Buffer(response.content, 'base64');
-                configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
-                var repoConfigsFolder = config.gitAccounts.github.repoConfigsFolder;
-                var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
+				checkIfError(!response.sha || !response.content, {code: 763}, cb, function () {
+					var configSHA = response.sha;
+	                var configFile = new Buffer(response.content, 'base64');
+	                configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
+	                var repoConfigsFolder = config.gitAccounts.github.repoConfigsFolder;
+	                var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 
-                var fileInfo = {
-                    configDirPath: configDirPath,
-                    configFilePath: repoConfigsFolder + options.path,
-                    configFile: configFile
-                };
+	                var fileInfo = {
+	                    configDirPath: configDirPath,
+	                    configFilePath: repoConfigsFolder + options.path,
+	                    configFile: configFile,
+						soajs: soajs
+	                };
 
-                lib.writeFile(fileInfo, function (error) {
-                    checkIfError(error, {}, cb, function () {
-                        if (require.resolve(fileInfo.configFilePath)) {
-            				delete require.cache[require.resolve(fileInfo.configFilePath)];
-            			}
-                        try {
-                            var repoConfig = require(fileInfo.configFilePath);
-                        }
-            			catch (e) {
-                            return cb (e);
-                        }
+	                lib.writeFile(fileInfo, function (error) {
+	                    checkIfError(error, {}, cb, function () {
+							var repoConfig;
+	                        if (require.resolve(fileInfo.configFilePath)) {
+	            				delete require.cache[require.resolve(fileInfo.configFilePath)];
+	            			}
+	                        try {
+	                            var repoConfig = require(fileInfo.configFilePath);
+	                        }
+	            			catch (e) {
+	                            return cb (e);
+	                        }
 
-                        lib.clearDir({repoConfigsFolder: repoConfigsFolder}, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                return cb (null, repoConfig, configSHA);
-                            });
-                        });
-                    });
-                });
+							return cb (null, repoConfig, configSHA);
+	                    });
+	                });
+				});
             });
         });
     }

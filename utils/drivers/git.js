@@ -15,49 +15,49 @@ function getGitDriver (config) {
 
 var git = {
 
-    "login": function (data, mongo, options, cb) {
+    "login": function (soajs, data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.login(data, mongo, options, cb);
+        driver.login(soajs, data, mongo, options, cb);
     },
 
-    "logout": function (data, mongo, options, cb) {
+    "logout": function (soajs, data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.logout(data, mongo, options, cb);
+        driver.logout(soajs, data, mongo, options, cb);
     },
 
-    "getRepos": function (data, mongo, options, cb) {
+    "getRepos": function (soajs, data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getRepos(data, mongo, options, cb);
+        driver.getRepos(soajs, data, mongo, options, cb);
     },
 
-    "getBranches": function (data, mongo, options, cb) {
+    "getBranches": function (soajs, data, mongo, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getBranches(data, mongo, options, cb);
+        driver.getBranches(soajs, data, mongo, options, cb);
     },
 
-    "getContent": function (options, cb) {
+    "getContent": function (soajs, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getContent(options, cb);
+        driver.getContent(soajs, options, cb);
     }
 };
 
