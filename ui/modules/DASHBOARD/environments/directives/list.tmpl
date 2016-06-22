@@ -29,16 +29,17 @@
         </tab>
         <tab heading="Custom Registry">
             <br />
-            <select class="form-control modeSelect f-right" ng-model="jsonEditor.options.mode">
+            <select ng-if="jsonEditor.dataIsReady" class="form-control modeSelect f-right" ng-model="jsonEditor.options.mode">
                 <option value="code">{{translation.codeView[LANG]}}</option>
                 <option value="tree">{{translation.treeView[LANG]}}</option>
                 <option value="form">{{translation.formView[LANG]}}</option>
             </select>
             <br /><br />
+            <label ng-if="!jsonEditor.dataIsReady">Loading custom registry ...</label>
             <div ng-if="jsonEditor.dataIsReady" ng-jsoneditor="editorLoaded" ng-model="jsonEditor.data" options="jsonEditor.options" style="width: 100%; height: 500px;"></div>
             <label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
             <br />
-            <a href="" ng-click="saveCustomRegistry()" class="btn btn-primary f-right">{{translation.update[LANG]}}</a>
+            <a href="" ng-if="jsonEditor.dataIsReady" ng-click="saveCustomRegistry()" class="btn btn-primary f-right">{{translation.update[LANG]}}</a>
         </tab>
     </tabset>
 </section>
