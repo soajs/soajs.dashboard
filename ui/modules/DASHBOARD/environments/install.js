@@ -1049,6 +1049,18 @@ var envTranslation ={
 		"ENG": "Use this section to add any custom registry information for this environment. Data must be added in JSON format.",
 		"FRA": "Use this section to add any custom registry information for this environment. Data must be added in JSON format."
 	},
+	"defaultRegistry": {
+		"ENG": "Default Registry",
+		"FRA": "Default Registry"
+	},
+	"customRegistry": {
+		"ENG": "Custom Registry",
+		"FRA": "Custom Registry"
+	},
+	"loadingCustomRegistry": {
+		"ENG": "Loading custom registry ...",
+		"FRA": "Loading custom registry ..."
+	},
 	//list-clusters
 	"removeCluster": {
 		"ENG": "Remove Cluster",
