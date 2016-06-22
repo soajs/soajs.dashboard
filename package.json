@@ -47,9 +47,8 @@
     "object-hash": "*",
     "request": "*",
     "rimraf": "*",
-    "soajs": "0.3.*",
     "shortid": "^2.2.4",
-    "tar": "*",
+    "soajs": "0.3.*",
     "unzip2": "*"
   }
 }

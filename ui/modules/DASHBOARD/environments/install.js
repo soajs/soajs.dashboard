@@ -1029,6 +1029,26 @@ var envTranslation ={
 		"ENG": "Reload Dashboard",
 		"FRA": "Reload Dashboard"
 	},
+	"update": {
+		"ENG": "Update",
+		"FRA": "Update"
+	},
+	"codeView": {
+		"ENG": "Code View",
+		"FRA": "Code View"
+	},
+	"treeView": {
+		"ENG": "Tree View",
+		"FRA": "Tree View"
+	},
+	"formView": {
+		"ENG": "Form View",
+		"FRA": "Form View"
+	},
+	"customRegistryFieldMsg": {
+		"ENG": "Use this section to add any custom registry information for this environment. Data must be added in JSON format.",
+		"FRA": "Use this section to add any custom registry information for this environment. Data must be added in JSON format."
+	},
 	//list-clusters
 	"removeCluster": {
 		"ENG": "Remove Cluster",

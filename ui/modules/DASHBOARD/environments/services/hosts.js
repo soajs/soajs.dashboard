@@ -1121,6 +1121,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                         getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
                             if (error) {
                                 currentScope.generateNewMsg(env, 'danger', error.message);
+                                $modalInstance.close();
                             }
                             else {
                                 currentScope.generateNewMsg(env, 'success', translation.newServiceHostsAdded[LANG]);

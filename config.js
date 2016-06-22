@@ -518,6 +518,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"custom": {
+				"source": ['body.custom'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
 			}
 		},
 		"/environment/key/update": {
@@ -1030,7 +1037,7 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"format": "alphanumeric",
-					"maxLength": 5
+					"maxLength": 6
 				}
 			}
 		},
@@ -2058,21 +2065,6 @@ module.exports = {
 				"default": 1,
 				"validation": {
 					"type": "number",
-					"minimum": 1
-				}
-			},
-			"gcName": {
-				"required": false,
-				"source": ['body.gcName'],
-				"validation": {
-					"type": "string"
-				}
-			},
-			"gcVersion": {
-				"required": false,
-				"source": ['body.gcVersion'],
-				"validation": {
-					"type": "integer",
 					"minimum": 1
 				}
 			},

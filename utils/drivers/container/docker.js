@@ -1,9 +1,10 @@
 "use strict";
 var fs = require("fs");
-var tar = require("tar");
 var Docker = require('dockerode');
 var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
+var fs = require('fs');
+var rimraf = require('rimraf');
 
 function checkError(error, cb, fCb) {
 	if (error) {
@@ -159,41 +160,6 @@ var deployer = {
 						});
 					}
 				});
-		});
-	},
-
-	"copy": function(deployerConfig, cid, mongo, src, dest, cb){
-		lib.getDeployer(deployerConfig, mongo, function(error, deployer){
-			checkError(error, cb, function(){
-				var container = deployer.getContainer(cid);
-
-				var d = dest.split("/");
-				var filename = d.pop();
-				d = d.join("/") + "/";
-
-				var file = fs.createReadStream(src, "utf8");
-				var packer = tar.Pack({}).on('error', function (error) {
-					console.log (error);
-				}).on('end', function () {
-					console.log ('done');
-				});
-				var tarWriteStream = fs.createWriteStream(src + '.tar');
-				file.pipe(packer).pipe(tarWriteStream);
-				var tarFile = fs.createReadStream(src + '.tar');
-
-				var opts = {
-					"path": d,
-					"noOverwriteDirNonDir": false //override existing files
-				};
-
-				console.log(opts);
-				container.putArchive(tarFile, opts, function(error, data){
-					console.log(error);
-					console.log(data);
-					console.log("-----------");
-					return cb(error, true);
-				});
-			});
 		});
 	}
 };

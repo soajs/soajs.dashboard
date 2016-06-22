@@ -114,6 +114,11 @@ var deployer = {
     "info": function (deployerConfig, cid, req, res, mongo) {
         var deployer = getDeployer(deployerConfig);
         deployer.info(deployerConfig, cid, req, res, mongo);
+    },
+
+    "getFile": function (deployerConfig, cid, req, path, mongo, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.getFile(deployerConfig, cid, req, path, mongo, cb);
     }
 };
 module.exports = deployer;

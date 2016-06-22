@@ -59,3 +59,11 @@ ul {
     border-color: #337ab7;
     border-width: 2px;
 }
+
+.grid table {
+    min-width: 100% !important;
+}
+
+.modeSelect {
+    width: 15%;
+}
