@@ -109,10 +109,6 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.containerLogs($scope, env, container);
 	};
 
-	$scope.hostPackages = function (env, host) {
-		envHosts.hostPackages($scope, env, host);
-	};
-
 	$scope.deleteContainer = function (env, container) {
 		envHosts.deleteContainer($scope, env, container);
 	};

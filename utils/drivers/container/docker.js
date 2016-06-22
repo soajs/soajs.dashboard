@@ -162,58 +162,6 @@ var deployer = {
 					}
 				});
 		});
-	},
-
-	"getFile": function (deployerConfig, cid, soajs, path, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			var container = deployer.getContainer(cid);
-
-			container.getArchive({path: path}, function (error, stream) {
-				if (error) {
-					return cb(error);
-				}
-				else {
-					var tarArchive = fs.createWriteStream(__dirname + '/packages.tar');
-					var chunk;
-					stream.on('readable', function () {
-						var handle = this;
-						while ((chunk = handle.read()) != null) {
-							tarArchive.write(chunk);
-						}
-					});
-
-					stream.on('end', function () {
-						stream.destroy();
-
-						fs.createReadStream(__dirname + '/packages.tar').pipe(tar.extract(__dirname + '/packages')).on('finish', function (error) {
-							if (error) {
-								return cb (error);
-							}
-
-							fs.readFile(__dirname + '/packages/packages.txt', function (error, data) {
-								if (error) {
-									return cb (error);
-								}
-								else {
-									fs.unlink(__dirname + '/packages.tar', function (error) {
-										if (error) {
-											return cb (error);
-										}
-										rimraf(__dirname + '/packages', function (error) {
-											if (error) {
-												return cb (error);
-											}
-
-											return cb (null, data.toString());
-										});
-									});
-								}
-							});
-						});
-					});
-				}
-			});
-		});
 	}
 };
 module.exports = deployer;

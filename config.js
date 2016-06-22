@@ -2073,26 +2073,6 @@ module.exports = {
 				}
 			}
 		},
-		"/hosts/container/packages/list": {
-			"_apiInfo": {
-				"l": "Get Host Packages",
-				"group": "Hosts"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 		"/hosts/container/logs": {
 			"_apiInfo": {
 				"l": "Get Container Logs",

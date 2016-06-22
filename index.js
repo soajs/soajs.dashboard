@@ -394,11 +394,6 @@ service.init(function() {
 			BL.deployDaemon(config, req.soajs, res);
 		});
 	});
-	service.get("/hosts/container/packages/list", function (req, res) {
-		initBLModel(req, res, hostBL, "host", function (BL) {
-			BL.getContainerPackages(config, req.soajs, res);
-		});
-	});
 	service.get("/hosts/container/logs", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function(BL) {
 			BL.getContainerLogs(config, req.soajs, res);

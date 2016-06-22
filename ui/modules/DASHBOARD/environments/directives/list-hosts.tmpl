@@ -122,46 +122,6 @@
 	</div>
 </script>
 
-<script type="text/ng-template" id="packagesList.tmpl">
-	<div class="modal-header">
-		<h3 class="modal-title">{{title}}</h3>
-	</div>
-	<div class="modal-body">
-		<div class="grid" style="width:100%">
-			<input type="text" class="form-control f-right" ng-model="query" ng-style="{'width': '30%'}" ng-keyup="searchPackages(query)" placeholder="Search Packages..." /><br /><br />
-            <table cellspacing="0" cellpadding="0" border="0">
-                <tbody>
-                <tr>
-					<th ng-style="{'width': '10px'}"></th>
-                    <th ng-style="{'width': '70%'}">Name</th>
-                    <th ng-style="{'width': '30%'}">Version</th>
-                </tr>
-                <tr ng-repeat="packInfo in packages.list track by $index" ng-class-even="'even'" ng-class-odd="'odd'">
-					<td>
-						<a href="" ng-if="packInfo.allowExpand" class="icon icon-circle-right" ng-click="showPackageDependencies($index)"></a>
-						<a href="" ng-if="packInfo.allowCollapse" class="icon icon-circle-down" ng-click="hidePackageDependencies($index)"></a>
-					</td>
-					<td>
-						<span ng-repeat="i in counterArr(packInfo.level) track by $index">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						<span ng-if="packInfo.level === 1 && packInfo.allowAllowCollapse">&#9487</span>
-						<span ng-if="packInfo.level !== 1 && packInfo.isLast">&#9495</span>
-						<span ng-if="packInfo.level !== 1 && !packInfo.isLast">&#9507</span>
-						<span ng-if="!packInfo.isSearchResult">{{packInfo.name}}</span>
-						<span ng-if="packInfo.isSearchResult"><mark>{{packInfo.name}}</mark></span>
-					</td>
-                    <td>{{packInfo.version}}</td>
-                </tr>
-                </tbody>
-            </table>
-			<alert type="warning" ng-if="packages.list.length === 0 && !query">This service/daemon does not have any dependencies.</alert>
-			<alert type="warning" ng-if="packages.list.length === 0 && query">No search results found for {{query}}.</alert>
-        </div>
-	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-	</div>
-</script>
-
 <section ng-controller="hostsCtrl">
 	<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
 		<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
@@ -296,9 +256,6 @@
 														<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, serviceName, oneIp, serviceInfo)">
 															<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 														</a>
-														<a href="" ng-show="oneIp.cid" ng-click="hostPackages(envCode, oneIp)">
-															<span class="icon icon-box-add" title="Get Host Packages"></span>&nbsp;
-														</a>
 													</td>
 												</tr>
 											</tbody>
@@ -379,9 +336,6 @@
 
 																			<a href="" ng-show="oneIp.cid" ng-click="hostLogs(envCode, hosts[service].name, oneIp, hosts[service])">
 																				<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
-																			</a>
-																			<a href="" ng-show="oneIp.cid" ng-click="hostPackages(envCode, oneIp)">
-																				<span class="icon icon-box-add" title="Get Host Packages"></span>&nbsp;
 																			</a>
 																			<!--<a href="" ng-show="oneIp.healthy && oneIp.cid" ng-click="infoHost(envCode, serviceName, oneIp, serviceInfo)">-->
 																			<!--<span class="icon icon-info" title="Get Service Info"></span>&nbsp;-->
