@@ -156,7 +156,7 @@ var lib = {
     },
 
     "getRepoContent": function (options, cb) {
-        lib.authenticate(options, function () {
+        lib.authenticate({type: 'oauth', token: options.token}, function () {
             github.repos.getContent(options, function (error, response) {
         		if (error) {
         			if (error.code === 404) {
