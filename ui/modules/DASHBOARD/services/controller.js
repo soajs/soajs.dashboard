@@ -200,7 +200,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			if (oneEntry.name === "env") {
 				oneEntry.value = env;
 			} else if (oneEntry.name === "config") {
-				oneEntry.value = JSON.stringify(jobData.serviceConfig[env], null, 2);
+				oneEntry.value = angular.copy (jobData.serviceConfig[env]);
 			}
 		});
 
@@ -217,7 +217,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					'action': function (formData) {
 						var postData = {};
 						postData.env = env;
-						postData.config = JSON.parse(formData.config);
+						postData.config = formData.config;
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/daemons/groupConfig/serviceConfig/update",
@@ -693,7 +693,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-	
+
 	$scope.refreshListing = function (){
 		if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 			$scope.listDaemons(function () {

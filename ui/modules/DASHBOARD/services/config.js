@@ -40,13 +40,17 @@ var servicesConfig = {
 					"required": true
 				},
 				{
-					"name": "config",
-					"label": translation.serviceConfiguration[LANG],
-					"type": "textarea",
-					"value": "",
-					"rows": 10,
+				    'name': 'config',
+				    'label': translation.serviceConfiguration[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '200px',
+				    "value": {},
+				    'required': true,
 					"tooltip": translation.serviceConfiguration[LANG],
-					"required": true
 				}
 			]
 		}
