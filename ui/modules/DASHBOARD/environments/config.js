@@ -216,15 +216,28 @@ var environmentsConfig = {
 					'placeholder': '300...',
 					'required': true
 				},
+				// {
+				// 	'name': 'store',
+				// 	'label': translation.store[LANG],
+				// 	'type': 'textarea',
+				// 	'rows': 5,
+				// 	'placeholder': '{}',
+				// 	'value': '',
+				// 	'tooltip': translation.provideTheSessionDatabaseStore[LANG],
+				// 	'required': true
+				// }
 				{
-					'name': 'store',
-					'label': translation.store[LANG],
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': '{}',
-					'value': '',
-					'tooltip': translation.provideTheSessionDatabaseStore[LANG],
-					'required': true
+				    'name': 'store',
+				    'label': translation.store[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '200px',
+				    'value': {},
+				    'required': true,
+					'tooltip': translation.provideTheSessionDatabaseStore[LANG]
 				}
 			]
 		},

@@ -64,7 +64,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 						if (session) {
 							postData['name'] = 'session';
 							postData['sessionInfo'] = {
-								'store': JSON.parse(formData.store),
+								'store': formData.store,
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
@@ -119,7 +119,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 				"collection": data.collection,
 				"stringify": data.stringify,
 				"expireAfter": data.expireAfter / (3600 * 1000),
-				"store": JSON.stringify(data.store, null, "\t")
+				"store": data.store
 			};
 			formConfig = environmentsConfig.form.session;
 		}
@@ -153,7 +153,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 						if (name === 'session') {
 							postData['name'] = 'session';
 							postData['sessionInfo'] = {
-								'store': JSON.parse(formData.store),
+								'store': formData.store,
 								'dbName': formData.name,
 								'expireAfter': formData.expireAfter * 3600 * 1000,
 								'collection': formData.collection,
