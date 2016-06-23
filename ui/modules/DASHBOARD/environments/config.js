@@ -642,6 +642,21 @@ var environmentsConfig = {
 					'value': []
 				}
 			]
+		},
+		serviceInfo: {
+			'entries': [
+				{
+				    'name': 'jsonData',
+				    'label': '',
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'view',
+				        'availableModes': []
+				    },
+				    'height': '500px',
+				    "value": {}
+				}
+			]
 		}
 	},
 	nginxRequiredCerts: {

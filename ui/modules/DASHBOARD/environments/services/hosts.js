@@ -555,23 +555,27 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     cb();
                 }
                 else {
-                    $modal.open({
-                        templateUrl: "serviceInfoBox.html",
-                        size: 'lg',
-                        backdrop: true,
-                        keyboard: false,
-                        controller: function ($scope, $modalInstance) {
-                            $scope.title = "Reloaded Registry of " + oneHost.name;
-                            $scope.data = JSON.stringify(response, null, 2);
-                            fixBackDrop();
-	                        setTimeout(function () {
-                                highlightMyCode()
-                            }, 500);
-                            $scope.ok = function () {
-                                $modalInstance.dismiss('ok');
-                            };
-                        }
-                    });
+                    var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
+                    formConfig.entries[0].value = response;
+                    var options = {
+            			timeout: $timeout,
+            			form: formConfig,
+            			name: 'reloadRegistry',
+            			label: "Reloaded Registry of " + oneHost.name,
+            			actions: [
+            				{
+            					'type': 'submit',
+            					'label': translation.ok[LANG],
+            					'btn': 'primary',
+            					'action': function (formData) {
+                                    currentScope.modalInstance.dismiss('cancel');
+                                    currentScope.form.formData = {};
+                                }
+            				}
+            			]
+            		};
+
+            		buildFormWithModal(currentScope, $modal, options);
                 }
             }
         });
@@ -601,23 +605,27 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     new Date().toISOString());
             }
             else {
-                $modal.open({
-                    templateUrl: "serviceInfoBox.html",
-                    size: 'lg',
-	                backdrop: true,
-                    keyboard: false,
-                    controller: function ($scope, $modalInstance) {
-                        $scope.title = "Reloaded Provisioned Information of " + oneHost.name;
-                        $scope.data = JSON.stringify(response, null, 2);
-	                    fixBackDrop();
-	                    setTimeout(function () {
-                            highlightMyCode()
-                        }, 500);
-                        $scope.ok = function () {
-                            $modalInstance.dismiss('ok');
-                        };
-                    }
-                });
+                var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
+                formConfig.entries[0].value = response;
+                var options = {
+        			timeout: $timeout,
+        			form: formConfig,
+        			name: 'reloadProvision',
+        			label: "Reloaded Provisioned Information of " + oneHost.name,
+        			actions: [
+        				{
+        					'type': 'submit',
+        					'label': translation.ok[LANG],
+        					'btn': 'primary',
+        					'action': function (formData) {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.form.formData = {};
+                            }
+        				}
+        			]
+        		};
+
+        		buildFormWithModal(currentScope, $modal, options);
             }
         });
     }
@@ -646,23 +654,27 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                     new Date().toISOString());
             }
             else {
-                $modal.open({
-                    templateUrl: "serviceInfoBox.html",
-                    size: "lg",
-                    backdrop: true,
-                    keyboard: false,
-                    controller: function ($scope, $modalInstance) {
-                        $scope.title = "Loaded Daemon Statistics for " + oneHost.name;
-                        $scope.data = JSON.stringify(response, null, 2);
-                        fixBackDrop();
-                        setTimeout(function () {
-                            highlightMyCode()
-                        }, 500);
-                        $scope.ok  =function () {
-                            $modalInstance.dismiss("ok");
-                        }
-                    }
-                })
+                var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
+                formConfig.entries[0].value = response;
+                var options = {
+        			timeout: $timeout,
+        			form: formConfig,
+        			name: 'loadDaemonStats',
+        			label: "Loaded Daemon Statistics for " + oneHost.name,
+        			actions: [
+        				{
+        					'type': 'submit',
+        					'label': translation.ok[LANG],
+        					'btn': 'primary',
+        					'action': function (formData) {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.form.formData = {};
+                            }
+        				}
+        			]
+        		};
+
+        		buildFormWithModal(currentScope, $modal, options);
             }
         });
     }
