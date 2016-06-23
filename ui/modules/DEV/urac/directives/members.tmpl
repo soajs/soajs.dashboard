@@ -1,0 +1,30 @@
+<div ng-controller="uracMembersCtrl">
+	<tabset id="membersSection">
+		<tab heading="{{translation.members[LANG]}}">
+			<section ng-controller="tenantMembersCtrl as gridCtrl" class="membersCtrl">
+				<div class="f-right" style="">
+					<a class="btn btn-primary" ng-click="members.listMembers()" href="">
+						{{translation.refreshListing[LANG]}}
+					</a>
+				</div>
+				<span ng-if="members.access.adminUser.addUser">
+                    <a href="" ng-click="members.addMember()" class="btn btn-primary">{{translation.addNewMember[LANG]}}</a>
+	                <br/><br/>
+                </span>
+				<nglist></nglist>
+			</section>
+		</tab>
+		<tab ng-show="access.adminGroup.list || 1" heading="{{translation.groups[LANG]}}">
+			<section ng-controller="tenantGroupsCtrl as gridCtrl">
+				<div class="f-right" style="">
+					<a class="btn btn-primary" ng-click="groups.listGroups()" href="">
+						{{translation.refreshListing[LANG]}}
+					</a>
+				</div>
+				<span ng-if="groups.access.adminGroup.add">
+                    <a href="" ng-click="groups.addGroup()" class="btn btn-primary">{{translation.addNewGroup[LANG]}}</a><br/><br/>
+                </span>
+				<nglist></nglist>
+			</section>
+		</tab>
+</div>

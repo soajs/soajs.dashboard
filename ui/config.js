@@ -36,6 +36,7 @@ var modules = {
 	},
 	"operate": {
 		"DEV":{
+			urac: 'modules/DEV/urac/install.js',
 			contentManagement: 'modules/DEV/contentManagement/install.js'
 		},
 		"STG":{
