@@ -18,7 +18,7 @@
 				<td ng-switch-when="editor">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/editor.tmpl'"></div>
 				</td>
-				
+
 				<td ng-switch-when="html" class="typeHtml">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/html.tmpl'"></div>
 				</td>
@@ -80,6 +80,10 @@
 				</td>
 				<td ng-switch-when="json">
 					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/json.tmpl'"></div>
+				</td>
+
+				<td ng-switch-when="jsoneditor">
+					<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/jsoneditor.tmpl'"></div>
 				</td>
 
 				<td ng-switch-default="">
