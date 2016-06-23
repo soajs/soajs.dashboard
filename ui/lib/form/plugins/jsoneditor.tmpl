@@ -2,7 +2,8 @@
 <select ng-if="entry.options.availableModes && entry.options.availableModes.length > 0" class="form-control f-right" style="width: 15%; height: 30px; margin-top: 7px" ng-model="entry.options.mode">
     <option ng-repeat="modeOption in entry.options.availableModes" value="{{modeOption.v}}" ng-selected="modeOptions === entry.options.mode">{{modeOption.l}}</option>
 </select>
-<div ng-jsoneditor="entry.onLoad" ng-model="entry.value" options="entry.options" ng-style="{'width': entry.width, 'height': entry.height}"></div>
+<div ng-jsoneditor="entry.onLoad" ng-model="entry.value" options="entry.options" ng-style="{'width': '100%', 'height': entry.height}"></div>
+<br /><br />
 <div ng-if="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
 
 
@@ -15,7 +16,6 @@
         'mode': 'code',
         'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
     },
-    'width': '100%',
     'height': '200px',
     "value": {
         "hello": "world"
