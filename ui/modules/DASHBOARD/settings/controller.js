@@ -434,7 +434,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.updateConfiguration = function (appId, key, env, value) {
 		var data = {};
 		if (value) {
-			data.config = JSON.stringify(value, null, "\t");
+			data.config = angular.copy (value);
 		}
 		if (env) {
 			data.envCode = env;
@@ -451,19 +451,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-						var configObj;
-						if (formData.config && (formData.config != "")) {
-							try {
-								configObj = JSON.parse(formData.config);
-							}
-							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidConfigJsonObject[LANG]);
-								return;
-							}
-						}
-						else {
-							configObj = {};
-						}
+						var configObj = (formData.config) ? formData.config : {};
 
 						var postData = {
 							'envCode': formData.envCode,
@@ -539,31 +527,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-						var deviceObj, geoObj;
-						if (formData.device && (formData.device != "")) {
-							try {
-								deviceObj = JSON.parse(formData.device);
-							}
-							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidDeviceJsonObject[LANG]);
-								return;
-							}
-						}
-						else {
-							deviceObj = {};
-						}
-						if (formData.geo && (formData.geo != "")) {
-							try {
-								geoObj = JSON.parse(formData.geo);
-							}
-							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidGeoJsonObject[LANG]);
-								return;
-							}
-						}
-						else {
-							geoObj = {};
-						}
+						var deviceObj = (formData.device) ? formData.device : {};
+						var geoObj = (formData.geo) ? formData.geo : {};
 
 						var postData = {
 							'expDate': formData.expDate,
@@ -607,10 +572,10 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.editExtKey = function (appId, data, key) {
 		var dataForm = angular.copy(data);
 		if (data.geo) {
-			dataForm.geo = JSON.stringify(data.geo, null, "\t");
+			dataForm.geo = angular.copy (data.geo);
 		}
 		if (data.device) {
-			dataForm.device = JSON.stringify(data.device, null, "\t");
+			dataForm.device = angular.copy (data.device);
 		}
 
 		var formConfig = angular.copy(settingsConfig.form.extKey);
@@ -641,31 +606,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					'label': translation.submit[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-						var geoObj, deviceObj;
-						if (formData.device && (formData.device != "")) {
-							try {
-								deviceObj = JSON.parse(formData.device);
-							}
-							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidDeviceJsonObject[LANG]);
-								return;
-							}
-						}
-						else {
-							deviceObj = {};
-						}
-						if (formData.geo && (formData.geo != "")) {
-							try {
-								geoObj = JSON.parse(formData.geo);
-							}
-							catch (e) {
-								$scope.form.displayAlert('danger', translation.errorInvalidGeoJsonObject[LANG]);
-								return;
-							}
-						}
-						else {
-							geoObj = {};
-						}
+						var deviceObj = (formData.device) ? formData.device : {};
+						var geoObj = (formData.geo) ? formData.geo : {};
 
 						var postData = {
 							'device': deviceObj,

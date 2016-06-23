@@ -127,14 +127,17 @@ var settingsConfig = {
 					'required': true
 				},
 				{
-					'name': 'config',
-					'label': translation.configuration[LANG],
-					'type': 'textarea',
-					'rows': 10,
-					'placeholder': "",
-					'value': '',
-					'tooltip': translation.formConfigToolTip[LANG],
-					'required': true
+				    'name': 'config',
+				    'label': translation.configuration[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '300px',
+				    "value": {},
+				    'required': true,
+				    'tooltip': translation.formConfigToolTip[LANG],
 				}
 			]
 		},
@@ -160,25 +163,31 @@ var settingsConfig = {
 					'required': false
 				},
 				{
-					'name': 'device',
-					'label': translation.device[LANG],
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': "",
-					'value': '',
-					'tooltip': translation.formDeviceTooltip[LANG],
-					'required': false
+				    'name': 'device',
+				    'label': translation.device[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '200px',
+				    "value": {},
+				    'required': false,
+				    'tooltip': translation.formDeviceTooltip[LANG],
 				},
 				{
-					'name': 'geo',
-					'label': 'GEO',
-					'type': 'textarea',
-					'rows': 5,
-					'placeholder': "",
-					'value': '',
-					'tooltip': translation.formGEOToolTip[LANG],
-					'required': false
-				}
+				    'name': 'geo',
+				    'label': 'GEO',
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '200px',
+				    "value": {},
+				    'required': false,
+				    'tooltip': translation.formGEOToolTip[LANG],
+				},
 			]
 		}
 	},
