@@ -216,16 +216,6 @@ var environmentsConfig = {
 					'placeholder': '300...',
 					'required': true
 				},
-				// {
-				// 	'name': 'store',
-				// 	'label': translation.store[LANG],
-				// 	'type': 'textarea',
-				// 	'rows': 5,
-				// 	'placeholder': '{}',
-				// 	'value': '',
-				// 	'tooltip': translation.provideTheSessionDatabaseStore[LANG],
-				// 	'required': true
-				// }
 				{
 				    'name': 'store',
 				    'label': translation.store[LANG],
@@ -663,6 +653,21 @@ var environmentsConfig = {
 			label: 'Private Key',
 			extension: '.key',
 			msg: 'Key from SSL Provider'
+		}
+	},
+	jsoneditorConfig: {
+		'options': {
+			'mode': 'code',
+			'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+		},
+		'height': '200px',
+		'onLoad': function (instance) {
+			if (instance.mode === 'code') {
+				instance.setMode('code');
+			}
+			else {
+				instance.set();
+			}
 		}
 	},
 	permissions: {

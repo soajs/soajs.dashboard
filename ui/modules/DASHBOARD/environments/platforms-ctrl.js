@@ -23,6 +23,8 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         newType: ""
     };
 
+    $scope.jsoneditorConfig = environmentsConfig.jsoneditorConfig;
+
     $scope.listPlatforms = function (envCode) {
         envPlatforms.listPlatforms($scope, envCode, function () {
             $scope.listNginxCerts();

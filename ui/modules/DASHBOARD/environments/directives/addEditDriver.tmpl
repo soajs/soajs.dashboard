@@ -14,8 +14,12 @@
                     <input type="text" class="form-control" ng-required="true" ng-model="local.host"><br>
                     <label>{{translation.port[LANG]}}</label><br>
                     <input type="number" class="form-control" ng-required="true" ng-model="local.port"><br>
-                    <label>{{translation.additionalConfiguration[LANG]}}</label><br>
-                    <textarea class="form-control" ng-required="false" ng-model="local.config" rows="6"></textarea><br>
+                    <label>{{translation.additionalConfiguration[LANG]}}</label>
+                    <select ng-if="jsoneditor.options.availableModes && jsoneditor.options.availableModes.length > 0" class="form-control f-right" style="width: 15%; height: 30px; margin-top: 7px" ng-model="jsoneditor.options.mode">
+                        <option ng-repeat="modeOption in jsoneditor.options.availableModes" value="{{modeOption.v}}" ng-selected="modeOptions === jsoneditor.options.mode">{{modeOption.l}}</option>
+                    </select><br /><br />
+                    <div ng-jsoneditor="jsoneditor.onLoad" ng-model="local.config" options="jsoneditor.options" ng-style="{'width': '100%', 'height': jsoneditor.height}"></div>
+                    <br><br>
                 </div>
                 <div ng-if="driver.info.label === 'dockermachine - cloud'">
                     <label>{{translation.cloudProvider[LANG]}}</label><br>
@@ -24,8 +28,12 @@
                     <input type="text" class="form-control" ng-required="true" ng-model="cloud.host"><br>
                     <label>{{translation.port[LANG]}}</label><br>
                     <input type="number" class="form-control" ng-required="true" ng-model="cloud.port"><br>
-                    <label>{{translation.additionalConfiguration[LANG]}}</label><br>
-                    <textarea class="form-control" ng-required="false" ng-model="cloud.config" rows="6"></textarea><br>
+                    <label>{{translation.additionalConfiguration[LANG]}}</label>
+                    <select ng-if="jsoneditor.options.availableModes && jsoneditor.options.availableModes.length > 0" class="form-control f-right" style="width: 15%; height: 30px; margin-top: 7px" ng-model="jsoneditor.options.mode">
+                        <option ng-repeat="modeOption in jsoneditor.options.availableModes" value="{{modeOption.v}}" ng-selected="modeOptions === jsoneditor.options.mode">{{modeOption.l}}</option>
+                    </select><br /><br />
+                    <div ng-jsoneditor="jsoneditor.onLoad" ng-model="cloud.config" options="jsoneditor.options" ng-style="{'width': '100%', 'height': jsoneditor.height}"></div>
+                    <br><br>
                 </div>
                 <div ng-if="driver.info.label === 'docker - socket'">
                     <label>{{translation.socketPath[LANG]}}</label><br>
