@@ -289,30 +289,37 @@ var environmentsConfig = {
 						"entries": modelObj.cluster.credentials
 					},
 					{
-					    'name': 'urlParam',
-					    'label': translation.URLParameters[LANG],
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    'value': {},
-					    'required': true,
-						'tooltip': translation.enterURLParametersCluster[LANG]
+						'name': 'urlParam',
+						'label': translation.URLParameters[LANG],
+						'type': 'textarea',
+						'rows': 7,
+						'placeholder': JSON.stringify({
+							"connectTimeoutMS": 0,
+							"socketTimeoutMS": 0,
+							"maxPoolSize": 5,
+							"wtimeoutMS": 0,
+							"slaveOk": true
+						}, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterURLParametersCluster[LANG],
+						'required': true
 					},
 					{
-					    'name': 'extraParam',
-					    'label': 'Extra Parameters',
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    'value': {},
-					    'required': true,
-						'tooltip': translation.enterExtraParametersCluster[LANG]
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'textarea',
+						'rows': 8,
+						'placeholder': JSON.stringify({
+							"db": {
+								"native_parser": true
+							},
+							"server": {
+								"auto_reconnect": true
+							}
+						}, null, "\t"),
+						'value': '',
+						'tooltip': translation.enterExtraParametersCluster[LANG],
+						'required': true
 					}
 				]
 			},
