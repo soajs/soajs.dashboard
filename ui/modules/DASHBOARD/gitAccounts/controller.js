@@ -64,7 +64,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     };
                     formConfig.entries.splice(4, 0, password);
                 } else {
-                    if (formConfig.entries[4].name === 'password') {
+                    if (selected.split('_')[1] !== 'private' && formConfig.entries[4].name === 'password') {
                         formConfig.entries.splice(4, 1);
                     }
                 }

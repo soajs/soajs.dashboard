@@ -24,6 +24,24 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
     };
 
     $scope.jsoneditorConfig = environmentsConfig.jsoneditorConfig;
+    $scope.jsoneditorConfig.onLoad = function (instance) {
+        if (instance.mode === 'code') {
+            instance.setMode('code');
+        }
+        else {
+            instance.set();
+        }
+
+        instance.editor.getSession().on('change', function () {
+            try {
+                instance.get();
+                $scope.jsoneditorConfig.jsonIsValid = true;
+            }
+            catch (e) {
+                $scope.jsoneditorConfig.jsonIsValid = false;
+            }
+        });
+    }
 
     $scope.listPlatforms = function (envCode) {
         envPlatforms.listPlatforms($scope, envCode, function () {

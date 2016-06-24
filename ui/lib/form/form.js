@@ -192,7 +192,17 @@ function buildForm(context, modal, configuration, cb) {
 				else {
 					instance.set();
 				}
-			}
+
+				instance.editor.getSession().on('change', function () {
+					try {
+						instance.get();
+						oneEntry.jsonIsValid = true;
+					}
+					catch (e) {
+						oneEntry.jsonIsValid = false;
+					}
+				});
+			};
 		}
 	}
 
@@ -303,6 +313,12 @@ function buildForm(context, modal, configuration, cb) {
 			else if (oneEntry.type === 'radio' || oneEntry.type === 'select') {
 				if (Array.isArray(data[oneEntry.name])) {
 					data[oneEntry.name] = data[oneEntry.name][0];
+				}
+			}
+			else if (oneEntry.type === 'jsoneditor') {
+				if (!oneEntry.jsonIsValid) {
+					context.form.displayAlert('danger', oneEntry.label + ': Invalid JSON Object');
+					return false;
 				}
 			}
 			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
