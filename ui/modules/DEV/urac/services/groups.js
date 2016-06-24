@@ -1,7 +1,7 @@
 "use strict";
 var serviceUracDEVapp = soajsApp.components;
 
-serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
+serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
 	function listGroups(currentScope, groupsConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
@@ -9,8 +9,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 		if (currentScope.access.adminGroup.list) {
 			var opts = {
 				"method": "get",
-				"routeName": "/urac/admin/group/list",
+				"routeName": "/urac/owner/admin/group/list",
 				"params": {
+					"tCode": $cookies.get('urac_merchant'),
 					"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 				}
 			};
@@ -100,8 +101,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 						};
 						var opts = {
 							"method": "send",
-							"routeName": "/urac/admin/group/add",
+							"routeName": "/urac/owner/admin/group/add",
 							"params": {
+								"tCode": $cookies.get('urac_merchant'),
 								"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 							},
 							"data": postData
@@ -160,8 +162,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 						};
 						var opts = {
 							"method": "send",
-							"routeName": "/urac/admin/group/edit",
+							"routeName": "/urac/owner/admin/group/edit",
 							"params": {
+								"tCode": $cookies.get('urac_merchant'),
 								"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 								"gId": data['_id']
 							},
@@ -202,11 +205,12 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 	
 	function deleteGroups(currentScope) {
 		var config = {
-			'routeName': "/urac/admin/group/delete",
+			'routeName': "/urac/owner/admin/group/delete",
 			"headers": {
 				"key": currentScope.key
 			},
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				'gId': '%id%'
 			},
@@ -225,8 +229,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 		var userCookie = currentScope.$parent.userCookie;
 		var opts = {
 			"method": "get",
-			"routeName": "/urac/admin/group/delete",
+			"routeName": "/urac/owner/admin/group/delete",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"gId": data._id
 			}
@@ -252,8 +257,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 		
 		var opts = {
 			"method": "get",
-			"routeName": "/urac/admin/listUsers",
+			"routeName": "/urac/owner/admin/listUsers",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
@@ -299,8 +305,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 								};
 								var opts = {
 									"method": "send",
-									"routeName": "/urac/admin/group/addUsers",
+									"routeName": "/urac/owner/admin/group/addUsers",
 									"params": {
+										"tCode": $cookies.get('urac_merchant'),
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 									},
 									"data": postData

@@ -27,7 +27,7 @@ var uracNav = [
 			'label': translation.operate[LANG],
 			'position': 4
 		},
-		//'mainMenu': true,
+		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
 		'order': 1,

@@ -58,13 +58,13 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 				'handler': 'editMember'
 			});
 		}
-		if (currentScope.access.adminUser.editUserConfig) {
-			options.left.push({
-				'label': translation.editACL[LANG],
-				'icon': 'unlocked',
-				'handler': 'editAcl'
-			});
-		}
+		// if (currentScope.access.adminUser.editUserConfig) {
+		// 	options.left.push({
+		// 		'label': translation.editACL[LANG],
+		// 		'icon': 'unlocked',
+		// 		'handler': 'editAcl'
+		// 	});
+		// }
 		if (currentScope.access.adminUser.changeStatusAccess) {
 			options.top = [
 				{
@@ -84,15 +84,14 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 	}
 	
 	function addMember(currentScope, moduleConfig, useCookie) {
-		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
-		
-		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
+
 		overlayLoading.show();
 		var opts = {
 			"method": "get",
-			"routeName": "/urac/admin/group/list",
+			"routeName": "/urac/owner/admin/group/list",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
@@ -139,8 +138,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 								overlayLoading.show();
 								var opts = {
 									"method": "send",
-									"routeName": "/urac/admin/addUser",
+									"routeName": "/urac/owner/admin/addUser",
 									"params": {
+										"tCode": $cookies.get('urac_merchant'),
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 									},
 									"data": postData
@@ -191,8 +191,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 		
 		var opts = {
 			"method": "get",
-			"routeName": "/urac/admin/group/list",
+			"routeName": "/urac/owner/admin/group/list",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
@@ -253,8 +254,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 								};
 								var opts = {
 									"method": "send",
-									"routeName": "/urac/admin/editUser",
+									"routeName": "/urac/owner/admin/editUser",
 									"params": {
+										"tCode": $cookies.get('urac_merchant'),
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 										"uId": data['_id']
 									},
@@ -300,8 +302,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 			"headers": {
 				"key": currentScope.key
 			},
-			'routeName': "/urac/admin/changeUserStatus",
+			'routeName': "/urac/owner/admin/changeUserStatus",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				'uId': '%id%',
 				'status': 'active'
@@ -324,8 +327,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 			"headers": {
 				"key": currentScope.key
 			},
-			'routeName': "/urac/admin/changeUserStatus",
+			'routeName': "/urac/owner/admin/changeUserStatus",
 			"params": {
+				"tCode": $cookies.get('urac_merchant'),
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				'uId': '%id%', 'status': 'inactive'
 			},
