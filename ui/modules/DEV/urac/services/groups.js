@@ -11,7 +11,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 				"method": "get",
 				"routeName": "/urac/admin/group/list",
 				"params": {
-					
+					"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 				}
 			};
 			if (currentScope.key) {
@@ -101,6 +101,9 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 						var opts = {
 							"method": "send",
 							"routeName": "/urac/admin/group/add",
+							"params": {
+								"__env": currentScope.currentSelectedEnvironment.toUpperCase()
+							},
 							"data": postData
 						};
 						if (currentScope.key) {
@@ -158,7 +161,10 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 						var opts = {
 							"method": "send",
 							"routeName": "/urac/admin/group/edit",
-							"params": {"gId": data['_id']},
+							"params": {
+								"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
+								"gId": data['_id']
+							},
 							"data": postData
 						};
 						if (currentScope.key) {
@@ -200,7 +206,10 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 			"headers": {
 				"key": currentScope.key
 			},
-			"params": {'gId': '%id%'},
+			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
+				'gId': '%id%'
+			},
 			'msg': {
 				'error': translation.errorMessageDeleteGroup[LANG],
 				'success': translation.successMessageDeleteGroup[LANG]
@@ -218,6 +227,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
 			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"gId": data._id
 			}
 		};
@@ -244,7 +254,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 			"method": "get",
 			"routeName": "/urac/admin/listUsers",
 			"params": {
-				
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
 		if (currentScope.key) {
@@ -291,7 +301,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$moda
 									"method": "send",
 									"routeName": "/urac/admin/group/addUsers",
 									"params": {
-										
+										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 									},
 									"data": postData
 								};

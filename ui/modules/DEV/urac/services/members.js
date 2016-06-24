@@ -3,15 +3,16 @@ var serviceUracDEVapp = soajsApp.components;
 
 serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	function listMembers(currentScope, moduleConfig, callback) {
-		var userCookie = currentScope.$parent.userCookie;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",
 			"proxy": true,
 			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"tCode": $cookies.get('urac_merchant')
 			}
 		};
+		
 		if (currentScope.key) {
 			opts.headers = {
 				"key": currentScope.key
@@ -91,7 +92,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"params": {}
+			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
+			}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -137,6 +140,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/admin/addUser",
+									"params": {
+										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
+									},
 									"data": postData
 								};
 								if (currentScope.key) {
@@ -186,7 +192,9 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"params": {}
+			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
+			}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -247,6 +255,7 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 									"method": "send",
 									"routeName": "/urac/admin/editUser",
 									"params": {
+										"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 										"uId": data['_id']
 									},
 									"data": postData
@@ -292,7 +301,11 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 				"key": currentScope.key
 			},
 			'routeName': "/urac/admin/changeUserStatus",
-			"params": {'uId': '%id%', 'status': 'active'},
+			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
+				'uId': '%id%',
+				'status': 'active'
+			},
 			'msg': {
 				'error': translation.errorMessageActivateMembers[LANG],
 				'success': translation.successMessageActivateMembers[LANG]
@@ -312,7 +325,10 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 				"key": currentScope.key
 			},
 			'routeName': "/urac/admin/changeUserStatus",
-			"params": {'uId': '%id%', 'status': 'inactive'},
+			"params": {
+				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
+				'uId': '%id%', 'status': 'inactive'
+			},
 			'msg': {
 				'error': translation.errorMessageDeactivateMembers[LANG],
 				'success': translation.successMessageDeactivateMembers[LANG]
