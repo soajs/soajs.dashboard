@@ -65,21 +65,21 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			data: opts.data || {},
 			json: true
 		};
-		
+
 		if (opts.proxy) {
-			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
+			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase()];
 		}
 		
 		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
-			config.headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+			config.headers.soajsauth = soajsAuthCookie;
 		}
 		
 		if (opts.headers.key) {
 			config.headers.key = opts.headers.key;
 		}
 		else if ($cookies.get("soajs_dashboard_key")) {
-			config.headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
+			config.headers.key = $cookies.get("soajs_dashboard_key");
 		}
 		else {
 			config.headers.key = apiConfiguration.key;
@@ -87,8 +87,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		
 		if (opts.proxy) {
 			if (!config.params.__env || !config.params.__envauth) {
-				var envauth = $cookies.get('soajs_envauth').replace(/\"/g, '');
-				var env = $cookies.getObject('myEnv').code.replace(/\"/g, '');
+				var envauth = $cookies.get('soajs_envauth');
+				var env = $cookies.getObject('myEnv').code;
 				config.params.__envauth = envauth[env.toLowerCase()];
 				config.params.__env = env.toUpperCase();
 			}

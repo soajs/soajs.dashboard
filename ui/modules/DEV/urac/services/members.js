@@ -1,14 +1,16 @@
 "use strict";
-var membersService = soajsApp.components;
+var serviceUracDEVapp = soajsApp.components;
 
-membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
+serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	function listMembers(currentScope, moduleConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
-		var tenantId = (callback) ? currentScope.tId : userCookie.tenant.id;
 		var opts = {
 			"method": "get",
-			"routeName": "/urac/admin/listUsers",
-			"params": {'tId': tenantId}
+			"routeName": "/urac/owner/admin/listUsers",
+			"proxy": true,
+			"params": {
+				"tCode": $cookies.get('urac_merchant')
+			}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -83,13 +85,13 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 	function addMember(currentScope, moduleConfig, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
-		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
+		
 		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
 		overlayLoading.show();
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"params": {'tId': tenantId}
+			"params": {}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -129,9 +131,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'firstName': formData.firstName,
 									'lastName': formData.lastName,
 									'email': formData.email,
-									'groups': formData.groups,
-									'tId': tenantId,
-									'tCode': tenantCode
+									'groups': formData.groups
 								};
 								overlayLoading.show();
 								var opts = {
@@ -182,11 +182,11 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 	function editMember(currentScope, moduleConfig, data, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(moduleConfig.form);
-		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
+		
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/group/list",
-			"params": {'tId': tenantId}
+			"params": {}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -241,13 +241,14 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'lastName': formData.lastName,
 									'email': formData.email,
 									'groups': formData.groups,
-									'tId': tenantId,
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/admin/editUser",
-									"params": {"uId": data['_id']},
+									"params": {
+										"uId": data['_id']
+									},
 									"data": postData
 								};
 								if (currentScope.key) {

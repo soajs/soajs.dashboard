@@ -51,7 +51,7 @@ uracDEVApp.controller('uracMembersCtrl', ['$scope', '$cookies', '$localStorage',
 	$scope.userCookie = $localStorage.soajs_user;
 }]);
 
-uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'membersHelper', function ($scope, $cookies, membersHelper) {
+uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'tenantMembersHelper', function ($scope, $cookies, tenantMembersHelper) {
 	//$scope.key = $cookies.get('urac_merchant_key');
 
 	$scope.members = angular.extend($scope);
@@ -62,27 +62,27 @@ uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'membersHelper
 	});
 
 	$scope.members.listMembers = function () {
-		membersHelper.listMembers($scope.members, membersConfig);
+		tenantMembersHelper.listMembers($scope.members, membersConfig);
 	};
 
 	$scope.members.addMember = function () {
-		membersHelper.addMember($scope.members, membersConfig, true);
+		tenantMembersHelper.addMember($scope.members, membersConfig, true);
 	};
 
 	$scope.members.editAcl = function (data) {
-		membersHelper.editAcl($scope.members, data);
+		tenantMembersHelper.editAcl($scope.members, data);
 	};
 
 	$scope.members.editMember = function (data) {
-		membersHelper.editMember($scope.members, membersConfig, data, true)
+		tenantMembersHelper.editMember($scope.members, membersConfig, data, true)
 	};
 
 	$scope.members.activateMembers = function () {
-		membersHelper.activateMembers($scope.members);
+		tenantMembersHelper.activateMembers($scope.members);
 	};
 
 	$scope.members.deactivateMembers = function () {
-		membersHelper.deactivateMembers($scope.members);
+		tenantMembersHelper.deactivateMembers($scope.members);
 	};
 
 	//call default method
@@ -94,33 +94,33 @@ uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'membersHelper
 
 }]);
 
-uracDEVApp.controller('tenantGroupsCtrl', ['$scope', '$cookies', 'groupsHelper', function ($scope, $cookies, groupsHelper) {
+uracDEVApp.controller('tenantGroupsCtrl', ['$scope', '$cookies', 'tenantGroupsHelper', function ($scope, $cookies, tenantGroupsHelper) {
 	//$scope.key = $cookies.get('urac_merchant_key');
 	$scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 
 	$scope.groups.listGroups = function () {
-		groupsHelper.listGroups($scope.groups, groupsConfig);
+		tenantGroupsHelper.listGroups($scope.groups, groupsConfig);
 	};
 
 	$scope.groups.addGroup = function () {
-		groupsHelper.addGroup($scope.groups, groupsConfig, true);
+		tenantGroupsHelper.addGroup($scope.groups, groupsConfig, true);
 	};
 
 	$scope.groups.editGroup = function (data) {
-		groupsHelper.editGroup($scope.groups, groupsConfig, data, true);
+		tenantGroupsHelper.editGroup($scope.groups, groupsConfig, data, true);
 	};
 
 	$scope.groups.deleteGroups = function () {
-		groupsHelper.deleteGroups($scope.groups);
+		tenantGroupsHelper.deleteGroups($scope.groups);
 	};
 
 	$scope.groups.delete1Group = function (data) {
-		groupsHelper.delete1Group($scope.groups, data, true);
+		tenantGroupsHelper.delete1Group($scope.groups, data, true);
 	};
 
 	$scope.groups.assignUsers = function (data) {
-		groupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}}, true);
+		tenantGroupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}}, true);
 	};
 
 	setTimeout(function () {

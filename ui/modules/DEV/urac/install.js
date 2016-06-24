@@ -21,16 +21,16 @@ var uracNav = [
 		'label': translation.uracManagement[LANG],
 		'url': '#/urac-management',
 		'tplPath': 'modules/DEV/urac/directives/listTenants.tmpl',
-		'icon': 'newspaper',
+		'icon': 'users',
 		'pillar': {
 			'name': 'operate',
 			'label': translation.operate[LANG],
 			'position': 4
 		},
-		'mainMenu': true,
+		//'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
-		'order': 99,
+		'order': 1,
 		'scripts': ['modules/DEV/urac/config.js', 'modules/DEV/urac/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},

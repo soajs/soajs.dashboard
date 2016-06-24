@@ -1,4 +1,9 @@
 <div ng-controller="uracMembersCtrl">
+	<section style="min-height: 50px;">
+		<span class="f-right">
+			<a href="#/urac-management">{{translation.backToList[LANG]}}</a>
+		</span>
+	</section>
 	<tabset id="membersSection">
 		<tab heading="{{translation.members[LANG]}}">
 			<section ng-controller="tenantMembersCtrl as gridCtrl" class="membersCtrl">

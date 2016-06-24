@@ -1,17 +1,17 @@
 "use strict";
-var groupsService = soajsApp.components;
-groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
+var serviceUracDEVapp = soajsApp.components;
+
+serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 	
 	function listGroups(currentScope, groupsConfig, callback) {
 		var userCookie = currentScope.$parent.userCookie;
-		var tenantId = (callback) ? currentScope.tId : userCookie.tenant.id;
 		
 		if (currentScope.access.adminGroup.list) {
 			var opts = {
 				"method": "get",
 				"routeName": "/urac/admin/group/list",
 				"params": {
-					'tId': tenantId
+					
 				}
 			};
 			if (currentScope.key) {
@@ -79,7 +79,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 	function addGroup(currentScope, groupsConfig, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
 		var config = angular.copy(groupsConfig.form);
-		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
+		
 		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
 		
 		var options = {
@@ -96,9 +96,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 						var postData = {
 							'name': formData.name,
 							'code': formData.code,
-							'description': formData.description,
-							'tId': tenantId,
-							'tCode': tenantCode
+							'description': formData.description
 						};
 						var opts = {
 							"method": "send",
@@ -216,13 +214,11 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 	
 	function delete1Group(currentScope, data, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
-		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/group/delete",
 			"params": {
-				"gId": data._id,
-				'tId': tenantId
+				"gId": data._id
 			}
 		};
 		if (currentScope.key) {
@@ -243,11 +239,13 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 	
 	function assignUsers(currentScope, groupsConfig, data, event, useCookie) {
 		var userCookie = currentScope.$parent.userCookie;
-		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
+		
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/admin/listUsers",
-			"params": {'tId': tenantId}
+			"params": {
+				
+			}
 		};
 		if (currentScope.key) {
 			opts.headers = {
@@ -292,7 +290,9 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/admin/group/addUsers",
-									"params": {'tId': tenantId},
+									"params": {
+										
+									},
 									"data": postData
 								};
 								if (currentScope.key) {
