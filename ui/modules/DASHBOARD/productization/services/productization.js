@@ -1,55 +1,55 @@
 "use strict";
 var productizationService = soajsApp.components;
-productizationService.service('aclHelpers', function(){
-
+productizationService.service('aclHelpers', function () {
+	
 	function groupApisForDisplay(apisArray, apiGroupName) {
-		var result = {} ;
-		var apiDefaultGroupName = 'General' ;
+		var result = {};
+		var apiDefaultGroupName = 'General';
 		var len = apisArray.length;
-		if (len ==0 ){
+		if (len == 0) {
 			return result;
 		}
-		for(var i=0; i<len; i++){
-			if(apisArray[i][apiGroupName]){
+		for (var i = 0; i < len; i++) {
+			if (apisArray[i][apiGroupName]) {
 				apiDefaultGroupName = apisArray[i][apiGroupName];
 			}
-
-			if(!result[apiDefaultGroupName]){
-				result[apiDefaultGroupName]={};
-				result[apiDefaultGroupName].apis=[];
+			
+			if (!result[apiDefaultGroupName]) {
+				result[apiDefaultGroupName] = {};
+				result[apiDefaultGroupName].apis = [];
 			}
-
-			if(apisArray[i].groupMain === true ){
-				result[apiDefaultGroupName]['defaultApi'] =apisArray[i].v;
+			
+			if (apisArray[i].groupMain === true) {
+				result[apiDefaultGroupName]['defaultApi'] = apisArray[i].v;
 			}
 			result[apiDefaultGroupName].apis.push(apisArray[i]);
 		}
-
-		if( !result[apiDefaultGroupName]['defaultApi'] ){
-			result[apiDefaultGroupName]['enableAll']=true;
+		
+		if (!result[apiDefaultGroupName]['defaultApi']) {
+			result[apiDefaultGroupName]['enableAll'] = true;
 		}
 		return result;
 	}
-
-	function fillAcl(currentScope){
-		var count =0;
+	
+	function fillAcl(currentScope) {
+		var count = 0;
 		var myAcl = {};
 		var envCodes = currentScope.environments_codes;
 		var aclFill = currentScope.aclFill;
-		envCodes.forEach(function(oneEnv){
-			if(aclFill[oneEnv.code.toLowerCase()] && (!aclFill[oneEnv.code.toLowerCase()].access && !aclFill[oneEnv.code.toLowerCase()].apis && !aclFill[oneEnv.code.toLowerCase()].apisRegExp && !aclFill[oneEnv.code.toLowerCase()].apisPermission)){
+		envCodes.forEach(function (oneEnv) {
+			if (aclFill[oneEnv.code.toLowerCase()] && (!aclFill[oneEnv.code.toLowerCase()].access && !aclFill[oneEnv.code.toLowerCase()].apis && !aclFill[oneEnv.code.toLowerCase()].apisRegExp && !aclFill[oneEnv.code.toLowerCase()].apisPermission)) {
 				count++;
 				myAcl[oneEnv.code.toUpperCase()] = aclFill[oneEnv.code.toLowerCase()];
 				propagateAcl(myAcl[oneEnv.code.toUpperCase()]);
 			}
 		});
-
-		if(count === 0){
+		
+		if (count === 0) {
 			//old schema
 			myAcl[envCodes[0].code.toUpperCase()] = aclFill;
 			propagateAcl(myAcl[envCodes[0].code.toUpperCase()]);
-			envCodes.forEach(function(oneEnv){
-				if(oneEnv.code !== envCodes[0].code){
+			envCodes.forEach(function (oneEnv) {
+				if (oneEnv.code !== envCodes[0].code) {
 					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
 				}
 			});
@@ -57,61 +57,63 @@ productizationService.service('aclHelpers', function(){
 			currentScope.msg.msg = translation.warningMsgAcl[LANG];
 		}
 		currentScope.aclFill = myAcl;
-
+		
 		overlayLoading.hide();
 	}
-
-	function propagateAcl(aclFill){
-		for(var propt in aclFill){
-			if(aclFill.hasOwnProperty(propt)){
+	
+	function propagateAcl(aclFill) {
+		for (var propt in aclFill) {
+			if (aclFill.hasOwnProperty(propt)) {
 				var service = aclFill[propt];
-				service.include =true;
+				service.include = true;
 				service.collapse = false;
-
-				if(service.access){
-					if( service.access===true){
+				
+				if (service.access) {
+					if (service.access === true) {
 						service.accessType = 'private';
 					}
-					else if( service.access===false){
+					else if (service.access === false) {
 						service.accessType = 'public';
 					}
-					else if( Array.isArray(service.access) )
-					{
-						if(service.access.indexOf('administrator')>-1 ){
-							service.accessType = 'admin';
+					else if (Array.isArray(service.access)) {
+						service.accessType = 'groups';
+						service.grpCodes = {};
+						if (service.access.indexOf('owner') > -1) {
+							service.grpCodes['owner'] = true;
 						}
-						else if(service.access.indexOf('owner')>-1 ){
-							service.accessType = 'owner';
+						if (service.access.indexOf('administrator') > -1) {
+							service.grpCodes['admin'] = true;
 						}
 					}
-
 				}
-				else{
+				else {
 					service.accessType = 'public';
 				}
-
-				if(service.apisPermission==='restricted'){
+				
+				if (service.apisPermission === 'restricted') {
 					service.apisRestrictPermission = true;
 				}
-				if(service.apis){
-					for(var ap in service.apis){
-						if(service.apis.hasOwnProperty(ap)) {
+				if (service.apis) {
+					for (var ap in service.apis) {
+						if (service.apis.hasOwnProperty(ap)) {
 							service.apis[ap].include = true;
 							service.apis[ap].accessType = 'clear';
-
-							if(service.apis[ap].access == true) {
+							
+							if (service.apis[ap].access == true) {
 								service.apis[ap].accessType = 'private';
 							}
-							else if(service.apis[ap].access === false) {
+							else if (service.apis[ap].access === false) {
 								service.apis[ap].accessType = 'public';
 							}
 							else {
-								if(Array.isArray(service.apis[ap].access)){
-									if((service.apis[ap].access.indexOf('administrator') > -1)) {
-										service.apis[ap].accessType = 'admin';
+								if (Array.isArray(service.apis[ap].access)) {
+									service.apis[ap].accessType = 'groups';
+									service.apis[ap].grpCodes = {};
+									if ((service.apis[ap].access.indexOf('administrator') > -1)) {
+										service.apis[ap].grpCodes['admin'] = true;
 									}
-									else if((service.apis[ap].access.indexOf('owner') > -1)) {
-										service.apis[ap].accessType = 'owner';
+									if ((service.apis[ap].access.indexOf('owner') > -1)) {
+										service.apis[ap].grpCodes['owner'] = true;
 									}
 								}
 							}
@@ -121,19 +123,19 @@ productizationService.service('aclHelpers', function(){
 			}
 		}
 	}
-
-	function applyPermissionRestriction(scope, envCode, service){
-		if( scope.aclFill[envCode][service.name].apisRestrictPermission===true ){
-			for(var grpLabel in service.fixList ){
-				if(service.fixList.hasOwnProperty(grpLabel)){
+	
+	function applyPermissionRestriction(scope, envCode, service) {
+		if (scope.aclFill[envCode][service.name].apisRestrictPermission === true) {
+			for (var grpLabel in service.fixList) {
+				if (service.fixList.hasOwnProperty(grpLabel)) {
 					var defaultApi = service.fixList[grpLabel]['defaultApi'];
-					if(defaultApi){
-						if( scope.aclFill[envCode][service.name].apis ){
+					if (defaultApi) {
+						if (scope.aclFill[envCode][service.name].apis) {
 							var apisList = service.fixList[grpLabel]['apis'];
-							if ((!scope.aclFill[envCode][service.name].apis[defaultApi]) || scope.aclFill[envCode][service.name].apis[defaultApi].include !== true){
-								apisList.forEach(function( oneApi ) {
-									if(scope.aclFill[envCode][service.name].apis[oneApi.v]){
-										scope.aclFill[envCode][service.name].apis[oneApi.v].include=false;
+							if ((!scope.aclFill[envCode][service.name].apis[defaultApi]) || scope.aclFill[envCode][service.name].apis[defaultApi].include !== true) {
+								apisList.forEach(function (oneApi) {
+									if (scope.aclFill[envCode][service.name].apis[oneApi.v]) {
+										scope.aclFill[envCode][service.name].apis[oneApi.v].include = false;
 									}
 								});
 							}
@@ -143,79 +145,89 @@ productizationService.service('aclHelpers', function(){
 			}
 		}
 	}
-
-	function checkForGroupDefault(scope, envCode, service,grp,val,myApi){
+	
+	function checkForGroupDefault(scope, envCode, service, grp, val, myApi) {
 		var defaultApi = service.fixList[grp]['defaultApi'];
-		if(myApi.groupMain===true){
-			if( scope.aclFill[envCode][service.name] && scope.aclFill[envCode][service.name].apis ) {
+		if (myApi.groupMain === true) {
+			if (scope.aclFill[envCode][service.name] && scope.aclFill[envCode][service.name].apis) {
 				if ((scope.aclFill[envCode][service.name].apis[defaultApi]) && scope.aclFill[envCode][service.name].apis[defaultApi].include !== true) {
-					val.apis.forEach(function( one ) {
-						if(scope.aclFill[envCode][service.name].apis[one.v]){
-							scope.aclFill[envCode][service.name].apis[one.v].include=false;
+					val.apis.forEach(function (one) {
+						if (scope.aclFill[envCode][service.name].apis[one.v]) {
+							scope.aclFill[envCode][service.name].apis[one.v].include = false;
 						}
 					});
 				}
 			}
 		}
 	}
-
-	function constructAclFromPost(aclFill){
-		var aclObj= {};
-		for(var envCode in aclFill){
+	
+	function constructAclFromPost(aclFill) {
+		var aclObj = {};
+		for (var envCode in aclFill) {
 			aclObj[envCode.toLowerCase()] = {};
 			aclFromPostPerEnv(aclFill[envCode.toUpperCase()], aclObj[envCode.toLowerCase()]);
-			if(Object.keys(aclObj[envCode.toLowerCase()]).length === 0){
+			if (Object.keys(aclObj[envCode.toLowerCase()]).length === 0) {
 				delete aclObj[envCode.toLowerCase()];
 			}
 		}
 		return aclObj;
 	}
-
-	function aclFromPostPerEnv(aclFill, aclObj){
-		for(var propt in aclFill){
-			if(aclFill.hasOwnProperty(propt)){
+	
+	function aclFromPostPerEnv(aclFill, aclObj) {
+		for (var propt in aclFill) {
+			if (aclFill.hasOwnProperty(propt)) {
 				var s = angular.copy(aclFill[propt]);
-
-				if(s.include===true){
-					aclObj[propt]={};
-					aclObj[propt].apis={};
-
-					if(s.accessType==='private'){
-						aclObj[propt].access=true;
+				
+				if (s.include === true) {
+					aclObj[propt] = {};
+					aclObj[propt].apis = {};
+					
+					if (s.accessType === 'private') {
+						aclObj[propt].access = true;
 					}
-					else if(s.accessType==='admin'){
-						aclObj[propt].access= ['administrator'];
+					else if (s.accessType === 'groups') {
+						aclObj[propt].access = [];
+						var grpCodes = s.grpCodes;
+						if (grpCodes.owner) {
+							aclObj[propt].access.push('owner');
+						}
+						if (grpCodes.admin) {
+							aclObj[propt].access.push('administrator');
+						}
 					}
-					else if(s.accessType==='owner'){
-						aclObj[propt].access= ['owner'];
+					else {
+						aclObj[propt].access = false;
 					}
-					else{
-						aclObj[propt].access=false;
+					
+					if (s.apisRestrictPermission === true) {
+						aclObj[propt].apisPermission = 'restricted';
 					}
-
-					if(s.apisRestrictPermission ===true ){
-						aclObj[propt].apisPermission ='restricted';
-					}
-
-					if(s.apis){
-						for(var ap in s.apis){
-							if(s.apis.hasOwnProperty(ap)){
+					
+					if (s.apis) {
+						for (var ap in s.apis) {
+							if (s.apis.hasOwnProperty(ap)) {
 								var api = s.apis[ap];
-
-								if( ( s.apisRestrictPermission=== true && api.include===true) || (!s.apisRestrictPermission ) ) {
+								
+								if (( s.apisRestrictPermission === true && api.include === true) || (!s.apisRestrictPermission )) {
 									/// need to also check for the default api if restricted
-									aclObj[propt].apis[ap]={};
-									if(api.accessType==='private'){
-										aclObj[propt].apis[ap].access=true;
+									aclObj[propt].apis[ap] = {};
+									if (api.accessType === 'private') {
+										aclObj[propt].apis[ap].access = true;
 									}
-									else if(api.accessType==='public'){
-										aclObj[propt].apis[ap].access=false;
+									else if (api.accessType === 'public') {
+										aclObj[propt].apis[ap].access = false;
 									}
-									else if(api.accessType==='admin'){
-										aclObj[propt].apis[ap].access=['administrator'];
-									}
-									else if(api.accessType==='owner'){
-										aclObj[propt].apis[ap].access=['owner'];
+									else if (api.accessType === 'groups') {
+										aclObj[propt].apis[ap].access = [];
+										var grpCodes = api.grpCodes;
+										if (grpCodes) {
+											if (grpCodes.admin) {
+												aclObj[propt].apis[ap].access.push('administrator');
+											}
+											if (grpCodes.owner) {
+												aclObj[propt].apis[ap].access.push('owner');
+											}
+										}
 									}
 								}
 							}
@@ -225,7 +237,7 @@ productizationService.service('aclHelpers', function(){
 			}
 		}
 	}
-
+	
 	return {
 		'groupApisForDisplay': groupApisForDisplay,
 		'fillAcl': fillAcl,

@@ -66,7 +66,7 @@ multiTenantService.service('aclHelper', function () {
 													}
 												}
 											}
-											if (aclObj[serviceName].apis[apiName].access.length == 0) {
+											if (aclObj[serviceName].apis[apiName].access.length === 0) {
 												return {'valid': false};
 											}
 										}
@@ -146,17 +146,21 @@ multiTenantService.service('aclHelper', function () {
 		else {
 			for (var envCode in parentAcl) {
 				envCode = envCode.toLowerCase();
-				servNamesNew = Object.keys(parentAcl[envCode]);
-				if (servNamesOld.length === 0) {
-					servNamesOld = servNamesNew;
-				}
-				else {
-					for (var i = 0; i < servNamesNew.length; i++) {
-						var ct = 0;
-						if (servNamesOld.indexOf(servNamesNew[i]) === -1) {
-							servNamesOld.push(servNamesNew[i]);
+				if (parentAcl && parentAcl[envCode]) {
+					servNamesNew = Object.keys(parentAcl[envCode]);
+					if (servNamesOld.length === 0) {
+						servNamesOld = servNamesNew;
+					}
+					else {
+						for (var i = 0; i < servNamesNew.length; i++) {
+							if (servNamesOld.indexOf(servNamesNew[i]) === -1) {
+								servNamesOld.push(servNamesNew[i]);
+							}
 						}
 					}
+				}
+				else {
+					console.log('Missing parentAcl of ' + envCode);
 				}
 			}
 		}
