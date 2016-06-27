@@ -116,35 +116,30 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 		$scope.jsonEditor.data = angular.copy ($scope.grid.rows[0].custom);
 		//bug in jsoneditor: setting default mode to 'code' does not display data
-		//to fix this, use another mode, load data, wait, switch mode
+		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
 		$timeout(function () {
 			$scope.jsonEditor.options.mode = 'code';
-		}, 500);
 
-		//Needs update
-		// $scope.jsoneditor = angular.copy(currentScope.jsoneditorConfig);
-		// $scope.jsoneditor.jsonIsValid = true;
-		// $scope.jsoneditor.onLoad = function (instance) {
-		// 	if (instance.mode === 'code') {
-		// 		instance.setMode('code');
-		// 	}
-		// 	else {
-		// 		instance.set();
-		// 	}
-		//
-		// 	instance.editor.getSession().on('change', function () {
-		// 		try {
-		// 			instance.get();
-		// 			$scope.jsoneditor.jsonIsValid = true;
-		// 		}
-		// 		catch (e) {
-		// 			$scope.jsoneditor.jsonIsValid = false;
-		// 		}
-		// 	});
-		// };
+			$timeout(function () {
+				instance.editor.getSession().on('change', function () {
+					try {
+						instance.get();
+						$scope.jsonEditor.jsonIsValid = true;
+					}
+					catch (e) {
+						$scope.jsonEditor.jsonIsValid = false;
+					}
+				});
+			}, 500);
+		}, 500);
 	};
 
 	$scope.saveCustomRegistry = function () {
+		if (!$scope.jsonEditor.jsonIsValid) {
+			$scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
+			return;
+		}
+		
 		$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
 		$scope.formEnvironment.custom = $scope.jsonEditor.data;
 		$scope.newEntry = false;

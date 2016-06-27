@@ -5,22 +5,3 @@
 <div ng-jsoneditor="entry.onLoad" ng-init="form.formData[entry.name] = entry.value || {}" ng-model="form.formData[entry.name]" options="entry.options" ng-style="{'width': '100%', 'height': entry.height}"></div>
 <br /><br />
 <div ng-if="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
-
-
-<!--
-{
-    'name': 'jsonData',
-    'label': 'Data',
-    'type': 'jsoneditor',
-    'options': {
-        'mode': 'code',
-        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-    },
-    'height': '200px',
-    "value": {
-        "hello": "world"
-    },
-    'required': true,
-    "fieldMsg": "Hello, World!"
-}
--->
