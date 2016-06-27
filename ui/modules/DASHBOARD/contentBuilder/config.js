@@ -175,7 +175,7 @@ var cbConfig = {
 						    'type': 'jsoneditor',
 						    'options': {
 						        'mode': 'text',
-						        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+						        'availableModes': []
 						    },
 						    'height': '300px',
 						    "value": {},
