@@ -90,7 +90,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 			var imfv = {
 				"req": ((formData.required === 'true') || formData.required[0] === true),
 				"source": ["body." + machineName],
-				"validation": JSON.parse(formData.imfv)
+				"validation": formData.imfv
 			};
 			currentScope.config.genericService.config.schema.commonFields[machineName] = imfv;
 		}
@@ -370,7 +370,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					"name": fieldName,
 					"label": fieldName,
 					"required": fieldInfo.required || fieldInfo.req,
-					"imfv": JSON.stringify(fieldInfo.validation, null, 2),
+					"imfv": angular.copy (fieldInfo.validation),
 					"defaultValue": ""
 				};
 				if(formInfo && Object.keys(formInfo).length > 0) {

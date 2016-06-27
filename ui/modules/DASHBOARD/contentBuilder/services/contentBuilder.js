@@ -246,7 +246,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			}
 
 			if(Object.keys(currentScope.config.genericService.config.errors).length > 0) {
-				data['errors'] = JSON.stringify(currentScope.config.genericService.config.errors, null, 2);
+				data['errors'] = angular.copy (currentScope.config.genericService.config.errors);
 			}
 
             if(currentScope.config.genericService.config.maxFileUpload) {

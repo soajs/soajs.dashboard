@@ -170,12 +170,15 @@ var cbConfig = {
 					"collapsed": true,
 					"entries": [
 						{
-							'name': 'imfv',
-							'label': translation.imfvConfiguration[LANG],
-							'type': 'textarea',
-							'rows': 10,
-							'placeholder': JSON.stringify({"type": "string"}, null, 2),
-							'value': '',
+						    'name': 'imfv',
+						    'label': translation.imfvConfiguration[LANG],
+						    'type': 'jsoneditor',
+						    'options': {
+						        'mode': 'code',
+						        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+						    },
+						    'height': '300px',
+						    "value": {},
 							'tooltip': translation.cbFormStep2FieldImfvTooltip[LANG],
 							'fieldMsg': translation.cbFormStep2FieldImfvFieldMsg[LANG]
 						}
@@ -372,17 +375,17 @@ var cbConfig = {
 					'fieldMsg': translation.cbFormStep3defaultCollectionFieldMsg[LANG]
 				},
 				{
-					"name": "errors",
-					"label": translation.errorCodesMessage[LANG],
-					"type": "textarea",
-					"rows": 6,
-					"placeholder": JSON.stringify({
-						400: translation.databaseError[LANG],
-						401: translation.invalidIdProvided[LANG]
-					}, null, 2),
-					"tooltip": translation.cbFormStep3errorsTooltip[LANG],
-					"value": "",
-					"required": false,
+				    'name': 'errors',
+				    'label': translation.errorCodesMessage[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '200px',
+				    "value": {},
+				    'required': false,
+				    "tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					'fieldMsg': translation.cbFormStep3errorsFieldMsg[LANG]
 				},
 				{

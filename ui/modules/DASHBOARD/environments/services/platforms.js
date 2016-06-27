@@ -489,6 +489,25 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
 				$scope.jsoneditor = angular.copy(currentScope.jsoneditorConfig);
+				$scope.jsoneditor.jsonIsValid = true;
+				$scope.jsoneditor.onLoad = function (instance) {
+			        if (instance.mode === 'code') {
+			            instance.setMode('code');
+			        }
+			        else {
+			            instance.set();
+			        }
+
+			        instance.editor.getSession().on('change', function () {
+			            try {
+			                instance.get();
+			                $scope.jsoneditor.jsonIsValid = true;
+			            }
+			            catch (e) {
+			                $scope.jsoneditor.jsonIsValid = false;
+			            }
+			        });
+				};
 
 				$scope.title = "Edit Driver";
 				$scope.outerScope = currentScope;
@@ -522,6 +541,28 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				}
 
 				$scope.onSubmit = function () {
+					if (driver.label === 'dockermachine - local') {
+						if (!$scope.jsoneditor.jsonIsValid) {
+							$scope.error = {
+								message: 'Invalid JSON Object'
+							};
+							$timeout(function () {
+								$scope.error.message = '';
+							}, 5000);
+							return;
+						}
+					}
+					else if (driver.label.indexOf('dockermachine - cloud') !== -1) {
+						if (!$scope.jsoneditor.jsonIsValid) {
+							$scope.error = {
+								message: 'Invalid JSON Object'
+							};
+							$timeout(function () {
+								$scope.error.message = '';
+							}, 5000);
+							return;
+						}
+					}
 					var postData = preparePostData($scope);
 
 					getSendDataFromServer(currentScope, ngDataApi, {

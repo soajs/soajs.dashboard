@@ -57,7 +57,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-	
+
 	$scope.changePassword = function () {
 		var config = changePwConfig.formConf;
 		var options = {
@@ -164,14 +164,17 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'required': true
 				},
 				{
-					'name': 'profile',
-					'label': translation.profile[LANG],
-					'type': 'textarea',
-					'value': '',
-					'placeholder': translation.JSONObjectRepresentingYourProfile[LANG],
-					'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
-					'required': false,
-					'rows': 10
+				    'name': 'profile',
+				    'label': translation.profile[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '300px',
+				    "value": {},
+				    'required': false,
+				    'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
 				}
 			],
 			'data': {},
@@ -181,16 +184,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'label': translation.editProfile[LANG],
 					'btn': 'primary',
 					'action': function (formData) {
-						var profileObj = {};
-						if (formData.profile && (formData.profile != "")) {
-							try {
-								profileObj = JSON.parse(formData.profile);
-							}
-							catch (e) {
-								$scope.$parent.displayAlert('danger', translation.errorInvalidProfileJsonObject[LANG]);
-								return;
-							}
-						}
+						var profileObj = (formData.profile) ? formData.profile : {};
 
 						var postData = {
 							'username': formData.username,
@@ -241,7 +235,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				}
 				else {
 					$scope.uId = response._id;
-					var p = JSON.stringify(response.profile, null, "\t");
+					var p = response.profile;
 					formConfig.data = response;
 					formConfig.data.profile = p;
 					buildForm($scope, null, formConfig);
@@ -374,7 +368,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 			}
 		}
 	}];
-	
+
 	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
@@ -382,7 +376,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 		//$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
-	
+
 }]);
 
 myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function ($scope, ngDataApi, isUserLoggedIn) {
@@ -505,5 +499,3 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
 	}
 }]);
-
-

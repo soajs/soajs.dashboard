@@ -120,6 +120,28 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		$timeout(function () {
 			$scope.jsonEditor.options.mode = 'code';
 		}, 500);
+
+		//Needs update
+		// $scope.jsoneditor = angular.copy(currentScope.jsoneditorConfig);
+		// $scope.jsoneditor.jsonIsValid = true;
+		// $scope.jsoneditor.onLoad = function (instance) {
+		// 	if (instance.mode === 'code') {
+		// 		instance.setMode('code');
+		// 	}
+		// 	else {
+		// 		instance.set();
+		// 	}
+		//
+		// 	instance.editor.getSession().on('change', function () {
+		// 		try {
+		// 			instance.get();
+		// 			$scope.jsoneditor.jsonIsValid = true;
+		// 		}
+		// 		catch (e) {
+		// 			$scope.jsoneditor.jsonIsValid = false;
+		// 		}
+		// 	});
+		// };
 	};
 
 	$scope.saveCustomRegistry = function () {

@@ -887,7 +887,7 @@ fieldset legend {
 }
 
 .apiListing {
-    display: inline-block;
+    display: block;
     vertical-align: top;
     padding-bottom: 10px;
 }
@@ -900,15 +900,10 @@ fieldset legend {
 
 .apiListing .apiAccess {
     float: left;
-    width: 410px;
 }
 
 .apiListing-container .odd {
     margin-right: 45px;
-}
-
-.apiListing-container .even, .apiListing-container .odd {
-    width: 710px;
 }
 
 .apiListing-container input {

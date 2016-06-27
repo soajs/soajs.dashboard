@@ -3,18 +3,30 @@
 	<b> <a href="">{{service.name}} </a></b>
 </div>
 <div ng-show="aclFill[oneEnv.code][service.name].include" style="float: left;">
-    <span style="padding-left: 15px;">
+	<div class="f-left">
+	    <span style="padding-left: 15px;">
         <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="public" type="radio"/> {{translation.public[LANG]}}
-    </span>
-    <span style="padding-left: 40px;">
-        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
-    </span>
-    <span style="padding-left: 40px;">
-        <input type="radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="owner"/> {{translation.owner[LANG]}}
-    </span>
-    <span style="padding-left: 40px;">
-        <input type="radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="admin"/> {{translation.administrator[LANG]}}
-    </span>
+        </span>
+	    <span style="padding-left: 40px;">
+	        <input ng-model="aclFill[oneEnv.code][service.name].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
+	    </span>
+	    <span style="padding-left: 40px;">
+	        <input type="radio" ng-model="aclFill[oneEnv.code][service.name].accessType" value="groups"/> {{translation.groups[LANG]}}
+	    </span>
+	</div>
+
+	<div class="grpsListingScroll smallGrpsListingScroll" ng-show="aclFill[oneEnv.code][service.name].accessType==='groups'">
+		<ul class="grpsListing">
+			<li class="oddLi">
+				<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name].grpCodes.owner" value="owner" class="">
+				Owner
+			</li>
+			<li class="">
+				<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name].grpCodes.admin" value="admin" class="">
+				Administrator
+			</li>
+		</ul>
+	</div>
 </div>
 <div style="float:right;" ng-show="aclFill[oneEnv.code][service.name].include">
 	<a href="" ng-click="minimize(oneEnv.code, service)" ng-show="aclFill[oneEnv.code][service.name].collapse===false">

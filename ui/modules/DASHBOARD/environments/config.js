@@ -664,15 +664,7 @@ var environmentsConfig = {
 			'mode': 'code',
 			'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
 		},
-		'height': '200px',
-		'onLoad': function (instance) {
-			if (instance.mode === 'code') {
-				instance.setMode('code');
-			}
-			else {
-				instance.set();
-			}
-		}
+		'height': '200px'
 	},
 	permissions: {
 		"listEnvironments": ['dashboard', '/environment/list'],
