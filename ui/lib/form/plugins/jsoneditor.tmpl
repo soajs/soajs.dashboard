@@ -2,6 +2,6 @@
 <select ng-if="entry.options.availableModes && entry.options.availableModes.length > 0" class="form-control f-right" style="width: 15%; height: 30px; margin-top: 7px" ng-model="entry.options.mode">
     <option ng-repeat="modeOption in entry.options.availableModes" value="{{modeOption.v}}" ng-selected="modeOptions === entry.options.mode">{{modeOption.l}}</option>
 </select>
-<div ng-jsoneditor="entry.onLoad" ng-init="form.formData[entry.name] = entry.value || {}" ng-model="form.formData[entry.name]" options="entry.options" ng-style="{'width': '100%', 'height': entry.height}"></div>
+<div ng-jsoneditor="entry.onLoad" ng-init="form.formData[entry.name] = entry.value || {}" ng-model="form.formData[entry.name]" ng-change="form.call(entry.onAction, entry.name , form.formData[entry.name], form )" options="entry.options" ng-style="{'width': '100%', 'height': entry.height}"></div>
 <br /><br />
 <div ng-if="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
