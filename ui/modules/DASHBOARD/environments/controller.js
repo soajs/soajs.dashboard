@@ -25,13 +25,15 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				mode: 'tree'
 			},
 			data: {},
+			jsonIsValid: true,
 			dataIsReady: false
 		},
 		logger: {
 			options: {
 				mode: 'tree'
 			},
-			data: {}
+			data: {},
+			jsonIsValid: true,
 		}
 	};
 
@@ -142,7 +144,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$scope.jsonEditor[source].jsonIsValid = false;
 					}
 				});
-			}, 500);
+			}, 600);
 		}, 500);
 	};
 
