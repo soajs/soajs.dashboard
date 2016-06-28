@@ -1,7 +1,7 @@
 "use strict";
-var serviceUracDEVapp = soajsApp.components;
+var serviceUracApp = soajsApp.components;
 
-serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
+serviceUracApp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
 	function listGroups(currentScope, groupsConfig, callback) {
 		if (currentScope.access.adminGroup.list) {

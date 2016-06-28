@@ -1,6 +1,6 @@
 "use strict";
 var membersAclService = soajsApp.components;
-membersAclService.service('membersAclHelper', [function () {
+membersAclService.service('tenantMembersAclHelper', [function () {
 
 	function prepareViewAclObj(aclFill, parentAcl) {
 		var service, serviceName;

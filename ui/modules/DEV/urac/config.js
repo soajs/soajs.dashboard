@@ -14,7 +14,7 @@ var membersConfig = {
 		'leftActions': [],
 		'topActions': [],
 		'defaultSortField': '',
-		'defaultLimit': 10
+		'defaultLimit': 50
 	},
 
 	form: {
@@ -86,10 +86,7 @@ var groupsConfig = {
 		'columns': [
 			{'label': translation.code[LANG], 'field': 'code'},
 			{'label': translation.name[LANG], 'field': 'name'},
-			{
-				'label': translation.description[LANG]
-				, 'field': 'description'
-			}
+			{'label': translation.description[LANG], 'field': 'description'}
 		],
 		'leftActions': [],
 		'topActions': [],

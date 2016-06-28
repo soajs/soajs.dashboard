@@ -1,7 +1,7 @@
 "use strict";
-var serviceUracDEVapp = soajsApp.components;
+var serviceUracApp = soajsApp.components;
 
-serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
+serviceUracApp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	function listMembers(currentScope, moduleConfig, callback) {
 		var opts = {
 			"method": "get",

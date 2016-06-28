@@ -52,7 +52,7 @@ uracDEVApp.controller("uracListTenantsCtrl", ['$scope', 'ngDataApi', '$cookies',
 
 }]);
 
-uracDEVApp.controller('uracMembersCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
+uracDEVApp.controller('uracMembersDevCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -61,7 +61,7 @@ uracDEVApp.controller('uracMembersCtrl', ['$scope', '$cookies', '$localStorage',
 	$scope.userCookie = $localStorage.soajs_user;
 }]);
 
-uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'tenantMembersHelper', function ($scope, $cookies, tenantMembersHelper) {
+uracDEVApp.controller('tenantMembersDevCtrl', ['$scope', '$cookies', 'tenantMembersHelper', function ($scope, $cookies, tenantMembersHelper) {
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
 
@@ -102,7 +102,7 @@ uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'tenantMembers
 
 }]);
 
-uracDEVApp.controller('tenantGroupsCtrl', ['$scope', '$cookies', 'tenantGroupsHelper', function ($scope, $cookies, tenantGroupsHelper) {
+uracDEVApp.controller('tenantGroupsDevCtrl', ['$scope', '$cookies', 'tenantGroupsHelper', function ($scope, $cookies, tenantGroupsHelper) {
 	$scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 
