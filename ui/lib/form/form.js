@@ -53,6 +53,7 @@ function buildForm(context, modal, configuration, cb) {
 		msgs: configuration.msgs,
 		action: configuration.action,
 		entries: configuration.entries,
+		entriesCount: configuration.entries.length,
 		timeout: configuration.timeout,
 		modal: modal,
 		actions: configuration.actions,
@@ -227,24 +228,41 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.refData = configuration.data;
 	}
 
-	for (var i = 0; i < context.form.entries.length; i++) {
-		if (context.form.entries[i].type === 'group') {
-			context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
-			context.form.entries[i].entries.forEach(function (oneSubEntry) {
-				updateFormData(oneSubEntry);
-			});
-		}
-		else if (context.form.entries[i].type === 'tabset') {
-			context.form.entries[i].tabs.forEach(function (oneTab) {
-				oneTab.entries.forEach(function (oneSubEntry) {
+	context.form.refresh = function(){
+		for (var i = 0; i < context.form.entries.length; i++) {
+			if (context.form.entries[i].type === 'group') {
+				context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
+				context.form.entries[i].entries.forEach(function (oneSubEntry) {
 					updateFormData(oneSubEntry);
 				});
-			});
+			}
+			else if (context.form.entries[i].type === 'tabset') {
+				context.form.entries[i].tabs.forEach(function (oneTab) {
+					oneTab.entries.forEach(function (oneSubEntry) {
+						updateFormData(oneSubEntry);
+					});
+				});
+			}
+			else {
+				updateFormData(context.form.entries[i]);
+			}
 		}
-		else {
-			updateFormData(context.form.entries[i]);
-		}
+	};
+	context.form.refresh();
+
+	function assignListener(elementName){
+		context.$watchCollection(elementName, function(newCol, oldCol){
+			if(newCol.length !== oldCol.length){
+				context.form.refresh();
+			}
+			for(var i =0; i < oldCol.length; i++) {
+				if (oldCol[i].type === 'group') {
+					assignListener(elementName + '[' + i + "].entries");
+				}
+			}
+		});
 	}
+	assignListener('form.entries');
 
 	context.form.do = function (functionObj) {
 		var formDataKeys = Object.keys(context.form.formData);
