@@ -174,7 +174,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 				    'height': '300px',
 				    "value": {},
 				    'required': false,
-				    'tooltip': translation.fillYourAdditionalProfileInformation[LANG],
+				    'tooltip': translation.fillYourAdditionalProfileInformation[LANG]
 				}
 			],
 			'data': {},

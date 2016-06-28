@@ -174,8 +174,8 @@ var cbConfig = {
 						    'label': translation.imfvConfiguration[LANG],
 						    'type': 'jsoneditor',
 						    'options': {
-						        'mode': 'code',
-						        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+						        'mode': 'text',
+						        'availableModes': []
 						    },
 						    'height': '300px',
 						    "value": {},
