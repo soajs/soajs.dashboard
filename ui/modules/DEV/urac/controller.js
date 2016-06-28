@@ -1,46 +1,56 @@
 "use strict";
 
 var uracDEVApp = soajsApp.components;
-uracDEVApp.controller("uracListTenantsCtrl", ['$scope', 'ngDataApi', '$cookies', '$timeout', '$modal', 'injectFiles',
-	function ($scope, ngDataApi, $cookies, $timeout, $modal, injectFiles) {
-		$scope.$parent.isUserLoggedIn();
-		$scope.access = {};
-		$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
+uracDEVApp.controller("uracListTenantsCtrl", ['$scope', 'ngDataApi', '$cookies', '$localStorage', function ($scope, ngDataApi, $cookies, $localStorage) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.access = {};
+	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
+	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
-		$scope.listTenants = function () {
-			overlayLoading.show();
-			var opts = {
-				"routeName": "/dashboard/tenant/list",
-				"method": "get",
-				"params": {
-					//"type": "client"
-				}
-			};
-			getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
-				overlayLoading.hide();
-				if (error) {
-					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-				}
-				else {
-					$scope.tenants = response;
-				}
-			});
-
-		};
-		
-		$scope.changeCode = function (tenant) {
-			var newCode = tenant.code;
-			$cookies.put('urac_merchant_key', tenant.applications[0].keys[0].extKeys[0].extKey);
-			if (newCode && newCode !== '') {
-				$scope.code = newCode.toString();
-				$cookies.put('urac_merchant', newCode);
-				$scope.$parent.go('/urac-management/members');
+	$scope.listTenants = function () {
+		overlayLoading.show();
+		var opts = {
+			"routeName": "/dashboard/tenant/list",
+			"method": "get",
+			"params": {
+				//"type": "client"
 			}
 		};
+		getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				for (var x = response.length - 1; x >= 0; x--) {
+					if (response[x].type === 'admin') {
+						response.splice(x, 1);
+					}
+				}
+				$scope.tenants = response;
+			}
+		});
 
+	};
+
+	$scope.changeCode = function (tenant) {
+		var newCode = tenant.code;
+		if (newCode && newCode !== '') {
+			$scope.code = newCode.toString();
+			$cookies.put('urac_merchant', newCode);
+			$scope.$parent.go('/urac-management/members');
+		}
+	};
+
+	if ($scope.access.listTenants) {
 		$scope.listTenants();
-		
-	}]);
+	}
+	else {
+		var user = $localStorage.soajs_user;
+		$scope.changeCode(user.tenant);
+	}
+
+}]);
 
 uracDEVApp.controller('uracMembersCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
 	$scope.$parent.isUserLoggedIn();
@@ -52,12 +62,10 @@ uracDEVApp.controller('uracMembersCtrl', ['$scope', '$cookies', '$localStorage',
 }]);
 
 uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'tenantMembersHelper', function ($scope, $cookies, tenantMembersHelper) {
-	//$scope.key = $cookies.get('urac_merchant_key');
-
 	$scope.members = angular.extend($scope);
 	$scope.members.access = $scope.$parent.access;
 
-	$scope.$parent.$on('reloadMembers', function (event) {
+	$scope.$parent.$on('reloadTenantMembers', function (event) {
 		$scope.members.listMembers($scope);
 	});
 
@@ -95,7 +103,6 @@ uracDEVApp.controller('tenantMembersCtrl', ['$scope', '$cookies', 'tenantMembers
 }]);
 
 uracDEVApp.controller('tenantGroupsCtrl', ['$scope', '$cookies', 'tenantGroupsHelper', function ($scope, $cookies, tenantGroupsHelper) {
-	//$scope.key = $cookies.get('urac_merchant_key');
 	$scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
 
@@ -120,7 +127,7 @@ uracDEVApp.controller('tenantGroupsCtrl', ['$scope', '$cookies', 'tenantGroupsHe
 	};
 
 	$scope.groups.assignUsers = function (data) {
-		tenantGroupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadMembers', params: {}}, true);
+		tenantGroupsHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadTenantMembers', params: {}});
 	};
 
 	setTimeout(function () {

@@ -4,8 +4,6 @@ var serviceUracDEVapp = soajsApp.components;
 serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
 	function listGroups(currentScope, groupsConfig, callback) {
-		var userCookie = currentScope.$parent.userCookie;
-		
 		if (currentScope.access.adminGroup.list) {
 			var opts = {
 				"method": "get",
@@ -77,11 +75,8 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cook
 		buildGrid(currentScope, options);
 	}
 	
-	function addGroup(currentScope, groupsConfig, useCookie) {
-		var userCookie = currentScope.$parent.userCookie;
+	function addGroup(currentScope, groupsConfig) {
 		var config = angular.copy(groupsConfig.form);
-		
-		var tenantCode = (useCookie) ? userCookie.tenant.code : currentScope.tenant.code;
 		
 		var options = {
 			timeout: $timeout,
@@ -141,7 +136,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cook
 		
 	}
 	
-	function editGroup(currentScope, groupsConfig, data, useCookie) {
+	function editGroup(currentScope, groupsConfig, data) {
 		var config = angular.copy(groupsConfig.form);
 		config.entries[0].type = 'readonly';
 		var options = {
@@ -225,8 +220,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cook
 		});
 	}
 	
-	function delete1Group(currentScope, data, useCookie) {
-		var userCookie = currentScope.$parent.userCookie;
+	function delete1Group(currentScope, data) {
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/group/delete",
@@ -252,9 +246,7 @@ serviceUracDEVapp.service('tenantGroupsHelper', ['ngDataApi', '$timeout', '$cook
 		});
 	}
 	
-	function assignUsers(currentScope, groupsConfig, data, event, useCookie) {
-		var userCookie = currentScope.$parent.userCookie;
-		
+	function assignUsers(currentScope, groupsConfig, data, event) {
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",

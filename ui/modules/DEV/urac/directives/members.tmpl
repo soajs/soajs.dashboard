@@ -1,16 +1,18 @@
 <div ng-controller="uracMembersCtrl">
-	<section style="min-height: 50px;">
-		<span class="f-right">
+	<section ng-if="access.listTenants" class="f-right" style="min-height: 50px;">
+		<span>
 			<a href="#/urac-management">{{translation.backToList[LANG]}}</a>
 		</span>
 	</section>
 	<tabset id="membersSection">
 		<tab heading="{{translation.members[LANG]}}">
 			<section ng-controller="tenantMembersCtrl as gridCtrl" class="membersCtrl">
-				<div class="f-right" style="">
-					<a class="btn btn-primary" ng-click="members.listMembers()" href="">
-						{{translation.refreshListing[LANG]}}
-					</a>
+				<div class="clearfix">
+					<div class="f-right">
+						<a class="btn btn-primary" ng-click="members.listMembers()" href="">
+							{{translation.refreshListing[LANG]}}
+						</a>
+					</div>
 				</div>
 				<span ng-if="members.access.adminUser.addUser">
                     <a href="" ng-click="members.addMember()" class="btn btn-primary">{{translation.addNewMember[LANG]}}</a>
@@ -21,10 +23,12 @@
 		</tab>
 		<tab ng-show="access.adminGroup.list || 1" heading="{{translation.groups[LANG]}}">
 			<section ng-controller="tenantGroupsCtrl as gridCtrl">
-				<div class="f-right" style="">
-					<a class="btn btn-primary" ng-click="groups.listGroups()" href="">
-						{{translation.refreshListing[LANG]}}
-					</a>
+				<div class="clearfix">
+					<div class="f-right">
+						<a class="btn btn-primary" ng-click="groups.listGroups()" href="">
+							{{translation.refreshListing[LANG]}}
+						</a>
+					</div>
 				</div>
 				<span ng-if="groups.access.adminGroup.add">
                     <a href="" ng-click="groups.addGroup()" class="btn btn-primary">{{translation.addNewGroup[LANG]}}</a><br/><br/>

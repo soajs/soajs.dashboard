@@ -83,7 +83,7 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 		buildGrid(currentScope, options);
 	}
 	
-	function addMember(currentScope, moduleConfig, useCookie) {
+	function addMember(currentScope, moduleConfig) {
 		var config = angular.copy(moduleConfig.form);
 
 		overlayLoading.show();
@@ -185,8 +185,7 @@ serviceUracDEVapp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$coo
 		currentScope.$parent.go('/members/' + data._id + '/editUserAcl');
 	}
 	
-	function editMember(currentScope, moduleConfig, data, useCookie) {
-		var userCookie = currentScope.$parent.userCookie;
+	function editMember(currentScope, moduleConfig, data) {
 		var config = angular.copy(moduleConfig.form);
 		
 		var opts = {

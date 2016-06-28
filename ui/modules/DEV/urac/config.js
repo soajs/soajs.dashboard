@@ -62,20 +62,20 @@ var membersConfig = {
 	},
 
 	permissions: {
-		"adminAll": ['urac', '/admin/all'],
+		"listTenants": ['dashboard', '/tenant/list'],
 		'adminUser': {
-			'list': ['urac', '/admin/listUsers'],
-			'changeStatusAccess': ['urac', '/admin/changeStatusAccess'],
-			'editUser': ['urac', '/admin/editUser'],
-			'editUserConfig': ['urac', '/admin/editUserConfig'],
-			'addUser': ['urac', '/admin/addUser']
+			'list': ['urac', '/owner/admin/listUsers'],
+			'changeStatusAccess': ['urac', '/owner/admin/changeStatusAccess'],
+			'editUser': ['urac', '/owner/admin//editUser'],
+			'editUserConfig': ['urac', '/owner/admin//editUserConfig'],
+			'addUser': ['urac', '/owner/admin/addUser']
 		},
 		'adminGroup': {
-			'list': ['urac', '/admin/group/list'],
-			'add': ['urac', '/admin/group/add'],
-			'edit': ['urac', '/admin/group/edit'],
-			'delete': ['urac', '/admin/group/delete'],
-			'addUsers': ['urac', '/admin/group/addUsers']
+			'list': ['urac', '/owner/admin/group/list'],
+			'add': ['urac', '/owner/admin/group/add'],
+			'edit': ['urac', '/owner/admin/group/edit'],
+			'delete': ['urac', '/owner/admin/group/delete'],
+			'addUsers': ['urac', '/owner/admin/group/addUsers']
 		}
 	}
 };
