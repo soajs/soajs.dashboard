@@ -111,7 +111,14 @@ module.exports = {
 						"clusterType": {"type": "string"},
 						"URLParam": {"type": "object", "properties": {}},
 						"servers": {"type": "array", "items": {"type": "object", "required": true}},
-						"extraParam": {"type": "object", "properties": {}}
+						"extraParam": {"type": "object", "properties": {}},
+						"credentials": {
+							"type": "object",
+							"properties": {
+								"username": {"type": "string"},
+								"password": {"type": "string"}
+							}
+						}
 					}
 				}
 			},
