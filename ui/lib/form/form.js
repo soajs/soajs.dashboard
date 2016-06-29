@@ -117,71 +117,73 @@ function buildForm(context, modal, configuration, cb) {
 		}
 	}
 
-	function updateFormData(oneEntry) {
-		if (oneEntry.value) {
-			if (Array.isArray(oneEntry.value)) {
-				context.form.formData[oneEntry.name] = [];
-				oneEntry.value.forEach(function (oneValue) {
-					if (oneValue.selected === true) {
-						context.form.formData[oneEntry.name].push(oneValue.v);
+	function updateFormData(oneEntry, reload) {
+		if(!reload){
+			if (oneEntry.value) {
+				if (Array.isArray(oneEntry.value)) {
+					context.form.formData[oneEntry.name] = [];
+					oneEntry.value.forEach(function (oneValue) {
+						if (oneValue.selected === true) {
+							context.form.formData[oneEntry.name].push(oneValue.v);
+						}
+					});
+				}
+				else {
+					context.form.formData[oneEntry.name] = oneEntry.value;
+				}
+			}
+			else if (oneEntry.type === 'number') {
+				if (oneEntry.value === 0) {
+					context.form.formData[oneEntry.name] = oneEntry.value;
+				}
+			}
+
+			if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
+				if (oneEntry.limit === undefined) {
+					oneEntry.limit = 0;
+				}
+				else if (oneEntry.limit === 0) {
+					oneEntry.addMore = true;
+				}
+
+				if (oneEntry.value && Array.isArray(oneEntry.value) && oneEntry.value.length > 0) {
+					if (oneEntry.limit < oneEntry.value.length) {
+						oneEntry.limit = oneEntry.value.length;
 					}
-				});
-			}
-			else {
-				context.form.formData[oneEntry.name] = oneEntry.value;
-			}
-		}
-		else if (oneEntry.type === 'number') {
-			if (oneEntry.value === 0) {
-				context.form.formData[oneEntry.name] = oneEntry.value;
-			}
-		}
-
-		if (['document', 'audio', 'image', 'video'].indexOf(oneEntry.type) !== -1) {
-			if (oneEntry.limit === undefined) {
-				oneEntry.limit = 0;
-			}
-			else if (oneEntry.limit === 0) {
-				oneEntry.addMore = true;
-			}
-
-			if (oneEntry.value && Array.isArray(oneEntry.value) && oneEntry.value.length > 0) {
-				if (oneEntry.limit < oneEntry.value.length) {
-					oneEntry.limit = oneEntry.value.length;
 				}
 			}
-		}
 
-		if (oneEntry.type === 'date-picker') {
-			if (typeof(oneEntry.min) === 'object') {
-				oneEntry.min = oneEntry.min.getTime();
-			}
-
-			oneEntry.openDate = function ($event, index) {
-				$event.preventDefault();
-				$event.stopPropagation();
-				context.form.entries[index].opened = true;
-			};
-		}
-
-		if (oneEntry.type === 'select') {
-			var lastObj;
-			for (var x = 0; x < oneEntry.value.length; x++) {
-				if (oneEntry.value[x].selected) {
-					lastObj = oneEntry.value[x];
-					oneEntry.value.splice(x, 1);
-					break;
+			if (oneEntry.type === 'date-picker') {
+				if (typeof(oneEntry.min) === 'object') {
+					oneEntry.min = oneEntry.min.getTime();
 				}
-			}
-			if (lastObj) {
-				oneEntry.value.push(lastObj);
+
+				oneEntry.openDate = function ($event, index) {
+					$event.preventDefault();
+					$event.stopPropagation();
+					context.form.entries[index].opened = true;
+				};
 			}
 
-			if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
-				oneEntry.action = oneEntry.onChange;
-			}
-			else {
-				oneEntry.action = {};
+			if (oneEntry.type === 'select') {
+				var lastObj;
+				for (var x = 0; x < oneEntry.value.length; x++) {
+					if (oneEntry.value[x].selected) {
+						lastObj = oneEntry.value[x];
+						oneEntry.value.splice(x, 1);
+						break;
+					}
+				}
+				if (lastObj) {
+					oneEntry.value.push(lastObj);
+				}
+
+				if (oneEntry.onChange && typeof(oneEntry.onChange.action) === 'function') {
+					oneEntry.action = oneEntry.onChange;
+				}
+				else {
+					oneEntry.action = {};
+				}
 			}
 		}
 
@@ -228,36 +230,40 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.refData = configuration.data;
 	}
 
-	context.form.refresh = function(){
+	context.form.refresh = function(reload){
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
 				context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
 				context.form.entries[i].entries.forEach(function (oneSubEntry) {
-					updateFormData(oneSubEntry);
+					updateFormData(oneSubEntry, reload);
 				});
 			}
 			else if (context.form.entries[i].type === 'tabset') {
 				context.form.entries[i].tabs.forEach(function (oneTab) {
 					oneTab.entries.forEach(function (oneSubEntry) {
-						updateFormData(oneSubEntry);
+						updateFormData(oneSubEntry, reload);
 					});
 				});
 			}
 			else {
-				updateFormData(context.form.entries[i]);
+				updateFormData(context.form.entries[i], reload);
 			}
 		}
 	};
-	context.form.refresh();
+
+	context.form.refresh(false);
 
 	function assignListener(elementName){
 		context.$watchCollection(elementName, function(newCol, oldCol){
-			if(newCol.length !== oldCol.length){
-				context.form.refresh();
+			if(newCol && oldCol && newCol.length !== oldCol.length){
+				context.form.refresh(true);
 			}
-			for(var i =0; i < oldCol.length; i++) {
-				if (oldCol[i].type === 'group') {
-					assignListener(elementName + '[' + i + "].entries");
+
+			if(oldCol && oldCol.length > 0){
+				for(var i =0; i < oldCol.length; i++) {
+					if (oldCol[i].type === 'group') {
+						assignListener(elementName + '[' + i + "].entries");
+					}
 				}
 			}
 		});
@@ -354,6 +360,23 @@ function buildForm(context, modal, configuration, cb) {
 	context.form.itemsAreValid = function (data) {
 		var entries = context.form.entries;
 		return doValidateItems(entries, data);
+	};
+
+	context.form.toggleSelectValues = function (fieldName, value) {
+		for(var i =0; i < context.form.entries.length; i ++){
+			if(context.form.entries[i].name === fieldName){
+				for(var j=0; j < context.form.entries[i].value.length; j++){
+					if(context.form.entries[i].value[j].v === value){
+						if(context.form.entries[i].value[j].selected) {
+							delete context.form.entries[i].value[j].selected;
+						}
+						else {
+							context.form.entries[i].value[j].selected = true;
+						}
+					}
+				}
+			}
+		}
 	};
 
 	context.form.toggleSelection = function (fieldName, value) {
