@@ -1943,6 +1943,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -2051,6 +2058,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
@@ -2114,6 +2128,13 @@ module.exports = {
 			},
 			"commit": {
 				"source": ['body.commit'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
 				"required": true,
 				"validation": {
 					"type": "string"
