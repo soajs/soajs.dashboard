@@ -1948,7 +1948,7 @@ module.exports = {
 				"source": ['body.useLocalSOAJS'],
 				"required": false,
 				"validation": {
-					"type": "string"
+					"type": "boolean"
 				}
 			}
 		},
@@ -2063,7 +2063,7 @@ module.exports = {
 				"source": ['body.useLocalSOAJS'],
 				"required": false,
 				"validation": {
-					"type": "string"
+					"type": "boolean"
 				}
 			}
 		},
@@ -2137,7 +2137,7 @@ module.exports = {
 				"source": ['body.useLocalSOAJS'],
 				"required": false,
 				"validation": {
-					"type": "string"
+					"type": "boolean"
 				}
 			}
 		},

@@ -548,6 +548,13 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
+					'name': 'useLocalSOAJS',
+					'label': 'Do you want to accelerate deployment by using the SOAJS package within the image?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+					'required': false
+				},
+				{
 					'name': 'exposedPort',
 					'label': 'Exposed Port',
 					'type': 'number',
