@@ -1946,7 +1946,7 @@ module.exports = {
 			},
 			"useLocalSOAJS": {
 				"source": ['body.useLocalSOAJS'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -2061,7 +2061,7 @@ module.exports = {
 			},
 			"useLocalSOAJS": {
 				"source": ['body.useLocalSOAJS'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -2135,7 +2135,7 @@ module.exports = {
 			},
 			"useLocalSOAJS": {
 				"source": ['body.useLocalSOAJS'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
