@@ -505,6 +505,25 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		});
 
 		$scope.isUserLoggedIn = function (stopRedirect) {
+			function getUser(username, cb) {
+				var apiParams = {
+					"method": "get",
+					"routeName": "/urac/account/getUser",
+					"params": {
+						"username": username
+					}
+				};
+
+				getSendDataFromServer($scope, ngDataApi, apiParams, function (error, response) {
+					if (error) {
+						cb(false);
+					}
+					else {
+						cb(true);
+					}
+				});
+			}
+
 			if (!$cookies.get('soajs_auth') || !$localStorage.soajs_user) {
 				$cookies.remove('soajs_auth');
 				$localStorage.soajs_user = null;
@@ -516,6 +535,12 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 			else {
+				var user = $localStorage.soajs_user;
+				getUser(user.username, function (result) {
+					if (!result) {
+						$scope.$emit('logout_user', {'stopRedirect': true});
+					}
+				});
 				$scope.footerMenu.links.forEach(function (oneMenuEntry) {
 					if (oneMenuEntry.id === 'home') {
 						oneMenuEntry.url = '#/dashboard';
@@ -524,8 +549,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if ($scope.footerMenu.selectedMenu === '#/login') {
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
-
-				var user = $localStorage.soajs_user;
 
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;
@@ -674,6 +697,10 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 			$scope.userLastName = user.lastName;
 		}
 	};
+
+	$scope.$parent.$on('logout_user', function (event, args) {
+		$scope.logoutUser();
+	});
 
 	$scope.logoutUser = function () {
 		var user = $localStorage.soajs_user;
