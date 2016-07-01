@@ -665,6 +665,9 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				var apiParams = {
 					"method": "get",
 					"routeName": "/urac/account/getUser",
+					"headers": {
+						"key": apiConfiguration.key
+					},
 					"params": {
 						"username": username
 					}
