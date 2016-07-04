@@ -2170,7 +2170,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'DEV'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2194,7 +2194,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'DEV'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2217,7 +2217,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'DEV'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2251,7 +2251,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'DEV'
 						});
 						done();
 					});
@@ -2295,7 +2295,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 										"key": key_body.data.key
 									},
 									form: {
-										"env": "DASHBOARD"
+										"env": "DEV"
 									}
 								};
 								executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKey_body) {
@@ -2307,7 +2307,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 											"key": key_body.data.key
 										},
 										form: {
-											"env": "DASHBOARD"
+											"env": "DEV"
 										}
 									};
 									executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKeyTwo_body) {
@@ -2425,7 +2425,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("fail - trying to add an external key for an environment that does not exist in new acl", function (done) {
+				it("fail - trying to add an external key for an environment that does not exist", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
@@ -2440,13 +2440,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'PROD'
+							'env': 'DASHBOARD'
 						}
 					};
 
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
 						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], {"code": 740, "message": errorCodes[740]});
+						assert.deepEqual(body.errors.details[0], {"code": 446, "message": errorCodes[446]});
 						done();
 					});
 				});
@@ -2484,7 +2484,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							id: tenantId,
 							appId: applicationId,
 							key: key,
-							extKeyEnv: 'DASHBOARD'
+							extKeyEnv: 'DEV'
 						},
 						form: {
 							'extKey': 'fdfdgdfgdf',
@@ -2681,7 +2681,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'DEV'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -3190,7 +3190,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
 											"device": {'a': 'b'},
 											"geo": {'x': 'y'},
-											"env": 'DASHBOARD'
+											"env": 'DEV'
 										}
 									],
 									"config": {

@@ -1543,6 +1543,62 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		describe("settings tests", function () {
 			var tenantId, applicationId, key, extKey, oauthUserId;
+
+			before ("update environment records to include session database in order to be able to proceed", function (done) {
+				var update = {
+					'$set': {
+						"dbs": {
+							"clusters": {
+								"cluster1": {
+									"URLParam": {
+										"connectTimeoutMS": 0,
+										"socketTimeoutMS": 0,
+										"maxPoolSize": 5,
+										"wtimeoutMS": 0,
+										"slaveOk": true
+									},
+									"servers": [
+										{
+											"host": "127.0.0.1",
+											"port": 27017
+										}
+									],
+									"extraParam": {
+										"db": {
+											"native_parser": true
+										},
+										"server": {
+											"auto_reconnect": true
+										}
+									}
+								}
+							},
+							"config": {
+								"session": {
+									"cluster": "cluster1",
+									"name": "core_session",
+									"store": {},
+									"collection": "sessions",
+									"stringify": false,
+									"expireAfter": 1209600000
+								},
+								"prefix": ""
+							},
+							"databases": {
+								"urac": {
+									"cluster": "cluster1",
+									"tenantSpecific": true
+								}
+							}
+						}
+					}
+				};
+				mongo.update("environment", {}, update, {multi: true}, function (error) {
+					assert.ifError(error);
+					done();
+				});
+			});
+
 			it("fail - user not logged in", function (done) {
 				executeMyRequest({}, 'settings/tenant/get', 'get', function (body) {
 					assert.deepEqual(body.errors.details[0],
@@ -1784,7 +1840,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'geo': {
 							'x': 'y'
 						},
-						'env': 'DASHBOARD'
+						'env': 'DEV'
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
@@ -1804,7 +1860,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					qs: {
 						appId: applicationId,
 						key: key,
-						extKeyEnv: 'DASHBOARD'
+						extKeyEnv: 'DEV'
 					},
 					form: {
 						'extKey': extKey,
@@ -1832,7 +1888,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						'extKey': extKey,
-						'extKeyEnv': 'DASHBOARD'
+						'extKeyEnv': 'DEV'
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function (body) {
@@ -2578,23 +2634,93 @@ describe("DASHBOARD UNIT Tests:", function () {
 	describe("change tenant security key", function () {
 
 		it("success - will change tenant security key", function (done) {
-
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 				assert.ifError(error);
 				assert.ok(envRecord);
-				var params = {
-					qs: {
-						'id': envRecord._id.toString()
+
+				//Login
+				var auth;
+				var options = {
+					uri: 'http://localhost:4001/login',
+					headers: {
+						'Content-Type': 'application/json',
+						key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
 					},
-					form: {
-						'algorithm': 'aes256',
-						'password': 'new test case password'
-					}
+					body: {
+						"username": "owner",
+						"password": "123456"
+					},
+					json: true
 				};
-				executeMyRequest(params, 'environment/key/update', 'post', function (body) {
-					assert.ok(body.data);
-					assert.ok(body.data.newKey);
-					done();
+
+				request.post(options, function (error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					auth = body.soajsauth;
+
+					var params = {
+						headers: {
+							soajsauth: auth,
+							key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
+						},
+						qs: {
+							'id': envRecord._id.toString()
+						},
+						form: {
+							'algorithm': 'aes256',
+							'password': 'new test case password'
+						}
+					};
+					executeMyRequest(params, 'environment/key/update', 'post', function (body) {
+						assert.ok(body.result);
+						done();
+					});
+				});
+			});
+		});
+
+		it("fail - logged in user is not the owner of the app", function (done) {
+			mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+				assert.ifError(error);
+				assert.ok(envRecord);
+
+				//Login
+				var auth;
+				var options = {
+					uri: 'http://localhost:4001/login',
+					headers: {
+						'Content-Type': 'application/json',
+						key: extKey
+					},
+					body: {
+						"username": "user1",
+						"password": "123456"
+					},
+					json: true
+				};
+
+				request.post(options, function (error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					auth = body.soajsauth;
+
+					var params = {
+						headers: {
+							soajsauth: auth
+						},
+						qs: {
+							'id': envRecord._id.toString()
+						},
+						form: {
+							'algorithm': 'aes256',
+							'password': 'new test case password'
+						}
+					};
+					executeMyRequest(params, 'environment/key/update', 'post', function (body) {
+						assert.ok(!body.result);
+						assert.deepEqual(body.errors.details[0], {"code": 781, "message": errorCodes[781]});
+						done();
+					});
 				});
 			});
 		});

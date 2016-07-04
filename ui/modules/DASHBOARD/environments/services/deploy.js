@@ -143,7 +143,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'owner': formData.owner,
 				'repo': formData.repo,
 				'branch': branchObj.name,
-				'commit': branchObj.commit.sha
+				'commit': branchObj.commit.sha,
+				'useLocalSOAJS': formData.useLocalSOAJS
 			};
 
 			if (formData.exposedPort) {

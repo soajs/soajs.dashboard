@@ -516,6 +516,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 			else {
+				var user = $localStorage.soajs_user;
 				$scope.footerMenu.links.forEach(function (oneMenuEntry) {
 					if (oneMenuEntry.id === 'home') {
 						oneMenuEntry.url = '#/dashboard';
@@ -524,8 +525,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				if ($scope.footerMenu.selectedMenu === '#/login') {
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
-
-				var user = $localStorage.soajs_user;
 
 				$scope.enableInterface = true;
 				$scope.userFirstName = user.firstName;
@@ -660,6 +659,49 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code;
 			}
 		}
+
+		$scope.checkUserCookie = function () {
+			function getUser(username, cb) {
+				var apiParams = {
+					"method": "get",
+					"routeName": "/urac/account/getUser",
+					"headers": {
+						"key": apiConfiguration.key
+					},
+					"params": {
+						"username": username
+					}
+				};
+
+				getSendDataFromServer($scope, ngDataApi, apiParams, function (error, response) {
+					if (error) {
+						cb(false);
+					}
+					else {
+						cb(true);
+					}
+				});
+			}
+
+			if ($cookies.get('soajs_auth') && $localStorage.soajs_user) {
+				var user = $localStorage.soajs_user;
+				getUser(user.username, function (result) {
+					if (!result) {
+						$cookies.remove('soajs_auth');
+						$cookies.remove('myEnv');
+						$cookies.remove('soajs_dashboard_key');
+						$cookies.remove('soajsID');
+						$localStorage.soajs_user = null;
+						$cookies.remove('soajs_current_route');
+						$cookies.remove('soajs_envauth');
+						$scope.isUserLoggedIn();
+					}
+				});
+			}
+		};
+
+		$scope.checkUserCookie();
+
 	}]);
 
 soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localStorage', function ($scope, ngDataApi, $cookies, $localStorage) {
@@ -678,6 +720,19 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 	$scope.logoutUser = function () {
 		var user = $localStorage.soajs_user;
 
+		function clearData() {
+			$cookies.remove('myEnv');
+			$cookies.remove('soajs_dashboard_key');
+			$cookies.remove('soajsID');
+			$cookies.remove('soajs_auth');
+			$localStorage.soajs_user = null;
+			$cookies.remove('soajs_current_route');
+			$cookies.remove('soajs_envauth');
+			$localStorage.acl_access = null;
+			$localStorage.environments = null;
+			$scope.$parent.enableInterface = false;
+		}
+
 		function logout() {
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
@@ -689,19 +744,9 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
-
 				$scope.currentSelectedEnvironment = null;
-				$cookies.remove('myEnv');
-				$cookies.remove('soajs_dashboard_key');
-				$cookies.remove('soajsID');
-				$cookies.remove('soajs_auth');
-				$localStorage.soajs_user = null;
-				$cookies.remove('soajs_current_route');
-				$cookies.remove('soajs_envauth');
-				$localStorage.acl_access = null;
-				$localStorage.environments = null;
+				clearData();
 				$scope.dashboard = [];
-				$scope.$parent.enableInterface = false;
 				$scope.$parent.go("/login");
 			});
 		}
@@ -710,13 +755,7 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 			logout();
 		}
 		else {
-			$cookies.remove('soajs_auth');
-			$cookies.remove('myEnv');
-			$cookies.remove('soajs_dashboard_key');
-			$cookies.remove('soajsID');
-			$localStorage.soajs_user = null;
-			$cookies.remove('soajs_current_route');
-			$cookies.remove('soajs_envauth');
+			clearData();
 			$scope.$parent.isUserLoggedIn();
 		}
 	};

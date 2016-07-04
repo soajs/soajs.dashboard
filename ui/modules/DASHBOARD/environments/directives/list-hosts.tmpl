@@ -62,6 +62,10 @@
 						<br>
 					</div>
 					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false" /> Accelerate deployment by using the SOAJS package within the image</label>
+						<br><br>
+					</div>
+					<div ng-if="currentScope.service.type !== 'nginx'">
 						<label>{{translation.envVariables[LANG]}}</label>
 						<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
 						<br>

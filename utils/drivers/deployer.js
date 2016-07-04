@@ -96,11 +96,6 @@ var deployer = {
 		deployer.exec(deployerConfig, cid, mongo, opts, cb);
 	},
 
-	"copy": function (deployerConfig, cid, mongo, src, dest, cb) {
-		var deployer = getDeployer(deployerConfig);
-		deployer.copy(deployerConfig, cid, mongo, src, dest, cb);
-	},
-
 	"restart": function (deployerConfig, cid, mongo, cb) {
 		var deployer = getDeployer(deployerConfig);
 		deployer.restart(deployerConfig, cid, mongo, cb);
@@ -114,11 +109,6 @@ var deployer = {
     "info": function (deployerConfig, cid, req, res, mongo) {
         var deployer = getDeployer(deployerConfig);
         deployer.info(deployerConfig, cid, req, res, mongo);
-    },
-
-    "getFile": function (deployerConfig, cid, req, path, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.getFile(deployerConfig, cid, req, path, mongo, cb);
     }
 };
 module.exports = deployer;

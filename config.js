@@ -111,7 +111,14 @@ module.exports = {
 						"clusterType": {"type": "string"},
 						"URLParam": {"type": "object", "properties": {}},
 						"servers": {"type": "array", "items": {"type": "object", "required": true}},
-						"extraParam": {"type": "object", "properties": {}}
+						"extraParam": {"type": "object", "properties": {}},
+						"credentials": {
+							"type": "object",
+							"properties": {
+								"username": {"type": "string"},
+								"password": {"type": "string"}
+							}
+						}
 					}
 				}
 			},
@@ -1936,6 +1943,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -2044,6 +2058,13 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
@@ -2110,6 +2131,13 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "string"
+				}
+			},
+			"useLocalSOAJS": {
+				"source": ['body.useLocalSOAJS'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
 				}
 			}
 		},
