@@ -563,6 +563,13 @@ var environmentsConfig = {
 					'required': false
 				},
 				{
+					'name': 'supportSSL',
+					'label': 'Do you want to enable SSL for Nginx?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+					'required': false
+				},
+				{
 					'name': 'variables',
 					"label": translation.environmentVariables[LANG],
 					"type": "textarea",

@@ -1976,6 +1976,13 @@ module.exports = {
 				"validation":{
 					"type":"number"
 				}
+			},
+			"supportSSL": {
+				"source": ['body.supportSSL'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/hosts/updateNginx": {
