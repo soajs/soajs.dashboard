@@ -314,6 +314,11 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				};
 
 				$scope.uploadFiles = function(type, driverName, counter, modal, cb) {
+					if (!currentScope.envCode || !type || !$scope.formData.certificates[$scope.index[counter]].name) {
+						//to avoid incompatibiltiy issues when using safari browsers
+						return cb();
+					}
+
 					var soajsauthCookie = $cookies.get('soajs_auth');
 					var dashKeyCookie = $cookies.get('soajs_dashboard_key');
 					var progress = {
