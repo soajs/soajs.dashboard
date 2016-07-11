@@ -316,6 +316,18 @@ var environmentsConfig = {
 					    "value": {},
 					    'required': true,
 					    'tooltip': translation.enterExtraParametersCluster[LANG],
+					},
+					{
+					    'name': 'streaming',
+					    'label': 'Streaming Options',
+					    'type': 'jsoneditor',
+					    'options': {
+					        'mode': 'code',
+					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+					    },
+					    'height': '200px',
+					    "value": {},
+					    'required': true
 					}
 				]
 			},

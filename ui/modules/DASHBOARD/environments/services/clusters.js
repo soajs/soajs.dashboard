@@ -123,13 +123,15 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 							}
 
 							var extraParam = (formData.extraParam) ? formData.extraParam : {};
+							var streamingOptions = (formData.streaming) ? formData.streaming : {};
 
 							var postData = {
 								'cluster': {
 									'servers': servers,
 									'credentials': credentials,
 									'URLParam': urlParam,
-									'extraParam': extraParam
+									'extraParam': extraParam,
+									'streaming': streamingOptions
 								}
 							};
 							postData.cluster.clusterType = type;
@@ -264,7 +266,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 		var dataForm = {
 			'name': name,
 			'urlParam': angular.copy (data.URLParam),
-			'extraParam': angular.copy (data.extraParam)
+			'extraParam': angular.copy (data.extraParam),
+			'streaming': angular.copy (data.streaming)
 		};
 
 		if (data.credentials && typeof(data.credentials) === 'object') {
@@ -296,6 +299,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 
 						var extraParam = (formData.extraParam) ? formData.extraParam : {};
 						var urlParam = (formData.urlParam) ? formData.urlParam : {};
+						var streamingOptions = (formData.streaming) ? formData.streaming : {};
 
 						var credentials = {};
 						if (formData.username) {
@@ -309,7 +313,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 								'servers': servers,
 								'credentials': credentials,
 								'URLParam': urlParam,
-								'extraParam': extraParam
+								'extraParam': extraParam,
+								'streaming': streamingOptions
 							}
 						};
 
