@@ -316,6 +316,18 @@ var environmentsConfig = {
 					    "value": {},
 					    'required': true,
 					    'tooltip': translation.enterExtraParametersCluster[LANG],
+					},
+					{
+					    'name': 'streaming',
+					    'label': 'Streaming Options',
+					    'type': 'jsoneditor',
+					    'options': {
+					        'mode': 'code',
+					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+					    },
+					    'height': '200px',
+					    "value": {},
+					    'required': true
 					}
 				]
 			},
@@ -560,6 +572,13 @@ var environmentsConfig = {
 					'type': 'number',
 					'value': "",
 					'fieldMsg': 'Optional: Specify a Nginx port to be exposed',
+					'required': false
+				},
+				{
+					'name': 'supportSSL',
+					'label': 'Do you want to enable SSL for Nginx?',
+					'type': 'radio',
+					'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 					'required': false
 				},
 				{

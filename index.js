@@ -15,11 +15,86 @@ var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
+var servicesCollectionName = 'services'
+var daemonsCollectionName = 'daemons';
+var staticContentCollectionName = 'staticContent';
+var groupConfigCollectionName = 'daemon_grpconf';
+var environmentCollectionName = 'environment';
+var gridfsCollectionName = 'fs.files';
+var tenantCollectionName = 'tenants';
+var dashExtKeysCollectionName = 'dashboard_extKeys';
+var hostsCollectionName = 'hosts';
+var productsCollectionName = 'products';
+var oauthUracCollectionName = 'oauth_urac';
+var gitAccountsCollectionName = 'git_accounts';
+var dockerCollectionName = 'docker';
+var gcCollectionName = 'gc';
+
 var service = new soajs.server.service(config);
 
 function checkForMongo(req) {
 	if(!mongo) {
 		mongo = new Mongo(req.soajs.registry.coreDB.provision);
+
+		//services
+		mongo.ensureIndex(servicesCollectionName, {port: 1}, {unique: true});
+		mongo.ensureIndex(servicesCollectionName, {'src.repo': 1, 'src.owner': 1});
+		mongo.ensureIndex(servicesCollectionName, {gcId: 1}, {unique: true});
+
+		//daemons
+		mongo.ensureIndex(daemonsCollectionName, {name: 1}, {unique: true});
+		mongo.ensureIndex(daemonsCollectionName, {port: 1}, {unique: true});
+		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1}, {unique: true});
+		mongo.ensureIndex(daemonsCollectionName, {'src.repo': 1, 'src.owner': 1});
+
+		//staticContent
+		mongo.ensureIndex(staticContentCollectionName, {name: 1}, {unique: true});
+		mongo.ensureIndex(staticContentCollectionName, {'src.repo': 1, 'src.owner': 1});
+		mongo.ensureIndex(staticContentCollectionName, {name: 1, 'src.repo': 1, 'src.owner': 1});
+
+		//daemon_grpconf
+		mongo.ensureIndex(groupConfigCollectionName, {daemon: 1});
+		mongo.ensureIndex(groupConfigCollectionName, {daemonConfigGroup: 1}, {unique: true});
+
+		//environment
+		mongo.ensureIndex(environmentCollectionName, {locked: 1});
+
+		//fs.files
+		mongo.ensureIndex(gridfsCollectionName, {filename: 1}, {unique: true});
+		mongo.ensureIndex(gridfsCollectionName, {filename: 1, 'metadata.type': 1});
+		mongo.ensureIndex(gridfsCollectionName, {'metadata.type': 1});
+		mongo.ensureIndex(gridfsCollectionName, {'metadata.env': 1});
+
+		//tenants
+		mongo.ensureIndex(tenantCollectionName, {name: 1});
+		mongo.ensureIndex(tenantCollectionName, {type: 1});
+		mongo.ensureIndex(tenantCollectionName, {'application.keys.extKeys.env': 1});
+
+		//dashboard_extKeys
+		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1});
+		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, env: 1});
+
+		//hosts
+		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1});
+		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1});
+
+		//oauth_urac
+		mongo.ensureIndex(oauthUracCollectionName, {tId: 1});
+
+		//git_accounts
+		mongo.ensureIndex(gitAccountsCollectionName, {'repos.name': 1});
+		mongo.ensureIndex(oauthUracCollectionName, {owner: 1, provider: 1});
+
+		//docker
+		mongo.ensureIndex(dockerCollectionName, {env: 1});
+		mongo.ensureIndex(dockerCollectionName, {env: 1, type: 1});
+		mongo.ensureIndex(dockerCollectionName, {env: 1, hostname: 1});
+		mongo.ensureIndex(dockerCollectionName, {env: 1, cid: 1});
+		mongo.ensureIndex(dockerCollectionName, {env: 1, running: 1});
+		mongo.ensureIndex(dockerCollectionName, {env: 1, type: 1, running: 1});
+
+		//gc
+		mongo.ensureIndex(gcCollectionName, {name: 1});
 	}
 }
 

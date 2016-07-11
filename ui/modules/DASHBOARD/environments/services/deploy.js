@@ -178,7 +178,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					overlay.hide();
 				}
 				else {
-
+					params.supportSSL = formData.supportSSL;
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployNginx",

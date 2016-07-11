@@ -112,6 +112,7 @@ module.exports = {
 						"URLParam": {"type": "object", "properties": {}},
 						"servers": {"type": "array", "items": {"type": "object", "required": true}},
 						"extraParam": {"type": "object", "properties": {}},
+						"streaming": {"type": "object", "properties": {}},
 						"credentials": {
 							"type": "object",
 							"properties": {
@@ -1975,6 +1976,13 @@ module.exports = {
 				"required": false,
 				"validation":{
 					"type":"number"
+				}
+			},
+			"supportSSL": {
+				"source": ['body.supportSSL'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
 				}
 			}
 		},
