@@ -1,0 +1,72 @@
+<section ng-controller="environmentCtrl" ng-show="grid.rows">
+    <tabset>
+        <tab heading="{{translation.defaultRegistry[LANG]}}">
+            <br />
+            <span ng-if="access.addEnvironment"><a href="" ng-click="addEnvironment()" class="btn btn-primary">{{translation.addNewEnvironment[LANG]}}</a><br/><br/></span>
+
+            <div class="entryBoxes">
+                <div ng-repeat="row in grid.rows" class="entryBox">
+                    <div class="header">{{translation.code[LANG]}}: {{row['code']}} / {{translation.siteDomain[LANG]}}: {{row['sitePrefix']}}.{{row.domain}} / {{translation.apiDomain[LANG]}} : {{row['apiPrefix']}}.{{row.domain}}</div>
+                    <div class="body">
+                        <div class="description">
+                            {{row['description']}}
+                        </div>
+                        <br/>
+                        <div ng-include="'modules/dashboard/environments/directives/list-service-config.tmpl'"></div>
+                        <div class="entryAction">
+
+                            <a ng-if="access.editEnvironment" href="" ng-click="updateEnvironment(row);">
+                                <span class="icon icon-pencil2" tooltip="{{translation.editEnvironment[LANG]}}"></span>
+                            </a>
+
+                            <a  ng-if="access.deleteEnvironment" href="" ng-confirm-click="{{translation.areYouSureWantRemoveThisEnvironment[LANG]}}" ng-click="removeEnvironment(row);">
+                                <span class="icon icon-cross" tooltip="{{translation.removeEnvironment[LANG]}}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="{{translation.customRegistry[LANG]}}">
+            <br />
+            <select ng-if="jsonEditor.custom.dataIsReady" class="form-control modeSelect f-right" ng-model="jsonEditor.custom.options.mode">
+                <option value="code">{{translation.codeView[LANG]}}</option>
+                <option value="tree">{{translation.treeView[LANG]}}</option>
+                <option value="form">{{translation.formView[LANG]}}</option>
+            </select>
+            <br /><br />
+            <label ng-if="!jsonEditor.custom.dataIsReady">{{translation.loadingCustomRegistry[LANG]}}</label>
+            <div ng-if="jsonEditor.custom.dataIsReady" ng-jsoneditor="customLoaded" ng-model="jsonEditor.custom.data" options="jsonEditor.custom.options" style="width: 100%; height: 500px;"></div>
+            <label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
+            <br />
+            <a href="" ng-if="jsonEditor.custom.dataIsReady" ng-click="saveCustomRegistry()" class="btn btn-primary f-right">{{translation.update[LANG]}}</a>
+        </tab>
+    </tabset>
+</section>
+
+<script type="text/ng-template" id="keyUpdateSuccess.tmpl">
+    <div class="modal-body">
+        <h4 style="text-align: center;">{{translation.tenantSecurityUpdated[LANG]}}</h4>
+        <label>{{translation.theFollowingKeysWereGenerated[LANG]}}:</label>
+        <div class="grid" style="width:100%">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tbody>
+                <tr>
+                    <th>{{translation.appPackage[LANG]}}</th>
+                    <th>{{translation.key[LANG]}}</th>
+                    <th>{{translation.externalKey[LANG]}}</th>
+                </tr>
+                <tr ng-repeat="entry in currentScope.newKeys" ng-class-even="'even'" ng-class-odd="'odd'">
+                    <td>{{entry.appPackage}}</td>
+                    <td>{{entry.key}}</td>
+                    <td>{{entry.extKey}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <label class="fieldMsg">{{translation.securityKeyUpdateSuccessMessage[LANG]}}</label>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="reloadDashboard()">{{translation.reloadDashboard[LANG]}}</button>
+    </div>
+</script>

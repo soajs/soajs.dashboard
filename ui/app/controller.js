@@ -22,7 +22,7 @@ function configureRouteNavigation(navigation, scope) {
 	navigation.forEach(function (navigationEntry) {
 		if (navigationEntry.scripts && navigationEntry.scripts.length > 0) {
 			navigationEntry.env = navigationEntry.scripts[0].split("/")[1];
-			if (navigationEntry.env === 'DASHBOARD') {
+			if (navigationEntry.env === 'dashboard') {
 				addRoute(navigationEntry);
 			}
 			else if (scope) {
@@ -163,11 +163,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			var url = link.entries[0].url;
 			$scope.pillar = pillarName;
 			if (pillarName === "operate") {
-				if (!$scope.currentSelectedEnvironment || $scope.currentSelectedEnvironment === 'DASHBOARD') {
+				if (!$scope.currentSelectedEnvironment || $scope.currentSelectedEnvironment === 'dashboard') {
 					if ($localStorage.environments) {
 						for (var x = 0; x < $localStorage.environments.length; x++) {
-							if ($localStorage.environments[x].code !== 'DASHBOARD') {
-								$scope.currentSelectedEnvironment = $localStorage.environments[x].code;
+							if ($localStorage.environments[x].code.toLowerCase() !== 'dashboard') {
+								$scope.currentSelectedEnvironment = $localStorage.environments[x].code.toLowerCase();
 								break;
 							}
 						}
@@ -206,11 +206,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 						if ($scope.mainMenu.links[j].pillar.position === 4) {
 							for (var k = $scope.leftMenu.environments.length - 1; k >= 0; k--) {
-								if ($scope.leftMenu.environments[k].code === "DASHBOARD") {
+								if ($scope.leftMenu.environments[k].code.toLowerCase() === "dashboard") {
 									$scope.leftMenu.environments.splice(k, 1);
 								}
 							}
-							if ($cookies.getObject('myEnv').code.replace(/\"/g, '') === 'DASHBOARD') {
+							if ($cookies.getObject('myEnv').code.replace(/\"/g, '').toLowerCase() === 'dashboard') {
 								$cookies.putObject('myEnv', $scope.leftMenu.environments[0]);
 							}
 						}
@@ -229,16 +229,16 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		$scope.switchEnvironment = function (envRecord) {
 			if (envRecord) {
-				$scope.currentSelectedEnvironment = envRecord.code;
+				$scope.currentSelectedEnvironment = envRecord.code.toLowerCase();
 			}
-			if (!$cookies.getObject('myEnv') || $cookies.getObject('myEnv').code !== envRecord.code) {
+			if (!$cookies.getObject('myEnv') || $cookies.getObject('myEnv').code.toLowerCase() !== envRecord.code.toLowerCase()) {
 				$cookies.putObject('myEnv', envRecord);
 
 				if ($scope.pillar && $scope.pillar.toLowerCase() === 'operate') {
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "get",
 						"routeName": "/dashboard/permissions/get",
-						"params": {"envCode": envRecord.code}
+						"params": {"envCode": envRecord.code.toLowerCase()}
 					}, function (error, response) {
 						if (error) {
 							$scope.displayAlert('danger', error.code, true, 'dashboard', error.message);
@@ -469,7 +469,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
 
 							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
-								if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'DASHBOARD') {
+								if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'dashboard') {
 									if ($scope.navigation[i].env === $scope.currentSelectedEnvironment) {
 										$scope.displayAlert('danger', 'You do not have permissions to access this section');
 										$timeout(function () {
@@ -613,7 +613,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				var strNav = $scope.appNavigation[i].tplPath.split("/");
 				if ($localStorage.environments && Array.isArray($localStorage.environments) && $localStorage.environments.length > 0) {
 					for (var e = 0; e < $localStorage.environments.length; e++) {
-						if (strNav[1].toUpperCase() === $localStorage.environments[e].code.toUpperCase()) {
+						if (strNav[1].toLowerCase() === $localStorage.environments[e].code.toLowerCase()) {
 
 							if (!$scope.navigation[strNav[1]]) {
 								$scope.navigation[strNav[1]] = [];
@@ -656,7 +656,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 
 		if (!$scope.currentSelectedEnvironment) {
 			if ($cookies.getObject("myEnv")) {
-				$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code;
+				$scope.currentSelectedEnvironment = $cookies.getObject("myEnv").code.toLowerCase();
 			}
 		}
 

@@ -1,0 +1,30 @@
+<div ng-controller="contentBuilderCtrl">
+    <tabset>
+        <tab heading="Active">
+            <section ng-controller="contentBuilderActiveCtrl">
+                <div ng-include="'modules/dashboard/contentBuilder/directives/view.tmpl'"></div>
+                <span ng-if="access.addService">
+                    <a href="#/content-builder/add" class="btn btn-primary">{{translation.addNewSchema[LANG]}}</a><br/><br/>
+                </span>
+                <nglist></nglist>
+            </section>
+        </tab>
+        <tab heading="Revisions" ng-if="access.servicesRevisions">
+            <section>
+                <div class="entryBoxes">
+                    <div ng-repeat="(serviceName, versionsRecords) in revisions track by serviceName" class="entryBox">
+                        <div class="header">
+                            {{serviceName}}
+                        </div>
+                        <div class="body" ng-controller="contentBuilderRevisionsCtrl">
+                            <div ng-include="'modules/dashboard/contentBuilder/directives/view.tmpl'"></div>
+                            <div ng-init="assingRevisionsToGrid(versionsRecords);">
+                                <nglist></nglist>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </tab>
+    </tabset>
+</div>

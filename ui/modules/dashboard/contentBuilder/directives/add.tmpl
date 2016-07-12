@@ -1,0 +1,17 @@
+<section ng-controller="contentBuilderCtrl">
+    <form novalidate class="css-form ng-pristine ng-valid ng-valid-required" id="addServiceSchema" name="serviceSchemaForm" ng-submit="serviceSchemaForm.$valid && saveService()">
+        <div class="modal-header">
+            <h3 class="modal-title">{{translation.createNewServiceSchema[LANG]}}</h3>
+        </div>
+        <div class="modal-body">
+            <div ng-include="'modules/dashboard/contentBuilder/directives/add-s1.tmpl'"></div>
+            <div ng-include="'modules/dashboard/contentBuilder/directives/add-s2.tmpl'"></div>
+            <div ng-include="'modules/dashboard/contentBuilder/directives/add-s3.tmpl'"></div>
+            <div ng-include="'modules/dashboard/contentBuilder/directives/add-s4.tmpl'"></div>
+        </div>
+        <div class="modal-footer">
+            <input ng-show="generateSchema" type="submit" class="btn btn-sm btn-primary" value="{{translation.generateServiceSchema[LANG]}}"/>
+            <a href="" ng-confirm-click="{{translation.ngConfirmClickCancel[LANG]}}" ng-click="purgeSchema()" class="btn btn-danger">{{translation.cancel[LANG]}}</a>
+        </div>
+    </form>
+</section>
