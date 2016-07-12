@@ -506,7 +506,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
         });
     };
 
-    injectFiles.injectCss("modules/DASHBOARD/gitAccounts/gitAccounts.css");
+    injectFiles.injectCss("modules/dashboard/gitAccounts/gitAccounts.css");
     if ($scope.access.listAccounts) {
         $scope.listAccounts();
     }

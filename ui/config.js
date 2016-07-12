@@ -14,37 +14,37 @@ var apiConfiguration = {
 
 var modules = {
 	"develop":{
-		"DASHBOARD":{
-			services: 'modules/DASHBOARD/services/install.js',
-			contentBuilder: 'modules/DASHBOARD/contentBuilder/install.js',
-			staticContent: 'modules/DASHBOARD/staticContent/install.js',
-			githubApp: 'modules/DASHBOARD/gitAccounts/install.js'
+		"dashboard":{
+			services: 'modules/dashboard/services/install.js',
+			contentBuilder: 'modules/dashboard/contentBuilder/install.js',
+			staticContent: 'modules/dashboard/staticContent/install.js',
+			githubApp: 'modules/dashboard/gitAccounts/install.js'
 		}
 	},
 	"manage":{
-		"DASHBOARD":{
-			productization: 'modules/DASHBOARD/productization/install.js',
-			multitenancy: 'modules/DASHBOARD/multitenancy/install.js',
-			members: 'modules/DASHBOARD/members/install.js',
-			settings: 'modules/DASHBOARD/settings/install.js'
+		"dashboard":{
+			productization: 'modules/dashboard/productization/install.js',
+			multitenancy: 'modules/dashboard/multitenancy/install.js',
+			members: 'modules/dashboard/members/install.js',
+			settings: 'modules/dashboard/settings/install.js'
 		}
 	},
 	"deploy":{
-		"DASHBOARD": {
-			environments: 'modules/DASHBOARD/environments/install.js'
+		"dashboard": {
+			environments: 'modules/dashboard/environments/install.js'
 		}
 	},
 	"operate": {
-		"DEV":{
-			contentManagement: 'modules/DEV/contentManagement/install.js'
+		"dev":{
+			contentManagement: 'modules/dev/contentManagement/install.js'
 		},
-		"STG":{
-			contentManagement: 'modules/STG/contentManagement/install.js'
+		"stg":{
+			contentManagement: 'modules/stg/contentManagement/install.js'
 		}
 	},
 	"common": {
-		"DASHBOARD": {
-			myAccount: 'modules/DASHBOARD/myAccount/install.js'
+		"dashboard": {
+			myAccount: 'modules/dashboard/myAccount/install.js'
 		}
 	}
 };

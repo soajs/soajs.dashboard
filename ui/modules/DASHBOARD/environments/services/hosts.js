@@ -896,7 +896,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
                 };
 
                 $scope.addNginx = function () {
-                    if (env !== 'DASHBOARD') {
+                    if (env !== 'dashboard') {
                         currentScope.services.unshift({
                             UIGroup: 'Web Servers',
                             name: 'Nginx',

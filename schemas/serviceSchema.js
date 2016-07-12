@@ -1,4 +1,167 @@
 "use strict";
+var oneApiRoute = {
+	"^\/[a-zA-Z0-9_\.\-]+$": {
+		"type": "object",
+		"properties": {
+			"method": {
+				"type": "string",
+				"required": false,
+				"enum": ["GET", "POST", "PUT", "DELETE", "DEL"]
+			},
+			"mw": {
+				"type": "string",
+				"required": false,
+				"pattern": "^/[^/]+(/[^/]+)*$"
+			},
+			"imfv": {
+				"required": false,
+				"type": "object",
+				"properties": {
+					"commonFields": {
+						"type": "array",
+						"required": false,
+						"items": {
+							"type": "string"
+						},
+						"uniqueItems": true
+					},
+					"custom": {
+						"oneOf": [
+							{
+								"type": "string",
+								"required": false,
+								"pattern": "^/[^/]+(/[^/]+)*$"
+							},
+							{
+								"type": "object",
+								"required": false,
+								"properties": {
+									"required": {"type": "boolean", "required": true},
+									"source": {
+										"type": "array",
+										"minItems": 1,
+										"items": {"type": "string"},
+										"required": true
+									},
+									"validation": {
+										"oneOf":[
+											{
+												"type": "object",
+												"required": true,
+												"additionalProperties": true
+											},
+											{
+												"type": "string",
+												"required": true
+											}
+										]
+									}
+								}
+							}
+						]
+					}
+				}
+			},
+			"_apiInfo": {
+				"requried": true,
+				"type": "object",
+				"properties": {
+					"l": {"type": "string", "requried": true},
+					"group": {"type": "string", "requried": true},
+					"groupMain": {"type": "boolean"}
+				}
+			},
+			"commonFields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"required": {"type": "boolean", "required": true},
+					"source": {
+						"type": "array",
+						"minItems": 1,
+						"items": {"type": "string"},
+						"required": true
+					},
+					"validation": {
+						"oneOf":[
+							{
+								"type": "object",
+								"required": true,
+								"additionalProperties": true
+							},
+							{
+								"type": "string",
+								"required": true
+							}
+						]
+					}
+				}
+			}
+		}
+	}
+};
+
+var apiRoute = {
+	"oneOf":[
+		{
+			"type": "object",
+			"required": true,
+			"properties": {
+				"commonFields": {
+					"oneOf": [
+						{
+							"type": "string",
+							"required": true,
+							"pattern": "^/[^/]+(/[^/]+)*$"
+						},
+						{
+							"type": "object",
+							"additionalProperties": {
+								"type": "object",
+								"properties": {
+									"required": {"type": "boolean", "required": true},
+									"source": {
+										"type": "array",
+										"minItems": 1,
+										"items": {"type": "string"},
+										"required": true
+									},
+									"validation": {
+										"oneOf":[
+											{
+												"type": "object",
+												"required": true,
+												"additionalProperties": true
+											},
+											{
+												"type": "string",
+												"required": true
+											}
+										]
+									}
+								}
+							}
+						}
+					]
+				},
+				"patternProperties": {
+					"oneOf": [
+						oneApiRoute,
+						{
+							"type": "object",
+							"required": true,
+							"patternProperties": oneApiRoute
+						}
+					]
+				}
+			}
+		},
+		{
+			"type": "string",
+			"required": false
+		}
+	]
+};
 
 var config = {
 	"oneOf": [
@@ -55,158 +218,7 @@ var config = {
 						}
 					]
 				},
-				"schema": {
-					"oneOf":[
-						{
-							"type": "object",
-							"required": true,
-							"properties": {
-								"commonFields": {
-									"oneOf": [
-										{
-											"type": "string",
-											"required": true,
-											"pattern": "^/[^/]+(/[^/]+)*$"
-										},
-										{
-											"type": "object",
-											"additionalProperties": {
-												"type": "object",
-												"properties": {
-													"required": {"type": "boolean", "required": true},
-													"source": {
-														"type": "array",
-														"minItems": 1,
-														"items": {"type": "string"},
-														"required": true
-													},
-													"validation": {
-														"oneOf":[
-															{
-																"type": "object",
-																"required": true,
-																"additionalProperties": true
-															},
-															{
-																"type": "string",
-																"required": true
-															}
-														]
-													}
-												}
-											}
-										}
-									]
-								},
-								"patternProperties": {
-									"^\/[a-zA-Z0-9_\.\-]+$": {
-										"type": "object",
-										"properties": {
-											"method": {
-												"type": "string",
-												"required": false,
-												"enum": ["GET", "POST", "PUT", "DELETE", "DEL"]
-											},
-											"mw": {
-												"type": "string",
-												"required": false,
-												"pattern": "^/[^/]+(/[^/]+)*$"
-											},
-											"imfv": {
-												"required": false,
-												"type": "object",
-												"properties": {
-													"commonFields": {
-														"type": "array",
-														"required": false,
-														"items": {
-															"type": "string"
-														},
-														"uniqueItems": true
-													},
-													"custom": {
-														"oneOf": [
-															{
-																"type": "string",
-																"required": false,
-																"pattern": "^/[^/]+(/[^/]+)*$"
-															},
-															{
-																"type": "object",
-																"required": false,
-																"properties": {
-																	"required": {"type": "boolean", "required": true},
-																	"source": {
-																		"type": "array",
-																		"minItems": 1,
-																		"items": {"type": "string"},
-																		"required": true
-																	},
-																	"validation": {
-																		"oneOf":[
-																			{
-																				"type": "object",
-																				"required": true,
-																				"additionalProperties": true
-																			},
-																			{
-																				"type": "string",
-																				"required": true
-																			}
-																		]
-																	}
-																}
-															}
-														]
-													}
-												}
-											},
-											"_apiInfo": {
-												"requried": true,
-												"type": "object",
-												"properties": {
-													"l": {"type": "string", "requried": true},
-													"group": {"type": "string", "requried": true},
-													"groupMain": {"type": "boolean"}
-												}
-											},
-											"commonFields": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-											"additionalProperties": {
-												"type": "object",
-												"properties": {
-													"required": {"type": "boolean", "required": true},
-													"source": {
-														"type": "array",
-														"minItems": 1,
-														"items": {"type": "string"},
-														"required": true
-													},
-													"validation": {
-														"oneOf":[
-															{
-																"type": "object",
-																"required": true,
-																"additionalProperties": true
-															},
-															{
-																"type": "string",
-																"required": true
-															}
-														]
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						},
-						{
-							"type": "string",
-							"required": false
-						}
-					]
-				}
+				"schema": apiRoute
 			}
 		},
 		{

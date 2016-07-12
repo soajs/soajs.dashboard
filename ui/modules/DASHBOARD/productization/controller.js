@@ -340,7 +340,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 		$scope.listProducts();
 	}
 
-	injectFiles.injectCss("modules/DASHBOARD/productization/productization.css");
+	injectFiles.injectCss("modules/dashboard/productization/productization.css");
 }]);
 
 productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', function ($scope, $routeParams, ngDataApi, aclHelpers) {

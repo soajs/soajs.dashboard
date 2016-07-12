@@ -31,7 +31,7 @@ var settingsNav = [
 			'route': '/settings/tenant/get'
 		},
 		'url': '#/settings',
-		'tplPath': 'modules/DASHBOARD/settings/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/settings/directives/list.tmpl',
 		'icon': 'cogs',
 		'mainMenu': true,
 		'pillar': {
@@ -41,7 +41,7 @@ var settingsNav = [
 		},
 		'tracker': true,
 		'order': 5,
-		'scripts': ['modules/DASHBOARD/settings/config.js', 'modules/DASHBOARD/settings/controller.js'],
+		'scripts': ['modules/dashboard/settings/config.js', 'modules/dashboard/settings/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

@@ -202,7 +202,7 @@ var gitAccountsNav = [
             'route': '/gitAccounts/accounts/list'
         },
         'url': '#/git-accounts',
-        'tplPath': 'modules/DASHBOARD/gitAccounts/directives/list.tmpl',
+        'tplPath': 'modules/dashboard/gitAccounts/directives/list.tmpl',
         'icon': 'git',
         'pillar': {
             'name': 'development',
@@ -212,7 +212,7 @@ var gitAccountsNav = [
         'mainMenu': true,
         'tracker': true,
         'order': 4,
-        'scripts': ['modules/DASHBOARD/gitAccounts/config.js', 'modules/DASHBOARD/gitAccounts/controller.js'],
+        'scripts': ['modules/dashboard/gitAccounts/config.js', 'modules/dashboard/gitAccounts/controller.js'],
         'ancestor': [translation.home[LANG]]
     }
 ];

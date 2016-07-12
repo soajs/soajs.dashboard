@@ -412,7 +412,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		});
 	};
 
-	injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
+	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	//default operation
 	if ($routeParams.id) {
 		if ($scope.access.editEnvironment) {

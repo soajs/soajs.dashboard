@@ -120,7 +120,7 @@ var cmNav = [
 			'route': '/cb/list'
 		},
 		'url': '#/content-management',
-		'tplPath': 'modules/STG/contentManagement/directives/list.tmpl',
+		'tplPath': 'modules/stg/contentManagement/directives/list.tmpl',
 		'icon': 'newspaper',
 		'pillar': {
 			'name': 'operate',
@@ -131,7 +131,7 @@ var cmNav = [
 		'contentMenu': true,
 		'tracker': true,
 		'order': 100,
-		'scripts': ['modules/STG/contentManagement/config.js', 'modules/STG/contentManagement/controller.js', 'modules/STG/contentManagement/services/contentManagement.js'],
+		'scripts': ['modules/stg/contentManagement/config.js', 'modules/stg/contentManagement/controller.js', 'modules/stg/contentManagement/services/contentManagement.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

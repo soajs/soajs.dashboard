@@ -139,7 +139,7 @@ var staticContentNav = [
             'route': '/staticContent/list'
         },
         'url': '#/static-content',
-        'tplPath': 'modules/DASHBOARD/staticContent/directives/list.tmpl',
+        'tplPath': 'modules/dashboard/staticContent/directives/list.tmpl',
         'icon': 'files-empty',
         'pillar': {
             'name': 'development',
@@ -149,7 +149,7 @@ var staticContentNav = [
         'mainMenu': true,
         'tracker': true,
         'order': 3,
-        'scripts': ['modules/DASHBOARD/staticContent/config.js', 'modules/DASHBOARD/staticContent/controller.js'],
+        'scripts': ['modules/dashboard/staticContent/config.js', 'modules/dashboard/staticContent/controller.js'],
         'ancestor': [translation.home[LANG]]
     }
 ];

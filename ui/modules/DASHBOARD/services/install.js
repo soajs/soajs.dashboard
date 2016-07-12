@@ -350,7 +350,7 @@ var servicesNav = [
 			'route': '/services/list'
 		},
 		'url': '#/services',
-		'tplPath': 'modules/DASHBOARD/services/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/services/directives/list.tmpl',
 		'icon': 'cloud',
 		'pillar': {
 			'name': 'development',
@@ -360,7 +360,7 @@ var servicesNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'order': 1,
-		'scripts': ['modules/DASHBOARD/services/config.js', 'modules/DASHBOARD/services/controller.js'],
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -371,7 +371,7 @@ var servicesNav = [
 			'route': '/daemons/list'
 		},
 		'url': '#/daemons',
-		'tplPath': 'modules/DASHBOARD/services/directives/list-daemons.tmpl',
+		'tplPath': 'modules/dashboard/services/directives/list-daemons.tmpl',
 		'icon': 'evil2',
 		'pillar': {
 			'name': 'development',
@@ -381,7 +381,7 @@ var servicesNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'order': 2,
-		'scripts': ['modules/DASHBOARD/services/config.js', 'modules/DASHBOARD/services/controller.js'],
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

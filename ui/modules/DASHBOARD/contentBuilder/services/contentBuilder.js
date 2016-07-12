@@ -201,7 +201,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			else {
 				currentScope.envList = [];
 				response.forEach(function(oneEnvironment) {
-					if(oneEnvironment.code !== 'DASHBOARD'){
+					if(oneEnvironment.code !== 'dashboard'){
 						if(Object.keys(oneEnvironment.dbs.clusters).length > 0) {
 							currentScope.nextStep = true;
 						}

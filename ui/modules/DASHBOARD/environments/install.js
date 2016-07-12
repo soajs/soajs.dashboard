@@ -1381,7 +1381,7 @@ var environmentsNav = [
 		},
 		'label': translation.registries[LANG],
 		'url': '#/environments',
-		'tplPath': 'modules/DASHBOARD/environments/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list.tmpl',
 		'icon': 'earth',
 		'pillar':{
 			'name': 'deployment',
@@ -1390,7 +1390,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/environments/config.js','modules/DASHBOARD/environments/services/template.js', 'modules/DASHBOARD/environments/controller.js'],
+		'scripts': ['modules/dashboard/environments/config.js','modules/dashboard/environments/services/template.js', 'modules/dashboard/environments/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1401,7 +1401,7 @@ var environmentsNav = [
 		},
 		'label': translation.platformsAndCertificates[LANG],
 		'url': '#/environments-platforms',
-		'tplPath': 'modules/DASHBOARD/environments/directives/list-platforms.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list-platforms.tmpl',
 		'icon': 'download3',
 		'pillar': {
 			'name': 'deployment',
@@ -1410,7 +1410,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/platforms-ctrl.js', 'modules/DASHBOARD/environments/services/platforms.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/platforms-ctrl.js', 'modules/dashboard/environments/services/platforms.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1421,7 +1421,7 @@ var environmentsNav = [
 		},
 		'label': translation.clusters[LANG],
 		'url': '#/environments-clusters',
-		'tplPath': 'modules/DASHBOARD/environments/directives/list-clusters.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list-clusters.tmpl',
 		'icon': 'stack',
 		'pillar':{
 			'name': 'deployment',
@@ -1430,7 +1430,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/clusters-ctrl.js', 'modules/DASHBOARD/environments/services/clusters.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/clusters-ctrl.js', 'modules/dashboard/environments/services/clusters.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1441,7 +1441,7 @@ var environmentsNav = [
 		},
 		'label': translation.databases[LANG],
 		'url': '#/environments-dbs',
-		'tplPath': 'modules/DASHBOARD/environments/directives/list-databases.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list-databases.tmpl',
 		'icon': 'database',
 		'pillar':{
 			'name': 'deployment',
@@ -1450,7 +1450,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/dbs-ctrl.js', 'modules/DASHBOARD/environments/services/database.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/dbs-ctrl.js', 'modules/dashboard/environments/services/database.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1461,7 +1461,7 @@ var environmentsNav = [
 		},
 		'label': translation.hosts[LANG],
 		'url': '#/environments-hosts',
-		'tplPath': 'modules/DASHBOARD/environments/directives/list-hosts.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list-hosts.tmpl',
 		'icon': 'sphere',
 		'pillar':{
 			'name': 'deployment',
@@ -1470,7 +1470,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/hosts-ctrl.js', 'modules/DASHBOARD/environments/services/hosts.js', 'modules/DASHBOARD/environments/services/deploy.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hosts-ctrl.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -1481,14 +1481,14 @@ var environmentsNav = [
 			'service': 'dashboard',
 			'route': '/environment/update'
 		},
-		'tplPath': 'modules/DASHBOARD/environments/directives/edit.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/edit.tmpl',
 		'tracker': true,
 		'pillar':{
 			'name': 'deployment',
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
-		'scripts': ['modules/DASHBOARD/environments/config.js', 'modules/DASHBOARD/environments/controller.js', 'modules/DASHBOARD/environments/services/clusters.js', 'modules/DASHBOARD/environments/services/database.js', 'modules/DASHBOARD/environments/services/hosts.js', 'modules/DASHBOARD/environments/services/deploy.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/controller.js', 'modules/dashboard/environments/services/clusters.js', 'modules/dashboard/environments/services/database.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

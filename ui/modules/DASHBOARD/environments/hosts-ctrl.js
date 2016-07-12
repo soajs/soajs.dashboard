@@ -118,7 +118,7 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 	};
 
 	if ($scope.access.listHosts) {
-		injectFiles.injectCss('modules/DASHBOARD/environments/environments.css');
+		injectFiles.injectCss('modules/dashboard/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;
 		//list nginx container, hosts, and zombie containers in parallel
 		$scope.listNginxHosts($scope.envCode);

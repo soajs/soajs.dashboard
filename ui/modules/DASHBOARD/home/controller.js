@@ -6,7 +6,7 @@ dahsboardApp.controller('dahsboardCtrl', ['$scope','injectFiles', function($scop
 	//$scope.access = {};
 	//constructModulePermissions($scope, $scope.access, configDashbrd.permissions);
 
-	injectFiles.injectCss('modules/DASHBOARD/home/home.css');
+	injectFiles.injectCss('modules/dashboard/home/home.css');
 }]);
 
 dahsboardApp.controller('helpPageCtrl', ['$scope', function($scope) {

@@ -141,7 +141,7 @@ var productizationNav =[
 			'route':'/product/list'
 		},
 		'url': '#/productization',
-		'tplPath': 'modules/DASHBOARD/productization/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/productization/directives/list.tmpl',
 		'icon': 'list',
 		'pillar':{
 			'name': 'management',
@@ -151,14 +151,14 @@ var productizationNav =[
 		'mainMenu': true,
 		'tracker': true,
 		'order': 1,
-		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
+		'scripts': ['modules/dashboard/productization/config.js', 'modules/dashboard/productization/controller.js', 'modules/dashboard/productization/services/productization.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'product-acl',
 		'label': translation.editPackageACL[LANG],
 		'url': '#/productization/:pid/editAcl/:code',
-		'tplPath': 'modules/DASHBOARD/productization/directives/editAcl.tmpl',
+		'tplPath': 'modules/dashboard/productization/directives/editAcl.tmpl',
 		'tracker': true,
 		'checkPermission':{
 			'service':'dashboard',
@@ -169,7 +169,7 @@ var productizationNav =[
 			'label': translation.manage[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/DASHBOARD/productization/config.js', 'modules/DASHBOARD/productization/controller.js', 'modules/DASHBOARD/productization/services/productization.js'],
+		'scripts': ['modules/dashboard/productization/config.js', 'modules/dashboard/productization/controller.js', 'modules/dashboard/productization/services/productization.js'],
 		'ancestor': [translation.home[LANG], translation.productization[LANG]]
 	}
 ];

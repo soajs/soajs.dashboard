@@ -187,7 +187,7 @@ var membersNav = [
 			'route': '/admin/all'
 		},
 		'url': '#/tenants-members',
-		'tplPath': 'modules/DASHBOARD/members/directives/tenant.tmpl',
+		'tplPath': 'modules/dashboard/members/directives/tenant.tmpl',
 		'icon': 'users',
 		'mainMenu': true,
 		'pillar': {
@@ -197,7 +197,7 @@ var membersNav = [
 		},
 		'tracker': true,
 		'order': 3,
-		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
+		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/members.js', 'modules/dashboard/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -208,7 +208,7 @@ var membersNav = [
 			'route': '/admin/listUsers'
 		},
 		'url': '#/members',
-		'tplPath': 'modules/DASHBOARD/members/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/members/directives/list.tmpl',
 		'icon': 'users',
 		'mainMenu': true,
 		'pillar': {
@@ -218,14 +218,14 @@ var membersNav = [
 		},
 		'tracker': true,
 		'order': 4,
-		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/members.js', 'modules/DASHBOARD/members/services/groups.js'],
+		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/members.js', 'modules/dashboard/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'user-acl',
 		'label': translation.userACL[LANG],
 		'url': '#/members/:uId/editUserAcl',
-		'tplPath': 'modules/DASHBOARD/members/directives/editUserAcl.tmpl',
+		'tplPath': 'modules/dashboard/members/directives/editUserAcl.tmpl',
 		'tracker': true,
 		'checkPermission': {
 			'service': 'urac',
@@ -236,7 +236,7 @@ var membersNav = [
 			'label': translation.manage[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/DASHBOARD/members/config.js', 'modules/DASHBOARD/members/controller.js', 'modules/DASHBOARD/members/services/acl.js'],
+		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/acl.js'],
 		'ancestor': [translation.home[LANG], translation.member[LANG]]
 	}
 ];

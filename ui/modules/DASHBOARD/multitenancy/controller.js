@@ -1428,7 +1428,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 	}
 
-	injectFiles.injectCss("modules/DASHBOARD/multitenancy/multitenancy.css");
+	injectFiles.injectCss("modules/dashboard/multitenancy/multitenancy.css");
 }]);
 
 multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$routeParams', 'aclHelper', function ($scope, ngDataApi, $routeParams, aclHelper) {

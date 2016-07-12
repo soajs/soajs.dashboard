@@ -20,7 +20,7 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
         });
     };
 
-    injectFiles.injectCss("modules/DASHBOARD/staticContent/staticContent.css");
+    injectFiles.injectCss("modules/dashboard/staticContent/staticContent.css");
     if ($scope.access.list) {
         $scope.listSources();
     }

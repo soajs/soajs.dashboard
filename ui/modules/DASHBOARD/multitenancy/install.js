@@ -194,7 +194,7 @@ var multitenancyNav = [
 			'route': '/product/list'
 		},
 		'url': '#/multi-tenancy',
-		'tplPath': 'modules/DASHBOARD/multitenancy/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/multitenancy/directives/list.tmpl',
 		'icon': 'tree',
 		'pillar': {
 			'name': 'management',
@@ -204,14 +204,14 @@ var multitenancyNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'order': 2,
-		'scripts': ['modules/DASHBOARD/multitenancy/config.js', 'modules/DASHBOARD/multitenancy/controller.js', 'modules/DASHBOARD/multitenancy/services/multitenancy.js'],
+		'scripts': ['modules/dashboard/multitenancy/config.js', 'modules/dashboard/multitenancy/controller.js', 'modules/dashboard/multitenancy/services/multitenancy.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'tenant-app-acl',
 		'label': translation.editAppACL[LANG],
 		'url': '#/multi-tenancy/:tId/editAcl/:appId',
-		'tplPath': 'modules/DASHBOARD/multitenancy/directives/editAcl.tmpl',
+		'tplPath': 'modules/dashboard/multitenancy/directives/editAcl.tmpl',
 		'tracker': true,
 		'checkPermission':{
 			'service':'dashboard',
@@ -222,7 +222,7 @@ var multitenancyNav = [
 			'label': translation.manage[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/DASHBOARD/multitenancy/config.js', 'modules/DASHBOARD/multitenancy/controller.js', 'modules/DASHBOARD/multitenancy/services/multitenancy.js'],
+		'scripts': ['modules/dashboard/multitenancy/config.js', 'modules/dashboard/multitenancy/controller.js', 'modules/dashboard/multitenancy/services/multitenancy.js'],
 		'ancestor': [translation.home[LANG], translation.multiTenancy[LANG]]
 	}
 ];

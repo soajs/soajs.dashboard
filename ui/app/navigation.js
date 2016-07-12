@@ -11,8 +11,8 @@ var navigation = [
 	// 	'id': 'home',
 	// 	'label': translation.home[LANG],
 	// 	'url': '#/dashboard',
-	// 	'tplPath': 'modules/DASHBOARD/home/directives/dashboard.tmpl',
-	// 	'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
+	// 	'tplPath': 'modules/dashboard/home/directives/dashboard.tmpl',
+	// 	'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
 	// 	'icon': 'home',
 	// 	//'userMenu': true,
 	// 	//'mainMenu': true,
@@ -22,8 +22,8 @@ var navigation = [
 		'id': 'home',
 		'label': translation.home[LANG],
 		'url': '#/login',
-		'tplPath': 'modules/DASHBOARD/myAccount/directives/login.tmpl',
-		'scripts': ['modules/DASHBOARD/myAccount/config.js', 'modules/DASHBOARD/myAccount/controller.js'],
+		'tplPath': 'modules/dashboard/myAccount/directives/login.tmpl',
+		'scripts': ['modules/dashboard/myAccount/config.js', 'modules/dashboard/myAccount/controller.js'],
 		'footerMenu': true
 	},
 	//{
@@ -41,8 +41,8 @@ var navigation = [
 		'id': 'help2',
 		'label': translation.help[LANG],
 		'url': '#/help',
-		'scripts': ['modules/DASHBOARD/home/config.js', 'modules/DASHBOARD/home/controller.js'],
-		'tplPath': 'modules/DASHBOARD/home/directives/help.tmpl',
+		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
+		'tplPath': 'modules/dashboard/home/directives/help.tmpl',
 		'footerMenu': true
 	}
 ];

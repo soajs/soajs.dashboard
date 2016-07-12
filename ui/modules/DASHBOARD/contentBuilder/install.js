@@ -869,7 +869,7 @@ var cbNav = [
 			'route': '/cb/get'
 		},
 		'url': '#/content-builder',
-		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/list.tmpl',
+		'tplPath': 'modules/dashboard/contentBuilder/directives/list.tmpl',
 		'icon': 'hammer',
 		'pillar': {
 			'name': 'development',
@@ -879,14 +879,14 @@ var cbNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'order': 4,
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/dashboard/contentBuilder/config.js', 'modules/dashboard/contentBuilder/controller.js', 'modules/dashboard/contentBuilder/services/contentBuilder.js', 'modules/dashboard/contentBuilder/services/input.js', 'modules/dashboard/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'content-builder-add',
 		'label': translation.addNewContentBuilder[LANG],
 		'url': '#/content-builder/add',
-		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/add.tmpl',
+		'tplPath': 'modules/dashboard/contentBuilder/directives/add.tmpl',
 		'tracker': true,
 		'checkPermission': {
 			'service': 'dashboard',
@@ -897,14 +897,14 @@ var cbNav = [
 			'label': translation.develop[LANG],
 			'position': 1
 		},
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/dashboard/contentBuilder/config.js', 'modules/dashboard/contentBuilder/controller.js', 'modules/dashboard/contentBuilder/services/contentBuilder.js', 'modules/dashboard/contentBuilder/services/input.js', 'modules/dashboard/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG], translation.contentBuilder[LANG]]
 	},
 	{
 		'id': 'content-builder-update',
 		'label': translation.updateContentBuilder[LANG],
 		'url': '#/content-builder/edit/:id',
-		'tplPath': 'modules/DASHBOARD/contentBuilder/directives/edit.tmpl',
+		'tplPath': 'modules/dashboard/contentBuilder/directives/edit.tmpl',
 		'tracker': true,
 		'checkPermission': {
 			'service': 'dashboard',
@@ -915,7 +915,7 @@ var cbNav = [
 			'label': translation.develop[LANG],
 			'position': 1
 		},
-		'scripts': ['modules/DASHBOARD/contentBuilder/config.js', 'modules/DASHBOARD/contentBuilder/controller.js', 'modules/DASHBOARD/contentBuilder/services/contentBuilder.js', 'modules/DASHBOARD/contentBuilder/services/input.js', 'modules/DASHBOARD/contentBuilder/services/api.js'],
+		'scripts': ['modules/dashboard/contentBuilder/config.js', 'modules/dashboard/contentBuilder/controller.js', 'modules/dashboard/contentBuilder/services/contentBuilder.js', 'modules/dashboard/contentBuilder/services/input.js', 'modules/dashboard/contentBuilder/services/api.js'],
 		'ancestor': [translation.home[LANG], translation.contentBuilder[LANG]]
 	}
 ];

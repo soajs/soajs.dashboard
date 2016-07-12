@@ -768,6 +768,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	};
 
 	$scope.getTenant(true);
-	injectFiles.injectCss("modules/DASHBOARD/settings/settings.css");
+	injectFiles.injectCss("modules/dashboard/settings/settings.css");
 
 }]);

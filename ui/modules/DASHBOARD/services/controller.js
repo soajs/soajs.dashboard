@@ -105,7 +105,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	};
 
 	if ($scope.access.listServices) {
-		injectFiles.injectCss("modules/DASHBOARD/services/services.css");
+		injectFiles.injectCss("modules/dashboard/services/services.css");
 		$scope.listServices();
 	}
 
@@ -705,7 +705,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 	if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 		$scope.listDaemons(function () {
 			$scope.listDaemonGroupConfig();
-			injectFiles.injectCss("modules/DASHBOARD/services/daemons.css");
+			injectFiles.injectCss("modules/dashboard/services/daemons.css");
 			if ($scope.access.tenants.list && $scope.access.environments.list) {
 				$scope.getTenants(function () {
 					$scope.getEnvironments();
