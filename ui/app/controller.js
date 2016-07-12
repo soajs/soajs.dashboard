@@ -210,7 +210,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 									$scope.leftMenu.environments.splice(k, 1);
 								}
 							}
-							if ($cookies.getObject('myEnv').code.toLowerCase() === 'dashboard') {
+							if ($cookies.getObject('myEnv').code.replace(/\"/g, '').toLowerCase() === 'dashboard') {
 								$cookies.putObject('myEnv', $scope.leftMenu.environments[0]);
 							}
 						}
