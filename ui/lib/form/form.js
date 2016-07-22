@@ -50,6 +50,7 @@ function buildForm(context, modal, configuration, cb) {
 	context.form = {
 		alerts: [],
 		label: configuration.label,
+		id: configuration.name,
 		msgs: configuration.msgs,
 		action: configuration.action,
 		entries: configuration.entries,
