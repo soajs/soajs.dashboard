@@ -564,7 +564,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
             			label: "Reloaded Registry of " + oneHost.name,
             			actions: [
             				{
-            					'type': 'submit',
+            					'type': 'reset',
             					'label': translation.ok[LANG],
             					'btn': 'primary',
             					'action': function (formData) {
@@ -614,7 +614,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         			label: "Reloaded Provisioned Information of " + oneHost.name,
         			actions: [
         				{
-        					'type': 'submit',
+        					'type': 'reset',
         					'label': translation.ok[LANG],
         					'btn': 'primary',
         					'action': function (formData) {
@@ -663,7 +663,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
         			label: "Loaded Daemon Statistics for " + oneHost.name,
         			actions: [
         				{
-        					'type': 'submit',
+        					'type': 'reset',
         					'label': translation.ok[LANG],
         					'btn': 'primary',
         					'action': function (formData) {
