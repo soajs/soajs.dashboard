@@ -22,6 +22,7 @@ var groupConfigCollectionName = 'daemon_grpconf';
 var environmentCollectionName = 'environment';
 var gridfsCollectionName = 'fs.files';
 var tenantCollectionName = 'tenants';
+var productsCollectionName = 'products';
 var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
 var productsCollectionName = 'products';
@@ -38,23 +39,27 @@ function checkForMongo(req) {
 
 		//services
 		mongo.ensureIndex(servicesCollectionName, {port: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(servicesCollectionName, {'src.repo': 1, 'src.owner': 1}, errorLogger);
+		mongo.ensureIndex(servicesCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.ensureIndex(servicesCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
 		mongo.ensureIndex(servicesCollectionName, {gcId: 1}, errorLogger);
+		mongo.ensureIndex(servicesCollectionName, {name: 1, gcId: 1}, errorLogger);
+		mongo.ensureIndex(servicesCollectionName, {port: 1, gcId: 1}, errorLogger);
 
 		//daemons
 		mongo.ensureIndex(daemonsCollectionName, {name: 1}, {unique: true}, errorLogger);
 		mongo.ensureIndex(daemonsCollectionName, {port: 1}, {unique: true}, errorLogger);
 		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(daemonsCollectionName, {'src.repo': 1, 'src.owner': 1}, errorLogger);
+		mongo.ensureIndex(daemonsCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
 
 		//staticContent
 		mongo.ensureIndex(staticContentCollectionName, {name: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(staticContentCollectionName, {'src.repo': 1, 'src.owner': 1}, errorLogger);
-		mongo.ensureIndex(staticContentCollectionName, {name: 1, 'src.repo': 1, 'src.owner': 1}, errorLogger);
+		mongo.ensureIndex(staticContentCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
+		mongo.ensureIndex(staticContentCollectionName, {name: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
 
 		//daemon_grpconf
 		mongo.ensureIndex(groupConfigCollectionName, {daemon: 1}, errorLogger);
-		mongo.ensureIndex(groupConfigCollectionName, {daemonConfigGroup: 1, daemon: 1}, {unique: true}, errorLogger);
+		mongo.ensureIndex(groupConfigCollectionName, {name: 1}, errorLogger);
 
 		//environment
 		mongo.ensureIndex(environmentCollectionName, {locked: 1}, errorLogger);
@@ -66,28 +71,37 @@ function checkForMongo(req) {
 		mongo.ensureIndex(gridfsCollectionName, {'metadata.env': 1}, errorLogger);
 
 		//tenants
+		mongo.ensureIndex(tenantCollectionName, {_id: 1, locked: 1}, errorLogger);
 		mongo.ensureIndex(tenantCollectionName, {name: 1}, errorLogger);
 		mongo.ensureIndex(tenantCollectionName, {type: 1}, errorLogger);
 		mongo.ensureIndex(tenantCollectionName, {'application.keys.extKeys.env': 1}, errorLogger);
 
+		//products
+		mongo.ensureIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
+
 		//dashboard_extKeys
-		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1}, errorLogger);
+		mongo.ensureIndex(dashExtKeysCollectionName, {env: 1}, errorLogger);
 		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, env: 1}, errorLogger);
+		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1, env: 1}, errorLogger);
 
 		//hosts
+		mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
 		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1}, errorLogger);
+		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
 		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
+		mongo.ensureIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
 
 		//oauth_urac
-		mongo.ensureIndex(oauthUracCollectionName, {tId: 1}, errorLogger);
+		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
+		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
 
 		//git_accounts
+		mongo.ensureIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
 		mongo.ensureIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
 		mongo.ensureIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
 
 		//docker
-		mongo.ensureIndex(dockerCollectionName, {env: 1}, errorLogger);
-		mongo.ensureIndex(dockerCollectionName, {env: 1, type: 1}, errorLogger);
+		mongo.ensureIndex(dockerCollectionName, {cid: 1}, errorLogger);
 		mongo.ensureIndex(dockerCollectionName, {env: 1, hostname: 1}, errorLogger);
 		mongo.ensureIndex(dockerCollectionName, {env: 1, cid: 1}, errorLogger);
 		mongo.ensureIndex(dockerCollectionName, {env: 1, running: 1}, errorLogger);
@@ -95,6 +109,7 @@ function checkForMongo(req) {
 
 		//gc
 		mongo.ensureIndex(gcCollectionName, {name: 1}, errorLogger);
+		mongo.ensureIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
 	}
 
 	function errorLogger(error) {
