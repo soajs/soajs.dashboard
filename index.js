@@ -83,7 +83,7 @@ function checkForMongo(req) {
 
 		//git_accounts
 		mongo.ensureIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
-		mongo.ensureIndex(oauthUracCollectionName, {owner: 1, provider: 1}, errorLogger);
+		mongo.ensureIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
 
 		//docker
 		mongo.ensureIndex(dockerCollectionName, {env: 1}, errorLogger);
