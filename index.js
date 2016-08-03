@@ -86,7 +86,6 @@ function checkForMongo(req) {
 
 		//hosts
 		mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
-		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1}, errorLogger);
 		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
 		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
 		mongo.ensureIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
