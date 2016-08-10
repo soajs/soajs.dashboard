@@ -248,7 +248,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			});
 		};
 
-		if ((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
+		if ((typeof(userCookie) !== "undefined") && (typeof(userCookie) === "object")) {
 			var uname = userCookie.username;
 			$scope.getProfile(uname);
 		}
