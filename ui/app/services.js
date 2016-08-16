@@ -87,8 +87,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		
 		if (opts.proxy) {
 			if (!config.params.__env || !config.params.__envauth) {
-				var envauth = $cookies.get('soajs_envauth').replace(/\"/g, '');
-				var env = $cookies.getObject('myEnv').code.replace(/\"/g, '');
+				var envauth = $cookies.getObject('soajs_envauth');
+				var env = $cookies.getObject('myEnv').code;
 				config.params.__envauth = envauth[env.toLowerCase()];
 				config.params.__env = env.toUpperCase();
 			}
@@ -140,10 +140,24 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		opts.api = 'sendData';
 		executeRequest(scope, opts, cb);
 	}
+
+	function putData(scope, opts, cb) {
+		opts.method = 'PUT';
+		opts.api = 'putData';
+		executeRequest(scope, opts, cb);
+	}
+
+	function delData(scope, opts, cb) {
+		opts.method = 'DELETE';
+		opts.api = 'delData';
+		executeRequest(scope, opts, cb);
+	}
 	
 	return {
 		'get': getData,
-		'send': sendData
+		'send': sendData,
+		'put': putData,
+		'del': delData
 	};
 }]);
 
