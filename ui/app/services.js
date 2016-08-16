@@ -140,10 +140,24 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		opts.api = 'sendData';
 		executeRequest(scope, opts, cb);
 	}
+
+	function putData(scope, opts, cb) {
+		opts.method = 'PUT';
+		opts.api = 'putData';
+		executeRequest(scope, opts, cb);
+	}
+
+	function delData(scope, opts, cb) {
+		opts.method = 'DELETE';
+		opts.api = 'delData';
+		executeRequest(scope, opts, cb);
+	}
 	
 	return {
 		'get': getData,
-		'send': sendData
+		'send': sendData,
+		'put': putData,
+		'del': delData
 	};
 }]);
 
