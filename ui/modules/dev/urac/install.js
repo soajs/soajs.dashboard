@@ -1,4 +1,5 @@
 "use strict";
+var uracModuleDev = 'modules/dev/urac';
 
 var memTranslation = {
 	"uracManagement": {
@@ -20,7 +21,7 @@ var uracNav = [
 		'id': 'urac-management',
 		'label': translation.uracManagement[LANG],
 		'url': '#/urac-management',
-		'tplPath': 'modules/DEV/urac/directives/listTenants.tmpl',
+		'tplPath': uracModuleDev + '/directives/listTenants.tmpl',
 		'icon': 'users',
 		'pillar': {
 			'name': 'operate',
@@ -31,14 +32,14 @@ var uracNav = [
 		'contentMenu': true,
 		'tracker': true,
 		'order': 1,
-		'scripts': ['modules/DEV/urac/config.js', 'modules/DEV/urac/controller.js'],
+		'scripts': [uracModuleDev + '/config.js', uracModuleDev + '/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'urac-tenant-management',
 		'label': translation.uracManagement[LANG],
 		'url': '#/urac-management/members',
-		'tplPath': 'modules/DEV/urac/directives/members.tmpl',
+		'tplPath': uracModuleDev + '/directives/members.tmpl',
 		'pillar': {
 			'name': 'operate',
 			'label': translation.operate[LANG],
@@ -46,10 +47,10 @@ var uracNav = [
 		},
 		'tracker': true,
 		'scripts': [
-			'modules/DEV/urac/config.js', 
-			'modules/DEV/urac/controller.js',
-			'modules/DEV/urac/services/members.js',
-			'modules/DEV/urac/services/groups.js'
+			uracModuleDev + '/config.js',
+			uracModuleDev + '/controller.js',
+			uracModuleDev + '/services/members.js',
+			uracModuleDev + '/services/groups.js'
 		],
 		'ancestor': [translation.home[LANG]]
 	}
