@@ -814,6 +814,10 @@ var translation = {
 	"manage": {
 		"ENG": "Manage",
 		"FRA": "Manage"
+	},
+	"back2List": {
+		"ENG": "Back to List",
+		"FRA": "Back to List"
 	}
 
 };

@@ -212,7 +212,10 @@ multiTenantService.service('aclHelper', function () {
 			var newList;
 			service = services[i];
 			envCodes.forEach(function (oneEnv) {
-				var parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
+				var parentEnvAcl = {};
+				if (parentAcl[oneEnv.code.toLowerCase()]) {
+					parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
+				}
 				if (currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name]) {
 					if (parentEnvAcl && (parentEnvAcl.apisPermission === 'restricted')) {
 						newList = [];

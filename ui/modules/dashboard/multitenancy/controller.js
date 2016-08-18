@@ -1140,7 +1140,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'expDate': formData.expDate,
 							'device': deviceObj,
 							'geo': geoObj,
-							'env': formData.environment
+							'env': formData.environment.toUpperCase()
 						};
 
 						getSendDataFromServer($scope, ngDataApi, {

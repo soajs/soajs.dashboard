@@ -50,6 +50,7 @@ function buildForm(context, modal, configuration, cb) {
 	context.form = {
 		alerts: [],
 		label: configuration.label,
+		id: configuration.name,
 		msgs: configuration.msgs,
 		action: configuration.action,
 		entries: configuration.entries,
@@ -95,14 +96,16 @@ function buildForm(context, modal, configuration, cb) {
 			if (fieldEntry.name === inputName) {
 				if (Array.isArray(fieldEntry.value)) {
 					fieldEntry.value.forEach(function (oneValue) {
-						oneValue.selected = false;
+						//oneValue.selected = false;
 						if (Array.isArray(configuration.data[inputName])) {
 							if (configuration.data[inputName].indexOf(oneValue.v) !== -1) {
 								oneValue.selected = true;
 							}
 						}
-						else if (oneValue.v === configuration.data[inputName]) {
-							oneValue.selected = true;
+						else {
+							if (oneValue.v.toString() === configuration.data[inputName].toString()) {
+								oneValue.selected = true;
+							}
 						}
 					});
 				}
@@ -118,7 +121,7 @@ function buildForm(context, modal, configuration, cb) {
 	}
 
 	function updateFormData(oneEntry, reload) {
-		if(!reload){
+		if (!reload) {
 			if (oneEntry.value) {
 				if (Array.isArray(oneEntry.value)) {
 					context.form.formData[oneEntry.name] = [];
@@ -195,7 +198,6 @@ function buildForm(context, modal, configuration, cb) {
 				else {
 					instance.set();
 				}
-
 				instance.editor.getSession().on('change', function () {
 					try {
 						instance.get();
@@ -230,7 +232,7 @@ function buildForm(context, modal, configuration, cb) {
 		context.form.refData = configuration.data;
 	}
 
-	context.form.refresh = function(reload){
+	context.form.refresh = function (reload) {
 		for (var i = 0; i < context.form.entries.length; i++) {
 			if (context.form.entries[i].type === 'group') {
 				context.form.entries[i].icon = (context.form.entries[i].collapsed) ? "plus" : "minus";
@@ -253,14 +255,14 @@ function buildForm(context, modal, configuration, cb) {
 
 	context.form.refresh(false);
 
-	function assignListener(elementName){
-		context.$watchCollection(elementName, function(newCol, oldCol){
-			if(newCol && oldCol && newCol.length !== oldCol.length){
+	function assignListener(elementName) {
+		context.$watchCollection(elementName, function (newCol, oldCol) {
+			if (newCol && oldCol && newCol.length !== oldCol.length) {
 				context.form.refresh(true);
 			}
 
-			if(oldCol && oldCol.length > 0){
-				for(var i =0; i < oldCol.length; i++) {
+			if (oldCol && oldCol.length > 0) {
+				for (var i = 0; i < oldCol.length; i++) {
 					if (oldCol[i].type === 'group') {
 						assignListener(elementName + '[' + i + "].entries");
 					}
@@ -268,6 +270,7 @@ function buildForm(context, modal, configuration, cb) {
 			}
 		});
 	}
+
 	assignListener('form.entries');
 
 	context.form.do = function (functionObj) {
@@ -345,8 +348,12 @@ function buildForm(context, modal, configuration, cb) {
 					return false;
 				}
 			}
-			if (data[oneEntry.name] === 'false') data[oneEntry.name] = false;
-			if (data[oneEntry.name] === 'true') data[oneEntry.name] = true;
+			if (data[oneEntry.name] === 'false') {
+				data[oneEntry.name] = false;
+			}
+			if (data[oneEntry.name] === 'true') {
+				data[oneEntry.name] = true;
+			}
 			if (oneEntry.required) {
 				if (data[oneEntry.name] === null || typeof(data[oneEntry.name]) === 'undefined' || data[oneEntry.name] === 'undefined' || data[oneEntry.name] === '') {
 					return false;
@@ -363,11 +370,11 @@ function buildForm(context, modal, configuration, cb) {
 	};
 
 	context.form.toggleSelectValues = function (fieldName, value) {
-		for(var i =0; i < context.form.entries.length; i ++){
-			if(context.form.entries[i].name === fieldName){
-				for(var j=0; j < context.form.entries[i].value.length; j++){
-					if(context.form.entries[i].value[j].v === value){
-						if(context.form.entries[i].value[j].selected) {
+		for (var i = 0; i < context.form.entries.length; i++) {
+			if (context.form.entries[i].name === fieldName) {
+				for (var j = 0; j < context.form.entries[i].value.length; j++) {
+					if (context.form.entries[i].value[j].v === value) {
+						if (context.form.entries[i].value[j].selected) {
 							delete context.form.entries[i].value[j].selected;
 						}
 						else {
