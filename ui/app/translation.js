@@ -22,11 +22,11 @@ var translation = {
 		"FRA": "Recharger la liste"
 	},
 	"getPrevious": {
-		"ENG": "Get Previous",
+		"ENG": "Previous",
 		"FRA": "Précédent"
 	},
 	"getNext": {
-		"ENG": "Get Next",
+		"ENG": "Next",
 		"FRA": "Suivant"
 	},
 	"username": {
@@ -253,7 +253,7 @@ var translation = {
 		"ENG": "Application Added Successfully",
 		"FRA": "Application Added Successfully"
 	},
-
+	
 	"applicationKeyAddedSuccessfully": {
 		"ENG": "Application Key Added Successfully",
 		"FRA": "Application Key Added Successfully"
@@ -818,8 +818,12 @@ var translation = {
 	"back2List": {
 		"ENG": "Back to List",
 		"FRA": "Back to List"
+	},
+	"preview": {
+		"ENG": "Preview",
+		"FRA": "Preview"
 	}
-
+	
 };
 
 var errorCodes = {
@@ -912,12 +916,12 @@ var errorCodes = {
 			"ENG": "Group code already exists. Choose another",
 			"FRA": "Le code du group existe deja. Choose another"
 		},
-
+		
 		500: {
 			"ENG": "This record in locked. You cannot modify or delete it",
 			"FRA": "This record in locked. You cannot modify or delete it"
 		},
-
+		
 		600: {
 			"ENG": "Database connection error",
 			"FRA": "Database connection error"
@@ -960,7 +964,7 @@ var errorCodes = {
 			"ENG": "Invalid or no Platform Driver configuration provided!",
 			"FRA": "Invalid or no Platform Driver configuration provided!"
 		},
-
+		
 		"409": {
 			"ENG": "Invalid product id provided",
 			"FRA": "Invalid product id provided"
@@ -1005,7 +1009,7 @@ var errorCodes = {
 			"ENG": "Unable to remove product package",
 			"FRA": "Unable to remove product package"
 		},
-
+		
 		"420": {
 			"ENG": "Unable to add the tenant record",
 			"FRA": "Unable to add the tenant record"
@@ -1026,7 +1030,7 @@ var errorCodes = {
 			"ENG": "Unable to remove tenant record",
 			"FRA": "Unable to remove tenant record"
 		},
-
+		
 		"425": {
 			"ENG": "Unable to add the tenant OAuth",
 			"FRA": "Unable to add the tenant OAuth"
@@ -1043,7 +1047,7 @@ var errorCodes = {
 			"ENG": "Unable to remove tenant OAuth",
 			"FRA": "Unable to remove tenant OAuth"
 		},
-
+		
 		"429": {
 			"ENG": "Unable to add the tenant application",
 			"FRA": "Unable to add the tenant application"
@@ -1068,7 +1072,7 @@ var errorCodes = {
 			"ENG": "Invalid product code or package code provided",
 			"FRA": "Invalid product code or package code provided"
 		},
-
+		
 		"435": {
 			"ENG": "Unable to get the tenant application keys",
 			"FRA": "Unable to get the tenant application keys"
@@ -1089,7 +1093,7 @@ var errorCodes = {
 			"ENG": "Invalid tenant oauth user Id provided",
 			"FRA": "Invalid tenant oauth user Id provided"
 		},
-
+		
 		"440": {
 			"ENG": "Unable to add the tenant application ext Key",
 			"FRA": "Unable to add the tenant application ext Key"
@@ -1118,7 +1122,7 @@ var errorCodes = {
 			"ENG": "Invalid environment provided",
 			"FRA": "Invalid environment provided"
 		},
-
+		
 		"447": {
 			"ENG": "Unable to get tenant oAuth Users",
 			"FRA": "Unable to get tenant oAuth Users"
@@ -1139,7 +1143,7 @@ var errorCodes = {
 			"ENG": "Unable to updated tenant oAuth User",
 			"FRA": "Unable to updated tenant oAuth User"
 		},
-
+		
 		"452": {
 			"ENG": "Invalid Tenant Code",
 			"FRA": "Invalid Tenant Code"
@@ -1160,7 +1164,7 @@ var errorCodes = {
 			"ENG": "Error adding Tenant Key",
 			"FRA": "Error adding Tenant Key"
 		},
-
+		
 		"460": {
 			"ENG": "Unable to find product",
 			"FRA": "Unable to find product"
@@ -1169,7 +1173,7 @@ var errorCodes = {
 			"ENG": "Unable to find package",
 			"FRA": "Unable to find package"
 		},
-
+		
 		"462": {
 			"ENG": "You are not allowed to remove the tenant you are currently logged in with",
 			"FRA": "You are not allowed to remove the tenant you are currently logged in with"
@@ -1194,7 +1198,7 @@ var errorCodes = {
 			"ENG": "You are not allowed to remove the package you are currently logged in with",
 			"FRA": "You are not allowed to remove the package you are currently logged in with"
 		},
-
+		
 		"500": {
 			"ENG": "This record is locked. You cannot delete it",
 			"FRA": "This record is locked. You cannot delete it"
@@ -1255,7 +1259,7 @@ var errorCodes = {
 			"ENG": "Error removing environment database",
 			"FRA": "Error removing environment database"
 		},
-
+		
 		"600": {
 			"ENG": "Database error",
 			"FRA": "Database error"
@@ -1340,7 +1344,7 @@ var errorCodes = {
 			"ENG": "Make sure upload directory exists:",
 			"FRA": "Make sure upload directory exists:"
 		},
-
+		
 		"700": {
 			"ENG": "This Content Schema already Exist",
 			"FRA": "This Content Schema already Exist"
@@ -1397,7 +1401,7 @@ var errorCodes = {
 			"ENG": "Unable to retrieve list of group configurations",
 			"FRA": "Unable to retrieve list of group configurations"
 		},
-
+		
 		"720": {
 			"ENG": "Unable to update job's service configuration",
 			"FRA": "Unable to update job's service configuration"
@@ -1442,12 +1446,12 @@ var errorCodes = {
 			"ENG": "One or more certificates do not exist",
 			"FRA": "One or more certificates do not exist"
 		},
-
+		
 		"731": {
 			"ENG": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 			"FRA": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature"
 		},
-
+		
 		"732": {
 			"ENG": "Unable to list drivers",
 			"FRA": "Unable to list drivers"
@@ -1492,7 +1496,7 @@ var errorCodes = {
 			"ENG": "Unable to list static content sources",
 			"FRA": "Unable to list static content sources"
 		},
-
+		
 		"750": {
 			"ENG": "Invalid Request.",
 			"FRA": "Invalid Request."
