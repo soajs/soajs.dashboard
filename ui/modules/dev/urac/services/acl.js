@@ -1,6 +1,7 @@
 "use strict";
 var membersAclService = soajsApp.components;
-membersAclService.service('tenantMembersAclHelper', [function () {
+
+membersAclService.service('memAclModuleDevHelper', [function () {
 
 	function prepareViewAclObj(aclFill, parentAcl) {
 		var service, serviceName;
@@ -124,6 +125,9 @@ membersAclService.service('tenantMembersAclHelper', [function () {
 	function renderPermissionsWithServices(currentScope, oneApplication) {
 		function objectIsEnv(obj) {
 			if (obj) {
+				if (JSON.stringify(obj) === '{}') {
+					return false;
+				}
 				if (!obj.access && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
 					return true;
 				}
@@ -132,7 +136,7 @@ membersAclService.service('tenantMembersAclHelper', [function () {
 		}
 
 		var envCodes = currentScope.environments_codes;
-		var aclObj = oneApplication.app_acl || oneApplication.parentPackageAcl;
+		var aclObj = oneApplication.acl || oneApplication.parentPackageAcl;
 		var oldSchema = true;
 		for (var p in aclObj) {
 			if (objectIsEnv(aclObj[p])) {

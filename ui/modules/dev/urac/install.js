@@ -53,6 +53,23 @@ var uracNav = [
 			uracModuleDev + '/services/groups.js'
 		],
 		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'urac-user-acl',
+		'label': 'Acl',
+		'url': '#/urac-management/:uId/editUserAcl',
+		'tplPath': uracModuleDev + '/directives/editUserAcl.tmpl',
+		'tracker': true,
+		'pillar': {
+			'name': 'operate',
+			'label': translation.operate[LANG],
+			'position': 4
+		},
+		'scripts': [
+			uracModuleDev + '/config.js',
+			uracModuleDev + '/controller.js',
+			uracModuleDev + '/services/acl.js'],
+		'ancestor': [translation.home[LANG]]
 	}
 ];
 
