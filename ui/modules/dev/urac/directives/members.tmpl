@@ -1,4 +1,4 @@
-<div ng-controller="uracMembersDevCtrl">
+<div ng-controller="uracMembersModuleDevCtrl">
 	<section ng-if="access.listTenants" style="min-height: 42px;">
 		<div class="f-right">
 			<span>
@@ -8,7 +8,7 @@
 	</section>
 	<tabset id="membersSection">
 		<tab heading="{{translation.members[LANG]}}">
-			<section ng-controller="tenantMembersDevCtrl" class="membersCtrl">
+			<section ng-controller="tenantMembersModuleDevCtrl" class="membersCtrl">
 				<div class="clearfix">
 					<div class="f-right">
 						<a class="btn btn-primary" ng-click="members.listMembers()" href="">
@@ -24,7 +24,7 @@
 			</section>
 		</tab>
 		<tab ng-show="access.adminGroup.list" heading="{{translation.groups[LANG]}}">
-			<section ng-controller="tenantGroupsDevCtrl as gridCtrl">
+			<section ng-controller="tenantGroupsModuleDevCtrl as gridCtrl">
 				<div class="clearfix">
 					<div class="f-right">
 						<a class="btn btn-primary" ng-click="groups.listGroups()" href="">

@@ -16,7 +16,7 @@ for (var attrname in memTranslation) {
 	translation[attrname] = memTranslation[attrname];
 }
 
-var uracNav = [
+var uracModuleDevNav = [
 	{
 		'id': 'urac-management',
 		'label': translation.uracManagement[LANG],
@@ -73,4 +73,4 @@ var uracNav = [
 	}
 ];
 
-navigation = navigation.concat(uracNav);
+navigation = navigation.concat(uracModuleDevNav);

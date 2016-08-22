@@ -1,7 +1,7 @@
 "use strict";
 var serviceUracApp = soajsApp.components;
 
-serviceUracApp.service('tenantMembersHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
+serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	var tCode = $cookies.getObject('urac_merchant').code;
 
 	function listMembers(currentScope, moduleConfig, callback) {
