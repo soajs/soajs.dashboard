@@ -2,9 +2,9 @@
 var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
-	var tCode = $cookies.getObject('urac_merchant').code;
-
+	
 	function listMembers(currentScope, moduleConfig, callback) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",
@@ -31,6 +31,7 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	}
 	
 	function printMembers(currentScope, moduleConfig, response) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		for (var x = 0; x < response.length; x++) {
 			if (response[x].groups) {
 				response[x].grpsArr = response[x].groups.join(', ');
@@ -81,22 +82,20 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	}
 	
 	function addMember(currentScope, moduleConfig) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(moduleConfig.form);
 
 		overlayLoading.show();
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/group/list",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
-		if (currentScope.key) {
-			opts.headers = {
-				"key": currentScope.key
-			}
-		}
+		
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
@@ -136,17 +135,14 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/owner/admin/addUser",
+									"proxy": true,
 									"params": {
 										"tCode": tCode,
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 									},
 									"data": postData
 								};
-								if (currentScope.key) {
-									opts.headers = {
-										"key": currentScope.key
-									}
-								}
+								
 								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									overlayLoading.hide();
 									if (error) {
@@ -183,21 +179,19 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	}
 	
 	function editMember(currentScope, moduleConfig, data) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(moduleConfig.form);
 		
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/group/list",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
-		if (currentScope.key) {
-			opts.headers = {
-				"key": currentScope.key
-			}
-		}
+		
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -251,6 +245,7 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/owner/admin/editUser",
+									"proxy": true,
 									"params": {
 										"tCode": tCode,
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
@@ -258,11 +253,7 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 									},
 									"data": postData
 								};
-								if (currentScope.key) {
-									opts.headers = {
-										"key": currentScope.key
-									}
-								}
+								
 								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -293,12 +284,11 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	}
 	
 	function activateMembers(currentScope) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		overlayLoading.show();
 		var config = {
-			"headers": {
-				"key": currentScope.key
-			},
 			'routeName': "/urac/owner/admin/changeUserStatus",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
@@ -318,12 +308,11 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	}
 	
 	function deactivateMembers(currentScope) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		overlayLoading.show();
 		var config = {
-			"headers": {
-				"key": currentScope.key
-			},
 			'routeName': "/urac/owner/admin/changeUserStatus",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),

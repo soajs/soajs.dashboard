@@ -37,6 +37,7 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 		var newCode = tenant.code;
 		if (newCode && newCode !== '') {
 			var obj = {
+				name: tenant.name,
 				code: tenant.code,
 				id: tenant._id || tenant.id
 			};
@@ -61,7 +62,8 @@ uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localSto
 	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
-	
+
+	$scope.tName = $cookies.getObject('urac_merchant').name;
 	$scope.userCookie = $localStorage.soajs_user;
 }]);
 
@@ -144,7 +146,6 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 
 uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'memAclModuleDevHelper', '$route', '$localStorage',
 	function ($scope, $routeParams, ngDataApi, $cookies, memAclModuleDevHelper, $route, $localStorage) {
-		$scope.key = apiConfiguration.key;
 		$scope.$parent.isUserLoggedIn();
 		$scope.msg = {};
 		$scope.user = {};

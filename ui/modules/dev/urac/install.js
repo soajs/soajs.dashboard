@@ -6,6 +6,10 @@ var memTranslation = {
 		"ENG": "Urac Management",
 		"FRA": "Urac Management"
 	},
+	"uracTenantManagement": {
+		"ENG": "Tenant Urac Management",
+		"FRA": "Tenant Urac Management"
+	},
 	"manageURAC": {
 		"ENG": "Manage URAC",
 		"FRA": "Manage URAC"
@@ -37,7 +41,7 @@ var uracModuleDevNav = [
 	},
 	{
 		'id': 'urac-tenant-management',
-		'label': translation.uracManagement[LANG],
+		'label': translation.uracTenantManagement[LANG],
 		'url': '#/urac-management/members',
 		'tplPath': uracModuleDev + '/directives/members.tmpl',
 		'pillar': {
@@ -56,7 +60,7 @@ var uracModuleDevNav = [
 	},
 	{
 		'id': 'urac-user-acl',
-		'label': 'Acl',
+		'label': 'Edit User Acl',
 		'url': '#/urac-management/:uId/editUserAcl',
 		'tplPath': uracModuleDev + '/directives/editUserAcl.tmpl',
 		'tracker': true,
@@ -68,8 +72,9 @@ var uracModuleDevNav = [
 		'scripts': [
 			uracModuleDev + '/config.js',
 			uracModuleDev + '/controller.js',
-			uracModuleDev + '/services/acl.js'],
-		'ancestor': [translation.home[LANG]]
+			uracModuleDev + '/services/acl.js'
+		],
+		'ancestor': [translation.home[LANG], translation.uracTenantManagement[LANG]]
 	}
 ];
 

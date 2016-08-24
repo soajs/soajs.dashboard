@@ -1,5 +1,8 @@
 <div ng-controller="uracMembersModuleDevCtrl">
 	<section ng-if="access.listTenants" style="min-height: 42px;">
+		<span ng-if="tName">
+			Managing: {{tName}}
+		</span>
 		<div class="f-right">
 			<span>
 				<a href="#/urac-management">{{translation.back2List[LANG]}}</a>

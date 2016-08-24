@@ -2,23 +2,20 @@
 var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
-	var tCode = $cookies.getObject('urac_merchant').code;
-	
+
 	function listGroups(currentScope, groupsConfig, callback) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		if (currentScope.access.adminGroup.list) {
 			var opts = {
 				"method": "get",
 				"routeName": "/urac/owner/admin/group/list",
+				"proxy": true,
 				"params": {
 					"tCode": tCode,
 					"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 				}
 			};
-			if (currentScope.key) {
-				opts.headers = {
-					"key": currentScope.key
-				};
-			}
+			
 			getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 				if (error) {
 					currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
@@ -36,6 +33,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function printGroups(currentScope, groupsConfig, response) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var options = {
 			grid: groupsConfig.grid,
 			data: response,
@@ -77,6 +75,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function addGroup(currentScope, groupsConfig) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(groupsConfig.form);
 		
 		var options = {
@@ -98,17 +97,14 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 						var opts = {
 							"method": "send",
 							"routeName": "/urac/owner/admin/group/add",
+							"proxy": true,
 							"params": {
 								"tCode": tCode,
 								"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 							},
 							"data": postData
 						};
-						if (currentScope.key) {
-							opts.headers = {
-								"key": currentScope.key
-							}
-						}
+						
 						getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 							if (error) {
 								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -138,6 +134,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function editGroup(currentScope, groupsConfig, data) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(groupsConfig.form);
 		config.entries[0].type = 'readonly';
 		var options = {
@@ -159,6 +156,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 						var opts = {
 							"method": "send",
 							"routeName": "/urac/owner/admin/group/edit",
+							"proxy": true,
 							"params": {
 								"tCode": tCode,
 								"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
@@ -166,11 +164,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 							},
 							"data": postData
 						};
-						if (currentScope.key) {
-							opts.headers = {
-								"key": currentScope.key
-							}
-						}
+						
 						getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 							if (error) {
 								currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -200,11 +194,10 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function deleteGroups(currentScope) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = {
 			'routeName': "/urac/owner/admin/group/delete",
-			"headers": {
-				"key": currentScope.key
-			},
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
@@ -222,20 +215,18 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function delete1Group(currentScope, data) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/group/delete",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"gId": data._id
 			}
 		};
-		if (currentScope.key) {
-			opts.headers = {
-				"key": currentScope.key
-			}
-		}
+		
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -248,19 +239,17 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	}
 	
 	function assignUsers(currentScope, groupsConfig, data, event) {
+		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",
+			"proxy": true,
 			"params": {
 				"tCode": tCode,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 			}
 		};
-		if (currentScope.key) {
-			opts.headers = {
-				"key": currentScope.key
-			}
-		}
+		
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
@@ -299,17 +288,14 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 								var opts = {
 									"method": "send",
 									"routeName": "/urac/owner/admin/group/addUsers",
+									"proxy": true,
 									"params": {
 										"tCode": tCode,
 										"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 									},
 									"data": postData
 								};
-								if (currentScope.key) {
-									opts.headers = {
-										"key": currentScope.key
-									}
-								}
+								
 								getSendDataFromServer(currentScope, ngDataApi, opts, function (error) {
 									if (error) {
 										currentScope.form.displayAlert('danger', error.code, true, 'urac', error.message);
