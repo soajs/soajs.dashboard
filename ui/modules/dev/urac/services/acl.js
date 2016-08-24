@@ -1,7 +1,8 @@
 "use strict";
 var membersAclService = soajsApp.components;
-membersAclService.service('membersAclHelper', [function () {
 
+membersAclService.service('memAclModuleDevHelper', [function () {
+	
 	function prepareViewAclObj(aclFill, parentAcl) {
 		var service, serviceName;
 		for (serviceName in parentAcl) {
@@ -30,7 +31,7 @@ membersAclService.service('membersAclHelper', [function () {
 				if (service.apisPermission === 'restricted') {
 					service.apisRestrictPermission = true;
 				}
-
+				
 				if (service.apis) {
 					for (var apiName in service.apis) {
 						if (service.apis.hasOwnProperty(apiName)) {
@@ -69,7 +70,7 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		}
 	}
-
+	
 	function groupApisForDisplay(apisArray, groupName) {
 		var result = {};
 		var apiDefaultGroupName = 'General';
@@ -88,7 +89,7 @@ membersAclService.service('membersAclHelper', [function () {
 		}
 		return result;
 	}
-
+	
 	function checkForGroupDefault(aclFill, service, grp, val, myApi) {
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if (myApi.groupMain === true && aclFill[service.name].apis) {
@@ -101,7 +102,7 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		}
 	}
-
+	
 	function applyRestriction(aclFill, service) {
 		if (aclFill[service.name].apisRestrictPermission === true) {
 			for (var grpLabel in service.fixList) {
@@ -120,7 +121,7 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		}
 	}
-
+	
 	function renderPermissionsWithServices(currentScope, oneApplication) {
 		function objectIsEnv(obj) {
 			if (obj) {
@@ -133,9 +134,10 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 			return false;
 		}
-
+		
 		var envCodes = currentScope.environments_codes;
-		var aclObj = oneApplication.app_acl || oneApplication.parentPackageAcl;
+		var aclObj = oneApplication.acl || oneApplication.parentPackageAcl;
+		
 		var oldSchema = true;
 		for (var p in aclObj) {
 			if (objectIsEnv(aclObj[p])) {
@@ -151,7 +153,7 @@ membersAclService.service('membersAclHelper', [function () {
 			});
 			aclObj = newAcl;
 		}
-
+		
 		if (oneApplication.userPackageAcl) {
 			var customOldSchema = true;
 			for (var prp in oneApplication.userPackageAcl) {
@@ -171,9 +173,8 @@ membersAclService.service('membersAclHelper', [function () {
 		}
 		var myAcl = {};
 		oneApplication.services = {};
-
+		
 		oneApplication.aclFill = {};
-
 		envCodes.forEach(function (oneEnv) {
 			oneApplication.services[oneEnv.code.toUpperCase()] = {};
 			if (objectIsEnv(aclObj[oneEnv.code.toLowerCase()])) {
@@ -183,12 +184,12 @@ membersAclService.service('membersAclHelper', [function () {
 						oneApplication.services[oneEnv.code.toUpperCase()][serviceName] = {};
 					}
 				}
-
+				
 				for (var envCode in aclObj) {
 					envCode = envCode.toLowerCase();
 					if (oneEnv.code === envCode.toUpperCase()) {
 						myAcl[envCode.toUpperCase()] = aclObj[envCode];
-
+						
 						for (var serviceName in myAcl[envCode.toUpperCase()]) {
 							var service = {};
 							for (var i = 0; i < currentScope.tenantApp.services.length; i++) {
@@ -204,7 +205,7 @@ membersAclService.service('membersAclHelper', [function () {
 												myAcl[oneEnv.code.toUpperCase()][serviceName].apiList = currentScope.tenantApp.services[i].versions[v].apis;
 											}
 										}
-
+										
 										service = currentScope.tenantApp.services[i];
 										if (oneApplication.services[oneEnv.code.toUpperCase()][service.name]) {
 											oneApplication.services[oneEnv.code.toUpperCase()][service.name] = service;
@@ -213,7 +214,7 @@ membersAclService.service('membersAclHelper', [function () {
 									}
 								}
 							}
-
+							
 							if (Object.hasOwnProperty.call(myAcl[envCode.toUpperCase()], serviceName)) {
 								var newList;
 								var apiList = myAcl[oneEnv.code.toUpperCase()][serviceName].apiList;
@@ -221,7 +222,7 @@ membersAclService.service('membersAclHelper', [function () {
 									if ((aclObj[envCode][serviceName]) && (aclObj[envCode][serviceName].apisPermission === 'restricted')) {
 										newList = [];
 										oneApplication.userPackageAcl[oneEnv.code.toLowerCase()][serviceName].forceRestricted = true;
-
+										
 										for (var apiInfo = 0; apiInfo < apiList.length; apiInfo++) {
 											if (aclObj[envCode][serviceName].apis) {
 												if (aclObj[envCode][serviceName].apis[apiList[apiInfo].v]) {
@@ -264,7 +265,7 @@ membersAclService.service('membersAclHelper', [function () {
 		});
 		return;
 	}
-
+	
 	function prepareAclObjToSave(aclPriviledges) {
 		var aclObj = {};
 		var valid = true;
@@ -297,11 +298,11 @@ membersAclService.service('membersAclHelper', [function () {
 								return {'valid': false};
 							}
 						}
-
+						
 						if (service.apisRestrictPermission === true) {
 							aclObj[envCode.toLowerCase()][propt].apisPermission = 'restricted';
 						}
-
+						
 						if (service.apis) {
 							for (apiName in service.apis) {
 								if (service.apis.hasOwnProperty(apiName)) {
@@ -339,7 +340,7 @@ membersAclService.service('membersAclHelper', [function () {
 		}
 		return {'valid': valid, 'data': aclObj};
 	}
-
+	
 	return {
 		'applyRestriction': applyRestriction,
 		'checkForGroupDefault': checkForGroupDefault,
