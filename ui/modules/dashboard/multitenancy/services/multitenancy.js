@@ -169,12 +169,16 @@ multiTenantService.service('aclHelper', function () {
 			servicesEnv[oneEnv.code.toUpperCase()] = {};
 			if (oldParentSchema) {
 				for (var s in parentAcl) {
-					servicesEnv[oneEnv.code.toUpperCase()][s] = {};
+					servicesEnv[oneEnv.code.toUpperCase()][s] = {
+						name: s
+					};
 				}
 			}
 			else {
 				for (var s in parentAcl[oneEnv.code.toLowerCase()]) {
-					servicesEnv[oneEnv.code.toUpperCase()][s] = {};
+					servicesEnv[oneEnv.code.toUpperCase()][s] = {
+						name: s
+					};
 				}
 			}
 		});
@@ -254,7 +258,6 @@ multiTenantService.service('aclHelper', function () {
 			for (propt in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(propt)) {
 					service = aclFill[env][propt];
-
 					service.include = true;
 					service.collapse = false;
 					if (service.access) {
