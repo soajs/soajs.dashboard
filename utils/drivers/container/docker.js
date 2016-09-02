@@ -62,7 +62,10 @@ var lib = {
 			mongo.find("fs.files", criteria, function (error, certs) {
 				checkError(error, cb, function () {
 					if (!certs || certs.length === 0) {
-						return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
+						return cb({
+							'code': 741,
+							'message': "No certificates for " + config.envCode + " environment exist"
+						});
 					}
 
 					mongo.getMongoSkinDB(function (error, db) {

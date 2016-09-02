@@ -23,8 +23,8 @@
 					</div>
 					<div ng-if="currentScope.service.type === 'nginx'">
 						<label>Exposed Port</label>
-						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort" />
-						<br />
+						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort"/>
+						<br/>
 					</div>
 					<div ng-if="currentScope.conflict">
 						<label ng-style="{'color': 'red'}">{{translation.warning[LANG]}}</label><br>
@@ -62,7 +62,8 @@
 						<br>
 					</div>
 					<div ng-if="currentScope.service.type !== 'nginx'">
-						<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false" /> Accelerate deployment by using the SOAJS package within the image</label>
+						<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false"/>
+							Accelerate deployment by using the SOAJS package within the image</label>
 						<br><br>
 					</div>
 					<div ng-if="currentScope.service.type !== 'nginx'">
