@@ -1,9 +1,7 @@
 "use strict";
 var cmConfig = {
-	permissions: {
-
-	},
-
+	permissions: {},
+	
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [],
@@ -12,7 +10,7 @@ var cmConfig = {
 		'defaultSortField': '',
 		'defaultLimit': 10
 	},
-	form:{
+	form: {
 		'add': {
 			'name': '',
 			'label': '',

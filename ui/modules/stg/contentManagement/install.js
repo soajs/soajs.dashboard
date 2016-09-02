@@ -1,6 +1,6 @@
 "use strict";
 
-var cmTranslation = {
+var cmModuleStgTranslation = {
 	"contentManagement": {
 		"ENG": "Content Management",
 		"FRA": "Content Management"
@@ -94,7 +94,7 @@ var cmTranslation = {
 		"ENG": "No Content Management Services are deployed yet. Head to the",
 		"FRA": "No Content Management Services are deployed yet. Head to the"
 	},
-
+	
 	"sectionAndDeployThem": {
 		"ENG": "Section and deploy them.",
 		"FRA": "Section and deploy them."
@@ -107,11 +107,11 @@ var cmTranslation = {
 	}
 };
 
-for (var attrname in cmTranslation) {
-	translation[attrname] = cmTranslation[attrname];
+for (var attrname in cmModuleStgTranslation) {
+	translation[attrname] = cmModuleStgTranslation[attrname];
 }
 
-var cmNav = [
+var cmModuleStgNav = [
 	{
 		'id': 'content-management',
 		'label': translation.contentManagement[LANG],
@@ -135,4 +135,4 @@ var cmNav = [
 		'ancestor': [translation.home[LANG]]
 	}
 ];
-navigation = navigation.concat(cmNav);
+navigation = navigation.concat(cmModuleStgNav);

@@ -1,6 +1,6 @@
 "use strict";
 var contentManagementApp = soajsApp.components;
-contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmModuleDevService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmModuleDevService) {
+contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmModuleDevService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmModuleDevService) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
