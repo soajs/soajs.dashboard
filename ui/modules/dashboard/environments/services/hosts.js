@@ -219,7 +219,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	                }
                 }
             }
-
+            console.log (renderedHosts);
             buildGroupsDisplay(renderedHosts);
         }
 

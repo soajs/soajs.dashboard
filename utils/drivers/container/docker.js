@@ -161,6 +161,52 @@ var deployer = {
 					}
 				});
 		});
+	},
+
+	"addNode": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			if (error) {
+				return cb(error);
+			}
+
+			deployer.swarmJoin(options, cb);
+		});
+	},
+
+	"removeNode": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			if (error) {
+				return cb(error);
+			}
+
+			deployer.swarmLeave(options, cb);
+		});
+	},
+
+	"updateNodeRole": function (deployerConfig, options, mongo, cb) {
+
+	},
+
+	"updateNodeAvailability": function (deployerConfig, options, mongo, cb) {
+
+	},
+
+	"deployHAService": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			if (error) {
+				return cb(error);
+			}
+
+			deployer.deployService(options, cb);
+		});
+	},
+
+	"scaleHAService": function (deployerConfig, options, mongo, cb) {
+
+	},
+
+	"deleteHAService": function (deployerConfig, options, mongo, cb) {
+
 	}
 };
 module.exports = deployer;

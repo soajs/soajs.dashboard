@@ -110,6 +110,36 @@ var model = {
 		}, cb);
 	},
 
+	"listNodes": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		criteria.recordType = 'node';
+		mongo.find(dockerColl, criteria, cb);
+	},
+
+	"getOneNode": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		crtieria.recordType = 'node';
+		mongo.find(dockerColl, criteria, cb);
+	},
+
+	"addNode": function (soajs, data, cb) {
+		checkForMongo(soajs);
+		data.recordType = 'node';
+		mongo.insert(dockerColl, data, cb);
+	},
+
+	"removeNode": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		crtieria.recordType = 'node';
+		mongo.remove(dockerColl, crtieria, cb);
+	},
+
+	"updateNode": function (soajs, criteria, update, cb) {
+		checkForMongo(soajs);
+		crtieria.recordType = 'node';
+		mongo.update(dockerColl, crtieria, update, cb);
+	},
+
 	/**
 	 * HOSTS COLLECTION
 	 */

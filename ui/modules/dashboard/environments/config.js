@@ -672,6 +672,26 @@ var environmentsConfig = {
 				    "value": {}
 				}
 			]
+		},
+		node: {
+			'entries': [
+				{
+					'name': 'ip',
+					'label': translation.nodeIP[LANG],
+					'type': 'text',
+					'tooltip': translation.nodeIP[LANG],
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'port',
+					'label': translation.nodeDockerPort[LANG],
+					'type': 'number',
+					'tooltip': translation.nodeDockerPort[LANG],
+					'required': true,
+					'value': ''
+				}
+			]
 		}
 	},
 	nginxRequiredCerts: {

@@ -518,6 +518,41 @@ service.init(function () {
 	});
 
 	/**
+	 * High Availability Cloud features
+	 */
+	 service.get("/hacloud/nodes/list", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.listNodes(config, req.soajs, res);
+ 		});
+	 });
+	 service.post("/hacloud/nodes/add", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.addNode(config, req.soajs, res);
+ 		});
+	 });
+	 service.get("/hacloud/nodes/remove", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.removeNode(config, req.soajs, res);
+ 		});
+	 });
+	 service.post("/hacloud/nodes/update", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.updateNode(config, req.soajs, res);
+ 		});
+	 });
+
+	 service.post("/hacloud/services/scale", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.scaleHAService(config, req.soajs, res);
+ 		});
+	 });
+	 service.get("/hacloud/services/delete", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.deleteHAService(config, req.soajs, res);
+ 		});
+	 });
+
+	/**
 	 * Github App features
 	 */
 	service.post("/gitAccounts/login", function (req, res) {

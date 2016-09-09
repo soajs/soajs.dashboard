@@ -36,6 +36,8 @@ module.exports = {
 		"services": "soajsorg/soajs"
 	},
 
+	"imagesDir": "/opt/soajs/FILES/deployer/",
+
 	"gitAccounts": {
 		"github": {
 			"protocol": "https",
@@ -2073,6 +2075,13 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
@@ -2216,6 +2225,137 @@ module.exports = {
 			},
 			"cid": {
 				"source": ['query.cid'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/hacloud/nodes/list": {
+			"_apiInfo": {
+				"l": "List HA Cloud Nodes",
+				"group": "HA Cloud"
+			}
+		},
+		"/hacloud/nodes/add": {
+			"_apiInfo": {
+				"l": "Add HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"ip": {
+				"source": ['body.ip'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"port": {
+				"source": ['body.port'],
+				"required": true,
+				"validation": {
+					"type": "number"
+				}
+			}
+		},
+		"/hacloud/nodes/remove": {
+			"_apiInfo": {
+				"l": "Remove HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"nodeId": {
+				"source": ['query.nodeId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hacloud/nodes/update": {
+			"_apiInfo": {
+				"l": "Update HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"nodeId": {
+				"source": ['query.nodeId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"type": {
+				"source": ['body.type'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"enum": ["role", "availability"]
+				}
+			},
+			"newStatus": {
+				"source": ['body.newStatus'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/hacloud/services/scale": {
+			"_apiInfo": {
+				"l": "Scale HA Service",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"name": {
+				"source": ['query.name'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"version": {
+				"source": ['query.version'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"scale": {
+				"source": ['body.scale'],
+				"required": true,
+				"validation": {
+					"type": "number"
+				}
+			}
+		},
+
+		"/hacloud/services/delete": {
+			"_apiInfo": {
+				"l": "Delete HA Service",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"name": {
+				"source": ['query.name'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"version": {
+				"source": ['query.version'],
 				"required": true,
 				"validation": {
 					"type": "string"

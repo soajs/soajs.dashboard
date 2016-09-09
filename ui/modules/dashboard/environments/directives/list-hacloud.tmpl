@@ -1,0 +1,200 @@
+<section ng-controller="hacloudCtrl">
+    <tabset>
+        <tab heading="Nodes">
+            <br />
+            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
+            <br /><br />
+            <div class="entryBoxes">
+                <div ng-repeat="node in nodes.list" class="entryBox mb20">
+                    <div class="header">
+                        {{node.name}}
+                        <span class="rightActions">
+                            <a href="" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
+                                <span class="icon icon-cross" tooltip="Remove Node"></span>
+                            </a>
+                            <a ng-if="node.role === 'manager'" href="" ng-click="updateNode(node, 'role', 'worker')">
+                                <span class="icon icon-arrow-down2" tooltip="Demote To Worker"></span>
+                            </a>
+                            <a ng-if="node.role === 'worker'" href="" ng-click="updateNode(node, 'role', 'manager')">
+                                <span class="icon icon-arrow-up2" tooltip="Promote To Manager"></span>
+                            </a>
+                            <a ng-if="node.availability === 'drained'" href="" ng-click="updateNode(node, 'availability', 'active')">
+                                <span class="icon icon-switch" tooltip="Activate"></span>
+                            </a>
+                            <a ng-if="node.availability === 'active'" href="" ng-click="updateNode(node, 'availability', 'drained')">
+                                <span class="icon icon-power-cord" tooltip="Drain"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="body">
+                        <div class="grid">
+                            <table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+                                <thead>
+                                    <tr class="header">
+                                        <td>IP Address</td>
+                                        <td>Docker Port</td>
+                                        <td>Role</td>
+                                        <td>Availability</td>
+                                        <td>Memory Resources</td>
+                                        <td>CPU Count</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{node.ip}}</td>
+                                        <td>{{node.dockerPort}}</td>
+                                        <td>{{node.role}}</td>
+                                        <td>{{node.availability}}</td>
+                                        <td>{{node.resources.memory / 1024 / 1024 / 1024}} GB</td>
+                                        <td>{{node.resources.cpuCount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tab>
+        <tab heading="Services">
+            <br />
+            <button class="btn btn-primary" ng-click="addService()">Add New Service</button>
+            <br /><br />
+            <fieldset class="groupFieldset" ng-if="hosts.controller">
+                <legend>
+                    <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>
+                    SOAJS Controllers
+                </legend>
+                <div ng-repeat="(serviceName, serviceInfo) in hosts">
+                    <div ng-if="serviceName === 'controller'" ng-show="showCtrlHosts">
+                        <div class="entryBoxes">
+                            <div class="entryBox mb20" ng-repeat="oneIp in serviceInfo.ips">
+                                <div class="header">
+                                    <span class="serviceLabelBox">{{oneIp.name|uppercase}} - v.{{oneIp.version}} | Port: {{oneIp.port}}</span>
+                                    <div class="dropdown serviceOpsDropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" id="serviceOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            Service Operations
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+                                            <li>&nbsp;Deployment</li>
+                                            <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+                                            <li><a href="" ng-click="deleteService()"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                            <li>&nbsp;Maintenance</li>
+                                            <li><a href="" ng-click="reloadServiceRegistry()"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
+                                            <li><a href="" ng-click="loadServiceProvision()"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
+                                            <li><a href="" ng-click="awarenessStat()"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="body">
+                                    <div class="grid">
+                                        <table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+                                            <thead>
+                                                <tr class="header">
+                                                    <td class="maintenanceHeader">Maintenance</td>
+                                                    <td class="hostnameHeader">Hostname</td>
+                                                    <td class="statusHeader">Status</td>
+                                                    <td class="ipHeader">IP Address</td>
+                                                    <td>Code</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="container in serviceInfo.ips">
+                                                    <td>
+                                                        <a href="" ng-click="executeHeartbeatTest(envCode, container)" title="{{translation.executeHeartbeatOperation[LANG]}}">
+                                                            <span class="icon icon-heart"></span>&nbsp;
+                                                        </a>
+
+                                                        <a href="" ng-show="container.cid" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+                                                        </a>
+                                                    </td>
+                                                    <td>{{container.hostname}}</td>
+                                                    <td>
+                                                        <span style="color: green" ng-if="container.heartbeat"><b>Healthy</b></span>
+                                                        <span style="color: red" ng-if="!container.heartbeat"><b>Unreachable</b></span>
+                                                    </td>
+                                                    <td>{{container.ip}}</td>
+                                                    <td>{{container.code}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div ng-repeat="(groupName, groupContent) in groups">
+                <fieldset class="groupFieldset">
+                    <legend>
+                        <a href="" class="icon" ng-class="{'icon-minus': groupContent.showContent, 'icon-plus': !groupContent.showContent}" ng-click="showHideGroupContent(groupName)"></a>{{groupName}}
+                    </legend>
+                    <div class="entryBoxes">
+                        <div class="entryBox mb20" ng-repeat="service in groupContent.services" ng-if="groupContent.showContent">
+                            <div class="header">
+                                <span class="serviceLabelBox">{{hosts[service].name|uppercase}} - v.{{hosts[service].version}} | Port: {{hosts[service].port}}</span>
+                                <div class="dropdown serviceOpsDropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="serviceOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Service Operations
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+                                        <li>&nbsp;Deployment</li>
+                                        <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+                                        <li><a href="" ng-click="deleteService()"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                        <li>&nbsp;Maintenance</li>
+                                        <li><a href="" ng-click="reloadServiceRegistry()"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
+                                        <li><a href="" ng-click="loadServiceProvision()"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="body">
+                                <div class="grid">
+                                    <table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+                                        <thead>
+                                            <tr class="header">
+                                                <td class="maintenanceHeader">Maintenance</td>
+                                                <td class="hostnameHeader">Hostname</td>
+                                                <td class="statusHeader">Status</td>
+                                                <td class="ipHeader">IP Address</td>
+                                                <td>Controller Awareness</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="container in hosts[service].ips[1]">
+                                                <td>
+                                                    <a href="" ng-click="executeHeartbeatTest(envCode, container)" title="{{translation.executeHeartbeatOperation[LANG]}}">
+                                                        <span class="icon icon-heart"></span>&nbsp;
+                                                    </a>
+
+                                                    <a href="" ng-show="container.healthy && hosts[service].type === 'daemon'" ng-click="loadDaemonStats(envCode, container)" title="{{translation.loadDaemonStatisticsOperation[LANG]}}">
+                                                        <span class="icon icon-stats-dots"></span>&nbsp;
+                                                    </a>
+
+                                                    <a href="" ng-show="container.cid" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                        <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+                                                    </a>
+                                                </td>
+                                                <td>{{container.hostname}}</td>
+                                                <td>
+                                                    <span style="color: green" ng-if="container.healthy"><b>Healthy</b></span>
+                                                    <span style="color: red" ng-if="!container.healthy"><b>Unreachable</b></span>
+                                                </td>
+                                                <td>{{container.ip}}</td>
+                                                <td>
+                                                    <span ng-repeat="ctrl in container.controllers" class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrl.heartbeat, 'ctrlBoxUnhealthy': !ctrl.heartbeat}">{{ctrl.code}}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </tab>
+    </tabset>
+</section>
