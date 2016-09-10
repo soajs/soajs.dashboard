@@ -30,6 +30,22 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.listServices($scope);
 	};
 
+	$scope.reloadServiceRegistry = function (source, service) {
+		hacloudSrv.reloadServiceRegistry($scope, source, service);
+	};
+
+	$scope.loadServiceProvision = function (source, service) {
+		hacloudSrv.loadServiceProvision($scope, source, service);
+	};
+
+	$scope.awarenessStat = function (source, service) {
+		hacloudSrv.awarenessStat($scope, source, service);
+	};
+
+	$scope.executeHeartbeatTest = function (env, oneHost) {
+			hacloudSrv.executeHeartbeatTest($scope, env, oneHost);
+	};
+
 	// if ($scope.access.listNodes) {
 		injectFiles.injectCss('modules/dashboard/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;

@@ -197,7 +197,7 @@ var deployer = {
 				return cb(error);
 			}
 
-			deployer.deployService(options, cb);
+			deployer.createService(options, cb);
 		});
 	},
 

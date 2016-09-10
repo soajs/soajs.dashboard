@@ -524,7 +524,365 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function listServices(currentScope) {
         listHosts(currentScope, currentScope.envCode);
-        listNginxHosts(currentScope, currentScope.env);
+        // listNginxHosts(currentScope, currentScope.env);
+    }
+
+    function reloadRegistry(currentScope, env, oneHost, cb) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "reloadRegistry",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
+                    oneHost.name +
+                    " " + translation.onIP[LANG] + " " +
+                    oneHost.ip +
+                    ":" +
+                    oneHost.port +
+                    " @ " +
+                    new Date().toISOString());
+            }
+            else {
+                if (cb) {
+                    cb();
+                }
+                else {
+                    var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
+                    formConfig.entries[0].value = response;
+                    var options = {
+            			timeout: $timeout,
+            			form: formConfig,
+            			name: 'reloadRegistry',
+            			label: "Reloaded Registry of " + oneHost.name,
+            			actions: [
+            				{
+            					'type': 'reset',
+            					'label': translation.ok[LANG],
+            					'btn': 'primary',
+            					'action': function (formData) {
+                                    currentScope.modalInstance.dismiss('cancel');
+                                    currentScope.form.formData = {};
+                                }
+            				}
+            			]
+            		};
+
+            		buildFormWithModal(currentScope, $modal, options);
+                }
+            }
+        });
+    }
+
+    function reloadServiceRegistry (currentScope, source, service) {
+        //reload registry for all service instances in parallel
+        if (source === 'controller') {
+            service.forEach(function (oneServiceIp) {
+                reloadRegistry(currentScope, currentScope.envCode, oneServiceIp);
+            });
+        }
+        else {
+            var srvVersions = Object.keys(service.ips);
+            srvVersions.forEach(function (oneSrvVersion) {
+                service.ips[oneSrvVersion].forEach(function (oneInstance) {
+                    reloadRegistry(currentScope, currentScope.envCode, oneInstance);
+                });
+            });
+        }
+    }
+
+    function loadProvisioning(currentScope, env, oneHost) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "loadProvision",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
+                    oneHost.name +
+                    " " + translation.onIP[LANG] + " " +
+                    oneHost.ip +
+                    ":" +
+                    oneHost.port +
+                    " @ " +
+                    new Date().toISOString());
+            }
+            else {
+                var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
+                formConfig.entries[0].value = response;
+                var options = {
+        			timeout: $timeout,
+        			form: formConfig,
+        			name: 'reloadProvision',
+        			label: "Reloaded Provisioned Information of " + oneHost.name,
+        			actions: [
+        				{
+        					'type': 'reset',
+        					'label': translation.ok[LANG],
+        					'btn': 'primary',
+        					'action': function (formData) {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.form.formData = {};
+                            }
+        				}
+        			]
+        		};
+
+        		buildFormWithModal(currentScope, $modal, options);
+            }
+        });
+    }
+
+    function loadServiceProvision (currentScope, source, service) {
+        //reload provision for all service instances in parallel
+        var srvVersions = Object.keys(service.ips);
+        srvVersions.forEach(function (oneSrvVersion) {
+            service.ips[oneSrvVersion].forEach(function (oneInstance) {
+                loadProvisioning(currentScope, currentScope.envCode, oneInstance);
+            });
+        });
+    }
+
+    function executeAwarenessTest(currentScope, env, oneHost) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "awarenessStat",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, awarenessResponse) {
+            if (error || !awarenessResponse.result || !awarenessResponse.data) {
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingAwarnessTestControllerIP[LANG] + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
+            }
+            else {
+                awarenessResponse = awarenessResponse.data.services;
+                for (var oneService in awarenessResponse) {
+                    if (awarenessResponse.hasOwnProperty(oneService)) {
+                        if (oneService === 'controller') {
+                            continue;
+                        }
+
+                        if (awarenessResponse[oneService].awarenessStats) {
+                            var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
+                            ips.forEach(function (serviceIp) {
+                                updateService(awarenessResponse, oneService, serviceIp);
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateService(response, oneService, serviceIp) {
+            var count = 0, max = 0;
+
+            for(var version in currentScope.hosts[oneService].ips){
+                for (var i = 0; i < currentScope.hosts[oneService].ips[version].length; i++) {
+                    max++;
+                    if (currentScope.hosts[oneService].ips[version][i].ip === serviceIp) {
+                        if (response[oneService].awarenessStats[serviceIp].healthy) {
+                            currentScope.hosts[oneService].ips[version][i].healthy = true;
+                            currentScope.hosts[oneService].ips[version][i].color = 'green';
+                        }
+                        else {
+                            currentScope.hosts[oneService].ips[version][i].healthy = false;
+                            currentScope.hosts[oneService].ips[version][i].color = 'red';
+                        }
+
+                        var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
+                        currentScope.hosts[oneService].ips[version][i].lastCheck = getTimeAgo(lc);
+
+                        if (response[oneService].awarenessStats[serviceIp].downSince) {
+                            currentScope.hosts[oneService].ips[version][i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
+                        }
+                        if (response[oneService].awarenessStats[serviceIp].downCount) {
+                            currentScope.hosts[oneService].ips[version][i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
+                        }
+
+                        currentScope.hosts[oneService].ips[version][i].controllers.forEach(function (oneCtrl) {
+                            if (oneCtrl.ip === oneHost.ip) {
+                                oneCtrl.color = 'green';
+                            }
+                        });
+                    }
+                }
+
+
+                currentScope.hosts[oneService].ips[version].forEach(function (oneIP) {
+                    if (oneIP.healthy) {
+                        count++;
+                    }
+                });
+            }
+
+            var healthy, color;
+            if (count === max) {
+            //if (count === currentScope.hosts[oneService].ips.length) {
+                color = 'green';
+                healthy = true;
+            }
+            else if (count === 0) {
+                color = 'red';
+                healthy = false;
+            }
+            else {
+                color = 'yellow';
+                healthy = false;
+            }
+            currentScope.hosts[oneService].healthy = healthy;
+            currentScope.hosts[oneService].color = color;
+            // currentScope.generateNewMsg(env, 'success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
+            currentScope.displayAlert('success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
+        }
+    }
+
+    function awarenessStat (currentScope, source, service) {
+        //excute awareness test for all service instances in parallel
+        service.forEach(function (oneServiceIp) {
+            executeAwarenessTest(currentScope, currentScope.envCode, oneServiceIp);
+        });
+    }
+
+    function executeHeartbeatTest(currentScope, env, oneHost) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "send",
+            "routeName": "/dashboard/hosts/maintenanceOperation",
+            "data": {
+                "serviceName": oneHost.name,
+                "operation": "heartbeat",
+                "serviceHost": oneHost.ip,
+                "servicePort": oneHost.port,
+                "hostname": oneHost.hostname,
+                "env": env
+            }
+        }, function (error, heartbeatResponse) {
+            if (error) {
+                updateServiceStatus(false);
+                currentScope.generateNewMsg(env, 'danger', translation.errorExecutingHeartbeatTest[LANG] + " " + oneHost.name + " " + translation.onHostName[LANG] +" " + oneHost.hostname + " @ " + new Date().toISOString());
+                updateServicesControllers(currentScope, env, oneHost);
+            }
+            else {
+                if (heartbeatResponse.result) {
+                    for(var version in currentScope.hosts[oneHost.name].ips){
+                        for (var i = 0; i < currentScope.hosts[oneHost.name].ips[version].length; i++) {
+                            if (currentScope.hosts[oneHost.name].ips[version][i].ip === oneHost.ip) {
+                                currentScope.hosts[oneHost.name].ips[version][i].heartbeat = true;
+                                currentScope.hosts[oneHost.name].ips[version][i].color = 'green';
+                            }
+                        }
+                    }
+                }
+                updateServiceStatus(true);
+                if (oneHost.name === 'controller') {
+                    currentScope.displayAlert('success', translation.service[LANG] + " " +
+                        oneHost.name +
+                        " " + translation.onHostName[LANG] + " " +
+                        oneHost.hostname +
+                        ":" +
+                        oneHost.port +
+                        " " + translation.isHealthy[LANG]+ " @ " +
+                        new Date().toISOString() +
+                        ", " + translation.checkingServicePleaseWait[LANG]);
+                }
+            }
+        });
+
+        function updateServiceStatus(healthyCheck) {
+            var count = 0, max=0;
+            var healthy = currentScope.hosts[oneHost.name].healthy;
+            var color = currentScope.hosts[oneHost.name].color;
+            var waitMessage = {};
+
+            if(oneHost.name ==='controller'){
+                checkMyIps(currentScope.hosts[oneHost.name].ips, max, count, healthyCheck, waitMessage);
+            }
+            else{
+                for(var version in currentScope.hosts[oneHost.name].ips){
+                    checkMyIps(currentScope.hosts[oneHost.name].ips[version], max, count, healthyCheck, waitMessage);
+                }
+            }
+
+            if (count === max) {
+                color = 'green';
+                healthy = true;
+            }
+            else if (count === 0) {
+                color = 'red';
+                healthy = false;
+            }
+            else {
+                color = 'yellow';
+                healthy = false;
+            }
+
+            currentScope.hosts[oneHost.name].healthy = healthy;
+            currentScope.hosts[oneHost.name].color = color;
+            if (oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
+                currentScope.hosts[oneHost.name].waitMessage = waitMessage;
+                currentScope.closeWaitMessage(currentScope.hosts[oneHost.name]);
+            }
+        }
+
+        function checkMyIps(ips, max, count, healthyCheck, waitMessage){
+            for (var i = 0; i < ips.length; i++) {
+                max++;
+                if (oneHost.ip === ips[i].ip) {
+                    if (healthyCheck) {
+                        currentScope.hostList.forEach(function (origHostRec) {
+                            if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
+                                ips[i].hostname = origHostRec.hostname;
+                                ips[i].cid = origHostRec.cid;
+                            }
+                        });
+                        if (oneHost.name === 'controller') {
+                            ips[i].heartbeat = true;
+                            ips[i].color = 'green';
+                        }
+                        else {
+                            ips[i].healthy = true;
+                            ips[i].color = 'green';
+                            waitMessage = {
+                                type: "success",
+                                message:  translation.service[LANG] + " " + oneHost.name + " " + translation.onHostName[LANG] + " " + oneHost.hostname + ":" + oneHost.port + " " + translation.isHealthy[LANG] + " @ " + new Date().toISOString(),
+                                close: function (entry) {
+                                    entry.waitMessage.type = '';
+                                    entry.waitMessage.message = '';
+                                }
+                            };
+                        }
+                    }
+                    else {
+                        ips[i].healthy = false;
+                        ips[i].heartbeat = false;
+                        ips[i].color = 'red';
+                    }
+                }
+            }
+            for (var j = 0; j < ips.length; j++) {
+                if (ips[j].heartbeat || ips[j].healthy) {
+                    count++;
+                }
+            }
+        }
     }
 
     return {
@@ -532,7 +890,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'addNode': addNode,
         'removeNode': removeNode,
         'updateNode': updateNode,
-        'listServices': listServices
+        'listServices': listServices,
+        'reloadServiceRegistry': reloadServiceRegistry,
+        'loadServiceProvision': loadServiceProvision,
+        'awarenessStat': awarenessStat,
+        'executeHeartbeatTest': executeHeartbeatTest
     };
 
 }]);
