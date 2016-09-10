@@ -331,7 +331,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 	                }
                 }
             }
-
+            console.log(currentScope.hosts);
             buildGroupsDisplay(renderedHosts);
         }
 
@@ -486,30 +486,32 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             }
         }, function (error, response) {
             if (error) {
-                currentScope.generateNewMsg(env, 'danger', error.message);
+                currentScope.displayAlert('danger', error.message);
             }
             else {
                 //collect network information to be displayed in UI
                 currentScope.showNginxHosts = true;
                 response.forEach(function (oneHost) {
-                    oneHost.networkInfo = {
-                        ips: [],
-                        ports: []
-                    };
-                    for (var network in oneHost.info.NetworkSettings.Networks) {
-                        oneHost.networkInfo.ips.push({
-                            networkName: network,
-                            ipAdd: oneHost.info.NetworkSettings.Networks[network].IPAddress
-                        });
-                    }
-                    for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
-                        if (oneHost.info.NetworkSettings.Ports[mappedPort] && mappedPort !== "443/tcp") {
-                            oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
-                                oneHost.networkInfo.ports.push({
-                                    host: oneMapping.HostPort,
-                                    container: mappedPort
-                                });
+                    if (oneHost.info.NetworkSettings && oneHost.info.NetworkSettings.Networks) {
+                        oneHost.networkInfo = {
+                            ips: [],
+                            ports: []
+                        };
+                        for (var network in oneHost.info.NetworkSettings.Networks) {
+                            oneHost.networkInfo.ips.push({
+                                networkName: network,
+                                ipAdd: oneHost.info.NetworkSettings.Networks[network].IPAddress
                             });
+                        }
+                        for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
+                            if (oneHost.info.NetworkSettings.Ports[mappedPort] && mappedPort !== "443/tcp") {
+                                oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
+                                    oneHost.networkInfo.ports.push({
+                                        host: oneMapping.HostPort,
+                                        container: mappedPort
+                                    });
+                                });
+                            }
                         }
                     }
                 });
@@ -520,7 +522,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function listServices(currentScope) {
         listHosts(currentScope, currentScope.envCode);
-        // listNginxHosts(currentScope, currentScope.env);
+        listNginxHosts(currentScope, currentScope.envCode);
     }
 
     function reloadRegistry(currentScope, env, oneHost, cb) {
@@ -1330,7 +1332,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'loadServiceProvision': loadServiceProvision,
         'awarenessStat': awarenessStat,
         'executeHeartbeatTest': executeHeartbeatTest,
-        'deployNewService': deployNewService
+        'deployNewService': deployNewService,
+        'listNginxHosts': listNginxHosts
     };
 
 }]);

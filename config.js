@@ -1953,6 +1953,27 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"name": {
+				"source": ['body.name'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -1985,6 +2006,20 @@ module.exports = {
 				"required": false,
 				"validation": {
 					"type": "boolean"
+				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
 				}
 			}
 		},

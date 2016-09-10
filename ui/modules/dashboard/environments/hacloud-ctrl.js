@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'hacloudSrv', 'injectFiles', function ($scope, $cookies, $timeout, hacloudSrv, injectFiles) {
+environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -26,6 +26,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
         hacloudSrv.updateNode($scope, node, type, newStatus);
     };
 
+	$scope.deployNewEnv = function () {
+		deploySrv.deployEnvironment($scope, $scope.envCode, true);
+	};
+
 	$scope.deployNewService = function () {
 		hacloudSrv.deployNewService($scope);
 	};
@@ -33,6 +37,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	$scope.listServices = function () {
 		hacloudSrv.listServices($scope);
 	};
+
+	$scope.listNginxServices = function () {
+		hacloudSrv.listNginxHosts($scope, $scope.envCode);
+	}
 
 	$scope.reloadServiceRegistry = function (source, service) {
 		hacloudSrv.reloadServiceRegistry($scope, source, service);

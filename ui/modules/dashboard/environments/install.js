@@ -1520,7 +1520,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/hacloud.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];
