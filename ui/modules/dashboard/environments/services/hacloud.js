@@ -124,8 +124,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 }
             }, function (error, response) {
                 if (error || !response) {
-                    console.log (error);
-                    // currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
+                    currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                 }
                 else {
 	                currentScope.profile = response.profile;
@@ -210,7 +209,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 }
             }, function (error, response) {
                 if (error || !response || !response.result) {
-                    // currentScope.generateNewMsg(env, 'danger', translation.controllers[LANG] + ' ' + defaultControllerHost.hostname + ' ' + translation.notHealthy[LANG] + '.');
+                    currentScope.displayAlert('danger', translation.controllers[LANG] + ' ' + defaultControllerHost.hostname + ' ' + translation.notHealthy[LANG] + '.');
                     if (error) {
                         console.log(error.message);
                     }
@@ -235,8 +234,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         }
                     }, function (error, response) {
                         if (error || !response || !response.result || !response.data) {
-                            console.log (error);
-                            // currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveServicesHostsInformation[LANG]);
+                            currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
                         }
                         else {
                             var servicesList = Object.keys(response.data.services);
@@ -334,7 +332,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 }
             }
 
-            console.log (renderedHosts);
             buildGroupsDisplay(renderedHosts);
         }
 
@@ -354,8 +351,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     currentScope.groups[renderedHosts[hostName].group].services.push(hostName);
                 }
             }
-
-            console.log (currentScope.groups);
         }
     }
 

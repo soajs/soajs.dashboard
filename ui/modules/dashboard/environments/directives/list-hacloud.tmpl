@@ -152,9 +152,9 @@
                 <div ng-repeat="(serviceName, serviceInfo) in hosts">
                     <div ng-if="serviceName === 'controller'" ng-show="showCtrlHosts">
                         <div class="entryBoxes">
-                            <div class="entryBox mb20" ng-repeat="oneIp in serviceInfo.ips">
+                            <div class="entryBox mb20">
                                 <div class="header">
-                                    <span class="serviceLabelBox">{{oneIp.name|uppercase}} - v.{{oneIp.version}} | Port: {{oneIp.port}}</span>
+                                    <span class="serviceLabelBox">{{serviceName|uppercase}} - v.{{oneIp.version}} | Port: {{serviceInfo.port}}</span>
                                     <div class="dropdown serviceOpsDropdown">
                                         <button class="btn btn-default dropdown-toggle" type="button" id="serviceOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                             Service Operations
