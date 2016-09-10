@@ -206,7 +206,15 @@ var deployer = {
 	},
 
 	"deleteHAService": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			if (error) {
+				return cb(error);
+			}
 
+			var serviceId = '';
+			var service = deployer.getService(serviceId);
+			service.remove(cb);
+		});
 	}
 };
 module.exports = deployer;

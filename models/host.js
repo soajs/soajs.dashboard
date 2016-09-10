@@ -110,6 +110,11 @@ var model = {
 		}, cb);
 	},
 
+	"insertContainers": function (soajs, records, cb) {
+		checkForMongo(soajs);
+		mongo.insert(dockerColl, records, cb);
+	},
+
 	"listNodes": function (soajs, criteria, cb) {
 		checkForMongo(soajs);
 		criteria.recordType = 'node';

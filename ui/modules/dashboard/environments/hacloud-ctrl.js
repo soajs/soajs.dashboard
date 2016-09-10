@@ -26,6 +26,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
         hacloudSrv.updateNode($scope, node, type, newStatus);
     };
 
+	$scope.deployNewService = function () {
+		hacloudSrv.deployNewService($scope);
+	};
+
 	$scope.listServices = function () {
 		hacloudSrv.listServices($scope);
 	};

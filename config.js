@@ -2082,6 +2082,13 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
