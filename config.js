@@ -33,7 +33,9 @@ module.exports = {
 
 	"images": {
 		"nginx": 'soajsorg/nginx',
-		"services": "soajsorg/soajs"
+		//////////////////////////////////////////////////////////////////
+		"services": "soajstest/soajs" //TEMPORARY: USING TEST IMAGE NAME//
+		//////////////////////////////////////////////////////////////////
 	},
 
 	"imagesDir": "/opt/soajs/FILES/deployer/",
