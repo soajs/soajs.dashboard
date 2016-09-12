@@ -2407,6 +2407,34 @@ module.exports = {
 			}
 		},
 
+		"/analytics/check": {
+			"_apiInfo": {
+				"l": "Check Analytics Status",
+				"group": "Analytics"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/analytics/activate": {
+			"_apiInfo": {
+				"l": "Activate Analytics",
+				"group": "Analytics"
+			},
+			"env": {
+				"source": ['body.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
 		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",

@@ -19,6 +19,7 @@ var servicesColl = "services";
 var daemonsColl = "daemons";
 var gitColl = "git_accounts";
 var staticColl = "staticContent";
+var analyticsColl = "analytics";
 
 var model = {
 	"getDB": function () {
@@ -218,6 +219,26 @@ var model = {
 		checkForMongo(soajs);
 		mongo.findOne(staticColl, {'_id': id}, cb);
 	},
+
+	/**
+	 * ANALYTICS COLLECTION
+	 */
+
+	 "getEnvAnalyticsRecord": function (soajs, env, cb) {
+		 checkForMongo(soajs);
+		 mongo.findOne(analyticsColl, {'json.env': env}, cb);
+	 },
+
+	 "updateAnalyticsRecord": function (soajs, env, update, cb) {
+		checkForMongo(soajs);
+		mongo.update(analyticsColl, {'json.env': env}, update, cb);
+	},
+
+	"getAnalyticsRecords": function (soajs, type, cb) {
+		checkForMongo(soajs);
+		mongo.find(analyticsColl, {type: type}, cb);
+	}
+
 
 	/*
 		grid fs

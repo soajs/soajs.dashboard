@@ -1,0 +1,18 @@
+<section ng-controller="analyticsCtrl">
+    <div ng-if="analytics.activated">
+        <tabset>
+            <tab heading="Web">
+
+            </tab>
+            <tab heading="Cluster">
+
+            </tab>
+        </tabset>
+    </div>
+    <div ng-if="!analytics.activated">
+        <alert type="warning" ng-style="{'text-align': 'center'}">
+            Analytics are not active for this environment
+        </alert>
+        <button ng-style="{'margin-left': '44%'}" class="btn btn-primary" ng-click="activateAnalytics()">Activate Analytics</button>
+    </div>
+</section>

@@ -148,6 +148,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 		                            'hostname': response.hosts[j].hostname,
 		                            'ip': response.hosts[j].ip,
 		                            'cid': response.hosts[j].cid,
+                                    'taskName': response.hosts[j].taskName,
 		                            'version': response.hosts[j].version,
 		                            'color': 'red',
 		                            'port': 4000,
@@ -331,7 +332,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 	                }
                 }
             }
-            console.log(currentScope.hosts);
+            console.log(renderedHosts);
             buildGroupsDisplay(renderedHosts);
         }
 

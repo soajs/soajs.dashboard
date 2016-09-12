@@ -198,7 +198,7 @@
                                                                 <span class="icon icon-heart"></span>&nbsp;
                                                             </a>
 
-                                                            <a href="" ng-show="container.cid" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                            <a href="" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
                                                                 <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
                                                             </a>
                                                         </td>
@@ -266,7 +266,7 @@
                                                             <span class="icon icon-stats-dots"></span>&nbsp;
                                                         </a>
 
-                                                        <a href="" ng-show="container.cid" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                        <a href="" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
                                                             <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
                                                         </a>
                                                     </td>

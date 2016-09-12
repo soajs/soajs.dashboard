@@ -560,6 +560,21 @@ service.init(function () {
  		});
 	 });
 
+	 /**
+ 	 * Analytics Features
+ 	 */
+	 service.get("/analytics/check", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.checkAnalytics(config, req.soajs, res);
+		});
+	 });
+
+	 service.post("/analytics/activate", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.activateAnalytics(config, req.soajs, res);
+		});
+	 });
+
 	/**
 	 * Github App features
 	 */
