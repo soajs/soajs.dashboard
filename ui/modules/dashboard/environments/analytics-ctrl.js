@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('analyticsCtrl', ['$scope', '$cookies', '$timeout', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, hacloudSrv, deploySrv, injectFiles) {
+environmentsApp.controller('analyticsCtrl', ['$scope', '$cookies', '$timeout', 'ngDataApi', 'injectFiles', function ($scope, $cookies, $timeout, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
