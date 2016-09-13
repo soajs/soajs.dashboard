@@ -8,6 +8,7 @@ environmentsApp.controller('analyticsCtrl', ['$scope', '$cookies', '$timeout', '
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
     $scope.analytics = {
+		env: $scope.envCode.toLowerCase(),
         activated: false
     };
 
