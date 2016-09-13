@@ -11,8 +11,9 @@
     </div>
     <div ng-if="!analytics.activated">
         <alert type="warning" ng-style="{'text-align': 'center'}">
-            Analytics are not active for this environment
+            Analytics has not been activated yet
         </alert>
+        <br />
         <button ng-style="{'margin-left': '44%'}" class="btn btn-primary" ng-click="activateAnalytics()">Activate Analytics</button>
     </div>
 </section>

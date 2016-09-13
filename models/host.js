@@ -226,12 +226,12 @@ var model = {
 
 	 "getEnvAnalyticsRecord": function (soajs, env, cb) {
 		 checkForMongo(soajs);
-		 mongo.findOne(analyticsColl, {'json.env': env}, cb);
+		 mongo.findOne(analyticsColl, {'json.env': env.toLowerCase()}, cb);
 	 },
 
 	 "updateAnalyticsRecord": function (soajs, env, update, cb) {
 		checkForMongo(soajs);
-		mongo.update(analyticsColl, {'json.env': env}, update, cb);
+		mongo.update(analyticsColl, {'json.env': env.toLowerCase()}, update, cb);
 	},
 
 	"getAnalyticsRecords": function (soajs, type, cb) {
