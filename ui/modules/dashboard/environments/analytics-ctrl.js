@@ -8,7 +8,6 @@ environmentsApp.controller('analyticsCtrl', ['$scope', '$cookies', '$timeout', '
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
     $scope.analytics = {
-		env: $scope.envCode.toLowerCase(),
         activated: false
     };
 
@@ -24,7 +23,7 @@ environmentsApp.controller('analyticsCtrl', ['$scope', '$cookies', '$timeout', '
                 $scope.displayAlert('danger', error.message);
             }
             else {
-                $scope.analytics.activated = response.data;
+                $scope.analytics.activated = response.enabled;
             }
         });
     };
