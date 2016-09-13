@@ -143,11 +143,18 @@
         <tab heading="Services">
             <br />
             <div ng-if="!hosts.controller">
-                <alert type="warning" ng-style="{'text-align': 'center'}">
-                    This environment has not been deployed yet!
-                </alert>
-                <br />
-                <button ng-style="{'margin-left': '44%'}" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+				<div ng-if="!isDeploying">
+					<alert type="warning" ng-style="{'text-align': 'center'}">
+	                    This environment has not been deployed yet!
+	                </alert>
+	                <br />
+	                <button ng-style="{'margin-left': '44%'}" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+				</div>
+                <div ng-if="isDeploying">
+					<alert type="success" ng-style="{'text-align': 'center'}">
+	                    This environment is being deployed and will be available in a few minutes. Please wait.
+	                </alert>
+				</div>
             </div>
             <div ng-if="hosts.controller">
                 <button class="btn btn-primary" ng-click="deployNewService()">Deploy New Service</button>
