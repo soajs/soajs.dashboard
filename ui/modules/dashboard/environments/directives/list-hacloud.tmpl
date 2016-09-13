@@ -179,19 +179,22 @@
 												<td class="hostnameHeader">Hostname</td>
 												<td class="statusHeader">Status</td>
 												<td class="ipHeader">IP Address</td>
-												<td>Exposed Port(s)</td>
 											</tr>
 										</thead>
 										<tbody>
 											<tr ng-repeat="instance in nginxHosts">
-												<td>Maintenance</td>
+												<td>
+													<a href="">
+														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+													</a>
+												</td>
 												<td>{{instance.hostname}}</td>
 												<td>
-													<span style="color: green" ng-if="instance.running">Healthy</span>
-													<span style="color: red" ng-if="!instance.running">Unreachable</span>
+													<span style="color: green" ng-if="instance.running"><b>Healthy</b></span>
+													<span style="color: red" ng-if="!instance.running"><b>Unreachable</b></span>
 												</td>
-												<td><span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span></td>
-												<td>Exposed Port(s)</td>
+												<!-- <td><span ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span></td> -->
+												<td>Pending</td>
 											</tr>
 										</tbody>
 									</table>
