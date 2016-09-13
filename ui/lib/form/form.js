@@ -103,7 +103,7 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (oneValue.v.toString() === configuration.data[inputName].toString()) {
+							if (!configuration.data[inputName] || oneValue.v.toString() === configuration.data[inputName].toString()) {
 								oneValue.selected = true;
 							}
 						}
