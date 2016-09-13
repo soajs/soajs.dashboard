@@ -3,7 +3,7 @@ var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 
-	function listGroups(currentScope, groupsConfig, callback) {
+	function listGroups(currentScope, groupConfig, callback) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		if (currentScope.access.adminGroup.list) {
 			var opts = {
@@ -25,17 +25,17 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 						return callback(response);
 					}
 					else {
-						printGroups(currentScope, groupsConfig, response);
+						printGroups(currentScope, groupConfig, response);
 					}
 				}
 			});
 		}
 	}
 	
-	function printGroups(currentScope, groupsConfig, response) {
+	function printGroups(currentScope, groupConfig, response) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var options = {
-			grid: groupsConfig.grid,
+			grid: groupConfig.grid,
 			data: response,
 			defaultSortField: 'code',
 			left: [],
@@ -74,9 +74,9 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 		buildGrid(currentScope, options);
 	}
 	
-	function addGroup(currentScope, groupsConfig) {
+	function addGroup(currentScope, groupConfig) {
 		var tCode = $cookies.getObject('urac_merchant').code;
-		var config = angular.copy(groupsConfig.form);
+		var config = angular.copy(groupConfig.form);
 		
 		var options = {
 			timeout: $timeout,
@@ -133,9 +133,9 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 		
 	}
 	
-	function editGroup(currentScope, groupsConfig, data) {
+	function editGroup(currentScope, groupConfig, data) {
 		var tCode = $cookies.getObject('urac_merchant').code;
-		var config = angular.copy(groupsConfig.form);
+		var config = angular.copy(groupConfig.form);
 		config.entries[0].type = 'readonly';
 		var options = {
 			timeout: $timeout,
@@ -238,7 +238,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 		});
 	}
 	
-	function assignUsers(currentScope, groupsConfig, data, event) {
+	function assignUsers(currentScope, groupConfig, data, event) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
@@ -266,7 +266,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 					});
 				}
 				
-				var config = angular.copy(groupsConfig.users);
+				var config = angular.copy(groupConfig.users);
 				config.entries[0].value = value;
 				
 				var options = {

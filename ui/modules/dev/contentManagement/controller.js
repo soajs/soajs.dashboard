@@ -4,7 +4,8 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
-	
+	$scope.cmModuleDev = cmModuleDev;
+
 	$scope.loadUIModule = function (oneService) {
 		$scope.hp = false;
 		$scope.selectedService = oneService;
@@ -528,5 +529,5 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	};
 	
 	cmModuleDevService.loadServices($scope);
-	injectFiles.injectCss("modules/dev/contentManagement/contentManagement.css");
+	injectFiles.injectCss(cmModuleDev + "/contentManagement.css");
 }]);

@@ -1,7 +1,7 @@
 "use strict";
-var uracModuleDev = 'modules/dev/urac';
+var uracModuleDev = uiModuleDev + '/urac';
 
-var memTranslation = {
+var uracModuleDevTranslation = {
 	"uracManagement": {
 		"ENG": "Urac Management",
 		"FRA": "Urac Management"
@@ -16,8 +16,8 @@ var memTranslation = {
 	}
 };
 
-for (var attrname in memTranslation) {
-	translation[attrname] = memTranslation[attrname];
+for (var attrname in uracModuleDevTranslation) {
+	translation[attrname] = uracModuleDevTranslation[attrname];
 }
 
 var uracModuleDevNav = [

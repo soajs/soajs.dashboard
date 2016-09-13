@@ -25,7 +25,8 @@
                                 <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
                             </span>
                             <span>
-                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/> {{translation.groups[LANG]}}
+                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/>
+	                            {{translation.groups[LANG]}}
                             </span>
 						</div>
 						<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType==='groups'">

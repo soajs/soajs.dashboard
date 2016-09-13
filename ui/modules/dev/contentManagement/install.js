@@ -1,5 +1,7 @@
 "use strict";
 
+var cmModuleDev = uiModuleDev + '/contentManagement';
+
 var cmModuleDevTranslation = {
 	"contentManagement": {
 		"ENG": "Content Management",
@@ -120,7 +122,7 @@ var cmModuleDevNav = [
 			'route': '/cb/list'
 		},
 		'url': '#/content-management',
-		'tplPath': 'modules/dev/contentManagement/directives/list.tmpl',
+		'tplPath': cmModuleDev + '/directives/list.tmpl',
 		'icon': 'newspaper',
 		'pillar': {
 			'name': 'operate',
@@ -131,7 +133,11 @@ var cmModuleDevNav = [
 		'contentMenu': true,
 		'tracker': true,
 		'order': 100,
-		'scripts': ['modules/dev/contentManagement/config.js', 'modules/dev/contentManagement/controller.js', 'modules/dev/contentManagement/services/contentManagement.js'],
+		'scripts': [
+			cmModuleDev + '/config.js',
+			cmModuleDev + '/controller.js',
+			cmModuleDev + '/services/contentManagement.js'
+		],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

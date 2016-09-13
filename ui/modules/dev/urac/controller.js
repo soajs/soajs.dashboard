@@ -5,7 +5,7 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
-	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
+	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
 	
 	$scope.listTenants = function () {
 		overlayLoading.show();
@@ -61,8 +61,8 @@ uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localSto
 	$scope.$parent.isUserLoggedIn();
 	
 	$scope.access = {};
-	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
-
+	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
+	
 	$scope.tName = $cookies.getObject('urac_merchant').name;
 	$scope.userCookie = $localStorage.soajs_user;
 }]);
@@ -76,11 +76,11 @@ uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', '$cookies', 'tenantM
 	});
 	
 	$scope.members.listMembers = function () {
-		tenantMembersModuleDevHelper.listMembers($scope.members, membersConfig);
+		tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig);
 	};
 	
 	$scope.members.addMember = function () {
-		tenantMembersModuleDevHelper.addMember($scope.members, membersConfig, true);
+		tenantMembersModuleDevHelper.addMember($scope.members, usersModuleDevConfig, true);
 	};
 	
 	$scope.members.editAcl = function (data) {
@@ -88,7 +88,7 @@ uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', '$cookies', 'tenantM
 	};
 	
 	$scope.members.editMember = function (data) {
-		tenantMembersModuleDevHelper.editMember($scope.members, membersConfig, data, true)
+		tenantMembersModuleDevHelper.editMember($scope.members, usersModuleDevConfig, data, true)
 	};
 	
 	$scope.members.activateMembers = function () {
@@ -113,15 +113,15 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	$scope.groups.access = $scope.$parent.access;
 	
 	$scope.groups.listGroups = function () {
-		tenantGroupsModuleDevHelper.listGroups($scope.groups, groupsConfig);
+		tenantGroupsModuleDevHelper.listGroups($scope.groups, groupsModuleDevConfig);
 	};
 	
 	$scope.groups.addGroup = function () {
-		tenantGroupsModuleDevHelper.addGroup($scope.groups, groupsConfig, true);
+		tenantGroupsModuleDevHelper.addGroup($scope.groups, groupsModuleDevConfig, true);
 	};
 	
 	$scope.groups.editGroup = function (data) {
-		tenantGroupsModuleDevHelper.editGroup($scope.groups, groupsConfig, data, true);
+		tenantGroupsModuleDevHelper.editGroup($scope.groups, groupsModuleDevConfig, data, true);
 	};
 	
 	$scope.groups.deleteGroups = function () {
@@ -133,7 +133,10 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	};
 	
 	$scope.groups.assignUsers = function (data) {
-		tenantGroupsModuleDevHelper.assignUsers($scope.groups, groupsConfig, data, {'name': 'reloadTenantMembers', params: {}});
+		tenantGroupsModuleDevHelper.assignUsers($scope.groups, groupsModuleDevConfig, data, {
+			'name': 'reloadTenantMembers',
+			params: {}
+		});
 	};
 	
 	setTimeout(function () {
@@ -153,6 +156,7 @@ uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi
 		$scope.allGroups = [];
 		$scope.pckName = '';
 		$scope.environments_codes = [];
+		$scope.uracModuleDev = uracModuleDev;
 		
 		var tCode = $cookies.getObject('urac_merchant').code;
 		$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
@@ -238,7 +242,7 @@ uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi
 					cb();
 				});
 			}
-
+			
 			function getPackage(oneApplication, cb) {
 				var opts = {
 					"method": "get",
@@ -248,7 +252,7 @@ uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi
 						"productCode": oneApplication.product
 					}
 				};
-
+				
 				getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);

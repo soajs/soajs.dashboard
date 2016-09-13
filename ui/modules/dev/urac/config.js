@@ -1,6 +1,6 @@
 "use strict";
 
-var membersConfig = {
+var usersModuleDevConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
@@ -80,7 +80,7 @@ var membersConfig = {
 	}
 };
 
-var groupsConfig = {
+var groupsModuleDevConfig = {
 	grid: {
 		recordsPerPageArray: [5, 10, 50, 100],
 		'columns': [
