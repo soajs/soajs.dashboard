@@ -160,6 +160,46 @@
                 <button class="btn btn-primary" ng-click="deployNewService()">Deploy New Service</button>
                 <button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
                 <br /><br />
+				<fieldset class="groupFieldset" ng-if="nginxHosts">
+					<legend>
+                        <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>
+                        Nginx Instances
+                    </legend>
+					<div class="entryBoxes">
+						<div class="entryBox mb20">
+							<div class="header">
+								<span class="serviceLabelBox">Nginx</span>
+							</div>
+							<div class="body">
+								<div class="grid">
+									<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+										<thead>
+											<tr class="header">
+												<td class="maintenanceHeader">Maintenance</td>
+												<td class="hostnameHeader">Hostname</td>
+												<td class="statusHeader">Status</td>
+												<td class="ipHeader">IP Address</td>
+												<td>Exposed Port(s)</td>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="instance in nginxHosts">
+												<td>Maintenance</td>
+												<td>{{instance.hostname}}</td>
+												<td>
+													<span style="color: green" ng-if="instance.running">Healthy</span>
+													<span style="color: red" ng-if="!instance.running">Unreachable</span>
+												</td>
+												<td><span class="green" ng-repeat="ip in nginxHost.networkInfo.ips">{{ip.networkName}}:{{ip.ipAdd}}<span ng-if="!$last">, </span></span></td>
+												<td>Exposed Port(s)</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</fieldset>
                 <fieldset class="groupFieldset" ng-if="hosts.controller">
                     <legend>
                         <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>
