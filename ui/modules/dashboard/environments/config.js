@@ -690,6 +690,18 @@ var environmentsConfig = {
 					'tooltip': translation.nodeDockerPort[LANG],
 					'required': true,
 					'value': ''
+				},
+				{
+					'name': 'role',
+					'label': translation.nodeRole[LANG],
+					'type': 'select',
+					'value': [
+						{l: 'Manager', v: 'manager'},
+						{l: 'Worker', v: 'worker', selected: true}
+					],
+					'tooltip': translation.nodeRole[LANG],
+					'required': true,
+					'value': ''
 				}
 			]
 		}

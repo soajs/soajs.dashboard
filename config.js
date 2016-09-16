@@ -2300,6 +2300,14 @@ module.exports = {
 				"validation": {
 					"type": "number"
 				}
+			},
+			"role": {
+				"source": ['body.role'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"enum": ['manager', 'worker']
+				}
 			}
 		},
 		"/hacloud/nodes/remove": {

@@ -310,6 +310,10 @@ var envTranslation ={
 		"ENG": "Node Docker Port",
 		"FRA": "Node Docker Port"
 	},
+	"nodeRole": {
+		"ENG": "Node Role",
+		"FRA": "Node Role"
+	},
 	//controller
 	"addNewEnvironment": {
 		"ENG": "Add New Environment",
