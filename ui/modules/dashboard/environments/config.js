@@ -700,8 +700,7 @@ var environmentsConfig = {
 						{l: 'Worker', v: 'worker', selected: true}
 					],
 					'tooltip': translation.nodeRole[LANG],
-					'required': true,
-					'value': ''
+					'required': true
 				}
 			]
 		}
