@@ -5,7 +5,7 @@ ul {
 
 .greyBoxCustom {
     position: relative !important;
-    width: 15% !important;
+    width: 25% !important;
     text-align: center !important;
 }
 
@@ -137,4 +137,18 @@ ul {
 .ctrlBoxUnhealthy {
     background-color: #FF3333;
     border: 2px solid #FF3333;
+}
+
+.driverEntryBox {
+    width: 49% !important;
+    padding-left: 0px !important;
+}
+
+.customLabel {
+    text-decoration: none !important;
+}
+
+.staticDiv {
+    width: 731px;
+    height: 52px;
 }

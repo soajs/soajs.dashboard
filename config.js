@@ -776,30 +776,30 @@ module.exports = {
 					"required": true
 				}
 			},
-			"driverName": {
-				"source": ['query.driverName'],
+			"type": {
+				"source": ['query.type'],
 				"required": true,
 				"validation": {
 					"type": "string"
 				}
 			},
-			"local": {
-				"source": ['body.local'],
-				"required": false,
+			"platform": {
+				"source": ['query.platform'],
+				"required": true,
 				"validation": {
-					"type": "object"
+					"type": "string"
 				}
 			},
-			"cloud": {
-				"source": ['body.cloud'],
-				"required": false,
+			"driver": {
+				"source": ['query.driver'],
+				"required": true,
 				"validation": {
-					"type": "object"
+					"type": "string"
 				}
 			},
-			"socket": {
-				"source": ['body.socket'],
-				"required": false,
+			"config": {
+				"source": ['body.config'],
+				"required": true,
 				"validation": {
 					"type": "object"
 				}
@@ -818,30 +818,30 @@ module.exports = {
 					"required": true
 				}
 			},
-			"driverName": {
-				"source": ['query.driverName'],
+			"type": {
+				"source": ['query.type'],
 				"required": true,
 				"validation": {
 					"type": "string"
 				}
 			},
-			"local": {
-				"source": ['body.local'],
-				"required": false,
+			"platform": {
+				"source": ['query.platform'],
+				"required": true,
 				"validation": {
-					"type": "object"
+					"type": "string"
 				}
 			},
-			"cloud": {
-				"source": ['body.cloud'],
-				"required": false,
+			"driver": {
+				"source": ['query.driver'],
+				"required": true,
 				"validation": {
-					"type": "object"
+					"type": "string"
 				}
 			},
-			"socket": {
-				"source": ['body.socket'],
-				"required": false,
+			"config": {
+				"source": ['body.config'],
+				"required": true,
 				"validation": {
 					"type": "object"
 				}

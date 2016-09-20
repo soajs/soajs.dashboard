@@ -53,28 +53,28 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         envPlatforms.editDriverConfig($scope, driver);
     };
 
-    $scope.uploadCerts = function (type, driverName) {
-        envPlatforms.uploadCerts($scope, type, driverName);
+    $scope.uploadCerts = function (platform, driverName) {
+        envPlatforms.uploadCerts($scope, platform, driverName);
     };
 
-    $scope.removeCert = function (certId, driverName) {
-        envPlatforms.removeCert($scope, certId, driverName);
+    $scope.removeCert = function (certId, platform, driverName) {
+        envPlatforms.removeCert($scope, certId, platform, driverName);
     };
 
     $scope.clearDriverConfig = function (driverName) {
         envPlatforms.clearDriverConfig ($scope, driverName);
     };
 
-    $scope.selectDriver = function (driverName) {
-        envPlatforms.selectDriver ($scope, driverName, $scope.deployer.type);
+    $scope.selectDriver = function (platform, driverName) {
+        envPlatforms.selectDriver ($scope, platform, driverName, $scope.deployer.type);
     };
 
     $scope.addDriver = function () {
         envPlatforms.addDriver($scope);
     };
 
-    $scope.editDriver = function (driver) {
-        envPlatforms.editDriver($scope, driver);
+    $scope.editDriver = function (platform, driver, driverConfig) {
+        envPlatforms.editDriver($scope, platform, driver, driverConfig);
     };
 
     $scope.changeDeployerType = function () {
