@@ -15,7 +15,7 @@ var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
-var servicesCollectionName = 'services'
+var servicesCollectionName = 'services';
 var daemonsCollectionName = 'daemons';
 var staticContentCollectionName = 'staticContent';
 var groupConfigCollectionName = 'daemon_grpconf';
@@ -25,7 +25,6 @@ var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
 var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
-var productsCollectionName = 'products';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
 var dockerCollectionName = 'docker';
