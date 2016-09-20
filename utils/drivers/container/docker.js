@@ -98,7 +98,7 @@ var lib = {
 			}
 
 			var criteria = {};
-			criteria['metadata.env.' + config.envCode] = config.selectedDriver;
+			criteria['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
 			mongo.find('fs.files', criteria, function (error, certs) {
 				checkError(error, callback, function () {
 					if (!certs || (certs && certs.length === 0)) {
