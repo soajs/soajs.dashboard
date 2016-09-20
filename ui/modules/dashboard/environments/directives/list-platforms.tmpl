@@ -4,12 +4,12 @@
             Deployment Settings
         </legend>
         <div ng-if="access.platforms.deployer.changeDeployerType">
-            <label>Deployment Type:&nbsp;</label>
-            <select class="form-control selectCustom" ng-model="deployer.type">
+            <label class="f-left pt6">Deployment Type:&nbsp;&nbsp;</label>
+            <select class="form-control f-left selectCustom" ng-model="deployer.type">
                 <option value="manual">{{translation.manual[LANG]}}</option>
                 <option value="container">{{translation.container[LANG]}}</option>
             </select>
-            <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="access.platforms.deployer.changeDeployerType && deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+            <a href="" style="margin-left:10px" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="access.platforms.deployer.changeDeployerType && deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
         </div>
     </fieldset>
     <fieldset>
@@ -20,10 +20,6 @@
             <legend>
                 <img ng-src="{{dockerImagePath}}" height="32px" width="140px" alt="Docker Logo"/>
             </legend>
-            <div>
-                <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
-                <br /><br />
-            </div>
             <div ng-repeat="(platform, drivers) in platforms" ng-if="access.platforms.list">
                 <div ng-if="platform === 'docker'">
                     <div class="entryBoxes entryBoxesGrid">
@@ -32,12 +28,6 @@
                                 {{driver|uppercase}}
                                 <span ng-if="deployer.selected === platform + '.' + driver && allowSelect" ng-style="{'color': 'green'}"><span class="icon icon-checkmark"></span>Active</span>
                                 <span class="rightActions">
-                                    <a ng-if="access.platforms.drivers.delete" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
-                                        <span class="icon icon-cross" tooltip="{{translation.deleteDriver[LANG]}}"></span>
-                                    </a>
-                                    <a ng-if="access.platforms.drivers.edit" href="" ng-click="editDriver(platform, driver, config)">
-                                        <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
-                                    </a>
                                     <a href="" ng-if="access.platforms.certs.upload && !config.socketPath" ng-click="uploadCerts(platform, driver)">
                                         <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                                     </a>
@@ -87,8 +77,4 @@
 
 <script type="text/ng-template" id="uploadCerts.tmpl">
     <div ng-include="'modules/dashboard/environments/directives/uploadCerts.tmpl'"></div>
-</script>
-
-<script type="text/ng-template" id="addEditDriver.tmpl">
-    <div ng-include="'modules/dashboard/environments/directives/addEditDriver.tmpl'"></div>
 </script>

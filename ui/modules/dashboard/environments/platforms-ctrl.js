@@ -61,20 +61,8 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         envPlatforms.removeCert($scope, certId, platform, driverName);
     };
 
-    $scope.clearDriverConfig = function (driverName) {
-        envPlatforms.clearDriverConfig ($scope, driverName);
-    };
-
     $scope.selectDriver = function (platform, driverName) {
         envPlatforms.selectDriver ($scope, platform, driverName, $scope.deployer.type);
-    };
-
-    $scope.addDriver = function () {
-        envPlatforms.addDriver($scope);
-    };
-
-    $scope.editDriver = function (platform, driver, driverConfig) {
-        envPlatforms.editDriver($scope, platform, driver, driverConfig);
     };
 
     $scope.changeDeployerType = function () {

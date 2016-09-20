@@ -223,18 +223,6 @@ service.init(function () {
 		checkForMongo(req);
 		environment.chooseExistingCerts(config, mongo, req, res);
 	});
-	service.post("/environment/platforms/driver/add", function (req, res) {
-		checkForMongo(req);
-		environment.addDriver(config, mongo, req, res);
-	});
-	service.post('/environment/platforms/driver/edit', function (req, res) {
-		checkForMongo(req);
-		environment.editDriver(config, mongo, req, res);
-	});
-	service.get("/environment/platforms/driver/delete", function (req, res) {
-		checkForMongo(req);
-		environment.deleteDriver(config, mongo, req, res);
-	});
 	service.post("/environment/platforms/driver/changeSelected", function (req, res) {
 		checkForMongo(req);
 		environment.changeSelectedDriver(config, mongo, req, res);
