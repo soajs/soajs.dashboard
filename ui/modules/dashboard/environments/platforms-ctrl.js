@@ -16,12 +16,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         selected: ""
     };
 
-    $scope.allowAddDriver = {};
     $scope.allowSelect = $scope.deployer.type === 'container';
-
-    $scope.deployment = {
-        newType: ""
-    };
 
     $scope.jsoneditorConfig = environmentsConfig.jsoneditorConfig;
     $scope.jsoneditorConfig.onLoad = function (instance) {

@@ -748,6 +748,13 @@ module.exports = {
 					"required": true
 				}
 			},
+			"platform": {
+				"source": ['query.platform'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"driverName": {
 				"source": ['query.driverName'],
 				"required": true,

@@ -40,7 +40,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			for (var driver in onePlatform) {
 				onePlatform[driver].certs = [];
 				for (var i = 0; i < record.certs.length; i++) {
-					if (record.certs[i].metadata.platform === platform && record.certs[i].metadata.env[currentScope.envCode].indexOf(platform + '.' + driver) !== -1) {
+					if (record.certs[i].metadata.platform === platform && record.certs[i].metadata.env[currentScope.envCode] && record.certs[i].metadata.env[currentScope.envCode].indexOf(platform + '.' + driver) !== -1) {
 						currentScope.platforms[platform][driver].certs.push({
 							_id: record.certs[i]._id,
 							filename: record.certs[i].filename
@@ -182,6 +182,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						routeName: "/dashboard/environment/platforms/cert/choose",
 						params: {
 							env: currentScope.envCode,
+							platform: platform,
 							driverName: driverName
 						},
 						data: {
