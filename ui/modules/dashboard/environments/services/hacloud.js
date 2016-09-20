@@ -29,7 +29,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
-                            ip: formData.ip,
+                            host: formData.ip,
                             port: formData.port,
                             role: formData.role
                         };

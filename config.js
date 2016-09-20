@@ -2189,8 +2189,8 @@ module.exports = {
 				"l": "Add HA Cloud Node",
 				"group": "HA Cloud"
 			},
-			"ip": {
-				"source": ['body.ip'],
+			"host": {
+				"source": ['body.host'],
 				"required": true,
 				"validation": {
 					"type": "string"
