@@ -43,7 +43,10 @@
                                     <alert type="success">This driver does not require certificates</alert>
                                 </div>
                                 <div ng-if="!config.socketPath">
-                                    <label class="customLabel">Manager Nodes:&nbsp;</label>{{config.nodes}}<br />
+                                    <label class="customLabel">Manager Nodes:&nbsp;</label>
+                                    <span ng-if="config.nodes && config.nodes.length > 0"><span ng-repeat="node in config.nodes">{{node}}<span ng-if="!$last">, </span></span></span>
+                                    <span ng-if="!config.nodes || config.nodes.length === 0">No nodes available</span>
+                                    <br />
                                     <label class="customLabel">Certificates:</label><br />
                                     <div class="staticDiv">
                                         <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
