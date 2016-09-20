@@ -147,6 +147,11 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	
 }]);
 
+uracApp.controller('tokensModuleDevCtrl', ['$scope', '$cookies', function ($scope, $cookies) {
+
+
+}]);
+
 uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'memAclModuleDevHelper', '$route', '$localStorage',
 	function ($scope, $routeParams, ngDataApi, $cookies, memAclModuleDevHelper, $route, $localStorage) {
 		$scope.$parent.isUserLoggedIn();
