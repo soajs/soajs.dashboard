@@ -33,7 +33,7 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 						return cb(null, dockerConfig);
 					}
 					else {
-						getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
+						return getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
 					}
 				});
 			});
@@ -43,36 +43,75 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 
 var lib = {
 	"getDeployer": function (deployerConfig, mongo, cb) {
+		/**
+			Three options:
+				- local: use socket port
+				- remote: get manager node record, extract ip/port and certificates
+				- remote and adding a new node: in case of adding a new node, use ip/port of new node and certificates
+		*/
 		var config = utils.cloneObj(deployerConfig);
-		delete config.driver;
-		config.envCode = config.envCode.toUpperCase();
 		var docker;
 		if (config.socketPath) {
 			docker = new Docker({socketPath: config.socketPath});
 			return cb(null, docker);
 		}
 		else {
-			var dockerConfig = {
-				host: config.host,
-				port: config.port
-			};
+			var dockerConfig = {};
+			getTargetNode(config, function (error, target) {
+				checkError(error, cb, function () {
+					dockerConfig.host = target.host;
+					dockerConfig.port = target.port;
+
+					getNodeCertificates(config, dockerConfig, function (error, dockerConfig) {
+						checkError(error, cb, function () {
+							docker = new Docker(dockerConfig);
+							return cb(null, docker);
+						});
+					});
+				});
+			});
+		}
+
+		function getTargetNode(config, callback) {
+			if (config.flags && config.flags.newNode) {
+				if (!config.host || !config.port) {
+					return callback({message: 'Missing host/port info'});
+				}
+				return callback(null, {host: config.host, port: config.port});
+			}
+			else {
+				if (!config.nodes || (config.nodes && config.nodes.length === 0)) {
+					return callback({message: 'No manager nodes found in this environment\'s deployer'});
+				}
+				var oneManagerNode = config.nodes[0]; //any manager node can be selected
+				mongo.findOne('docker', {name: oneManagerNode}, function (error, nodeRecord) {
+					checkError(error, callback, function () {
+						return callback(null, {host: nodeRecord.ip, port: nodeRecord.port});
+					});
+				});
+			}
+		}
+
+		function getNodeCertificates(config, dockerConfig, callback) {
+			if (!config.envCode) {
+				return callback({message: 'Missing environment code'});
+			}
 
 			var criteria = {};
-			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
-			mongo.find("fs.files", criteria, function (error, certs) {
-				checkError(error, cb, function () {
-					if (!certs || certs.length === 0) {
-						return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
+			criteria['metadata.env.' + config.envCode] = config.selectedDriver;
+			mongo.find('fs.files', criteria, function (error, certs) {
+				checkError(error, callback, function () {
+					if (!certs || (certs && certs.length === 0)) {
+						return callback({message: 'No certificates for ' + config.envCode + ' environment found'});
 					}
 
 					mongo.getMongoSkinDB(function (error, db) {
-						checkError(error, cb, function () {
+						checkError(error, callback, function () {
 							var gfs = Grid(db, mongo.mongoSkin);
 							var counter = 0;
 							getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
-								checkError(error, cb, function () {
-									docker = new Docker(dockerConfig);
-									return cb(null, docker);
+								checkError(error, callback, function () {
+									return callback(null, dockerConfig);
 								});
 							});
 						});
@@ -164,6 +203,10 @@ var deployer = {
 	},
 
 	"addNode": function (deployerConfig, options, mongo, cb) {
+		deployerConfig.flags = {
+			newNode: true
+		};
+
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			if (error) {
 				return cb(error);
