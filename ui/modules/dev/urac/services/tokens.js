@@ -70,7 +70,7 @@ serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cook
 	function delete1Token(currentScope, data) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
-			"method": "get",
+			"method": "del",
 			"routeName": "/urac/owner/admin/tokens/delete",
 			"proxy": true,
 			"params": {
@@ -96,6 +96,7 @@ serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cook
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = {
 			'routeName': "/urac/owner/admin/tokens/delete",
+			"method": "del",
 			"proxy": true,
 			"params": {
 				"tCode": tCode,
