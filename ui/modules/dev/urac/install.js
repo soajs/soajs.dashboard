@@ -13,6 +13,38 @@ var uracModuleDevTranslation = {
 	"manageURAC": {
 		"ENG": "Manage URAC",
 		"FRA": "Manage URAC"
+	},
+	"tokensUserId": {
+		"ENG": "User",
+		"FRA": "User"
+	},
+	"tokensToken": {
+		"ENG": "Token",
+		"FRA": "Token"
+	},
+	"tokensExpires": {
+		"ENG": "Expiry Date",
+		"FRA": "Date d'expiration"
+	},
+	"tokensStatus": {
+		"ENG": "Status",
+		"FRA": "Status"
+	},
+	"tokensService": {
+		"ENG": "Service",
+		"FRA": "Service"
+	},
+	"areYouSureWantDeleteSelectedToken": {
+		"ENG": "Are you sure you want to delete selected token(s)",
+		"FRA": "Etes vouz sure que vous voulez suprimer le token "
+	},
+	"errorMessageDeleteToken": {
+		"ENG": "Unable to delete Token.",
+		"FRA": "Unable to delete Token."
+	},
+	"successMessageDeleteToken": {
+		"ENG": "Token deleted successfully.",
+		"FRA": "Token deleted successfully."
 	}
 };
 
@@ -54,7 +86,8 @@ var uracModuleDevNav = [
 			uracModuleDev + '/config.js',
 			uracModuleDev + '/controller.js',
 			uracModuleDev + '/services/members.js',
-			uracModuleDev + '/services/groups.js'
+			uracModuleDev + '/services/groups.js',
+			uracModuleDev + '/services/tokens.js'
 		],
 		'ancestor': [translation.home[LANG]]
 	},

@@ -76,6 +76,10 @@ var usersModuleDevConfig = {
 			'edit': ['urac', '/owner/admin/group/edit'],
 			'delete': ['urac', '/owner/admin/group/delete'],
 			'addUsers': ['urac', '/owner/admin/group/addUsers']
+		},
+		'adminToken': {
+			'list': ['urac', '/owner/admin/tokens/list'],
+			'delete': ['urac', '/owner/admin/tokens/delete']
 		}
 	}
 };
@@ -145,5 +149,23 @@ var groupsModuleDevConfig = {
 				'required': true
 			}
 		]
+	}
+};
+
+
+var tokensModuleDevConfig = {
+	grid: {
+		recordsPerPageArray: [5, 10, 50, 100],
+		'columns': [
+			{'label': translation.tokensUserId[LANG], 'field': 'username'},
+			{'label': translation.tokensToken[LANG], 'field': 'token'},
+			{'label': translation.tokensExpires[LANG], 'field': 'expires', 'filter' : 'prettyLocalDate'},
+			{'label': translation.tokensStatus[LANG], 'field': 'status'},
+			{'label': translation.tokensService[LANG], 'field': 'service'}
+		],
+		'leftActions': [],
+		'topActions': [],
+		'defaultSortField': '',
+		'defaultLimit': 10
 	}
 };

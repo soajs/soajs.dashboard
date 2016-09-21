@@ -44,6 +44,19 @@
 		<tab heading="Tokens">
 			<section ng-controller="tokensModuleDevCtrl as gridCtrl">
 
+			<div class="clearfix">
+            					<div class="f-right">
+            						<a class="btn btn-primary" ng-click="tokens.listTokens()" href="">
+            							{{translation.refreshListing[LANG]}}
+            						</a>
+            					</div>
+            				</div>
+            				<span ng-if="tokens.access.adminToken.add">
+                                <a href="" ng-click="tokens.addToken()" class="btn btn-primary">ADD NEW GROUP</a><br/><br/>
+                          </span>
+            <nglist></nglist>
+
 			</section>
 		</tab>
+	</tabset>
 </div>

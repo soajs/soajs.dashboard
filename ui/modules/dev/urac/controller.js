@@ -147,9 +147,28 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	
 }]);
 
-uracApp.controller('tokensModuleDevCtrl', ['$scope', '$cookies', function ($scope, $cookies) {
-
-
+uracApp.controller('tokensModuleDevCtrl', ['$scope', '$cookies', 'tokensModuleDevHelper', function ($scope, $cookies, tokensModuleDevHelper) {
+	$scope.tokens = angular.extend($scope);
+	$scope.tokens.access = $scope.$parent.access;
+	
+	$scope.tokens.listTokens = function () {
+		tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig);
+	};
+	
+	$scope.tokens.deleteTokens = function () {
+		tokensModuleDevHelper.deleteTokens($scope.tokens);
+	};
+	
+	$scope.tokens.delete1Token = function (data) {
+		tokensModuleDevHelper.delete1Token($scope.tokens, data, true);
+	};
+	
+	setTimeout(function () {
+		if ($scope.tokens.access.adminUser.list) {
+			$scope.tokens.listTokens();
+		}
+	}, 200);
+	
 }]);
 
 uracApp.controller('uracAclModuleDevCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'memAclModuleDevHelper', '$route', '$localStorage',
