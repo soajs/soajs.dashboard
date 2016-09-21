@@ -86,7 +86,7 @@ var lib = {
 				var oneManagerNode = config.nodes[0]; //any manager node can be selected
 				mongo.findOne('docker', {name: oneManagerNode}, function (error, nodeRecord) {
 					checkError(error, callback, function () {
-						return callback(null, {host: nodeRecord.ip, port: nodeRecord.port});
+						return callback(null, {host: nodeRecord.ip, port: nodeRecord.dockerPort});
 					});
 				});
 			}
