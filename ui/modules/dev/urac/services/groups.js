@@ -196,6 +196,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	function deleteGroups(currentScope) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = {
+			"method": "del",
 			'routeName': "/urac/owner/admin/group/delete",
 			"proxy": true,
 			"params": {
@@ -217,7 +218,7 @@ serviceUracApp.service('tenantGroupsModuleDevHelper', ['ngDataApi', '$timeout', 
 	function delete1Group(currentScope, data) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
-			"method": "get",
+			"method": "del",
 			"routeName": "/urac/owner/admin/group/delete",
 			"proxy": true,
 			"params": {
