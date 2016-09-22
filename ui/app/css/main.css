@@ -1499,3 +1499,23 @@ div.entryBox .body .btn-primary.noFloat {
     width: 20%;
     white-space: nowrap;
 }
+
+
+.pageCount {
+    width: 150px;
+    text-align: right;
+}
+
+td.apiNavigation {
+    width: 210px;
+    text-align: right;
+}
+
+td.apiNavigationWide {
+    width: 230px;
+}
+
+.totalCount {
+    width: 190px;
+    text-align: right;
+}

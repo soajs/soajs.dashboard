@@ -3,23 +3,34 @@ var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
-	function listMembers(currentScope, moduleConfig, callback) {
+	function listMembers(currentScope, moduleConfig, firsCall, callback) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",
 			"proxy": true,
 			"params": {
+				"start": currentScope.startLimit,
+				"limit": currentScope.endLimit,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"tCode": tCode
 			}
 		};
-
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 			}
 			else {
+				if (firsCall) {
+					currentScope.showNext = (currentScope.totalCount > currentScope.endLimit);
+				}
+				else {
+					var nextLimit = currentScope.startLimit + currentScope.increment;
+					if (currentScope.totalCount <= nextLimit) {
+						currentScope.showNext = false;
+					}
+				}
+				
 				if (callback && typeof(callback) === 'function') {
 					return callback(response);
 				}

@@ -67,46 +67,128 @@ uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localSto
 	$scope.userCookie = $localStorage.soajs_user;
 }]);
 
-uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', '$cookies', 'tenantMembersModuleDevHelper', function ($scope, $cookies, tenantMembersModuleDevHelper) {
-	$scope.members = angular.extend($scope);
-	$scope.members.access = $scope.$parent.access;
-	
-	$scope.$parent.$on('reloadTenantMembers', function (event) {
-		$scope.members.listMembers($scope);
-	});
-	
-	$scope.members.listMembers = function () {
-		tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig);
-	};
-	
-	$scope.members.addMember = function () {
-		tenantMembersModuleDevHelper.addMember($scope.members, usersModuleDevConfig, true);
-	};
-	
-	$scope.members.editAcl = function (data) {
-		tenantMembersModuleDevHelper.editAcl($scope.members, data);
-	};
-	
-	$scope.members.editMember = function (data) {
-		tenantMembersModuleDevHelper.editMember($scope.members, usersModuleDevConfig, data, true)
-	};
-	
-	$scope.members.activateMembers = function () {
-		tenantMembersModuleDevHelper.activateMembers($scope.members);
-	};
-	
-	$scope.members.deactivateMembers = function () {
-		tenantMembersModuleDevHelper.deactivateMembers($scope.members);
-	};
-	
-	//call default method
-	setTimeout(function () {
-		if ($scope.members.access.adminUser.list) {
-			$scope.members.listMembers($scope);
-		}
-	}, 200);
-	
-}]);
+uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', 'ngDataApi', '$cookies', 'tenantMembersModuleDevHelper',
+	function ($scope, ngDataApi, $cookies, tenantMembersModuleDevHelper) {
+		$scope.startLimit = 0;
+		$scope.totalCount = 0;
+		$scope.endLimit = usersModuleDevConfig.apiEndLimit;
+		$scope.increment = usersModuleDevConfig.apiEndLimit;
+		$scope.showNext = true;
+		$scope.pageActive = 1;
+		$scope.keywords;
+
+		$scope.members = angular.extend($scope);
+		$scope.members.access = $scope.$parent.access;
+
+		$scope.$parent.$on('reloadTenantMembers', function (event) {
+			$scope.members.listMembers(true);
+		});
+
+		$scope.getPrev = function () {
+			$scope.members.startLimit = $scope.members.startLimit - $scope.members.increment;
+			if (0 <= $scope.members.startLimit) {
+				$scope.members.listMembers();
+				$scope.members.showNext = true;
+				$scope.members.pageActive--;
+			}
+			else {
+				$scope.members.pageActive = 1;
+				$scope.members.startLimit = 0;
+			}
+		};
+
+		$scope.getNext = function () {
+			var startLimit = $scope.members.startLimit + $scope.members.increment;
+			if (startLimit < $scope.members.totalCount) {
+				$scope.members.startLimit = startLimit;
+				$scope.members.listMembers();
+				$scope.members.pageActive++;
+			}
+			else {
+				$scope.members.showNext = false;
+			}
+		};
+
+		$scope.getEnd = function () {
+			var startLimit = ($scope.members.totalPagesActive - 1) * $scope.members.endLimit;
+			if (startLimit < $scope.members.totalCount) {
+				$scope.members.startLimit = startLimit;
+				$scope.members.listMembers();
+				$scope.members.pageActive = $scope.members.totalPagesActive;
+			}
+			else {
+				$scope.members.showNext = false;
+			}
+		};
+
+		$scope.members.countMembers = function (cb) {
+			var opts = {
+				"method": "get",
+				"routeName": "/urac/owner/admin/users/count",
+				"proxy": true,
+				"params": {
+					"tCode": $cookies.getObject('urac_merchant').code,
+					"__env": $scope.members.currentSelectedEnvironment.toUpperCase()
+				}
+			};
+			if ($scope.keywords) {
+				opts.params.keywords = $scope.keywords;
+			}
+			getSendDataFromServer($scope.members, ngDataApi, opts, function (error, response) {
+				if (error) {
+					overlayLoading.hide();
+					$scope.members.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
+				}
+				else {
+					$scope.members.totalCount = response.count;
+					$scope.members.totalPagesActive = Math.ceil($scope.members.totalCount / $scope.endLimit);
+				}
+				cb();
+			});
+
+		};
+
+		$scope.members.listMembers = function (firstCall) {
+			if (firstCall) {
+				$scope.members.pageActive = 1;
+				$scope.members.countMembers(function () {
+					tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig, firstCall);
+				});
+			}
+			else {
+				tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig, firstCall);
+			}
+
+		};
+
+		$scope.members.addMember = function () {
+			tenantMembersModuleDevHelper.addMember($scope.members, usersModuleDevConfig, true);
+		};
+
+		$scope.members.editAcl = function (data) {
+			tenantMembersModuleDevHelper.editAcl($scope.members, data);
+		};
+
+		$scope.members.editMember = function (data) {
+			tenantMembersModuleDevHelper.editMember($scope.members, usersModuleDevConfig, data, true)
+		};
+
+		$scope.members.activateMembers = function () {
+			tenantMembersModuleDevHelper.activateMembers($scope.members);
+		};
+
+		$scope.members.deactivateMembers = function () {
+			tenantMembersModuleDevHelper.deactivateMembers($scope.members);
+		};
+
+		//call default method
+		setTimeout(function () {
+			if ($scope.members.access.adminUser.list) {
+				$scope.members.listMembers(true);
+			}
+		}, 200);
+
+	}]);
 
 uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGroupsModuleDevHelper', function ($scope, $cookies, tenantGroupsModuleDevHelper) {
 	$scope.groups = angular.extend($scope);

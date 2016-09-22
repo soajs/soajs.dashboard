@@ -1,8 +1,9 @@
 "use strict";
 
 var usersModuleDevConfig = {
+	apiEndLimit: 1000,
 	grid: {
-		recordsPerPageArray: [5, 10, 50, 100],
+		recordsPerPageArray: [10, 50, 100],
 		'columns': [
 			{'label': translation.username[LANG], 'field': 'username'},
 			{'label': translation.firstName[LANG], 'field': 'firstName'},
@@ -16,7 +17,7 @@ var usersModuleDevConfig = {
 		'defaultSortField': '',
 		'defaultLimit': 50
 	},
-
+	
 	form: {
 		'name': '',
 		'label': '',
@@ -60,7 +61,7 @@ var usersModuleDevConfig = {
 			}
 		]
 	},
-
+	
 	permissions: {
 		"listTenants": ['dashboard', '/tenant/list'],
 		'adminUser': {
@@ -97,7 +98,7 @@ var groupsModuleDevConfig = {
 		'defaultSortField': '',
 		'defaultLimit': 10
 	},
-
+	
 	form: {
 		'name': '',
 		'label': '',
@@ -159,7 +160,7 @@ var tokensModuleDevConfig = {
 		'columns': [
 			{'label': translation.tokensUserId[LANG], 'field': 'username'},
 			{'label': translation.tokensToken[LANG], 'field': 'token'},
-			{'label': translation.tokensExpires[LANG], 'field': 'expires', 'filter' : 'prettyLocalDate'},
+			{'label': translation.tokensExpires[LANG], 'field': 'expires', 'filter': 'prettyLocalDate'},
 			{'label': translation.tokensStatus[LANG], 'field': 'status'},
 			{'label': translation.tokensService[LANG], 'field': 'service'}
 		],
