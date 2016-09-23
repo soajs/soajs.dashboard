@@ -1,40 +1,40 @@
 <div class='grid' id="{{grid.thisGridId}}">
 
-	<div>
-		<table ng-if="grid.navigation" cellspacing="0" cellpadding="0" border="0" width="100%" class="navigation">
-			<tbody>
-				<tr>
-					<td>
-					</td>
-					<td></td>
-					<td align="right">
-						Found {{grid.navigation.totalCount}} Record(s)
-					</td>
-					<td align="right" class="pageCount">
-						Page {{grid.navigation.pageActive}} of {{grid.navigation.totalPagesActive}}
-					</td>
-					<td align="right" class="apiNavigation apiNavigationWide">
-						<ul class="pagination-sm pagination">
-							<li ng-if="grid.apiNavigation.previous" ng-class="{'disabled': grid.navigation.startLimit<=0}">
-								<a ng-click="grid.apiNavigation.previous.command()" href="">
-									{{translation.getPrevious[LANG]}} {{grid.navigation.endLimit}}
-								</a>
-							</li>
-							<li ng-if="grid.apiNavigation.next" ng-class="{'disabled': !grid.navigation.showNext}">
-								<a ng-click="grid.apiNavigation.next.command()" href="">
-									{{translation.getNext[LANG]}} {{grid.navigation.endLimit}}
-								</a>
-							</li>
-							<li ng-if="grid.apiNavigation.last" ng-class="{'disabled': !grid.navigation.showNext}">
-								<a ng-click="grid.apiNavigation.last.command();" href="">{{translation.last[LANG]}}</a>
-							</li>
-						</ul>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
 	<div ng-show="grid.filteredRows.length > 0 || grid.applySearch">
+		<div>
+			<table ng-if="grid.navigation" cellspacing="0" cellpadding="0" border="0" width="100%" class="navigation">
+				<tbody>
+					<tr>
+						<td>
+						</td>
+						<td></td>
+						<td align="right">
+							Found {{grid.navigation.totalCount}} Record(s)
+						</td>
+						<td align="right" class="pageCount">
+							Page {{grid.navigation.pageActive}} of {{grid.navigation.totalPagesActive}}
+						</td>
+						<td align="right" class="apiNavigation apiNavigationWide">
+							<ul class="pagination-sm pagination">
+								<li ng-if="grid.apiNavigation.previous" ng-class="{'disabled': grid.navigation.startLimit<=0}">
+									<a ng-click="grid.apiNavigation.previous.command()" href="">
+										{{translation.getPrevious[LANG]}} {{grid.navigation.endLimit}}
+									</a>
+								</li>
+								<li ng-if="grid.apiNavigation.next" ng-class="{'disabled': !grid.navigation.showNext}">
+									<a ng-click="grid.apiNavigation.next.command()" href="">
+										{{translation.getNext[LANG]}} {{grid.navigation.endLimit}}
+									</a>
+								</li>
+								<li ng-if="grid.apiNavigation.last" ng-class="{'disabled': !grid.navigation.showNext}">
+									<a ng-click="grid.apiNavigation.last.command();" href="">{{translation.last[LANG]}}</a>
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<table border="0" cellspacing="0" cellpadding="0" width="100%" class="">
 			<tr class="header">
 				<td>
