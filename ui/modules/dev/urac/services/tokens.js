@@ -3,7 +3,7 @@ var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
-	function listTokens(currentScope, tokenConfig, callback) {
+	function listTokens(currentScope, tokenConfig, firsCall, callback) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		if (currentScope.access.adminToken.list) {
 			var opts = {
@@ -11,6 +11,8 @@ serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cook
 				"routeName": "/urac/owner/admin/tokens/list",
 				"proxy": true,
 				"params": {
+					"start": currentScope.startLimit,
+					"limit": currentScope.endLimit,
 					"tCode": tCode,
 					"__env": currentScope.currentSelectedEnvironment.toUpperCase()
 				}
@@ -21,6 +23,16 @@ serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cook
 					currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
 				}
 				else {
+					if (firsCall) {
+						currentScope.showNext = (currentScope.totalCount > currentScope.endLimit);
+					}
+					else {
+						var nextLimit = currentScope.startLimit + currentScope.increment;
+						if (currentScope.totalCount <= nextLimit) {
+							currentScope.showNext = false;
+						}
+					}
+					
 					if (callback && typeof(callback) === 'function') {
 						return callback(response);
 					}
