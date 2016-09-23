@@ -48,7 +48,12 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 	};
 	
 	if ($scope.access.listTenants) {
-		$scope.listTenants();
+		if ($cookies.getObject('urac_merchant') && $cookies.getObject('urac_merchant').code) {
+			$scope.$parent.go('/urac-management/members');
+		}
+		else {
+			$scope.listTenants();
+		}
 	}
 	else {
 		var user = $localStorage.soajs_user;
@@ -65,6 +70,10 @@ uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localSto
 	
 	$scope.tName = $cookies.getObject('urac_merchant').name;
 	$scope.userCookie = $localStorage.soajs_user;
+	$scope.backToList = function () {
+		$cookies.remove('urac_merchant');
+		$scope.$parent.go('/urac-management');
+	};
 }]);
 
 uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', 'ngDataApi', '$cookies', 'tenantMembersModuleDevHelper',
@@ -72,55 +81,20 @@ uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', 'ngDataApi', '$cooki
 		$scope.startLimit = 0;
 		$scope.totalCount = 0;
 		$scope.endLimit = usersModuleDevConfig.apiEndLimit;
-		$scope.increment = usersModuleDevConfig.apiEndLimit;
-		$scope.showNext = true;
-		$scope.pageActive = 1;
 		$scope.keywords;
-
+		
 		$scope.members = angular.extend($scope);
 		$scope.members.access = $scope.$parent.access;
-
+		
 		$scope.$parent.$on('reloadTenantMembers', function (event) {
 			$scope.members.listMembers(true);
 		});
-
-		$scope.getPrev = function () {
-			$scope.members.startLimit = $scope.members.startLimit - $scope.members.increment;
-			if (0 <= $scope.members.startLimit) {
-				$scope.members.listMembers();
-				$scope.members.showNext = true;
-				$scope.members.pageActive--;
-			}
-			else {
-				$scope.members.pageActive = 1;
-				$scope.members.startLimit = 0;
-			}
+		
+		$scope.members.getMore = function (startLimit) {
+			$scope.members.startLimit = startLimit;
+			$scope.members.listMembers(false);
 		};
-
-		$scope.getNext = function () {
-			var startLimit = $scope.members.startLimit + $scope.members.increment;
-			if (startLimit < $scope.members.totalCount) {
-				$scope.members.startLimit = startLimit;
-				$scope.members.listMembers();
-				$scope.members.pageActive++;
-			}
-			else {
-				$scope.members.showNext = false;
-			}
-		};
-
-		$scope.getEnd = function () {
-			var startLimit = ($scope.members.totalPagesActive - 1) * $scope.members.endLimit;
-			if (startLimit < $scope.members.totalCount) {
-				$scope.members.startLimit = startLimit;
-				$scope.members.listMembers();
-				$scope.members.pageActive = $scope.members.totalPagesActive;
-			}
-			else {
-				$scope.members.showNext = false;
-			}
-		};
-
+		
 		$scope.members.countMembers = function (cb) {
 			var opts = {
 				"method": "get",
@@ -145,49 +119,55 @@ uracApp.controller('tenantMembersModuleDevCtrl', ['$scope', 'ngDataApi', '$cooki
 				}
 				cb();
 			});
-
+			
 		};
-
+		
 		$scope.members.listMembers = function (firstCall) {
 			if (firstCall) {
 				$scope.members.pageActive = 1;
 				$scope.members.countMembers(function () {
-					tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig, firstCall);
+					tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig.users, firstCall);
 				});
 			}
 			else {
-				tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig, firstCall);
+				tenantMembersModuleDevHelper.listMembers($scope.members, usersModuleDevConfig.users, firstCall);
 			}
-
+			
 		};
-
+		
+		$scope.members.refresh = function () {
+			$scope.members.startLimit = 0;
+			$scope.members.listMembers(true);
+		};
+		
 		$scope.members.addMember = function () {
-			tenantMembersModuleDevHelper.addMember($scope.members, usersModuleDevConfig, true);
+			tenantMembersModuleDevHelper.addMember($scope.members, usersModuleDevConfig.users, true);
 		};
-
+		
 		$scope.members.editAcl = function (data) {
-			tenantMembersModuleDevHelper.editAcl($scope.members, data);
+			//tenantMembersModuleDevHelper.editAcl($scope.members, data);
+			$scope.members.$parent.go('/urac-management/' + data._id + '/editUserAcl');
 		};
-
+		
 		$scope.members.editMember = function (data) {
-			tenantMembersModuleDevHelper.editMember($scope.members, usersModuleDevConfig, data, true)
+			tenantMembersModuleDevHelper.editMember($scope.members, usersModuleDevConfig.users, data, true)
 		};
-
+		
 		$scope.members.activateMembers = function () {
 			tenantMembersModuleDevHelper.activateMembers($scope.members);
 		};
-
+		
 		$scope.members.deactivateMembers = function () {
 			tenantMembersModuleDevHelper.deactivateMembers($scope.members);
 		};
-
+		
 		//call default method
 		setTimeout(function () {
 			if ($scope.members.access.adminUser.list) {
 				$scope.members.listMembers(true);
 			}
-		}, 200);
-
+		}, 50);
+		
 	}]);
 
 uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGroupsModuleDevHelper', function ($scope, $cookies, tenantGroupsModuleDevHelper) {
@@ -195,18 +175,18 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	$scope.groups.access = $scope.$parent.access;
 	
 	$scope.groups.listGroups = function () {
-		tenantGroupsModuleDevHelper.listGroups($scope.groups, groupsModuleDevConfig);
+		tenantGroupsModuleDevHelper.listGroups($scope.groups, usersModuleDevConfig.groups);
 	};
 	
 	$scope.groups.addGroup = function () {
-		tenantGroupsModuleDevHelper.addGroup($scope.groups, groupsModuleDevConfig, true);
+		tenantGroupsModuleDevHelper.addGroup($scope.groups, usersModuleDevConfig.groups, true);
 	};
 	
 	$scope.groups.editGroup = function (data) {
-		tenantGroupsModuleDevHelper.editGroup($scope.groups, groupsModuleDevConfig, data, true);
+		tenantGroupsModuleDevHelper.editGroup($scope.groups, usersModuleDevConfig.groups, data, true);
 	};
 	
-	$scope.groups.deleteGroups = function () {
+	$scope.groups.deleteGroups = function (data) {
 		tenantGroupsModuleDevHelper.deleteGroups($scope.groups);
 	};
 	
@@ -215,7 +195,7 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	};
 	
 	$scope.groups.assignUsers = function (data) {
-		tenantGroupsModuleDevHelper.assignUsers($scope.groups, groupsModuleDevConfig, data, {
+		tenantGroupsModuleDevHelper.assignUsers($scope.groups, usersModuleDevConfig.groups, data, {
 			'name': 'reloadTenantMembers',
 			params: {}
 		});
