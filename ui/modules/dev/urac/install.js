@@ -45,6 +45,10 @@ var uracModuleDevTranslation = {
 	"successMessageDeleteToken": {
 		"ENG": "Token deleted successfully.",
 		"FRA": "Token deleted successfully."
+	},
+	"tokens": {
+		"ENG": "Tokens",
+		"FRA": "Tokens"
 	}
 };
 

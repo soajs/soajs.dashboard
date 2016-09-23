@@ -209,12 +209,91 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 	
 }]);
 
-uracApp.controller('tokensModuleDevCtrl', ['$scope', '$cookies', 'tokensModuleDevHelper', function ($scope, $cookies, tokensModuleDevHelper) {
+uracApp.controller('tokensModuleDevCtrl', ['$scope', 'ngDataApi', '$cookies', 'tokensModuleDevHelper', function ($scope, ngDataApi, $cookies, tokensModuleDevHelper) {
 	$scope.tokens = angular.extend($scope);
 	$scope.tokens.access = $scope.$parent.access;
 	
-	$scope.tokens.listTokens = function () {
-		tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig);
+	$scope.startLimit = 0;
+	$scope.totalCount = 0;
+	$scope.endLimit = usersModuleDevConfig.apiEndLimit;
+	$scope.increment = usersModuleDevConfig.apiEndLimit;
+	$scope.showNext = true;
+	$scope.pageActive = 1;
+	
+	$scope.getPrev = function () {
+		$scope.tokens.startLimit = $scope.tokens.startLimit - $scope.tokens.increment;
+		if (0 <= $scope.tokens.startLimit) {
+			$scope.tokens.listTokens(false);
+			$scope.tokens.showNext = true;
+			$scope.tokens.pageActive--;
+		}
+		else {
+			$scope.tokens.pageActive = 1;
+			$scope.tokens.startLimit = 0;
+		}
+	};
+	
+	$scope.getNext = function () {
+		var startLimit = $scope.tokens.startLimit + $scope.tokens.increment;
+		if (startLimit < $scope.tokens.totalCount) {
+			$scope.tokens.startLimit = startLimit;
+			$scope.tokens.listTokens();
+			$scope.tokens.pageActive++;
+		}
+		else {
+			$scope.tokens.showNext = false;
+		}
+	};
+	
+	$scope.getEnd = function () {
+		var startLimit = ($scope.tokens.totalPagesActive - 1) * $scope.tokens.endLimit;
+		if (startLimit < $scope.tokens.totalCount) {
+			$scope.tokens.startLimit = startLimit;
+			$scope.tokens.listTokens();
+			$scope.tokens.pageActive = $scope.tokens.totalPagesActive;
+		}
+		else {
+			$scope.tokens.showNext = false;
+		}
+	};
+	
+	$scope.tokens.countTokens = function (cb) {
+		var opts = {
+			"method": "get",
+			"routeName": "/urac/owner/admin/tokens/list",
+			"proxy": true,
+			"params": {
+				"tCode": $cookies.getObject('urac_merchant').code,
+				"__env": $scope.tokens.currentSelectedEnvironment.toUpperCase()
+			}
+		};
+		if ($scope.keywords) {
+			opts.params.keywords = $scope.keywords;
+		}
+		getSendDataFromServer($scope.tokens, ngDataApi, opts, function (error, response) {
+			if (error) {
+				overlayLoading.hide();
+				$scope.tokens.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
+			}
+			else {
+				$scope.tokens.totalCount = response.totalCount;
+				$scope.tokens.totalPagesActive = Math.ceil($scope.tokens.totalCount / $scope.endLimit);
+			}
+			cb();
+		});
+		
+	};
+	
+	$scope.tokens.listTokens = function (firstCall) {
+		if (firstCall) {
+			$scope.tokens.pageActive = 1;
+			$scope.tokens.countTokens(function () {
+				tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig, firstCall);
+			});
+		}
+		else {
+			tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig, firstCall);
+		}
 	};
 	
 	$scope.tokens.deleteTokens = function () {
@@ -227,7 +306,7 @@ uracApp.controller('tokensModuleDevCtrl', ['$scope', '$cookies', 'tokensModuleDe
 	
 	setTimeout(function () {
 		if ($scope.tokens.access.adminUser.list) {
-			$scope.tokens.listTokens();
+			$scope.tokens.listTokens(true);
 		}
 	}, 200);
 	
