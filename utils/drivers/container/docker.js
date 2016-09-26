@@ -235,7 +235,7 @@ var deployer = {
 
 							var managerConfig = {
 								driver: deployerConfig.driver,
-								nodes: [managerNode.name]
+								nodes: [managerNode.name],
 								envCode: deployerConfig.envCode
 							};
 							lib.getDeployer(managerConfig, mongo, function (error, deployer) {
