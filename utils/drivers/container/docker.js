@@ -222,8 +222,33 @@ var deployer = {
 						return cb(error);
 					}
 
-					var node = deployer.getNode(nodeInfo.Name);
-					node.inspect(cb);
+					if (options.role === 'manager') {
+						var node = deployer.getNode(nodeInfo.Name);
+						node.inspect(cb);
+					}
+					else {
+						//get manager node from swarm and inspect newly added node
+						mongo.findOne('docker', {role: 'manager'}, function (error, managerNode) {
+							if (error) {
+								return cb(error);
+							}
+
+							var managerConfig = {
+								driver: deployerConfig.driver,
+								host: managerNode.ip,
+								port: managerNode.port,
+								envCode: deployerConfig.envCode
+							};
+							lib.getDeployer(managerConfig, mongo, function (error, deployer) {
+								if (error) {
+									return cb(error);
+								}
+
+								var node = deployer.getNode(nodeInfo.Name);
+								node.inspect(cb);
+							});
+						});
+					}
 				});
 			});
 		});
