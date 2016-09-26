@@ -212,7 +212,20 @@ var deployer = {
 				return cb(error);
 			}
 
-			deployer.swarmJoin(options, cb);
+			deployer.info(function (error, nodeInfo) {
+				if (error) {
+					return cb(error);
+				}
+
+				deployer.swarmJoin(options, function (error) {
+					if (error) {
+						return cb(error);
+					}
+
+					var node = deployer.getNode(nodeInfo.Name);
+					node.inspect(cb);
+				});
+			});
 		});
 	},
 
