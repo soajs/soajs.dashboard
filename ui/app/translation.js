@@ -840,10 +840,7 @@ var errorCodes = {
 			"ENG": "User account already exists.",
 			"FRA": "User account already exists."
 		},
-		403: {
-			"ENG": "Unable to register user. please try again.",
-			"FRA": "Unable to register user. please try again."
-		},
+		
 		404: {
 			"ENG": "Unable to logout the user. User not found.",
 			"FRA": "Unable to logout the user. User not found."
