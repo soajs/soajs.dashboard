@@ -228,24 +228,18 @@ var deployer = {
 					}
 					else {
 						//get manager node from swarm and inspect newly added node
-						mongo.findOne('docker', {role: 'manager'}, function (error, managerNode) {
+						var managerConfig = {
+							driver: deployerConfig.driver,
+							nodes: deployerConfig.nodes,
+							envCode: deployerConfig.envCode
+						};
+						lib.getDeployer(managerConfig, mongo, function (error, deployer) {
 							if (error) {
 								return cb(error);
 							}
 
-							var managerConfig = {
-								driver: deployerConfig.driver,
-								nodes: [managerNode.name],
-								envCode: deployerConfig.envCode
-							};
-							lib.getDeployer(managerConfig, mongo, function (error, deployer) {
-								if (error) {
-									return cb(error);
-								}
-
-								var node = deployer.getNode(nodeInfo.Name);
-								node.inspect(cb);
-							});
+							var node = deployer.getNode(nodeInfo.Name);
+							node.inspect(cb);
 						});
 					}
 				});
