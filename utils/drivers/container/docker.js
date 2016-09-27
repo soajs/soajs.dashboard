@@ -228,12 +228,11 @@ var deployer = {
 					}
 					else {
 						//get manager node from swarm and inspect newly added node
-						var managerConfig = {
-							driver: deployerConfig.driver,
-							nodes: deployerConfig.nodes,
-							envCode: deployerConfig.envCode
-						};
-						lib.getDeployer(managerConfig, mongo, function (error, deployer) {
+						delete deployerConfig.flags;
+						delete deployerConfig.host;
+						delete deployerConfig.port;
+
+						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 							if (error) {
 								return cb(error);
 							}
