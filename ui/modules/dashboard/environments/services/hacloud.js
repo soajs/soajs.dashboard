@@ -92,8 +92,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         };
 
         var postData = {
-            updateType: type,
-            newStatus: newStatus
+            type: type,
+            value: newStatus
         };
 
         getSendDataFromServer(currentScope, ngDataApi, {

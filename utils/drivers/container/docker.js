@@ -252,16 +252,36 @@ var deployer = {
 				return cb(error);
 			}
 
-			deployer.swarmLeave(options, cb);
+			//TODO: check this
+			var node = deployer.getNode(options.name);
+			node.remove(function (error, result) {
+				checkError(error, cb, function () {
+
+					return cb(error, result);
+				});
+			});
 		});
 	},
 
-	"updateNodeRole": function (deployerConfig, options, mongo, cb) {
+	"updateNode": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			checkError(error, cb, function () {
+				//update node is not yet implemented in dockerode
+				var node = deployer.getNode(options.nodeId);
 
-	},
-
-	"updateNodeAvailability": function (deployerConfig, options, mongo, cb) {
-
+				//need to inspect node in order to get its current version and pass it to update call
+				node.inspect(function (error, nodeRecord) {
+					checkError(error, cb, function () {
+						options.version = nodeRecord.Version.Index;
+						node.update(options, function (error, result) {
+							checkError(error, cb, function () {
+								return cb(null, true);
+							});
+						});
+					});
+				});
+			});
+		});
 	},
 
 	"deployHAService": function (deployerConfig, options, mongo, cb) {

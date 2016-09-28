@@ -124,8 +124,8 @@ var model = {
 
 	"getOneNode": function (soajs, criteria, cb) {
 		checkForMongo(soajs);
-		crtieria.recordType = 'node';
-		mongo.find(dockerColl, criteria, cb);
+		criteria.recordType = 'node';
+		mongo.findOne(dockerColl, criteria, cb);
 	},
 
 	"addNode": function (soajs, data, cb) {
@@ -136,14 +136,14 @@ var model = {
 
 	"removeNode": function (soajs, criteria, cb) {
 		checkForMongo(soajs);
-		crtieria.recordType = 'node';
-		mongo.remove(dockerColl, crtieria, cb);
+		criteria.recordType = 'node';
+		mongo.remove(dockerColl, criteria, cb);
 	},
 
 	"updateNode": function (soajs, criteria, update, cb) {
 		checkForMongo(soajs);
-		crtieria.recordType = 'node';
-		mongo.update(dockerColl, crtieria, update, cb);
+		criteria.recordType = 'node';
+		mongo.update(dockerColl, criteria, update, cb);
 	},
 
 	/**

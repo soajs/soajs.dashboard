@@ -121,14 +121,9 @@ var deployer = {
         deployer.removeNode(deployerConfig, options, mongo, cb);
     },
 
-    "updateNodeRole": function (deployerConfig, options, mongo, cb) {
+    "updateNode": function (deployerConfig, options, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.updateNodeRole(deployerConfig, options, mongo, cb);
-    },
-
-    "updateNodeAvailability": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.updateNodeAvailability(deployerConfig, options, mongo, cb);
+        deployer.updateNode(deployerConfig, options, mongo, cb);
     },
 
     "deployHAService": function (deployerConfig, options, mongo, cb) {

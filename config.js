@@ -2245,8 +2245,8 @@ module.exports = {
 					"enum": ["role", "availability"]
 				}
 			},
-			"newStatus": {
-				"source": ['body.newStatus'],
+			"value": {
+				"source": ['body.value'],
 				"required": true,
 				"validation": {
 					"type": "string"
