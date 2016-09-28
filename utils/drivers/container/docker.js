@@ -246,7 +246,7 @@ var deployer = {
 		});
 	},
 
-	"removeNode": function (deployerConfig, options, mongo, cb) {
+	"removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
 		/*
 			- get deployer for target node
 			- leave swarm
@@ -270,7 +270,7 @@ var deployer = {
 						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 							var node = deployer.getNode(options.id);
 							setTimeout(function () {
-								node.remove(); //TODO: handle callback
+								node.remove(backgroundCB);
 							}, 20000);
 						});
 					});

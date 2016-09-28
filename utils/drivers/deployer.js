@@ -116,9 +116,9 @@ var deployer = {
         deployer.addNode(deployerConfig, options, mongo, cb);
     },
 
-    "removeNode": function (deployerConfig, options, mongo, cb) {
+    "removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
         var deployer = getDeployer(deployerConfig);
-        deployer.removeNode(deployerConfig, options, mongo, cb);
+        deployer.removeNode(deployerConfig, options, mongo, cb, backgroundCB);
     },
 
     "updateNode": function (deployerConfig, options, mongo, cb) {
