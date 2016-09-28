@@ -38,7 +38,7 @@
   "dependencies": {
     "async": "*",
     "bcrypt": "*",
-    "dockerode": "*",
+    "dockerode": "aff04/dockerode.git",
     "formidable": "*",
     "github": "^0.2.4",
     "gridfs-stream": "*",
