@@ -73,7 +73,7 @@ var lib = {
 		}
 
 		function getTargetNode(config, callback) {
-			if (config.flags && config.flags.newNode) {
+			if (config.flags && (config.flags.newNode || config.flags.targetNode)) {
 				if (!config.host || !config.port) {
 					return callback({message: 'Missing host/port info'});
 				}
@@ -247,17 +247,33 @@ var deployer = {
 	},
 
 	"removeNode": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			if (error) {
-				return cb(error);
-			}
+		/*
+			- get deployer for target node
+			- leave swarm
+			- return success response
+			- get deployer of a manager node in the swarm
+			- remove node
+		*/
 
-			//TODO: check this
-			var node = deployer.getNode(options.name);
-			node.remove(function (error, result) {
-				checkError(error, cb, function () {
+		var targetDeployerConfig = JSON.parse(JSON.stringify(deployerConfig));
+		targetDeployerConfig.host = options.ip;
+		targetDeployerConfig.port = options.dockerPort;
+		targetDeployerConfig.flags = { targetNode: true };
+		lib.getDeployer(targetDeployerConfig, mongo, function (error, targetDeployer) {
+			checkError(error, cb, function () {
+				targetDeployer.swarmLeave(function (error) {
+					checkError(error, cb, function () {
 
-					return cb(error, result);
+						//return response and remove node entry from swarm in the background
+						cb(null, true);
+
+						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+							var node = deployer.getNode(options.id);
+							setTimeout(function () {
+								node.remove(); //TODO: handle callback
+							}, 20000);
+						});
+					});
 				});
 			});
 		});
