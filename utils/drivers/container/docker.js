@@ -84,8 +84,8 @@ var lib = {
 					return callback({message: 'No manager nodes found in this environment\'s deployer'});
 				}
 				var oneManagerNode = config.nodes[0]; //any manager node can be selected
-				mongo.findOne('docker', {name: oneManagerNode}, function (error, nodeRecord) {
-					checkError(error, callback, function () {
+				mongo.findOne('docker', {recordType: 'node', name: oneManagerNode}, function (error, nodeRecord) {
+					checkError(error || !nodeRecord, callback, function () {
 						return callback(null, {host: nodeRecord.ip, port: nodeRecord.dockerPort});
 					});
 				});
@@ -208,39 +208,39 @@ var deployer = {
 		};
 
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			if (error) {
-				return cb(error);
-			}
+			checkError(error, cb, function () {
+				deployer.info(function (error, nodeInfo) {
+					checkError(error, cb, function () {
+						deployer.swarmJoin(options, function (error) {
+							checkError(error, cb, function () {
+								if (options.role === 'manager') {
+									var node = deployer.getNode(nodeInfo.Name);
+									node.inspect(cb);
+								}
+								else {
+									//get manager node from swarm and inspect newly added node
+									delete deployerConfig.flags;
+									delete deployerConfig.host;
+									delete deployerConfig.port;
 
-			deployer.info(function (error, nodeInfo) {
-				if (error) {
-					return cb(error);
-				}
-
-				deployer.swarmJoin(options, function (error) {
-					if (error) {
-						return cb(error);
-					}
-
-					if (options.role === 'manager') {
-						var node = deployer.getNode(nodeInfo.Name);
-						node.inspect(cb);
-					}
-					else {
-						//get manager node from swarm and inspect newly added node
-						delete deployerConfig.flags;
-						delete deployerConfig.host;
-						delete deployerConfig.port;
-
-						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-							if (error) {
-								return cb(error);
-							}
-
-							var node = deployer.getNode(nodeInfo.Name);
-							node.inspect(cb);
+									lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+										checkError(error, cb, function () {
+											deployer.listNodes(function (error, nodes) {
+												checkError(error, cb, function () {
+													for (var i = 0; i < nodes.length; i++) {
+														if (nodes[i].Description.Hostname === nodeInfo.Name) {
+															return cb(null, nodes[i]);
+														}
+													}
+													return cb();
+												});
+											});
+										});
+									});
+								}
+							});
 						});
-					}
+					});
 				});
 			});
 		});
