@@ -83,6 +83,29 @@
 		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
 	</div>
 </script>
+
+<script type="text/ng-template" id="scaleService.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<div class="form">
+			<label>This service is currently running as a replica of {{service.currentScale}} instance(s)</label>
+			<br />
+			<label>How many instances should this service be scaled to?</label>
+			<input type="number" class="form-control centeredInput" required="true" ng-model="service.newScale" />
+			<br />
+			<alert type="info" class="text-align-center">
+				Scaling a service is a process that might take some time to complete.
+			</alert>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">Scale</button>
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
 <section ng-controller="hacloudCtrl">
     <tabset>
         <tab heading="Nodes">
@@ -286,7 +309,7 @@
 	                                        </button>
 	                                        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 	                                            <li>&nbsp;Deployment</li>
-	                                            <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+	                                            <li><a href="" ng-click="scaleService(versionInfo, version)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 	                                            <li><a href="" ng-click="deleteService(versionInfo[0].serviceName, version)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 	                                            <li>&nbsp;Maintenance</li>
 	                                            <li><a href="" ng-click="reloadServiceRegistry('service', hosts[service])"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>

@@ -156,3 +156,12 @@ ul {
 .pt6 {
     padding-top: 6px;
 }
+
+.text-align-center {
+    text-align: center;
+}
+
+.centeredInput {
+    margin-left: 30%;
+    width: 40%;
+}

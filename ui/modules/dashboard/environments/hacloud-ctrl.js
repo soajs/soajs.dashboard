@@ -40,8 +40,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	};
 
 	$scope.deleteService = function (serviceName, serviceVersion) {
-		console.log ($scope.hosts);
 		hacloudSrv.deleteService($scope, serviceName, serviceVersion);
+	};
+
+	$scope.scaleService = function (serviceInfo, serviceVersion) {
+		hacloudSrv.scaleService($scope, serviceInfo, serviceVersion);
 	};
 
 	$scope.listNginxServices = function () {

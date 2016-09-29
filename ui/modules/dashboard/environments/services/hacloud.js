@@ -336,7 +336,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 	                }
                 }
             }
-            console.log(currentScope.hosts);
+
             buildGroupsDisplay(renderedHosts);
         }
 
@@ -548,6 +548,59 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             else {
                 currentScope.displayAlert('success', 'Service deleted succesfully');
                 currentScope.listServices();
+            }
+        });
+    }
+
+    function scaleService(currentScope, serviceInfo, serviceVersion) {
+        $modal.open({
+            templateUrl: "scaleService.tmpl",
+            size: 'm',
+            backdrop: true,
+            keyboard: true,
+            controller: function ($scope, $modalInstance) {
+                fixBackDrop();
+
+                $scope.service = {
+                    name: serviceInfo[0].serviceName, //all instances must have the same service name
+                    version: serviceVersion,
+                    env: currentScope.envCode,
+                    currentScale: serviceInfo.length
+                };
+                $scope.title = $scope.service.name + ' | Scale Service';
+
+                $scope.onSubmit = function () {
+                    var params = {
+                        env: $scope.service.env,
+                        name: $scope.service.name,
+                        version: $scope.service.version
+                    };
+
+                    var postData = {
+                        scale: $scope.service.newScale
+                    };
+
+                    getSendDataFromServer(currentScope, ngDataApi, {
+                        method: 'send',
+                        routeName: '/dashboard/hacloud/services/scale',
+                        params: params,
+                        data: postData
+                    }, function (error, result) {
+                        if (error) {
+                            currentScope.displayAlert('danger', error.message);
+                            $scope.closeModal();
+                        }
+                        else {
+                            currentScope.displayAlert('success', 'Service scaled successfully');
+                            currentScope.listService();
+                            $scope.closeModal();
+                        }
+                    });
+                };
+
+                $scope.closeModal = function () {
+                    $modalInstance.close();
+                };
             }
         });
     }
@@ -1356,6 +1409,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'updateNode': updateNode,
         'listServices': listServices,
         'deleteService': deleteService,
+        'scaleService': scaleService,
         'reloadServiceRegistry': reloadServiceRegistry,
         'loadServiceProvision': loadServiceProvision,
         'awarenessStat': awarenessStat,
