@@ -39,8 +39,9 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		$scope.listNginxServices($scope, $scope.envCode);
 	};
 
-	$scope.removeService = function () {
-		hacloudSrv.removeService($scope);
+	$scope.deleteService = function (serviceName, serviceVersion) {
+		console.log ($scope.hosts);
+		hacloudSrv.deleteService($scope, serviceName, serviceVersion);
 	};
 
 	$scope.listNginxServices = function () {

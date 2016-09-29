@@ -222,7 +222,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
                                                 <li>&nbsp;Deployment</li>
                                                 <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-                                                <li><a href="" ng-click="deleteService()"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                                <li><a href="" ng-click="deleteService(serviceInfo.serviceHAName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
                                                 <li>&nbsp;Maintenance</li>
                                                 <li><a href="" ng-click="reloadServiceRegistry('controller', serviceInfo.ips)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
                                                 <li><a href="" ng-click="awarenessStat('controller', serviceInfo.ips)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
@@ -287,7 +287,7 @@
 	                                        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 	                                            <li>&nbsp;Deployment</li>
 	                                            <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-	                                            <li><a href="" ng-click="deleteService()"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+	                                            <li><a href="" ng-click="deleteService(versionInfo[0].serviceName, version)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 	                                            <li>&nbsp;Maintenance</li>
 	                                            <li><a href="" ng-click="reloadServiceRegistry('service', hosts[service])"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 	                                            <li><a href="" ng-click="loadServiceProvision('service', hosts[service])"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>

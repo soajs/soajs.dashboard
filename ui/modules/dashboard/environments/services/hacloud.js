@@ -143,13 +143,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                         for (var j = 0, ctrlCounter = 1; j < response.hosts.length; j++) {
                             if (response.hosts[j].name === 'controller') {
+                                console.log (response.hosts[j]);
 	                            var info = {
 		                            'name': 'controller',
                                     'code': 'CTRL-' + ctrlCounter++,
 		                            'hostname': response.hosts[j].hostname,
 		                            'ip': response.hosts[j].ip,
 		                            'cid': response.hosts[j].cid,
-                                    'taskName': response.hosts[j].taskName,
+                                    'serviceName': response.hosts[j].serviceHAName,
+                                    'taskName': response.hosts[j].serviceHATask,
 		                            'version': response.hosts[j].version,
 		                            'color': 'red',
 		                            'port': 4000,
@@ -334,7 +336,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 	                }
                 }
             }
-            console.log(renderedHosts);
+            console.log(currentScope.hosts);
             buildGroupsDisplay(renderedHosts);
         }
 
@@ -526,6 +528,28 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     function listServices(currentScope) {
         listHosts(currentScope, currentScope.envCode);
         listNginxHosts(currentScope, currentScope.envCode);
+    }
+
+    function deleteService(currentScope, serviceName, serviceVersion) {
+        var params = {
+            env: currentScope.envCode,
+            name: serviceName,
+            version: serviceVersion
+        };
+
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'get',
+            routeName: '/dashboard/hacloud/services/delete',
+            params: params
+        }, function (error, response) {
+            if (error) {
+                currentScope.displayAlert('danger', error.message);
+            }
+            else {
+                currentScope.displayAlert('success', 'Service deleted succesfully');
+                currentScope.listServices();
+            }
+        });
     }
 
     function reloadRegistry(currentScope, env, oneHost, cb) {
@@ -1331,6 +1355,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'removeNode': removeNode,
         'updateNode': updateNode,
         'listServices': listServices,
+        'deleteService': deleteService,
         'reloadServiceRegistry': reloadServiceRegistry,
         'loadServiceProvision': loadServiceProvision,
         'awarenessStat': awarenessStat,
