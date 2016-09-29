@@ -55,7 +55,8 @@ var model = {
 
 	"getContainers": function (soajs, env, type, running, cb) {
 		var condition = {
-			"env": env.toLowerCase()
+			"env": env.toLowerCase(),
+			"recordType": "container"
 		};
 		if (type) {
 			condition["$or"] = [
@@ -66,6 +67,7 @@ var model = {
 		if (running) {
 			condition.running = running;
 		}
+		
 		checkForMongo(soajs);
 		mongo.find(dockerColl, condition, cb);
 	},
@@ -146,6 +148,12 @@ var model = {
 		mongo.update(dockerColl, criteria, update, cb);
 	},
 
+	"removeServiceContainers": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		criteria.recordType = 'container';
+		mongo.remove(dockerColl, criteria, cb);
+	},
+
 	/**
 	 * HOSTS COLLECTION
 	 */
@@ -218,6 +226,11 @@ var model = {
 	"getStaticContent": function (soajs, id, cb) {
 		checkForMongo(soajs);
 		mongo.findOne(staticColl, {'_id': id}, cb);
+	},
+
+	"removeServiceHosts": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		mongo.remove(hostsColl, criteria, cb);
 	},
 
 	/**

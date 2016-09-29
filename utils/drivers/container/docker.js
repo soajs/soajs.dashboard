@@ -320,7 +320,7 @@ var deployer = {
 				return cb(error);
 			}
 
-			var serviceId = '';
+			var serviceId = options.serviceName;
 			var service = deployer.getService(serviceId);
 			service.remove(cb);
 		});

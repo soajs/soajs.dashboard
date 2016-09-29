@@ -301,6 +301,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 							                oneHost.hostname = origHostRec.hostname;
 							                oneHost.cid = origHostRec.cid;
                                             oneHost.taskName = origHostRec.serviceHATask;
+                                            oneHost.serviceName = origHostRec.serviceHAName;
 
                                             if (origHostRec.src) {
                                                 oneHost.commit = origHostRec.src.commit;
