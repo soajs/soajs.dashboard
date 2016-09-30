@@ -282,7 +282,6 @@ var deployer = {
 	"updateNode": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			checkError(error, cb, function () {
-				//update node is not yet implemented in dockerode
 				var node = deployer.getNode(options.nodeId);
 
 				//need to inspect node in order to get its current version and pass it to update call
@@ -302,27 +301,35 @@ var deployer = {
 
 	"deployHAService": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			if (error) {
-				return cb(error);
-			}
-
-			deployer.createService(options, cb);
+			checkError(error, cb, function () {
+				deployer.createService(options, cb);
+			});
 		});
 	},
 
 	"scaleHAService": function (deployerConfig, options, mongo, cb) {
-
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			checkError(error, cb, function () {
+				var service = deployer.getService(options.serviceName);
+				service.inspect(function (error, serviceInfo) {
+					checkError(error, cb, function () {
+						var update = serviceInfo.Spec;
+						update.version = serviceInfo.Version.Index;
+						update.Replicated.Replicas = options.scale;
+						service.update(update, cb);
+					});
+				});
+			});
+		});
 	},
 
 	"deleteHAService": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			if (error) {
-				return cb(error);
-			}
-
-			var serviceId = options.serviceName;
-			var service = deployer.getService(serviceId);
-			service.remove(cb);
+			checkError(error, cb, function () {
+				var serviceId = options.serviceName;
+				var service = deployer.getService(serviceId);
+				service.remove(cb);
+			});
 		});
 	}
 };

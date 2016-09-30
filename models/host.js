@@ -67,7 +67,7 @@ var model = {
 		if (running) {
 			condition.running = running;
 		}
-		
+
 		checkForMongo(soajs);
 		mongo.find(dockerColl, condition, cb);
 	},
@@ -146,6 +146,12 @@ var model = {
 		checkForMongo(soajs);
 		criteria.recordType = 'node';
 		mongo.update(dockerColl, criteria, update, cb);
+	},
+
+	"getServiceContainers": function (soajs, criteria, cb) {
+		checkForMongo(soajs);
+		criteria.recordType = 'container';
+		mongo.find(dockerColl, criteria, cb);
 	},
 
 	"removeServiceContainers": function (soajs, criteria, cb) {
