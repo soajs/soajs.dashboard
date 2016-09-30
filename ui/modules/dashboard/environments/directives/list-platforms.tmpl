@@ -1,83 +1,101 @@
-<section ng-controller="platformsCtrl">
-    <fieldset>
-        <legend>
-            Deployment Settings
-        </legend>
-        <div ng-if="access.platforms.deployer.changeDeployerType">
-            <label class="f-left pt6">Deployment Type:&nbsp;&nbsp;</label>
-            <select class="form-control f-left selectCustom" ng-model="deployer.type">
-                <option value="manual">{{translation.manual[LANG]}}</option>
-                <option value="container">{{translation.container[LANG]}}</option>
-            </select>
-            <a href="" style="margin-left:10px" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="access.platforms.deployer.changeDeployerType && deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+    <section ng-controller="platformsCtrl">
+        <select class="form-control f-left selectCustom" ng-model="deployer.type" ng-if="access.platforms.deployer.changeDeployerType">
+            <option value="manual">{{translation.manual[LANG]}}</option>
+            <option value="container">{{translation.container[LANG]}}</option>
+        </select>&nbsp;
+        <a href="" class="btn btn-primary" ng-click="changeDeployerType()" ng-if="access.platforms.deployer.changeDeployerType && deployer.type !== originalDeployerType">{{translation.change[LANG]}}</a>
+        <br><br><br>
+        <div ng-if="access.platforms.drivers.add && (allowAddDriver['local'] || allowAddDriver['cloud'] || allowAddDriver['socket'])">
+            <a href="" class="btn btn-primary" ng-click="addDriver()">{{translation.addDriver[LANG]}}</a>
+            <br><br>
         </div>
-    </fieldset>
-    <fieldset>
-        <legend>
-            Platforms & Certificates
-        </legend>
-        <fieldset>
-            <legend>
-                <img ng-src="{{dockerImagePath}}" height="32px" width="140px" alt="Docker Logo"/>
-            </legend>
-            <div ng-repeat="(platform, drivers) in platforms" ng-if="access.platforms.list">
-                <div ng-if="platform === 'docker'">
-                    <div class="entryBoxes entryBoxesGrid">
-                        <div ng-repeat="(driver, config) in drivers" class="entryBox mb20 driverEntryBox">
-                            <div class="header">
-                                {{driver|uppercase}}
-                                <span ng-if="deployer.selected === platform + '.' + driver && allowSelect" ng-style="{'color': 'green'}"><span class="icon icon-checkmark"></span>Active</span>
-                                <span class="rightActions">
-                                    <a href="" ng-if="access.platforms.certs.upload && !config.socketPath" ng-click="uploadCerts(platform, driver)">
-                                        <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
-                                    </a>
-                                    <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(platform, driver)">
-                                        <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
-                                    </a>
-                                </span>
-                            </div>
-                            <div class="body">
-                                <div ng-if="config.socketPath">
-                                    <label class="customLabel">Socket Path:&nbsp;</label>{{config.socketPath}}<br />
-                                    <label class="customLabel">Certificates:</label><br />
-                                    <alert type="success">This driver does not require certificates</alert>
-                                </div>
-                                <div ng-if="!config.socketPath">
-                                    <label class="customLabel">Manager Nodes:&nbsp;</label>
-                                    <span ng-if="config.nodes && config.nodes.length > 0"><span ng-repeat="node in config.nodes">{{node}}<span ng-if="!$last">, </span></span></span>
-                                    <span ng-if="!config.nodes || config.nodes.length === 0">No nodes available</span>
-                                    <br />
-                                    <label class="customLabel">Certificates:</label><br />
-                                    <div class="staticDiv">
-                                        <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
-                                            <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in config.certs">
-                                                <b>{{cert.filename}}</b>
-                                                <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, platform, driver)">
-                                                    <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <alert type="warning" ng-if="!config.certs || config.certs.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
-                                    </div>
-                                </div>
+        <div class="entryBoxes">
+            <fieldset>
+                <legend>
+                    <img ng-src="{{dockerImagePath}}" height="32px" width="140px" alt="Docker Logo"/>
+                </legend>
+                <div ng-repeat="driver in platforms" class="entryBox mb20" ng-if="access.platforms.list">
+                    <div class="header">
+                        {{driver.label}}&nbsp;&nbsp;&nbsp;<span ng-if="driver.uiType !== 'socket'"><b>[ {{translation.host[LANG]}}: {{driver.host}} | {{translation.port[LANG]}}: {{driver.port}} ]</b></span>
+                        <span ng-if="uiSelected === driver.label" class="text-green">{{translation.selected[LANG]}}</span>
+                        <span class="rightActions">
+                            <a ng-if="access.platforms.drivers.delete" href="" ng-confirm-click="{{translation.areYouSureYouWantClearThisDriversConfiguration[LANG]}}" ng-click="clearDriverConfig(driver.label);">
+                                <span class="icon icon-cross" tooltip="{{translation.deleteDriver[LANG]}}"></span>
+                            </a>
+                            <a ng-if="access.platforms.drivers.edit" href="" ng-click="editDriver(driver);">
+                                <span class="icon icon-pencil" tooltip="{{translation.editDriver[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-if="access.platforms.certs.upload && driver.uiType !== 'socket'" ng-click="uploadCerts('docker', driver.label)">
+                                <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
+                            </a>
+                            <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(driver.label)">
+                                <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="body" ng-if="driver.uiType !== 'socket'">
+                        <label>{{translation.certificates[LANG]}}:&nbsp;</label><br>
+                        <div class="entryBoxes entryBoxesGrid">
+                            <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in driver.certificates">
+                                <b>{{cert.filename}}</b>
+                                <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, driver.label)">
+                                    <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
+                                </a>
                             </div>
                         </div>
+                        <alert type="warning" ng-if="!driver.certificates || driver.certificates.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
+                    </div>
+                    <div class="body" ng-if="driver.uiType === 'socket'">
+                        <label>{{translation.socketPath[LANG]}}:&nbsp;</label>{{driver.socketPath}}<br>
                     </div>
                 </div>
-            </div>
-        </fieldset>
-    </fieldset>
-</section>
+            </fieldset>
+            <!-- <fieldset>
+                <legend>
+                    <img ng-src="{{nginxImagePath}}" height="32px" width="140px" alt="Nginx Logo"/>
+                </legend>
+                <div class="entryBox mb20">
+                    <div class="header">
+                        Nginx {{translation.certificates[LANG]}}
+                        <span class="rightActions" ng-show="nginx.certs.length < 2">
+                            <a href="" ng-if="access.platforms.certs.upload" ng-click="uploadCerts('nginx')">
+                                <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="body">
+                        <label>{{translation.certificates[LANG]}}:&nbsp;</label>
+                        <alert type="warning" ng-if="nginx.certs.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
+                        <div class="entryBoxes entryBoxesGrid">
+                            <div class="entryBox blueBox greyBoxCustom greyBoxCustom2" ng-repeat="cert in nginx.certs">
+                                <span ng-if="cert.metadata.label === 'certificate'"><b>{{translation.chainedCertificate[LANG]}}: </b></span>
+                                <span ng-if="cert.metadata.label === 'privateKey'"><b>{{translation.privateKey[LANG]}}: </b></span>
+                                &nbsp;{{cert.filename}}&nbsp;&nbsp;&nbsp;
+                                <a href="" ng-if="access.platforms.certs.delete" ng-click="deleteNginxCert(cert._id)">
+                                    <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <label class="fieldMsg">{{translation.uploadSSLCertificatesMsg[LANG]}}</label>
+                    </div>
+                </div>
+            </fieldset> -->
+        </div>
+    </section>
 
-<script type="text/ng-template" id="uploadCertsInfo.html">
-    <div class="modal-body">
-        <div ng-bind-html="text"></div>
-    </div>
-    <div class="modal-footer" ng-if="data">
-        <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
-    </div>
-</script>
+    <script type="text/ng-template" id="uploadCertsInfo.html">
+        <div class="modal-body">
+            <div ng-bind-html="text"></div>
+        </div>
+        <div class="modal-footer" ng-if="data">
+            <button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+        </div>
+    </script>
 
-<script type="text/ng-template" id="uploadCerts.tmpl">
-    <div ng-include="'modules/dashboard/environments/directives/uploadCerts.tmpl'"></div>
-</script>
+    <script type="text/ng-template" id="uploadCerts.tmpl">
+        <div ng-include="'modules/dashboard/environments/directives/uploadCerts.tmpl'"></div>
+    </script>
+
+    <script type="text/ng-template" id="addEditDriver.tmpl">
+        <div ng-include="'modules/dashboard/environments/directives/addEditDriver.tmpl'"></div>
+    </script>

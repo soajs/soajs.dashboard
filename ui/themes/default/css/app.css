@@ -16,9 +16,21 @@ em {
 }
 
 .overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    display: none;
 }
 
 .overlay .bg {
+    background-color: #464543;
+    color: #464543;
+    opacity: 0.6;
+    width: 100%;
+    height: 100%;
 }
 
 #overlay .bg {
@@ -26,8 +38,1458 @@ em {
     opacity: 0.7;
 }
 
+.overlay .content {
+    background: white;
+    margin: auto;
+    opacity: 0.9;
+    text-align: center;
+    border-radius: 10px;
+    position: fixed;
+    width: 30%;
+    left: 35%;
+    top: 10%;
+}
+
+#overlay .content {
+    width: 80%;
+    opacity: 1.3;
+    left: 10%;
+    overflow: scroll;
+}
+
+#overlayLoading .content .image {
+    padding-bottom: 50px;
+    padding-top: 50px;
+}
+
+#header {
+    height: 50px;
+    background: #424951;
+    min-width: 1300px;
+}
+
 #header #logo {
-    width: 13%;
+    float: left;
     margin: 0px 10px;
+    color: #ffffff;
+    font-weight: bold;
     font-size: 35px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#header #logo img {
+    width: 35px;
+    position: relative;
+    top: -4px;
+    margin-right: 5px;
+    display: inline;
+}
+
+#header #pillars {
+    float: left;
+    margin: 0 0 0 6%;
+    height: 35px;
+}
+
+#header #pillars .one-pillar {
+    float: left;
+    margin-right: 5px;
+}
+
+#header #pillars .one-pillar button {
+    background-color: #515e67;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    border: none;
+    border-right: solid 1px #4f5762;
+    height: 50px;
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+#header #pillars .one-pillar button:hover {
+    background-color: #222222;
+}
+
+#header #pillars .one-pillar button.selected {
+    background-color: white;
+    color: #337ab7;
+}
+
+#header #slogan {
+    font-style: italic;
+    color: #337ab7;
+    font-size: 10px;
+}
+
+#header #userMenu {
+    float: right;
+    margin: 15px 20px 0 0;
+    height: 20px;
+    min-width: 15%;
+    font-weight: bold;
+    position: relative;
+    z-index: 10;
+}
+
+#header #userMenu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#header #userMenu ul li {
+    float: left;
+    margin-right: 10px;
+    color: #bfc0c1;
+    position: relative;
+}
+
+#header #userMenu ul li a {
+    color: #E5EAEE;
+    outline: 0;
+}
+
+#header #userMenu ul li a.active,
+#header #userMenu ul li a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+#header #userMenu li .myMenu {
+    font-size: 22px;
+    left: 22px;
+    position: relative;
+    cursor: pointer;
+}
+
+#header #userMenu li .userMenu {
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    background: #424951;
+    right: -25px;
+    top: 20px;
+    padding-top: 15px;
+    font-size: 14px;
+}
+
+#header #userMenu li:hover {
+    color: white;
+}
+
+#header #userMenu li:hover > .userMenu {
+    display: block;
+}
+
+#header #userMenu li .userMenu li {
+    float: none;
+    margin: 0;
+    padding: 0;
+    border: solid 1px white;
+    border-top: none;
+    border-bottom: none;
+}
+
+#header #userMenu li .userMenu li.logout {
+    border-bottom: solid 1px white;
+}
+
+#header #userMenu li .userMenu li a {
+    padding: 10px 25px 5px 10px;
+    white-space: nowrap;
+    border-top: 1px solid #606d76;
+    border-bottom: 1px solid #4f5762;
+}
+
+#header #userMenu li .userMenu li a.userMenu0 {
+    border-top: none;
+}
+
+#header #userMenu li .userMenu li a:hover {
+    background-color: black;
+}
+
+#page {
+    width: 100%;
+    min-width: 1300px;
+    display: table;
+    clear: both;
+}
+
+#mainMenu {
+    background-color: #515E67;
+    float: left;
+    min-height: 525px;
+    position: relative;
+    border-bottom: solid 1px white;
+    border-right: solid 1px white;
+}
+
+#mainMenu #myEnvironments {
+    display: block;
+    width: 100%;
+    height: 28px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.42857;
+    color: #555;
+    background-color: #FFF;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 6px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+#mainMenu.mainMenu {
+    width: 15%;
+}
+
+#mainMenu.mainMenu2 {
+    width: 45px;
+}
+
+#mainMenu .environmentsMenu {
+    margin: 5px;
+}
+
+#mainMenu .environmentsMenu input {
+    margin: 0 1px;
+}
+
+#mainMenu h4 {
+    margin: 0;
+    background-color: #70808D;
+    padding: 5px 10px;
+    border-top: 1px solid #989eaa;
+    border-bottom: solid 1px #4F5762;
+}
+
+#mainMenu ul {
+    border-top: solid 1px #606d76;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#mainMenu li {
+    padding: 10px 0 10px 10px;
+    border-top: solid 1px #606d76;
+    border-bottom: solid 1px #4F5762;
+    cursor: pointer;
+    min-height: 41px;
+}
+
+#mainMenu li.first {
+    margin-top: 4px
+}
+
+#mainMenu ul li a {
+    display: block;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+    text-decoration: none;
+    outline: 0;
+}
+
+#mainMenu ul li a span.icon {
+    display: block;
+    float: left;
+    height: 40px;
+}
+
+#mainMenu li:first-child {
+    border-top: none;
+}
+
+#mainMenu ul li:hover {
+    background-color: #222222;
+    color: white;
+}
+
+#mainMenu ul li.active {
+    background-color: white;
+}
+
+#mainMenu ul li.active > a {
+    color: #337ab7;
+    text-shadow: none;
+}
+
+#mainMenu .collapser {
+    font-size: 20px;
+    color: white;
+    position: absolute;
+    bottom: 4px;
+    right: 2px;
+}
+
+#page .wrapper {
+    width: 100%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper2 {
+    width: 85%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper3 {
+    width: 96%;
+    float: left;
+    min-height: 560px;
+    background-color: #e5eaee;
+    border-top: solid 1px white;
+    padding: 20px;
+    position: relative;
+}
+
+#page .wrapper .inner-line {
+    border-left: 1px solid white;
+    height: 35px;
+    left: -1px;
+    position: absolute;
+    top: -1px;
+}
+
+#tracker {
+    background: white;
+    padding: 3px 10px;
+    border: solid 1px #cccccc;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#tracker ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#tracker ul li {
+    float: left;
+    padding-left: 5px;
+}
+
+#tracker ul li b {
+    color: #515e67;
+}
+
+#notifications {
+    clear: both;
+    background: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.alert {
+    margin: 0px;
+}
+
+#page section {
+    display: inline-block;
+    width: 100%;
+    background: #ffffff;
+    border: solid 1px #cccccc;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 300px;
+}
+
+#page section aside {
+    float: left;
+    min-height: 450px;
+    display: inline-block;
+}
+
+#footer {
+    border-top: solid 1px white;
+    width: 100%;
+    min-height: 40px;
+    background: #404449;
+    color: #e5eaee;
+    min-width: 1300px;
+}
+
+#footer .separator {
+    border-top: solid 1px #4F5762;
+}
+
+#footer .menu {
+    font-size: 11px;
+    margin-top: 10px;
+    list-style-type: none;
+    float: left;
+}
+
+#footer .menu li {
+    float: left;
+    padding: 0 5px;
+}
+
+#footer .menu li + li::before {
+    content: ". ";
+    margin-right: 5px;
+}
+
+#footer .menu li a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+#footer .menu li a.active {
+    color: white;
+    text-decoration: none;
+}
+
+#footer .copyright {
+    margin-top: 10px;
+    margin-right: 20px;
+    float: right;
+    font-size: 11px;
+    text-style: italic;
+    letter-spacing: 1px;
+}
+
+.redFlag {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.w17i {
+    width: 17% !important;
+}
+
+.w20i {
+    width: 20% !important;
+}
+
+.w10 {
+    width: 10%;
+}
+
+.w20 {
+    width: 20%;
+}
+
+.w30 {
+    width: 30%;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.w80 {
+    min-width: 80%;
+    width: 80%;
+}
+
+.w90 {
+    min-width: 90%;
+    width: 90%;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.t-right {
+    text-align: right;
+}
+
+.t-left {
+    text-align: left;
+}
+
+.f-right {
+    float: right;
+}
+
+.f-left {
+    float: left;
+}
+
+.c-both {
+    clear: both;
+}
+
+.table {
+    display: table;
+    /*display: flex;*/
+}
+
+.table-cell {
+    display: table-cell;
+    /*flex: 1;*/
+}
+
+.mb5 {
+    margin-bottom: 5px;
+}
+
+/**
+    THEME SPECIFIC
+**/
+#header #userMenu ul li a {
+    padding-left: 5px;
+    display: block;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+#header #userMenu ul li a#guestMenu-login {
+    position: absolute;
+    right: -180px;
+    display: block;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+#mainMenu ul li a {
+    padding-left: 5px;
+    display: block;
+}
+
+.large-Modal .modal-dialog {
+    width: 80%;
+}
+
+pre {
+    padding: 0;
+}
+
+/**
+    THEME ENDS HERE
+    CUSTOM CSS STARTS HERE
+**/
+.entryServiceBoxes {
+
+}
+
+.entryServiceBoxes .service-container {
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.entryServiceBoxes .service-container label {
+    text-decoration: underline;
+}
+
+.entryServiceBoxes .service-container div.blueBox {
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: solid 1px #cccccc;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #eeeeee;
+    border-radius: 8px;
+}
+
+.entryServiceBoxes .service-container .serviceNameHead span {
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+.serviceNameHead .serviceName {
+    float: left;
+    width: 200px;
+}
+
+.entryServiceBoxes .service-container .body {
+    padding: 5px;
+}
+
+/*****/
+div.entryBoxes {
+    width: 100%;
+    display: table;
+}
+
+#page div.entryBoxes div.entryBox, .entryOneBox {
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#page div.entryBoxesGrid div.entryBox {
+    float: left;
+    display: table;
+    width: auto;
+    margin: 5px;
+    padding-left: 5px;
+}
+
+#page div.entryBoxes div.entryBox label {
+    text-decoration: underline;
+}
+
+.greyBox {
+    background: #cccccc;
+}
+
+#page div.entryBoxes div.blueBox {
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+}
+
+#page div.entryBoxes div.redBox {
+    background: #f2dede;
+    border: solid 1px #d43f3a;
+    color: black;
+}
+
+div.entryBox .header {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: solid 1px #cccccc;
+    padding: 5px;
+    font-weight: bold;
+    background-color: #eeeeee;
+}
+
+div.entryBox .header.closed {
+    border-radius: 8px;
+    border-bottom: none;
+}
+
+div.entryBox .header span {
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+div.entryBox .header b {
+    margin-left: 50px;
+}
+
+div.entryBox .body {
+    padding: 5px;
+}
+
+div.entryBox .body .description {
+    color: #666666;
+    font-style: italic;
+}
+
+div.entryBox .body .btn-primary {
+    float: right;
+    position: relative;
+    top: -10px;
+}
+
+div.entryBox .body form .btn-primary {
+    float: none;
+    top: 0px;
+}
+
+div.entryBox div.entryAction {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    text-align: center;
+}
+
+.blueListing {
+    margin: 10px 0;
+    padding: 0;
+}
+
+.blueListing li.blueLi {
+    padding: 5px;
+    margin-bottom: 5px;
+    display: block;
+    border: solid 1px #337ab7;
+    width: 100%;
+    border-radius: 5px;
+    background-color: #DEF1F7;
+    text-align: left;
+    position: relative;
+}
+
+div.entryBox .listoUsers li.blueLi {
+    display: inline;
+    width: auto;
+    float: left;
+    margin-right: 10px;
+}
+
+div.entryBox li.blueLi.blueLiBox {
+    width: 23%;
+    margin: 1%;
+    float: left;
+    height: 120px;
+    word-wrap: break-word;
+}
+
+.blueListing li.blueLi a {
+    margin-right: 5px;
+}
+
+.rightActions a {
+    float: right;
+}
+
+.blueListing li.row-list a {
+    position: relative;
+    top: 0;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.blueListing li .keysAccordion a {
+    margin-right: 5px;
+    float: none;
+}
+
+.keysAccordion .panel-heading {
+    padding: 5px 15px;
+}
+
+.keysAccordion .panel-title {
+    font-size: 12px;
+}
+
+.keysAccordion .panel-group {
+    margin-bottom: 5px;
+}
+
+.keysAccordion .keyAlerts {
+    padding: 5px 0;
+}
+
+.appKeys {
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.externalKeysGrid {
+    margin-top: 10px;
+    vertical-align: top;
+}
+
+.externalKeysGrid table td {
+    vertical-align: top;
+}
+
+.modal-dialog {
+    position: relative;
+    top: 100px;
+}
+
+form .ng-invalid {
+    border-color: red;
+}
+
+form .ng-valid {
+    border-color: green;
+}
+
+form .header, form .modal-header {
+    background-color: #9EBC5D !important;
+}
+
+form .header {
+    border-radius: 5px;
+    border: solid 1px #8A9E5B !important;
+    margin-bottom: 10px !important;
+}
+
+form .header h3 {
+    padding: 10px 15px !important;
+}
+
+.grid .header {
+    background-color: #70808d !important;
+    border: solid 1px #424951 !important;
+    border-radius: 5px !important;;
+    width: 100% !important;;
+    font-size: 12px !important;
+    color: white;
+}
+
+.grid .header a {
+    color: #424951 !important;
+}
+
+.grid table th {
+    background-color: #99C9FF !important;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+}
+
+.nav-tabs li a:focus {
+    outline: 0;
+}
+
+div.entryBox .body .btn-ssm {
+    position: relative;
+    top: 0px;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    margin-left: 10px;
+    margin-bottom: 5px;
+}
+
+fieldset {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+
+fieldset legend {
+    margin-bottom: 0;
+    text-decoration: none;
+    width: auto;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.apiListing {
+    display: block;
+    vertical-align: top;
+    padding-bottom: 10px;
+}
+
+.apiListing .apiLabel {
+    float: left;
+    width: 300px;
+    padding-right: 30px;
+}
+
+.apiListing .apiAccess {
+    float: left;
+}
+
+.apiListing-container .odd {
+    margin-right: 45px;
+}
+
+.apiListing-container input {
+    margin-top: 0;
+}
+
+.listApis tr.odd {
+    background-color: #ddd;
+}
+
+.listApis tr td {
+    padding: 3px;
+}
+
+.service-container {
+}
+
+.listApis {
+    display: none;
+}
+
+.openApis {
+    display: block;
+    transition: all 0.5s ease 0s;
+}
+
+#application-ApiList .apiListing-container .even, #application-ApiList .apiListing-container .odd {
+    width: 100%;
+}
+
+.grpsListingScroll {
+    width: 378px;
+    height: 70px;
+    overflow-y: scroll;
+    display: inline-block;
+    border: 1px solid #cccccc;
+    margin-left: 5px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.smallGrpsListingScroll {
+    height: 35px;
+    overflow: hidden;
+}
+
+.apiListing .grpsListingScroll {
+    margin-top: -5px;
+}
+
+ul.grpsListing {
+    margin: 0;
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    padding-left: 5px;
+}
+
+.grpsListing li {
+    float: left;
+    width: 170px;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.grpsListing li.oddLi {
+    margin-right: 10px;
+}
+
+.grpsListing li input {
+    margin-right: 3px;
+    margin-top: 1px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+}
+
+#application-ApiList .apiListing .apiAccess {
+    width: auto;
+    vertical-align: top;
+}
+
+.apiAccess em {
+    font-size: 11px;
+}
+
+fieldset .grid table {
+    min-width: 100px;
+}
+
+.dbBoxGreen,
+.dbBoxRed,
+.dbBox {
+    padding: 5px;
+    float: left;
+    display: table;
+    width: auto;
+    margin: 5px;
+}
+
+.dbBoxGreen .head,
+.dbBoxRed .head,
+.dbBox .head {
+    padding: 5px 5px 5px 10px;
+    border: solid 1px #337ab7;
+    border-radius: 5px;
+    position: relative;
+    background-color: #DEF1F7;
+}
+
+.dbBoxRed .head {
+    background: #f2dede;
+    border: solid 1px #d43f3a;
+}
+
+.dbBoxGreen .head {
+    background: #CEDBAF;
+    border: solid 1px #9EBC5D;
+}
+
+.dbBoxGreen .rightActions,
+.dbBoxRed .rightActions,
+.dbBox .rightActions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.dbBoxGreen .head h4,
+.dbBoxRed .head h4,
+.dbBox .head h4 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.dbBoxGreen .info,
+.dbBoxRed .info,
+.dbBox .info {
+    display: table;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 90%;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 10px;
+}
+
+.dbBoxGreen .info2,
+.dbBoxRed .info2,
+.dbBox .info2 {
+    display: table;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    width: 90%;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 60px;
+}
+
+.apisList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0
+}
+
+.apisList li {
+    border-bottom: solid 1px #ccc;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.form .grouped p {
+    font-weight: bold;
+}
+
+.form .grouped {
+    padding-left: 0px;
+    min-width: 1056px;
+    margin-top: 20px;
+}
+
+.form h4 {
+    background-color: #E5EAEE;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.form .grouped label {
+    width: 280px;
+    /*background-color:#E5EAEE;*/
+    /*padding:8px 0;*/
+    /*border-radius:5px;*/
+}
+
+form tr .grouped em {
+    margin-left: 285px;
+    color: #ccc;
+}
+
+form tr .grouped label {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+form tr .grouped input[type="text"] {
+    height: 30px;
+}
+
+.grouped .icon-arrow-right {
+    padding-left: 20px;
+}
+
+.grouped .icon-arrow-right2 {
+    padding-left: 5px;
+}
+
+.grid table.serviceApis {
+    width: 49%;
+    min-width: 49%;
+    /*display: block;*/
+    float: left;
+}
+
+.serviceApis .routeApi {
+    width: 49%;
+}
+
+.serviceApis .labelApi {
+    width: 51%;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.yellow {
+    color: gold;
+}
+
+.noWrap {
+    white-space: nowrap;
+}
+
+.hostsGrid .header {
+    background-color: #70808d !important;
+    border: solid 1px #424951 !important;
+    border-radius: 5px !important;;
+    width: 100% !important;;
+    font-size: 12px !important;
+    color: white;
+}
+
+.hostsGrid .header a {
+    color: #424951 !important;
+}
+
+.hostsGrid th {
+    background-color: #dedede !important;
+    border: 1px solid #bbb;
+    font-weight: bold;
+    padding-left: 4px;
+}
+
+.hostsGrid td {
+    padding: 4px;
+    border: 1px solid #bbb;
+}
+
+.OneIpTable {
+
+}
+
+.OneIpTable td {
+    padding: 4px;
+    border: 1px solid #2694E8;
+}
+
+.OneIpTable th {
+    padding-left: 4px;
+}
+
+tr.sApisEven {
+    background-color: #F8F8F8;
+}
+
+.controllerEnvelop {
+    width: 100%;
+    display: table;
+    padding-bottom: 30px;
+}
+
+.actions {
+    min-width: 95px;
+}
+
+.host-ip {
+    min-width: 154px;
+}
+
+.host-branch {
+    min-width: 154px;
+}
+
+.downSince {
+    min-width: 180px;
+}
+
+.downCount {
+    min-width: 110px;
+}
+
+.lastCheck {
+    min-width: 110px;
+}
+
+.serviceBox .head {
+    background-color: #DEF1F7;
+    border: 1px solid #337AB7;
+    border-radius: 5px;
+    padding: 5px 5px 5px 10px;
+    position: relative;
+}
+
+.serviceBox .service-ips {
+    display: block;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #cccccc;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin: 0 10px;
+    border-top: none;
+    min-height: 60px;
+}
+
+#membersSection .nav-tabs {
+    border-bottom-width: 0px;
+}
+
+#page section.membersCtrl {
+    border-top-left-radius: 0;
+}
+
+.helpPage .tab-pane {
+    padding: 10px;
+}
+
+#tenantInfo form .header {
+    display: none;
+}
+
+.grid.oAuthUsers td.leftAction {
+    width: 30px;
+}
+
+div.entryBox .body .btn-primary.noFloat {
+    float: none;
+    top: 0
+}
+
+#tenantsMembers .nav-tabs {
+    border-bottom-width: 1px;
+}
+
+#envirForm {
+    min-width: 1056px;
+}
+
+.inlineAPIBox {
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+    margin-bottom: 15px;
+}
+
+.inlineAPIBox .apiLabel {
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    padding: 3px;
+}
+
+.fieldMsg {
+    font-style: italic;
+    color: #999;
+    font-size: 12px;
+    clear: both;
+    width: 100%;
+}
+
+.wizardForm td ul {
+    clear: both;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 3px;
+}
+
+.wizardForm td ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 20px;
+}
+
+.wizardForm #defaultValue-wrapper, .wizardForm #codeValues-wrapper,
+.wizardForm #filter-wrapper, .wizardForm #sorting-wrapper, .wizardForm #sortDirection-wrapper {
+    display: none;
+}
+
+.apiErrorCodes li,
+.APIInputBox {
+    /*#page div.entryBoxes div.entryBox:hover {*/
+    background: #DEF1F7;
+    border: solid 1px #337ab7;
+    color: black;
+    padding: 2px 10px;
+    position: relative;
+    top: 3px;
+    border-radius: 5px;
+    list-style-type: none;
+    margin-right: 20px;
+    margin-bottom: 5px;
+}
+
+.npicons {
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    color: #e5eaee;
+}
+
+.npicons:hover {
+    color: #9EBC5D;
+}
+
+.view table tr.odd {
+    background: #F8F8F8;
+}
+
+.languageSelect {
+    float: right;
+}
+
+.languageSelect a {
+    color: #337ab7;
+}
+
+.languageSelect a.active {
+    color: #000;
+}
+
+.breakAll {
+    word-break: break-all;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+#credentials-wrapper {
+    margin-top: 10px;
+}
+
+.urlParams tr.form-group {
+    float: left;
+    width: 32%;
+    margin-left: 8px;
+    margin-bottom: 5px;
+}
+
+.urlParams tr.form-group td {
+    width: 90%;
+    display: block;
+}
+
+.floatGroup tr {
+    float: left;
+    width: 50%;
+}
+
+.floatGroup tr td {
+    width: 95%;
+    display: block;
+}
+
+.serversList tr {
+    float: left;
+    width: 20%;
+    margin-bottom: 0px;
+}
+
+.serversList tr td {
+    display: block;
+    width: 95%;
+}
+
+.serversList tr[class^="form-group tr-removeServer"] {
+    width: 5%;
+}
+
+.serversList tr[class^="form-group tr-removeServer"] td {
+    text-align: right;
+    padding-top: 45px;
+}
+
+.serversList tr[class^="form-group tr-host"] {
+    width: 75%;
+}
+
+.serversList .red {
+    color: #a94442;
+    cursor: pointer;
+}
+
+.preBox {
+    width: 100%;
+    overflow: auto;
+    list-style-type: none;
+    position: relative;
+    max-height: 400px;
+    min-height: 100px;
+}
+
+.preBox:hover {
+    overflow: scroll;
+}
+
+.text-size-slider {
+    line-height: 100%;
+    font-size: 14px;
+}
+
+.text-size-slider .big-letter {
+    font-weight: bold;
+    padding-left: 10%;
+}
+
+.text-size-slider .small-letter{
+    font-weight: bold;
+    padding-right: 10%;
+}
+
+.text-size-slider .slider {
+    -webkit-appearance: none;
+    margin: 0 8px;
+}
+
+.text-size-slider .slider:focus {
+    outline: none;
+}
+
+.text-size-slider .slider::-webkit-slider-thumb {
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background-color: black;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-top: -6px;
+}
+
+.text-size-slider .slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    background: black;
+    border: 0;
+}
+.servicesList td {
+    width : 20%;
+    white-space: nowrap;
 }

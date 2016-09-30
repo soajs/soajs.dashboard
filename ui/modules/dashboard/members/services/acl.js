@@ -124,10 +124,7 @@ membersAclService.service('membersAclHelper', [function () {
 	function renderPermissionsWithServices(currentScope, oneApplication) {
 		function objectIsEnv(obj) {
 			if (obj) {
-				if (JSON.stringify(obj) === '{}') {
-					return false;
-				}
-				if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+				if (!obj.access && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
 					return true;
 				}
 			}
@@ -173,7 +170,6 @@ membersAclService.service('membersAclHelper', [function () {
 		oneApplication.services = {};
 
 		oneApplication.aclFill = {};
-
 		envCodes.forEach(function (oneEnv) {
 			oneApplication.services[oneEnv.code.toUpperCase()] = {};
 			if (objectIsEnv(aclObj[oneEnv.code.toLowerCase()])) {

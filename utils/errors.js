@@ -145,7 +145,11 @@ var errors = {
 	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 
 	"732": "Unable to list drivers",
+	"733": "Unable to add driver",
+	"734": "Unable to update driver",
 	"735": "Unable to change selected driver",
+	"736": "Unable to delete driver",
+	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
 
 	"739": "Missing required param(s). Make sure you specify certificate filename, type, and environment code. If type is docker, specify driver name and if type is nginx, specify certificate label",
@@ -156,7 +160,7 @@ var errors = {
 
 	"742": "Unable to list static content sources",
 
-	"743": "Missing environment deployer settings. Please specify deployment type, and selected driver in the Platforms section",
+	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
 
 	"750": "Invalid Request.",
 
@@ -199,9 +203,19 @@ var errors = {
 
 	"781": "You are not the owner of this application. You cannot perform this operation.",
 
-	901: "Error Logging out from environments",
-	902: "Error Logging in to environments",
-	903: "You do not have access to this environment %envCode%"
+	"783": "Missing folders paths multi repository",
+	"784": "Error in multi repository folders array",
+	"785": "Folders array is empty",
+
+	"786": "Validation Error",
+	"787": "Missing field name in config.js",
+	"788": "Invalid or no type provided in config.js",
+
+	"901": "Error Logging out from environments",
+	"902": "Error Logging in to environments",
+	"903": "You do not have access to this environment %envCode%",
+
+	"904": "Check your internet connection"
 };
 
 

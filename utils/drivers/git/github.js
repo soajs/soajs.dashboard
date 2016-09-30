@@ -275,7 +275,7 @@ var lib = {
                         });
                     });
                 });
-			};
+			}
         });
     },
 
@@ -409,7 +409,7 @@ module.exports = {
 	            				delete require.cache[require.resolve(fileInfo.configFilePath)];
 	            			}
 	                        try {
-	                            var repoConfig = require(fileInfo.configFilePath);
+	                            repoConfig = require(fileInfo.configFilePath);
 	                        }
 	            			catch (e) {
 	                            return cb (e);

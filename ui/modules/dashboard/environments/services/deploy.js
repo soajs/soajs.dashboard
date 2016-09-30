@@ -2,7 +2,7 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
-	function deployEnvironment(currentScope, envCode, haMode) {
+	function deployEnvironment(currentScope, envCode) {
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 
 		getControllerBranches(currentScope, function (branchInfo) {
@@ -168,21 +168,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 			}
 
-			if (haMode) {
-				params.name = 'controller';
-				params.haService = true;
-				params.haCount = formData.controllers;
-			}
-
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/hosts/deployController",
 				"data": params
 			}, function(error, response) {
 				if(error) {
-					console.log (error);
-					overlay.hide();
 					currentScope.generateNewMsg(envCode, 'danger', error.message);
+					overlay.hide();
 				}
 				else {
 					params.supportSSL = formData.supportSSL;
@@ -197,17 +190,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						}
 						else {
 							overlay.hide(function(){
-								if (!haMode) {
-									currentScope.listNginxHosts(envCode);
-									currentScope.listHosts(envCode);
-								}
-								else {
-									currentScope.isDeploying = true;
-									$timeout(function () {
-										currentScope.listNginxServices();
-										currentScope.listServices();
-									}, 30000);
-								}
+								currentScope.listNginxHosts(envCode);
+								currentScope.listHosts(envCode);
 							});
 						}
 					});

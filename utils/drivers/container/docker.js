@@ -33,7 +33,7 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 						return cb(null, dockerConfig);
 					}
 					else {
-						return getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
+						getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
 					}
 				});
 			});
@@ -43,75 +43,36 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 
 var lib = {
 	"getDeployer": function (deployerConfig, mongo, cb) {
-		/**
-			Three options:
-				- local: use socket port
-				- remote: get manager node record, extract ip/port and certificates
-				- remote and adding a new node: in case of adding a new node, use ip/port of new node and certificates
-		*/
 		var config = utils.cloneObj(deployerConfig);
+		delete config.driver;
+		config.envCode = config.envCode.toUpperCase();
 		var docker;
 		if (config.socketPath) {
 			docker = new Docker({socketPath: config.socketPath});
 			return cb(null, docker);
 		}
 		else {
-			var dockerConfig = {};
-			getTargetNode(config, function (error, target) {
-				checkError(error, cb, function () {
-					dockerConfig.host = target.host;
-					dockerConfig.port = target.port;
-
-					getNodeCertificates(config, dockerConfig, function (error, dockerConfig) {
-						checkError(error, cb, function () {
-							docker = new Docker(dockerConfig);
-							return cb(null, docker);
-						});
-					});
-				});
-			});
-		}
-
-		function getTargetNode(config, callback) {
-			if (config.flags && (config.flags.newNode || config.flags.targetNode)) {
-				if (!config.host || !config.port) {
-					return callback({message: 'Missing host/port info'});
-				}
-				return callback(null, {host: config.host, port: config.port});
-			}
-			else {
-				if (!config.nodes || (config.nodes && config.nodes.length === 0)) {
-					return callback({message: 'No manager nodes found in this environment\'s deployer'});
-				}
-				var oneManagerNode = config.nodes[0]; //any manager node can be selected
-				mongo.findOne('docker', {recordType: 'node', name: oneManagerNode}, function (error, nodeRecord) {
-					checkError(error || !nodeRecord, callback, function () {
-						return callback(null, {host: nodeRecord.ip, port: nodeRecord.dockerPort});
-					});
-				});
-			}
-		}
-
-		function getNodeCertificates(config, dockerConfig, callback) {
-			if (!config.envCode) {
-				return callback({message: 'Missing environment code'});
-			}
+			var dockerConfig = {
+				host: config.host,
+				port: config.port
+			};
 
 			var criteria = {};
-			criteria['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
-			mongo.find('fs.files', criteria, function (error, certs) {
-				checkError(error, callback, function () {
-					if (!certs || (certs && certs.length === 0)) {
-						return callback({message: 'No certificates for ' + config.envCode + ' environment found'});
+			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
+			mongo.find("fs.files", criteria, function (error, certs) {
+				checkError(error, cb, function () {
+					if (!certs || certs.length === 0) {
+						return cb({'code': 741, 'message': "No certificates for " + config.envCode + " environment exist"});
 					}
 
 					mongo.getMongoSkinDB(function (error, db) {
-						checkError(error, callback, function () {
+						checkError(error, cb, function () {
 							var gfs = Grid(db, mongo.mongoSkin);
 							var counter = 0;
 							getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
-								checkError(error, callback, function () {
-									return callback(null, dockerConfig);
+								checkError(error, cb, function () {
+									docker = new Docker(dockerConfig);
+									return cb(null, docker);
 								});
 							});
 						});
@@ -199,142 +160,6 @@ var deployer = {
 						});
 					}
 				});
-		});
-	},
-
-	"addNode": function (deployerConfig, options, mongo, cb) {
-		deployerConfig.flags = {
-			newNode: true
-		};
-
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			checkError(error, cb, function () {
-				deployer.info(function (error, nodeInfo) {
-					checkError(error, cb, function () {
-						deployer.swarmJoin(options, function (error) {
-							checkError(error, cb, function () {
-								if (options.role === 'manager') {
-									var node = deployer.getNode(nodeInfo.Name);
-									node.inspect(cb);
-								}
-								else {
-									//get manager node from swarm and inspect newly added node
-									delete deployerConfig.flags;
-									delete deployerConfig.host;
-									delete deployerConfig.port;
-
-									lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-										checkError(error, cb, function () {
-											deployer.listNodes(function (error, nodes) {
-												checkError(error, cb, function () {
-													for (var i = 0; i < nodes.length; i++) {
-														if (nodes[i].Description.Hostname === nodeInfo.Name) {
-															return cb(null, nodes[i]);
-														}
-													}
-													return cb();
-												});
-											});
-										});
-									});
-								}
-							});
-						});
-					});
-				});
-			});
-		});
-	},
-
-	"removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
-		/*
-			- get deployer for target node
-			- leave swarm
-			- return success response
-			- get deployer of a manager node in the swarm
-			- remove node
-		*/
-
-		var targetDeployerConfig = JSON.parse(JSON.stringify(deployerConfig));
-		targetDeployerConfig.host = options.ip;
-		targetDeployerConfig.port = options.dockerPort;
-		targetDeployerConfig.flags = { targetNode: true };
-		lib.getDeployer(targetDeployerConfig, mongo, function (error, targetDeployer) {
-			checkError(error, cb, function () {
-				targetDeployer.swarmLeave(function (error) {
-					checkError(error, cb, function () {
-
-						//return response and remove node entry from swarm in the background
-						cb(null, true);
-
-						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-							var node = deployer.getNode(options.id);
-							setTimeout(function () {
-								node.remove(backgroundCB);
-							}, 20000);
-						});
-					});
-				});
-			});
-		});
-	},
-
-	"updateNode": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			checkError(error, cb, function () {
-				var node = deployer.getNode(options.nodeId);
-
-				//need to inspect node in order to get its current version and pass it to update call
-				node.inspect(function (error, nodeRecord) {
-					checkError(error, cb, function () {
-						options.version = nodeRecord.Version.Index;
-						node.update(options, function (error, result) {
-							checkError(error, cb, function () {
-								return cb(null, true);
-							});
-						});
-					});
-				});
-			});
-		});
-	},
-
-	"deployHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			checkError(error, cb, function () {
-				deployer.createService(options, cb);
-			});
-		});
-	},
-
-	"scaleHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			checkError(error, cb, function () {
-				var service = deployer.getService(options.serviceName);
-				service.inspect(function (error, serviceInfo) {
-					checkError(error, cb, function () {
-						//testing/////////////////////////////////////
-						//docker api does not support update using service name 
-						service = deployer.getService(serviceInfo.ID);
-						//////////////////////////////////////////////
-
-						var update = serviceInfo.Spec;
-						update.version = serviceInfo.Version.Index;
-						update.Mode.Replicated.Replicas = options.scale;
-						service.update(update, cb);
-					});
-				});
-			});
-		});
-	},
-
-	"deleteHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
-			checkError(error, cb, function () {
-				var serviceId = options.serviceName;
-				var service = deployer.getService(serviceId);
-				service.remove(cb);
-			});
 		});
 	}
 };

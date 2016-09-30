@@ -32,7 +32,7 @@ Create and manage environments with different IPs.<br>
 Environments are linked to the Registry.<br>
 Environments are also used when adding tenant service configuration.
 
-More information on Environments is available on the website section [registry](http://www.soajs.org/#/documentation/registry)
+More information on Environments is available on the website section [registry](http://www.soajs.org/#/documentation/core/registry)
 
 ###2. Productization
 Package your services with different permissions and access controls and offer them as commercial products.<br>
@@ -41,7 +41,7 @@ Each Package offers a variety of access levels on the services' APIs.<br>
 If a service is contained in a package, then this product offers the ability to use this service.<br>
 When specifying the access level over a service, you can grant access to the whole service or add restrictions on its APIs.
 
-More information on Productization is available on the website section [provisioning](http://www.soajs.org/#/documentation/provisioning)
+More information on Productization is available on the website section [productization](http://www.soajs.org/#/documentation/advanced/productization)
 
 ###3. Multitenancy
 Create and manage multiple tenants (clients) and assign product packages to them.<br>
@@ -50,7 +50,7 @@ Then when making calls to the APIs of that service, specify the key of the tenan
 
 Tenants applications contains the tenant keys. These keys are checked when a request is made to a multitenant configured service API to determine if the requested service API is accessible or not using this key value. These keys also have expiry dates and are secured by device and geo location information if needed.
 
-More information on Multitenancy is available on the website section [provisioning](http://www.soajs.org/#/documentation/provisioning)
+More information on Multitenancy is available on the website section [multitenancy](http://www.soajs.org/#/documentation/advanced/multitenancy)
 
 More information on Dashboard Services is available on the website section [Dashboard](http://www.soajs.org/#/documentation/dashboard-services)
 
@@ -61,7 +61,7 @@ The dashboard offers a UI that can be used to invoke all the service APIs mentio
 To get the UI running, you need to install several packages:
 
 1. **nginx**: 3rd Party http server mainly used for virtual host creation [Download Link](http://nginx.org)
-2. **soajs.util** main SOAJS utility library containing controller and agent services [Download Link](https://www.npmjs.com/package/soajs.util)
+2. **soajs.utilities** main SOAJS utility library containing controller and agent services [Download Link](https://www.npmjs.com/package/soajs.utilities)
 3. **soajs.urac** URAC serviced used to manage users records [Download Link](https://www.npmjs.com/package/soajs.urac)
 4. **soajs.examples** SOAJS basic examples and sample Database Data [Download Link](https://www.npmjs.com/package/soajs.examples)
 5. **soajs.dashboard** SOAJS dashboard service and GUI [Download Link](https://www.npmjs.com/package/soajs.dashboard)
@@ -73,4 +73,4 @@ To get the UI running, you need to install several packages:
 * Load the provisioned data from the **examples** module and login with the test administrator account.
 * Once logged in, the UI navigation is straight forward to every section of the dashboard service.
 
-More information on how to set up the Dashboard UI is available on the website section [dashboard UI](http://www.soajs.org/#/documentation/dashboard-setup)
+More information on how to set up the Dashboard UI is available on the website section [dashboard UI](http://http://www.soajs.org/#/documentation/ui/dashboard)

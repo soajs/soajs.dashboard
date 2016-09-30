@@ -194,10 +194,7 @@ multiTenantService.service('aclHelper', function () {
 
 	function objectIsEnv(obj) {
 		if (obj) {
-			if (JSON.stringify(obj) === '{}') {
-				return false;
-			}
-			if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+			if (!obj.access && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
 				return true;
 			}
 		}
@@ -215,10 +212,7 @@ multiTenantService.service('aclHelper', function () {
 			var newList;
 			service = services[i];
 			envCodes.forEach(function (oneEnv) {
-				var parentEnvAcl = {};
-				if (parentAcl[oneEnv.code.toLowerCase()]) {
-					parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
-				}
+				var parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
 				if (currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name]) {
 					if (parentEnvAcl && (parentEnvAcl.apisPermission === 'restricted')) {
 						newList = [];

@@ -6,7 +6,7 @@ var gitAccountsAppConfig = {
 					'name': 'provider',
 					'label': translation.accountProvider[LANG],
 					'type': 'select',
-					'value': [{'v': 'github', 'l': 'GitHub', 'selected': true}],
+					'value': [{'v': 'bitbucket', 'l': 'Bitbucket'},  {'v': 'github', 'l': 'GitHub'}],
 					'tooltip': translation.chooseAccountProvider[LANG],
 					'required': true
 				},

@@ -48,8 +48,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             'class': 'accountType',
             'type': 'radio',
             'value': [{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
-                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
-                {'v': 'organization_public', 'l': 'Organization - Public'}],
+                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'}],
             'required': true,
             onAction: function (label, selected, formConfig) {
                 if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
@@ -272,19 +271,19 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     account.repos.push(oneRepo);
                 }
             });
-            setTimeout(function(){
-                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
-            },500);
         }
         else {
             account.repos = account.repos.concat(repos);
-            setTimeout(function(){
-                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
-            },500);
         }
+
+        var reposList = jQuery('#reposList');
+        setTimeout(function(){
+            reposList.animate({scrollTop: reposList.prop("scrollHeight")}, 1500);
+        },500);
     };
 
     $scope.activateRepo = function (account, repo) {
+        console.log(repo);
         var formConfig = angular.copy(gitAccountsAppConfig.form.selectConfigBranch);
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
@@ -326,6 +325,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                     data: {
                                         provider: account.provider,
                                         owner: repo.owner.login,
+                                        project: repo.project ? repo.project.key : null,
                                         repo: repo.name,
                                         configBranch: formData.branch
                                     }

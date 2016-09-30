@@ -109,37 +109,6 @@ var deployer = {
     "info": function (deployerConfig, cid, req, res, mongo) {
         var deployer = getDeployer(deployerConfig);
         deployer.info(deployerConfig, cid, req, res, mongo);
-    },
-
-    "addNode": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.addNode(deployerConfig, options, mongo, cb);
-    },
-
-    "removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.removeNode(deployerConfig, options, mongo, cb, backgroundCB);
-    },
-
-    "updateNode": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.updateNode(deployerConfig, options, mongo, cb);
-    },
-
-    "deployHAService": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.deployHAService(deployerConfig, options, mongo, cb);
-    },
-
-    "scaleHAService": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.scaleHAService(deployerConfig, options, mongo, cb);
-    },
-
-    "deleteHAService": function (deployerConfig, options, mongo, cb) {
-        var deployer = getDeployer(deployerConfig);
-        deployer.deleteHAService(deployerConfig, options, mongo, cb);
     }
 };
-
 module.exports = deployer;

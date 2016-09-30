@@ -31,16 +31,25 @@ module.exports = {
 
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
 
-	"images": {
-		//////////////////////////////////////////////////////////////////
-		"nginx": 'soajstest/nginx', //TEMPORARY: USING TEST IMAGE NAME//
-		"services": "soajstest/soajs" //TEMPORARY: USING TEST IMAGE NAME//
-		//////////////////////////////////////////////////////////////////
+	images: {
+		"nginx": 'soajsorg/nginx',
+		"services": "soajsorg/soajs"
 	},
-
-	"imagesDir": "/opt/soajs/FILES/deployer/",
-
-	"gitAccounts": {
+	gitAccounts: {
+		bitbucket: {
+			userAgent: "SOAJS Bitbucket App",
+			defaultConfigFilePath: "config.js",
+			repoConfigsFolder: __dirname + '/repoConfigs',
+			// required for OAuth
+			apiDomain: process.env.BITBUCKET_BASE_URL + '/rest/api/1.0',
+			requestUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/request-token',
+			accessUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/access-token',
+			authorizeUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/authorize',
+			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
+			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
+			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
+			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+		},
 		"github": {
 			"protocol": "https",
 			"domainName": "api.github.com",
@@ -748,13 +757,6 @@ module.exports = {
 					"required": true
 				}
 			},
-			"platform": {
-				"source": ['query.platform'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
 			"driverName": {
 				"source": ['query.driverName'],
 				"required": true,
@@ -767,6 +769,111 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "array"
+				}
+			}
+		},
+		"/environment/platforms/driver/add": {
+			_apiInfo: {
+				"l": "Add Driver",
+				"group": "Environment Platforms"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			"driverName": {
+				"source": ['query.driverName'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"local": {
+				"source": ['body.local'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			"cloud": {
+				"source": ['body.cloud'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			"socket": {
+				"source": ['body.socket'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			}
+		},
+		"/environment/platforms/driver/edit": {
+			_apiInfo: {
+				"l": "Update Driver",
+				"group": "Environment Platforms"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			"driverName": {
+				"source": ['query.driverName'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"local": {
+				"source": ['body.local'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			"cloud": {
+				"source": ['body.cloud'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			},
+			"socket": {
+				"source": ['body.socket'],
+				"required": false,
+				"validation": {
+					"type": "object"
+				}
+			}
+		},
+		"/environment/platforms/driver/delete": {
+			_apiInfo: {
+				"l": "Delete Driver Configuration",
+				"group": "Environment Platforms"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"required": true
+				}
+			},
+			"driverName": {
+				"source": ['query.driverName'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
@@ -1857,27 +1964,6 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
-			},
-			"name": {
-				"source": ['body.name'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
-				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -1910,20 +1996,6 @@ module.exports = {
 				"required": false,
 				"validation": {
 					"type": "boolean"
-				}
-			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
 				}
 			}
 		},
@@ -2013,20 +2085,6 @@ module.exports = {
 				"required": false,
 				"validation": {
 					"type": "boolean"
-				}
-			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
 				}
 			}
 		},
@@ -2171,173 +2229,6 @@ module.exports = {
 			},
 			"cid": {
 				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/hacloud/nodes/list": {
-			"_apiInfo": {
-				"l": "List HA Cloud Nodes",
-				"group": "HA Cloud"
-			}
-		},
-		"/hacloud/nodes/add": {
-			"_apiInfo": {
-				"l": "Add HA Cloud Node",
-				"group": "HA Cloud"
-			},
-			"host": {
-				"source": ['body.host'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"port": {
-				"source": ['body.port'],
-				"required": true,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"role": {
-				"source": ['body.role'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"enum": ['manager', 'worker']
-				}
-			}
-		},
-		"/hacloud/nodes/remove": {
-			"_apiInfo": {
-				"l": "Remove HA Cloud Node",
-				"group": "HA Cloud"
-			},
-			"nodeId": {
-				"source": ['query.nodeId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hacloud/nodes/update": {
-			"_apiInfo": {
-				"l": "Update HA Cloud Node",
-				"group": "HA Cloud"
-			},
-			"nodeId": {
-				"source": ['query.nodeId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"type": {
-				"source": ['body.type'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"enum": ["role", "availability"]
-				}
-			},
-			"value": {
-				"source": ['body.value'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/hacloud/services/scale": {
-			"_apiInfo": {
-				"l": "Scale HA Service",
-				"group": "HA Cloud"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"name": {
-				"source": ['query.name'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"version": {
-				"source": ['query.version'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"scale": {
-				"source": ['body.scale'],
-				"required": true,
-				"validation": {
-					"type": "number"
-				}
-			}
-		},
-
-		"/hacloud/services/delete": {
-			"_apiInfo": {
-				"l": "Delete HA Service",
-				"group": "HA Cloud"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"name": {
-				"source": ['query.name'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"version": {
-				"source": ['query.version'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/analytics/check": {
-			"_apiInfo": {
-				"l": "Check Analytics Status",
-				"group": "Analytics"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/analytics/activate": {
-			"_apiInfo": {
-				"l": "Activate Analytics",
-				"group": "Analytics"
-			},
-			"env": {
-				"source": ['body.env'],
 				"required": true,
 				"validation": {
 					"type": "string"
@@ -2526,6 +2417,12 @@ module.exports = {
 			"owner": {
 				"source": ['body.owner'],
 				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"project": {
+				"source": ['body.project'],
 				"validation": {
 					"type": "string"
 				}
