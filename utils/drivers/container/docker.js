@@ -315,7 +315,7 @@ var deployer = {
 					checkError(error, cb, function () {
 						var update = serviceInfo.Spec;
 						update.version = serviceInfo.Version.Index;
-						update.Replicated.Replicas = options.scale;
+						update.Mode.Replicated.Replicas = options.scale;
 						service.update(update, cb);
 					});
 				});
