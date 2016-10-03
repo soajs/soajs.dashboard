@@ -98,6 +98,15 @@ var model = {
 		mongo.remove(dockerColl, condition, cb);
 	},
 
+	"removeContainerByTask": function (soajs, env, taskName, cb) {
+		var criteria = {
+			env: env.toLowerCase(),
+			taskName: taskName
+		};
+		checkForMongo(soajs);
+		mongo.remove(dockerColl, criteria, cb);
+	},
+
 	"insertContainer": function (soajs, record, cb) {
 		checkForMongo(soajs);
 		record.hostname = record.hostname.replace("/", "");
@@ -206,6 +215,15 @@ var model = {
 		}
 		checkForMongo(soajs);
 		mongo.remove(hostsColl, condition, cb);
+	},
+
+	"removeHostByTask": function (soajs, env, task, cb) {
+		var criteria = {
+			env: env.toLowerCase(),
+			serviceHATask: task
+		};
+		checkForMongo(soajs);
+		mongo.remove(hostsColl, criteria, cb);
 	},
 
 	"insertHost": function (soajs, record, cb) {
