@@ -136,9 +136,24 @@ var deployer = {
         deployer.scaleHAService(deployerConfig, options, mongo, cb);
     },
 
+    "inspectHAService": function (deployerConfig, options, mongo, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.inspectHAService(deployerConfig, options, mongo, cb);
+    },
+
+    "inspectHATask": function (deployerConfig, options, mongo, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.inspectHATask(deployerConfig, options, mongo, cb);
+    },
+
     "deleteHAService": function (deployerConfig, options, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.deleteHAService(deployerConfig, options, mongo, cb);
+    },
+
+    "inspectContainer": function (deployerConfig, options, mongo, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.inspectContainer(deployerConfig, options, mongo, cb);
     }
 };
 

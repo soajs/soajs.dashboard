@@ -314,7 +314,7 @@ var deployer = {
 				service.inspect(function (error, serviceInfo) {
 					checkError(error, cb, function () {
 						//testing/////////////////////////////////////
-						//docker api does not support update using service name 
+						//docker api does not support update using service name
 						service = deployer.getService(serviceInfo.ID);
 						//////////////////////////////////////////////
 
@@ -328,12 +328,59 @@ var deployer = {
 		});
 	},
 
+	"inspectHAService": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			checkError(error, cb, function () {
+				var output = {}, params = {};
+				var service = deployer.getService(options.serviceName);
+				service.inspect(function (error, serviceInfo) {
+					checkError(error, cb, function () {
+						output.service = serviceInfo;
+
+						params.service = [options.serviceName];
+						deployer.listTasks(params, function (error, serviceTasks) {
+							checkError(error, cb, function () {
+								output.tasks = serviceTasks;
+								return cb(null, output);
+							});
+						});
+					});
+				});
+			});
+		});
+	},
+
+	"inspectHATask": function (deployerConfig, options, mongo, cb) {
+		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			checkError(error, cb, function () {
+				var task = deployer.getTask(options.taskId);
+				task.inspect(cb);
+			});
+		});
+	},
+
 	"deleteHAService": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			checkError(error, cb, function () {
 				var serviceId = options.serviceName;
 				var service = deployer.getService(serviceId);
 				service.remove(cb);
+			});
+		});
+	},
+
+	"inspectContainer": function (deployerConfig, options, mongo, cb) {
+		mongo.findOne('docker', {id: options.nodeId}, function (error, nodeInfo) {
+			checkError(error, cb, function () {
+				deployerConfig.host = nodeInfo.ip;
+				deployerConfig.port = nodeInfo.dockerPort;
+				deployerConfig.flags = { targetNode: true };
+				lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+					checkError(error, cb, function () {
+						var container = deployer.getContainer(options.containerId);
+						container.inspect(cb);
+					});
+				});
 			});
 		});
 	}
