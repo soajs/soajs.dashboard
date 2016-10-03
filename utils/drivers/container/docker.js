@@ -368,8 +368,8 @@ var deployer = {
 	},
 
 	"inspectContainer": function (deployerConfig, options, mongo, cb) {
-		mongo.findOne('docker', {id: options.nodeId}, function (error, nodeInfo) {
-			checkError(error, cb, function () {
+		mongo.findOne('docker', {recordType: 'node', id: options.nodeId}, function (error, nodeInfo) {
+			checkError(error || !nodeInfo, cb, function () {
 				deployerConfig.host = nodeInfo.ip;
 				deployerConfig.port = nodeInfo.dockerPort;
 				deployerConfig.flags = { targetNode: true };
