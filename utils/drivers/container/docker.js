@@ -313,10 +313,8 @@ var deployer = {
 				var service = deployer.getService(options.serviceName);
 				service.inspect(function (error, serviceInfo) {
 					checkError(error, cb, function () {
-						//testing/////////////////////////////////////
-						//docker api does not support update using service name
+						//docker api does not support updating a service using its name
 						service = deployer.getService(serviceInfo.ID);
-						//////////////////////////////////////////////
 
 						var update = serviceInfo.Spec;
 						update.version = serviceInfo.Version.Index;
