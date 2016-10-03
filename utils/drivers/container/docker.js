@@ -337,7 +337,7 @@ var deployer = {
 					checkError(error, cb, function () {
 						output.service = serviceInfo;
 
-						params.service = [options.serviceName];
+						params.filters = { service: [options.serviceName] };
 						deployer.listTasks(params, function (error, serviceTasks) {
 							checkError(error, cb, function () {
 								output.tasks = serviceTasks;
