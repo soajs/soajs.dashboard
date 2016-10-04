@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "async": "*",
-    "bcrypt": "*",
     "dockerode": "*",
     "formidable": "*",
     "github": "^0.2.4",

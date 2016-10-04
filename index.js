@@ -385,7 +385,7 @@ service.init(function () {
 	});
 	service.post("/tenant/application/key/add", function (req, res) {
 		checkForMongo(req);
-		tenant.createApplicationKey(config, mongo, req, res);
+		tenant.createApplicationKey(config, mongo, service.provision, req, res);
 	});
 	service.get("/tenant/application/key/list", function (req, res) {
 		checkForMongo(req);
@@ -402,7 +402,7 @@ service.init(function () {
 	});
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		checkForMongo(req);
-		tenant.addApplicationExtKeys(config, mongo, req, res);
+		tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
 	});
 	service.post("/tenant/application/key/ext/update", function (req, res) {
 		checkForMongo(req);
@@ -688,7 +688,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/add", function (req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.createApplicationKey(config, mongo, req, res);
+			tenant.createApplicationKey(config, mongo, service.provision, req, res);
 		});
 	});
 	service.get("/settings/tenant/application/key/list", function (req, res) {
@@ -713,7 +713,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.addApplicationExtKeys(config, mongo, req, res);
+			tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
 		});
 	});
 	service.post("/settings/tenant/application/key/ext/update", function (req, res) {
