@@ -199,6 +199,25 @@ var errors = {
 
 	"781": "You are not the owner of this application. You cannot perform this operation.",
 
+	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
+	"801": "Unable to add node, make sure the new node is configured properly",
+	"802": "Unable to save new node record. However, the new node was added to the cluster",
+	"803": "Unable to get node record",
+	"804": "Unable to remove node, make sure the node is healthy and reachable within the cluster",
+	"805": "Unable to remove node record. However, the node is currently being removed from the cluster",
+	"806": "Unable to update node, make sure the node is reachable and properly configured",
+	"807": "Unable to update the node record. However, the node state was updated within the cluster",
+	"808": "Unable to retrieve service containers list",
+	"809": "The new and current scale counts are identical",
+	"810": "Unable to scale service, make sure the deployer is configured properly",
+	"811": "Unable to inspect service containers",
+	"812": "Unable to update container records. However, the service was scaled successfully",
+	"813": "Unable to delete service, make sure the deployer is configured properly",
+	"814": "Unable to remove container records. However, the service was deleted successfully",
+	"815": "Unable to remove host records. However, the service was deleted successfully",
+	"816": "Unable to get analytics configuration for this environment",
+	"817": "Unable to list nodes",
+
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
 	903: "You do not have access to this environment %envCode%"
