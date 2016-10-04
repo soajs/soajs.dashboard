@@ -160,6 +160,7 @@ var model = {
 	"getServiceContainers": function (soajs, criteria, cb) {
 		checkForMongo(soajs);
 		criteria.recordType = 'container';
+		criteria.env = criteria.env.toLowerCase();
 		mongo.find(dockerColl, criteria, cb);
 	},
 
