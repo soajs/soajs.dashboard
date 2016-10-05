@@ -1076,6 +1076,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 currentScope.confirmBranch = '';
                 delete currentScope.replicaCount;
                 delete currentScope.exposedPort;
+                currentScope.memoryLimit = 209715200;
                 currentScope.useLocalSOAJS = true;
                 currentScope.message = {};
                 currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
@@ -1316,7 +1317,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         'repo': currentScope.serviceRepo,
                         'useLocalSOAJS': currentScope.useLocalSOAJS,
                         'haService': true,
-                        'haCount': currentScope.replicaCount
+                        'haCount': currentScope.replicaCount,
+                        'memoryLimit': currentScope.memoryLimit
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {

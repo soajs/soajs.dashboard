@@ -61,6 +61,11 @@
 						<input type="number" class="form-control" ng-model="currentScope.replicaCount" ng-required="true" />
 						<br>
 					</div>
+					<div>
+						<label>Memory Limits in MBytes</label>
+						<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true" />
+						<br>
+					</div>
 					<div ng-if="currentScope.service.type !== 'nginx'">
 						<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false" />&nbsp;Enable SOAJS accelerated deployment</label>
 						<br><br>
