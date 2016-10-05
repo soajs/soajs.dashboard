@@ -2317,6 +2317,27 @@ module.exports = {
 			}
 		},
 
+		"/hacloud/services/instances/logs": {
+			"_apiInfo": {
+				"l": "Get Service Container Logs",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"taskName": {
+				"source": ['query.taskName'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
 		"/analytics/check": {
 			"_apiInfo": {
 				"l": "Check Analytics Status",

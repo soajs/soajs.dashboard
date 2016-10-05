@@ -85,6 +85,15 @@ var model = {
 		mongo.findOne(dockerColl, condition, cb);
 	},
 
+	"getContainerByTask": function (soajs, env, taskName, cb) {
+		var criteia = {
+			env: env.toLowerCase(),
+			taskName: taskName
+		};
+		checkForMongo(soajs);
+		mongo.findOne(dockerColl, criteria, cb);
+	},
+
 	"removeContainer": function (soajs, env, hostname, cb) {
 		var condition = {
 			"env": env.toLowerCase(),

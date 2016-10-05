@@ -548,6 +548,12 @@ service.init(function () {
  		});
 	 });
 
+	 service.get("/hacloud/services/instances/logs", function (req, res) {
+		 initBLModel(req, res, hostBL, "host", function (BL) {
+ 			BL.streamLogs(config, req.soajs, res);
+ 		});
+	 });
+
 	 /**
  	 * Analytics Features
  	 */

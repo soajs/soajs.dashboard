@@ -154,6 +154,11 @@ var deployer = {
     "inspectContainer": function (deployerConfig, options, mongo, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.inspectContainer(deployerConfig, options, mongo, cb);
+    },
+
+    "getContainerLogs": function (deployerConfig, options, mongo, soajs, res) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.getContainerLogs(deployerConfig, options, mongo, soajs, res);
     }
 };
 

@@ -106,6 +106,27 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="logBox.html">
+	<div class="modal-header">
+		<table width="100%">
+			<tr>
+				<td width="80%">
+					<h3 class="modal-title">{{title}}</h3>
+				</td>
+				<td width="20%" align="center">
+					<span><text-size-slider min="10" max="36" unit="px" value="12" idt="code"></text-size-slider></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="modal-body">
+		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh">{{data}}</code></pre>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
+</script>
+
 <section ng-controller="hacloudCtrl">
     <tabset>
         <tab heading="Nodes">
@@ -340,7 +361,7 @@
 	                                                            <span class="icon icon-stats-dots"></span>&nbsp;
 	                                                        </a>
 
-	                                                        <a href="" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+	                                                        <a href="" ng-show="container.taskName" ng-click="hostLogs(container.taskName)">
 	                                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 	                                                        </a>
 	                                                    </td>

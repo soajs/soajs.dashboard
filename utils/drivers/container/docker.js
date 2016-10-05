@@ -351,8 +351,18 @@ var deployer = {
 	"inspectHATask": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			checkError(error, cb, function () {
-				var task = deployer.getTask(options.taskId);
-				task.inspect(cb);
+				var params = {
+					filters: {
+						// name: [options.taskName], //TODO: check issue
+						service: [options.taskName.split('.')[0]]
+					}
+				};
+
+				deployer.listTasks(params, function (error, taskRecord) {
+					checkError(error, cb, function () {
+						return cb(null, taskRecord[0]);
+					});
+				});
 			});
 		});
 	},
@@ -381,6 +391,56 @@ var deployer = {
 				});
 			});
 		});
+	},
+
+	"getContainerLogs": function (deployerConfig, options, mongo, soajs, res) {
+		mongo.findOne('docker', {recordType: 'node', id: options.nodeId}, function (error, nodeInfo) {
+			if (error || !nodeInfo) {
+				error = ((error) ? error : {message: 'Node record not found'});
+				soajs.log.error(error);
+				return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
+			}
+
+			deployerConfig.host = nodeInfo.ip;
+			deployerConfig.port = nodeInfo.dockerPort;
+			deployerConfig.flags = { targetNode: true };
+			lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+				if (error) {
+					soajs.log.error(error);
+					return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
+				}
+				var container = deployer.getContainer(options.containerId);
+				var logOptions = {
+					stdout: true,
+					stderr: true,
+					tail: 400
+				};
+
+				container.logs(logOptions, function (error, logStream) {
+					if (error) {
+						soajs.log.error(error);
+						return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
+					}
+
+					var data = '';
+					var chunk;
+					logStream.setEncoding('utf8');
+					logStream.on('readable', function () {
+						var handle = this;
+						while ((chunk = handle.read()) != null) {
+							data += chunk.toString("utf8");
+						}
+					});
+
+					logStream.on('end', function () {
+						logStream.destroy();
+						var out = soajs.buildResponse(null, {'data': data});
+						return res.json(out);
+					});
+				});
+			});
+		});
 	}
 };
+
 module.exports = deployer;

@@ -840,6 +840,66 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         });
     }
 
+    function hostLogs (currentScope, taskName) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: "get",
+            routeName: "/dashboard/hacloud/services/instances/logs",
+            params: {
+                env: currentScope.envCode,
+                taskName: taskName
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.displayAlert('danger', error.message);
+            }
+            else {
+                $modal.open({
+                    templateUrl: "logBox.html",
+                    size: 'lg',
+                    backdrop: true,
+                    keyboard: false,
+                    windowClass: 'large-Modal',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.title = "Host Logs of " + taskName;
+                        $scope.data = remove_special(response.data);
+	                    fixBackDrop();
+                        setTimeout(function () {
+                            highlightMyCode()
+                        }, 500);
+                        $scope.ok = function () {
+                            $modalInstance.dismiss('ok');
+                        };
+                    }
+                });
+            }
+        });
+    }
+
+    function remove_special(str) {
+        var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
+            /[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
+            /[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
+            /[\xD2-\xD4]/g, /[\xF2-\xF4]/g,
+            /[\xD9-\xDB]/g, /[\xF9-\xFB]/g,
+            /\xD1/, /\xF1/g,
+            "/[\u00a0|\u1680|[\u2000-\u2009]|u200a|\u200b|\u2028|\u2029|\u202f|\u205f|\u3000|\xa0]/g",
+            /\uFFFD/g,
+            /\u000b/g, '/[\u180e|\u000c]/g',
+            /\u2013/g, /\u2014/g,
+            /\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g];
+        var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...'];
+        for (var i = 0; i < rExps.length; i++) {
+            str = str.replace(rExps[i], repChar[i]);
+        }
+        for (var x = 0; x < str.length; x++) {
+            var charcode = str.charCodeAt(x);
+            if ((charcode < 32 || charcode > 126) && charcode != 10 && charcode != 13) {
+                str = str.replace(str.charAt(x), "");
+            }
+        }
+        return str;
+    }
+
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "send",
@@ -1414,6 +1474,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'loadServiceProvision': loadServiceProvision,
         'awarenessStat': awarenessStat,
         'executeHeartbeatTest': executeHeartbeatTest,
+        'hostLogs': hostLogs,
         'deployNewService': deployNewService,
         'listNginxHosts': listNginxHosts
     };

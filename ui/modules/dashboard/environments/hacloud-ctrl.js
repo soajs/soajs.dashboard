@@ -64,7 +64,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	};
 
 	$scope.executeHeartbeatTest = function (env, oneHost) {
-			hacloudSrv.executeHeartbeatTest($scope, env, oneHost);
+		hacloudSrv.executeHeartbeatTest($scope, env, oneHost);
+	};
+
+	$scope.hostLogs = function (taskName) {
+		hacloudSrv.hostLogs($scope, taskName);
 	};
 
 	// if ($scope.access.listNodes) {
