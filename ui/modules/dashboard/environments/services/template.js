@@ -4,31 +4,16 @@ var env_template = {
 	"domain": "",
 	"profile": "",
 	"description": "",
-	"deployer": {
-		"type": "",
-		"selected": "",
-		"container":{
-			"dockermachine":{
-				"local": {
-					"host": "",
-					"port": 0,
-					"config":{
-						"HostConfig": {
-							"NetworkMode": ""
-						},
-						"MachineName": ""
-					}
+	"deployer" : {
+		"type" : "",
+		"selected" : "",
+		"container" : {
+			"docker" : {
+				"local" : {
+					"socketPath" : "/var/run/docker.sock"
 				},
-				"cloud":{
-					"rackspace": {
-						"host": "",
-						"port": 0
-					}
-				}
-			},
-			"docker": {
-				"socket": {
-					"socketPath": "/var/run/docker.sock"
+				"remote" : {
+					"nodes" : []
 				}
 			}
 		}
