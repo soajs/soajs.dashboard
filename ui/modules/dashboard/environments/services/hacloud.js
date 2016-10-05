@@ -497,7 +497,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 //collect network information to be displayed in UI
                 currentScope.showNginxHosts = true;
                 response.forEach(function (oneHost) {
-                    if (oneHost.info.NetworkSettings && oneHost.info.NetworkSettings.Networks) {
+                    if (oneHost.info && oneHost.info.NetworkSettings && oneHost.info.NetworkSettings.Networks) {
                         oneHost.networkInfo = {
                             ips: [],
                             ports: []
@@ -1076,7 +1076,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 currentScope.confirmBranch = '';
                 delete currentScope.replicaCount;
                 delete currentScope.exposedPort;
-                currentScope.memoryLimit = 209715200;
+                currentScope.memoryLimit = 200;
                 currentScope.useLocalSOAJS = true;
                 currentScope.message = {};
                 currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
@@ -1318,7 +1318,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         'useLocalSOAJS': currentScope.useLocalSOAJS,
                         'haService': true,
                         'haCount': currentScope.replicaCount,
-                        'memoryLimit': currentScope.memoryLimit
+                        'memoryLimit': (currentScope.memoryLimit * 1048576) //converting to bytes
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {
