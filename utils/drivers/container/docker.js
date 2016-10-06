@@ -353,7 +353,6 @@ var deployer = {
 			checkError(error, cb, function () {
 				var serviceName = options.taskName.split('.')[0];
 				var taskNumber = options.taskName.split('.')[1];
-
 				var params = {
 					filters: {
 						service: [serviceName]
@@ -363,7 +362,7 @@ var deployer = {
 				deployer.listTasks(params, function (error, taskRecords) {
 					checkError(error || taskRecords.length === 0, cb, function () {
 						for (var i = 0; i < taskRecords.length; i++) {
-							if (taskRecords[i].Slot === taskNumber) {
+							if (taskRecords[i].Slot == taskNumber) {
 								return cb(null, taskRecords[i]);
 							}
 						}
