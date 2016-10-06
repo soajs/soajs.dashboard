@@ -356,7 +356,7 @@ var deployer = {
 
 				var params = {
 					filters: {
-						service: serviceName
+						service: [serviceName]
 					}
 				};
 
