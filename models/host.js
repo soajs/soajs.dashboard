@@ -86,7 +86,7 @@ var model = {
 	},
 
 	"getContainerByTask": function (soajs, env, taskName, cb) {
-		var criteia = {
+		var criteria = {
 			env: env.toLowerCase(),
 			taskName: taskName
 		};
