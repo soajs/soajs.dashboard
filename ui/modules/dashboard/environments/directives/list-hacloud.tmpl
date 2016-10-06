@@ -135,14 +135,22 @@
 <section ng-controller="hacloudCtrl">
     <tabset>
         <tab heading="Nodes">
-            <br />
-            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
-            <br /><br />
+			<br />
+			<div ng-if="envCode === 'DASHBOARD'">
+	            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
+	            <br /><br />
+			</div>
+			<div ng-if="envCode !== 'DASHBOARD'">
+				<alert type="info">
+					Node management is only allowed in the DASHBOARD environment
+				</alert>
+				<br />
+			</div>
             <div class="entryBoxes">
                 <div ng-repeat="node in nodes.list" class="entryBox mb20">
                     <div class="header">
                         {{node.name}}
-                        <span class="rightActions">
+                        <span class="rightActions" ng-if="envCode === 'DASHBOARD'">
                             <a href="" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
                                 <span class="icon icon-cross" tooltip="Remove Node"></span>
                             </a>

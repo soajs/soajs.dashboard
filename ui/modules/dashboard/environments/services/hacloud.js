@@ -34,20 +34,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                             role: formData.role
                         };
 
+                        overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
                             "method": "send",
                             "routeName": "/dashboard/hacloud/nodes/add",
                             "data": postData
                         }, function (error, response) {
+                            overlayLoading.hide();
+                            currentScope.modalInstance.close();
+                            currentScope.form.formData = {};
                             if (error) {
                                 currentScope.displayAlert('danger', error.message);
-                                currentScope.modalInstance.close();
-        						currentScope.form.formData = {};
                             }
                             else {
                                 currentScope.displayAlert('success', 'Node added successfully');
-                                currentScope.modalInstance.close();
-                                currentScope.form.formData = {};
                                 currentScope.listNodes();
                             }
                         });
@@ -143,7 +143,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                         for (var j = 0, ctrlCounter = 1; j < response.hosts.length; j++) {
                             if (response.hosts[j].name === 'controller') {
-                                console.log (response.hosts[j]);
 	                            var info = {
 		                            'name': 'controller',
                                     'code': 'CTRL-' + ctrlCounter++,
@@ -580,20 +579,21 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         scale: $scope.service.newScale
                     };
 
+                    overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'send',
                         routeName: '/dashboard/hacloud/services/scale',
                         params: params,
                         data: postData
                     }, function (error, result) {
+                        overlayLoading.hide();
+                        $modalInstance.close();
                         if (error) {
                             currentScope.displayAlert('danger', error.message);
-                            $scope.closeModal();
                         }
                         else {
-                            currentScope.displayAlert('success', 'Service scaled successfully');
-                            currentScope.listService();
-                            $scope.closeModal();
+                            currentScope.displayAlert('success', 'Service scaled successfully! If scaling up, new instances will appear as soon as they are ready');
+                            currentScope.listServices();
                         }
                     });
                 };
@@ -841,6 +841,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     }
 
     function hostLogs (currentScope, taskName) {
+        overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
             method: "get",
             routeName: "/dashboard/hacloud/services/instances/logs",
@@ -849,6 +850,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 taskName: taskName
             }
         }, function (error, response) {
+            overlayLoading.hide();
             if (error) {
                 currentScope.displayAlert('danger', error.message);
             }
@@ -1359,7 +1361,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         params.grpConfName = currentScope.groupConfig.daemonConfigGroup;
                     }
 
+                    overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
+                        overlayLoading.hide();
                         if (error) {
                             currentScope.displayAlert('danger', error.message);
                             $modalInstance.close();

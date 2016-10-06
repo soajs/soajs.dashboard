@@ -206,7 +206,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 									$timeout(function () {
 										currentScope.listNginxServices();
 										currentScope.listServices();
-									}, 30000);
+									}, 15000);
 								}
 							});
 						}
