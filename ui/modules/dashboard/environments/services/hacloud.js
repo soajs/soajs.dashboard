@@ -130,6 +130,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 else {
 	                currentScope.profile = response.profile;
 	                currentScope.deployer = response.deployer;
+                    if (currentScope.deployer.selected.split('.')[2] === 'local') {
+                        currentScope.localDeployment = true;
+                    }
+
                     currentScope.hostList = response.hosts;
                     if (response.hosts && response.hosts.length > 0) {
                         currentScope.hosts = {

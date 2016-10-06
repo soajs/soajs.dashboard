@@ -62,7 +62,7 @@
 						<br>
 					</div>
 					<div>
-						<label>Memory Limits in MBytes</label>
+						<label>Memory Limit Per Instance (in MBytes)</label>
 						<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true" />
 						<br>
 					</div>
@@ -136,21 +136,29 @@
     <tabset>
         <tab heading="Nodes">
 			<br />
-			<div ng-if="envCode === 'DASHBOARD'">
-	            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
-	            <br /><br />
-			</div>
-			<div ng-if="envCode !== 'DASHBOARD'">
+			<div ng-if="localDeployment">
 				<alert type="info">
-					Node management is only allowed in the DASHBOARD environment
+					Node management is not permitted in local deployment mode
 				</alert>
 				<br />
+			</div>
+			<div ng-if="!localDeployment">
+				<div ng-if="envCode === 'DASHBOARD'">
+		            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
+		            <br /><br />
+				</div>
+				<div ng-if="envCode !== 'DASHBOARD'">
+					<alert type="info">
+						Node management is only allowed in the DASHBOARD environment
+					</alert>
+					<br />
+				</div>
 			</div>
             <div class="entryBoxes">
                 <div ng-repeat="node in nodes.list" class="entryBox mb20">
                     <div class="header">
                         {{node.name}}
-                        <span class="rightActions" ng-if="envCode === 'DASHBOARD'">
+                        <span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
                             <a href="" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
                                 <span class="icon icon-cross" tooltip="Remove Node"></span>
                             </a>
