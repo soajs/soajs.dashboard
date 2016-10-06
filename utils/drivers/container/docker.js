@@ -351,16 +351,23 @@ var deployer = {
 	"inspectHATask": function (deployerConfig, options, mongo, cb) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			checkError(error, cb, function () {
+				var serviceName = options.taskName.split('.')[0];
+				var taskNumber = options.taskName.split('.')[1];
+
 				var params = {
 					filters: {
-						name: [options.taskName],
-						service: [options.taskName.split('.')[0]]
+						service: serviceName
 					}
 				};
 
-				deployer.listTasks(params, function (error, taskRecord) {
-					checkError(error, cb, function () {
-						return cb(null, taskRecord[0]);
+				deployer.listTasks(params, function (error, taskRecords) {
+					checkError(error || taskRecords.length === 0, cb, function () {
+						for (var i = 0; i < taskRecords.length; i++) {
+							if (taskRecords[i].Slot === taskNumber) {
+								return cb(null, taskRecords[i]);
+							}
+						}
+						return cb();
 					});
 				});
 			});
