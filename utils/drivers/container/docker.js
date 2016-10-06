@@ -353,7 +353,7 @@ var deployer = {
 			checkError(error, cb, function () {
 				var params = {
 					filters: {
-						// name: [options.taskName], //TODO: check issue
+						name: [options.taskName],
 						service: [options.taskName.split('.')[0]]
 					}
 				};
