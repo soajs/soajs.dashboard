@@ -501,26 +501,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 currentScope.showNginxHosts = true;
                 response.forEach(function (oneHost) {
                     if (oneHost.info && oneHost.info.NetworkSettings && oneHost.info.NetworkSettings.Networks) {
+                        var network = Object.keys(oneHost.info.NetworkSettings.Networks)[0]; //only one network is available
                         oneHost.networkInfo = {
-                            ips: [],
+                            ip: oneHost.info.NetworkSettings.Networks[network].IPAddress,
                             ports: []
                         };
-                        for (var network in oneHost.info.NetworkSettings.Networks) {
-                            oneHost.networkInfo.ips.push({
-                                networkName: network,
-                                ipAdd: oneHost.info.NetworkSettings.Networks[network].IPAddress
-                            });
-                        }
-                        for (var mappedPort in oneHost.info.NetworkSettings.Ports) {
-                            if (oneHost.info.NetworkSettings.Ports[mappedPort] && mappedPort !== "443/tcp") {
-                                oneHost.info.NetworkSettings.Ports[mappedPort].forEach (function (oneMapping) {
-                                    oneHost.networkInfo.ports.push({
-                                        host: oneMapping.HostPort,
-                                        container: mappedPort
-                                    });
-                                });
-                            }
-                        }
                     }
                 });
                 currentScope.nginxHosts = response;
