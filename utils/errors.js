@@ -217,6 +217,7 @@ var errors = {
 	"815": "Unable to remove host records. However, the service was deleted successfully",
 	"816": "Unable to get analytics configuration for this environment",
 	"817": "Unable to list nodes",
+	"818": "This operation is only permitted in the dashboard environment",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",

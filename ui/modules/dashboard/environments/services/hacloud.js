@@ -29,6 +29,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 					'btn': 'primary',
 					'action': function (formData) {
 						var postData = {
+                            env: currentScope.envCode,
                             host: formData.ip,
                             port: formData.port,
                             role: formData.role
@@ -73,6 +74,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             "method": "get",
             "routeName": "/dashboard/hacloud/nodes/remove",
             "params": {
+                env: currentScope.envCode,
                 nodeId: nodeId
             }
         }, function (error, response) {
@@ -88,6 +90,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function updateNode(currentScope, node, type, newStatus) {
         var params = {
+            env: currentScope.envCode,
             nodeId: node.id
         };
 

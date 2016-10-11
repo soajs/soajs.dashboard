@@ -2197,6 +2197,13 @@ module.exports = {
 				"l": "Add HA Cloud Node",
 				"group": "HA Cloud"
 			},
+			"env": {
+				"source": ['body.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"host": {
 				"source": ['body.host'],
 				"required": true,
@@ -2225,6 +2232,13 @@ module.exports = {
 				"l": "Remove HA Cloud Node",
 				"group": "HA Cloud"
 			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"nodeId": {
 				"source": ['query.nodeId'],
 				"required": true,
@@ -2237,6 +2251,13 @@ module.exports = {
 			"_apiInfo": {
 				"l": "Update HA Cloud Node",
 				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			},
 			"nodeId": {
 				"source": ['query.nodeId'],
