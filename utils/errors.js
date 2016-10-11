@@ -222,6 +222,7 @@ var errors = {
 	"820": "Unable to update environments' deployer. However, the node was removed successfully",
 	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
 	"822": "Unable to update environments' deployer. However, the node was updated successfully",
+	"823": "Update operations are not permitted for clusters that that composed of a single node",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
