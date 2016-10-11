@@ -79,7 +79,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             }
         }, function (error, response) {
             if (error) {
-                currentScope.displayAlert('danger', 'Unable to remove node');
+                currentScope.displayAlert('danger', error.message);
             }
             else {
                 currentScope.displayAlert('success', 'Node removed successfully');
