@@ -40,6 +40,20 @@ var model = {
 		mongo.findOne(envColl, {code: "DASHBOARD"}, cb);
 	},
 
+	"updateDockerDeployerNodes": function (soajs, action, node, cb) {
+		checkForMongo(soajs);
+		var update = {};
+
+		if (action === 'add') {
+			update.$push = { 'deployer.container.docker.remote': node };
+		}
+		else if (action === 'remove') {
+			update.$pull = { 'deployer.container.docker.remote': node };
+		}
+
+		mongo.update(envColl, {}, update, {multi: true}, cb);
+	},
+
 	/**
 	 * DOCKER COLLECTION
 	 */

@@ -218,6 +218,8 @@ var errors = {
 	"816": "Unable to get analytics configuration for this environment",
 	"817": "Unable to list nodes",
 	"818": "This operation is only permitted in the dashboard environment",
+	"819": "Unable to update environments' deployer. However, the node was added successfully",
+	"820": "Unable to update environments' deployer. However, the node was removed successfully",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
