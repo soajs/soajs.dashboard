@@ -220,6 +220,7 @@ var errors = {
 	"818": "This operation is only permitted in the dashboard environment",
 	"819": "Unable to update environments' deployer. However, the node was added successfully",
 	"820": "Unable to update environments' deployer. However, the node was removed successfully",
+	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
 
 	901: "Error Logging out from environments",
 	902: "Error Logging in to environments",
