@@ -45,10 +45,10 @@ var model = {
 		var update = {};
 
 		if (action === 'add') {
-			update.$push = { 'deployer.container.docker.remote': node };
+			update.$push = { 'deployer.container.docker.remote.nodes': node };
 		}
 		else if (action === 'remove') {
-			update.$pull = { 'deployer.container.docker.remote': node };
+			update.$pull = { 'deployer.container.docker.remote.nodes': node };
 		}
 
 		mongo.update(envColl, {}, update, {multi: true}, cb);
