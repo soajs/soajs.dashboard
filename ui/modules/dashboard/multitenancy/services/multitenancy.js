@@ -52,7 +52,7 @@ multiTenantService.service('aclHelper', function () {
 	}
 
 	function prepareViewAclObj(currentScope, aclFill) {
-		var services=currentScope.currentApplication.services;
+		var services = currentScope.currentApplication.services;
 		for (var lowerCase in aclFill) {
 			var upperCase = lowerCase.toUpperCase();
 			if (upperCase !== lowerCase) {
@@ -131,6 +131,33 @@ multiTenantService.service('aclHelper', function () {
 						}
 					}
 
+					if (service.get || service.post || service.put || service.delete) {
+						for (var method in service) {
+							if (service[method].apis) {
+								for (ap in service[method].apis) {
+									if (service[method].apis.hasOwnProperty(ap)) {
+										service[method].apis[ap].include = true;
+										service[method].apis[ap].accessType = 'clear';
+										if (service[method].apis[ap].access == true) {
+											service[method].apis[ap].accessType = 'private';
+										}
+										else if (service[method].apis[ap].access === false) {
+											service[method].apis[ap].accessType = 'public';
+										}
+										else {
+											if (Array.isArray(service[method].apis[ap].access)) {
+												service[method].apis[ap].accessType = 'groups';
+												service[method].apis[ap].grpCodes = {};
+												service[method].apis[ap].access.forEach(function (c) {
+													service[method].apis[ap].grpCodes[c] = true;
+												});
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 					if (service.apis) {
 						for (ap in service.apis) {
 							if (service.apis.hasOwnProperty(ap)) {

@@ -35,14 +35,14 @@
 
 								</div>
 
-								<div class="grpsListingScroll smallGrpsListingScroll" ng-show="aclFill[oneEnv.code][service.name].apis[my1Api.v].accessType==='groups'">
+								<div class="grpsListingScroll smallGrpsListingScroll" ng-show="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType==='groups'">
 									<ul class="grpsListing">
 										<li class="oddLi">
-											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.owner" value="owner" class="">
+											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.owner" value="owner">
 											Owner
 										</li>
 										<li class="">
-											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.admin" value="admin" class="">
+											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.admin" value="admin">
 											Administrator
 										</li>
 									</ul>
