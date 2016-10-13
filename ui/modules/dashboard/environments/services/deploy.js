@@ -190,6 +190,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 				else {
 					params.supportSSL = formData.supportSSL;
+					params.haCount = formData.nginxCount;
 					params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
