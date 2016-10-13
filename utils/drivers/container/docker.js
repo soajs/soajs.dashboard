@@ -5,6 +5,7 @@ var utils = require("soajs/lib/utils");
 var Grid = require('gridfs-stream');
 var fs = require('fs');
 var rimraf = require('rimraf');
+var async = require('async');
 
 function checkError(error, cb, fCb) {
 	if (error) {
@@ -13,30 +14,31 @@ function checkError(error, cb, fCb) {
 	return fCb();
 }
 
-function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
-	var gs = new gfs.mongo.GridStore(db, certs[counter]._id, 'r', {
-		root: 'fs',
-		w: 1,
-		fsync: true
-	});
+function getDockerCerts(certs, gfs, db, cb) {
+	var certBuffers = {};
+	async.each(certs, function (oneCert, callback) {
+		var gs = new gfs.mongo.GridStore(db, oneCert._id, 'r', {
+			root: 'fs',
+			w: 1,
+			fsync: true
+		});
 
-	gs.open(function (error, gstore) {
-		checkError(error, cb, function () {
-			gstore.read(function (error, filedata) {
-				checkError(error, cb, function () {
-					gstore.close();
-					var certKey = certs[counter].filename.split(".")[0];
-					dockerConfig[certKey] = filedata;
+		gs.open(function (error, gstore) {
+			checkError(error, callback, function () {
+				gstore.read(function (error, filedata) {
+					checkError(error, callback, function () {
+						gstore.close();
 
-					counter++;
-					if (counter === certs.length) {
-						return cb(null, dockerConfig);
-					}
-					else {
-						return getDockerCerts(dockerConfig, certs, gfs, db, counter, cb);
-					}
+						var certName = oneCert.filename.split('.')[0];
+						certBuffers[certName] = filedata;
+						return callback(null, true);
+					});
 				});
 			});
+		});
+	}, function (error, result) {
+		checkError(error, cb, function () {
+			return cb(null, certBuffers);
 		});
 	});
 }
@@ -46,25 +48,58 @@ var lib = {
 		/**
 			Three options:
 				- local: use socket port
-				- remote: get manager node record, extract ip/port and certificates
-				- remote and adding a new node: in case of adding a new node, use ip/port of new node and certificates
+				- remote: get fastest manager node and use it
+				- remote and target: get deployer for target node
 		*/
 		var config = utils.cloneObj(deployerConfig);
 		var docker;
+
 		if (config.socketPath) {
 			docker = new Docker({socketPath: config.socketPath});
 			return cb(null, docker);
 		}
-		else {
-			var dockerConfig = {};
-			getTargetNode(config, function (error, target) {
-				checkError(error, cb, function () {
-					dockerConfig.host = target.host;
-					dockerConfig.port = target.port;
 
-					getNodeCertificates(config, dockerConfig, function (error, dockerConfig) {
+		getClusterCertificates(config, function (error, certs) {
+			checkError(error, cb, function () {
+
+				if (config.flags && (config.flags.newNode || config.flags.targetNode)) {
+					getTargetNode(config, function (error, target) {
 						checkError(error, cb, function () {
+							var dockerConfig = buildDockerConfig(target.host, target.port, certs);
 							docker = new Docker(dockerConfig);
+							return cb(null, docker);
+						});
+					});
+				}
+				else {
+					return getManagerNodeDeployer(config, certs, cb);
+				}
+			});
+		});
+
+
+		function getTargetNode(config, callback) {
+			if (!config.host || !config.port) {
+				return callback({message: 'Missing host/port info'});
+			}
+			return callback(null, {host: config.host, port: config.port});
+		}
+
+		function getManagerNodeDeployer(config, certs, cb) {
+			if (!config.nodes || config.nodes.length === 0) {
+				return cb({message: 'No manager nodes found in this environment\'s deployer'});
+			}
+
+			mongo.find('docker', {recordType: 'node', role: 'manager'}, function (error, managerNodes) {
+				checkError(error, cb, function () {
+					async.detect(managerNodes, function (oneNode, callback) {
+						var dockerConfig = buildDockerConfig(oneNode.ip, oneNode.dockerPort, certs);
+						var docker = new Docker(dockerConfig);
+						return docker.ping(callback);
+					}, function (error, fastestNodeRecord) {
+						checkError(error, cb, function () {
+							var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
+							var docker = new Docker(dockerConfig);
 							return cb(null, docker);
 						});
 					});
@@ -72,27 +107,21 @@ var lib = {
 			});
 		}
 
-		function getTargetNode(config, callback) {
-			if (config.flags && (config.flags.newNode || config.flags.targetNode)) {
-				if (!config.host || !config.port) {
-					return callback({message: 'Missing host/port info'});
-				}
-				return callback(null, {host: config.host, port: config.port});
+		function buildDockerConfig(host, port, certs) {
+			var dockerConfig = {
+				host: host,
+				port: port
 			}
-			else {
-				if (!config.nodes || (config.nodes && config.nodes.length === 0)) {
-					return callback({message: 'No manager nodes found in this environment\'s deployer'});
-				}
-				var oneManagerNode = config.nodes[0]; //any manager node can be selected
-				mongo.findOne('docker', {recordType: 'node', name: oneManagerNode}, function (error, nodeRecord) {
-					checkError(error || !nodeRecord, callback, function () {
-						return callback(null, {host: nodeRecord.ip, port: nodeRecord.dockerPort});
-					});
-				});
-			}
+
+			var certKeys = Object.keys(certs);
+			certKeys.forEach(function (oneCertKey) {
+				dockerConfig[oneCertKey] = certs[oneCertKey];
+			});
+
+			return dockerConfig;
 		}
 
-		function getNodeCertificates(config, dockerConfig, callback) {
+		function getClusterCertificates(config, callback) {
 			if (!config.envCode) {
 				return callback({message: 'Missing environment code'});
 			}
@@ -109,11 +138,7 @@ var lib = {
 						checkError(error, callback, function () {
 							var gfs = Grid(db, mongo.mongoSkin);
 							var counter = 0;
-							getDockerCerts(dockerConfig, certs, gfs, db, counter, function (error, dockerConfig) {
-								checkError(error, callback, function () {
-									return callback(null, dockerConfig);
-								});
-							});
+							return getDockerCerts(certs, gfs, db, callback);
 						});
 					});
 				});
