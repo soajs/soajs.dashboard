@@ -51,8 +51,8 @@ multiTenantService.service('aclHelper', function () {
 		return result;
 	}
 
-	function prepareViewAclObj(aclFill) {
-
+	function prepareViewAclObj(currentScope, aclFill) {
+		var services=currentScope.currentApplication.services;
 		for (var lowerCase in aclFill) {
 			var upperCase = lowerCase.toUpperCase();
 			if (upperCase !== lowerCase) {
@@ -62,12 +62,47 @@ multiTenantService.service('aclHelper', function () {
 		}
 		var service, propt, env;
 
+		function grpByMethod(service, fixList) {
+			var byMethod = false;
+			for (var grp in fixList) {
+				if (fixList[grp].apisRest) {
+					byMethod = true;
+					for (var method in fixList[grp].apisRest) {
+						if (!service[method]) {
+							service[method] = {
+								apis: {}
+							};
+						}
+						fixList[grp].apisRest[method].forEach(function (api) {
+							if (service.apis) {
+								if (service.apis[api.v]) {
+									service[method].apis[api.v] = service.apis[api.v];
+								}
+							}
+						});
+					}
+				}
+			}
+			if (byMethod) {
+				delete service.apis;
+			}
+		}
+
 		for (env in aclFill) {
 			for (propt in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(propt)) {
 					service = aclFill[env][propt];
 					service.include = true;
 					service.collapse = false;
+
+					var currentService;
+					for (var x = 0; x < services.length; x++) {
+						if (services[x].name === propt) {
+							currentService = services[x];
+							break;
+						}
+					}
+
 					if (service.access) {
 						if (service.access === true) {
 							service.accessType = 'private';
@@ -90,6 +125,12 @@ multiTenantService.service('aclHelper', function () {
 						service.apisRestrictPermission = true;
 					}
 					var ap;
+					if (!service.get && !service.post && !service.put && !service.delete) {
+						if (currentService) {
+							grpByMethod(service, currentService.fixList);
+						}
+					}
+
 					if (service.apis) {
 						for (ap in service.apis) {
 							if (service.apis.hasOwnProperty(ap)) {
@@ -254,9 +295,18 @@ multiTenantService.service('aclHelper', function () {
 						service.forceRestricted = true;
 						for (var j = 0; j < service.apisList.length; j++) {
 							var v = service.apisList[j].v;
-							if (parentEnvAcl.apis) {
-								if (parentEnvAcl.apis[v]) {
-									newList.push(service.apisList[j]);
+							if (service.apisList[j].m) {
+								if (parentEnvAcl[service.apisList[j].m]) {
+									if (parentEnvAcl[service.apisList[j].m].apis[v]) {
+										newList.push(service.apisList[j]);
+									}
+								}
+							}
+							else {
+								if (parentEnvAcl.apis) {
+									if (parentEnvAcl.apis[v]) {
+										newList.push(service.apisList[j]);
+									}
 								}
 							}
 						}
