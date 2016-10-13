@@ -176,7 +176,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				params.name = 'controller';
 				params.haService = true;
 				params.haCount = formData.controllers;
-				params.memoryLimit = formData.ctrlMemoryLimit;
+				params.memoryLimit = (formData.ctrlMemoryLimit * 1048576);
 			}
 
 			getSendDataFromServer(currentScope, ngDataApi, {
@@ -185,13 +185,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				"data": params
 			}, function(error, response) {
 				if(error) {
-					console.log (error);
 					overlay.hide();
 					currentScope.generateNewMsg(envCode, 'danger', error.message);
 				}
 				else {
 					params.supportSSL = formData.supportSSL;
-					params.memoryLimit = formData.nginxMemoryLimit;
+					params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployNginx",
