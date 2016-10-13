@@ -571,8 +571,8 @@ var environmentsConfig = {
 					'label': 'Exposed Port',
 					'type': 'number',
 					'value': "",
-					'fieldMsg': 'Optional: Specify a Nginx port to be exposed',
-					'required': false
+					'fieldMsg': 'Mandatory: Specify a Nginx port to be exposed for this environment',
+					'required': true
 				},
 				{
 					'name': 'supportSSL',
