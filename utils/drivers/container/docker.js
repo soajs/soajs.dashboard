@@ -19,7 +19,7 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 		w: 1,
 		fsync: true
 	});
-
+	
 	gs.open(function (error, gstore) {
 		checkError(error, cb, function () {
 			gstore.read(function (error, filedata) {
@@ -27,7 +27,7 @@ function getDockerCerts(dockerConfig, certs, gfs, db, counter, cb) {
 					gstore.close();
 					var certKey = certs[counter].filename.split(".")[0];
 					dockerConfig[certKey] = filedata;
-
+					
 					counter++;
 					if (counter === certs.length) {
 						return cb(null, dockerConfig);
@@ -56,7 +56,7 @@ var lib = {
 				host: config.host,
 				port: config.port
 			};
-
+			
 			var criteria = {};
 			criteria['metadata.env.' + config.envCode] = deployerConfig.selectedDriver;
 			mongo.find("fs.files", criteria, function (error, certs) {
@@ -67,7 +67,7 @@ var lib = {
 							'message': "No certificates for " + config.envCode + " environment exist"
 						});
 					}
-
+					
 					mongo.getMongoSkinDB(function (error, db) {
 						checkError(error, cb, function () {
 							var gfs = Grid(db, mongo.mongoSkin);
@@ -84,13 +84,13 @@ var lib = {
 			});
 		}
 	},
-
+	
 	"container": function (dockerInfo, action, cid, mongo, opts, cb) {
 		lib.getDeployer(dockerInfo, mongo, function (error, deployer) {
 			checkError(error, cb, function () {
 				var container = deployer.getContainer(cid);
 				container[action](opts || null, function (error, response) {
-
+					
 					checkError(error, cb, function () {
 						if (action === 'start' || action === 'restart') {
 							container.inspect(cb);
@@ -115,23 +115,23 @@ var deployer = {
 			});
 		});
 	},
-
+	
 	"start": function (deployerConfig, cid, mongo, cb) {
 		lib.container(deployerConfig, "start", cid, mongo, null, cb);
 	},
-
+	
 	"exec": function (deployerConfig, cid, mongo, opts, cb) {
 		lib.container(deployerConfig, "exec", cid, mongo, opts, cb);
 	},
-
+	
 	"restart": function (deployerConfig, cid, mongo, cb) {
 		lib.container(deployerConfig, "restart", cid, mongo, null, cb);
 	},
-
+	
 	"remove": function (deployerConfig, cid, mongo, cb) {
 		lib.container(deployerConfig, "remove", cid, mongo, {"force": true}, cb);
 	},
-
+	
 	"info": function (deployerConfig, cid, soajs, res, mongo) {
 		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 			deployer.getContainer(cid).logs({
@@ -155,7 +155,7 @@ var deployer = {
 								data += chunk.toString("utf8");
 							}
 						});
-
+						
 						stream.on('end', function () {
 							stream.destroy();
 							var out = soajs.buildResponse(null, {'data': data});
