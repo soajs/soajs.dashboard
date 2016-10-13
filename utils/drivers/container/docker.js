@@ -96,19 +96,13 @@ var lib = {
 						var dockerConfig = buildDockerConfig(oneNode.ip, oneNode.dockerPort, certs);
 						var docker = new Docker(dockerConfig);
 						return docker.ping(function (error, response) {
-							if (error) console.log ('Error: ' + error);
-							checkError(error, callback, function () {
-								console.log ('Response: ' + response);
-								return callback(null, response);
-							});
+							//error is insignificant in this case
+							return callback(null, response);
 						});
 					}, function (error, fastestNodeRecord) {
-						console.log ('Selected node: ' + fastestNodeRecord.name);
-						checkError(error, cb, function () {
-							var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
-							var docker = new Docker(dockerConfig);
-							return cb(null, docker);
-						});
+						var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
+						var docker = new Docker(dockerConfig);
+						return cb(null, docker);
 					});
 				});
 			});
