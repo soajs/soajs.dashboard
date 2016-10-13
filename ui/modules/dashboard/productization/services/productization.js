@@ -4,40 +4,40 @@ productizationService.service('aclHelpers', function () {
 	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		var result = {};
-		var apiDefaultGroupName = 'General';
+		var defaultGroupName = 'General';
 		var len = apisArray.length;
 		if (len == 0) {
 			return result;
 		}
 		for (var i = 0; i < len; i++) {
 			if (apisArray[i][apiGroupName]) {
-				apiDefaultGroupName = apisArray[i][apiGroupName];
+				defaultGroupName = apisArray[i][apiGroupName];
 			}
 			
-			if (!result[apiDefaultGroupName]) {
-				result[apiDefaultGroupName] = {};
-				result[apiDefaultGroupName].apis = [];
+			if (!result[defaultGroupName]) {
+				result[defaultGroupName] = {};
+				result[defaultGroupName].apis = [];
 				if (apisArray[i].m) {
-					result[apiDefaultGroupName].apisRest = {};
+					result[defaultGroupName].apisRest = {};
 				}
 			}
 			if (!apisArray[i].m) {
 				//apisArray[i].m = 'all';
 			}
 			if (apisArray[i].m) {
-				if (!result[apiDefaultGroupName].apisRest[apisArray[i].m]) {
-					result[apiDefaultGroupName].apisRest[apisArray[i].m] = [];
+				if (!result[defaultGroupName].apisRest[apisArray[i].m]) {
+					result[defaultGroupName].apisRest[apisArray[i].m] = [];
 				}
-				result[apiDefaultGroupName].apisRest[apisArray[i].m].push(apisArray[i]);
+				result[defaultGroupName].apisRest[apisArray[i].m].push(apisArray[i]);
 			}
 			if (apisArray[i].groupMain === true) {
-				result[apiDefaultGroupName]['defaultApi'] = apisArray[i].v;
+				result[defaultGroupName]['defaultApi'] = apisArray[i].v;
 			}
-			result[apiDefaultGroupName].apis.push(apisArray[i]);
+			result[defaultGroupName].apis.push(apisArray[i]);
 		}
 		
-		if (!result[apiDefaultGroupName]['defaultApi']) {
-			result[apiDefaultGroupName]['enableAll'] = true;
+		if (!result[defaultGroupName]['defaultApi']) {
+			result[defaultGroupName]['enableAll'] = true;
 		}
 		return result;
 	}
@@ -85,8 +85,10 @@ productizationService.service('aclHelpers', function () {
 							};
 						}
 						fixList[grp].apisRest[method].forEach(function (api) {
-							if (service.apis[api.v]) {
-								service[method].apis[api.v] = service.apis[api.v];
+							if (service.apis) {
+								if (service.apis[api.v]) {
+									service[method].apis[api.v] = service.apis[api.v];
+								}
 							}
 						});
 					}
@@ -96,7 +98,7 @@ productizationService.service('aclHelpers', function () {
 				delete service.apis;
 			}
 		}
-		
+
 		for (var propt in aclFill) {
 			if (aclFill.hasOwnProperty(propt)) {
 				var service = aclFill[propt];
@@ -137,7 +139,9 @@ productizationService.service('aclHelpers', function () {
 				}
 				// backward compatible. grp by method
 				if (!service.get && !service.post && !service.put && !service.delete) {
-					grpByMethod(service, currentService.fixList);
+					if (currentService) {
+						grpByMethod(service, currentService.fixList);
+					}
 				}
 				
 				if (service.get || service.post || service.put || service.delete) {
