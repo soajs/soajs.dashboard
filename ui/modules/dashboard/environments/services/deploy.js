@@ -7,11 +7,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 		getControllerBranches(currentScope, function (branchInfo) {
 			for (var i = 0; i < formConfig.entries.length; i++) {
-				if (formConfig.entries[i].name === 'branch') {
-					branchInfo.branches.forEach(function (oneBranch) {
-						delete oneBranch.commit.url;
-						formConfig.entries[i].value.push({'v': oneBranch, 'l': oneBranch.name});
-					});
+				if (formConfig.entries[i].name === 'controllers') {
+					var ctrlEntries = formConfig.entries[i].entries;
+					for (var j = 0; j < ctrlEntries.length; j++) {
+						if (ctrlEntries[j].name === 'branch') {
+							branchInfo.branches.forEach(function (oneBranch) {
+								delete oneBranch.commit.url;
+								ctrlEntries[j].value.push({'v': oneBranch, 'l': oneBranch.name});
+							});
+						}
+					}
 				}
 			}
 
@@ -22,7 +27,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 				'required': true,
 				'onAction': function (label, selected, formConfig) {
-					if (selected === 'true' && formConfig.entries[3].name !== 'selectCustomUI') {
+					if (selected === 'true' && (!formConfig.entries[0].entries[5] || formConfig.entries[0].entries[5].name !== 'selectCustomUI')) {
 						listStaticContent(currentScope, function (staticContentSources) {
 							var selectCustomUI = {
 								'name': 'selectCustomUI',
@@ -57,7 +62,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 												selectUIBranch.value.push({'v': oneBranch, 'l': oneBranch.name});
 											});
 
-											formConfig.entries.splice(4, 0, selectUIBranch);
+											formConfig.entries[0].entries.splice(6, 0, selectUIBranch);
 										}
 									});
 								}
@@ -65,25 +70,24 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							staticContentSources.forEach (function (oneSource) {
 								selectCustomUI.value.push ({'v': oneSource, 'l': oneSource.name});
 							});
-							formConfig.entries.splice(3, 0, selectCustomUI);
+							formConfig.entries[0].entries.splice(5, 0, selectCustomUI);
 						});
-					} else if (selected === 'false' && formConfig.entries[3].name === 'selectCustomUI') {
-						if (formConfig.entries[3].name === 'selectCustomUI') {
-							formConfig.entries.splice(3, 1);
-							delete formConfig.formData.selectCustomUI;
-							if (formConfig.entries[3].name === 'selectUIBranch') {
-								formConfig.entries.splice(3, 1);
-							}
+					} else if (selected === 'false' && formConfig.entries[0].entries[5].name === 'selectCustomUI') {
+						if (formConfig.entries[0].entries[6] && formConfig.entries[0].entries[6].name === 'selectUIBranch') {
+							formConfig.entries[0].entries.splice(6, 1);
+							delete formConfig.formData.selectUIBranch;
 						}
+						formConfig.entries[0].entries.splice(5, 1);
+						delete formConfig.formData.selectCustomUI;
 					}
 				}
 			};
-			formConfig.entries.splice(2, 0, customUIEntry);
+			formConfig.entries[0].entries.splice(4, 0, customUIEntry);
 
-			for (var i = 0; i < formConfig.entries.length; i++) {
-				if (formConfig.entries[i].name === 'defaultENVVAR') {
-					formConfig.entries[i].value = formConfig.entries[i].value.replace("%envName%", envCode);
-					formConfig.entries[i].value = formConfig.entries[i].value.replace("%profilePathToUse%", currentScope.profile);
+			for (var i = 0; i < formConfig.entries[1].entries.length; i++) {
+				if (formConfig.entries[1].entries[i].name === 'defaultENVVAR') {
+					formConfig.entries[1].entries[i].value = formConfig.entries[1].entries[i].value.replace("%envName%", envCode);
+					formConfig.entries[1].entries[i].value = formConfig.entries[1].entries[i].value.replace("%profilePathToUse%", currentScope.profile);
 				}
 			}
 
@@ -172,6 +176,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				params.name = 'controller';
 				params.haService = true;
 				params.haCount = formData.controllers;
+				params.memoryLimit = formData.ctrlMemoryLimit;
 			}
 
 			getSendDataFromServer(currentScope, ngDataApi, {
@@ -186,6 +191,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 				else {
 					params.supportSSL = formData.supportSSL;
+					params.memoryLimit = formData.nginxMemoryLimit;
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployNginx",

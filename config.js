@@ -1925,6 +1925,14 @@ module.exports = {
 				"validation": {
 					"type": "number"
 				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"validation": {
+					"type": "number",
+					"default": 209715200
+				}
 			}
 		},
 		"/hosts/updateNginx": {

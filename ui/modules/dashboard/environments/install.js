@@ -219,8 +219,12 @@ var envTranslation ={
 		"FRA": "Default Environment Variables:"
 	},
 	"controller": {
-		"ENG": "Controller(s)",
-		"FRA": "Controller(s)"
+		"ENG": "Number of Controller Instances",
+		"FRA": "Number of Controller Instances"
+	},
+	"numberOfNginxInstances": {
+		"ENG": "Number of Nginx Instances",
+		"FRA": "Number of Nginx Instances"
 	},
 	"chooseHowManyControllersDeploy": {
 		"ENG": "Choose how many controllers to deploy",
