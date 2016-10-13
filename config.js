@@ -1878,6 +1878,14 @@ module.exports = {
 				"validation": {
 					"type": "number"
 				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -1929,9 +1937,9 @@ module.exports = {
 			"memoryLimit": {
 				"source": ['body.memoryLimit'],
 				"required": false,
+				"default": 209715200,
 				"validation": {
-					"type": "number",
-					"default": 209715200
+					"type": "number"
 				}
 			}
 		},
@@ -2040,9 +2048,9 @@ module.exports = {
 			"memoryLimit": {
 				"source": ['body.memoryLimit'],
 				"required": false,
+				"default": 209715200,
 				"validation": {
-					"type": "number",
-					"default": 209715200
+					"type": "number"
 				}
 			}
 		},
