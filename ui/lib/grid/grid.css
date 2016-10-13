@@ -39,7 +39,7 @@
 
 .grid table td {
     padding: 4px;
-    font-size:13px;
+    font-size: 13px;
     word-break: break-all;
 }
 
@@ -95,6 +95,10 @@
     content: " - ";
 }
 
-input.searchInput{
-	color:#333;
+input.searchInput {
+    color: #333;
+}
+
+.grid table td.apiNavigation {
+    padding-right: 0;
 }

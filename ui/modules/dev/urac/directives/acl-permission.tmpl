@@ -13,8 +13,8 @@
 						<span title="{{myApi.v}}">{{myApi.l}}</span>
 					</div>
 					<div class="apiAccess" ng-hide="(application.aclFill[oneEnv.code][service.name].apisRestrictPermission && (application.aclFill[oneEnv.code][service.name].apis[myApi.v].include!==true))">
-						<div style="float:left">
-                            <span style="padding-right: 15px;">
+						<div class="f-left">
+                            <span style="padding-left: 0px;">
                                 <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{application.package}}_{{service.name}}_{{grp}}_{{$index}}_accessType"/>
                                 <em>{{translation.InheritFromService[LANG]}}</em>
                             </span>
@@ -25,7 +25,8 @@
                                 <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
                             </span>
                             <span>
-                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/> {{translation.groups[LANG]}}
+                                <input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="application.aclFill[service.name].apis[myApi.v].accessType==='groups'"/>
+	                            {{translation.groups[LANG]}}
                             </span>
 						</div>
 						<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType==='groups'">

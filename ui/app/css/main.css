@@ -895,12 +895,16 @@ fieldset legend {
 
 .apiListing .apiLabel {
     float: left;
-    width: 300px;
+    width: 390px;
     padding-right: 30px;
 }
 
 .apiListing .apiAccess {
     float: left;
+}
+
+.apiAccess span {
+    padding-left: 15px;
 }
 
 .apiListing-container .odd {
@@ -1494,4 +1498,24 @@ div.entryBox .body .btn-primary.noFloat {
 .servicesList td {
     width: 20%;
     white-space: nowrap;
+}
+
+
+.pageCount {
+    width: 150px;
+    text-align: right;
+}
+
+td.apiNavigation {
+    width: 210px;
+    text-align: right;
+}
+
+td.apiNavigationWide {
+    width: 230px;
+}
+
+.totalCount {
+    width: 190px;
+    text-align: right;
 }

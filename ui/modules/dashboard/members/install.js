@@ -197,7 +197,11 @@ var membersNav = [
 		},
 		'tracker': true,
 		'order': 3,
-		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/members.js', 'modules/dashboard/members/services/groups.js'],
+		'scripts': [
+			'modules/dashboard/members/config.js',
+			'modules/dashboard/members/controller.js',
+			'modules/dashboard/members/services/members.js',
+			'modules/dashboard/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -218,7 +222,9 @@ var membersNav = [
 		},
 		'tracker': true,
 		'order': 4,
-		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/members.js', 'modules/dashboard/members/services/groups.js'],
+		'scripts': ['modules/dashboard/members/config.js', 
+			'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/members.js', 
+			'modules/dashboard/members/services/groups.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
@@ -236,7 +242,9 @@ var membersNav = [
 			'label': translation.manage[LANG],
 			'position': 2
 		},
-		'scripts': ['modules/dashboard/members/config.js', 'modules/dashboard/members/controller.js', 'modules/dashboard/members/services/acl.js'],
+		'scripts': ['modules/dashboard/members/config.js', 
+			'modules/dashboard/members/controller.js', 
+			'modules/dashboard/members/services/acl.js'],
 		'ancestor': [translation.home[LANG], translation.member[LANG]]
 	}
 ];

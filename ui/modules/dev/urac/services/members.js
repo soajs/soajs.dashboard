@@ -3,18 +3,19 @@ var serviceUracApp = soajsApp.components;
 
 serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout', '$cookies', '$modal', function (ngDataApi, $timeout, $cookies, $modal) {
 	
-	function listMembers(currentScope, moduleConfig, callback) {
+	function listMembers(currentScope, moduleConfig, firsCall, callback) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var opts = {
 			"method": "get",
 			"routeName": "/urac/owner/admin/listUsers",
 			"proxy": true,
 			"params": {
+				"start": currentScope.startLimit,
+				"limit": currentScope.endLimit,
 				"__env": currentScope.currentSelectedEnvironment.toUpperCase(),
 				"tCode": tCode
 			}
 		};
-
 		getSendDataFromServer(currentScope, ngDataApi, opts, function (error, response) {
 			if (error) {
 				currentScope.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
@@ -24,14 +25,13 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 					return callback(response);
 				}
 				else {
-					printMembers(currentScope, moduleConfig, response);
+					printMembers(currentScope, moduleConfig, response, firsCall);
 				}
 			}
 		});
 	}
 	
-	function printMembers(currentScope, moduleConfig, response) {
-		var tCode = $cookies.getObject('urac_merchant').code;
+	function printMembers(currentScope, moduleConfig, response, firsCall) {
 		for (var x = 0; x < response.length; x++) {
 			if (response[x].groups) {
 				response[x].grpsArr = response[x].groups.join(', ');
@@ -46,7 +46,28 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 			data: response,
 			defaultSortField: 'username',
 			left: [],
-			top: []
+			top: [],
+			apiNavigation: {
+				previous: {
+					'label': 'Prev',
+					'handler': 'getMore'
+				},
+				next: {
+					'label': 'Next',
+					'handler': 'getMore'
+				},
+				last: {
+					'label': 'Last',
+					'handler': 'getMore'
+				}
+			}
+		};
+		options.grid.navigation = {
+			firsCall: firsCall,
+			startLimit: currentScope.startLimit,
+			totalCount: currentScope.totalCount,
+			endLimit: currentScope.endLimit,
+			totalPagesActive: currentScope.totalPagesActive
 		};
 		
 		if (currentScope.access.adminUser.editUser) {
@@ -76,7 +97,6 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 					'handler': 'deactivateMembers'
 				}
 			];
-			
 		}
 		buildGrid(currentScope, options);
 	}
@@ -84,7 +104,7 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 	function addMember(currentScope, moduleConfig) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(moduleConfig.form);
-
+		
 		overlayLoading.show();
 		var opts = {
 			"method": "get",
@@ -173,11 +193,7 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 		});
 		
 	}
-	
-	function editAcl(currentScope, data) {
-		currentScope.$parent.go('/urac-management/' + data._id + '/editUserAcl');
-	}
-	
+
 	function editMember(currentScope, moduleConfig, data) {
 		var tCode = $cookies.getObject('urac_merchant').code;
 		var config = angular.copy(moduleConfig.form);
@@ -334,7 +350,6 @@ serviceUracApp.service('tenantMembersModuleDevHelper', ['ngDataApi', '$timeout',
 		'listMembers': listMembers,
 		'printMembers': printMembers,
 		'addMember': addMember,
-		'editAcl': editAcl,
 		'editMember': editMember,
 		'activateMembers': activateMembers,
 		'deactivateMembers': deactivateMembers

@@ -196,6 +196,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 	function deleteGroups(currentScope) {
 		var config = {
+			"method": "del",
 			'routeName': "/urac/admin/group/delete",
 			"headers": {
 				"key": currentScope.key
@@ -216,7 +217,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		var opts = {
-			"method": "get",
+			"method": "del",
 			"routeName": "/urac/admin/group/delete",
 			"params": {
 				"gId": data._id,

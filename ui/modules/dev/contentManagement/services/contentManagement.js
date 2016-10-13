@@ -1,6 +1,7 @@
 "use strict";
 var cmService = soajsApp.components;
-cmService.service('cmService', ['ngDataApi', '$cookies', '$http', 'Upload', '$compile', function (ngDataApi, $cookies, $http, Upload, $compile) {
+
+cmService.service('cmModuleDevService', ['ngDataApi', '$cookies', '$http', 'Upload', '$compile', function (ngDataApi, $cookies, $http, Upload, $compile) {
 
     function loadServices(currentScope) {
         var services = [];

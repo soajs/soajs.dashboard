@@ -14,8 +14,8 @@
 						{{myApis.l}}
 					</div>
 					<div class="apiAccess" ng-hide="(aclFill[oneEnv.code][service.name].apisRestrictPermission && (aclFill[oneEnv.code][service.name].apis[myApis.v].include!==true))">
-						<div style="" class="f-left">
-						<span style="padding-right:5px;">
+						<div class="f-left">
+						<span style="padding-left: 0px;">
                             <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="clear" type="radio"/>
                             <em style="">{{translation.InheritFromService[LANG]}}</em>
                         </span>
