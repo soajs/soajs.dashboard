@@ -46,11 +46,11 @@ function getDockerCerts(certs, gfs, db, cb) {
 var lib = {
 	"getDeployer": function (deployerConfig, mongo, cb) {
 		/**
-			Three options:
-				- local: use socket port
-				- remote: get fastest manager node and use it
-				- remote and target: get deployer for target node
-		*/
+		 Three options:
+		 - local: use socket port
+		 - remote: get fastest manager node and use it
+		 - remote and target: get deployer for target node
+		 */
 		var config = utils.cloneObj(deployerConfig);
 		var docker;
 
@@ -132,7 +132,10 @@ var lib = {
 			mongo.find('fs.files', criteria, function (error, certs) {
 				checkError(error, callback, function () {
 					if (!certs || (certs && certs.length === 0)) {
-						return callback({code: 741, message: 'No certificates for ' + config.envCode + ' environment found'});
+						return callback({
+							code: 741,
+							message: 'No certificates for ' + config.envCode + ' environment found'
+						});
 					}
 
 					mongo.getMongoSkinDB(function (error, db) {
@@ -274,17 +277,17 @@ var deployer = {
 
 	"removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
 		/*
-			- get deployer for target node
-			- leave swarm
-			- return success response
-			- get deployer of a manager node in the swarm
-			- remove node
-		*/
+		 - get deployer for target node
+		 - leave swarm
+		 - return success response
+		 - get deployer of a manager node in the swarm
+		 - remove node
+		 */
 
 		var targetDeployerConfig = JSON.parse(JSON.stringify(deployerConfig));
 		targetDeployerConfig.host = options.ip;
 		targetDeployerConfig.port = options.dockerPort;
-		targetDeployerConfig.flags = { targetNode: true };
+		targetDeployerConfig.flags = {targetNode: true};
 		lib.getDeployer(targetDeployerConfig, mongo, function (error, targetDeployer) {
 			checkError(error, cb, function () {
 				targetDeployer.swarmLeave(function (error) {
@@ -361,7 +364,7 @@ var deployer = {
 					checkError(error, cb, function () {
 						output.service = serviceInfo;
 
-						params.filters = { service: [options.serviceName] };
+						params.filters = {service: [options.serviceName]};
 						deployer.listTasks(params, function (error, serviceTasks) {
 							checkError(error, cb, function () {
 								output.tasks = serviceTasks;
@@ -414,7 +417,7 @@ var deployer = {
 			checkError(error || !nodeInfo, cb, function () {
 				deployerConfig.host = nodeInfo.ip;
 				deployerConfig.port = nodeInfo.dockerPort;
-				deployerConfig.flags = { targetNode: true };
+				deployerConfig.flags = {targetNode: true};
 				lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 					checkError(error, cb, function () {
 						var container = deployer.getContainer(options.containerId);
@@ -435,7 +438,7 @@ var deployer = {
 
 			deployerConfig.host = nodeInfo.ip;
 			deployerConfig.port = nodeInfo.dockerPort;
-			deployerConfig.flags = { targetNode: true };
+			deployerConfig.flags = {targetNode: true};
 			lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
 				if (error) {
 					soajs.log.error(error);
