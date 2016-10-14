@@ -289,8 +289,44 @@ soajsApp.service("injectFiles", function () {
 
 soajsApp.service("aclDrawHelpers", function () {
 	
+	function groupApisForDisplay(apisArray, apiGroupName) {
+		var result = {};
+		var defaultGroupName = 'General';
+		var len = apisArray.length;
+		if (len == 0) {
+			return result;
+		}
+		for (var i = 0; i < len; i++) {
+			if (apisArray[i][apiGroupName]) {
+				defaultGroupName = apisArray[i][apiGroupName];
+			}
+			
+			if (!result[defaultGroupName]) {
+				result[defaultGroupName] = {};
+				result[defaultGroupName].apis = [];
+				if (apisArray[i].m) {
+					result[defaultGroupName].apisRest = {};
+				}
+			}
+			if (!apisArray[i].m) {
+				//apisArray[i].m = 'all';
+			}
+			if (apisArray[i].m) {
+				if (!result[defaultGroupName].apisRest[apisArray[i].m]) {
+					result[defaultGroupName].apisRest[apisArray[i].m] = [];
+				}
+				result[defaultGroupName].apisRest[apisArray[i].m].push(apisArray[i]);
+			}
+			if (apisArray[i].groupMain === true) {
+				result[defaultGroupName]['defaultApi'] = apisArray[i].v;
+			}
+			result[defaultGroupName].apis.push(apisArray[i]);
+		}
+		
+		return result;
+	}
+	
 	function applyApiRestriction(aclFill, service) {
-		console.log('applyApiRestriction');
 		if (aclFill[service.name].apisRestrictPermission === true) {
 			for (var grpLabel in service.fixList) {
 				if (service.fixList.hasOwnProperty(grpLabel)) {
@@ -367,6 +403,7 @@ soajsApp.service("aclDrawHelpers", function () {
 	}
 	
 	return {
+		'groupApisForDisplay': groupApisForDisplay,
 		'checkForGroupDefault': checkForGroupDefault,
 		'applyApiRestriction': applyApiRestriction
 	}

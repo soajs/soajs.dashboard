@@ -36,10 +36,9 @@
 									<ul class="grpsListing">
 										<li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
 											<input ng-model="application.aclFill[oneEnv.code][service.name][method].apis[myApi.v].grpCodes[code]" type="checkbox"/>
-											<span>{{code}} </span>
+											<span>{{code}}</span>
 										</li>
 									</ul>
-									<span ng-repeat="code in allGroups"></span>
 								</div>
 							</div>
 						</div>
@@ -73,10 +72,9 @@
 							<ul class="grpsListing">
 								<li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
 									<input ng-model="application.aclFill[oneEnv.code][service.name].apis[myApi.v].grpCodes[code]" type="checkbox"/>
-									<span>{{code}} </span>
+									<span>{{code}}</span>
 								</li>
 							</ul>
-							<span ng-repeat="code in allGroups"></span>
 						</div>
 					</div>
 				</div>
