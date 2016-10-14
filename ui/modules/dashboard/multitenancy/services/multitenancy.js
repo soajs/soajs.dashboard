@@ -1,6 +1,6 @@
 "use strict";
 var multiTenantService = soajsApp.components;
-multiTenantService.service('aclHelper', function () {
+multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelpers) {
 	
 	function objectIsEnv(obj) {
 		if (obj) {
@@ -181,6 +181,7 @@ multiTenantService.service('aclHelper', function () {
 							}
 						}
 					}
+					applyRestriction(aclFill[env], currentService);
 				}
 			}
 		}
@@ -344,42 +345,11 @@ multiTenantService.service('aclHelper', function () {
 	}
 	
 	function checkForGroupDefault(aclFill, service, grp, val, myApi) {
-		var defaultApi = service.fixList[grp]['defaultApi'];
-		if (myApi.groupMain === true) {
-			if (aclFill[service.name].apis) {
-				if ((aclFill[service.name].apis[defaultApi]) && aclFill[service.name].apis[defaultApi].include !== true) {
-					val.apis.forEach(function (one) {
-						if (aclFill[service.name].apis[one.v]) {
-							aclFill[service.name].apis[one.v].include = false;
-						}
-					});
-					
-				}
-			}
-		}
+		aclDrawHelpers.checkForGroupDefault(aclFill, service, grp, val, myApi);
 	}
 	
 	function applyRestriction(aclFill, service) {
-		if (aclFill[service.name].apisRestrictPermission === true) {
-			var grpLabel;
-			for (grpLabel in service.fixList) {
-				if (service.fixList.hasOwnProperty(grpLabel)) {
-					var defaultApi = service.fixList[grpLabel]['defaultApi'];
-					if (defaultApi) {
-						if (aclFill[service.name].apis) {
-							var apisList = service.fixList[grpLabel]['apis'];
-							if ((!aclFill[service.name].apis[defaultApi]) || aclFill[service.name].apis[defaultApi].include !== true) {
-								apisList.forEach(function (oneApi) {
-									if (aclFill[service.name].apis[oneApi.v]) {
-										aclFill[service.name].apis[oneApi.v].include = false;
-									}
-								});
-							}
-						}
-					}
-				}
-			}
-		}
+		aclDrawHelpers.applyApiRestriction(aclFill, service);
 	}
 	
 	function prepareAclObjToSave(aclFill) {
@@ -422,32 +392,73 @@ multiTenantService.service('aclHelper', function () {
 							aclObj[serviceName].apisPermission = 'restricted';
 						}
 						
-						if (service.apis) {
-							for (apiName in service.apis) {
-								if (service.apis.hasOwnProperty(apiName)) {
-									var api = service.apis[apiName];
-									if ((service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
-										/// need to also check for the default api if restricted
-										aclObj[serviceName].apis[apiName] = {};
-										if (api.accessType === 'private') {
-											aclObj[serviceName].apis[apiName].access = true;
-										}
-										else if (api.accessType === 'public') {
-											aclObj[serviceName].apis[apiName].access = false;
-										}
-										else if (api.accessType === 'groups') {
-											aclObj[serviceName].apis[apiName].access = [];
-											grpCodes = aclFill[env][serviceName].apis[apiName].grpCodes;
-											
-											if (grpCodes) {
-												for (code in grpCodes) {
-													if (grpCodes.hasOwnProperty(code)) {
-														aclObj[serviceName].apis[apiName].access.push(code);
+						if (service.get || service.post || service.put || service.delete) {
+							for (var method in service) {
+								if (service[method].apis) {
+									aclObj[serviceName][method] = {
+										apis: {}
+									};
+									
+									for (var apiName in service[method].apis) {
+										if (service[method].apis.hasOwnProperty(apiName)) {
+											var api = service[method].apis[apiName];
+											if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
+												/// need to also check for the default api if restricted
+												aclObj[serviceName][method].apis[apiName] = {};
+												if (api.accessType === 'private') {
+													aclObj[serviceName][method].apis[apiName].access = true;
+												}
+												else if (api.accessType === 'public') {
+													aclObj[serviceName][method].apis[apiName].access = false;
+												}
+												else if (api.accessType === 'groups') {
+													aclObj[serviceName][method].apis[apiName].access = [];
+													grpCodes = aclFill[env][serviceName][method].apis[apiName].grpCodes;
+													if (grpCodes) {
+														for (code in grpCodes) {
+															if (grpCodes.hasOwnProperty(code)) {
+																aclObj[serviceName][method].apis[apiName].access.push(code);
+															}
+														}
+													}
+													if (aclObj[serviceName][method].apis[apiName].access.length === 0) {
+														return {'valid': false};
 													}
 												}
 											}
-											if (aclObj[serviceName].apis[apiName].access.length === 0) {
-												return {'valid': false};
+										}
+									}
+								}
+							}
+						}
+						else {
+							if (service.apis) {
+								for (apiName in service.apis) {
+									if (service.apis.hasOwnProperty(apiName)) {
+										var api = service.apis[apiName];
+										if ((service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
+											/// need to also check for the default api if restricted
+											aclObj[serviceName].apis[apiName] = {};
+											if (api.accessType === 'private') {
+												aclObj[serviceName].apis[apiName].access = true;
+											}
+											else if (api.accessType === 'public') {
+												aclObj[serviceName].apis[apiName].access = false;
+											}
+											else if (api.accessType === 'groups') {
+												aclObj[serviceName].apis[apiName].access = [];
+												grpCodes = aclFill[env][serviceName].apis[apiName].grpCodes;
+												
+												if (grpCodes) {
+													for (code in grpCodes) {
+														if (grpCodes.hasOwnProperty(code)) {
+															aclObj[serviceName].apis[apiName].access.push(code);
+														}
+													}
+												}
+												if (aclObj[serviceName].apis[apiName].access.length === 0) {
+													return {'valid': false};
+												}
 											}
 										}
 									}
@@ -470,4 +481,4 @@ multiTenantService.service('aclHelper', function () {
 		'checkForGroupDefault': checkForGroupDefault,
 		'applyRestriction': applyRestriction
 	}
-});
+}]);
