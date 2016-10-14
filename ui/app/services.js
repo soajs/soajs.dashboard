@@ -402,7 +402,59 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
+	function fillServiceAccess(service) {
+		service.include = true;
+		service.collapse = false;
+		if (service.access) {
+			if (service.access === true) {
+				service.accessType = 'private';
+			}
+			else if (service.access === false) {
+				service.accessType = 'public';
+			}
+			else if (Array.isArray(service.access)) {
+				service.accessType = 'groups';
+				service.grpCodes = {};
+				service.access.forEach(function (c) {
+					service.grpCodes[c] = true;
+				});
+			}
+		}
+		else {
+			service.accessType = 'public';
+		}
+		if (service.apisPermission === 'restricted') {
+			service.apisRestrictPermission = true;
+		}
+	}
+	
+	function fillApiAccess(service, apis) {
+		for (var apiName in apis) {
+			if (apis.hasOwnProperty(apiName)) {
+				apis[apiName].include = true;
+				apis[apiName].accessType = 'clear';
+				if (apis[apiName].access == true) {
+					apis[apiName].accessType = 'private';
+				}
+				else if (apis[apiName].access === false) {
+					apis[apiName].accessType = 'public';
+				}
+				else {
+					if (Array.isArray(apis[apiName].access)) {
+						apis[apiName].accessType = 'groups';
+						apis[apiName].grpCodes = {};
+						apis[apiName].access.forEach(function (c) {
+							apis[apiName].grpCodes[c] = true;
+						});
+					}
+				}
+			}
+		}
+	}
+	
 	return {
+		'fillServiceAccess': fillServiceAccess,
+		'fillApiAccess': fillApiAccess,
 		'groupApisForDisplay': groupApisForDisplay,
 		'checkForGroupDefault': checkForGroupDefault,
 		'applyApiRestriction': applyApiRestriction

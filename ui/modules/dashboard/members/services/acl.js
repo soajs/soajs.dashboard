@@ -50,94 +50,30 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
 				service = aclFill[serviceName];
-				service.name = serviceName;
-				service.include = true;
-				service.collapse = false;
-				if (service.access) {
-					if (service.access === true) {
-						service.accessType = 'private';
-					}
-					else if (service.access === false) {
-						service.accessType = 'public';
-					}
-					else if (Array.isArray(service.access)) {
-						service.accessType = 'groups';
-						service.grpCodes = {};
-						service.access.forEach(function (c) {
-							service.grpCodes[c] = true;
-						});
-					}
-				}
-				else {
-					service.accessType = 'public';
-				}
-				if (service.apisPermission === 'restricted') {
-					service.apisRestrictPermission = true;
-				}
+				aclDrawHelpers.fillServiceAccess(service);
 				
 				if (!service.get && !service.post && !service.put && !service.delete) {
 					grpByMethod(service, services[serviceName].fixList);
 				}
 				
-				var ap;
 				if (service.get || service.post || service.put || service.delete) {
 					for (var method in service) {
 						if (service[method].apis) {
-							for (ap in service[method].apis) {
-								if (service[method].apis.hasOwnProperty(ap)) {
-									service[method].apis[ap].include = true;
-									service[method].apis[ap].accessType = 'clear';
-									if (service[method].apis[ap].access == true) {
-										service[method].apis[ap].accessType = 'private';
-									}
-									else if (service[method].apis[ap].access === false) {
-										service[method].apis[ap].accessType = 'public';
-									}
-									else {
-										if (Array.isArray(service[method].apis[ap].access)) {
-											service[method].apis[ap].accessType = 'groups';
-											service[method].apis[ap].grpCodes = {};
-											service[method].apis[ap].access.forEach(function (c) {
-												service[method].apis[ap].grpCodes[c] = true;
-											});
-										}
-									}
-								}
-							}
+							aclDrawHelpers.fillApiAccess(service[method], service[method].apis);
 						}
 					}
 				}
 				
 				if (service.apis) {
-					for (var apiName in service.apis) {
-						if (service.apis.hasOwnProperty(apiName)) {
-							service.apis[apiName].include = true;
-							service.apis[apiName].accessType = 'clear';
-							if (service.apis[apiName].access == true) {
-								service.apis[apiName].accessType = 'private';
-							}
-							else if (service.apis[apiName].access === false) {
-								service.apis[apiName].accessType = 'public';
-							}
-							else {
-								if (Array.isArray(service.apis[apiName].access)) {
-									service.apis[apiName].accessType = 'groups';
-									service.apis[apiName].grpCodes = {};
-									service.apis[apiName].access.forEach(function (c) {
-										service.apis[apiName].grpCodes[c] = true;
-									});
-								}
-							}
-						}
-					}
+					aclDrawHelpers.fillApiAccess(service, service.apis);
 				}
+
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {
 				if (parentAcl[serviceName]) {
 					if (parentAcl[serviceName].apisPermission === 'restricted') {
 						aclFill[serviceName] = {
-							name: serviceName,
 							include: false,
 							forceRestricted: true,
 							apisRestrictPermission: true,

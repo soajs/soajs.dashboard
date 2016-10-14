@@ -66,10 +66,6 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 		for (var propt in aclFill) {
 			if (aclFill.hasOwnProperty(propt)) {
 				var service = aclFill[propt];
-				service.name = propt;
-				service.include = true;
-				service.collapse = false;
-				
 				var currentService;
 				for (var x = 0; x < currentScope.allServiceApis.length; x++) {
 					if (currentScope.allServiceApis[x].name === propt) {
@@ -77,31 +73,8 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 						break;
 					}
 				}
-				if (service.access) {
-					if (service.access === true) {
-						service.accessType = 'private';
-					}
-					else if (service.access === false) {
-						service.accessType = 'public';
-					}
-					else if (Array.isArray(service.access)) {
-						service.accessType = 'groups';
-						service.grpCodes = {};
-						if (service.access.indexOf('owner') > -1) {
-							service.grpCodes['owner'] = true;
-						}
-						if (service.access.indexOf('administrator') > -1) {
-							service.grpCodes['admin'] = true;
-						}
-					}
-				}
-				else {
-					service.accessType = 'public';
-				}
-				
-				if (service.apisPermission === 'restricted') {
-					service.apisRestrictPermission = true;
-				}
+				aclDrawHelpers.fillServiceAccess(service);
+
 				// backward compatible. grp by method
 				if (!service.get && !service.post && !service.put && !service.delete) {
 					if (currentService) {
@@ -113,62 +86,14 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 					for (var method in service) {
 						if (service[method]) {
 							if (service[method].apis) {
-								for (var ap in service[method].apis) {
-									if (service[method].apis.hasOwnProperty(ap)) {
-										service[method].apis[ap].include = true;
-										service[method].apis[ap].accessType = 'clear';
-										
-										if (service[method].apis[ap].access == true) {
-											service[method].apis[ap].accessType = 'private';
-										}
-										else if (service[method].apis[ap].access === false) {
-											service[method].apis[ap].accessType = 'public';
-										}
-										else {
-											if (Array.isArray(service[method].apis[ap].access)) {
-												service[method].apis[ap].accessType = 'groups';
-												service[method].apis[ap].grpCodes = {};
-												if ((service[method].apis[ap].access.indexOf('administrator') > -1)) {
-													service[method].apis[ap].grpCodes['admin'] = true;
-												}
-												if ((service[method].apis[ap].access.indexOf('owner') > -1)) {
-													service[method].apis[ap].grpCodes['owner'] = true;
-												}
-											}
-										}
-									}
-								}
+								aclDrawHelpers.fillApiAccess(service[method], service[method].apis);
 							}
 						}
 					}
 				}
 				
 				if (service.apis) {
-					for (var ap in service.apis) {
-						if (service.apis.hasOwnProperty(ap)) {
-							service.apis[ap].include = true;
-							service.apis[ap].accessType = 'clear';
-							
-							if (service.apis[ap].access == true) {
-								service.apis[ap].accessType = 'private';
-							}
-							else if (service.apis[ap].access === false) {
-								service.apis[ap].accessType = 'public';
-							}
-							else {
-								if (Array.isArray(service.apis[ap].access)) {
-									service.apis[ap].accessType = 'groups';
-									service.apis[ap].grpCodes = {};
-									if ((service.apis[ap].access.indexOf('administrator') > -1)) {
-										service.apis[ap].grpCodes['admin'] = true;
-									}
-									if ((service.apis[ap].access.indexOf('owner') > -1)) {
-										service.apis[ap].grpCodes['owner'] = true;
-									}
-								}
-							}
-						}
-					}
+					aclDrawHelpers.fillApiAccess(service, service.apis);
 				}
 				aclDrawHelpers.applyApiRestriction(aclFill, currentService);
 			}
@@ -215,7 +140,7 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 						if (grpCodes.owner) {
 							aclObj[propt].access.push('owner');
 						}
-						if (grpCodes.admin) {
+						if (grpCodes.administrator) {
 							aclObj[propt].access.push('administrator');
 						}
 					}
@@ -248,7 +173,7 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 												aclObj[propt][method].apis[ap].access = [];
 												var grpCodes = api.grpCodes;
 												if (grpCodes) {
-													if (grpCodes.admin) {
+													if (grpCodes.administrator) {
 														aclObj[propt][method].apis[ap].access.push('administrator');
 													}
 													if (grpCodes.owner) {
@@ -281,7 +206,7 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 											aclObj[propt].apis[ap].access = [];
 											var grpCodes = api.grpCodes;
 											if (grpCodes) {
-												if (grpCodes.admin) {
+												if (grpCodes.administrator) {
 													aclObj[propt].apis[ap].access.push('administrator');
 												}
 												if (grpCodes.owner) {
