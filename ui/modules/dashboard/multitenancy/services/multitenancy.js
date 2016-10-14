@@ -1,7 +1,7 @@
 "use strict";
 var multiTenantService = soajsApp.components;
 multiTenantService.service('aclHelper', function () {
-
+	
 	function objectIsEnv(obj) {
 		if (obj) {
 			if (JSON.stringify(obj) === '{}') {
@@ -13,7 +13,7 @@ multiTenantService.service('aclHelper', function () {
 		}
 		return false;
 	}
-
+	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		var result = {};
 		var defaultGroupName = 'General';
@@ -25,7 +25,7 @@ multiTenantService.service('aclHelper', function () {
 			if (apisArray[i][apiGroupName]) {
 				defaultGroupName = apisArray[i][apiGroupName];
 			}
-
+			
 			if (!result[defaultGroupName]) {
 				result[defaultGroupName] = {};
 				result[defaultGroupName].apis = [];
@@ -47,10 +47,10 @@ multiTenantService.service('aclHelper', function () {
 			}
 			result[defaultGroupName].apis.push(apisArray[i]);
 		}
-
+		
 		return result;
 	}
-
+	
 	function prepareViewAclObj(currentScope, aclFill) {
 		var services = currentScope.currentApplication.services;
 		for (var lowerCase in aclFill) {
@@ -61,7 +61,7 @@ multiTenantService.service('aclHelper', function () {
 			}
 		}
 		var service, propt, env;
-
+		
 		function grpByMethod(service, fixList) {
 			var byMethod = false;
 			for (var grp in fixList) {
@@ -87,14 +87,14 @@ multiTenantService.service('aclHelper', function () {
 				delete service.apis;
 			}
 		}
-
+		
 		for (env in aclFill) {
 			for (propt in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(propt)) {
 					service = aclFill[env][propt];
 					service.include = true;
 					service.collapse = false;
-
+					
 					var currentService;
 					for (var x = 0; x < services.length; x++) {
 						if (services[x].name === propt) {
@@ -102,7 +102,7 @@ multiTenantService.service('aclHelper', function () {
 							break;
 						}
 					}
-
+					
 					if (service.access) {
 						if (service.access === true) {
 							service.accessType = 'private';
@@ -130,7 +130,7 @@ multiTenantService.service('aclHelper', function () {
 							grpByMethod(service, currentService.fixList);
 						}
 					}
-
+					
 					if (service.get || service.post || service.put || service.delete) {
 						for (var method in service) {
 							if (service[method].apis) {
@@ -185,7 +185,7 @@ multiTenantService.service('aclHelper', function () {
 			}
 		}
 	}
-
+	
 	function fillAcl(currentScope) {
 		var parentAcl = currentScope.currentApplication.parentPckgAcl;
 		var envCodes = currentScope.environments_codes;
@@ -196,7 +196,7 @@ multiTenantService.service('aclHelper', function () {
 		var myAcl = {};
 		var servNamesNew = [];
 		var servNamesOld = [];
-
+		
 		var oldParentSchema = true;
 		for (var p in parentAcl) {
 			if (objectIsEnv(parentAcl[p])) {
@@ -222,7 +222,7 @@ multiTenantService.service('aclHelper', function () {
 				oldAcl = true;
 			}
 		}
-
+		
 		if (oldAcl) {
 			myAcl[envCodes[0].code.toUpperCase()] = acl;
 			envCodes.forEach(function (oneEnv) {
@@ -244,7 +244,7 @@ multiTenantService.service('aclHelper', function () {
 				}
 			});
 		}
-
+		
 		if (oldParentSchema) {
 			servNamesOld = Object.keys(parentAcl);
 		}
@@ -269,7 +269,7 @@ multiTenantService.service('aclHelper', function () {
 				}
 			}
 		}
-
+		
 		envCodes.forEach(function (oneEnv) {
 			servicesEnv[oneEnv.code.toUpperCase()] = {};
 			if (oldParentSchema) {
@@ -287,7 +287,7 @@ multiTenantService.service('aclHelper', function () {
 				}
 			}
 		});
-
+		
 		currentScope.currentApplication.serviceNames = servNamesOld;
 		currentScope.currentApplication.aclFill = myAcl;
 		currentScope.currentApplication.servicesEnv = servicesEnv;
@@ -300,13 +300,13 @@ multiTenantService.service('aclHelper', function () {
 			currentScope.currentApplication.parentPckgAcl = newAcl;
 		}
 	}
-
+	
 	function prepareServices(currentScope) {
 		var service = {};
 		var services = currentScope.currentApplication.services;
 		var envCodes = currentScope.environments_codes;
 		var parentAcl = currentScope.currentApplication.parentPckgAcl;
-
+		
 		for (var i = 0; i < services.length; i++) {
 			services[i].fixList = groupApisForDisplay(services[i].apisList, 'group');
 			var newList;
@@ -329,11 +329,9 @@ multiTenantService.service('aclHelper', function () {
 									}
 								}
 							}
-							else {
-								if (parentEnvAcl.apis) {
-									if (parentEnvAcl.apis[v]) {
-										newList.push(service.apisList[j]);
-									}
+							if (parentEnvAcl.apis) {
+								if (parentEnvAcl.apis[v]) {
+									newList.push(service.apisList[j]);
 								}
 							}
 						}
@@ -344,7 +342,7 @@ multiTenantService.service('aclHelper', function () {
 			});
 		}
 	}
-
+	
 	function checkForGroupDefault(aclFill, service, grp, val, myApi) {
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if (myApi.groupMain === true) {
@@ -355,12 +353,12 @@ multiTenantService.service('aclHelper', function () {
 							aclFill[service.name].apis[one.v].include = false;
 						}
 					});
-
+					
 				}
 			}
 		}
 	}
-
+	
 	function applyRestriction(aclFill, service) {
 		if (aclFill[service.name].apisRestrictPermission === true) {
 			var grpLabel;
@@ -383,7 +381,7 @@ multiTenantService.service('aclHelper', function () {
 			}
 		}
 	}
-
+	
 	function prepareAclObjToSave(aclFill) {
 		var acl = {};
 		var valid = true;
@@ -394,11 +392,11 @@ multiTenantService.service('aclHelper', function () {
 			for (serviceName in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(serviceName)) {
 					var service = angular.copy(aclFill[env][serviceName]);
-
+					
 					if (service.include === true) {
 						aclObj[serviceName] = {};
 						aclObj[serviceName].apis = {};
-
+						
 						if (service.accessType === 'private') {
 							aclObj[serviceName].access = true;
 						}
@@ -419,11 +417,11 @@ multiTenantService.service('aclHelper', function () {
 								return {'valid': false};
 							}
 						}
-
+						
 						if (service.apisRestrictPermission === true) {
 							aclObj[serviceName].apisPermission = 'restricted';
 						}
-
+						
 						if (service.apis) {
 							for (apiName in service.apis) {
 								if (service.apis.hasOwnProperty(apiName)) {
@@ -440,7 +438,7 @@ multiTenantService.service('aclHelper', function () {
 										else if (api.accessType === 'groups') {
 											aclObj[serviceName].apis[apiName].access = [];
 											grpCodes = aclFill[env][serviceName].apis[apiName].grpCodes;
-
+											
 											if (grpCodes) {
 												for (code in grpCodes) {
 													if (grpCodes.hasOwnProperty(code)) {
@@ -462,7 +460,7 @@ multiTenantService.service('aclHelper', function () {
 		}
 		return {'valid': valid, 'data': acl};
 	}
-
+	
 	return {
 		'prepareServices': prepareServices,
 		'prepareAclObjToSave': prepareAclObjToSave,

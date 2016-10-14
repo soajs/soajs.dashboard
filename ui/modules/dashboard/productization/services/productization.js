@@ -1,6 +1,6 @@
 "use strict";
 var productizationService = soajsApp.components;
-productizationService.service('aclHelpers', function () {
+productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDrawHelpers) {
 	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		var result = {};
@@ -98,10 +98,11 @@ productizationService.service('aclHelpers', function () {
 				delete service.apis;
 			}
 		}
-
+		
 		for (var propt in aclFill) {
 			if (aclFill.hasOwnProperty(propt)) {
 				var service = aclFill[propt];
+				service.name = propt;
 				service.include = true;
 				service.collapse = false;
 				
@@ -205,45 +206,19 @@ productizationService.service('aclHelpers', function () {
 						}
 					}
 				}
+				aclDrawHelpers.applyApiRestriction(aclFill, currentService);
 			}
 		}
 	}
 	
 	function applyPermissionRestriction(scope, envCode, service) {
-		if (scope.aclFill[envCode][service.name].apisRestrictPermission === true) {
-			for (var grpLabel in service.fixList) {
-				if (service.fixList.hasOwnProperty(grpLabel)) {
-					var defaultApi = service.fixList[grpLabel]['defaultApi'];
-					if (defaultApi) {
-						if (scope.aclFill[envCode][service.name].apis) {
-							var apisList = service.fixList[grpLabel]['apis'];
-							if ((!scope.aclFill[envCode][service.name].apis[defaultApi]) || scope.aclFill[envCode][service.name].apis[defaultApi].include !== true) {
-								apisList.forEach(function (oneApi) {
-									if (scope.aclFill[envCode][service.name].apis[oneApi.v]) {
-										scope.aclFill[envCode][service.name].apis[oneApi.v].include = false;
-									}
-								});
-							}
-						}
-					}
-				}
-			}
-		}
+		var aclFill = scope.aclFill[envCode];
+		aclDrawHelpers.applyApiRestriction(aclFill, service);
 	}
 	
 	function checkForGroupDefault(scope, envCode, service, grp, val, myApi) {
-		var defaultApi = service.fixList[grp]['defaultApi'];
-		if (myApi.groupMain === true) {
-			if (scope.aclFill[envCode][service.name] && scope.aclFill[envCode][service.name].apis) {
-				if ((scope.aclFill[envCode][service.name].apis[defaultApi]) && scope.aclFill[envCode][service.name].apis[defaultApi].include !== true) {
-					val.apis.forEach(function (one) {
-						if (scope.aclFill[envCode][service.name].apis[one.v]) {
-							scope.aclFill[envCode][service.name].apis[one.v].include = false;
-						}
-					});
-				}
-			}
-		}
+		var aclFill = scope.aclFill[envCode];
+		aclDrawHelpers.checkForGroupDefault(aclFill, service, grp, val, myApi);
 	}
 	
 	function constructAclFromPost(aclFill) {
@@ -367,4 +342,4 @@ productizationService.service('aclHelpers', function () {
 		'checkForGroupDefault': checkForGroupDefault,
 		'constructAclFromPost': constructAclFromPost
 	}
-});
+}]);

@@ -140,13 +140,13 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		opts.api = 'sendData';
 		executeRequest(scope, opts, cb);
 	}
-
+	
 	function putData(scope, opts, cb) {
 		opts.method = 'PUT';
 		opts.api = 'putData';
 		executeRequest(scope, opts, cb);
 	}
-
+	
 	function delData(scope, opts, cb) {
 		opts.method = 'DELETE';
 		opts.api = 'delData';
@@ -284,5 +284,90 @@ soajsApp.service("injectFiles", function () {
 	
 	return {
 		'injectCss': injectCss
+	}
+});
+
+soajsApp.service("aclDrawHelpers", function () {
+	
+	function applyApiRestriction(aclFill, service) {
+		console.log('applyApiRestriction');
+		if (aclFill[service.name].apisRestrictPermission === true) {
+			for (var grpLabel in service.fixList) {
+				if (service.fixList.hasOwnProperty(grpLabel)) {
+					var defaultApi = service.fixList[grpLabel]['defaultApi'];
+					if (defaultApi) {
+						var found = false;
+						if (service.fixList[grpLabel].apisRest) {
+							for (var m in service.fixList[grpLabel].apisRest) {
+								if (aclFill[service.name][m] && aclFill[service.name][m].apis[defaultApi] && aclFill[service.name][m].apis[defaultApi].include === true) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								for (var m in service.fixList[grpLabel].apisRest) {
+									if (aclFill[service.name][m]) {
+										service.fixList[grpLabel].apisRest[m].forEach(function (oneApi) {
+											if (aclFill[service.name][m].apis[oneApi.v]) {
+												aclFill[service.name][m].apis[oneApi.v].include = false;
+											}
+										});
+									}
+								}
+							}
+						}
+						else if (aclFill[service.name].apis) {
+							if ((!aclFill[service.name].apis[defaultApi]) || aclFill[service.name].apis[defaultApi].include !== true) {
+								service.fixList[grpLabel]['apis'].forEach(function (oneApi) {
+									if (aclFill[service.name].apis[oneApi.v]) {
+										aclFill[service.name].apis[oneApi.v].include = false;
+									}
+								});
+							}
+						}
+						service.fixList[grpLabel].defaultIncluded = found;
+					}
+				}
+			}
+		}
+	}
+	
+	function checkForGroupDefault(aclFill, service, grp, val, myApi) {
+		var defaultApi = service.fixList[grp]['defaultApi'];
+		var found = true;
+		if (myApi.groupMain === true) {
+			if (val.apisRest && myApi.m) {
+				if (aclFill[service.name][myApi.m].apis) {
+					if (aclFill[service.name][myApi.m].apis[defaultApi] && aclFill[service.name][myApi.m].apis[defaultApi].include !== true) {
+						found = false;
+						for (var m in val.apisRest) {
+							if (aclFill[service.name][m]) {
+								val.apisRest[m].forEach(function (one) {
+									if (aclFill[service.name][m].apis[one.v]) {
+										aclFill[service.name][m].apis[one.v].include = false;
+									}
+								});
+							}
+						}
+					}
+				}
+			}
+			else if (aclFill[service.name].apis) {
+				if ((aclFill[service.name].apis[defaultApi]) && aclFill[service.name].apis[defaultApi].include !== true) {
+					found = false;
+					val.apis.forEach(function (one) {
+						if (aclFill[service.name].apis[one.v]) {
+							aclFill[service.name].apis[one.v].include = false;
+						}
+					});
+				}
+			}
+			service.fixList[grp].defaultIncluded = found;
+		}
+	}
+	
+	return {
+		'checkForGroupDefault': checkForGroupDefault,
+		'applyApiRestriction': applyApiRestriction
 	}
 });
