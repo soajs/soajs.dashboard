@@ -4,29 +4,40 @@ productizationService.service('aclHelpers', function () {
 	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		var result = {};
-		var apiDefaultGroupName = 'General';
+		var defaultGroupName = 'General';
 		var len = apisArray.length;
 		if (len == 0) {
 			return result;
 		}
 		for (var i = 0; i < len; i++) {
 			if (apisArray[i][apiGroupName]) {
-				apiDefaultGroupName = apisArray[i][apiGroupName];
+				defaultGroupName = apisArray[i][apiGroupName];
 			}
 			
-			if (!result[apiDefaultGroupName]) {
-				result[apiDefaultGroupName] = {};
-				result[apiDefaultGroupName].apis = [];
+			if (!result[defaultGroupName]) {
+				result[defaultGroupName] = {};
+				result[defaultGroupName].apis = [];
+				if (apisArray[i].m) {
+					result[defaultGroupName].apisRest = {};
+				}
 			}
-			
+			if (!apisArray[i].m) {
+				//apisArray[i].m = 'all';
+			}
+			if (apisArray[i].m) {
+				if (!result[defaultGroupName].apisRest[apisArray[i].m]) {
+					result[defaultGroupName].apisRest[apisArray[i].m] = [];
+				}
+				result[defaultGroupName].apisRest[apisArray[i].m].push(apisArray[i]);
+			}
 			if (apisArray[i].groupMain === true) {
-				result[apiDefaultGroupName]['defaultApi'] = apisArray[i].v;
+				result[defaultGroupName]['defaultApi'] = apisArray[i].v;
 			}
-			result[apiDefaultGroupName].apis.push(apisArray[i]);
+			result[defaultGroupName].apis.push(apisArray[i]);
 		}
 		
-		if (!result[apiDefaultGroupName]['defaultApi']) {
-			result[apiDefaultGroupName]['enableAll'] = true;
+		if (!result[defaultGroupName]['defaultApi']) {
+			result[defaultGroupName]['enableAll'] = true;
 		}
 		return result;
 	}
@@ -40,14 +51,14 @@ productizationService.service('aclHelpers', function () {
 			if (aclFill[oneEnv.code.toLowerCase()] && (!aclFill[oneEnv.code.toLowerCase()].access && !aclFill[oneEnv.code.toLowerCase()].apis && !aclFill[oneEnv.code.toLowerCase()].apisRegExp && !aclFill[oneEnv.code.toLowerCase()].apisPermission)) {
 				count++;
 				myAcl[oneEnv.code.toUpperCase()] = aclFill[oneEnv.code.toLowerCase()];
-				propagateAcl(myAcl[oneEnv.code.toUpperCase()]);
+				propagateAcl(currentScope, myAcl[oneEnv.code.toUpperCase()]);
 			}
 		});
 		
 		if (count === 0) {
 			//old schema
 			myAcl[envCodes[0].code.toUpperCase()] = aclFill;
-			propagateAcl(myAcl[envCodes[0].code.toUpperCase()]);
+			propagateAcl(currentScope, myAcl[envCodes[0].code.toUpperCase()]);
 			envCodes.forEach(function (oneEnv) {
 				if (oneEnv.code !== envCodes[0].code) {
 					myAcl[oneEnv.code.toUpperCase()] = angular.copy(myAcl[envCodes[0].code]);
@@ -61,13 +72,46 @@ productizationService.service('aclHelpers', function () {
 		overlayLoading.hide();
 	}
 	
-	function propagateAcl(aclFill) {
+	function propagateAcl(currentScope, aclFill) {
+		function grpByMethod(service, fixList) {
+			var byMethod = false;
+			for (var grp in fixList) {
+				if (fixList[grp].apisRest) {
+					byMethod = true;
+					for (var method in fixList[grp].apisRest) {
+						if (!service[method]) {
+							service[method] = {
+								apis: {}
+							};
+						}
+						fixList[grp].apisRest[method].forEach(function (api) {
+							if (service.apis) {
+								if (service.apis[api.v]) {
+									service[method].apis[api.v] = service.apis[api.v];
+								}
+							}
+						});
+					}
+				}
+			}
+			if (byMethod) {
+				delete service.apis;
+			}
+		}
+
 		for (var propt in aclFill) {
 			if (aclFill.hasOwnProperty(propt)) {
 				var service = aclFill[propt];
 				service.include = true;
 				service.collapse = false;
 				
+				var currentService;
+				for (var x = 0; x < currentScope.allServiceApis.length; x++) {
+					if (currentScope.allServiceApis[x].name === propt) {
+						currentService = currentScope.allServiceApis[x];
+						break;
+					}
+				}
 				if (service.access) {
 					if (service.access === true) {
 						service.accessType = 'private';
@@ -93,6 +137,47 @@ productizationService.service('aclHelpers', function () {
 				if (service.apisPermission === 'restricted') {
 					service.apisRestrictPermission = true;
 				}
+				// backward compatible. grp by method
+				if (!service.get && !service.post && !service.put && !service.delete) {
+					if (currentService) {
+						grpByMethod(service, currentService.fixList);
+					}
+				}
+				
+				if (service.get || service.post || service.put || service.delete) {
+					for (var method in service) {
+						if (service[method]) {
+							if (service[method].apis) {
+								for (var ap in service[method].apis) {
+									if (service[method].apis.hasOwnProperty(ap)) {
+										service[method].apis[ap].include = true;
+										service[method].apis[ap].accessType = 'clear';
+										
+										if (service[method].apis[ap].access == true) {
+											service[method].apis[ap].accessType = 'private';
+										}
+										else if (service[method].apis[ap].access === false) {
+											service[method].apis[ap].accessType = 'public';
+										}
+										else {
+											if (Array.isArray(service[method].apis[ap].access)) {
+												service[method].apis[ap].accessType = 'groups';
+												service[method].apis[ap].grpCodes = {};
+												if ((service[method].apis[ap].access.indexOf('administrator') > -1)) {
+													service[method].apis[ap].grpCodes['admin'] = true;
+												}
+												if ((service[method].apis[ap].access.indexOf('owner') > -1)) {
+													service[method].apis[ap].grpCodes['owner'] = true;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				
 				if (service.apis) {
 					for (var ap in service.apis) {
 						if (service.apis.hasOwnProperty(ap)) {
@@ -202,30 +287,67 @@ productizationService.service('aclHelpers', function () {
 					if (s.apisRestrictPermission === true) {
 						aclObj[propt].apisPermission = 'restricted';
 					}
-					
-					if (s.apis) {
-						for (var ap in s.apis) {
-							if (s.apis.hasOwnProperty(ap)) {
-								var api = s.apis[ap];
-								
-								if (( s.apisRestrictPermission === true && api.include === true) || (!s.apisRestrictPermission )) {
-									/// need to also check for the default api if restricted
-									aclObj[propt].apis[ap] = {};
-									if (api.accessType === 'private') {
-										aclObj[propt].apis[ap].access = true;
-									}
-									else if (api.accessType === 'public') {
-										aclObj[propt].apis[ap].access = false;
-									}
-									else if (api.accessType === 'groups') {
-										aclObj[propt].apis[ap].access = [];
-										var grpCodes = api.grpCodes;
-										if (grpCodes) {
-											if (grpCodes.admin) {
-												aclObj[propt].apis[ap].access.push('administrator');
+					if (s.get || s.post || s.put || s.delete) {
+						for (var method in s) {
+							if (s[method].apis) {
+								aclObj[propt][method] = {
+									apis: {}
+								};
+								for (var ap in s[method].apis) {
+									if (s[method].apis.hasOwnProperty(ap)) {
+										var api = s[method].apis[ap];
+										if (( s.apisRestrictPermission === true && api.include === true) || (!s.apisRestrictPermission )) {
+											/// need to also check for the default api if restricted
+											aclObj[propt][method].apis[ap] = {};
+											if (api.accessType === 'private') {
+												aclObj[propt][method].apis[ap].access = true;
 											}
-											if (grpCodes.owner) {
-												aclObj[propt].apis[ap].access.push('owner');
+											else if (api.accessType === 'public') {
+												aclObj[propt][method].apis[ap].access = false;
+											}
+											else if (api.accessType === 'groups') {
+												aclObj[propt][method].apis[ap].access = [];
+												var grpCodes = api.grpCodes;
+												if (grpCodes) {
+													if (grpCodes.admin) {
+														aclObj[propt][method].apis[ap].access.push('administrator');
+													}
+													if (grpCodes.owner) {
+														aclObj[propt][method].apis[ap].access.push('owner');
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					else {
+						if (s.apis) {
+							for (var ap in s.apis) {
+								if (s.apis.hasOwnProperty(ap)) {
+									var api = s.apis[ap];
+									
+									if (( s.apisRestrictPermission === true && api.include === true) || (!s.apisRestrictPermission )) {
+										/// need to also check for the default api if restricted
+										aclObj[propt].apis[ap] = {};
+										if (api.accessType === 'private') {
+											aclObj[propt].apis[ap].access = true;
+										}
+										else if (api.accessType === 'public') {
+											aclObj[propt].apis[ap].access = false;
+										}
+										else if (api.accessType === 'groups') {
+											aclObj[propt].apis[ap].access = [];
+											var grpCodes = api.grpCodes;
+											if (grpCodes) {
+												if (grpCodes.admin) {
+													aclObj[propt].apis[ap].access.push('administrator');
+												}
+												if (grpCodes.owner) {
+													aclObj[propt].apis[ap].access.push('owner');
+												}
 											}
 										}
 									}

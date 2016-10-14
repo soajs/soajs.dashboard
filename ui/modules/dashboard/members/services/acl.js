@@ -1,7 +1,38 @@
 "use strict";
 var membersAclService = soajsApp.components;
 membersAclService.service('membersAclHelper', [function () {
-
+	
+	function objectIsEnv(obj) {
+		if (obj) {
+			if (JSON.stringify(obj) === '{}') {
+				return false;
+			}
+			if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function groupApisForDisplay(apisArray, groupName) {
+		var result = {};
+		var apiDefaultGroupName = 'General';
+		for (var i = 0; i < apisArray.length; i++) {
+			if (apisArray[i][groupName]) {
+				apiDefaultGroupName = apisArray[i][groupName];
+			}
+			if (!result[apiDefaultGroupName]) {
+				result[apiDefaultGroupName] = {};
+				result[apiDefaultGroupName].apis = [];
+			}
+			if (apisArray[i].groupMain === true) {
+				result[apiDefaultGroupName]['defaultApi'] = apisArray[i].v;
+			}
+			result[apiDefaultGroupName].apis.push(apisArray[i]);
+		}
+		return result;
+	}
+	
 	function prepareViewAclObj(aclFill, parentAcl) {
 		var service, serviceName;
 		for (serviceName in parentAcl) {
@@ -69,26 +100,7 @@ membersAclService.service('membersAclHelper', [function () {
 			}
 		}
 	}
-
-	function groupApisForDisplay(apisArray, groupName) {
-		var result = {};
-		var apiDefaultGroupName = 'General';
-		for (var i = 0; i < apisArray.length; i++) {
-			if (apisArray[i][groupName]) {
-				apiDefaultGroupName = apisArray[i][groupName];
-			}
-			if (!result[apiDefaultGroupName]) {
-				result[apiDefaultGroupName] = {};
-				result[apiDefaultGroupName].apis = [];
-			}
-			if (apisArray[i].groupMain === true) {
-				result[apiDefaultGroupName]['defaultApi'] = apisArray[i].v;
-			}
-			result[apiDefaultGroupName].apis.push(apisArray[i]);
-		}
-		return result;
-	}
-
+	
 	function checkForGroupDefault(aclFill, service, grp, val, myApi) {
 		var defaultApi = service.fixList[grp]['defaultApi'];
 		if (myApi.groupMain === true && aclFill[service.name].apis) {
@@ -122,15 +134,6 @@ membersAclService.service('membersAclHelper', [function () {
 	}
 
 	function renderPermissionsWithServices(currentScope, oneApplication) {
-		function objectIsEnv(obj) {
-			if (obj) {
-				if (!obj.access && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
-					return true;
-				}
-			}
-			return false;
-		}
-
 		var envCodes = currentScope.environments_codes;
 		var aclObj = oneApplication.app_acl || oneApplication.parentPackageAcl;
 		var oldSchema = true;
@@ -170,6 +173,7 @@ membersAclService.service('membersAclHelper', [function () {
 		oneApplication.services = {};
 
 		oneApplication.aclFill = {};
+
 		envCodes.forEach(function (oneEnv) {
 			oneApplication.services[oneEnv.code.toUpperCase()] = {};
 			if (objectIsEnv(aclObj[oneEnv.code.toLowerCase()])) {

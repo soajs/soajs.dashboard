@@ -47,7 +47,7 @@ membersApp.controller('membersCtrl', ['$scope', 'membersHelper', function ($scop
 		if ($scope.members.access.adminUser.list) {
 			$scope.members.listMembers($scope);
 		}
-	}, 200);
+	}, 50);
 
 }]);
 
