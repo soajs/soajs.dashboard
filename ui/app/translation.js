@@ -825,12 +825,12 @@ var translation = {
 	}
 	
 };
-
+	
 var errorCodes = {
 	"urac": {
 		400: {
-			"ENG": "Problem with the provided password.",
-			"FRA": "Mot de pass est invalide."
+			"ENG": "Database connection error",
+			"FRA": "Database connection error"
 		},
 		401: {
 			"ENG": "Unable to log in the user. User not found.",
@@ -840,10 +840,7 @@ var errorCodes = {
 			"ENG": "User account already exists.",
 			"FRA": "User account already exists."
 		},
-		403: {
-			"ENG": "Unable to register user. please try again.",
-			"FRA": "Unable to register user. please try again."
-		},
+		
 		404: {
 			"ENG": "Unable to logout the user. User not found.",
 			"FRA": "Unable to logout the user. User not found."
@@ -881,8 +878,8 @@ var errorCodes = {
 			"FRA": "You have provided the same existing email address"
 		},
 		413: {
-			"ENG": "Invalid profile field provided. Profile should be a stringified object.",
-			"FRA": "Invalid profile field provided. Profile should be a stringified object."
+			"ENG": "Problem with the provided password.",
+			"FRA": "Mot de pass est invalide."
 		},
 		414: {
 			"ENG": "Unable to add user.",
@@ -922,10 +919,6 @@ var errorCodes = {
 			"FRA": "This record in locked. You cannot modify or delete it"
 		},
 		
-		600: {
-			"ENG": "Database connection error",
-			"FRA": "Database connection error"
-		},
 		611: {
 			"ENG": "invalid tenant id provided",
 			"FRA": "invalid tenant id provided"

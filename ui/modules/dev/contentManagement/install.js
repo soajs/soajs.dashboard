@@ -1,6 +1,8 @@
 "use strict";
 
-var cmTranslation = {
+var cmModuleDev = uiModuleDev + '/contentManagement';
+
+var cmModuleDevTranslation = {
 	"contentManagement": {
 		"ENG": "Content Management",
 		"FRA": "Content Management"
@@ -94,7 +96,7 @@ var cmTranslation = {
 		"ENG": "No Content Management Services are deployed yet. Head to the",
 		"FRA": "No Content Management Services are deployed yet. Head to the"
 	},
-
+	
 	"sectionAndDeployThem": {
 		"ENG": "Section and deploy them.",
 		"FRA": "Section and deploy them."
@@ -107,11 +109,11 @@ var cmTranslation = {
 	}
 };
 
-for (var attrname in cmTranslation) {
-	translation[attrname] = cmTranslation[attrname];
+for (var attrname in cmModuleDevTranslation) {
+	translation[attrname] = cmModuleDevTranslation[attrname];
 }
 
-var cmNav = [
+var cmModuleDevNav = [
 	{
 		'id': 'content-management',
 		'label': translation.contentManagement[LANG],
@@ -120,7 +122,7 @@ var cmNav = [
 			'route': '/cb/list'
 		},
 		'url': '#/content-management',
-		'tplPath': 'modules/dev/contentManagement/directives/list.tmpl',
+		'tplPath': cmModuleDev + '/directives/list.tmpl',
 		'icon': 'newspaper',
 		'pillar': {
 			'name': 'operate',
@@ -131,8 +133,13 @@ var cmNav = [
 		'contentMenu': true,
 		'tracker': true,
 		'order': 100,
-		'scripts': ['modules/dev/contentManagement/config.js', 'modules/dev/contentManagement/controller.js', 'modules/dev/contentManagement/services/contentManagement.js'],
+		'scripts': [
+			cmModuleDev + '/config.js',
+			cmModuleDev + '/controller.js',
+			cmModuleDev + '/services/contentManagement.js'
+		],
 		'ancestor': [translation.home[LANG]]
 	}
 ];
-navigation = navigation.concat(cmNav);
+
+navigation = navigation.concat(cmModuleDevNav);

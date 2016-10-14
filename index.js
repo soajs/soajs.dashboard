@@ -15,7 +15,7 @@ var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
 
-var servicesCollectionName = 'services'
+var servicesCollectionName = 'services';
 var daemonsCollectionName = 'daemons';
 var staticContentCollectionName = 'staticContent';
 var groupConfigCollectionName = 'daemon_grpconf';
@@ -25,7 +25,6 @@ var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
 var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
-var productsCollectionName = 'products';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
 var dockerCollectionName = 'docker';
@@ -374,7 +373,7 @@ service.init(function () {
 	});
 	service.post("/tenant/application/key/add", function (req, res) {
 		checkForMongo(req);
-		tenant.createApplicationKey(config, mongo, req, res);
+		tenant.createApplicationKey(config, mongo, service.provision, req, res);
 	});
 	service.get("/tenant/application/key/list", function (req, res) {
 		checkForMongo(req);
@@ -391,7 +390,7 @@ service.init(function () {
 	});
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		checkForMongo(req);
-		tenant.addApplicationExtKeys(config, mongo, req, res);
+		tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
 	});
 	service.post("/tenant/application/key/ext/update", function (req, res) {
 		checkForMongo(req);
@@ -741,7 +740,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/add", function (req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.createApplicationKey(config, mongo, req, res);
+			tenant.createApplicationKey(config, mongo, service.provision, req, res);
 		});
 	});
 	service.get("/settings/tenant/application/key/list", function (req, res) {
@@ -766,7 +765,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
 		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.addApplicationExtKeys(config, mongo, req, res);
+			tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
 		});
 	});
 	service.post("/settings/tenant/application/key/ext/update", function (req, res) {

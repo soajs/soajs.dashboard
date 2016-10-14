@@ -1,10 +1,11 @@
 "use strict";
 var contentManagementApp = soajsApp.components;
-contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmService) {
+contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ngDataApi', '$compile', '$timeout', '$modal', 'injectFiles', 'cmModuleDevService', function ($scope, ngDataApi, $compile, $timeout, $modal, injectFiles, cmModuleDevService) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
-	
+	$scope.cmModuleDev = cmModuleDev;
+
 	$scope.loadUIModule = function (oneService) {
 		$scope.hp = false;
 		$scope.selectedService = oneService;
@@ -202,7 +203,7 @@ contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataAp
 							});
 						}
 						
-						var files = cmService.extractFilesFromPostedData($scope, config, formData);
+						var files = cmModuleDevService.extractFilesFromPostedData($scope, config, formData);
 						if (files === false) {
 							$scope.form.displayAlert('danger', translation.makeSureYouHaveFilledInputs[LANG]);
 						}
@@ -220,7 +221,7 @@ contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataAp
 								}
 								else {
 									if (typeof(files) === 'object' && Object.keys(files).length > 0) {
-										cmService.UploadFile($scope, config, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
+										cmModuleDevService.UploadFile($scope, config, 'add', files, response, '/' + $scope.selectedService.name + "/upload", function (error) {
 											if (error) {
 												$scope.form.displayAlert('danger', error);
 											}
@@ -336,7 +337,7 @@ contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataAp
 								});
 							}
 							
-							var files = cmService.extractFilesFromPostedData($scope, config, formData);
+							var files = cmModuleDevService.extractFilesFromPostedData($scope, config, formData);
 							if (files === false) {
 								$scope.form.displayAlert('danger', translation.makeSureYouHaveFilledInputs[LANG]);
 							}
@@ -364,7 +365,7 @@ contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataAp
 											}
 										}
 										if (hasContentToUpload) {
-											cmService.UploadFile($scope, config, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
+											cmModuleDevService.UploadFile($scope, config, 'edit', files, [response], '/' + $scope.selectedService.name + "/upload", function (error) {
 												if (error) {
 													$scope.form.displayAlert('danger', error);
 												}
@@ -524,9 +525,9 @@ contentManagementApp.controller("ContentManagementDevCtrl", ['$scope', 'ngDataAp
 	};
 	
 	$scope.downloadFile = function (oneEntry, mediaType) {
-		cmService.downloadFile($scope, oneEntry, mediaType);
+		cmModuleDevService.downloadFile($scope, oneEntry, mediaType);
 	};
 	
-	cmService.loadServices($scope);
-	injectFiles.injectCss("modules/dev/contentManagement/contentManagement.css");
+	cmModuleDevService.loadServices($scope);
+	injectFiles.injectCss(cmModuleDev + "/contentManagement.css");
 }]);
