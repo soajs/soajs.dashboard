@@ -51,7 +51,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                 {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'}],
             'required': true,
             onAction: function (label, selected, formConfig) {
-                if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
+                if (selected.split('_')[1] === 'private' && formConfig.entries[5].name !== 'password') {
                     var password = {
                         'name': 'password',
                         'label': 'Password',
@@ -61,10 +61,10 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                         'placeholder': 'Your Password',
                         'required': true
                     };
-                    formConfig.entries.splice(4, 0, password);
+                    formConfig.entries.splice(5, 0, password);
                 } else {
-                    if (selected.split('_')[1] !== 'private' && formConfig.entries[4].name === 'password') {
-                        formConfig.entries.splice(4, 1);
+                    if (selected.split('_')[1] !== 'private' && formConfig.entries[5].name === 'password') {
+                        formConfig.entries.splice(5, 1);
                     }
                 }
             }

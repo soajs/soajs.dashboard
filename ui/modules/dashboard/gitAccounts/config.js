@@ -11,7 +11,7 @@ var gitAccountsAppConfig = {
 					'required': true,
 					'onAction': function (id, selected, form) {
 						if (selected === 'bitbucket') {
-							form.entries[1].value = 'bitbucket.org';
+							form.entries[1].value = 'api.bitbucket.org';
 							if (form.entries[1].type !== 'text') {
 								form.entries[1].type = 'text';
 							}
