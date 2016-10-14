@@ -85,6 +85,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     'action': function (formData) {
                         var postData = {
                             provider: formData.provider,
+                            domain: formData.providerDomain,
                             label: formData.label,
                             username: formData.username,
                             type: formData.type.split('_')[0],

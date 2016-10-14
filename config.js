@@ -41,10 +41,10 @@ module.exports = {
 			defaultConfigFilePath: "config.js",
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			// required for OAuth
-			apiDomain: process.env.BITBUCKET_BASE_URL + '/rest/api/1.0',
-			requestUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/request-token',
-			accessUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/access-token',
-			authorizeUrl: process.env.BITBUCKET_BASE_URL + '/plugins/servlet/oauth/authorize',
+			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
+			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
+			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
+			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
 			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
 			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
 			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
@@ -2264,6 +2264,13 @@ module.exports = {
 			},
 			"provider": {
 				"source": ['body.provider'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"domain": {
+				"source": ['body.domain'],
 				"required": true,
 				"validation": {
 					"type": "string"

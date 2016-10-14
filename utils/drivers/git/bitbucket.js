@@ -35,13 +35,14 @@ function checkIfError(error, options, cb, callback) {
 
 var lib = {
     "authenticate": function (options) {
+        var domain = 'https://' + config.gitAccounts.bitbucket.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
         if (options.access === 'public') {
-            bitbucketClient = new BitbucketClient(config.gitAccounts.bitbucket.apiDomain);
+            bitbucketClient = new BitbucketClient(domain);
         } else {
             // has the form username:password
             var credentials = options.token.split(':');
 
-            bitbucketClient = new BitbucketClient(config.gitAccounts.bitbucket.apiDomain, {
+            bitbucketClient = new BitbucketClient(domain, {
                 type: 'basic',
                 username: credentials[0],
                 password: credentials[1]
@@ -50,7 +51,8 @@ var lib = {
     },
 
     "checkUserRecord": function (options, cb) {
-        var tempClient = new BitbucketClient(config.gitAccounts.bitbucket.apiDomain);
+        var domain = 'https://' + config.gitAccounts.bitbucket.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
+        var tempClient = new BitbucketClient(domain);
 
         tempClient.users.getUser(options.owner)
             .then(function (user) {
@@ -228,7 +230,8 @@ module.exports = {
                     else if (options.access === 'private') {
                         options.token = options.owner + ":" + options.password;
 
-                        var tempClient = new BitbucketClient(config.gitAccounts.bitbucket.apiDomain, {
+                        var domain = 'https://' + config.gitAccounts.bitbucket.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
+                        var tempClient = new BitbucketClient(domain, {
                             type: 'basic',
                             username: options.owner,
                             password: options.password
@@ -290,6 +293,7 @@ module.exports = {
     "getRepos": function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
+                options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
                     options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);

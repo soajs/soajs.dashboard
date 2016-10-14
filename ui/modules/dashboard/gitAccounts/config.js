@@ -8,6 +8,26 @@ var gitAccountsAppConfig = {
 					'type': 'select',
 					'value': [{'v': 'bitbucket', 'l': 'Bitbucket'},  {'v': 'github', 'l': 'GitHub'}],
 					'tooltip': translation.chooseAccountProvider[LANG],
+					'required': true,
+					'onAction': function (id, selected, form) {
+						if (selected === 'bitbucket') {
+							form.entries[1].value = 'bitbucket.org';
+							if (form.entries[1].type !== 'text') {
+								form.entries[1].type = 'text';
+							}
+						}
+						else if (selected === 'github') {
+							form.entries[1].value = 'github.com';
+							form.entries[1].type = 'readonly';
+						}
+						form.refresh();
+					}
+				},
+				{
+					'name': 'providerDomain',
+					'label': 'Provider Domain',
+					'type': 'text',
+					'value': '',
 					'required': true
 				},
 				{
