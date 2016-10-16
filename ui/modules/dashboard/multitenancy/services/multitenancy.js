@@ -15,44 +15,11 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 	}
 	
 	function groupApisForDisplay(apisArray, apiGroupName) {
-		var result = {};
-		var defaultGroupName = 'General';
-		var len = apisArray.length;
-		if (len == 0) {
-			return result;
-		}
-		for (var i = 0; i < len; i++) {
-			if (apisArray[i][apiGroupName]) {
-				defaultGroupName = apisArray[i][apiGroupName];
-			}
-			
-			if (!result[defaultGroupName]) {
-				result[defaultGroupName] = {};
-				result[defaultGroupName].apis = [];
-				if (apisArray[i].m) {
-					result[defaultGroupName].apisRest = {};
-				}
-			}
-			if (!apisArray[i].m) {
-				//apisArray[i].m = 'all';
-			}
-			if (apisArray[i].m) {
-				if (!result[defaultGroupName].apisRest[apisArray[i].m]) {
-					result[defaultGroupName].apisRest[apisArray[i].m] = [];
-				}
-				result[defaultGroupName].apisRest[apisArray[i].m].push(apisArray[i]);
-			}
-			if (apisArray[i].groupMain === true) {
-				result[defaultGroupName]['defaultApi'] = apisArray[i].v;
-			}
-			result[defaultGroupName].apis.push(apisArray[i]);
-		}
-		
-		return result;
+		return aclDrawHelpers.groupApisForDisplay(apisArray, apiGroupName);
 	}
 	
 	function prepareViewAclObj(currentScope, aclFill) {
-		var services = currentScope.currentApplication.services;
+		var services = currentScope.currentApplication.servicesEnv;
 		for (var lowerCase in aclFill) {
 			var upperCase = lowerCase.toUpperCase();
 			if (upperCase !== lowerCase) {
@@ -96,12 +63,7 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 					service.collapse = false;
 					
 					var currentService;
-					for (var x = 0; x < services.length; x++) {
-						if (services[x].name === propt) {
-							currentService = services[x];
-							break;
-						}
-					}
+					currentService = services[env.toUpperCase()][propt];
 					
 					if (service.access) {
 						if (service.access === true) {
@@ -355,118 +317,11 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 	function prepareAclObjToSave(aclFill) {
 		var acl = {};
 		var valid = true;
-		var serviceName, grpCodes, apiName, code, env;
+		var env;
 		for (env in aclFill) {
 			acl[env.toLowerCase()] = {};
-			var aclObj = acl[env.toLowerCase()];
-			for (serviceName in aclFill[env]) {
-				if (aclFill[env].hasOwnProperty(serviceName)) {
-					var service = angular.copy(aclFill[env][serviceName]);
-					
-					if (service.include === true) {
-						aclObj[serviceName] = {};
-						aclObj[serviceName].apis = {};
-						
-						if (service.accessType === 'private') {
-							aclObj[serviceName].access = true;
-						}
-						else if (service.accessType === 'public') {
-							aclObj[serviceName].access = false;
-						}
-						else if (service.accessType === 'groups') {
-							aclObj[serviceName].access = [];
-							grpCodes = aclFill[env][serviceName].grpCodes;
-							if (grpCodes) {
-								for (code in grpCodes) {
-									if (grpCodes.hasOwnProperty(code)) {
-										aclObj[serviceName].access.push(code);
-									}
-								}
-							}
-							if (aclObj[serviceName].access.length == 0) {
-								return {'valid': false};
-							}
-						}
-						
-						if (service.apisRestrictPermission === true) {
-							aclObj[serviceName].apisPermission = 'restricted';
-						}
-						
-						if (service.get || service.post || service.put || service.delete) {
-							for (var method in service) {
-								if (service[method].apis) {
-									aclObj[serviceName][method] = {
-										apis: {}
-									};
-									
-									for (var apiName in service[method].apis) {
-										if (service[method].apis.hasOwnProperty(apiName)) {
-											var api = service[method].apis[apiName];
-											if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
-												/// need to also check for the default api if restricted
-												aclObj[serviceName][method].apis[apiName] = {};
-												if (api.accessType === 'private') {
-													aclObj[serviceName][method].apis[apiName].access = true;
-												}
-												else if (api.accessType === 'public') {
-													aclObj[serviceName][method].apis[apiName].access = false;
-												}
-												else if (api.accessType === 'groups') {
-													aclObj[serviceName][method].apis[apiName].access = [];
-													grpCodes = aclFill[env][serviceName][method].apis[apiName].grpCodes;
-													if (grpCodes) {
-														for (code in grpCodes) {
-															if (grpCodes.hasOwnProperty(code)) {
-																aclObj[serviceName][method].apis[apiName].access.push(code);
-															}
-														}
-													}
-													if (aclObj[serviceName][method].apis[apiName].access.length === 0) {
-														return {'valid': false};
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-						else {
-							if (service.apis) {
-								for (apiName in service.apis) {
-									if (service.apis.hasOwnProperty(apiName)) {
-										var api = service.apis[apiName];
-										if ((service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
-											/// need to also check for the default api if restricted
-											aclObj[serviceName].apis[apiName] = {};
-											if (api.accessType === 'private') {
-												aclObj[serviceName].apis[apiName].access = true;
-											}
-											else if (api.accessType === 'public') {
-												aclObj[serviceName].apis[apiName].access = false;
-											}
-											else if (api.accessType === 'groups') {
-												aclObj[serviceName].apis[apiName].access = [];
-												grpCodes = aclFill[env][serviceName].apis[apiName].grpCodes;
-												
-												if (grpCodes) {
-													for (code in grpCodes) {
-														if (grpCodes.hasOwnProperty(code)) {
-															aclObj[serviceName].apis[apiName].access.push(code);
-														}
-													}
-												}
-												if (aclObj[serviceName].apis[apiName].access.length === 0) {
-													return {'valid': false};
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+			if (!aclDrawHelpers.prepareObject(aclFill[env], acl[env.toLowerCase()]).valid) {
+				return {'valid': false, 'data': acl};
 			}
 		}
 		return {'valid': valid, 'data': acl};

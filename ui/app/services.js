@@ -452,11 +452,122 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
+	function prepareObject(aclEnvFill, aclEnvObj) {
+		var code, grpCodes;
+		
+		for (var serviceName in aclEnvFill) {
+			if (aclEnvFill.hasOwnProperty(serviceName)) {
+				var service = angular.copy(aclEnvFill[serviceName]);
+				if (service.include === true) {
+					aclEnvObj[serviceName] = {};
+					aclEnvObj[serviceName].apis = {};
+					if (service.accessType === 'private') {
+						aclEnvObj[serviceName].access = true;
+					}
+					else if (service.accessType === 'public') {
+						aclEnvObj[serviceName].access = false;
+					}
+					else if (service.accessType === 'groups') {
+						aclEnvObj[serviceName].access = [];
+						grpCodes = aclEnvFill[serviceName].grpCodes;
+						if (grpCodes) {
+							for (code in grpCodes) {
+								if (grpCodes.hasOwnProperty(code)) {
+									aclEnvObj[serviceName].access.push(code);
+								}
+							}
+						}
+						if (aclEnvObj[serviceName].access.length == 0) {
+							return {'valid': false};
+						}
+					}
+					
+					if (service.apisRestrictPermission === true) {
+						aclEnvObj[serviceName].apisPermission = 'restricted';
+					}
+					
+					if (service.get || service.post || service.put || service.delete) {
+						for (var method in service) {
+							if (service[method].apis) {
+								aclEnvObj[serviceName][method] = {
+									apis: {}
+								};
+								
+								for (var apiName in service[method].apis) {
+									if (service[method].apis.hasOwnProperty(apiName)) {
+										var api = service[method].apis[apiName];
+										if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
+											/// need to also check for the default api if restricted
+											aclEnvObj[serviceName][method].apis[apiName] = {};
+											if (api.accessType === 'private') {
+												aclEnvObj[serviceName][method].apis[apiName].access = true;
+											}
+											else if (api.accessType === 'public') {
+												aclEnvObj[serviceName][method].apis[apiName].access = false;
+											}
+											else if (api.accessType === 'groups') {
+												aclEnvObj[serviceName][method].apis[apiName].access = [];
+												grpCodes = aclEnvFill[serviceName][method].apis[apiName].grpCodes;
+												if (grpCodes) {
+													for (code in grpCodes) {
+														if (grpCodes.hasOwnProperty(code)) {
+															aclEnvObj[serviceName][method].apis[apiName].access.push(code);
+														}
+													}
+												}
+												if (aclEnvObj[serviceName][method].apis[apiName].access.length === 0) {
+													return {'valid': false};
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					if (service.apis) {
+						for (apiName in service.apis) {
+							if (service.apis.hasOwnProperty(apiName)) {
+								var api = service.apis[apiName];
+								if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
+									/// need to also check for the default api if restricted
+									aclEnvObj[serviceName].apis[apiName] = {};
+									if (api.accessType === 'private') {
+										aclEnvObj[serviceName].apis[apiName].access = true;
+									}
+									else if (api.accessType === 'public') {
+										aclEnvObj[serviceName].apis[apiName].access = false;
+									}
+									else if (api.accessType === 'groups') {
+										aclEnvObj[serviceName].apis[apiName].access = [];
+										grpCodes = aclEnvFill[serviceName].apis[apiName].grpCodes;
+										if (grpCodes) {
+											for (code in grpCodes) {
+												if (grpCodes.hasOwnProperty(code)) {
+													aclEnvObj[serviceName].apis[apiName].access.push(code);
+												}
+											}
+										}
+										if (aclEnvObj[serviceName].apis[apiName].access.length === 0) {
+											return {'valid': false};
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return {'valid': true};
+	}
+	
 	return {
 		'fillServiceAccess': fillServiceAccess,
 		'fillApiAccess': fillApiAccess,
 		'groupApisForDisplay': groupApisForDisplay,
 		'checkForGroupDefault': checkForGroupDefault,
-		'applyApiRestriction': applyApiRestriction
+		'applyApiRestriction': applyApiRestriction,
+		'prepareObject': prepareObject
 	}
 });

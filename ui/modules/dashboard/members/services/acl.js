@@ -237,112 +237,13 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 	function prepareAclObjToSave(aclPriviledges) {
 		var aclObj = {};
 		var valid = true;
-		var propt, grpCodes, apiName, code, envCode;
+		var envCode;
 		for (envCode in aclPriviledges.services) {
 			aclObj[envCode.toLowerCase()] = {};
-			for (propt in aclPriviledges.services[envCode]) {
-				if (aclPriviledges.services[envCode].hasOwnProperty(propt)) {
-					var service = angular.copy(aclPriviledges.services[envCode][propt]);
-					if (service.include === true) {
-						aclObj[envCode.toLowerCase()][propt] = {};
-						aclObj[envCode.toLowerCase()][propt].apis = {};
-						if (service.accessType === 'private') {
-							aclObj[envCode.toLowerCase()][propt].access = true;
-						}
-						else if (service.accessType === 'public') {
-							aclObj[envCode.toLowerCase()][propt].access = false;
-						}
-						else if (service.accessType === 'groups') {
-							aclObj[envCode.toLowerCase()][propt].access = [];
-							grpCodes = aclPriviledges.services[envCode][propt].grpCodes;
-							if (grpCodes) {
-								for (code in grpCodes) {
-									if (grpCodes.hasOwnProperty(code)) {
-										aclObj[envCode.toLowerCase()][propt].access.push(code);
-									}
-								}
-							}
-							if (aclObj[envCode.toLowerCase()][propt].access.length == 0) {
-								return {'valid': false};
-							}
-						}
-						
-						if (service.apisRestrictPermission === true) {
-							aclObj[envCode.toLowerCase()][propt].apisPermission = 'restricted';
-						}
-						
-						if (service.get || service.post || service.put || service.delete) {
-							for (var method in service) {
-								if (service[method].apis) {
-									aclObj[envCode.toLowerCase()][propt][method] = {
-										apis: {}
-									};
-									
-									for (var apiName in service[method].apis) {
-										if (service[method].apis.hasOwnProperty(apiName)) {
-											var api = service[method].apis[apiName];
-											if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
-												/// need to also check for the default api if restricted
-												aclObj[envCode.toLowerCase()][propt][method].apis[apiName] = {};
-												if (api.accessType === 'private') {
-													aclObj[envCode.toLowerCase()][propt][method].apis[apiName].access = true;
-												}
-												else if (api.accessType === 'public') {
-													aclObj[envCode.toLowerCase()][propt][method].apis[apiName].access = false;
-												}
-												else if (api.accessType === 'groups') {
-													aclObj[envCode.toLowerCase()][propt][method].apis[apiName].access = [];
-													grpCodes = aclPriviledges.services[envCode][propt][method].apis[apiName].grpCodes;
-													if (grpCodes) {
-														for (code in grpCodes) {
-															if (grpCodes.hasOwnProperty(code)) {
-																aclObj[envCode.toLowerCase()][propt][method].apis[apiName].access.push(code);
-															}
-														}
-													}
-													if (aclObj[envCode.toLowerCase()][propt][method].apis[apiName].access.length === 0) {
-														return {'valid': false};
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-						if (service.apis) {
-							for (apiName in service.apis) {
-								if (service.apis.hasOwnProperty(apiName)) {
-									var api = service.apis[apiName];
-									if (( service.apisRestrictPermission === true && api.include === true) || !service.apisRestrictPermission) {
-										/// need to also check for the default api if restricted
-										aclObj[envCode.toLowerCase()][propt].apis[apiName] = {};
-										if (api.accessType === 'private') {
-											aclObj[envCode.toLowerCase()][propt].apis[apiName].access = true;
-										}
-										else if (api.accessType === 'public') {
-											aclObj[envCode.toLowerCase()][propt].apis[apiName].access = false;
-										}
-										else if (api.accessType === 'groups') {
-											aclObj[envCode.toLowerCase()][propt].apis[apiName].access = [];
-											grpCodes = aclPriviledges.services[envCode][propt].apis[apiName].grpCodes;
-											if (grpCodes) {
-												for (code in grpCodes) {
-													if (grpCodes.hasOwnProperty(code)) {
-														aclObj[envCode.toLowerCase()][propt].apis[apiName].access.push(code);
-													}
-												}
-											}
-											if (aclObj[envCode.toLowerCase()][propt].apis[apiName].access.length === 0) {
-												return {'valid': false};
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+			var aclEnvObj = aclObj[envCode.toLowerCase()];
+			var aclEnvFill = aclPriviledges.services[envCode];
+			if (!aclDrawHelpers.prepareObject(aclEnvFill, aclEnvObj).valid) {
+				return {'valid': false, 'data': aclObj};
 			}
 		}
 		return {'valid': valid, 'data': aclObj};
