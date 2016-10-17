@@ -263,6 +263,9 @@ function objectIsEnv(obj) {
 			return false;
 		}
 		if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+			if (obj.get || obj.post || obj.put || obj.delete) {
+				return false;
+			}
 			return true;
 		}
 	}

@@ -39,18 +39,6 @@ membersAclService.service('memAclModuleDevHelper', ['aclDrawHelpers', function (
 	}
 	
 	function renderPermissionsWithServices(currentScope, oneApplication) {
-		function objectIsEnv(obj) {
-			if (obj) {
-				if (JSON.stringify(obj) === '{}') {
-					return false;
-				}
-				if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
-					return true;
-				}
-			}
-			return false;
-		}
-		
 		var envCodes = currentScope.environments_codes;
 		var aclObj = oneApplication.acl || oneApplication.parentPackageAcl;
 		
