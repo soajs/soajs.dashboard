@@ -321,6 +321,7 @@ module.exports = {
     "getBranches": function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
+                options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
                     options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
