@@ -2,18 +2,6 @@
 var multiTenantService = soajsApp.components;
 multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelpers) {
 	
-	function objectIsEnv(obj) {
-		if (obj) {
-			if (JSON.stringify(obj) === '{}') {
-				return false;
-			}
-			if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		return aclDrawHelpers.groupApisForDisplay(apisArray, apiGroupName);
 	}
@@ -32,10 +20,9 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 		for (var env in aclFill) {
 			for (serviceName in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(serviceName)) {
-					service = aclFill[env][serviceName];
 					var currentService = services[env.toUpperCase()][serviceName];
-					
-					aclDrawHelpers.fillServiceAccess(service);
+					service = aclFill[env][serviceName];
+					aclDrawHelpers.fillServiceAccess(service, currentService);
 					aclDrawHelpers.fillServiceApiAccess(service, currentService);
 					applyRestriction(aclFill[env], currentService);
 				}

@@ -2,30 +2,17 @@
 var membersAclService = soajsApp.components;
 membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDrawHelpers) {
 	
-	function objectIsEnv(obj) {
-		if (obj) {
-			if (JSON.stringify(obj) === '{}') {
-				return false;
-			}
-			if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	function groupApisForDisplay(apisArray, apiGroupName) {
 		return aclDrawHelpers.groupApisForDisplay(apisArray, apiGroupName);
 	}
 	
 	function prepareViewAclObj(aclFill, parentAcl, services) {
-		var service, serviceName;
+		var serviceName;
 		
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
-				service = aclFill[serviceName];
-				aclDrawHelpers.fillServiceAccess(service);
-				aclDrawHelpers.fillServiceApiAccess(service, services[serviceName]);
+				aclDrawHelpers.fillServiceAccess(aclFill[serviceName]);
+				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], services[serviceName]);
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {

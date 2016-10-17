@@ -12,10 +12,12 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 		var envCodes = currentScope.environments_codes;
 		var aclFill = currentScope.aclFill;
 		envCodes.forEach(function (oneEnv) {
-			if (aclFill[oneEnv.code.toLowerCase()] && (!aclFill[oneEnv.code.toLowerCase()].access && !aclFill[oneEnv.code.toLowerCase()].apis && !aclFill[oneEnv.code.toLowerCase()].apisRegExp && !aclFill[oneEnv.code.toLowerCase()].apisPermission)) {
-				count++;
-				myAcl[oneEnv.code.toUpperCase()] = aclFill[oneEnv.code.toLowerCase()];
-				propagateAcl(currentScope, myAcl[oneEnv.code.toUpperCase()]);
+			if (aclFill[oneEnv.code.toLowerCase()]) {
+				if (objectIsEnv(aclFill[oneEnv.code.toLowerCase()])) {
+					count++;
+					myAcl[oneEnv.code.toUpperCase()] = aclFill[oneEnv.code.toLowerCase()];
+					propagateAcl(currentScope, myAcl[oneEnv.code.toUpperCase()]);
+				}
 			}
 		});
 		
@@ -37,10 +39,8 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 	}
 	
 	function propagateAcl(currentScope, aclFill) {
-		
 		for (var serviceName in aclFill) {
 			if (aclFill.hasOwnProperty(serviceName)) {
-				var service = aclFill[serviceName];
 				var currentService;
 				for (var x = 0; x < currentScope.allServiceApis.length; x++) {
 					if (currentScope.allServiceApis[x].name === serviceName) {
@@ -48,8 +48,8 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 						break;
 					}
 				}
-				aclDrawHelpers.fillServiceAccess(service, currentService);
-				aclDrawHelpers.fillServiceApiAccess(service, currentService);
+				aclDrawHelpers.fillServiceAccess(aclFill[serviceName], currentService);
+				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], currentService);
 				aclDrawHelpers.applyApiRestriction(aclFill, currentService);
 			}
 		}

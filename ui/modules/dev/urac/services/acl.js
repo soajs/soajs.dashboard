@@ -4,12 +4,11 @@ var membersAclService = soajsApp.components;
 membersAclService.service('memAclModuleDevHelper', ['aclDrawHelpers', function (aclDrawHelpers) {
 	
 	function prepareViewAclObj(aclFill, parentAcl, services) {
-		var service, serviceName;
+		var serviceName;
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
-				service = aclFill[serviceName];
-				aclDrawHelpers.fillServiceAccess(service);
-				aclDrawHelpers.fillServiceApiAccess(service, services[serviceName]);
+				aclDrawHelpers.fillServiceAccess(aclFill[serviceName], services[serviceName]);
+				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], services[serviceName]);
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {

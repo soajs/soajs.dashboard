@@ -256,3 +256,15 @@ function returnLatestVersion(service) {
 	keysInt = keysInt.sort(compareNumbers);
 	return keysInt[0].toString();
 }
+
+function objectIsEnv(obj) {
+	if (obj) {
+		if (JSON.stringify(obj) === '{}') {
+			return false;
+		}
+		if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+			return true;
+		}
+	}
+	return false;
+}

@@ -327,7 +327,8 @@ soajsApp.service("aclDrawHelpers", function () {
 	}
 	
 	function applyApiRestriction(aclFill, service) {
-		if (aclFill[service.name].apisRestrictPermission === true) {
+		var aclService = aclFill[service.name];
+		if (aclService.apisRestrictPermission === true) {
 			for (var grpLabel in service.fixList) {
 				if (service.fixList.hasOwnProperty(grpLabel)) {
 					var defaultApi = service.fixList[grpLabel]['defaultApi'];
@@ -335,28 +336,28 @@ soajsApp.service("aclDrawHelpers", function () {
 						var found = false;
 						if (service.fixList[grpLabel].apisRest) {
 							for (var m in service.fixList[grpLabel].apisRest) {
-								if (aclFill[service.name][m] && aclFill[service.name][m].apis[defaultApi] && aclFill[service.name][m].apis[defaultApi].include === true) {
+								if (aclService[m] && aclService[m].apis[defaultApi] && aclService[m].apis[defaultApi].include === true) {
 									found = true;
 									break;
 								}
 							}
 							if (!found) {
 								for (var m in service.fixList[grpLabel].apisRest) {
-									if (aclFill[service.name][m]) {
+									if (aclService[m]) {
 										service.fixList[grpLabel].apisRest[m].forEach(function (oneApi) {
-											if (aclFill[service.name][m].apis[oneApi.v]) {
-												aclFill[service.name][m].apis[oneApi.v].include = false;
+											if (aclService[m].apis[oneApi.v]) {
+												aclService[m].apis[oneApi.v].include = false;
 											}
 										});
 									}
 								}
 							}
 						}
-						else if (aclFill[service.name].apis) {
-							if ((!aclFill[service.name].apis[defaultApi]) || aclFill[service.name].apis[defaultApi].include !== true) {
+						else if (aclService.apis) {
+							if ((!aclService.apis[defaultApi]) || aclService.apis[defaultApi].include !== true) {
 								service.fixList[grpLabel]['apis'].forEach(function (oneApi) {
-									if (aclFill[service.name].apis[oneApi.v]) {
-										aclFill[service.name].apis[oneApi.v].include = false;
+									if (aclService.apis[oneApi.v]) {
+										aclService.apis[oneApi.v].include = false;
 									}
 								});
 							}
@@ -428,7 +429,7 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function fillApiAccess(service, apis) {
+	function fillApiAccess(apis) {
 		for (var apiName in apis) {
 			if (apis.hasOwnProperty(apiName)) {
 				apis[apiName].include = true;
@@ -486,13 +487,12 @@ soajsApp.service("aclDrawHelpers", function () {
 		if (service.get || service.post || service.put || service.delete) {
 			for (var method in service) {
 				if (service[method].apis) {
-					fillApiAccess(service[method], service[method].apis);
+					fillApiAccess(service[method].apis);
 				}
 			}
 		}
-		
-		if (service.apis) {
-			fillApiAccess(service, service.apis);
+		else if (service.apis) {
+			fillApiAccess(service.apis);
 		}
 	}
 	
