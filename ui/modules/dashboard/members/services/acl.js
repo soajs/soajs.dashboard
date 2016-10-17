@@ -21,53 +21,11 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 	function prepareViewAclObj(aclFill, parentAcl, services) {
 		var service, serviceName;
 		
-		function grpByMethod(service, fixList) {
-			var byMethod = false;
-			for (var grp in fixList) {
-				if (fixList[grp].apisRest) {
-					byMethod = true;
-					for (var method in fixList[grp].apisRest) {
-						if (!service[method]) {
-							service[method] = {
-								apis: {}
-							};
-						}
-						fixList[grp].apisRest[method].forEach(function (api) {
-							if (service.apis) {
-								if (service.apis[api.v]) {
-									service[method].apis[api.v] = service.apis[api.v];
-								}
-							}
-						});
-					}
-				}
-			}
-			if (byMethod) {
-				delete service.apis;
-			}
-		}
-		
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
 				service = aclFill[serviceName];
 				aclDrawHelpers.fillServiceAccess(service);
-				
-				if (!service.get && !service.post && !service.put && !service.delete) {
-					grpByMethod(service, services[serviceName].fixList);
-				}
-				
-				if (service.get || service.post || service.put || service.delete) {
-					for (var method in service) {
-						if (service[method].apis) {
-							aclDrawHelpers.fillApiAccess(service[method], service[method].apis);
-						}
-					}
-				}
-				
-				if (service.apis) {
-					aclDrawHelpers.fillApiAccess(service, service.apis);
-				}
-
+				aclDrawHelpers.fillServiceApiAccess(service, services[serviceName]);
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {
@@ -242,7 +200,7 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 			aclObj[envCode.toLowerCase()] = {};
 			var aclEnvObj = aclObj[envCode.toLowerCase()];
 			var aclEnvFill = aclPriviledges.services[envCode];
-			if (!aclDrawHelpers.prepareObject(aclEnvFill, aclEnvObj).valid) {
+			if (!aclDrawHelpers.prepareSaveObject(aclEnvFill, aclEnvObj).valid) {
 				return {'valid': false, 'data': aclObj};
 			}
 		}

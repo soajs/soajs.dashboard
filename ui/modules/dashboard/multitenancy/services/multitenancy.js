@@ -27,122 +27,16 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 				delete aclFill[lowerCase];
 			}
 		}
-		var service, propt, env;
+		var service, serviceName;
 		
-		function grpByMethod(service, fixList) {
-			var byMethod = false;
-			for (var grp in fixList) {
-				if (fixList[grp].apisRest) {
-					byMethod = true;
-					for (var method in fixList[grp].apisRest) {
-						if (!service[method]) {
-							service[method] = {
-								apis: {}
-							};
-						}
-						fixList[grp].apisRest[method].forEach(function (api) {
-							if (service.apis) {
-								if (service.apis[api.v]) {
-									service[method].apis[api.v] = service.apis[api.v];
-								}
-							}
-						});
-					}
-				}
-			}
-			if (byMethod) {
-				delete service.apis;
-			}
-		}
-		
-		for (env in aclFill) {
-			for (propt in aclFill[env]) {
-				if (aclFill[env].hasOwnProperty(propt)) {
-					service = aclFill[env][propt];
-					service.include = true;
-					service.collapse = false;
+		for (var env in aclFill) {
+			for (serviceName in aclFill[env]) {
+				if (aclFill[env].hasOwnProperty(serviceName)) {
+					service = aclFill[env][serviceName];
+					var currentService = services[env.toUpperCase()][serviceName];
 					
-					var currentService;
-					currentService = services[env.toUpperCase()][propt];
-					
-					if (service.access) {
-						if (service.access === true) {
-							service.accessType = 'private';
-						}
-						else if (service.access === false) {
-							service.accessType = 'public';
-						}
-						else if (Array.isArray(service.access)) {
-							service.accessType = 'groups';
-							service.grpCodes = {};
-							service.access.forEach(function (c) {
-								service.grpCodes[c] = true;
-							});
-						}
-					}
-					else {
-						service.accessType = 'public';
-					}
-					if (service.apisPermission === 'restricted') {
-						service.apisRestrictPermission = true;
-					}
-					var ap;
-					if (!service.get && !service.post && !service.put && !service.delete) {
-						if (currentService) {
-							grpByMethod(service, currentService.fixList);
-						}
-					}
-					
-					if (service.get || service.post || service.put || service.delete) {
-						for (var method in service) {
-							if (service[method].apis) {
-								for (ap in service[method].apis) {
-									if (service[method].apis.hasOwnProperty(ap)) {
-										service[method].apis[ap].include = true;
-										service[method].apis[ap].accessType = 'clear';
-										if (service[method].apis[ap].access == true) {
-											service[method].apis[ap].accessType = 'private';
-										}
-										else if (service[method].apis[ap].access === false) {
-											service[method].apis[ap].accessType = 'public';
-										}
-										else {
-											if (Array.isArray(service[method].apis[ap].access)) {
-												service[method].apis[ap].accessType = 'groups';
-												service[method].apis[ap].grpCodes = {};
-												service[method].apis[ap].access.forEach(function (c) {
-													service[method].apis[ap].grpCodes[c] = true;
-												});
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					if (service.apis) {
-						for (ap in service.apis) {
-							if (service.apis.hasOwnProperty(ap)) {
-								service.apis[ap].include = true;
-								service.apis[ap].accessType = 'clear';
-								if (service.apis[ap].access == true) {
-									service.apis[ap].accessType = 'private';
-								}
-								else if (service.apis[ap].access === false) {
-									service.apis[ap].accessType = 'public';
-								}
-								else {
-									if (Array.isArray(service.apis[ap].access)) {
-										service.apis[ap].accessType = 'groups';
-										service.apis[ap].grpCodes = {};
-										service.apis[ap].access.forEach(function (c) {
-											service.apis[ap].grpCodes[c] = true;
-										});
-									}
-								}
-							}
-						}
-					}
+					aclDrawHelpers.fillServiceAccess(service);
+					aclDrawHelpers.fillServiceApiAccess(service, currentService);
 					applyRestriction(aclFill[env], currentService);
 				}
 			}
@@ -320,7 +214,7 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 		var env;
 		for (env in aclFill) {
 			acl[env.toLowerCase()] = {};
-			if (!aclDrawHelpers.prepareObject(aclFill[env], acl[env.toLowerCase()]).valid) {
+			if (!aclDrawHelpers.prepareSaveObject(aclFill[env], acl[env.toLowerCase()]).valid) {
 				return {'valid': false, 'data': acl};
 			}
 		}

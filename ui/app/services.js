@@ -402,7 +402,7 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function fillServiceAccess(service) {
+	function fillServiceAccess(service, currentService) {
 		service.include = true;
 		service.collapse = false;
 		if (service.access) {
@@ -452,7 +452,51 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function prepareObject(aclEnvFill, aclEnvObj) {
+	function fillServiceApiAccess(service, currentService) {
+		function grpByMethod(service, fixList) {
+			var byMethod = false;
+			for (var grp in fixList) {
+				if (fixList[grp].apisRest) {
+					byMethod = true;
+					for (var method in fixList[grp].apisRest) {
+						if (!service[method]) {
+							service[method] = {
+								apis: {}
+							};
+						}
+						fixList[grp].apisRest[method].forEach(function (api) {
+							if (service.apis) {
+								if (service.apis[api.v]) {
+									service[method].apis[api.v] = service.apis[api.v];
+								}
+							}
+						});
+					}
+				}
+			}
+			if (byMethod) {
+				delete service.apis;
+			}
+		}
+		
+		if (!service.get && !service.post && !service.put && !service.delete) {
+			grpByMethod(service, currentService.fixList);
+		}
+		
+		if (service.get || service.post || service.put || service.delete) {
+			for (var method in service) {
+				if (service[method].apis) {
+					fillApiAccess(service[method], service[method].apis);
+				}
+			}
+		}
+		
+		if (service.apis) {
+			fillApiAccess(service, service.apis);
+		}
+	}
+	
+	function prepareSaveObject(aclEnvFill, aclEnvObj) {
 		var code, grpCodes;
 		
 		for (var serviceName in aclEnvFill) {
@@ -564,10 +608,11 @@ soajsApp.service("aclDrawHelpers", function () {
 	
 	return {
 		'fillServiceAccess': fillServiceAccess,
+		'fillServiceApiAccess': fillServiceApiAccess,
 		'fillApiAccess': fillApiAccess,
 		'groupApisForDisplay': groupApisForDisplay,
 		'checkForGroupDefault': checkForGroupDefault,
 		'applyApiRestriction': applyApiRestriction,
-		'prepareObject': prepareObject
+		'prepareSaveObject': prepareSaveObject
 	}
 });

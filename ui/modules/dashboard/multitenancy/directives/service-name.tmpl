@@ -5,13 +5,13 @@
 <div ng-show="currentApplication.aclFill[oneEnv.code][service.name].include" style="float: left;">
 	<div style="float: left">
         <span style="padding-left: 15px;">
-            <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="public" type="radio" ng-checked="currentApplication.aclFill[oneEnv.code][service.name].accessType==='public'"/> {{translation.public[LANG]}}
+            <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="public" type="radio"/> {{translation.public[LANG]}}
         </span>
         <span style="padding-left: 40px;">
-            <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="private" type="radio" ng-checked="currentApplication.aclFill[oneEnv.code][service.name].accessType==='private'"/> {{translation.private[LANG]}}
+            <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
         </span>
         <span style="padding-left: 40px;">
-            <input type="radio" ng-checked="currentApplication.aclFill[oneEnv.code][service.name].accessType==='groups'" ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="groups"/> {{translation.groups[LANG]}}
+            <input type="radio" ng-model="currentApplication.aclFill[oneEnv.code][service.name].accessType" value="groups"/> {{translation.groups[LANG]}}
         </span>
 	</div>
 	<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="currentApplication.aclFill[oneEnv.code][service.name].accessType=='groups' ">
