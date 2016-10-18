@@ -5,7 +5,7 @@ ul {
 
 .greyBoxCustom {
     position: relative !important;
-    width: 15% !important;
+    width: 25% !important;
     text-align: center !important;
 }
 
@@ -67,3 +67,102 @@ ul {
 .modeSelect {
     width: 15% !important;
 }
+
+.customTable td {
+     text-align: center !important;
+ }
+
+ .updateNodeButton {
+     float: right;
+     margin-top: 10px;
+     width: 10%;
+ }
+
+ .maintenanceHeader {
+     width: 10% !important;
+ }
+
+ .hostnameHeader {
+     width: 15% !important;
+ }
+
+ .statusHeader {
+     width: 15% !important;
+ }
+
+ .ipHeader {
+     width: 15% !important;
+ }
+
+ .serviceOpsDropdown {
+     float: right !important;
+
+     height: 28px !important;
+     margin-top: -4px !important;
+ }
+
+ .serviceOpsDropdown .btn {
+     font-size: 11px !important;
+ }
+
+ .serviceLabelBox {
+     margin-left: 0px !important;
+     padding-left: 2px !important;
+     padding-right: 2px;
+     background-color: white;
+     border: 2px solid white;
+     border-radius: 5px;
+ }
+
+ .ctrlBox {
+     width: 10px;
+     height: 10px;
+     margin-right: 3px;
+     margin-left: 3px;
+     padding-left: 2px;
+     padding-right: 2px;
+     color: white;
+     border-radius: 5px;
+ }
+
+ .ctrlBoxHealthy {
+     background-color: #6B985F;
+     border: 2px solid #6B985F;
+ }
+
+ .ctrlBoxUnhealthy {
+     background-color: #FF3333;
+     border: 2px solid #FF3333;
+ }
+
+ .driverEntryBox {
+     width: 49% !important;
+     padding-left: 0px !important;
+ }
+
+ .customLabel {
+     text-decoration: none !important;
+ }
+
+ .staticDiv {
+     width: 731px;
+     height: 52px;
+ }
+
+ .pt6 {
+     padding-top: 6px;
+ }
+
+ .text-align-center {
+     text-align: center;
+ }
+
+ .centeredInput {
+     margin-left: 30%;
+     width: 40%;
+     text-align: center;
+ }
+
+ .mr20 {
+     margin-right: 20px !important;
+ }
