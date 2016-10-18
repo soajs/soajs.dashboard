@@ -6,21 +6,31 @@ var gitAccountsAppConfig = {
 					'name': 'provider',
 					'label': translation.accountProvider[LANG],
 					'type': 'select',
-					'value': [{'v': 'github', 'l': 'GitHub'}, {'v': 'bitbucket-org', 'l': 'Bitbucket'}, {'v': 'bitbucket-enterprise', 'l': 'Bitbucket Enterprise'}],
+					'value': [{'v': 'github', 'l': 'GitHub'}, {'v': 'bitbucket_org', 'l': 'Bitbucket'}, {'v': 'bitbucket_enterprise', 'l': 'Bitbucket Enterprise'}],
 					'tooltip': translation.chooseAccountProvider[LANG],
 					'required': true,
 					'onAction': function (id, selected, form) {
 						if (selected === 'github') {
 							form.entries[1].value = 'github.com';
 							form.entries[1].type = 'readonly';
-						}
-						else if (selected === 'bitbucket-org') {
-							form.entries[1].value = 'bitbucket.org';
-							form.entries[1].type = 'readonly';
+
+							if (!form.entries[2].value[2]) {
+								form.entries[2].value.push({'v': 'organization_public', 'l': 'Organization - Public'});
+							}
 						}
 						else {
-							form.entries[1].value = '';
-							form.entries[1].type = 'text';
+							if (form.entries[2].value[2] && form.entries[2].value[2].v === 'organization_public') {
+								form.entries[2].value.splice(2, 1);
+							}
+
+							if (selected === 'bitbucket_org') {
+								form.entries[1].value = 'bitbucket.org';
+								form.entries[1].type = 'readonly';
+							}
+							else if (selected === 'bitbucket_enterprise') {
+								form.entries[1].value = ' ';
+								form.entries[1].type = 'text';
+							}
 						}
 
 						form.refresh();
@@ -33,6 +43,35 @@ var gitAccountsAppConfig = {
 					'value': '',
 					'required': true
 				},
+				{
+		            'name': 'type',
+		            'label': 'Account Type',
+		            'class': 'accountType',
+		            'type': 'radio',
+		            'value': [
+						{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
+		                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'}
+					],
+		            'required': true,
+		            onAction: function (label, selected, formConfig) {
+		                if (selected.split('_')[1] === 'private' && formConfig.entries[5].name !== 'password') {
+		                    var password = {
+		                        'name': 'password',
+		                        'label': 'Password',
+		                        'type': 'password',
+		                        'value': '',
+		                        'tooltip': 'Account Password',
+		                        'placeholder': 'Your Password',
+		                        'required': true
+		                    };
+		                    formConfig.entries.splice(5, 0, password);
+		                } else {
+		                    if (selected.split('_')[1] !== 'private' && formConfig.entries[5].name === 'password') {
+		                        formConfig.entries.splice(5, 1);
+		                    }
+		                }
+		            }
+		        },
 				{
 					'name': 'label',
 					'label': translation.accountName[LANG],

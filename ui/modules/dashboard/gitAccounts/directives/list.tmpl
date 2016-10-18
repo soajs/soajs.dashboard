@@ -10,7 +10,13 @@
                     <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
                     {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
                 </div>
-                <div class="body">
+                <div class="body" ng-if="account.loading">
+                    <div id="loadingNotification">
+                        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="32px" height="32px"><br>
+                        <h5 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h5>
+                    </div>
+                </div>
+                <div class="body" ng-if="!account.loading">
                     <label>{{translation.repositories[LANG]}}</label>
 	                <span style="float: right; padding-right: 2%" class="icon icon-search">&nbsp;<input ng-model="searchKeyword"></span>
                     <div ng-if="account.repo && account.repo.length === 0">
@@ -21,9 +27,9 @@
                         <ul class="blueListing">
                             <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '98%'}">
                                 <span class="repoFullName">{{repo.full_name}}</span>
-                                <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
-                                <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
-                                <span ng-if="repo.status === 'outOfSync'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
+                                <span ng-if="repo.status === 'deleted'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
+                                <span ng-if="repo.status === 'active'" class="f-right mr11"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
+                                <span ng-if="repo.status === 'outOfSync'" class="f-right mr11"><span class="icon icon-warning"></span>{{translation.repoOutOfSync[LANG]}}</span>
                                 <div class="rightActions">
                                     <a href="" ng-if="access.activateRepo && !repo.status" ng-click="activateRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
                                         <span class="icon icon-switch" tooltip="{{translation.activate[LANG]}}"></span>
@@ -124,19 +130,11 @@
 
 <script type="text/ng-template" id="repoOutOfSync.tmpl">
     <div class="modal-body">
-        <!--<div ng-bind-html="text"></div>-->
         <h4 style="text-align: center;">{{translation.repoOutOfSync[LANG]}}</h4>
         <label style="text-align: center;">{{translation.wouldYouLikeReactivateRepo[LANG]}}</label>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="reactivate()">{{translation.reactivate[LANG]}}</button>
         <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
-    </div>
-</script>
-
-<script type="text/ng-template" id="loading.tmpl">
-    <div class="modal-body">
-        <img class="loadingImageLarge" ng-src="{{imagePath}}" width="50px" height="50px"><br>
-        <h4 class="alignCenter">{{translation.gettingReposPleaseWait[LANG]}}</h4>
     </div>
 </script>

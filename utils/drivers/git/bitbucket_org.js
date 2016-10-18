@@ -46,7 +46,7 @@ var bitbucket = {
     getUserRecord: function (data, cb) {
         var options = {
             method: 'GET',
-            url: config.gitAccounts.bitbucketOrg.apiDomain + config.gitAccounts.bitbucketOrg.routes.getUserRecord.replace('%USERNAME%', data.owner)
+            url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getUserRecord.replace('%USERNAME%', data.owner)
         };
 
         if (data.token) {
@@ -62,7 +62,7 @@ var bitbucket = {
         var repoInfo = data.name.split('/');
         var options = {
             method: 'GET',
-            url: config.gitAccounts.bitbucketOrg.apiDomain + config.gitAccounts.bitbucketOrg.routes.getBranches
+            url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getBranches
                 .replace('%USERNAME%', repoInfo[0])
                 .replace('%REPO_NAME%', repoInfo[1])
         };
@@ -79,7 +79,7 @@ var bitbucket = {
     getContent: function (data, cb) {
         var options = {
             method: 'GET',
-            url: config.gitAccounts.bitbucketOrg.apiDomain + config.gitAccounts.bitbucketOrg.routes.getContent
+            url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
                 .replace('%USERNAME%', data.user)
                 .replace('%REPO_NAME%', data.repo)
                 .replace('%BRANCH%', data.ref)
@@ -100,7 +100,7 @@ var bitbucket = {
             method: 'GET'
         };
         if (data.token) {
-            options.url = config.gitAccounts.bitbucketOrg.apiDomain + config.gitAccounts.bitbucketOrg.routes.getAllRepos;
+            options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getAllRepos;
             options.headers = {
                 authorization: 'Basic ' + data.token
             };
@@ -108,7 +108,7 @@ var bitbucket = {
             return requester(options, cb);
         }
         else {
-            options.url = config.gitAccounts.bitbucketOrg.apiDomain + config.gitAccounts.bitbucketOrg.routes.getUserRecord.replace('%USERNAME%', data.owner);
+            options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getUserRecord.replace('%USERNAME%', data.owner);
             requester(options, function (error, userRecord) {
                 if (error) {
                     return cb(error);
@@ -339,7 +339,7 @@ module.exports = {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
                 var configFile = response.replace(/require\s*\(.+\)/g, '""');
-                var repoConfigsFolder = config.gitAccounts.bitbucketOrg.repoConfigsFolder;
+                var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
                 var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 
                 var fileInfo = {

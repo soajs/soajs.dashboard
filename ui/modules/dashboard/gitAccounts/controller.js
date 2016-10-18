@@ -13,6 +13,8 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     $scope.defaultPageNumber = 1;
     $scope.defaultPerPage = 100;
 
+    $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
+
     $scope.listAccounts = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'get',
@@ -25,16 +27,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
                 if ($scope.accounts.length > 0) {
                     var counter = 0;
-                    var loadingModal = $modal.open({
-                        templateUrl: "loading.tmpl",
-                        backdrop: true,
-                        keyboard: false,
-                        controller: function ($scope, $modalInstance) {
-                            fixBackDrop();
-                            $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
-                        }
-                    });
-                    $scope.listRepos($scope.accounts, counter, 'getRepos', loadingModal);
+                    $scope.listRepos($scope.accounts, counter, 'getRepos');
                 }
             }
         });
@@ -42,39 +35,6 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
     $scope.addAccount = function () {
         var formConfig = angular.copy(gitAccountsAppConfig.form.login);
-        var accountType = {
-            'name': 'type',
-            'label': 'Account Type',
-            'class': 'accountType',
-            'type': 'radio',
-            'value': [
-                {'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
-                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
-                {'v': 'organization_public', 'l': 'Organization - Public'}
-            ],
-            'required': true,
-            onAction: function (label, selected, formConfig) {
-                if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
-                    var password = {
-                        'name': 'password',
-                        'label': 'Password',
-                        'type': 'password',
-                        'value': '',
-                        'tooltip': 'Account Password',
-                        'placeholder': 'Your Password',
-                        'required': true
-                    };
-                    formConfig.entries.splice(4, 0, password);
-                } else {
-                    if (selected.split('_')[1] !== 'private' && formConfig.entries[4].name === 'password') {
-                        formConfig.entries.splice(4, 1);
-                    }
-                }
-            }
-        };
-
-        formConfig.entries.splice(2, 0, accountType);
-
         var options = {
             timeout: $timeout,
             form: formConfig,
@@ -130,7 +90,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     };
 
     $scope.deleteAccount = function (account) {
-        if (account.access === 'public') {
+        if (account.access === 'public' || account.provider !== 'github') {
             getSendDataFromServer($scope, ngDataApi, {
                 'method': 'get',
                 'routeName': '/dashboard/gitAccounts/logout',
@@ -198,13 +158,14 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
         }
     };
 
-    $scope.listRepos = function (accounts, counter, action, loadingModal) {
+    $scope.listRepos = function (accounts, counter, action) {
         //in case of one repo only
         if (!Array.isArray(accounts)) {
             accounts = [accounts];
             counter = (counter) ? counter : 0;
         }
         var id = accounts[counter]._id;
+        accounts[counter].loading = true;
         if (!accounts[counter].nextPageNumber) {
             accounts[counter].nextPageNumber = $scope.defaultPageNumber;
         }
@@ -219,11 +180,9 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                 page: (action === 'loadMore') ? accounts[counter].nextPageNumber : $scope.defaultPageNumber
             }
         }, function (error, response) {
+            accounts[counter].loading = false;
             if (error) {
                 $scope.displayAlert('danger', error.message);
-                if (loadingModal) {
-                    loadingModal.close();
-                }
             } else {
                 if (action === 'loadMore') {
                     $scope.appendNewRepos(accounts[counter], response);
@@ -247,14 +206,9 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
                     counter++;
                     if (counter < accounts.length) {
-                        return $scope.listRepos(accounts, counter, 'getRepos', loadingModal);
+                        return $scope.listRepos(accounts, counter, 'getRepos');
                     } else {
-                        if (loadingModal) {
-                            loadingModal.close();
-                        }
-                        else {
-                            $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
-                        }
+                        // $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
                     }
                 }
             }
@@ -330,6 +284,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                         provider: account.provider,
                                         owner: repo.owner.login,
                                         repo: repo.name,
+                                        project: repo.project ? repo.project.key : null,
                                         configBranch: formData.branch
                                     }
                                 }, function (error, response) {

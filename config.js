@@ -41,7 +41,7 @@ module.exports = {
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"gitAccounts": {
-		"bitbucketOrg": {
+		"bitbucket_org": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
 			routes: {
 				getUserRecord: '/users/%USERNAME%',
@@ -50,8 +50,9 @@ module.exports = {
 				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
 			},
 			repoConfigsFolder: __dirname + '/repoConfigs',
+			defaultConfigFilePath: "config.js"
 		},
-		"bitbucketEnterprise": {
+		"bitbucket_enterprise": {
 			userAgent: "SOAJS Bitbucket App",
 			defaultConfigFilePath: "config.js",
 			repoConfigsFolder: __dirname + '/repoConfigs',
@@ -2630,6 +2631,13 @@ module.exports = {
 			"repo": {
 				"source": ['body.repo'],
 				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"project": {
+				"source": ['body.project'],
+				"required": false,
 				"validation": {
 					"type": "string"
 				}

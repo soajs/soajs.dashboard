@@ -68,3 +68,13 @@ li.accountType {
     border-radius: 5px;
     border: solid 1px #337ab7;
 }
+
+#loadingNotification {
+    height: 290px;
+    width: 100%;
+    padding-top: 40px;
+}
+
+.mr11 {
+    margin-right: 11% !important;
+}
