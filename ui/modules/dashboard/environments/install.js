@@ -1369,6 +1369,11 @@ var envTranslation ={
 	"availableFilesOfType": {
 		"ENG": "Available files of type",
 		"FRA": "Available files of type"
+	},
+	//HA section
+	"haCloud": {
+		"ENG": "High Availability - Cloud",
+		"FRA": "High Availability - Cloud"
 	}
 };
 
@@ -1475,6 +1480,26 @@ var environmentsNav = [
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hosts-ctrl.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'environments-hosts',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/nodes/list'
+		},
+		'label': translation.haCloud[LANG],
+		'url': '#/environments-hacloud',
+		'tplPath': 'modules/dashboard/environments/directives/list-hacloud.tmpl',
+		'icon': 'sphere',
+		'pillar':{
+			'name': 'deployment',
+			'label': translation.deploy[LANG],
+			'position': 3
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
