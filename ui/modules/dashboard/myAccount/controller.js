@@ -164,20 +164,17 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'required': true
 				},
 				{
-					'name': 'profile',
-					'label': translation.profile[LANG],
-					'type': 'jsoneditor',
-					'options': {
-						'mode': 'code',
-						'availableModes': [{'v': 'code', 'l': 'Code View'}, {
-							'v': 'tree',
-							'l': 'Tree View'
-						}, {'v': 'form', 'l': 'Form View'}]
-					},
-					'height': '300px',
-					"value": {},
-					'required': false,
-					'tooltip': translation.fillYourAdditionalProfileInformation[LANG]
+				    'name': 'profile',
+				    'label': translation.profile[LANG],
+				    'type': 'jsoneditor',
+				    'options': {
+				        'mode': 'code',
+				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
+				    },
+				    'height': '300px',
+				    "value": {},
+				    'required': false,
+				    'tooltip': translation.fillYourAdditionalProfileInformation[LANG]
 				}
 			],
 			'data': {},
@@ -248,7 +245,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			});
 		};
 
-		if ((typeof(userCookie) !== "undefined") && (typeof(userCookie) === "object")) {
+		if ((typeof(userCookie) != "undefined") && (typeof(userCookie) == "object")) {
 			var uname = userCookie.username;
 			$scope.getProfile(uname);
 		}
@@ -344,16 +341,9 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
-						var oldSystem = false;
 						$localStorage.acl_access = {};
 						var se = Object.keys(response.acl);
-						for (var j = 0; j < se.length; j++) {
-							if (Object.hasOwnProperty.call(response.acl[se[j]], 'access') || response.acl[se[j]].apis || response.acl[se[j]].apisRegExp || response.acl[se[j]].apisPermission) {
-								oldSystem = true;
-								break;
-							}
-						}
-						if (oldSystem) {
+						if (response.acl[se[0]].access || response.acl[se[0]].apis || response.acl[se[0]].apisRegExp || response.acl[se[0]].apisPermission) {
 							for (var i in response.environments) {
 								$localStorage.acl_access[response.environments[i].code.toLowerCase()] = response.acl;
 							}

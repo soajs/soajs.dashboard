@@ -35,12 +35,11 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			'Content-Type': 'application/json'
 		}
 	};
-	
+
 	var pathParams = options.routeName.split("/");
-	
 	var exclude = ['urac', 'dashboard'];
 	if (exclude.indexOf(pathParams[1]) !== -1) {
-		if (options.proxy && $scope.checkAuthEnvCookie()) {
+		if (options.proxy) {
 			apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 			apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 			apiOptions.proxy = true;
@@ -51,23 +50,23 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
 	}
-	
+
 	if (options.jsonp) {
 		apiOptions.jsonp = true;
 	}
-	
+
 	if (options.params) {
 		apiOptions.params = options.params;
 	}
-	
+
 	if (options.data) {
 		apiOptions.data = options.data;
 	}
-	
+
 	if (options.method) {
 		apiOptions.method = options.method;
 	}
-	
+
 	if (options.responseType) {
 		apiOptions.responseType = options.responseType;
 	}
@@ -78,7 +77,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			apiOptions.file = options.file;
 		}
 	}
-	
+
 	if (options.headers) {
 		for (var i in options.headers) {
 			if (options.headers.hasOwnProperty(i)) {
@@ -86,7 +85,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 			}
 		}
 	}
-	
+
 	ngDataApi[options.method]($scope, apiOptions, callback);
 }
 
@@ -100,20 +99,17 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	var fieldName = (opts.override && opts.override.fieldName) ? options.override.fieldName : "_id";
 	var token = (opts.override && opts.override.fieldName) ? "%" + options.override.fieldName + "%" : "%id%";
 	var method = options.method || 'get';
-	var grid = $scope.grid;
-	if (opts.grid) {
-		grid = opts.grid;
-	}
-	for (var i = grid.rows.length - 1; i >= 0; i--) {
-		if (grid.rows[i].selected) {
-			referenceKeys.push(grid.rows[i][fieldName]);
+	for (var i = $scope.grid.rows.length - 1; i >= 0; i--) {
+		if ($scope.grid.rows[i].selected) {
+			referenceKeys.push($scope.grid.rows[i][fieldName]);
 		}
 	}
-	
+
 	performUpdate(referenceKeys, 0, function () {
 		if (err > 0) {
 			$scope.$parent.displayAlert('danger', opts.msg.error);
 		}
+
 		if (err < referenceKeys.length) {
 			$scope.$parent.displayAlert('success', opts.msg.success);
 		}
@@ -121,7 +117,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			callback(valid);
 		}
 	});
-	
+
 	function performUpdate(referenceKeys, counter, cb) {
 		if (opts.params) {
 			for (var i in opts.params) {
@@ -133,7 +129,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 				}
 			}
 		}
-		
+
 		if (opts.data) {
 			for (var i in opts.data) {
 				if (opts.data[i] === token) {
@@ -158,7 +154,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			else {
 				valid.push(referenceKeys[counter]);
 			}
-			
+
 			counter++;
 			if (counter < referenceKeys.length) {
 				performUpdate(referenceKeys, counter, cb);
@@ -174,11 +170,11 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
  * takes a date and returns xx ago...
  */
 function getTimeAgo(date) {
-	
+
 	var seconds = Math.floor((new Date().getTime() - date) / 1000);
-	
+
 	var interval = Math.floor(seconds / 31536000);
-	
+
 	if (interval > 1) {
 		return interval + " years";
 	}
@@ -208,7 +204,7 @@ function openSaveAsDialog(filename, content, mediaType) {
 	var blob = new Blob([content], {type: mediaType});
 	var URL = window.URL || window.webkitURL;
 	var objectUrl = URL.createObjectURL(blob);
-	
+
 	var a = document.createElement("a");
 	document.body.appendChild(a);
 	a.style = "display: none";
@@ -246,7 +242,7 @@ function returnLatestVersion(service) {
 	function compareNumbers(a, b) {
 		return b - a;
 	}
-	
+
 	var keys = Object.keys(service);
 	var keysInt = [];
 	keys.forEach(function (key) {

@@ -10,11 +10,16 @@ var model = {
     },
 
     "getAccount": function (mongo, options, cb) {
+
         if (options.accountId) {
-            mongo.findOne(collName, {_id: options.accountId}, cb);
+            mongo.findOne(collName, {_id: options.accountId}, function(error, account) {
+                return cb(error, account);
+            });
         }
         else if (options.owner && options.repo) {
-            model.searchForAccount(mongo, options, cb);
+            model.searchForAccount(mongo, options, function(error, account) {
+                return cb(error, account);
+            });
         }
     },
 
@@ -35,7 +40,7 @@ var model = {
 
     "removeAccount": function (mongo, recordId, cb) {
         mongo.remove(collName, {_id: recordId}, function (error) {
-	        return cb(error, true);
+            return cb(error, true);
         });
     },
 

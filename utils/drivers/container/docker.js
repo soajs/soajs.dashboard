@@ -52,6 +52,8 @@ var lib = {
 		 - remote and target: get deployer for target node
 		 */
 		var config = utils.cloneObj(deployerConfig);
+		delete config.driver;
+		config.envCode = config.envCode.toUpperCase();
 		var docker;
 
 		if (config.socketPath) {
@@ -139,7 +141,7 @@ var lib = {
 					}
 
 					mongo.getMongoSkinDB(function (error, db) {
-						checkError(error, callback, function () {
+						checkError(error, cb, function () {
 							var gfs = Grid(db, mongo.mongoSkin);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);

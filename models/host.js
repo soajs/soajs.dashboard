@@ -19,7 +19,6 @@ var servicesColl = "services";
 var daemonsColl = "daemons";
 var gitColl = "git_accounts";
 var staticColl = "staticContent";
-var analyticsColl = "analytics";
 
 var model = {
 	"getDB": function () {
@@ -69,8 +68,7 @@ var model = {
 
 	"getContainers": function (soajs, env, type, running, cb) {
 		var condition = {
-			"env": env.toLowerCase(),
-			"recordType": "container"
+			"env": env.toLowerCase()
 		};
 		if (type) {
 			condition["$or"] = [
@@ -81,7 +79,6 @@ var model = {
 		if (running) {
 			condition.running = running;
 		}
-
 		checkForMongo(soajs);
 		mongo.find(dockerColl, condition, cb);
 	},
@@ -275,31 +272,6 @@ var model = {
 		checkForMongo(soajs);
 		mongo.findOne(staticColl, {'_id': id}, cb);
 	},
-
-	"removeServiceHosts": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
-		mongo.remove(hostsColl, criteria, cb);
-	},
-
-	/**
-	 * ANALYTICS COLLECTION
-	 */
-
-	 "getEnvAnalyticsRecord": function (soajs, env, cb) {
-		 checkForMongo(soajs);
-		 mongo.findOne(analyticsColl, {'json.env': env.toLowerCase()}, cb);
-	 },
-
-	 "updateAnalyticsRecord": function (soajs, env, update, cb) {
-		checkForMongo(soajs);
-		mongo.update(analyticsColl, {'json.env': env.toLowerCase()}, update, cb);
-	},
-
-	"getAnalyticsRecords": function (soajs, type, cb) {
-		checkForMongo(soajs);
-		mongo.find(analyticsColl, {type: type}, cb);
-	}
-
 
 	/*
 		grid fs

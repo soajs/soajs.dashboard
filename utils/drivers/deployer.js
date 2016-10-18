@@ -161,5 +161,4 @@ var deployer = {
         deployer.getContainerLogs(deployerConfig, options, mongo, soajs, res);
     }
 };
-
 module.exports = deployer;

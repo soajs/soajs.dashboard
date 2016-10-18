@@ -1140,7 +1140,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							'expDate': formData.expDate,
 							'device': deviceObj,
 							'geo': geoObj,
-							'env': formData.environment.toUpperCase()
+							'env': formData.environment
 						};
 						
 						getSendDataFromServer($scope, ngDataApi, {
@@ -1540,7 +1540,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 										if (!$scope.currentApplication.acl) {
 											$scope.isInherited = true;
 										}
-										aclHelper.prepareViewAclObj($scope.currentApplication.aclFill);
+										aclHelper.prepareViewAclObj($scope, $scope.currentApplication.aclFill);
 										overlayLoading.hide();
 									}
 								});

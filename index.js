@@ -460,15 +460,7 @@ service.init(function () {
 	});
 	service.post("/hosts/deployController", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function (BL) {
-			if(req.soajs.inputmaskData.haService) {
-				req.soajs.customData = {
-					type: 'controller'
-				};
-				BL.deployService(config, req.soajs, res);
-			}
-			else {
-				BL.deployController(config, req.soajs, res);
-			}
+			BL.deployController(config, req.soajs, res);
 		});
 	});
 	service.post("/hosts/deployNginx", function (req, res) {
