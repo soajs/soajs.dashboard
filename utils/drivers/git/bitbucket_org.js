@@ -64,7 +64,7 @@ var bitbucket = {
             repoInfo = data.name.split('/');
         }
         else {
-            repoInfo = [data.owner, data.repo]
+            repoInfo = [data.owner, data.repo];
         }
 
         var options = {
