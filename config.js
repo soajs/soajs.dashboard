@@ -41,6 +41,30 @@ module.exports = {
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"gitAccounts": {
+		"bitbucketOrg": {
+			apiDomain: 'https://api.bitbucket.org/1.0',
+			routes: {
+				getUserRecord: '/users/%USERNAME%',
+				getAllRepos: '/user/repositories',
+				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
+				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
+			},
+			repoConfigsFolder: __dirname + '/repoConfigs',
+		},
+		"bitbucketEnterprise": {
+			userAgent: "SOAJS Bitbucket App",
+			defaultConfigFilePath: "config.js",
+			repoConfigsFolder: __dirname + '/repoConfigs',
+			// required for OAuth
+			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
+			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
+			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
+			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
+			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
+			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
+			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
+			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+		},
 		"github": {
 			"protocol": "https",
 			"domainName": "api.github.com",
@@ -2439,6 +2463,13 @@ module.exports = {
 			},
 			"provider": {
 				"source": ['body.provider'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"domain": {
+				"source": ['body.domain'],
 				"required": true,
 				"validation": {
 					"type": "string"

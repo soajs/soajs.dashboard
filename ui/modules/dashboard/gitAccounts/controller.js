@@ -47,9 +47,11 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             'label': 'Account Type',
             'class': 'accountType',
             'type': 'radio',
-            'value': [{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
+            'value': [
+                {'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
                 {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
-                {'v': 'organization_public', 'l': 'Organization - Public'}],
+                {'v': 'organization_public', 'l': 'Organization - Public'}
+            ],
             'required': true,
             onAction: function (label, selected, formConfig) {
                 if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
@@ -86,6 +88,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     'action': function (formData) {
                         var postData = {
                             provider: formData.provider,
+                            domain: formData.providerDomain,
                             label: formData.label,
                             username: formData.username,
                             type: formData.type.split('_')[0],
