@@ -36,6 +36,16 @@ module.exports = {
 		"services": "soajsorg/soajs"
 	},
 	gitAccounts: {
+		bitbucketorg: {
+			apiDomain: 'https://api.bitbucket.org/1.0',
+			routes: {
+				getUserRecord: '/users/%USERNAME%',
+				getAllRepos: '/user/repositories',
+				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
+				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
+			},
+			repoConfigsFolder: __dirname + '/repoConfigs',
+		},
 		bitbucket: {
 			userAgent: "SOAJS Bitbucket App",
 			defaultConfigFilePath: "config.js",
