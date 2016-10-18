@@ -59,7 +59,14 @@ var bitbucket = {
     },
 
     getRepoBranches: function (data, cb) {
-        var repoInfo = data.name.split('/');
+        var repoInfo;
+        if (data.name) {
+            repoInfo = data.name.split('/');
+        }
+        else {
+            repoInfo = [data.owner, data.repo]
+        }
+
         var options = {
             method: 'GET',
             url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getBranches
