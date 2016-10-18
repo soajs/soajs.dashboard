@@ -3,83 +3,83 @@
 var cmModuleStgTranslation = {
 	"contentManagement": {
 		"ENG": "Content Management",
-		"FRA": "Gestion de Contenu"
+		"FRA": "Content Management"
 	},
 	//controller
 	"areYouSureWantDeleteSelectedEntry": {
 		"ENG": "Are you sure you want to delete the selected entry?",
-		"FRA": "Êtes-vous sûr de vouloir effacer l'entrée selectionnée?"
+		"FRA": "Are you sure you want to delete the selected entry?"
 	},
 	"areYouSureWantDeleteSelectedEntryS": {
 		"ENG": "Are you sure you want to delete the selected entry(s)?",
-		"FRA": "Êtes-vous sûr de vouloir effacer les entrées selectionnées?"
+		"FRA": "Are you sure you want to delete the selected entry(s)?"
 	},
 	"goBack": {
 		"ENG": "Go Back",
-		"FRA": "Précédent"
+		"FRA": "Go Back"
 	},
 	"youDoNotHaveAccessContentModule": {
 		"ENG": "You do not have access to this content module.",
-		"FRA": "Vous n'avez pas accès à ce module de contenu."
+		"FRA": "You do not have access to this content module."
 	},
 	"addNewEntry": {
 		"ENG": "Add New Entry",
-		"FRA": "Nouvelle Entrée"
+		"FRA": "Add New Entry"
 	},
 	"saveData": {
 		"ENG": "Save Data",
-		"FRA": "Sauvegarder Données"
+		"FRA": "Save Data"
 	},
 	"makeSureYouHaveFilledInputs": {
 		"ENG": "Make sure you have filled all the files inputs.",
-		"FRA": "Assurez-vous d'avoir rempli toutes les entrées de fichiers."
+		"FRA": "Make sure you have filled all the files inputs."
 	},
 	"dataAddedSuccessfully": {
 		"ENG": "Data Added Successfully.",
-		"FRA": "Données ajoutées avec succès."
+		"FRA": "Data Added Successfully."
 	},
 	"updateEntry": {
 		"ENG": "Update Entry",
-		"FRA": "Mettre à jour l'entrée"
+		"FRA": "Update Entry"
 	},
 	"viewEntry": {
 		"ENG": "View Entry",
-		"FRA": "Voir l'entrée"
+		"FRA": "View Entry"
 	},
 	"oneOrMoreSelectedDataNotDeleted": {
 		"ENG": "one or more of the selected Data was not deleted.",
-		"FRA": "une ou plusieurs des données sélectionnées n'a pas été effacé."
+		"FRA": "one or more of the selected Data was not deleted."
 	},
 	//Directives
 	//infoBox
 	"clickOpenFile": {
 		"ENG": "Click to Open File",
-		"FRA": "Cliquer pour ouvrir le fichier"
+		"FRA": "Click to Open File"
 	},
 	"clickOpenImage": {
 		"ENG": "Click to Open Image",
-		"FRA": "Cliquer pour ouvrir l'image"
+		"FRA": "Click to Open Image"
 	},
 	"clickDownloadAudioTrack": {
 		"ENG": "Click to Download Audio Track",
-		"FRA": "Cliquer pour télécharger la piste audio"
+		"FRA": "Click to Download Audio Track"
 	},
 	"clickDownloadVideo": {
 		"ENG": "Click to Download Video",
-		"FRA": "Cliquer pour télécharger la vidéo"
+		"FRA": "Click to Download Video"
 	},
 	//list
 	"manageContent": {
 		"ENG": "Manage Content",
-		"FRA": "Gérer le Contenu"
+		"FRA": "Manage Content"
 	},
 	"managingContentOf": {
 		"ENG": "Managing Content of",
-		"FRA": "Gérant le Contenu de"
+		"FRA": "Managing Content of"
 	},
 	"loadingData": {
 		"ENG": "Loading Data",
-		"FRA": "Chargement des Données"
+		"FRA": "Loading Data"
 	},
 	"noContentManagementServicesRunning": {
 		"ENG": "No Content Management Services are running.",
@@ -92,18 +92,18 @@ var cmModuleStgTranslation = {
 	//No Content Management Services are deployed yet. Head to the Environments Section and deploy them.
 	"noContentManagementServiceDeployedYet": {
 		"ENG": "No Content Management Services are deployed yet. Head to the",
-		"FRA": "Aucuns services de gestion de contenu déployés. Allez à la section"
+		"FRA": "No Content Management Services are deployed yet. Head to the"
 	},
 	
 	"sectionAndDeployThem": {
 		"ENG": "Section and deploy them.",
-		"FRA": "et déployez-en."
+		"FRA": "Section and deploy them."
 	},
 	//Services
 	//contentManagement
 	"yourBrowserDoesNotSupportAudioTag": {
 		"ENG": "Your browser does not support the audio tag.",
-		"FRA": "Votre navigateur ne supporte pas la balise audio."
+		"FRA": "Your browser does not support the audio tag."
 	}
 };
 

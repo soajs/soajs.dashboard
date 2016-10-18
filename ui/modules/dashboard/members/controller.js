@@ -323,14 +323,16 @@ membersApp.controller('memberAclCtrl', ['$scope', '$routeParams', 'ngDataApi', '
 
 		$scope.getTenantAppInfo = function () {
 			getUserGroupInfo(function () {
-				getSendDataFromServer($scope, ngDataApi, {
+				var opts = {
 					"method": "send",
 					"headers": {
 						"key": $scope.key
 					},
 					"routeName": "/dashboard/tenant/acl/get",
 					"params": {"id": $scope.user.tenant.id}
-				}, function (error, response) {
+				};
+
+				getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);

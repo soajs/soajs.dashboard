@@ -22,89 +22,28 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		currentScope.deployer.type = record.type;
 		currentScope.originalDeployerType = record.type;//used to detect changes in type on UI level
 
-		currentScope.deployer.selected = record.selected;
-		if (record.selected) {
-			currentScope.uiSelected = record.selected.replace(record.type + ".", "").replace(/\./g, " - ");
+		if (record.selected.split('.')[0] === 'container') {
+			currentScope.deployer.selected = record.selected.substring(record.selected.indexOf('.') + 1, record.selected.length);
 		}
+
 		currentScope.allowSelect = currentScope.deployer.type === 'container';
 
 		currentScope.availableCerts = { //used later to view available certificates and allow user to choose them for other drivers
-			docker: record.certs,
-			nginx: []
+			docker: record.certs
 		};
 
-		currentScope.platforms = [];
-
-		if (record.container) {
-			if (record.container.dockermachine) {
-				currentScope.availableCloudProviders = Object.keys(record.container.dockermachine.cloud);
-
-				if (!record.container.dockermachine.local || Object.keys(record.container.dockermachine.local).length === 0) {
-					currentScope.allowAddDriver['local'] = {
-						'label': 'dockermachine - local',
-						'allow': true
-					};
-				} else {
-					currentScope.platforms.push({
-						label: 'dockermachine - local',
-						uiType: 'local',
-						host: record.container.dockermachine.local.host,
-						port: record.container.dockermachine.local.port,
-						config: record.container.dockermachine.local.config,
-						certificates: []
-					});
-				}
-
-				if (record.container.dockermachine.cloud) {
-					var emptyCloudCounter = 0;
-					for (var i in record.container.dockermachine.cloud) {
-						if (Object.keys(record.container.dockermachine.cloud[i]).length > 0) {//not an empty cloud driver object
-							currentScope.platforms.push({
-								label: 'dockermachine - cloud - ' + i,
-								uiType: 'cloud',
-								host: record.container.dockermachine.cloud[i].host,
-								port: record.container.dockermachine.cloud[i].port,
-								config: record.container.dockermachine.cloud[i].config,
-								certificates: []
-							});
-						} else {
-							emptyCloudCounter++;
-						}
-					}
-					if (emptyCloudCounter === Object.keys(record.container.dockermachine.cloud).length) { //all cloud drivers and empty, allow user to add one
-						currentScope.allowAddDriver['cloud'] = {
-							'label': 'dockermachine - cloud',
-							'allow': true
-						};
-					}
-				}
-			}
-
-			if (record.container.docker) {
-				if (Object.keys(record.container.docker.socket).length === 0) {
-					currentScope.allowAddDriver['socket'] = {
-						'label': 'docker - socket',
-						'allow': true
-					};
-				} else {
-					currentScope.platforms.push({
-						label: 'docker - socket',
-						uiType: 'socket',
-						socketPath: record.container.docker.socket.socketPath
-					});
-				}
-			}
-		}
+		currentScope.platforms = record.container;
 
 		//filling in certificates
-		for (var i = 0; i < currentScope.platforms.length; i++) {
-			var driver = currentScope.platforms[i];
-			for (var j = 0; j < record.certs.length; j++) {
-				if (record.certs[j].metadata.type === 'docker') {
-					if (record.certs[j].metadata.env[currentScope.envCode] && record.certs[j].metadata.env[currentScope.envCode].indexOf(driver.label) !== -1) {
-						driver.certificates.push({
-							_id: record.certs[j]._id,
-							filename: record.certs[j].filename
+		for (var platform in currentScope.platforms) {
+			var onePlatform = currentScope.platforms[platform];
+			for (var driver in onePlatform) {
+				onePlatform[driver].certs = [];
+				for (var i = 0; i < record.certs.length; i++) {
+					if (record.certs[i].metadata.platform === platform && record.certs[i].metadata.env[currentScope.envCode] && record.certs[i].metadata.env[currentScope.envCode].indexOf(platform + '.' + driver) !== -1) {
+						currentScope.platforms[platform][driver].certs.push({
+							_id: record.certs[i]._id,
+							filename: record.certs[i].filename
 						});
 					}
 				}
@@ -161,7 +100,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function uploadCerts(currentScope, type, driverName) {
+	function uploadCerts(currentScope, platform, driverName) {
 		var upload = $modal.open({
 			templateUrl: "uploadCerts.tmpl",
 			backdrop: true,
@@ -178,8 +117,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					selected: {}
 				};
 
-				$scope.type = type;
-				if (type === 'nginx') {
+				$scope.platform = platform;
+				if (platform === 'nginx') {
 					$scope.nginxRequiredCerts = angular.copy(environmentsConfig.nginxRequiredCerts);
 					currentScope.nginx.certs.forEach(function (oneCert) {
 						if ($scope.nginxRequiredCerts[oneCert.metadata.label]) {
@@ -207,7 +146,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							$scope.index.push(i);
 						}
 
-						$scope.uploadFiles(type, driverName, 0, uploadInfo, function () {
+						$scope.uploadFiles(platform, driverName, 0, uploadInfo, function () {
 							$scope.formData.certificates = {};
 							$scope.index = [];
 							uploadInfo.close();
@@ -243,6 +182,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						routeName: "/dashboard/environment/platforms/cert/choose",
 						params: {
 							env: currentScope.envCode,
+							platform: platform,
 							driverName: driverName
 						},
 						data: {
@@ -250,7 +190,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					};
 
-					if (type === 'nginx') {
+					if (platform === 'nginx') {
 						options.routeName = '/dashboard/environment/nginx/cert/choose';
 						delete options.params.driverName;
 					}
@@ -262,7 +202,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						} else {
 							currentScope.$parent.displayAlert('success', translation.chosenCertificatesSavedSuccessfully[LANG]);
 							upload.close();
-							if (type === 'nginx') {
+							if (platform === 'nginx') {
 								currentScope.listNginxCerts(currentScope);
 							}
 							else {
@@ -273,10 +213,10 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				};
 
 				$scope.getAvailableCerts = function () {
-					if (type === 'nginx') {
+					if (platform === 'nginx') {
 						$scope.certsToDisplay = {};
-						currentScope.availableCerts[$scope.type].forEach(function (oneCert) {
-							if (oneCert.metadata.type === $scope.type) {
+						currentScope.availableCerts[$scope.platform].forEach(function (oneCert) {
+							if (oneCert.metadata.platform === $scope.platform) {
 								if (!$scope.certsToDisplay[oneCert.metadata.label]) {
 									$scope.certsToDisplay[oneCert.metadata.label] = [];
 								}
@@ -294,10 +234,10 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						});
 						$scope.certsToDisplay.length = Object.keys($scope.certsToDisplay).length;
 					}
-					else if (type === 'docker') {
+					else if (platform === 'docker') {
 						$scope.certsToDisplay = [];
-						currentScope.availableCerts[$scope.type].forEach(function (oneCert) {
-							if (oneCert.metadata.type === $scope.type) {
+						currentScope.availableCerts[$scope.platform].forEach(function (oneCert) {
+							if (oneCert.metadata.platform === $scope.platform) {
 								$scope.certsToDisplay.push({
 									_id: oneCert._id,
 									name: oneCert.filename,
@@ -313,8 +253,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					upload.close();
 				};
 
-				$scope.uploadFiles = function(type, driverName, counter, modal, cb) {
-					if (!currentScope.envCode || !type || !$scope.formData.certificates[$scope.index[counter]].name) {
+				$scope.uploadFiles = function(platform, driverName, counter, modal, cb) {
+					if (!currentScope.envCode || !platform || !$scope.formData.certificates[$scope.index[counter]].name) {
 						//to avoid incompatibiltiy issues when using safari browsers
 						return cb();
 					}
@@ -330,7 +270,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						params: {
 							envCode: currentScope.envCode,
 							filename: $scope.formData.certificates[$scope.index[counter]].name,
-							type: type,
+							platform: platform,
 							driver: driverName
 						},
 						file: $scope.formData.certificates[$scope.index[counter]],
@@ -340,7 +280,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					};
 
-					if (type === 'nginx') {
+					if (platform === 'nginx') {
 						options.url = apiConfiguration.domain + "/dashboard/environment/nginx/cert/upload";
 
 						delete options.params.driver;
@@ -366,7 +306,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							if (counter === Object.keys($scope.formData.certificates).length) {
 								return cb();
 							} else {
-								$scope.uploadFiles(type, driverName, counter, modal, cb);
+								$scope.uploadFiles(platform, driverName, counter, modal, cb);
 							}
 						}
 					}).error(function (data, status, header, config) {
@@ -378,14 +318,14 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function removeCert(currentScope, certId, driverName) {
+	function removeCert(currentScope, certId, platform, driverName) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/environment/platforms/cert/delete",
 			"params": {
 				"id": certId,
 				"env": currentScope.envCode,
-				"driverName": driverName
+				"driverName": platform + '.' + driverName
 			}
 		}, function (error, response) {
 			if (error) {
@@ -397,8 +337,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function selectDriver(currentScope, driverName, type) {
-		var driver = type + "." + driverName.replace(/ - /g, ".");
+	function selectDriver(currentScope, platform, driverName, type) {
+		var driver = type + "." + platform + '.' + driverName;
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/platforms/driver/changeSelected",
@@ -409,190 +349,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
 			} else {
 				currentScope.$parent.displayAlert('success', translation.selectedDriverUpdated[LANG]);
+				currentScope.deployer.selected = platform + '.' + driverName;
 				currentScope.originalDeployer = currentScope.deployer.selected;
-				currentScope.uiSelected = driverName;
-			}
-		});
-	}
-
-	function clearDriverConfig(currentScope, driverName) {
-		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/environment/platforms/driver/delete",
-			"params": {
-				env: currentScope.envCode,
-				driverName: driverName
-			}
-		}, function (error, response) {
-			if (error) {
-				currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
-			} else {
-				currentScope.$parent.displayAlert('success', translation.driverConfigurationClearedSuccessfully[LANG]);
-				currentScope.listPlatforms(currentScope.envCode);
-			}
-		});
-	}
-
-	function addDriver(currentScope) {
-		$modal.open({
-			templateUrl: "addEditDriver.tmpl",
-			size: 'lg',
-			backdrop: true,
-			keyboard: true,
-			controller: function ($scope, $modalInstance) {
-				fixBackDrop();
-				$scope.jsoneditor = angular.copy(currentScope.jsoneditorConfig);
-
-				$scope.title = translation.addDriver[LANG];
-				$scope.outerScope = currentScope;
-
-				$scope.driver = {
-					info: {}
-				};
-
-				$scope.local = {};
-				$scope.cloud = {};
-				$scope.socket = {};
-
-				$scope.onSubmit = function () {
-					var postData = preparePostData($scope);
-
-					getSendDataFromServer(currentScope, ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/environment/platforms/driver/add",
-						"params": {
-							env: currentScope.envCode,
-							driverName: $scope.driver.info.label
-						},
-						"data": postData
-					}, function (error, response) {
-						if (error) {
-							currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
-							$modalInstance.close();
-						} else {
-							currentScope.$parent.displayAlert('success', translation.driverCreatedSuccessfully[LANG]);
-							$modalInstance.close();
-							delete currentScope.allowAddDriver[$scope.driver.info.label.split(" - ")[1]];
-							currentScope.listPlatforms(currentScope.envCode);
-						}
-					});
-				};
-
-				$scope.closeModal = function () {
-					$modalInstance.close();
-				};
-			}
-		});
-	}
-
-	function editDriver(currentScope, driver) {
-		$modal.open({
-			templateUrl: "addEditDriver.tmpl",
-			size: 'lg',
-			backdrop: true,
-			keyboard: true,
-			controller: function ($scope, $modalInstance) {
-				fixBackDrop();
-				$scope.jsoneditor = angular.copy(currentScope.jsoneditorConfig);
-				$scope.jsoneditor.jsonIsValid = true;
-				$scope.jsoneditor.onLoad = function (instance) {
-			        if (instance.mode === 'code') {
-			            instance.setMode('code');
-			        }
-			        else {
-			            instance.set();
-			        }
-
-			        instance.editor.getSession().on('change', function () {
-			            try {
-			                instance.get();
-			                $scope.jsoneditor.jsonIsValid = true;
-			            }
-			            catch (e) {
-			                $scope.jsoneditor.jsonIsValid = false;
-			            }
-			        });
-				};
-
-				$scope.title = "Edit Driver";
-				$scope.outerScope = currentScope;
-
-				$scope.driver = {
-					info: angular.copy(driver)
-				};
-
-				$scope.local = {};
-				$scope.cloud = {};
-				$scope.socket = {};
-				$scope.mode = 'edit';
-
-				if (driver.label === 'dockermachine - local') {
-					$scope.local.host = driver.host;
-					$scope.local.port = driver.port;
-					if (driver.config && driver.config !== "") {
-						$scope.local.config = angular.copy (driver.config);
-					}
-				} else if (driver.label.indexOf('dockermachine - cloud') !== -1) {
-					$scope.cloud.selectedCloud = driver.label.split(" - ")[2];
-					$scope.driver.info.label = 'dockermachine - cloud'; //must be in this format to be compatible with form
-
-					$scope.cloud.host = driver.host;
-					$scope.cloud.port = driver.port;
-					if (driver.config && driver.config !== "") {
-						$scope.cloud.config = angular.copy (driver.config);
-					}
-				} else if (driver.label === 'docker - socket') {
-					$scope.socket.socketPath = driver.socketPath;
-				}
-
-				$scope.onSubmit = function () {
-					if (driver.label === 'dockermachine - local') {
-						if (!$scope.jsoneditor.jsonIsValid) {
-							$scope.error = {
-								message: 'Invalid JSON Object'
-							};
-							$timeout(function () {
-								$scope.error.message = '';
-							}, 5000);
-							return;
-						}
-					}
-					else if (driver.label.indexOf('dockermachine - cloud') !== -1) {
-						if (!$scope.jsoneditor.jsonIsValid) {
-							$scope.error = {
-								message: 'Invalid JSON Object'
-							};
-							$timeout(function () {
-								$scope.error.message = '';
-							}, 5000);
-							return;
-						}
-					}
-					var postData = preparePostData($scope);
-
-					getSendDataFromServer(currentScope, ngDataApi, {
-						"method": "send",
-						"routeName": "/dashboard/environment/platforms/driver/edit",
-						"params": {
-							env: currentScope.envCode,
-							driverName: driver.label
-						},
-						"data": postData
-					}, function (error, response) {
-						if (error) {
-							currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
-							$modalInstance.close();
-						} else {
-							currentScope.$parent.displayAlert('success', 'Driver edited successfully');
-							$modalInstance.close();
-							currentScope.listPlatforms(currentScope.envCode);
-						}
-					});
-				};
-
-				$scope.closeModal = function () {
-					$modalInstance.close();
-				};
 			}
 		});
 	}
@@ -620,40 +378,6 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
-	function preparePostData(currentScope) {
-		if (currentScope.driver.info.label === 'dockermachine - local') {
-			var postData = {
-				local: {
-					host: currentScope.local.host,
-					port: currentScope.local.port
-				}
-			};
-			if (currentScope.local.config && currentScope.local.config !== "") {
-				postData.local.config = currentScope.local.config;
-			}
-		} else if (currentScope.driver.info.label === 'dockermachine - cloud') {
-			var postData = {
-				cloud: {
-					cloudProvider: currentScope.cloud.selectedCloud,
-					host: currentScope.cloud.host,
-					port: currentScope.cloud.port
-				}
-			};
-			if (currentScope.cloud.config && currentScope.cloud.config !== "") {
-				postData.cloud.config = currentScope.cloud.config;
-			}
-
-		} else if (currentScope.driver.info.label === 'docker - socket') {
-			var postData = {
-				socket: {
-					socketPath: currentScope.socket.socketPath
-				}
-			};
-		}
-
-		return postData;
-	}
-
 	return {
 		'listPlatforms': listPlatforms,
 		'listNginxCerts': listNginxCerts,
@@ -661,9 +385,6 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		'uploadCerts': uploadCerts,
 		'removeCert': removeCert,
 		'selectDriver': selectDriver,
-		'clearDriverConfig': clearDriverConfig,
-		'addDriver': addDriver,
-		'editDriver': editDriver,
 		'changeDeployerType': changeDeployerType
 	}
 }]);

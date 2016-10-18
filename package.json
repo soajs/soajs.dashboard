@@ -38,7 +38,6 @@
   "dependencies": {
     "async": "*",
     "bcrypt": "*",
-    "bitbucket-server-nodejs": "^2.10.0",
     "dockerode": "aff04/dockerode.git",
     "formidable": "*",
     "github": "^0.2.4",

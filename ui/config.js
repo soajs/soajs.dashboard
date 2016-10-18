@@ -17,32 +17,33 @@ var uiModuleStg = 'modules/stg';
 var uiModuleProd = 'modules/prod';
 
 var modules = {
-	"develop":{
-		"dashboard":{
+	"develop": {
+		"dashboard": {
 			services: 'modules/dashboard/services/install.js',
 			contentBuilder: 'modules/dashboard/contentBuilder/install.js',
 			staticContent: 'modules/dashboard/staticContent/install.js',
 			githubApp: 'modules/dashboard/gitAccounts/install.js'
 		}
 	},
-	"manage":{
-		"dashboard":{
+	"manage": {
+		"dashboard": {
 			productization: 'modules/dashboard/productization/install.js',
 			multitenancy: 'modules/dashboard/multitenancy/install.js',
 			members: 'modules/dashboard/members/install.js',
 			settings: 'modules/dashboard/settings/install.js'
 		}
 	},
-	"deploy":{
+	"deploy": {
 		"dashboard": {
 			environments: 'modules/dashboard/environments/install.js'
 		}
 	},
 	"operate": {
-		"dev":{
+		"dev": {
+			urac: 'modules/dev/urac/install.js',
 			contentManagement: 'modules/dev/contentManagement/install.js'
 		},
-		"stg":{
+		"stg": {
 			contentManagement: 'modules/stg/contentManagement/install.js'
 		}
 	},

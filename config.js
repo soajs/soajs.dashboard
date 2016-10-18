@@ -31,36 +31,16 @@ module.exports = {
 
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
 
-	images: {
-		"nginx": 'soajsorg/nginx',
-		"services": "soajsorg/soajs"
+	"images": {
+		//////////////////////////////////////////////////////////////////
+		"nginx": 'soajstest/nginx', //TEMPORARY: USING TEST IMAGE NAME//
+		"services": "soajstest/soajs" //TEMPORARY: USING TEST IMAGE NAME//
+		//////////////////////////////////////////////////////////////////
 	},
-	gitAccounts: {
-		bitbucketorg: {
-			apiDomain: 'https://api.bitbucket.org/1.0',
-			routes: {
-				getUserRecord: '/users/%USERNAME%',
-				getAllRepos: '/user/repositories',
-				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
-				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
-			},
-			repoConfigsFolder: __dirname + '/repoConfigs',
-			defaultConfigFilePath: "config.js"
-		},
-		bitbucket: {
-			userAgent: "SOAJS Bitbucket App",
-			defaultConfigFilePath: "config.js",
-			repoConfigsFolder: __dirname + '/repoConfigs',
-			// required for OAuth
-			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
-			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
-			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
-			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
-			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
-			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
-			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
-			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
-		},
+
+	"imagesDir": "/opt/soajs/FILES/deployer/",
+
+	"gitAccounts": {
 		"github": {
 			"protocol": "https",
 			"domainName": "api.github.com",
@@ -766,6 +746,13 @@ module.exports = {
 				"validation": {
 					"type": "string",
 					"required": true
+				}
+			},
+			"platform": {
+				"source": ['query.platform'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			},
 			"driverName": {
@@ -2457,13 +2444,6 @@ module.exports = {
 					"type": "string"
 				}
 			},
-			"domain": {
-				"source": ['body.domain'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
 			"type": {
 				"source": ['body.type'],
 				"required": true,
@@ -2612,12 +2592,6 @@ module.exports = {
 			"owner": {
 				"source": ['body.owner'],
 				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"project": {
-				"source": ['body.project'],
 				"validation": {
 					"type": "string"
 				}

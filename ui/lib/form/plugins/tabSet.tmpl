@@ -63,9 +63,15 @@
 					<td ng-switch-when="phone">
 						<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/phone.tmpl'"></div>
 					</td>
+
 					<td ng-switch-when="json">
 						<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/json.tmpl'"></div>
 					</td>
+
+					<td ng-switch-when="jsoneditor">
+						<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/jsoneditor.tmpl'"></div>
+					</td>
+
 					<td ng-switch-default="">
 						<div id="{{entry.name}}-wrapper" ng-include="'lib/form/plugins/default.tmpl'"></div>
 					</td>

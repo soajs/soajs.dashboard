@@ -137,7 +137,7 @@ cmService.service('cmModuleDevService', ['ngDataApi', '$cookies', '$http', 'Uplo
 	                    if (exclude.indexOf(pathParams[3]) === -1) {
 		                    uploadParams.uploadUrl = "/proxy/redirect";
 		                    uploadParams.data['proxyRoute'] = encodeURIComponent(url);
-		                    uploadParams.data['__envauth'] = $cookies.get('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase()];
+		                    uploadParams.data['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase()];
 	                    }
                         currentScope.form.uploadFileToUrl(Upload, uploadParams,
                             function (error, response) {

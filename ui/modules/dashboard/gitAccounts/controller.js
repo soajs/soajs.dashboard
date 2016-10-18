@@ -48,10 +48,11 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             'class': 'accountType',
             'type': 'radio',
             'value': [{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
-                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'}],
+                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
+                {'v': 'organization_public', 'l': 'Organization - Public'}],
             'required': true,
             onAction: function (label, selected, formConfig) {
-                if (selected.split('_')[1] === 'private' && formConfig.entries[5].name !== 'password') {
+                if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
                     var password = {
                         'name': 'password',
                         'label': 'Password',
@@ -61,10 +62,10 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                         'placeholder': 'Your Password',
                         'required': true
                     };
-                    formConfig.entries.splice(5, 0, password);
+                    formConfig.entries.splice(4, 0, password);
                 } else {
-                    if (selected.split('_')[1] !== 'private' && formConfig.entries[5].name === 'password') {
-                        formConfig.entries.splice(5, 1);
+                    if (selected.split('_')[1] !== 'private' && formConfig.entries[4].name === 'password') {
+                        formConfig.entries.splice(4, 1);
                     }
                 }
             }
@@ -85,7 +86,6 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     'action': function (formData) {
                         var postData = {
                             provider: formData.provider,
-                            domain: formData.providerDomain,
                             label: formData.label,
                             username: formData.username,
                             type: formData.type.split('_')[0],
@@ -272,19 +272,19 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     account.repos.push(oneRepo);
                 }
             });
+            setTimeout(function(){
+                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
+            },500);
         }
         else {
             account.repos = account.repos.concat(repos);
+            setTimeout(function(){
+                jQuery('#reposList').animate({scrollTop: jQuery('#reposList').prop("scrollHeight")}, 1500);
+            },500);
         }
-
-        var reposList = jQuery('#reposList');
-        setTimeout(function(){
-            reposList.animate({scrollTop: reposList.prop("scrollHeight")}, 1500);
-        },500);
     };
 
     $scope.activateRepo = function (account, repo) {
-        console.log(repo);
         var formConfig = angular.copy(gitAccountsAppConfig.form.selectConfigBranch);
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
@@ -326,7 +326,6 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                     data: {
                                         provider: account.provider,
                                         owner: repo.owner.login,
-                                        project: repo.project ? repo.project.key : null,
                                         repo: repo.name,
                                         configBranch: formData.branch
                                     }

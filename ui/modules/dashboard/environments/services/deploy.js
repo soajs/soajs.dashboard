@@ -2,7 +2,7 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
-	function deployEnvironment(currentScope, envCode) {
+	function deployEnvironment(currentScope, envCode, haMode) {
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 
 		getControllerBranches(currentScope, function (branchInfo) {
@@ -184,8 +184,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				"routeName": "/dashboard/hosts/deployController",
 				"data": params
 			}, function(error, response) {
-				overlay.hide();
 				if(error) {
+					overlay.hide();
 					currentScope.generateNewMsg(envCode, 'danger', error.message);
 				}
 				else {

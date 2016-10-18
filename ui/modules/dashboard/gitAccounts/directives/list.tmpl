@@ -7,7 +7,7 @@
         <div class="entryBoxes entryBoxesGrid">
             <div ng-if="access.listAccounts" id="{{account._id}}" ng-repeat="account in accounts" class="entryBox customEntryBox">
                 <div class="header opened">
-                    <i class="fa fa-lg fa-{{account.provider}}"></i>
+                    <span class="icon icon-github" ng-if="account.provider === 'github'"></span>
                     {{account.label|uppercase}}&nbsp;&nbsp;[{{account.owner}}]
                 </div>
                 <div class="body">
@@ -19,7 +19,7 @@
 
                     <div ng-if="access.getRepos" id="reposList" style="overflow:scroll; height:265px; width:100%">
                         <ul class="blueListing">
-                            <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword track by $index" ng-style="{'width': '98%'}">
+                            <li class="blueLi row-list {{repo.status}}" ng-repeat="repo in account.repos| filter: searchKeyword" ng-style="{'width': '98%'}">
                                 <span class="repoFullName">{{repo.full_name}}</span>
                                 <span ng-if="repo.status === 'deleted'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-warning"></span>{{translation.repoHasBeenDeleted[LANG]}}</span>
                                 <span ng-if="repo.status === 'active'" class="f-right" ng-style="{'margin-right': '11%'}"><span class="icon icon-checkmark"></span>{{translation.activeRepo[LANG]}}</span>
