@@ -45,6 +45,7 @@ module.exports = {
 				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
 			},
 			repoConfigsFolder: __dirname + '/repoConfigs',
+			defaultConfigFilePath: "config.js"
 		},
 		bitbucket: {
 			userAgent: "SOAJS Bitbucket App",
