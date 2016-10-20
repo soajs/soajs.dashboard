@@ -49,6 +49,9 @@ module.exports = {
 				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
 				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
 			},
+			oauth: {
+				domain: 'https://bitbucket.org/site/oauth2/access_token'
+			},
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			defaultConfigFilePath: "config.js"
 		},

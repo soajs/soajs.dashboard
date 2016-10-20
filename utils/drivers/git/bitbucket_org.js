@@ -51,7 +51,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -76,7 +76,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -95,7 +95,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -109,7 +109,7 @@ var bitbucket = {
         if (data.token) {
             options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getAllRepos;
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
 
             return requester(options, cb);
@@ -124,17 +124,50 @@ var bitbucket = {
                 return cb(null, userRecord.repositories);
             });
         }
+    },
+
+    generateToken: function (data, cb) {
+        var options = {
+            method: 'POST',
+            json: true,
+            url: config.gitAccounts.bitbucket_org.oauth.domain,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            auth: {
+                user: data.key,
+                pass: data.secret
+            },
+            form: {
+                grant_type: 'password',
+                username: data.owner,
+                password: data.password
+            }
+        };
+
+        return requester(options, cb);
     }
 
 };
 
 var lib = {
-    buildToken: function (options) {
-        if (!options.owner || !options.password) {
-            return null;
-        }
+    "createAuthToken": function (options, mongo, cb) {
+        mongo.findOne('environment', {code: 'DASHBOARD'}, {custom: 1}, function (error, customRegistry) {
+            if (error) {
+                return cb(error);
+            }
 
-        return new Buffer(options.owner + ':' + options.password).toString('base64');
+            options.key = customRegistry.custom.oauth.bitbucket.key;
+            options.secret = customRegistry.custom.oauth.bitbucket.secret;
+
+            bitbucket.generateToken(options, function (error, authInfo) {
+                if (error || authInfo.error) {
+                    return cb(error || authInfo);
+                }
+
+                return cb(null, {token: authInfo.access_token});
+            });
+        });
     },
 
     checkUserRecord: function (options, cb) {
@@ -280,11 +313,17 @@ module.exports = {
                         });
 	                }
 	                else if (options.access === 'private') {//create token for account and save
-                        options.token = lib.buildToken(options);
-                        delete options.password;
-                        lib.checkUserRecord(options, function (error) {
+                        lib.createAuthToken(options, mongo, function (error, tokenInfo) {
                             checkIfError(error, {}, cb, function () {
-                                return data.saveNewAccount(mongo, options, cb);
+                                options.token = tokenInfo.token;
+                                delete options.password;
+                                delete options.key;
+                                delete options.secret;
+                                lib.checkUserRecord(options, function (error) {
+                                    checkIfError(error, {}, cb, function () {
+                                        return data.saveNewAccount(mongo, options, cb);
+                                    });
+                                });
                             });
                         });
 	                }
