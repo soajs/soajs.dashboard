@@ -91,7 +91,7 @@ var lib = {
                         }
                     });
                 }
-                
+
                 return cb(null, branchesArray);
             })
             .catch(function (error) {
@@ -253,7 +253,8 @@ module.exports = {
                                 }
 
                                 // if credentials are good, encrypt them then save the account
-                                options.token = aes.encrypt(options.token, GIT_ACCOUNTS_SECRET);
+                                // options.token = aes.encrypt(options.token, GIT_ACCOUNTS_SECRET);
+                                options.token = new Buffer(options.token).toString('base64');
                                 data.saveNewAccount(mongo, options, cb);
                             })
                             .catch(function (error) {
@@ -299,7 +300,8 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    options.token = new Buffer(accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
 
@@ -327,7 +329,8 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    options.token = new Buffer (accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
 
