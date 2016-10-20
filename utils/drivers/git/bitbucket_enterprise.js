@@ -341,7 +341,6 @@ module.exports = {
     },
 
     "getContent": function (soajs, options, cb) {
-        console.log (options);
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 
