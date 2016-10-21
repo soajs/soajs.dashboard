@@ -710,6 +710,16 @@ var environmentsConfig = {
 				}
 			]
 		},
+		multiServiceInfo: {
+			'entries': [
+				{
+					'name': 'infoTabs',
+					'label': '',
+					'type': 'tabset',
+					'tabs': []
+				}
+			]
+		},
 		node: {
 			'entries': [
 				{
