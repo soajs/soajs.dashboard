@@ -172,7 +172,7 @@ var lib = {
 
     "checkAuthToken": function (options, mongo, accountRecord, cb) {
         if (!options.tokenInfo) {
-            return cb(null, true);
+            return cb(null, false);
         }
 
         var expiryDate = options.tokenInfo.created + options.tokenInfo.expires_in - 300000; //5min extra for extra assurance when deploying
@@ -191,11 +191,22 @@ var lib = {
                 accountRecord.tokenInfo.created = (new Date).getTime();
                 accountRecord.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
 
-                return mongo.save('git_accounts', accountRecord, cb);
+                mongo.save('git_accounts', accountRecord, function (error) {
+                    if (error) {
+                        return cb(error);
+                    }
+
+                    var newTokenInfo = {
+                        token: accountRecord.token,
+                        tokenInfo: accountRecord.tokenInfo
+                    };
+
+                    return cb(null, true, newTokenInfo);
+                });
             });
         }
         else {
-            return cb(null, true);
+            return cb(null, false);
         }
     },
 
@@ -392,8 +403,12 @@ module.exports = {
                 options.type = accountRecord.type;
                 options.owner = accountRecord.owner;
                 options.tokenInfo = accountRecord.tokenInfo;
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, result) {
+                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
                         lib.getAllRepos(options, function (error, result) {
                             checkIfError(error, {}, cb, function () {
                                 result = lib.buildReposArray(result);
@@ -416,8 +431,12 @@ module.exports = {
                 options.token = accountRecord.token;
                 options.tokenInfo = accountRecord.tokenInfo;
 
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, result) {
+                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
                         lib.getRepoBranches(options, function (error, branches) {
                             branches = lib.buildBranchesArray(branches);
                             checkIfError(error, {}, cb, function () {
@@ -438,7 +457,11 @@ module.exports = {
     getContent: function (soajs, data, mongo, options, cb) {
         data.getAccount(mongo, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, result) {
+                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
+                    if (updated) {
+                        options.token = newTokenInfo.token;
+                        options.tokenInfo = newTokenInfo.tokenInfo;
+                    }
                     checkIfError(error, {}, cb, function () {
                         lib.getRepoContent(options, function (error, response) {
                             checkIfError(error, {}, cb, function () {
