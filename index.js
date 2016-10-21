@@ -9,11 +9,14 @@ var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 var hostBL = require("./lib/host.js");
+var tenantBL = require("./lib/tenant.js");
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
+
+var dbModel = "mongo";
 
 var servicesCollectionName = 'services';
 var daemonsCollectionName = 'daemons';
@@ -31,7 +34,6 @@ var dockerCollectionName = 'docker';
 var gcCollectionName = 'gc';
 
 var service = new soajs.server.service(config);
-
 function checkForMongo(req) {
 	if (!mongo) {
 		mongo = new Mongo(req.soajs.registry.coreDB.provision);
@@ -296,128 +298,177 @@ service.init(function () {
 	 * Tenants features
 	 */
 	service.post("/tenant/add", function (req, res) {
-		checkForMongo(req);
-		tenant.add(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.add(config, req, res);
+		});
 	});
+
 	service.get("/tenant/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.delete(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.delete(config, req, res);
+		});
 	});
+
 	service.get("/tenant/list", function (req, res) {
-		checkForMongo(req);
-		tenant.list(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
+
 	service.post("/tenant/update", function (req, res) {
-		checkForMongo(req);
-		tenant.update(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.update(config, req, res);
+		});
 	});
+
 	service.get("/tenant/get", function (req, res) {
-		checkForMongo(req);
-		tenant.get(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.get(config, req, res);
+		});
 	});
 
 	service.get("/tenant/oauth/list", function (req, res) {
-		checkForMongo(req);
-		tenant.getOAuth(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.getOAuth(config, req, res);
+		});
 	});
+
 	service.post("/tenant/oauth/add", function (req, res) {
-		checkForMongo(req);
-		tenant.saveOAuth(config, 425, 'tenant OAuth add successful', mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res);
+		});
 	});
+
 	service.post("/tenant/oauth/update", function (req, res) {
-		checkForMongo(req);
-		tenant.saveOAuth(config, 426, 'tenant OAuth update successful', mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
+		});
 	});
+
 	service.get("/tenant/oauth/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.deleteOAuth(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.deleteOAuth(config, req, res);
+		});
 	});
 
 	service.get("/tenant/oauth/users/list", function (req, res) {
-		checkForMongo(req);
-		tenant.getOAuthUsers(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.getOAuthUsers(config, req, res);
+		});
 	});
+
 	service.get("/tenant/oauth/users/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.deleteOAuthUsers(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.deleteOAuthUsers(config, req, res);
+		});
 	});
+
 	service.post("/tenant/oauth/users/add", function (req, res) {
-		checkForMongo(req);
-		tenant.addOAuthUsers(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.addOAuthUsers(config, req, res);
+		});
 	});
+
 	service.post("/tenant/oauth/users/update", function (req, res) {
-		checkForMongo(req);
-		tenant.updateOAuthUsers(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.updateOAuthUsers(config, req, res);
+		});
 	});
 
 	service.get("/tenant/application/list", function (req, res) {
-		checkForMongo(req);
-		tenant.listApplication(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.listApplication(config, req, res);
+		});
 	});
+
 	service.post("/tenant/application/add", function (req, res) {
-		checkForMongo(req);
-		tenant.addApplication(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.addApplication(config, req, res);
+		});
 	});
+
 	service.post("/tenant/application/update", function (req, res) {
-		checkForMongo(req);
-		tenant.updateApplication(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.updateApplication(config, req, res);
+		});
 	});
+
 	service.get("/tenant/application/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.deleteApplication(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.deleteApplication(config, req, res);
+		});
 	});
 
 	service.post("/tenant/acl/get", function (req, res) {
-		checkForMongo(req);
-		tenant.getTenantAcl(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.getTenantAcl(config, req, res);
+		});
 	});
+
 	service.post("/tenant/application/key/add", function (req, res) {
-		checkForMongo(req);
-		tenant.createApplicationKey(config, mongo, service.provision, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.createApplicationKey(config, req, res);
+		});
 	});
+
 	service.get("/tenant/application/key/list", function (req, res) {
-		checkForMongo(req);
-		tenant.getApplicationKeys(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.getApplicationKeys(config, req, res);
+		});
 	});
+
 	service.get("/tenant/application/key/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.deleteApplicationKey(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.deleteApplicationKey(config, req, res);
+		});
 	});
 
 	service.get("/tenant/application/key/ext/list", function (req, res) {
-		checkForMongo(req);
-		tenant.listApplicationExtKeys(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.listApplicationExtKeys(config, req, res);
+		});
 	});
+
 	service.post("/tenant/application/key/ext/add", function (req, res) {
-		checkForMongo(req);
-		tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+		});
 	});
+
 	service.post("/tenant/application/key/ext/update", function (req, res) {
-		checkForMongo(req);
-		tenant.updateApplicationExtKeys(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.updateApplicationExtKeys(config, req, res);
+		});
 	});
+
 	service.post("/tenant/application/key/ext/delete", function (req, res) {
-		checkForMongo(req);
-		tenant.deleteApplicationExtKeys(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.deleteApplicationExtKeys(config, req, res);
+		});
 	});
 
 	service.post("/tenant/application/key/config/update", function (req, res) {
-		checkForMongo(req);
-		tenant.updateApplicationConfig(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.updateApplicationConfig(config, req, res);
+		});
 	});
+
 	service.get("/tenant/application/key/config/list", function (req, res) {
-		checkForMongo(req);
-		tenant.listApplicationConfig(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.listApplicationConfig(config, req, res);
+		});
 	});
 
 	service.get("/key/get", function (req, res) {
-		checkForMongo(req);
-		tenant.extKeyGet(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.extKeyGet(config, req, res);
+		});
 	});
 
 	service.get("/permissions/get", function (req, res) {
-		checkForMongo(req);
-		tenant.permissionsGet(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.permissionsGet(config, req, res);
+		});
 	});
 
 	/**
