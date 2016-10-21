@@ -2492,6 +2492,20 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"oauthKey": {
+				"source": ['body.oauthKey'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"oauthSecret": {
+				"source": ['body.oauthSecret'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/gitAccounts/logout": {

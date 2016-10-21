@@ -147,8 +147,8 @@ var bitbucket = {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             auth: {
-                user: data.key,
-                pass: data.secret
+                user: data.tokenInfo.oauthKey,
+                pass: data.tokenInfo.oauthSecret
             },
             form: formData
         };
@@ -159,24 +159,14 @@ var bitbucket = {
 
 var lib = {
     "createAuthToken": function (options, mongo, cb) {
-        mongo.findOne('environment', {code: 'DASHBOARD'}, {custom: 1}, function (error, customRegistry) {
-            if (error) {
-                return cb(error);
+        options.action = 'generate';
+
+        bitbucket.getToken(options, function (error, authInfo) {
+            if (error || authInfo.error) {
+                return cb(error || authInfo);
             }
 
-            //TODO: add check for oauth values here
-
-            options.key = customRegistry.custom.oauth.bitbucket.key;
-            options.secret = customRegistry.custom.oauth.bitbucket.secret;
-            options.action = 'generate';
-
-            bitbucket.getToken(options, function (error, authInfo) {
-                if (error || authInfo.error) {
-                    return cb(error || authInfo);
-                }
-
-                return cb(null, authInfo);
-            });
+            return cb(null, authInfo);
         });
     },
 
@@ -185,32 +175,23 @@ var lib = {
             return cb(null, true);
         }
 
-        var expiryDate = options.tokenInfo.created + options.tokenInfo.expires_in + 300000; //5min extra for extra assurance when deploying
+        var expiryDate = options.tokenInfo.created + options.tokenInfo.expires_in - 300000; //5min extra for extra assurance when deploying
         var currentDate = (new Date).getTime();
 
         if (currentDate > expiryDate) {
-            mongo.findOne('environment', {code: 'DASHBOARD'}, {custom: 1}, function (error, customRegistry) {
-                if (error) {
-                    return cb(error);
+            options.action = 'refresh';
+
+            bitbucket.getToken(options, function (error, tokenInfo) {
+                if (error || tokenInfo.error) {
+                    return cb(error || tokenInfo.error);
                 }
 
-                //TODO: add check for oauth values here
+                accountRecord.token = tokenInfo.access_token;
+                accountRecord.tokenInfo.refresh_token = tokenInfo.refresh_token;
+                accountRecord.tokenInfo.created = (new Date).getTime();
+                accountRecord.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
 
-                options.key = customRegistry.custom.oauth.bitbucket.key;
-                options.secret = customRegistry.custom.oauth.bitbucket.secret;
-                options.action = 'refresh';
-
-                bitbucket.getToken(options, function (error, tokenInfo) {
-                    if (error || tokenInfo.error) {
-                        return cb(error || tokenInfo.error);
-                    }
-
-                    accountRecord.token = tokenInfo.access_token;
-                    delete tokenInfo.access_token;
-                    tokenInfo.created = (new Date).getTime();
-
-                    return mongo.save('git_accounts', accountRecord, cb);
-                });
+                return mongo.save('git_accounts', accountRecord, cb);
             });
         }
         else {
@@ -371,15 +352,14 @@ module.exports = {
                         lib.createAuthToken(options, mongo, function (error, tokenInfo) {
                             checkIfError(error, {}, cb, function () {
                                 options.token = tokenInfo.access_token;
-                                options.tokenInfo = tokenInfo;
                                 //these fields are required in order to refresh the token when it exipres
+                                options.tokenInfo.refresh_token = tokenInfo.refresh_token;
                                 options.tokenInfo.created = (new Date).getTime();
-                                options.tokenInfo.expires_in = options.tokenInfo.expires_in * 1000;
+                                options.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
 
                                 delete options.tokenInfo.access_token;
                                 delete options.password;
-                                delete options.key;
-                                delete options.secret;
+                                delete options.action;
                                 lib.checkUserRecord(options, function (error) {
                                     checkIfError(error, {}, cb, function () {
                                         return data.saveNewAccount(mongo, options, cb);

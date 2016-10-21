@@ -105,17 +105,17 @@ var gaTranslation = {
         ENG: "Choose Account Provider",
         FRA: "Choose Account Provider"
     },
-    accountName: {
-        ENG: "Account Name",
-        FRA: "Account Name"
+    accountLabel: {
+        ENG: "Account Label",
+        FRA: "Account Label"
     },
     chooseAccountName: {
         ENG: "Choose Account Name",
         FRA: "Choose Account Name"
     },
     exampleMyAccount: {
-        ENG: "Example: myAccount",
-        FRA: "Example: myAccount"
+        ENG: "Example: My Account",
+        FRA: "Example: My Account"
     },
     username: {
         ENG: "Username",
@@ -157,7 +157,7 @@ var gaTranslation = {
         ENG: "Please specify the branch to use to read the repository's config file",
         FRA: "Please specify the branch to use to read the repository's config file"
     },
-    
+
     logoutSuccessful: {
         ENG: "Logout Successful",
         FRA: "Logout Successful"
