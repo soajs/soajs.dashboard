@@ -2383,7 +2383,7 @@ module.exports = {
 			},
 			"version": {
 				"source": ['query.version'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}

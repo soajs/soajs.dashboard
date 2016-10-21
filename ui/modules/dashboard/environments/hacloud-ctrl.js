@@ -49,7 +49,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	$scope.listNginxServices = function () {
 		hacloudSrv.listNginxHosts($scope, $scope.envCode);
-	}
+	};
 
 	$scope.reloadServiceRegistry = function (source, service) {
 		hacloudSrv.reloadServiceRegistry($scope, source, service);

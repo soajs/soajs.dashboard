@@ -234,6 +234,17 @@
 						<div class="entryBox mb20">
 							<div class="header">
 								<span class="serviceLabelBox">Nginx</span>
+								<div class="dropdown serviceOpsDropdown">
+									<button class="btn btn-default dropdown-toggle" type="button" id="serviceOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										Service Operations
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+										<li>&nbsp;Deployment</li>
+										<li><a href="" ng-click="scaleService(nginxHosts)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+										<li><a href="" ng-click="deleteService(nginxHosts[0].serviceName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+									</ul>
+								</div>
 							</div>
 							<div class="body">
 								<div class="grid">
@@ -250,7 +261,7 @@
 											<tr ng-repeat="instance in nginxHosts">
 												<td>
 													<a href="">
-														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+														<span ng-click="hostLogs(instance.taskName)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 													</a>
 												</td>
 												<td>{{instance.hostname}}</td>
@@ -285,7 +296,7 @@
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
                                                 <li>&nbsp;Deployment</li>
-                                                <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+                                                <li><a href="" ng-click="scaleService(serviceInfo.ips)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
                                                 <li><a href="" ng-click="deleteService(serviceInfo.serviceHAName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
                                                 <li>&nbsp;Maintenance</li>
                                                 <li><a href="" ng-click="reloadServiceRegistry('controller', serviceInfo.ips)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
