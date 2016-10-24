@@ -407,7 +407,7 @@ service.init(function () {
 
 	service.post("/tenant/application/key/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.createApplicationKey(config, req, res);
+			BL.createApplicationKey(config, service.provision, req, res);
 		});
 	});
 
@@ -475,8 +475,9 @@ service.init(function () {
 	 * Dashboard Keys
 	 */
 	service.get("/tenant/db/keys/list", function (req, res) {
-		checkForMongo(req);
-		tenant.listDashboardKeys(config, mongo, req, res);
+		initBLModel(req, res, tenantBL, dbModel, function (BL) {
+			BL.listDashboardKeys(config, req, res);
+		});
 	});
 
 	/**

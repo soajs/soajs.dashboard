@@ -6,16 +6,19 @@ var soajs = require("soajs");
 var Mongo = soajs.mongo;
 var mongo = null;
 
-function checkForMongo(soajs, opts) {
+function checkForMongo(soajs) {
     if (!mongo) {
-        var database = opts.dbName;
-        mongo = new Mongo(soajs.registry.coreDB.database);
+        mongo = new Mongo(soajs.registry.coreDB.provision);
     }
 }
 
-var model = {
+module.exports = {
+    "generateMongoId": function(){
+      return new mongo.ObjectId();
+    },
+
     "validateId": function(soajs, cb){
-        checkForMongo(soajs, opts);
+        checkForMongo(soajs);
         try{
             soajs.inputmaskData.id = mongo.ObjectId(soajs.inputmaskData.id);
             return cb(null, soajs.inputmaskData.id);
@@ -25,38 +28,49 @@ var model = {
         }
     },
 
+    "validateUid": function(soajs, cb){
+        checkForMongo(soajs);
+        try{
+            soajs.inputmaskData.uId = mongo.ObjectId(soajs.inputmaskData.uId);
+            return cb(null, soajs.inputmaskData.uId);
+        }
+        catch(e){
+            return cb(e);
+        }
+    },
+
     "countEntries": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.count(opts.collection, opts.conditions || {}, cb);
+        checkForMongo(soajs);
+        mongo.count(opts.collection, opts.conditions || {}, cb);
     },
 
     "findEntries": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.find(opts.collection, opts.conditions || {}, opts.fields || null, opts.options || null, cb);
+        checkForMongo(soajs);
+        mongo.find(opts.collection, opts.conditions || {}, opts.fields || null, opts.options || null, cb);
     },
 
     "findEntry": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.findOne(opts.collection, opts.conditions || {}, opts.fields || null, opts.options || null, cb);
+        checkForMongo(soajs);
+        mongo.findOne(opts.collection, opts.conditions || {}, cb);
     },
 
     "saveEntry": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.save(opts.collection, opts.record, cb);
+        checkForMongo(soajs);
+        mongo.save(opts.collection, opts.record, cb);
     },
 
     "insertEntry": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.insert(opts.collection, opts.record, cb);
+        checkForMongo(soajs);
+        mongo.insert(opts.collection, opts.record, cb);
     },
 
     "removeEntry": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.remove(opts.collection, opts.conditions, cb);
+        checkForMongo(soajs);
+        mongo.remove(opts.collection, opts.conditions, cb);
     },
 
     "updateEntry": function (soajs, opts, cb) {
-        checkForMongo(soajs, opts);
-        soajs.mongoDb.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, cb);
+        checkForMongo(soajs);
+        mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, cb);
     }
 };
