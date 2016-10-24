@@ -79,3 +79,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		$scope.listServices();
 	// }
 }]);
+
+
+environmentsApp.filter('bytesToGbytes', function () {
+	return function (number) {
+		number = number / 1024 / 1024 / 1024;
+		return number.toFixed(2);
+	}
+});

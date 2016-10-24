@@ -195,7 +195,7 @@
                                         <td>{{node.dockerPort}}</td>
                                         <td>{{node.role}}</td>
                                         <td>{{node.availability}}</td>
-                                        <td>{{node.resources.memory / 1024 / 1024 / 1024}} GB</td>
+                                        <td>{{node.resources.memory | bytesToGbytes}} GB</td>
                                         <td>{{node.resources.cpuCount}}</td>
                                     </tr>
                                 </tbody>
