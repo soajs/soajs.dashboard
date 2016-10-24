@@ -71,13 +71,16 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.hostLogs($scope, taskName);
 	};
 
-	// if ($scope.access.listNodes) {
-		injectFiles.injectCss('modules/dashboard/environments/environments.css');
-		$scope.envCode = $cookies.getObject("myEnv").code;
+	injectFiles.injectCss('modules/dashboard/environments/environments.css');
+	$scope.envCode = $cookies.getObject("myEnv").code;
 
+	if ($scope.access.hacloud.nodes.list) {
 		$scope.listNodes();
+	}
+	if ($scope.access.listHosts) {
 		$scope.listServices();
-	// }
+	}
+	
 }]);
 
 
