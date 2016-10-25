@@ -51,7 +51,7 @@ module.exports = {
 
     "findEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.findOne(opts.collection, opts.conditions || {}, cb);
+        mongo.findOne(opts.collection, opts.conditions || {},  opts.fields || null, opts.options || null, cb);
     },
 
     "saveEntry": function (soajs, opts, cb) {

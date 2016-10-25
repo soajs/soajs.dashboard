@@ -8,8 +8,11 @@ var config = require('./config.js');
 var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
+
 var hostBL = require("./lib/host.js");
 var tenantBL = require("./lib/tenant.js");
+var productBL = require('./lib/product.js');
+
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
 var daemons = require("./lib/daemons.js");
@@ -253,45 +256,55 @@ service.init(function () {
 	 * Products features
 	 */
 	service.post("/product/add", function (req, res) {
-		checkForMongo(req);
-		product.add(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.add(config, req, res);
+		});
 	});
 	service.get("/product/delete", function (req, res) {
-		checkForMongo(req);
-		product.delete(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.delete(config, req, res);
+		});
 	});
 	service.post("/product/update", function (req, res) {
-		checkForMongo(req);
-		product.update(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.update(config, req, res);
+		});
 	});
 	service.get("/product/list", function (req, res) {
-		checkForMongo(req);
-		product.list(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
 	service.get("/product/get", function (req, res) {
-		checkForMongo(req);
-		product.get(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.get(config, req, res);
+		});
 	});
 
 	service.get("/product/packages/get", function (req, res) {
-		checkForMongo(req);
-		product.getPackage(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.getPackage(config, req, res);
+		});
 	});
 	service.get("/product/packages/list", function (req, res) {
-		checkForMongo(req);
-		product.listPackage(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.listPackage(config, req, res);
+		});
 	});
 	service.post("/product/packages/add", function (req, res) {
-		checkForMongo(req);
-		product.addPackage(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.addPackage(config, req, res);
+		});
 	});
 	service.post("/product/packages/update", function (req, res) {
-		checkForMongo(req);
-		product.updatePackage(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.updatePackage(config, req, res);
+		});
 	});
 	service.get("/product/packages/delete", function (req, res) {
-		checkForMongo(req);
-		product.deletePackage(config, mongo, req, res);
+		initBLModel(req, res, productBL, dbModel, function (BL) {
+			BL.deletePackage(config, req, res);
+		});
 	});
 
 	/**
