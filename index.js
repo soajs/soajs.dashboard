@@ -12,6 +12,9 @@ var tenant = require('./lib/tenant.js');
 var hostBL = require("./lib/host.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
+var servicesBL = require("./lib/services.js");
+var daemonsBL = require("./lib/daemons.js");
+var staticContentBL = require('./lib/staticContent.js');
 
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
@@ -673,56 +676,65 @@ service.init(function () {
 	 * Services features
 	 */
 	service.post("/services/list", function (req, res) {
-		checkForMongo(req);
-		services.list(config, mongo, req, res);
+		initBLModel(req, res, servicesBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
-
 	/**
 	 * Daemons features
 	 */
 	service.post("/daemons/list", function (req, res) {
-		checkForMongo(req);
-		daemons.list(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
 	service.post("/daemons/groupConfig/list", function (req, res) {
-		checkForMongo(req);
-		daemons.listGroupConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.listGroupConfig(config, req, res);
+		});
 	});
 	service.post("/daemons/groupConfig/add", function (req, res) {
-		checkForMongo(req);
-		daemons.addGroupConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.addGroupConfig(config, req, res);
+		});
 	});
 	service.post("/daemons/groupConfig/update", function (req, res) {
-		checkForMongo(req);
-		daemons.updateGroupConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.updateGroupConfig(config, req, res);
+		});
 	});
 	service.get("/daemons/groupConfig/delete", function (req, res) {
-		checkForMongo(req);
-		daemons.deleteGroupConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.deleteGroupConfig(config, req, res);
+		});
 	});
 	service.post("/daemons/groupConfig/serviceConfig/update", function (req, res) {
-		checkForMongo(req);
-		daemons.updateServiceConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.updateServiceConfig(config, req, res);
+		});
 	});
 	service.get("/daemons/groupConfig/serviceConfig/list", function (req, res) {
-		checkForMongo(req);
-		daemons.listServiceConfig(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.listServiceConfig(config, req, res);
+		});
 	});
 	service.post("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
-		checkForMongo(req);
-		daemons.updateTenantExtKeys(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.updateTenantExtKeys(config, req, res);
+		});
 	});
 	service.get("/daemons/groupConfig/tenantExtKeys/list", function (req, res) {
-		checkForMongo(req);
-		daemons.listTenantExtKeys(config, mongo, req, res);
+		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
+			BL.listTenantExtKeys(config, req, res);
+		});
 	});
-
 	/**
 	 * Static Content features
 	 */
 	service.post("/staticContent/list", function (req, res) {
-		checkForMongo(req);
-		staticContent.list(config, mongo, req, res);
+		initBLModel(req, res, staticContentBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
 
 	/**

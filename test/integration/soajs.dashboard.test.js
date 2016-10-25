@@ -72,7 +72,7 @@ describe("DASHBOARD UNIT Tests:", function () {
         done();
     });
 
-	describe("environment tests", function () {
+	describe.skip("environment tests", function () {
 		var validEnvRecord = {
 			"code": "DEV",
 			"domain": "api.myDomain.com",
@@ -1455,7 +1455,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	});
 
-	describe("login tests", function () {
+	describe.skip("login tests", function () {
 		var auth;
 		it("success - did not specify environment code, old acl", function (done) {
 			var options = {
@@ -1509,7 +1509,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe("testing settings for logged in users", function () {
+	describe.skip("testing settings for logged in users", function () {
 		var soajsauth;
 
 		it("fail - should not work for non-logged in users", function (done) {
@@ -1976,7 +1976,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe("platforms tests", function () {
+	describe.skip("platforms tests", function () {
 
 		describe("add drivers", function () {
 
@@ -2311,7 +2311,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	});
 
-	describe("hosts tests", function () {
+	describe.skip("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {
@@ -2631,7 +2631,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe("change tenant security key", function () {
+	describe.skip("change tenant security key", function () {
 
 		it("success - will change tenant security key", function (done) {
 			mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
@@ -2726,7 +2726,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
+	describe.skip("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
 		var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
 
 		before(function (done) {
