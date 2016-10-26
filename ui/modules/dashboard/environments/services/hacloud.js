@@ -622,30 +622,25 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             }
             else {
                 if (cb) {
-                    cb();
+                    return cb();
                 }
                 else {
-                    var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
-                    formConfig.entries[0].value = response;
-                    var options = {
-            			timeout: $timeout,
-            			form: formConfig,
-            			name: 'reloadRegistry',
-            			label: "Reloaded Registry of " + oneHost.name,
-            			actions: [
-            				{
-            					'type': 'reset',
-            					'label': translation.ok[LANG],
-            					'btn': 'primary',
-            					'action': function (formData) {
-                                    currentScope.modalInstance.dismiss('cancel');
-                                    currentScope.form.formData = {};
-                                }
-            				}
-            			]
-            		};
-
-            		buildFormWithModal(currentScope, $modal, options);
+                    currentScope.registryInfo.push({
+                        'label': oneHost.ip,
+                        'entries': [
+                            {
+                                'label': 'Registry information for: ' + oneHost.taskName,
+                                'name': oneHost.name,
+                                'type': 'jsoneditor',
+                                'options': {
+            				        'mode': 'view',
+            				        'availableModes': []
+            				    },
+            				    'height': '500px',
+            				    "value": response
+                            }
+                        ]
+                    });
                 }
             }
         });
@@ -653,19 +648,45 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function reloadServiceRegistry (currentScope, source, service) {
         //reload registry for all service instances in parallel
+        currentScope.registryInfo = [];
         if (source === 'controller') {
             service.forEach(function (oneServiceIp) {
                 reloadRegistry(currentScope, currentScope.envCode, oneServiceIp);
             });
         }
         else {
-            var srvVersions = Object.keys(service.ips);
-            srvVersions.forEach(function (oneSrvVersion) {
-                service.ips[oneSrvVersion].forEach(function (oneInstance) {
-                    reloadRegistry(currentScope, currentScope.envCode, oneInstance);
-                });
+            service.forEach(function (oneInstance) {
+                reloadRegistry(currentScope, currentScope.envCode, oneInstance);
             });
         }
+
+        var stopWatching = currentScope.$watchCollection('registryInfo', function () {
+            if (currentScope.registryInfo.length === service.length) {
+                stopWatching();
+                var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+                formConfig.entries[0].tabs = currentScope.registryInfo;
+                var options = {
+                    timeout: $timeout,
+                    form: formConfig,
+                    name: 'reloadRegistry',
+                    label: "Reloaded Registry of " + service[0].serviceName,
+                    actions: [
+                        {
+                            'type': 'reset',
+                            'label': translation.ok[LANG],
+                            'btn': 'primary',
+                            'action': function (formData) {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.registryInfo = [];
+                                currentScope.form.formData = {};
+                            }
+                        }
+                    ]
+                };
+
+                buildFormWithModal(currentScope, $modal, options);
+            }
+        });
     }
 
     function loadProvisioning(currentScope, env, oneHost) {
@@ -692,38 +713,59 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     new Date().toISOString());
             }
             else {
-                var formConfig = angular.copy(environmentsConfig.form.serviceInfo);
-                formConfig.entries[0].value = response;
-                var options = {
-        			timeout: $timeout,
-        			form: formConfig,
-        			name: 'reloadProvision',
-        			label: "Reloaded Provisioned Information of " + oneHost.name,
-        			actions: [
-        				{
-        					'type': 'reset',
-        					'label': translation.ok[LANG],
-        					'btn': 'primary',
-        					'action': function (formData) {
-                                currentScope.modalInstance.dismiss('cancel');
-                                currentScope.form.formData = {};
-                            }
-        				}
-        			]
-        		};
-
-        		buildFormWithModal(currentScope, $modal, options);
+                currentScope.provisionInfo.push({
+                    'label': oneHost.ip,
+                    'entries': [
+                        {
+                            'label': 'Provision information for: ' + oneHost.taskName,
+                            'name': oneHost.name,
+                            'type': 'jsoneditor',
+                            'options': {
+                                'mode': 'view',
+                                'availableModes': []
+                            },
+                            'height': '500px',
+                            "value": response
+                        }
+                    ]
+                });
             }
         });
     }
 
     function loadServiceProvision (currentScope, source, service) {
         //reload provision for all service instances in parallel
-        var srvVersions = Object.keys(service.ips);
-        srvVersions.forEach(function (oneSrvVersion) {
-            service.ips[oneSrvVersion].forEach(function (oneInstance) {
-                loadProvisioning(currentScope, currentScope.envCode, oneInstance);
-            });
+        currentScope.provisionInfo = [];
+        service.forEach(function (oneInstance) {
+            loadProvisioning(currentScope, currentScope.envCode, oneInstance);
+        });
+
+        var stopWatching = currentScope.$watchCollection('provisionInfo', function () {
+            if (currentScope.provisionInfo.length === service.length) {
+                stopWatching();
+                var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+                formConfig.entries[0].tabs = currentScope.provisionInfo;
+                var options = {
+                    timeout: $timeout,
+                    form: formConfig,
+                    name: 'reloadProvision',
+                    label: "Reloaded Provisioned Data of " + service[0].serviceName,
+                    actions: [
+                        {
+                            'type': 'reset',
+                            'label': translation.ok[LANG],
+                            'btn': 'primary',
+                            'action': function (formData) {
+                                currentScope.modalInstance.dismiss('cancel');
+                                currentScope.provisionInfo = [];
+                                currentScope.form.formData = {};
+                            }
+                        }
+                    ]
+                };
+
+                buildFormWithModal(currentScope, $modal, options);
+            }
         });
     }
 

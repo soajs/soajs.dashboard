@@ -293,22 +293,22 @@ var lib = {
 
 
 module.exports = {
-    "login": function (soajs, data, mongo, options, cb) {
-        data.checkIfAccountExists(mongo, options, function (error, count) {
+    "login": function (soajs, data, model, options, cb) {
+        data.checkIfAccountExists(soajs, model, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, {code: 752, message: 'Account already exists'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 	                    if (options.type === 'personal') {
 	                        lib.checkUserRecord(options, function (error) {
 	                            checkIfError(error, {}, cb, function () {
-	                                data.saveNewAccount(mongo, options, cb);
+	                                data.saveNewAccount(soajs, model, options, cb);
 	                            });
 	                        });
 	                    }
 	                    else if (options.type === 'organization') {
 	                        lib.checkOrgRecord(options, function (error) {
 	                            checkIfError(error, {}, cb, function () {
-	                                data.saveNewAccount(mongo, options, cb);
+	                                data.saveNewAccount(soajs, model, options, cb);
 	                            });
 	                        });
 	                    }
@@ -319,7 +319,7 @@ module.exports = {
 	                            delete options.password;
 	                            options.token = tokenInfo.token;
 	                            options.authId = tokenInfo.authId;
-	                            data.saveNewAccount(mongo, options, cb);
+	                            data.saveNewAccount(soajs, model, options, cb);
 	                        });
 	                    });
 	                }
@@ -328,28 +328,28 @@ module.exports = {
         });
     },
 
-    "logout": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "logout": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {code: 754, message: 'Active repositories exist for this user'}, cb, function () {
-                    if (accountRecord.access === 'public') {
-                        data.removeAccount(mongo, accountRecord._id, cb);
-                    }
-                    else if (accountRecord.access === 'private') {
-                        data.removeAccount(mongo, accountRecord._id, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                accountRecord.password = options.password;
+					data.removeAccount(soajs, model, accountRecord._id, function (error) {
+						checkIfError(error, {}, cb, function () {
+							if (accountRecord.access === 'public') {
+		                        return cb(null, true);
+		                    }
+							else {
+								accountRecord.password = options.password;
                                 lib.deleteAuthToken(accountRecord, cb);
-                            });
-                        });
-                    }
+							}
+						});
+					});
                 });
             });
         });
     },
 
-    "getRepos": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "getRepos": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 if (accountRecord.token) {
                     options.token = accountRecord.token;
@@ -367,8 +367,8 @@ module.exports = {
         });
     },
 
-    "getBranches": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "getBranches": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.token = accountRecord.token;
                 lib.getRepoBranches(options, function (error, branches) {
@@ -385,7 +385,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, options, cb) {
+    "getContent": function (soajs, data, model, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(!response.sha || !response.content, {code: 763}, cb, function () {

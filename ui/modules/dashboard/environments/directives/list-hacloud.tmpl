@@ -134,7 +134,7 @@
 
 <section ng-controller="hacloudCtrl">
     <tabset>
-        <tab heading="Nodes">
+        <tab heading="Nodes" ng-if="access.hacloud.nodes.list">
 			<br />
 			<div ng-if="localDeployment">
 				<alert type="info">
@@ -144,7 +144,7 @@
 			</div>
 			<div ng-if="!localDeployment">
 				<div ng-if="envCode === 'DASHBOARD'">
-		            <button class="btn btn-primary" ng-click="addNode()">Add New Node</button>
+		            <button class="btn btn-primary" ng-if="access.hacloud.nodes.add" ng-click="addNode()">Add New Node</button>
 		            <br /><br />
 				</div>
 				<div ng-if="envCode !== 'DASHBOARD'">
@@ -159,19 +159,19 @@
                     <div class="header">
                         {{node.name}}
                         <span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
-                            <a href="" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
+                            <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
                                 <span class="icon icon-cross" tooltip="Remove Node"></span>
                             </a>
-                            <a ng-if="node.role === 'manager'" href="" ng-click="updateNode(node, 'role', 'worker')">
+                            <a ng-if="node.role === 'manager' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'worker')">
                                 <span class="icon icon-arrow-down2" tooltip="Demote To Worker"></span>
                             </a>
-                            <a ng-if="node.role === 'worker'" href="" ng-click="updateNode(node, 'role', 'manager')">
+                            <a ng-if="node.role === 'worker' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'manager')">
                                 <span class="icon icon-arrow-up2" tooltip="Promote To Manager"></span>
                             </a>
-                            <a ng-if="node.availability === 'drain'" href="" ng-click="updateNode(node, 'availability', 'active')">
+                            <a ng-if="node.availability === 'drain' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'active')">
                                 <span class="icon icon-switch" tooltip="Activate"></span>
                             </a>
-                            <a ng-if="node.availability === 'active'" href="" ng-click="updateNode(node, 'availability', 'drain')">
+                            <a ng-if="node.availability === 'active' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'drain')">
                                 <span class="icon icon-power-cord" tooltip="Drain"></span>
                             </a>
                         </span>
@@ -195,7 +195,7 @@
                                         <td>{{node.dockerPort}}</td>
                                         <td>{{node.role}}</td>
                                         <td>{{node.availability}}</td>
-                                        <td>{{node.resources.memory / 1024 / 1024 / 1024}} GB</td>
+                                        <td>{{node.resources.memory | bytesToGbytes}} GB</td>
                                         <td>{{node.resources.cpuCount}}</td>
                                     </tr>
                                 </tbody>
@@ -205,7 +205,7 @@
                 </div>
             </div>
         </tab>
-        <tab heading="Services">
+        <tab heading="Services" ng-if="access.listHosts">
             <br />
             <div ng-if="!hosts.controller">
 				<div ng-if="!isDeploying">
@@ -213,7 +213,7 @@
 	                    This environment has not been deployed yet!
 	                </alert>
 	                <br />
-	                <button ng-style="{'margin-left': '44%'}" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+	                <button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
 				</div>
                 <div ng-if="isDeploying">
 					<alert type="success" ng-style="{'text-align': 'center'}">
@@ -222,8 +222,8 @@
 				</div>
             </div>
             <div ng-if="hosts.controller">
-                <button class="btn btn-primary" ng-click="deployNewService()">Deploy New Service</button>
-                <button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
+                <button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy New Service</button>
+                <button class="btn btn-primary f-right" ng-click="listServices()" ng-if="access.listHosts"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
                 <br /><br />
 				<fieldset class="groupFieldset" ng-if="nginxHosts">
 					<legend>
@@ -234,6 +234,17 @@
 						<div class="entryBox mb20">
 							<div class="header">
 								<span class="serviceLabelBox">Nginx</span>
+								<div class="dropdown serviceOpsDropdown">
+									<button class="btn btn-default dropdown-toggle" type="button" id="serviceOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+										Service Operations
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+										<li>&nbsp;Deployment</li>
+										<li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(nginxHosts)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+										<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(nginxHosts[0].serviceName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+									</ul>
+								</div>
 							</div>
 							<div class="body">
 								<div class="grid">
@@ -249,8 +260,8 @@
 										<tbody>
 											<tr ng-repeat="instance in nginxHosts">
 												<td>
-													<a href="">
-														<span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
+													<a href="" ng-if="access.hacloud.services.logs">
+														<span ng-click="hostLogs(instance.taskName)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 													</a>
 												</td>
 												<td>{{instance.hostname}}</td>
@@ -285,8 +296,8 @@
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
                                                 <li>&nbsp;Deployment</li>
-                                                <li><a href="" ng-click="scaleService()"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-                                                <li><a href="" ng-click="deleteService(serviceInfo.serviceHAName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                                <li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(serviceInfo.ips)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+                                                <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(serviceInfo.serviceHAName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
                                                 <li>&nbsp;Maintenance</li>
                                                 <li><a href="" ng-click="reloadServiceRegistry('controller', serviceInfo.ips)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
                                                 <li><a href="" ng-click="awarenessStat('controller', serviceInfo.ips)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
@@ -312,7 +323,7 @@
                                                                 <span class="icon icon-heart"></span>&nbsp;
                                                             </a>
 
-                                                            <a href="" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                            <a href="" ng-if="access.hacloud.services.logs" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
                                                                 <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
                                                             </a>
                                                         </td>
@@ -350,11 +361,11 @@
 	                                        </button>
 	                                        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 	                                            <li>&nbsp;Deployment</li>
-	                                            <li><a href="" ng-click="scaleService(versionInfo, version)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-	                                            <li><a href="" ng-click="deleteService(versionInfo[0].serviceName, version)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+	                                            <li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(versionInfo, version)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+	                                            <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(versionInfo[0].serviceName, version)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 	                                            <li>&nbsp;Maintenance</li>
-	                                            <li><a href="" ng-click="reloadServiceRegistry('service', hosts[service])"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
-	                                            <li><a href="" ng-click="loadServiceProvision('service', hosts[service])"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
+	                                            <li><a href="" ng-click="reloadServiceRegistry('service', versionInfo)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
+	                                            <li><a href="" ng-click="loadServiceProvision('service', versionInfo)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 	                                        </ul>
 	                                    </div>
 	                                </div>
@@ -381,7 +392,7 @@
 	                                                            <span class="icon icon-stats-dots"></span>&nbsp;
 	                                                        </a>
 
-	                                                        <a href="" ng-show="container.taskName" ng-click="hostLogs(container.taskName)">
+	                                                        <a href="" ng-if="access.hacloud.services.logs" ng-show="container.taskName" ng-click="hostLogs(container.taskName)">
 	                                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 	                                                        </a>
 	                                                    </td>

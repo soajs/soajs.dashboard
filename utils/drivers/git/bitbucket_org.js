@@ -51,7 +51,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -76,7 +76,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -95,7 +95,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
         }
 
@@ -109,7 +109,7 @@ var bitbucket = {
         if (data.token) {
             options.url = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getAllRepos;
             options.headers = {
-                authorization: 'Basic ' + data.token
+                authorization: 'Bearer ' + data.token
             };
 
             return requester(options, cb);
@@ -124,17 +124,94 @@ var bitbucket = {
                 return cb(null, userRecord.repositories);
             });
         }
-    }
+    },
 
+    getToken: function (data, cb) {
+        //generates or refreshes a oauth token
+        var formData = {};
+        if (data.action === 'generate') {
+            formData.grant_type = 'password';
+            formData.username = data.owner;
+            formData.password = data.password;
+        }
+        else if (data.action === 'refresh') {
+            formData.grant_type = 'refresh_token';
+            formData.refresh_token = data.tokenInfo.refresh_token;
+        }
+
+        var options = {
+            method: 'POST',
+            json: true,
+            url: config.gitAccounts.bitbucket_org.oauth.domain,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            auth: {
+                user: data.tokenInfo.oauthKey,
+                pass: data.tokenInfo.oauthSecret
+            },
+            form: formData
+        };
+
+        return requester(options, cb);
+    }
 };
 
 var lib = {
-    buildToken: function (options) {
-        if (!options.owner || !options.password) {
-            return null;
+    "createAuthToken": function (options, cb) {
+        options.action = 'generate';
+
+        bitbucket.getToken(options, function (error, authInfo) {
+            if (error || authInfo.error) {
+                return cb(error || authInfo);
+            }
+
+            return cb(null, authInfo);
+        });
+    },
+
+    "checkAuthToken": function (soajs, options, model, accountRecord, cb) {
+        if (!options.tokenInfo) {
+            return cb(null, false);
         }
 
-        return new Buffer(options.owner + ':' + options.password).toString('base64');
+        var expiryDate = options.tokenInfo.created + options.tokenInfo.expires_in - 300000; //5min extra for extra assurance when deploying
+        var currentDate = (new Date).getTime();
+
+        if (currentDate > expiryDate) {
+            options.action = 'refresh';
+
+            bitbucket.getToken(options, function (error, tokenInfo) {
+                if (error || tokenInfo.error) {
+                    return cb(error || tokenInfo.error);
+                }
+
+                accountRecord.token = tokenInfo.access_token;
+                accountRecord.tokenInfo.refresh_token = tokenInfo.refresh_token;
+                accountRecord.tokenInfo.created = (new Date).getTime();
+                accountRecord.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
+
+                var opts = {
+                    collection: 'git_accounts',
+                    record: accountRecord
+                };
+                model.saveEntry(soajs, opts, function (error) {
+                    if (error) {
+                        return cb(error);
+                    }
+
+                    var newTokenInfo = {
+                        token: accountRecord.token,
+                        tokenInfo: accountRecord.tokenInfo
+                    };
+
+                    return cb(null, true, newTokenInfo);
+                });
+            });
+        }
+        else {
+            return cb(null, false);
+        }
     },
 
     checkUserRecord: function (options, cb) {
@@ -157,15 +234,22 @@ var lib = {
 
     buildReposArray: function (allRepos) {
         var repos = [];
-        allRepos.forEach(function (oneRepo) {
-            repos.push({
-                full_name: oneRepo.owner + '/' + oneRepo.name,
-                owner: {
-                    login: oneRepo.owner
-                },
-                name: oneRepo.name
+
+        if (allRepos && Array.isArray(allRepos)) {
+            allRepos.forEach(function (oneRepo) {
+                repos.push({
+                    full_name: oneRepo.owner + '/' + oneRepo.name,
+                    owner: {
+                        login: oneRepo.owner
+                    },
+                    name: oneRepo.name
+                });
             });
-        });
+        }
+        else {
+            repos = null;
+        }
+
         return repos;
     },
 
@@ -268,23 +352,34 @@ var lib = {
 
 module.exports = {
 
-    login: function (soajs, data, mongo, options, cb) {
-        data.checkIfAccountExists(mongo, options, function (error, count) {
+    login: function (soajs, data, model, options, cb) {
+        data.checkIfAccountExists(soajs, model, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, {code: 752, message: 'Account already added'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
                         lib.checkUserRecord(options, function (error) {
                             checkIfError(error, {}, cb, function () {
-                                return data.saveNewAccount(mongo, options, cb);
+                                return data.saveNewAccount(soajs, model, options, cb);
                             });
                         });
 	                }
 	                else if (options.access === 'private') {//create token for account and save
-                        options.token = lib.buildToken(options);
-                        delete options.password;
-                        lib.checkUserRecord(options, function (error) {
+                        lib.createAuthToken(options, function (error, tokenInfo) {
                             checkIfError(error, {}, cb, function () {
-                                return data.saveNewAccount(mongo, options, cb);
+                                options.token = tokenInfo.access_token;
+                                //these fields are required in order to refresh the token when it exipres
+                                options.tokenInfo.refresh_token = tokenInfo.refresh_token;
+                                options.tokenInfo.created = (new Date).getTime();
+                                options.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
+
+                                delete options.tokenInfo.access_token;
+                                delete options.password;
+                                delete options.action;
+                                lib.checkUserRecord(options, function (error) {
+                                    checkIfError(error, {}, cb, function () {
+                                        return data.saveNewAccount(soajs, model, options, cb);
+                                    });
+                                });
                             });
                         });
 	                }
@@ -293,29 +388,40 @@ module.exports = {
         });
     },
 
-    logout: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    logout: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {code: 754, message: 'Active repositories exist for this user'}, cb, function () {
-                    return data.removeAccount(mongo, accountRecord._id, cb);
+                    return data.removeAccount(soajs, model, accountRecord._id, cb);
                 });
             });
         });
     },
 
-    getRepos: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    getRepos: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 if (accountRecord.token) {
                     options.token = accountRecord.token;
                 }
                 options.type = accountRecord.type;
                 options.owner = accountRecord.owner;
-                lib.getAllRepos(options, function (error, result) {
+                options.tokenInfo = accountRecord.tokenInfo;
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
-                        result = lib.buildReposArray(result);
-                        lib.addReposStatus(result, accountRecord.repos, function (repos) {
-                            return cb (null, repos);
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
+                        lib.getAllRepos(options, function (error, result) {
+                            checkIfError(error, {}, cb, function () {
+                                result = lib.buildReposArray(result);
+                                checkIfError(!result, {}, cb, function () {
+                                    lib.addReposStatus(result, accountRecord.repos, function (repos) {
+                                        return cb (null, repos);
+                                    });
+                                });
+                            });
                         });
                     });
                 });
@@ -323,53 +429,75 @@ module.exports = {
         });
     },
 
-    getBranches: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    getBranches: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.token = accountRecord.token;
-                lib.getRepoBranches(options, function (error, branches) {
-                    branches = lib.buildBranchesArray(branches);
+                options.tokenInfo = accountRecord.tokenInfo;
+
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
-                        var result = {
-                            owner: options.owner,
-                            repo: options.repo,
-                            branches: branches
-                        };
-                        return cb (null, result);
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
+                        lib.getRepoBranches(options, function (error, branches) {
+                            branches = lib.buildBranchesArray(branches);
+                            checkIfError(error, {}, cb, function () {
+                                var result = {
+                                    owner: options.owner,
+                                    repo: options.repo,
+                                    branches: branches
+                                };
+                                return cb (null, result);
+                            });
+                        });
                     });
                 });
             });
         });
     },
 
-    getContent: function (soajs, options, cb) {
-        lib.getRepoContent(options, function (error, response) {
+    getContent: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
-                var configFile = response.replace(/require\s*\(.+\)/g, '""');
-                var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
-                var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
-
-                var fileInfo = {
-                    configDirPath: configDirPath,
-                    configFilePath: repoConfigsFolder + options.path,
-                    configFile: configFile,
-                    soajs: soajs
-                };
-
-                lib.writeFile(fileInfo, function (error) {
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
+                    if (updated) {
+                        options.token = newTokenInfo.token;
+                        options.tokenInfo = newTokenInfo.tokenInfo;
+                    }
                     checkIfError(error, {}, cb, function () {
-                        var repoConfig;
-                        if (require.resolve(fileInfo.configFilePath)) {
-                            delete require.cache[require.resolve(fileInfo.configFilePath)];
-                        }
-                        try {
-                            repoConfig = require(fileInfo.configFilePath);
-                        }
-                        catch (e) {
-                            return cb (e);
-                        }
+                        lib.getRepoContent(options, function (error, response) {
+                            checkIfError(error, {}, cb, function () {
+                                var configFile = response.replace(/require\s*\(.+\)/g, '""');
+                                var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
+                                var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 
-                        return cb (null, repoConfig, '');
+                                var fileInfo = {
+                                    configDirPath: configDirPath,
+                                    configFilePath: repoConfigsFolder + options.path,
+                                    configFile: configFile,
+                                    soajs: soajs
+                                };
+
+                                lib.writeFile(fileInfo, function (error) {
+                                    checkIfError(error, {}, cb, function () {
+                                        var repoConfig;
+                                        if (require.resolve(fileInfo.configFilePath)) {
+                                            delete require.cache[require.resolve(fileInfo.configFilePath)];
+                                        }
+                                        try {
+                                            repoConfig = require(fileInfo.configFilePath);
+                                        }
+                                        catch (e) {
+                                            return cb (e);
+                                        }
+
+                                        return cb (null, repoConfig, '');
+                                    });
+                                });
+                            });
+                        });
                     });
                 });
             });
