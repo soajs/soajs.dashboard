@@ -41,7 +41,7 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 	function propagateAcl(currentScope, aclFill) {
 		for (var serviceName in aclFill) {
 			if (aclFill.hasOwnProperty(serviceName)) {
-				var currentService;
+				var currentService = {};
 				for (var x = 0; x < currentScope.allServiceApis.length; x++) {
 					if (currentScope.allServiceApis[x].name === serviceName) {
 						currentService = currentScope.allServiceApis[x];
@@ -88,7 +88,7 @@ productizationService.service('aclHelpers', ['aclDrawHelpers', function (aclDraw
 			return {'valid': false, 'data': aclEnvObj};
 		}
 		
-		return {'valid': true, 'data': aclFill};
+		return {'valid': true, 'data': aclEnvObj};
 	}
 	
 	return {
