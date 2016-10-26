@@ -51,13 +51,13 @@ var git = {
         driver.getBranches(soajs, data, model, options, cb);
     },
 
-    "getContent": function (soajs, data, mongo, options, cb) {
+    "getContent": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getContent(soajs, data, mongo, options, cb);
+        driver.getContent(soajs, data, model, options, cb);
     }
 };
 
