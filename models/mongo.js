@@ -13,8 +13,17 @@ function checkForMongo(soajs) {
 }
 
 module.exports = {
-    "generateMongoId": function(){
+    "getDb": function(soajs) {
+        checkForMongo(soajs);
+        return mongo;
+    },
+
+    "generateAppId": function(){
       return new mongo.ObjectId();
+    },
+
+    "getTenantId": function(soajs){
+        return mongo.ObjectId(soajs.tenant.id);
     },
 
     "validateId": function(soajs, cb){
@@ -36,6 +45,17 @@ module.exports = {
         }
         catch(e){
             return cb(e);
+        }
+    },
+
+    "validateCertId": function(soajs, oneCert, cb){
+        checkForMongo(soajs);
+        try {
+            oneCert = mongo.ObjectId(oneCert);
+            return cb (null, oneCert);
+        }
+        catch (e) {
+            return cb (e);
         }
     },
 

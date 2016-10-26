@@ -72,7 +72,7 @@ describe("DASHBOARD UNIT Tests:", function () {
         done();
     });
 
-	describe.skip("environment tests", function () {
+	describe("environment tests", function () {
 		var validEnvRecord = {
 			"code": "DEV",
 			"domain": "api.myDomain.com",
@@ -1455,7 +1455,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	});
 
-	describe.skip("login tests", function () {
+	describe("login tests", function () {
 		var auth;
 		it("success - did not specify environment code, old acl", function (done) {
 			var options = {
@@ -1509,7 +1509,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe.skip("testing settings for logged in users", function () {
+	describe("testing settings for logged in users", function () {
 		var soajsauth;
 
 		it("fail - should not work for non-logged in users", function (done) {
@@ -1976,9 +1976,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe.skip("platforms tests", function () {
+	describe("platforms tests", function () {
 
-		describe("add drivers", function () {
+		describe.skip("add drivers", function () {
 
 			it("success - will add a docker machine local driver for DEV", function (done) {
 				var params = {
@@ -2092,7 +2092,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 
-		describe("edit drivers", function () {
+		describe.skip("edit drivers", function () {
 
 			it("success - will update a docker machine local driver", function (done) {
 				var params = {
@@ -2248,7 +2248,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 
-		describe("delete drivers", function () {
+		describe.skip("delete drivers", function () {
 
 			it("success - will delete local driver", function (done) {
 				var params = {
@@ -2311,7 +2311,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	});
 
-	describe.skip("hosts tests", function () {
+	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {

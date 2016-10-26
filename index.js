@@ -15,6 +15,8 @@ var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
 var daemonsBL = require("./lib/daemons.js");
 var staticContentBL = require('./lib/staticContent.js');
+var gitAccountsBL = require("./lib/git.js");
+var environmentBL = require('./lib/environment.js');
 
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
@@ -156,103 +158,127 @@ service.init(function () {
 	 * Environments features
 	 */
 	service.post("/environment/add", function (req, res) {
-		checkForMongo(req);
-		environment.add(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.add(config, req, res);
+		});
 	});
 	service.get("/environment/delete", function (req, res) {
-		checkForMongo(req);
-		environment.delete(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.delete(config, req, res);
+		});
 	});
 	service.post("/environment/update", function (req, res) {
-		checkForMongo(req);
-		environment.update(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.update(config, req, res);
+		});
 	});
 	service.get("/environment/list", function (req, res) {
-		checkForMongo(req);
-		environment.list(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
 	service.post("/environment/key/update", function (req, res) {
-		checkForMongo(req);
-		environment.keyUpdate(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.keyUpdate(config, req, res);
+		});
 	});
 
 	service.get("/environment/dbs/list", function (req, res) {
-		checkForMongo(req);
-		environment.listDbs(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.listDbs(config, req, res);
+		});
 	});
 	service.get("/environment/dbs/delete", function (req, res) {
-		checkForMongo(req);
-		environment.deleteDb(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.deleteDb(config, req, res);
+		});
 	});
 	service.post("/environment/dbs/add", function (req, res) {
-		checkForMongo(req);
-		environment.addDb(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.addDb(config, req, res);
+		});
 	});
 	service.post("/environment/dbs/update", function (req, res) {
-		checkForMongo(req);
-		environment.updateDb(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.updateDb(config, req, res);
+		});
 	});
 
 	service.post("/environment/dbs/updatePrefix", function (req, res) {
-		checkForMongo(req);
-		environment.updateDbsPrefix(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.updateDbsPrefix(config, req, res);
+		});
 	});
 
 	service.post("/environment/clusters/add", function (req, res) {
-		checkForMongo(req);
-		environment.addCluster(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.addCluster(config, req, res);
+		});
 	});
 	service.get("/environment/clusters/delete", function (req, res) {
-		checkForMongo(req);
-		environment.deleteCluster(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.deleteCluster(config, req, res);
+		});
 	});
 	service.post("/environment/clusters/update", function (req, res) {
-		checkForMongo(req);
-		environment.updateCluster(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.updateCluster(config, req, res);
+		});
 	});
 	service.get("/environment/clusters/list", function (req, res) {
-		checkForMongo(req);
-		environment.listClusters(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.listClusters(config, req, res);
+		});
 	});
 	service.get("/environment/platforms/list", function (req, res) {
-		checkForMongo(req);
-		environment.listPlatforms(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.listPlatforms(config, req, res);
+		});
 	});
 	service.post("/environment/platforms/cert/upload", function (req, res) {
-		checkForMongo(req);
-		environment.uploadCerts(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.uploadCerts(config, req, res);
+		});
 	});
 	service.get("/environment/platforms/cert/delete", function (req, res) {
-		checkForMongo(req);
-		environment.removeCert(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.removeCert(config, req, res);
+		});
 	});
 	service.post("/environment/platforms/cert/choose", function (req, res) {
-		checkForMongo(req);
-		environment.chooseExistingCerts(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.chooseExistingCerts(config, req, res);
+		});
 	});
 	service.post("/environment/platforms/driver/changeSelected", function (req, res) {
-		checkForMongo(req);
-		environment.changeSelectedDriver(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.changeSelectedDriver(config, req, res);
+		});
 	});
 	service.post("/environment/platforms/deployer/type/change", function (req, res) {
-		checkForMongo(req);
-		environment.changeDeployerType(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.changeDeployerType(config, req, res);
+		});
 	});
 	service.post("/environment/nginx/cert/upload", function (req, res) {
-		checkForMongo(req);
-		environment.uploadCerts(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.uploadCerts(config, req, res);
+		});
 	});
 	service.get("/environment/nginx/cert/list", function (req, res) {
-		checkForMongo(req);
-		environment.listNginxCerts(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.listNginxCerts(config, req, res);
+		});
 	});
 	service.get("/environment/nginx/cert/delete", function (req, res) {
-		checkForMongo(req);
-		environment.removeNginxCert(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.removeNginxCert(config, req, res);
+		});
 	});
 	service.post("/environment/nginx/cert/choose", function (req, res) {
-		checkForMongo(req);
-		environment.chooseExistingNginxCerts(config, mongo, req, res);
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.chooseExistingNginxCerts(config, req, res);
+		});
 	});
 
 	/**
@@ -583,93 +609,100 @@ service.init(function () {
 	/**
 	 * High Availability Cloud features
 	 */
-	 service.get("/hacloud/nodes/list", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.listNodes(config, req.soajs, res);
- 		});
-	 });
-	 service.post("/hacloud/nodes/add", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.addNode(config, req.soajs, res);
- 		});
-	 });
-	 service.get("/hacloud/nodes/remove", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.removeNode(config, req.soajs, res);
- 		});
-	 });
-	 service.post("/hacloud/nodes/update", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.updateNode(config, req.soajs, res);
- 		});
-	 });
+	service.get("/hacloud/nodes/list", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.listNodes(config, req.soajs, res);
+		});
+	});
+	service.post("/hacloud/nodes/add", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.addNode(config, req.soajs, res);
+		});
+	});
+	service.get("/hacloud/nodes/remove", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.removeNode(config, req.soajs, res);
+		});
+	});
+	service.post("/hacloud/nodes/update", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.updateNode(config, req.soajs, res);
+		});
+	});
 
-	 service.post("/hacloud/services/scale", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.scaleHAService(config, req.soajs, res);
- 		});
-	 });
-	 service.get("/hacloud/services/delete", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.deleteHAService(config, req.soajs, res);
- 		});
-	 });
+	service.post("/hacloud/services/scale", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.scaleHAService(config, req.soajs, res);
+		});
+	});
+	service.get("/hacloud/services/delete", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.deleteHAService(config, req.soajs, res);
+		});
+	});
 
-	 service.get("/hacloud/services/instances/logs", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.streamLogs(config, req.soajs, res);
- 		});
-	 });
+	service.get("/hacloud/services/instances/logs", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.streamLogs(config, req.soajs, res);
+		});
+	});
 
-	 /**
- 	 * Analytics Features
- 	 */
-	 service.get("/analytics/check", function (req, res) {
+	/**
+	 * Analytics Features
+	 */
+	service.get("/analytics/check", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function (BL) {
 			BL.checkAnalytics(config, req.soajs, res);
 		});
-	 });
+	});
 
-	 service.post("/analytics/activate", function (req, res) {
+	service.post("/analytics/activate", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function (BL) {
 			BL.activateAnalytics(config, req.soajs, res);
 		});
-	 });
+	});
 
 	/**
 	 * Github App features
 	 */
 	service.post("/gitAccounts/login", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.login(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.login(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/logout", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.logout(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.logout(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/accounts/list", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.listAccounts(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.listAccounts(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/getRepos", function (req, res) {
 		checkForMongo(req);
 		gitAccounts.getRepos(mongo, config, req, res);
 	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.getBranches(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getBranches(config, req, res);
+		});
 	});
 	service.post("/gitAccounts/repo/activate", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.activateRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.activateRepo(config, req, res);
+		});
 	});
 	service.get('/gitAccounts/repo/deactivate', function (req, res) {
-		checkForMongo(req);
-		gitAccounts.deactivateRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.deactivateRepo(config, req, res);
+		});
 	});
 	service.post('/gitAccounts/repo/sync', function (req, res) {
-		checkForMongo(req);
-		gitAccounts.syncRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.syncRepo(config, req, res);
+		});
 	});
 
 	/**
@@ -741,133 +774,155 @@ service.init(function () {
 	 * Settings features
 	 */
 	service.post("/settings/tenant/update", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.update(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.update(config, req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/get", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			environment.list(config, mongo, req, res, function (environments) {
-				tenant.get(config, mongo, req, res, function (tenant) {
-					return res.jsonp(req.soajs.buildResponse(null, {'tenant': tenant, 'environments': environments}));
+			initBLModel(req, res, environmentBL, dbModel, function (BL) {
+				BL.list(config, req, res, function (environments) {
+					initBLModel(req, res, tenantBL, dbModel, function (BL1) {
+						BL1.get(config, req, res, function (tenant) {
+							return res.jsonp(req.soajs.buildResponse(null, {'tenant': tenant, 'environments': environments}));
+						});
+					});
 				});
 			});
 		});
 	});
 
 	service.get("/settings/tenant/oauth/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.getOAuth(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.getOAuth(config, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/oauth/add", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.saveOAuth(config, 425, 'tenant OAuth add successful', mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/oauth/update", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.saveOAuth(config, 426, 'tenant OAuth update successful', mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/oauth/delete", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.deleteOAuth(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.deleteOAuth(config, req, res);
+			});
 		});
 	});
 
 	service.get("/settings/tenant/oauth/users/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.getOAuthUsers(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.getOAuthUsers(config, req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/oauth/users/delete", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.deleteOAuthUsers(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.deleteOAuthUsers(config, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/oauth/users/add", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.addOAuthUsers(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.addOAuthUsers(config, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/oauth/users/update", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.updateOAuthUsers(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.updateOAuthUsers(config, req, res);
+			});
 		});
 	});
 
 	service.get("/settings/tenant/application/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.listApplication(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.listApplication(config, req, res);
+			});
 		});
 	});
 
 	service.post("/settings/tenant/application/key/add", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.createApplicationKey(config, mongo, service.provision, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.createApplicationKey(config, service.provision, req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/application/key/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.getApplicationKeys(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.getApplicationKeys(config, req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/application/key/delete", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.deleteApplicationKey(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.deleteApplicationKey(config, req, res);
+			});
 		});
 	});
 
 	service.get("/settings/tenant/application/key/ext/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.listApplicationExtKeys(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.listApplicationExtKeys(config, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.addApplicationExtKeys(config, mongo, service.provision, service.registry, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/application/key/ext/update", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.updateApplicationExtKeys(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.updateApplicationExtKeys(config, req, res);
+			});
 		});
 	});
 	service.post("/settings/tenant/application/key/ext/delete", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.deleteApplicationExtKeys(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.deleteApplicationExtKeys(config, req, res);
+			});
 		});
 	});
 
 	service.post("/settings/tenant/application/key/config/update", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.updateApplicationConfig(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.updateApplicationConfig(config, req, res);
+			});
 		});
 	});
 	service.get("/settings/tenant/application/key/config/list", function (req, res) {
-		checkForMongo(req);
 		checkMyAccess(req, res, function () {
-			tenant.listApplicationConfig(config, mongo, req, res);
+			initBLModel(req, res, tenantBL, dbModel, function (BL) {
+				BL.listApplicationConfig(config, req, res);
+			});
 		});
 	});
 
