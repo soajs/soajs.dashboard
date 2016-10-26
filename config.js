@@ -2713,6 +2713,13 @@ module.exports = {
 					"type": "string"
 				}
 			},
+			"project": {
+				"source": ['body.project'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"owner": {
 				"source": ['body.owner'],
 				"required": true,

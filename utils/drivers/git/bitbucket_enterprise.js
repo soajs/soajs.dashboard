@@ -219,8 +219,8 @@ var lib = {
 };
 
 module.exports = {
-    "login": function (soajs, data, mongo, options, cb) {
-        data.checkIfAccountExists(mongo, options, function (error, count) {
+    "login": function (soajs, data, model, options, cb) {
+        data.checkIfAccountExists(soajs, model, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
                 checkIfError(count > 0, {code: 752, message: 'Account already exists'}, cb, function () {
 
@@ -228,7 +228,7 @@ module.exports = {
                         lib.checkUserRecord(options, function (error) {
                             checkIfError(error, {}, cb, function () {
                                 lib.authenticate(options);
-                                data.saveNewAccount(mongo, options, cb);
+                                data.saveNewAccount(soajs, model, options, cb);
                             });
                         });
                     }
@@ -248,14 +248,8 @@ module.exports = {
                                 delete options.password;
                                 lib.authenticate(options);
 
-                                if (GIT_ACCOUNTS_SECRET === DEFAULT_GIT_ACCOUNTS_SECRET) {
-                                    soajs.log.warn("GIT_ACCOUNTS_SECRET have not been set and is using the default password. For enhanced security, please set it up as an environment variable.");
-                                }
-
-                                // if credentials are good, encrypt them then save the account
-                                // options.token = aes.encrypt(options.token, GIT_ACCOUNTS_SECRET);
                                 options.token = new Buffer(options.token).toString('base64');
-                                data.saveNewAccount(mongo, options, cb);
+                                data.saveNewAccount(soajs, model, options, cb);
                             })
                             .catch(function (error) {
                                 return cb(error);
@@ -271,31 +265,21 @@ module.exports = {
         });
     },
 
-    "logout": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "logout": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {
                     code: 754,
                     message: 'Active repositories exist for this user'
                 }, cb, function () {
-                    if (accountRecord.access === 'public') {
-                        data.removeAccount(mongo, accountRecord._id, cb);
-                    }
-                    else if (accountRecord.access === 'private') {
-                        data.removeAccount(mongo, accountRecord._id, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                accountRecord.password = options.password;
-                                return cb();
-                            });
-                        });
-                    }
+                    data.removeAccount(soajs, model, accountRecord._id, cb);
                 });
             });
         });
     },
 
-    "getRepos": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "getRepos": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 options.domain = accountRecord.domain;
 
@@ -323,8 +307,8 @@ module.exports = {
         });
     },
 
-    "getBranches": function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    "getBranches": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.domain = accountRecord.domain;
 
@@ -348,7 +332,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, data, mongo, options, cb) {
+    "getContent": function (soajs, data, model, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 

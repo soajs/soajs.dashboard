@@ -158,7 +158,7 @@ var bitbucket = {
 };
 
 var lib = {
-    "createAuthToken": function (options, mongo, cb) {
+    "createAuthToken": function (options, cb) {
         options.action = 'generate';
 
         bitbucket.getToken(options, function (error, authInfo) {
@@ -170,7 +170,7 @@ var lib = {
         });
     },
 
-    "checkAuthToken": function (options, mongo, accountRecord, cb) {
+    "checkAuthToken": function (soajs, options, model, accountRecord, cb) {
         if (!options.tokenInfo) {
             return cb(null, false);
         }
@@ -191,7 +191,11 @@ var lib = {
                 accountRecord.tokenInfo.created = (new Date).getTime();
                 accountRecord.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
 
-                mongo.save('git_accounts', accountRecord, function (error) {
+                var opts = {
+                    collection: 'git_accounts',
+                    record: accountRecord
+                };
+                model.saveEntry(soajs, opts, function (error) {
                     if (error) {
                         return cb(error);
                     }
@@ -348,19 +352,19 @@ var lib = {
 
 module.exports = {
 
-    login: function (soajs, data, mongo, options, cb) {
-        data.checkIfAccountExists(mongo, options, function (error, count) {
+    login: function (soajs, data, model, options, cb) {
+        data.checkIfAccountExists(soajs, model, options, function (error, count) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, {code: 752, message: 'Account already added'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
                         lib.checkUserRecord(options, function (error) {
                             checkIfError(error, {}, cb, function () {
-                                return data.saveNewAccount(mongo, options, cb);
+                                return data.saveNewAccount(soajs, model, options, cb);
                             });
                         });
 	                }
 	                else if (options.access === 'private') {//create token for account and save
-                        lib.createAuthToken(options, mongo, function (error, tokenInfo) {
+                        lib.createAuthToken(options, function (error, tokenInfo) {
                             checkIfError(error, {}, cb, function () {
                                 options.token = tokenInfo.access_token;
                                 //these fields are required in order to refresh the token when it exipres
@@ -373,7 +377,7 @@ module.exports = {
                                 delete options.action;
                                 lib.checkUserRecord(options, function (error) {
                                     checkIfError(error, {}, cb, function () {
-                                        return data.saveNewAccount(mongo, options, cb);
+                                        return data.saveNewAccount(soajs, model, options, cb);
                                     });
                                 });
                             });
@@ -384,18 +388,18 @@ module.exports = {
         });
     },
 
-    logout: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    logout: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 checkIfError(accountRecord.repos.length > 0, {code: 754, message: 'Active repositories exist for this user'}, cb, function () {
-                    return data.removeAccount(mongo, accountRecord._id, cb);
+                    return data.removeAccount(soajs, model, accountRecord._id, cb);
                 });
             });
         });
     },
 
-    getRepos: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    getRepos: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error || !accountRecord, {}, cb, function () {
                 if (accountRecord.token) {
                     options.token = accountRecord.token;
@@ -403,7 +407,7 @@ module.exports = {
                 options.type = accountRecord.type;
                 options.owner = accountRecord.owner;
                 options.tokenInfo = accountRecord.tokenInfo;
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
                         if (updated) {
                             options.token = newTokenInfo.token;
@@ -425,13 +429,13 @@ module.exports = {
         });
     },
 
-    getBranches: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    getBranches: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 options.token = accountRecord.token;
                 options.tokenInfo = accountRecord.tokenInfo;
 
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
                     checkIfError(error, {}, cb, function () {
                         if (updated) {
                             options.token = newTokenInfo.token;
@@ -454,10 +458,10 @@ module.exports = {
         });
     },
 
-    getContent: function (soajs, data, mongo, options, cb) {
-        data.getAccount(mongo, options, function (error, accountRecord) {
+    getContent: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
-                lib.checkAuthToken(options, mongo, accountRecord, function (error, updated, newTokenInfo) {
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
                     if (updated) {
                         options.token = newTokenInfo.token;
                         options.tokenInfo = newTokenInfo.tokenInfo;

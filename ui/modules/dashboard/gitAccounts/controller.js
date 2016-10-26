@@ -394,6 +394,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             },
             data: {
                 provider: account.provider,
+                project: repo.project ? repo.project.key : null,
                 owner: repo.owner.login,
                 repo: repo.name
             }
