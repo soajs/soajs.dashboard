@@ -15,6 +15,7 @@ var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
 var daemonsBL = require("./lib/daemons.js");
 var staticContentBL = require('./lib/staticContent.js');
+var gitAccountsBL = require('./lib/git.js');
 
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
@@ -637,39 +638,47 @@ service.init(function () {
 	 });
 
 	/**
-	 * Github App features
+	 * Git App features gitAccountsBL
 	 */
 	service.post("/gitAccounts/login", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.login(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.login(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/logout", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.logout(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.logout(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/accounts/list", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.listAccounts(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.listAccounts(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/getRepos", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.getRepos(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getRepos(config, req, res);
+		});
 	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.getBranches(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getBranches(config, req, res);
+		});
 	});
 	service.post("/gitAccounts/repo/activate", function (req, res) {
-		checkForMongo(req);
-		gitAccounts.activateRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.activateRepo(config, req, res);
+		});
 	});
 	service.get('/gitAccounts/repo/deactivate', function (req, res) {
-		checkForMongo(req);
-		gitAccounts.deactivateRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.deactivateRepo(config, req, res);
+		});
 	});
 	service.post('/gitAccounts/repo/sync', function (req, res) {
-		checkForMongo(req);
-		gitAccounts.syncRepo(mongo, config, req, res);
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.syncRepo(config, req, res);
+		});
 	});
 
 	/**

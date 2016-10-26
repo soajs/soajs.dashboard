@@ -15,40 +15,40 @@ function getGitDriver (config) {
 
 var git = {
 
-    "login": function (soajs, data, mongo, options, cb) {
+    "login": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.login(soajs, data, mongo, options, cb);
+        driver.login(soajs, data, model, options, cb);
     },
 
-    "logout": function (soajs, data, mongo, options, cb) {
+    "logout": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.logout(soajs, data, mongo, options, cb);
+        driver.logout(soajs, data, model, options, cb);
     },
 
-    "getRepos": function (soajs, data, mongo, options, cb) {
+    "getRepos": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getRepos(soajs, data, mongo, options, cb);
+        driver.getRepos(soajs, data, model, options, cb);
     },
 
-    "getBranches": function (soajs, data, mongo, options, cb) {
+    "getBranches": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getBranches(soajs, data, mongo, options, cb);
+        driver.getBranches(soajs, data, model, options, cb);
     },
 
     "getContent": function (soajs, options, cb) {
