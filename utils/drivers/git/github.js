@@ -385,7 +385,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, options, cb) {
+    "getContent": function (soajs, data, mongo, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(!response.sha || !response.content, {code: 763}, cb, function () {

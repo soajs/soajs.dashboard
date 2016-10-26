@@ -710,6 +710,16 @@ var environmentsConfig = {
 				}
 			]
 		},
+		multiServiceInfo: {
+			'entries': [
+				{
+					'name': 'infoTabs',
+					'label': '',
+					'type': 'tabset',
+					'tabs': []
+				}
+			]
+		},
 		node: {
 			'entries': [
 				{
@@ -798,6 +808,20 @@ var environmentsConfig = {
 			"containers": {
 				"restartHost": ['dashboard', '/environment/nginx/redeploy'],
 				"restartNginx": ['dashboard', '/environment/hosts/redeployService']
+			}
+		},
+		"hacloud": {
+			"nodes": {
+				"list": ['dashboard', '/hacloud/nodes/list'],
+				"add": ['dashboard', '/hacloud/nodes/add'],
+				"remove": ['dashboard', '/hacloud/nodes/remove'],
+				"update": ['dashboard', '/hacloud/nodes/update'],
+			},
+			"services": {
+				"add": ['dashboard', '/hacloud/hosts/deployService'],
+				"remove": ['dashboard', '/hacloud/services/delete'],
+				"scale": ['dashboard', '/hacloud/services/scale'],
+				"logs": ['dashboard', '/hacloud/services/instances/logs']
 			}
 		}
 	}

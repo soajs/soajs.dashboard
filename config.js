@@ -49,6 +49,9 @@ module.exports = {
 				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
 				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
 			},
+			oauth: {
+				domain: 'https://bitbucket.org/site/oauth2/access_token'
+			},
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			defaultConfigFilePath: "config.js"
 		},
@@ -2380,7 +2383,7 @@ module.exports = {
 			},
 			"version": {
 				"source": ['query.version'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -2486,6 +2489,20 @@ module.exports = {
 			"access": {
 				"source": ['body.access'],
 				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"oauthKey": {
+				"source": ['body.oauthKey'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"oauthSecret": {
+				"source": ['body.oauthSecret'],
+				"required": false,
 				"validation": {
 					"type": "string"
 				}

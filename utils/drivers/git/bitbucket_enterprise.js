@@ -80,14 +80,19 @@ var lib = {
         // options.owner contains either the project key or the user slug
         bitbucketClient.branches.get(repoInfo[0], repoInfo[1])
             .then(function (branches) {
+                var branchesArray = [];
                 // The GUI expects a 'name'
                 // Bitbucket does not return one like GitHub, so we construct it
                 for (var i = 0; i < branches.values.length; ++i) {
-                    var branch = branches.values[i];
-                    branch.name = branch.displayId;
+                    branchesArray.push({
+                        name: branches.values[i].displayId,
+                        commit: {
+                            sha: branches.values[i].latestCommit
+                        }
+                    });
                 }
 
-                return cb(null, branches.values);
+                return cb(null, branchesArray);
             })
             .catch(function (error) {
                 return cb(error);
@@ -248,7 +253,8 @@ module.exports = {
                                 }
 
                                 // if credentials are good, encrypt them then save the account
-                                options.token = aes.encrypt(options.token, GIT_ACCOUNTS_SECRET);
+                                // options.token = aes.encrypt(options.token, GIT_ACCOUNTS_SECRET);
+                                options.token = new Buffer(options.token).toString('base64');
                                 data.saveNewAccount(mongo, options, cb);
                             })
                             .catch(function (error) {
@@ -294,7 +300,8 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    options.token = new Buffer(accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
 
@@ -322,7 +329,8 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
+                    options.token = new Buffer (accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
 
@@ -340,8 +348,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, options, cb) {
-        console.log (options);
+    "getContent": function (soajs, data, mongo, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 

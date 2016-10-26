@@ -49,7 +49,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	$scope.listNginxServices = function () {
 		hacloudSrv.listNginxHosts($scope, $scope.envCode);
-	}
+	};
 
 	$scope.reloadServiceRegistry = function (source, service) {
 		hacloudSrv.reloadServiceRegistry($scope, source, service);
@@ -71,11 +71,22 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.hostLogs($scope, taskName);
 	};
 
-	// if ($scope.access.listNodes) {
-		injectFiles.injectCss('modules/dashboard/environments/environments.css');
-		$scope.envCode = $cookies.getObject("myEnv").code;
+	injectFiles.injectCss('modules/dashboard/environments/environments.css');
+	$scope.envCode = $cookies.getObject("myEnv").code;
 
+	if ($scope.access.hacloud.nodes.list) {
 		$scope.listNodes();
+	}
+	if ($scope.access.listHosts) {
 		$scope.listServices();
-	// }
+	}
+	
 }]);
+
+
+environmentsApp.filter('bytesToGbytes', function () {
+	return function (number) {
+		number = number / 1024 / 1024 / 1024;
+		return number.toFixed(2);
+	}
+});
