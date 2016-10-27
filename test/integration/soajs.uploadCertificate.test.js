@@ -518,7 +518,7 @@ describe("Docker Certificates tests", function () {
     });
 });
 
-describe.skip("Nginx Certificates tests", function () {
+describe("Nginx Certificates tests", function () {
 
     before("remove test certificates if exist", function (done) {
         mongo.remove ("fs.files", {"filename": /test_cert/}, function (error, result) {
