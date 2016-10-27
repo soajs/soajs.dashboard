@@ -2,7 +2,7 @@
 
 var collName = "git_accounts";
 
-var model = {
+var methods = {
     "getAuthToken": function (soajs, model, options, cb) {
         var opts = {
             collection: collName,
@@ -23,7 +23,7 @@ var model = {
             model.findEntry(soajs, opts, cb);
         }
         else if (options.owner && options.repo) {
-            model.searchForAccount(soajs, model, options, cb);
+            methods.searchForAccount(soajs, model, options, cb);
         }
     },
 
@@ -111,4 +111,4 @@ var model = {
     }
 };
 
-module.exports = model;
+module.exports = methods;
