@@ -1,16 +1,4 @@
 "use strict";
-var soajs = require('soajs');
-var Grid = require('gridfs-stream');
-var Mongo = soajs.mongo;
-var mongo = null;
-var gfs = null;
-var gfsdb = null;
-
-function checkForMongo(soajs) {
-	if (!mongo) {
-		mongo = new Mongo(soajs.registry.coreDB.provision);
-	}
-}
 
 var hostsColl = "hosts";
 var dockerColl = "docker";
@@ -21,283 +9,403 @@ var gitColl = "git_accounts";
 var staticColl = "staticContent";
 var analyticsColl = "analytics";
 
-var model = {
-	"getDB": function () {
-		return mongo;
+var methods = {
+	"getEnvironment": function (soajs, model, code, cb) {
+		var opts = {
+			collection: envColl,
+			conditions: {code: code.toUpperCase()}
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"makeObjectId": function (id) {
-		return mongo.ObjectId(id);
+	"getDashboardEnvironment": function (soajs, model, cb) {
+		var opts = {
+			collection: envColl,
+			conditions: {code: "DASHBOARD"}
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"getEnvironment": function (soajs, code, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(envColl, {code: code.toUpperCase()}, cb);
-	},
-
-	"getDashboardEnvironment": function (soajs, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(envColl, {code: "DASHBOARD"}, cb);
-	},
-
-	"updateDockerDeployerNodes": function (soajs, action, node, cb) {
-		checkForMongo(soajs);
-		var update = {};
+	"updateDockerDeployerNodes": function (soajs, model, action, node, cb) {
+		var opts = {
+			collection: envColl,
+			conditions: {},
+			fields: {},
+			options: {multi: true}
+		};
 
 		if (action === 'add') {
-			update.$push = { 'deployer.container.docker.remote.nodes': node };
+			opts.fields.$push = { 'deployer.container.docker.remote.nodes': node };
 		}
 		else if (action === 'remove') {
-			update.$pull = { 'deployer.container.docker.remote.nodes': node };
+			opts.fields.$pull = { 'deployer.container.docker.remote.nodes': node };
 		}
 
-		mongo.update(envColl, {}, update, {multi: true}, cb);
+		model.updateEntry(soajs, opts, cb);
 	},
 
 	/**
 	 * DOCKER COLLECTION
 	 */
-	"countContainers": function (soajs, env, type, cb) {
-		var condition = {
-			"env": env.toLowerCase(),
-			"type": type
+	"countContainers": function (soajs, model, env, type, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				"env": env.toLowerCase(),
+				"type": type
+			}
 		};
 
-		checkForMongo(soajs);
-		mongo.count(dockerColl, condition, cb);
+		model.countEntries(soajs, opts, cb);
 	},
 
-	"getContainers": function (soajs, env, type, running, cb) {
-		var condition = {
-			"env": env.toLowerCase(),
-			"recordType": "container"
+	"getContainers": function (soajs, model, env, type, running, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				"env": env.toLowerCase(),
+				"recordType": "container"
+			}
 		};
+
 		if (type) {
-			condition["$or"] = [
+			opt.conditions["$or"] = [
 				{"type": type},
 				{"type": type + "_" + env.toLowerCase()}
 			];
 		}
+
 		if (running) {
-			condition.running = running;
+			opts.conditions.running = running;
 		}
 
-		checkForMongo(soajs);
-		mongo.find(dockerColl, condition, cb);
+		model.findEntries(soajs, opts, cb);
 	},
 
-	"getOneContainer": function (soajs, env, hostname, cb) {
-		var condition = {
-			"env": env.toLowerCase(),
-			"$or": [
-				{"hostname": hostname},
-				{"hostname": hostname + "_" + env.toLowerCase()},
-				{"cid": hostname}
-			]
+	"getOneContainer": function (soajs, model, env, hostname, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				"env": env.toLowerCase(),
+				"$or": [
+					{"hostname": hostname},
+					{"hostname": hostname + "_" + env.toLowerCase()},
+					{"cid": hostname}
+				]
+			}
 		};
-		checkForMongo(soajs);
-		mongo.findOne(dockerColl, condition, cb);
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"getContainerByTask": function (soajs, env, taskName, cb) {
-		var criteria = {
-			env: env.toLowerCase(),
-			taskName: taskName
+	"getContainerByTask": function (soajs, model, env, taskName, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				env: env.toLowerCase(),
+				taskName: taskName
+			}
 		};
-		checkForMongo(soajs);
-		mongo.findOne(dockerColl, criteria, cb);
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"removeContainer": function (soajs, env, hostname, cb) {
-		var condition = {
-			"env": env.toLowerCase(),
-			'$or': [
-				{"hostname": hostname + "_" + env.toLowerCase()},
-				{"hostname": hostname},
-				{"cid": hostname}
-			]
+	"removeContainer": function (soajs, model, env, hostname, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				"env": env.toLowerCase(),
+				'$or': [
+					{"hostname": hostname + "_" + env.toLowerCase()},
+					{"hostname": hostname},
+					{"cid": hostname}
+				]
+			}
 		};
-		checkForMongo(soajs);
-		mongo.remove(dockerColl, condition, cb);
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
-	"removeContainerByTask": function (soajs, env, taskName, cb) {
-		var criteria = {
-			env: env.toLowerCase(),
-			taskName: taskName
+	"removeContainerByTask": function (soajs, model, env, taskName, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				env: env.toLowerCase(),
+				taskName: taskName
+			}
 		};
-		checkForMongo(soajs);
-		mongo.remove(dockerColl, criteria, cb);
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
-	"insertContainer": function (soajs, record, cb) {
-		checkForMongo(soajs);
+	"insertContainer": function (soajs, model, record, cb) {
 		record.hostname = record.hostname.replace("/", "");
-		mongo.insert(dockerColl, record, cb);
+
+		var opts = {
+			collection: dockerColl,
+			record: record
+		};
+
+		model.insertEntry(soajs, opts, cb);
 	},
 
-	"updateContainer": function (soajs, containerId, data, cb) {
-		checkForMongo(soajs);
-		mongo.update(dockerColl, {"cid": containerId}, {'$set': {"info": data}}, {
-			multi: false,
-			upsert: false,
-			safe: true
-		}, cb);
+	"updateContainer": function (soajs, model, containerId, data, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: { "cid": containerId },
+			fields: { '$set': { "info": data } },
+			options: {
+				multi: false,
+				upsert: false,
+				safe: true
+			}
+		};
+
+		model.updateEntry(soajs, opts, cb);
 	},
 
-	"insertContainers": function (soajs, records, cb) {
-		checkForMongo(soajs);
-		mongo.insert(dockerColl, records, cb);
+	"insertContainers": function (soajs, model, records, cb) {
+		var opts = {
+			collection: dockerColl,
+			record: records
+		};
+
+		model.insertEntry(soajs, opts, cb);
 	},
 
-	"listNodes": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
+	"listNodes": function (soajs, model, criteria, cb) {
 		criteria.recordType = 'node';
-		mongo.find(dockerColl, criteria, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.findEntries(soajs, opts, cb);
 	},
 
-	"getOneNode": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
+	"getOneNode": function (soajs, model, criteria, cb) {
 		criteria.recordType = 'node';
-		mongo.findOne(dockerColl, criteria, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"addNode": function (soajs, data, cb) {
-		checkForMongo(soajs);
+	"addNode": function (soajs, model, data, cb) {
 		data.recordType = 'node';
-		mongo.insert(dockerColl, data, cb);
+		var opts = {
+			collection: dockerColl,
+			record: data
+		};
+
+		model.insertEntry(soajs, opts, cb);
 	},
 
-	"removeNode": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
+	"removeNode": function (soajs, model, criteria, cb) {
 		criteria.recordType = 'node';
-		mongo.remove(dockerColl, criteria, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
-	"updateNode": function (soajs, criteria, update, cb) {
-		checkForMongo(soajs);
+	"updateNode": function (soajs, model, criteria, update, cb) {
 		criteria.recordType = 'node';
-		mongo.update(dockerColl, criteria, update, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.updateEntry(soajs, opts, cb);
 	},
 
-	"getServiceContainers": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
+	"getServiceContainers": function (soajs, model, criteria, cb) {
 		criteria.recordType = 'container';
 		criteria.env = criteria.env.toLowerCase();
-		mongo.find(dockerColl, criteria, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.findEntries(soajs, opts, cb);
 	},
 
-	"removeServiceContainers": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
+	"removeServiceContainers": function (soajs, model, criteria, cb) {
 		criteria.recordType = 'container';
-		mongo.remove(dockerColl, criteria, cb);
+		var opts = {
+			collection: dockerColl,
+			conditions: criteria
+		};
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
 	/**
 	 * HOSTS COLLECTION
 	 */
-	"getHosts": function (soajs, env, type, cb) {
-		var condition = {
-			"env": env.toLowerCase()
+	"getHosts": function (soajs, model, env, type, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				"env": env.toLowerCase()
+			}
 		};
 
 		if (type && type !== '') {
-			condition["name"] = type;
+			opts.conditions["name"] = type;
 		}
-		checkForMongo(soajs);
-		mongo.find(hostsColl, condition, cb);
+
+		model.findEntries(soajs, opts, cb);
 	},
 
-	"getOneHost": function (soajs, env, type, ip, hostname, cb) {
-		var condition = {
-			"env": env.toLowerCase(),
-			"name": type
+	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				"env": env.toLowerCase(),
+				"name": type
+			}
 		};
 
 		if (ip && ip !== '') {
-			condition["ip"] = ip;
+			opts.conditions["ip"] = ip;
 		}
 
 		if (hostname && hostname !== '') {
-			condition["hostname"] = hostname;
+			opts.conditions["hostname"] = hostname;
 		}
-		checkForMongo(soajs);
-		mongo.findOne(hostsColl, condition, cb);
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"removeHost": function (soajs, env, type, ip, cb) {
-		var condition = {
-			"env": env.toLowerCase()
+	"removeHost": function (soajs, model, env, type, ip, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				"env": env.toLowerCase()
+			}
 		};
 
 		if (type && type !== '') {
-			condition["name"] = type;
+			opts.conditions.name = type;
 		}
 
 		if (ip && ip !== '') {
-			condition["ip"] = ip;
+			opts.conditions.ip = ip;
 		}
-		checkForMongo(soajs);
-		mongo.remove(hostsColl, condition, cb);
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
-	"removeHostByTask": function (soajs, env, task, cb) {
-		var criteria = {
-			env: env.toLowerCase(),
-			serviceHATask: task
+	"removeHostByTask": function (soajs, model, env, task, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				env: env.toLowerCase(),
+				serviceHATask: task
+			}
 		};
-		checkForMongo(soajs);
-		mongo.remove(hostsColl, criteria, cb);
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
-	"insertHost": function (soajs, record, cb) {
-		checkForMongo(soajs);
+	"insertHost": function (soajs, model, record, cb) {
 		record.hostname = record.hostname.replace("/", "");
-		mongo.insert(hostsColl, record, cb);
+		var opts = {
+			collection: hostsColl,
+			record: record
+		};
+
+		model.insertEntry(soajs, opts, cb);
 	},
 
-	"getService": function (soajs, condition, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(servicesColl, condition, cb);
+	"getService": function (soajs, model, condition, cb) {
+		var opts = {
+			collection: servicesColl,
+			conditions: condition
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"getDaemon": function (soajs, condition, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(daemonsColl, condition, cb);
+	"getDaemon": function (soajs, model, condition, cb) {
+		var opts = {
+			collection: daemonsColl,
+			conditions: condition
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"getGitAccounts": function (soajs, repoName, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(gitColl, {"repos.name": repoName}, {provider: 1, domain: 1, token: 1, 'repos.$': 1}, cb);
+	"getGitAccounts": function (soajs, model, repoName, cb) {
+		var opts = {
+			collection: gitColl,
+			conditions: { "repos.name": repoName },
+			fields: {
+				provider: 1,
+				domain: 1,
+				token: 1,
+				'repos.$': 1
+			}
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"getStaticContent": function (soajs, id, cb) {
-		checkForMongo(soajs);
-		mongo.findOne(staticColl, {'_id': id}, cb);
+	"getStaticContent": function (soajs, model, id, cb) {
+		var opts = {
+			collection: staticColl,
+			conditions: { '_id': id }
+		};
+
+		model.findEntry(soajs, opts, cb);
 	},
 
-	"removeServiceHosts": function (soajs, criteria, cb) {
-		checkForMongo(soajs);
-		mongo.remove(hostsColl, criteria, cb);
+	"removeServiceHosts": function (soajs, model, criteria, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: criteria
+		};
+
+		model.removeEntry(soajs, opts, cb);
 	},
 
 	/**
 	 * ANALYTICS COLLECTION
 	 */
 
-	 "getEnvAnalyticsRecord": function (soajs, env, cb) {
-		 checkForMongo(soajs);
-		 mongo.findOne(analyticsColl, {'json.env': env.toLowerCase()}, cb);
+	 "getEnvAnalyticsRecord": function (soajs, model, env, cb) {
+		 var opts = {
+			 collection: analyticsColl,
+			 conditions: { 'json.env': env.toLowerCase() }
+		 };
+
+		 model.findEntry(soajs, opts, cb);
 	 },
 
-	 "updateAnalyticsRecord": function (soajs, env, update, cb) {
-		checkForMongo(soajs);
-		mongo.update(analyticsColl, {'json.env': env.toLowerCase()}, update, cb);
+	 "updateAnalyticsRecord": function (soajs, model, env, update, cb) {
+		 var opts = {
+			 collection: analyticsColl,
+			 conditions: { 'json.env': env.toLowerCase() },
+			 fields: update
+		 };
+
+		model.updateEntry(soajs, opts, cb);
 	},
 
-	"getAnalyticsRecords": function (soajs, type, cb) {
-		checkForMongo(soajs);
-		mongo.find(analyticsColl, {type: type}, cb);
+	"getAnalyticsRecords": function (soajs, model, type, cb) {
+		var opts = {
+			collection: analyticsColl,
+			conditions: { type: type }
+		};
+
+		model.findEntries(soajs, opts, cb);
 	}
 
 
@@ -357,4 +465,4 @@ var model = {
 	// }
 };
 
-module.exports = model;
+module.exports = methods;
