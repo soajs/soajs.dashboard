@@ -107,6 +107,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"password": '43554',
 					"label": "soajs Test Account",
 					"provider": "github",
+					"domain": "github.com",
 					"type": "personal",
 					"access": "private"
 				}
@@ -125,6 +126,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"password": passwordPersonal,
 					"label": "soajs Test Account",
 					"provider": "bitbucket",
+					"domain": "github.com",
 					"type": "personal",
 					"access": "private"
 				}
@@ -144,6 +146,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"password": passwordPersonal,
 					"label": "soajs Test Account",
 					"provider": "github",
+					"domain": "github.com",
 					"type": "personal",
 					"access": "private"
 				}
@@ -160,6 +163,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"username": 'soajs',
 					"label": "Test organization Account",
 					"provider": "github",
+					"domain": "github.com",
 					"type": "organization",
 					"access": "public"
 				}
@@ -968,6 +972,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						"username": usernamePersonal,
 						"label": "Test personal public Account",
 						"provider": "github",
+						"domain": "github.com",
 						"type": "personal",
 						"access": "public"
 					}
@@ -1211,6 +1216,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						"username": orgName,
 						"label": "Test organization Account",
 						"provider": "github",
+						"domain": "github.com",
 						"type": "organization",
 						"access": "public"
 					}
