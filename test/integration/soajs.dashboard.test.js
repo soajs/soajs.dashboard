@@ -1509,7 +1509,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe.skip("testing settings for logged in users", function () {
+	describe("testing settings for logged in users", function () {
 		var soajsauth;
 
 		it("fail - should not work for non-logged in users", function (done) {
@@ -2073,7 +2073,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 
-	describe.skip("hosts tests", function () {
+	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {

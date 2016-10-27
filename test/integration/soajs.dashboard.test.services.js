@@ -71,7 +71,6 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 		describe("list services test", function () {
 			it("success - will get services list", function (done) {
 				executeMyRequest({}, 'services/list', 'post', function (body) {
-					console.log("here " + JSON.stringify(body, null, 2))
 					assert.ok(body.data);
 					assert.ok(body.data.length > 0);
 					done();

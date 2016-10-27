@@ -329,6 +329,7 @@ describe("Docker Certificates tests", function () {
             };
 
             executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
+                console.log(JSON.stringify(body,null,2));
                 assert.ok(body.result);
                 assert.ok(body.data);
 
@@ -517,7 +518,7 @@ describe("Docker Certificates tests", function () {
     });
 });
 
-describe("Nginx Certificates tests", function () {
+describe.skip("Nginx Certificates tests", function () {
 
     before("remove test certificates if exist", function (done) {
         mongo.remove ("fs.files", {"filename": /test_cert/}, function (error, result) {
