@@ -81,7 +81,7 @@ module.exports = {
 
     "insertEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.insert(opts.collection, opts.record, cb);
+        mongo.insert(opts.collection, opts.record, opts.versioning || false, cb);
     },
 
     "removeEntry": function (soajs, opts, cb) {
@@ -91,6 +91,6 @@ module.exports = {
 
     "updateEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, cb);
+        mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, opts.versioning || false, cb);
     }
 };

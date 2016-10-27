@@ -17,6 +17,7 @@ var daemonsBL = require("./lib/daemons.js");
 var staticContentBL = require('./lib/staticContent.js');
 var gitAccountsBL = require("./lib/git.js");
 var environmentBL = require('./lib/environment.js');
+var cbBL = require("./lib/contentbuilder.js");
 
 var gitAccounts = require("./lib/git.js");
 var services = require("./lib/services.js");
@@ -609,58 +610,58 @@ service.init(function () {
 	/**
 	 * High Availability Cloud features
 	 */
-	 service.get("/hacloud/nodes/list", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.listNodes(config, req.soajs, res);
- 		});
-	 });
-	 service.post("/hacloud/nodes/add", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.addNode(config, req.soajs, res);
- 		});
-	 });
-	 service.get("/hacloud/nodes/remove", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.removeNode(config, req.soajs, res);
- 		});
-	 });
-	 service.post("/hacloud/nodes/update", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.updateNode(config, req.soajs, res);
- 		});
-	 });
+	service.get("/hacloud/nodes/list", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.listNodes(config, req.soajs, res);
+		});
+	});
+	service.post("/hacloud/nodes/add", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.addNode(config, req.soajs, res);
+		});
+	});
+	service.get("/hacloud/nodes/remove", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.removeNode(config, req.soajs, res);
+		});
+	});
+	service.post("/hacloud/nodes/update", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.updateNode(config, req.soajs, res);
+		});
+	});
 
-	 service.post("/hacloud/services/scale", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.scaleHAService(config, req.soajs, res);
- 		});
-	 });
-	 service.get("/hacloud/services/delete", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.deleteHAService(config, req.soajs, res);
- 		});
-	 });
+	service.post("/hacloud/services/scale", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.scaleHAService(config, req.soajs, res);
+		});
+	});
+	service.get("/hacloud/services/delete", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.deleteHAService(config, req.soajs, res);
+		});
+	});
 
-	 service.get("/hacloud/services/instances/logs", function (req, res) {
-		 initBLModel(req, res, hostBL, "host", function (BL) {
- 			BL.streamLogs(config, req.soajs, res);
- 		});
-	 });
+	service.get("/hacloud/services/instances/logs", function (req, res) {
+		initBLModel(req, res, hostBL, "host", function (BL) {
+			BL.streamLogs(config, req.soajs, res);
+		});
+	});
 
-	 /**
- 	 * Analytics Features
- 	 */
-	 service.get("/analytics/check", function (req, res) {
+	/**
+	 * Analytics Features
+	 */
+	service.get("/analytics/check", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function (BL) {
 			BL.checkAnalytics(config, req.soajs, res);
 		});
-	 });
+	});
 
-	 service.post("/analytics/activate", function (req, res) {
+	service.post("/analytics/activate", function (req, res) {
 		initBLModel(req, res, hostBL, "host", function (BL) {
 			BL.activateAnalytics(config, req.soajs, res);
 		});
-	 });
+	});
 
 	/**
 	 * Git App features gitAccountsBL
@@ -931,24 +932,29 @@ service.init(function () {
 	 * content builder features
 	 */
 	service.get("/cb/list", function (req, res) {
-		checkForMongo(req);
-		cb.list(config, mongo, req, res);
+		initBLModel(req, res, cbBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
 	});
 	service.get("/cb/get", function (req, res) {
-		checkForMongo(req);
-		cb.get(config, mongo, req, res);
+		initBLModel(req, res, cbBL, dbModel, function (BL) {
+			BL.get(config, req, res);
+		});
 	});
 	service.get("/cb/listRevisions", function (req, res) {
-		checkForMongo(req);
-		cb.revisions(config, mongo, req, res);
+		initBLModel(req, res, cbBL, dbModel, function (BL) {
+			BL.revisions(config, req, res);
+		});
 	});
 	service.post("/cb/add", function (req, res) {
-		checkForMongo(req);
-		cb.add(config, mongo, req, res);
+		initBLModel(req, res, cbBL, dbModel, function (BL) {
+			BL.add(config, req, res);
+		});
 	});
 	service.post("/cb/update", function (req, res) {
-		checkForMongo(req);
-		cb.update(config, mongo, req, res);
+		initBLModel(req, res, cbBL, dbModel, function (BL) {
+			BL.update(config, req, res);
+		});
 	});
 
 	/**
