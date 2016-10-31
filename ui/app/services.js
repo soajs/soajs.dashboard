@@ -327,8 +327,10 @@ soajsApp.service("aclDrawHelpers", function () {
 	}
 	
 	function applyApiRestriction(aclFill, service) {
-		var aclService = aclFill[service.name];
-		if (aclService.apisRestrictPermission === true) {
+		if (service.name) {
+			var aclService = aclFill[service.name];
+		}
+		if (aclService && aclService.apisRestrictPermission === true) {
 			for (var grpLabel in service.fixList) {
 				if (service.fixList.hasOwnProperty(grpLabel)) {
 					var defaultApi = service.fixList[grpLabel]['defaultApi'];
