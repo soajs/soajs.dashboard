@@ -18,44 +18,44 @@ module.exports = {
         return mongo;
     },
 
-    "generateAppId": function(){
-      return new mongo.ObjectId();
-    },
-
-    "getTenantId": function(soajs){
-        return mongo.ObjectId(soajs.tenant.id);
+    "generateId": function (soajs) {
+        checkForMongo(soajs);
+        return new mongo.ObjectId();
     },
 
     "validateId": function(soajs, cb){
         checkForMongo(soajs);
         try{
             soajs.inputmaskData.id = mongo.ObjectId(soajs.inputmaskData.id);
-            return cb(null, soajs.inputmaskData.id);
+            return ((cb) ? cb(null, soajs.inputmaskData.id) : soajs.inputmaskData.id);
         }
         catch(e){
-            return cb(e);
+            if (cb) {
+                return cb(e);
+            }
+            else {
+                soajs.log.error('Exception thrown while trying to get object id for ' + soajs.inputmaskData.id);
+                soajs.log.error(e);
+                return null;
+            }
         }
     },
 
-    "validateUid": function(soajs, cb){
-        checkForMongo(soajs);
-        try{
-            soajs.inputmaskData.uId = mongo.ObjectId(soajs.inputmaskData.uId);
-            return cb(null, soajs.inputmaskData.uId);
-        }
-        catch(e){
-            return cb(e);
-        }
-    },
-
-    "validateCertId": function(soajs, oneCert, cb){
+    "validateCustomId": function (soajs, id, cb) {
         checkForMongo(soajs);
         try {
-            oneCert = mongo.ObjectId(oneCert);
-            return cb (null, oneCert);
+            id = mongo.ObjectId(id);
+            return ((cb) ? cb(null, id) : id);
         }
         catch (e) {
-            return cb (e);
+            if (cb) {
+                return cb(e);
+            }
+            else {
+                soajs.log.error('Exception thrown while trying to get object id for ' + id);
+                soajs.log.error(e);
+                return null;
+            }
         }
     },
 
@@ -81,7 +81,7 @@ module.exports = {
 
     "insertEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.insert(opts.collection, opts.record, cb);
+        mongo.insert(opts.collection, opts.record, opts.versioning || false, cb);
     },
 
     "removeEntry": function (soajs, opts, cb) {
@@ -91,6 +91,6 @@ module.exports = {
 
     "updateEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
-        mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, cb);
+        mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, opts.versioning || false, cb);
     }
 };

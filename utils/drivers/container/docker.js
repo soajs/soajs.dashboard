@@ -7,6 +7,9 @@ var fs = require('fs');
 var rimraf = require('rimraf');
 var async = require('async');
 
+var dockerColl = 'docker';
+var gridfsColl = 'fs.files';
+
 function checkError(error, cb, fCb) {
 	if (error) {
 		return cb(error, null);
@@ -17,7 +20,7 @@ function checkError(error, cb, fCb) {
 function getDockerCerts(certs, gfs, db, cb) {
 	var certBuffers = {};
 	async.each(certs, function (oneCert, callback) {
-		var gs = new gfs.mongo.GridStore(db, oneCert._id, 'r', {
+		var gs = new gfs.mongo.GridStore(db, oneCert._id, 'r', { //TODO: update to support model injection
 			root: 'fs',
 			w: 1,
 			fsync: true
@@ -44,7 +47,7 @@ function getDockerCerts(certs, gfs, db, cb) {
 }
 
 var lib = {
-	"getDeployer": function (deployerConfig, mongo, cb) {
+	"getDeployer": function (soajs, deployerConfig, model, cb) {
 		/**
 		 Three options:
 		 - local: use socket port
@@ -90,16 +93,24 @@ var lib = {
 				return cb({message: 'No manager nodes found in this environment\'s deployer'});
 			}
 
-			mongo.find('docker', {recordType: 'node', role: 'manager'}, function (error, managerNodes) {
+			var opts = {
+				collection: dockerColl,
+				conditions: { recordType: 'node', role: 'manager' }
+			};
+
+			model.findEntries(soajs, opts, function (error, managerNodes) {
 				checkError(error, cb, function () {
 					async.detect(managerNodes, function (oneNode, callback) {
 						var dockerConfig = buildDockerConfig(oneNode.ip, oneNode.dockerPort, certs);
 						var docker = new Docker(dockerConfig);
-						return docker.ping(function (error, response) {
+						docker.ping(function (error, response) {
 							//error is insignificant in this case
 							return callback(null, response);
 						});
 					}, function (error, fastestNodeRecord) {
+						if (!fastestNodeRecord) {
+							return cb({'message': 'ERROR: unable to connect to a manager node'});
+						}
 						var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
 						var docker = new Docker(dockerConfig);
 						return cb(null, docker);
@@ -112,7 +123,7 @@ var lib = {
 			var dockerConfig = {
 				host: host,
 				port: port
-			}
+			};
 
 			var certKeys = Object.keys(certs);
 			certKeys.forEach(function (oneCertKey) {
@@ -127,9 +138,12 @@ var lib = {
 				return callback({message: 'Missing environment code'});
 			}
 
-			var criteria = {};
-			criteria['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
-			mongo.find('fs.files', criteria, function (error, certs) {
+			var opts = {
+				collection: gridfsColl,
+				conditions: {}
+			};
+			opts.conditions['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
+			model.findEntries(soajs, opts, function (error, certs) {
 				checkError(error, callback, function () {
 					if (!certs || (certs && certs.length === 0)) {
 						return callback({
@@ -138,9 +152,9 @@ var lib = {
 						});
 					}
 
-					mongo.getMongoSkinDB(function (error, db) {
+					model.getDb(soajs).getMongoSkinDB(function (error, db) {
 						checkError(error, callback, function () {
-							var gfs = Grid(db, mongo.mongoSkin);
+							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);
 						});
@@ -150,8 +164,8 @@ var lib = {
 		}
 	},
 
-	"container": function (dockerInfo, action, cid, mongo, opts, cb) {
-		lib.getDeployer(dockerInfo, mongo, function (error, deployer) {
+	"container": function (soajs, dockerInfo, action, cid, model, opts, cb) {
+		lib.getDeployer(dockerInfo, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var container = deployer.getContainer(cid);
 				container[action](opts || null, function (error, response) {
@@ -168,8 +182,8 @@ var lib = {
 	}
 };
 var deployer = {
-	"createContainer": function (deployerConfig, params, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"createContainer": function (soajs, deployerConfig, params, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			if (error) {
 				return cb(error);
 			}
@@ -181,24 +195,24 @@ var deployer = {
 		});
 	},
 
-	"start": function (deployerConfig, cid, mongo, cb) {
-		lib.container(deployerConfig, "start", cid, mongo, null, cb);
+	"start": function (soajs, deployerConfig, cid, model, cb) {
+		lib.container(soajs, deployerConfig, "start", cid, model, null, cb);
 	},
 
-	"exec": function (deployerConfig, cid, mongo, opts, cb) {
-		lib.container(deployerConfig, "exec", cid, mongo, opts, cb);
+	"exec": function (soajs, deployerConfig, cid, model, opts, cb) {
+		lib.container(soajs, deployerConfig, "exec", cid, model, opts, cb);
 	},
 
-	"restart": function (deployerConfig, cid, mongo, cb) {
-		lib.container(deployerConfig, "restart", cid, mongo, null, cb);
+	"restart": function (soajs, deployerConfig, cid, model, cb) {
+		lib.container(soajs, deployerConfig, "restart", cid, model, null, cb);
 	},
 
-	"remove": function (deployerConfig, cid, mongo, cb) {
-		lib.container(deployerConfig, "remove", cid, mongo, {"force": true}, cb);
+	"remove": function (soajs, deployerConfig, cid, model, cb) {
+		lib.container(soajs, deployerConfig, "remove", cid, model, {"force": true}, cb);
 	},
 
-	"info": function (deployerConfig, cid, soajs, res, mongo) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"info": function (soajs, deployerConfig, cid, res, model) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			deployer.getContainer(cid).logs({
 					stderr: true,
 					stdout: true,
@@ -231,12 +245,12 @@ var deployer = {
 		});
 	},
 
-	"addNode": function (deployerConfig, options, mongo, cb) {
+	"addNode": function (soajs, deployerConfig, options, model, cb) {
 		deployerConfig.flags = {
 			newNode: true
 		};
 
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.info(function (error, nodeInfo) {
 					checkError(error, cb, function () {
@@ -252,7 +266,7 @@ var deployer = {
 									delete deployerConfig.host;
 									delete deployerConfig.port;
 
-									lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+									lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 										checkError(error, cb, function () {
 											deployer.listNodes(function (error, nodes) {
 												checkError(error, cb, function () {
@@ -275,7 +289,7 @@ var deployer = {
 		});
 	},
 
-	"removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
+	"removeNode": function (soajs, deployerConfig, options, model, cb, backgroundCB) {
 		/*
 		 - get deployer for target node
 		 - leave swarm
@@ -288,7 +302,7 @@ var deployer = {
 		targetDeployerConfig.host = options.ip;
 		targetDeployerConfig.port = options.dockerPort;
 		targetDeployerConfig.flags = {targetNode: true};
-		lib.getDeployer(targetDeployerConfig, mongo, function (error, targetDeployer) {
+		lib.getDeployer(soajs, targetDeployerConfig, model, function (error, targetDeployer) {
 			checkError(error, cb, function () {
 				targetDeployer.swarmLeave(function (error) {
 					checkError(error, cb, function () {
@@ -296,7 +310,7 @@ var deployer = {
 						//return response and remove node entry from swarm in the background
 						cb(null, true);
 
-						lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+						lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 							var node = deployer.getNode(options.id);
 							setTimeout(function () {
 								node.remove(backgroundCB);
@@ -308,8 +322,8 @@ var deployer = {
 		});
 	},
 
-	"updateNode": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"updateNode": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var node = deployer.getNode(options.nodeId);
 
@@ -328,16 +342,16 @@ var deployer = {
 		});
 	},
 
-	"deployHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.createService(options, cb);
 			});
 		});
 	},
 
-	"scaleHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"scaleHAService": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var service = deployer.getService(options.serviceName);
 				service.inspect(function (error, serviceInfo) {
@@ -355,8 +369,8 @@ var deployer = {
 		});
 	},
 
-	"inspectHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"inspectHAService": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var output = {}, params = {};
 				var service = deployer.getService(options.serviceName);
@@ -377,8 +391,8 @@ var deployer = {
 		});
 	},
 
-	"inspectHATask": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"inspectHATask": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var serviceName = options.taskName.split('.')[0];
 				var taskNumber = options.taskName.split('.')[1];
@@ -402,8 +416,8 @@ var deployer = {
 		});
 	},
 
-	"deleteHAService": function (deployerConfig, options, mongo, cb) {
-		lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+	"deleteHAService": function (soajs, deployerConfig, options, model, cb) {
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var serviceId = options.serviceName;
 				var service = deployer.getService(serviceId);
@@ -412,13 +426,17 @@ var deployer = {
 		});
 	},
 
-	"inspectContainer": function (deployerConfig, options, mongo, cb) {
-		mongo.findOne('docker', {recordType: 'node', id: options.nodeId}, function (error, nodeInfo) {
+	"inspectContainer": function (soajs, deployerConfig, options, model, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: { recordType: 'node', id: options.nodeId }
+		};
+		model.getEntry(soajs, opts, function (error, nodeInfo) {
 			checkError(error || !nodeInfo, cb, function () {
 				deployerConfig.host = nodeInfo.ip;
 				deployerConfig.port = nodeInfo.dockerPort;
 				deployerConfig.flags = {targetNode: true};
-				lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+				lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 					checkError(error, cb, function () {
 						var container = deployer.getContainer(options.containerId);
 						container.inspect(cb);
@@ -428,8 +446,12 @@ var deployer = {
 		});
 	},
 
-	"getContainerLogs": function (deployerConfig, options, mongo, soajs, res) {
-		mongo.findOne('docker', {recordType: 'node', id: options.nodeId}, function (error, nodeInfo) {
+	"getContainerLogs": function (soajs, deployerConfig, options, model, res) {
+		var opts = {
+			collection: dockerColl,
+			conditions: { recordType: 'node', id: options.nodeId }
+		};
+		model.getEntry(soajs, opts, function (error, nodeInfo) {
 			if (error || !nodeInfo) {
 				error = ((error) ? error : {message: 'Node record not found'});
 				soajs.log.error(error);
@@ -439,7 +461,7 @@ var deployer = {
 			deployerConfig.host = nodeInfo.ip;
 			deployerConfig.port = nodeInfo.dockerPort;
 			deployerConfig.flags = {targetNode: true};
-			lib.getDeployer(deployerConfig, mongo, function (error, deployer) {
+			lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 				if (error) {
 					soajs.log.error(error);
 					return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
@@ -462,7 +484,7 @@ var deployer = {
 					logStream.setEncoding('utf8');
 					logStream.on('readable', function () {
 						var handle = this;
-						while ((chunk = handle.read()) != null) {
+						while ((chunk = handle.read()) !== null) {
 							data += chunk.toString("utf8");
 						}
 					});

@@ -17,7 +17,7 @@ function getDeployer(config) {
 }
 
 var deployer = {
-    "createContainer": function (deployerConfig, params, mongo, cb) {
+    "createContainer": function (soajs, deployerConfig, params, model, cb) {
         var name = params.name;
         var environment = params.env;
         var dockerImage = params.image;
@@ -82,83 +82,83 @@ var deployer = {
             if (params.Cmd) {
                 options.Cmd = params.Cmd;
             }
-            deployer.createContainer(deployerConfig, options, mongo, cb);
+            deployer.createContainer(soajs, deployerConfig, options, model, cb);
         });
     },
 
-    "start": function (deployerConfig, cid, mongo, cb) {
+    "start": function (soajs, deployerConfig, cid, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.start(deployerConfig, cid, mongo, cb);
+        deployer.start(soajs, deployerConfig, cid, model, cb);
     },
 
-	"exec": function (deployerConfig, cid, mongo, opts, cb) {
+	"exec": function (soajs, deployerConfig, cid, model, opts, cb) {
 		var deployer = getDeployer(deployerConfig);
-		deployer.exec(deployerConfig, cid, mongo, opts, cb);
+		deployer.exec(soajs, deployerConfig, cid, model, opts, cb);
 	},
 
-	"restart": function (deployerConfig, cid, mongo, cb) {
+	"restart": function (soajs, deployerConfig, cid, model, cb) {
 		var deployer = getDeployer(deployerConfig);
-		deployer.restart(deployerConfig, cid, mongo, cb);
+		deployer.restart(soajs, deployerConfig, cid, model, cb);
 	},
 
-    "remove": function (deployerConfig, cid, mongo, cb) {
+    "remove": function (soajs, deployerConfig, cid, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.remove(deployerConfig, cid, mongo, cb);
+        deployer.remove(soajs, deployerConfig, cid, model, cb);
     },
 
-    "info": function (deployerConfig, cid, req, res, mongo) {
+    "info": function (soajs, deployerConfig, cid, res, model) {
         var deployer = getDeployer(deployerConfig);
-        deployer.info(deployerConfig, cid, req, res, mongo);
+        deployer.info(soajs, deployerConfig, cid, res, model);
     },
 
-    "addNode": function (deployerConfig, options, mongo, cb) {
+    "addNode": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.addNode(deployerConfig, options, mongo, cb);
+        deployer.addNode(soajs, deployerConfig, options, model, cb);
     },
 
-    "removeNode": function (deployerConfig, options, mongo, cb, backgroundCB) {
+    "removeNode": function (soajs, deployerConfig, options, model, cb, backgroundCB) {
         var deployer = getDeployer(deployerConfig);
-        deployer.removeNode(deployerConfig, options, mongo, cb, backgroundCB);
+        deployer.removeNode(soajs, deployerConfig, options, model, cb, backgroundCB);
     },
 
-    "updateNode": function (deployerConfig, options, mongo, cb) {
+    "updateNode": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.updateNode(deployerConfig, options, mongo, cb);
+        deployer.updateNode(soajs, deployerConfig, options, model, cb);
     },
 
-    "deployHAService": function (deployerConfig, options, mongo, cb) {
+    "deployHAService": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.deployHAService(deployerConfig, options, mongo, cb);
+        deployer.deployHAService(soajs, deployerConfig, options, model, cb);
     },
 
-    "scaleHAService": function (deployerConfig, options, mongo, cb) {
+    "scaleHAService": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.scaleHAService(deployerConfig, options, mongo, cb);
+        deployer.scaleHAService(soajs, deployerConfig, options, model, cb);
     },
 
-    "inspectHAService": function (deployerConfig, options, mongo, cb) {
+    "inspectHAService": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.inspectHAService(deployerConfig, options, mongo, cb);
+        deployer.inspectHAService(soajs, deployerConfig, options, model, cb);
     },
 
-    "inspectHATask": function (deployerConfig, options, mongo, cb) {
+    "inspectHATask": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.inspectHATask(deployerConfig, options, mongo, cb);
+        deployer.inspectHATask(soajs, deployerConfig, options, model, cb);
     },
 
-    "deleteHAService": function (deployerConfig, options, mongo, cb) {
+    "deleteHAService": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.deleteHAService(deployerConfig, options, mongo, cb);
+        deployer.deleteHAService(soajs, deployerConfig, options, model, cb);
     },
 
-    "inspectContainer": function (deployerConfig, options, mongo, cb) {
+    "inspectContainer": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
-        deployer.inspectContainer(deployerConfig, options, mongo, cb);
+        deployer.inspectContainer(soajs, deployerConfig, options, model, cb);
     },
 
-    "getContainerLogs": function (deployerConfig, options, mongo, soajs, res) {
+    "getContainerLogs": function (soajs, deployerConfig, options, model, res) {
         var deployer = getDeployer(deployerConfig);
-        deployer.getContainerLogs(deployerConfig, options, mongo, soajs, res);
+        deployer.getContainerLogs(soajs, deployerConfig, options, model, res);
     }
 };
 
