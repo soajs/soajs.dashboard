@@ -71,7 +71,7 @@ var methods = {
 		};
 
 		if (type) {
-			opt.conditions["$or"] = [
+			opts.conditions["$or"] = [
 				{"type": type},
 				{"type": type + "_" + env.toLowerCase()}
 			];
