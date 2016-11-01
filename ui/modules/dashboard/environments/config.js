@@ -819,7 +819,7 @@ var environmentsConfig = {
 			},
 			"services": {
 				"add": ['dashboard', '/hacloud/hosts/deployService'],
-				"remove": ['dashboard', '/hacloud/services/delete'],
+				"delete": ['dashboard', '/hacloud/services/delete'],
 				"scale": ['dashboard', '/hacloud/services/scale'],
 				"logs": ['dashboard', '/hacloud/services/instances/logs']
 			}
