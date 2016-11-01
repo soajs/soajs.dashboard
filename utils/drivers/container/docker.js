@@ -105,9 +105,9 @@ var lib = {
 						var docker = new Docker(dockerConfig);
 						docker.ping(function (error, response) {
 							//error is insignificant in this case
-							return callback(null, response);
+							return callback(response);
 						});
-					}, function (error, fastestNodeRecord) {
+					}, function (fastestNodeRecord) {
 						if (!fastestNodeRecord) {
 							return cb({'message': 'ERROR: unable to connect to a manager node'});
 						}
