@@ -431,7 +431,7 @@ var deployer = {
 			collection: dockerColl,
 			conditions: { recordType: 'node', id: options.nodeId }
 		};
-		model.getEntry(soajs, opts, function (error, nodeInfo) {
+		model.findEntry(soajs, opts, function (error, nodeInfo) {
 			checkError(error || !nodeInfo, cb, function () {
 				deployerConfig.host = nodeInfo.ip;
 				deployerConfig.port = nodeInfo.dockerPort;
@@ -451,7 +451,7 @@ var deployer = {
 			collection: dockerColl,
 			conditions: { recordType: 'node', id: options.nodeId }
 		};
-		model.getEntry(soajs, opts, function (error, nodeInfo) {
+		model.findEntry(soajs, opts, function (error, nodeInfo) {
 			if (error || !nodeInfo) {
 				error = ((error) ? error : {message: 'Node record not found'});
 				soajs.log.error(error);
