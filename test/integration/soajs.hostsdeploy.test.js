@@ -89,72 +89,68 @@ describe("testing hosts deployment", function () {
                 assert.ok(body);
                 soajsauth = body.soajsauth;
 
-                var validDeployerRecord = {
-                    "type": "container",
-                    "selected": "container.dockermachine.local",
-                    "container": {
-                        "dockermachine": {
-                            "local": {
-                                "host": "localhost",
-                                "port": 5354,
-                                "config": {
-                                    "HostConfig": {
-                                        "NetworkMode": "soajsnet"
-                                    },
-                                    "MachineName": "soajs-dev"
-                                }
-                            },
-                            "cloud": {
-                                "rackspace": {
-                                    "host": "docker.rackspace.com",
-                                    "port": 2376
-                                    //additional info goes here like instances, credentials or keys ....
-                                }
-                            }
-                        },
-                        "docker": {
-                            "socket": {
-                                "socketPath": "/var/run/docker.sock"
-                            }
-                        }
+                var nodeRecord = {
+                    "recordType" : "node",
+                    "id" : "aacrh437ty7tnfui56phe3pzx",
+                    "name" : "docker-mock",
+                    "ip" : "127.0.0.1",
+                    "dockerPort" : 5354,
+                    "swarmPort" : 5355,
+                    "availability" : "active",
+                    "role" : "manager",
+                    "resources" : {
+                        "cpuCount" : 1,
+                        "memory" : 2094673920
+                    },
+                    "tokens" : {
+                        "worker" : "SWMTKN-1-79fle0f1tsxbyuoyurl4apt3s",
+                        "manager" : "SWMTKN-1-8z861ondptw0ajl19qqpnbry2"
                     }
                 };
-                mongo.update("environment", {"code": "DEV"}, {
-                    "$set": {
-                        "deployer": validDeployerRecord,
-                        "profile": __dirname + "/../profiles/profile.js"
-                    }
-                }, function (error) {
+
+                mongo.insert("docker", nodeRecord, function (error) {
                     assert.ifError(error);
-                    validDeployerRecord.container.dockermachine.local.config.MachineName = "soajs-stg";
-                    mongo.update("environment", {"code": "STG"}, {"$set": {"deployer": validDeployerRecord, "profile": __dirname + "/../profiles/profile.js"}}, function (error) {
+
+                    var validDeployerRecord = {
+                		"type" : "container",
+                		"selected" : "container.docker.remote",
+                		"container" : {
+                			"docker" : {
+                				"local" : {
+                					"socketPath" : "/var/run/docker.sock"
+                				},
+                				"remote" : {
+                					"nodes" : ["docker-mock"]
+                				}
+                			}
+                		}
+                	};
+
+                    mongo.update("environment", {}, {
+                        "$set": {
+                            "deployer": validDeployerRecord,
+                            "profile": __dirname + "/../profiles/profile.js"
+                        }
+                    }, {multi: true}, function (error) {
                         assert.ifError(error);
+                        //upload a fake certificate to fs.files
+                        var testUploadFilesDir = __dirname + "/../uploads/";
+                        var params = {
+                            qs: {
+                                filename: 'test_cert.pem',
+                                envCode: 'DEV',
+                                platform: 'docker',
+                                driver: 'remote'
+                            },
+                            formData: {
+                                file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
+                            }
+                        };
 
-                        validDeployerRecord.container.dockermachine.local.config.MachineName = "soajs-prod";
-                        validDeployerRecord.type = 'manual';
-
-                        mongo.update("environment", {"code": "PROD"}, {"$set": {"deployer": validDeployerRecord, "profile": __dirname + "/../profiles/profile.js"}}, function (error) {
-                            assert.ifError(error);
-
-                            //upload a fake certificate to fs.files
-                            var testUploadFilesDir = __dirname + "/../uploads/";
-                            var params = {
-                                qs: {
-                                    filename: 'test_cert.pem',
-                                    envCode: 'DEV',
-                                    type: 'docker',
-                                    driver: 'dockermachine - local'
-                                },
-                                formData: {
-                                    file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
-                                }
-                            };
-
-                            executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
-                                assert.ok(body.result);
-                                assert.ok(body.data);
-                                done();
-                            });
+                        executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
+                            assert.ok(body.result);
+                            assert.ok(body.data);
+                            done();
                         });
                     });
                 });
@@ -177,30 +173,15 @@ describe("testing hosts deployment", function () {
                 "port": 80,
                 "profile": "/opt/soajs/FILES/profiles/profile.js",
                 "deployer": {
-                    "type": "container",
-                    "selected": "container.dockermachine.local",
-                    "container": {
-                        "dockermachine": {
-                            "local": {
-                                "host": "192.168.99.107",
-                                "port": 2376,
-                                "config": {
-                                    "HostConfig": {
-                                        "NetworkMode": "soajsnet"
-                                    },
-                                    "MachineName": "soajs-dash"
-                                }
+                    "type" : "container",
+                    "selected" : "container.docker.remote",
+                    "container" : {
+                        "docker" : {
+                            "local" : {
+                                "socketPath" : "/var/run/docker.sock"
                             },
-                            "cloud": {
-                                "rackspace": {
-                                    "host": "docker.rackspace.com",
-                                    "port": 2376
-                                }
-                            }
-                        },
-                        "docker": {
-                            "socket": {
-                                "socketPath": "/var/run/docker.sock"
+                            "remote" : {
+                                "nodes" : ["docker-mock"]
                             }
                         }
                     }
@@ -354,7 +335,10 @@ describe("testing hosts deployment", function () {
                     "commit": "67a61db0955803cddf94672b0192be28f47cf280",
                     "variables": [
                         "TEST_VAR=mocha"
-                    ]
+                    ],
+                    "name": "controller",
+                    "haService": true,
+                    "haCount": 1
                 }
             };
             executeMyRequest(params, "hosts/deployController", "post", function (body) {
@@ -381,7 +365,10 @@ describe("testing hosts deployment", function () {
 					    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
 					    "variables": [
 						    "TEST_VAR=mocha"
-					    ]
+					    ],
+                        "name": "controller",
+                        "haService": true,
+                        "haCount": 1
 				    }
 			    };
 			    executeMyRequest(params, "hosts/deployController", "post", function (body) {
@@ -392,7 +379,7 @@ describe("testing hosts deployment", function () {
 		    });
 	    });
 
-        it("success - deploy 1 controller with static content", function (done) {
+        it("success - deploy 1 environment with static content", function (done) {
             mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
                 assert.ifError(error);
 
@@ -409,7 +396,10 @@ describe("testing hosts deployment", function () {
                         "commit": "67a61db0955803cddf94672b0192be28f47cf280",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "name": "controller",
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployController", "post", function (body) {
@@ -426,7 +416,9 @@ describe("testing hosts deployment", function () {
 				                "customUIId": record._id.toString(),
 				                "branch": "develop",
 				                "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
-			                }
+			                },
+                            "haService": true,
+                            "haCount": 1
 		                }
 	                };
 
@@ -452,12 +444,14 @@ describe("testing hosts deployment", function () {
                     "name": "urac",
                     "envCode": "DEV",
                     "owner": "soajs",
-                    "repo": "soajs.oauth",
+                    "repo": "soajs.urac",
                     "branch": "develop",
                     "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
                     "variables": [
                         "TEST_VAR=mocha"
-                    ]
+                    ],
+                    "haService": true,
+                    "haCount": 1
                 }
             };
             executeMyRequest(params, "hosts/deployService", "post", function (body) {
@@ -489,7 +483,9 @@ describe("testing hosts deployment", function () {
                         "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployService", "post", function (body) {
@@ -523,7 +519,9 @@ describe("testing hosts deployment", function () {
                         "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployService", "post", function (body) {
@@ -558,7 +556,9 @@ describe("testing hosts deployment", function () {
                         "commit": "2f69289334e76f896d08bc7a71ac757aa55cb20f",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployService", "post", function (body) {
@@ -583,7 +583,9 @@ describe("testing hosts deployment", function () {
                     "commit": "67a61db0955803cddf94672b0192be28f47cf280",
                     "variables": [
                         "TEST_VAR=mocha"
-                    ]
+                    ],
+                    "haService": true,
+                    "haCount": 1
                 }
             };
             executeMyRequest(params, "hosts/deployService", "post", function (body) {
@@ -594,31 +596,29 @@ describe("testing hosts deployment", function () {
         });
 
         it("fail - trying to deploy without certificates", function (done) {
-            mongo.update("environment", {"code": "STG"}, {"$set": {"deployer.type": "container"}}, function (error, result) {
-                assert.ifError(error);
-                assert.ok(result);
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                "form": {
+                    "name": "urac",
+                    "envCode": "STG",
+                    "owner": "soajs",
+                    "repo": "soajs.urac",
+                    "branch": "develop",
+                    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+                    "variables": [
+                        "TEST_VAR=mocha"
+                    ],
+                    "haService": true,
+                    "haCount": 1
+                }
+            };
 
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "form": {
-                        "name": "urac",
-                        "envCode": "STG",
-                        "owner": "soajs",
-                        "repo": "soajs.urac",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ]
-                    }
-                };
-                executeMyRequest(params, "hosts/deployService", "post", function (body) {
-                    assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 741, 'message': errorCodes[741]});
-                    done();
-                });
+            executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {'code': 741, 'message': errorCodes[741]});
+                done();
             });
         });
     });
@@ -640,7 +640,9 @@ describe("testing hosts deployment", function () {
                     "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                     "variables": [
                         "TEST_VAR=mocha"
-                    ]
+                    ],
+                    "haService": true,
+                    "haCount": 1
                 }
             };
             executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
@@ -672,7 +674,9 @@ describe("testing hosts deployment", function () {
                         "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
@@ -706,7 +710,9 @@ describe("testing hosts deployment", function () {
                         "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                         "variables": [
                             "TEST_VAR=mocha"
-                        ]
+                        ],
+                        "haService": true,
+                        "haCount": 1
                     }
                 };
                 executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
@@ -734,7 +740,9 @@ describe("testing hosts deployment", function () {
                     "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
                     "variables": [
                         "TEST_VAR=mocha"
-                    ]
+                    ],
+                    "haService": true,
+                    "haCount": 1
                 }
             };
             executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
@@ -807,6 +815,10 @@ describe("testing hosts deployment", function () {
                 });
             });
         });
+    });
+
+    describe("testing scale service", function () {
+
     });
 
     describe("testing controller delete", function () {
@@ -1022,7 +1034,7 @@ describe("testing hosts deployment", function () {
         };
 
         before("clean docker collection and inject nginx records in docker collection", function (done) {
-            mongo.remove("docker", {type: 'nginx'}, function (error) {
+            mongo.remove("docker", {platform: 'nginx'}, function (error) {
                 assert.ifError(error);
 
                 mongo.insert("docker", nginxDockerRecord, function (error) {
@@ -1057,7 +1069,7 @@ describe("testing hosts deployment", function () {
             });
 
             it("mongo check", function (done) {
-                mongo.count("docker", {type: 'nginx'}, function (error, count) {
+                mongo.count("docker", {platform: 'nginx'}, function (error, count) {
                     assert.ifError(error);
                     assert.equal(count, 1);
                     done();
