@@ -90,3 +90,21 @@ form .file-odd {
 .modal-lg {
     width: 1000px;
 }
+
+form .note {
+    display: none;
+}
+
+form .submittedForm .note {
+    display: block;
+    padding-bottom: 8px;
+}
+
+.submittedForm {
+    text-align: left;
+}
+
+.submittedForm .alert {
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
