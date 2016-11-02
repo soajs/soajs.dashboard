@@ -1,22 +1,3 @@
-<style>
-	form .note {
-		display: none;
-	}
-
-	form .submittedForm .note {
-		display: block;
-		padding-bottom: 8px;
-	}
-
-	.submittedForm {
-		text-align: left;
-	}
-
-	.submittedForm .alert {
-		padding-bottom: 8px;
-		padding-top: 8px;
-	}
-</style>
 <form id="{{form.id}}" name="{{form.name}}" class="css-form" novalidate>
 	<div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
 		<span ng-if="form.modal" class="closeButton">

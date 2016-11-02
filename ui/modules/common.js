@@ -82,7 +82,12 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	if (options.headers) {
 		for (var i in options.headers) {
 			if (options.headers.hasOwnProperty(i)) {
-				apiOptions.headers[i] = options.headers[i];
+				if(options.headers[i] === null){
+					delete apiOptions.headers[i];
+				}
+				else{
+					apiOptions.headers[i] = options.headers[i];
+				}
 			}
 		}
 	}
