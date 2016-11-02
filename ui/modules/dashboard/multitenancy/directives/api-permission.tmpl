@@ -13,12 +13,12 @@
 						<div ng-repeat="myApi in apisList" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:api.selected}">
 							<div class="apiListing clearfix">
 								<div class="apiLabel">
-									<input ng-click="checkForGroupDefault(service,grp,val,myApi, oneEnv.code)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (currentApplication.aclFill[oneEnv.code][service.name][method].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].include" ng-show="currentApplication.aclFill[oneEnv.code][service.name][method].apisRestrictPermission"/>
+									<input ng-click="checkForGroupDefault(service,grp,val,myApi, oneEnv.code)" ng-disabled="(val.defaultApi && myApi.groupMain!==true && (val.defaultIncluded===false))" type="checkbox" value="true" ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].include" ng-show="currentApplication.aclFill[oneEnv.code][service.name].apisRestrictPermission"/>
 									<span title="{{myApi.v}}">{{myApi.l}}</span>
 								</div>
-								<div class="apiAccess" ng-hide="(currentApplication.aclFill[oneEnv.code][service.name][method].apisRestrictPermission && (currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].include!==true))">
+								<div class="apiAccess" ng-hide="(currentApplication.aclFill[oneEnv.code][service.name].apisRestrictPermission && (currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].include!==true))">
 									<div class="f-left">
-                                <span style="padding-left: 0px;">
+                                <span style="padding-left: 0px">
                                     <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"/>
                                     <em>{{translation.InheritFromService[LANG]}}</em>
                                 </span>

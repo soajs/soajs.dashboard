@@ -9,11 +9,11 @@
 			<div ng-if="val.apisRest">
 				<fieldset ng-repeat="(method, apisList) in val.apisRest">
 					<legend>{{method}}</legend>
-					<div>
+					<div class="apiListing-container">
 						<div class="clearfix apiListing" ng-repeat="my1Api in apisList" ng-class-even="'even'" ng-class-odd="'odd'"
 						     ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
 							<div class="apiLabel">
-								<input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].include" ng-click="checkForGroupDefault(oneEnv.code,service,grp,val,my1Api)" ng-disabled="(val.defaultApi && my1Api.groupMain!==true && (aclFill[oneEnv.code][service.name][method].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-show="aclFill[oneEnv.code][service.name].apisRestrictPermission"/>
+								<input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].include" ng-click="checkForGroupDefault(oneEnv.code,service,grp,val,my1Api)" ng-disabled="(val.defaultApi && my1Api.groupMain!==true && val.defaultIncluded===false)" type="checkbox" value="true" ng-show="aclFill[oneEnv.code][service.name].apisRestrictPermission"/>
 								{{my1Api.l}}
 							</div>
 							<div class="apiAccess" ng-hide="(aclFill[oneEnv.code][service.name].apisRestrictPermission && (aclFill[oneEnv.code][service.name][method].apis[my1Api.v].include!==true))">
@@ -41,8 +41,8 @@
 											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.owner" value="owner">
 											Owner
 										</li>
-										<li class="">
-											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.admin" value="admin">
+										<li>
+											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.administrator" value="administrator">
 											Administrator
 										</li>
 									</ul>
@@ -53,8 +53,8 @@
 				</fieldset>
 			</div>
 
-			<div ng-if="!val.apisRest" class="clearfix apiListing-container">
-				<div class="clearfix apiListing" ng-repeat="myApis in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
+			<div ng-if="!val.apisRest" class="apiListing-container clearfix">
+				<div class="apiListing clearfix" ng-repeat="myApis in val.apis| orderBy:'groupMain'" ng-class-even="'even'" ng-class-odd="'odd'"
 				     ng-class="{'first': $first, 'last': $last, selected:api.selected}" style="">
 					<div class="apiLabel">
 						<input id="{{oneEnv.code}}_{{service.name}}_{{$index}}" ng-click="checkForGroupDefault(oneEnv.code,service,grp,val,myApis)" ng-disabled="(val.defaultApi && myApis.groupMain!==true && (aclFill[oneEnv.code][service.name].apis[val.defaultApi].include!==true))" type="checkbox" value="true" ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].include" ng-show="aclFill[oneEnv.code][service.name].apisRestrictPermission"/>
@@ -64,7 +64,7 @@
 						<div class="f-left">
 						<span style="padding-left: 0px;">
                             <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="clear" type="radio"/>
-                            <em style="">{{translation.InheritFromService[LANG]}}</em>
+                            <em>{{translation.InheritFromService[LANG]}}</em>
                         </span>
                         <span>
                             <input ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].accessType" value="public" type="radio"/> {{translation.public[LANG]}}
@@ -86,7 +86,7 @@
 									Owner
 								</li>
 								<li class="">
-									<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].grpCodes.admin" value="admin" class="">
+									<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name].apis[myApis.v].grpCodes.administrator" value="administrator">
 									Administrator
 								</li>
 							</ul>

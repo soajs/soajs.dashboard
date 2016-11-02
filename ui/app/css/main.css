@@ -874,7 +874,7 @@ div.entryBox .body .btn-ssm {
 fieldset {
     border: 1px solid #cccccc;
     border-radius: 5px;
-    padding: 8px 12px;
+    padding: 8px 10px;
     margin-bottom: 10px;
 }
 
@@ -896,7 +896,7 @@ fieldset legend {
 .apiListing .apiLabel {
     float: left;
     width: 390px;
-    padding-right: 30px;
+    padding-right: 22px;
 }
 
 .apiListing .apiAccess {
@@ -907,8 +907,8 @@ fieldset legend {
     padding-left: 15px;
 }
 
-.apiListing-container .odd {
-    margin-right: 45px;
+.apiAccess ul li span {
+    padding-left: 0px;
 }
 
 .apiListing-container input {
@@ -940,20 +940,24 @@ fieldset legend {
 }
 
 .grpsListingScroll {
-    width: 378px;
-    height: 70px;
+    width: 355px;
+    height: 66px;
     overflow-y: scroll;
     display: inline-block;
     border: 1px solid #cccccc;
     margin-left: 5px;
     background-color: white;
     border-radius: 10px;
-    padding: 5px;
+    padding: 5px 2px;
 }
 
 .smallGrpsListingScroll {
-    height: 35px;
+    height: 30px;
     overflow: hidden;
+}
+
+.grpsListingScroll ul li input {
+    margin-right: 1px;
 }
 
 .apiListing .grpsListingScroll {
@@ -970,7 +974,7 @@ ul.grpsListing {
 
 .grpsListing li {
     float: left;
-    width: 170px;
+    width: 164px;
     font-weight: normal;
     font-size: 12px;
 }
@@ -1499,7 +1503,6 @@ div.entryBox .body .btn-primary.noFloat {
     width: 20%;
     white-space: nowrap;
 }
-
 
 .pageCount {
     width: 150px;
