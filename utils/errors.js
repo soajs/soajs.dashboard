@@ -60,11 +60,11 @@ var errors = {
 	"450": "Unable to remove tenant oAuth User",
 	"451": "Unable to updated tenant oAuth User",
 
-    "452": "Invalid Tenant Code",
-    "453": "Invalid Tenant External Key",
-    "454": "Tenant does not exist",
-    "455": "Tenant Key already exists",
-    "456": "Error adding Tenant Key",
+	"452": "Invalid Tenant Code",
+	"453": "Invalid Tenant External Key",
+	"454": "Tenant does not exist",
+	"455": "Tenant Key already exists",
+	"456": "Error adding Tenant Key",
 
 	"460": "Unable to find product",
 	"461": "Unable to find package",
@@ -112,7 +112,7 @@ var errors = {
 	"617": "Error Registering Service.",
 	"618": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section.",
 	"619": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation.",
-    "620": "Make sure upload directory exists :",
+	"620": "Make sure upload directory exists :",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
@@ -145,7 +145,11 @@ var errors = {
 	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 
 	"732": "Unable to list drivers",
+	"733": "Unable to add driver",
+	"734": "Unable to update driver",
 	"735": "Unable to change selected driver",
+	"736": "Unable to delete driver",
+	"737": "You are not allowed to delete a driver that is currently selected",
 	"738": "Unable to change deployer type",
 
 	"739": "Missing required param(s). Make sure you specify certificate filename, type, and environment code. If type is docker, specify driver name and if type is nginx, specify certificate label",
@@ -156,7 +160,7 @@ var errors = {
 
 	"742": "Unable to list static content sources",
 
-	"743": "Missing environment deployer settings. Please specify deployment type, and selected driver in the Platforms section",
+	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
 
 	"750": "Invalid Request.",
 
@@ -199,34 +203,19 @@ var errors = {
 
 	"781": "You are not the owner of this application. You cannot perform this operation.",
 
-	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
-	"801": "Unable to add node, make sure the new node is configured properly",
-	"802": "Unable to save new node record. However, the new node was added to the cluster",
-	"803": "Unable to get node record",
-	"804": "Unable to remove node, make sure the node is healthy and reachable within the cluster",
-	"805": "Unable to remove node record. However, the node is currently being removed from the cluster",
-	"806": "Unable to update node, make sure the node is reachable and properly configured",
-	"807": "Unable to update the node record. However, the node state was updated within the cluster",
-	"808": "Unable to retrieve service containers list",
-	"809": "The new and current scale counts are identical",
-	"810": "Unable to scale service, make sure the deployer is configured properly",
-	"811": "Unable to inspect service containers",
-	"812": "Unable to update container records. However, the service was scaled successfully",
-	"813": "Unable to delete service, make sure the deployer is configured properly",
-	"814": "Unable to remove container records. However, the service was deleted successfully",
-	"815": "Unable to remove host records. However, the service was deleted successfully",
-	"816": "Unable to get analytics configuration for this environment",
-	"817": "Unable to list nodes",
-	"818": "This operation is only permitted in the dashboard environment",
-	"819": "Unable to update environments' deployer. However, the node was added successfully",
-	"820": "Unable to update environments' deployer. However, the node was removed successfully",
-	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
-	"822": "Unable to update environments' deployer. However, the node was updated successfully",
-	"823": "Update operations are not permitted for clusters that that composed of a single node",
+	"783": "Missing folders paths multi repository",
+	"784": "Error in multi repository folders array",
+	"785": "Folders array is empty",
 
-	901: "Error Logging out from environments",
-	902: "Error Logging in to environments",
-	903: "You do not have access to this environment %envCode%"
+	"786": "Validation Error",
+	"787": "Missing field name in config.js",
+	"788": "Invalid or no type provided in config.js",
+
+	"901": "Error Logging out from environments",
+	"902": "Error Logging in to environments",
+	"903": "You do not have access to this environment %envCode%",
+
+	"904": "Check your internet connection"
 };
 
 
