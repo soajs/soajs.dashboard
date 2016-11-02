@@ -822,10 +822,13 @@ var translation = {
 	"preview": {
 		"ENG": "Preview",
 		"FRA": "Preview"
+	},
+	"missingRequiredFields": {
+		"ENG": "Missing Required Fields",
+		"FRA": "Missing Required Fields"
 	}
-	
 };
-	
+
 var errorCodes = {
 	"urac": {
 		400: {

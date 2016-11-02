@@ -1,6 +1,10 @@
 <form id="{{form.id}}" name="{{form.name}}" class="css-form" novalidate>
 	<div ng-show="form.label" ng-class="{'header': !form.modal, 'modal-header': form.modal}"><h3>{{form.label}}</h3>
-		<span ng-if="form.modal" class="closeButton"><a href="" ng-click="form.closeModal()"><span tooltip="Close" class="icon icon-cross"></span></a></span>
+		<span ng-if="form.modal" class="closeButton">
+			<a href="" ng-click="form.closeModal()">
+				<span tooltip="Close" class="icon icon-cross"></span>
+			</a>
+		</span>
 	</div>
 	<div ng-class="{'body': !form.modal, 'modal-body': form.modal}">
 		<div ng-show="form.alerts">
@@ -92,8 +96,15 @@
 			</tr>
 		</table>
 	</div>
-	<div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}"><br/>
-
+	<div ng-class="{'footer': !form.modal, 'modal-footer': form.modal}">
+		<br/>
+		<div ng-class="{'submittedForm': form.submitted === true}">
+			<div class="note">
+				<alert type="danger" close="form.closeNote()">
+					{{translation.missingRequiredFields[LANG]}}
+				</alert>
+			</div>
+		</div>
 		<div ng-show="form.msgs.footer" class="footer-msg" ng-bind-html="form.msgs.footer|toTrustedHtml"></div>
 		<input ng-repeat="formAction in form.actions" type="{{formAction.type}}" value="{{formAction.label}}" ng-click="form.do(formAction)" class="btn btn-sm btn-{{formAction.btn}}"/>
 	</div>
