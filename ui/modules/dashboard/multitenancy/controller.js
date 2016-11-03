@@ -1540,7 +1540,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 										if (!$scope.currentApplication.acl) {
 											$scope.isInherited = true;
 										}
-										aclHelper.prepareViewAclObj($scope.currentApplication.aclFill);
+										aclHelper.prepareViewAclObj($scope, $scope.currentApplication.aclFill);
 										overlayLoading.hide();
 									}
 								});

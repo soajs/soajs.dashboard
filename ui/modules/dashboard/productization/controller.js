@@ -443,7 +443,12 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 	$scope.saveACL = function () {
 		var productId = $routeParams.pid;
 		var postData = $scope.currentPackage;
-		postData.acl = aclHelpers.constructAclFromPost($scope.aclFill);
+		var result = aclHelpers.constructAclFromPost($scope.aclFill);
+		postData.acl = result.data;
+		if (!result.valid) {
+			$scope.$parent.displayAlert('danger', translation.youNeedToChangeOneGroupAccessTypeGroups[LANG]);
+			return;
+		}
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",

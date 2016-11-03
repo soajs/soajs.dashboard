@@ -82,7 +82,12 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	if (options.headers) {
 		for (var i in options.headers) {
 			if (options.headers.hasOwnProperty(i)) {
-				apiOptions.headers[i] = options.headers[i];
+				if(options.headers[i] === null){
+					delete apiOptions.headers[i];
+				}
+				else{
+					apiOptions.headers[i] = options.headers[i];
+				}
 			}
 		}
 	}
@@ -255,4 +260,19 @@ function returnLatestVersion(service) {
 	// sort in descending order
 	keysInt = keysInt.sort(compareNumbers);
 	return keysInt[0].toString();
+}
+
+function objectIsEnv(obj) {
+	if (obj) {
+		if (JSON.stringify(obj) === '{}') {
+			return false;
+		}
+		if (!Object.hasOwnProperty.call(obj, 'access') && !obj.apis && !obj.apisRegExp && !obj.apisPermission) {
+			if (obj.get || obj.post || obj.put || obj.delete) {
+				return false;
+			}
+			return true;
+		}
+	}
+	return false;
 }
