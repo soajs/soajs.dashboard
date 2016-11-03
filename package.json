@@ -49,7 +49,7 @@
     "request": "*",
     "rimraf": "*",
     "shortid": "^2.2.4",
-    "soajs": "0.3.*",
+    "soajs": "soajs/soajs.git#develop",
     "unzip2": "*"
   }
 }

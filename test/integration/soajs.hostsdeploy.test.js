@@ -280,6 +280,27 @@ describe("testing hosts deployment", function () {
         });
     });
 
+    before('Activate swarm mode for local docker engine', function (done) {
+        var params = {
+            method: 'POST',
+            uri: 'http://unix:/var/run/docker.sock:/swarm/init',
+            json: true,
+            headers: {
+                Host: '127.0.0.1'
+            },
+            body: {
+                "ListenAddr": "0.0.0.0:2377",
+                "AdvertiseAddr": "127.0.0.1:2377",
+                "ForceNewCluster": true
+            }
+        };
+
+        request(params, function (error, response, body) {
+            assert.ifError(error);
+            done();
+        });
+    });
+
     after(function (done) {
         mongo.closeDb();
         server.close();
