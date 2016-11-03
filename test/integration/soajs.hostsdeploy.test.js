@@ -1000,7 +1000,7 @@ describe("testing hosts deployment", function () {
                 assert.ok(body);
                 assert.ok(body.data)
 
-                deleteService(soajsauth, {env: 'STG', name: 'dev_gc_myservice_v1'}, function (body) {
+                deleteService(soajsauth, {env: 'DEV', name: 'dev_gc_myservice_v1'}, function (body) {
                     assert.ok(body);
                     assert.ok(body.data)
 
