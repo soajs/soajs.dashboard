@@ -2575,14 +2575,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				},
 				form: {
 					"extKey": tenantExtKey,
-					"extKeyEnv": "DASHBOARD"
+					"extKeyEnv": "DEV"
 				}
 			};
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-
+				assert.ok(body.errors);
 				assert.deepEqual(body.errors.details[0], {"code": 465, "message": errorCodes[465]});
 				done();
 			});

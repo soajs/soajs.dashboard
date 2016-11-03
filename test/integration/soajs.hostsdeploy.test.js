@@ -133,25 +133,7 @@ describe("testing hosts deployment", function () {
                         }
                     }, {multi: true}, function (error) {
                         assert.ifError(error);
-                        //upload a fake certificate to fs.files
-                        var testUploadFilesDir = __dirname + "/../uploads/";
-                        var params = {
-                            qs: {
-                                filename: 'test_cert.pem',
-                                envCode: 'DEV',
-                                platform: 'docker',
-                                driver: 'remote'
-                            },
-                            formData: {
-                                file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
-                            }
-                        };
-
-                        executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
-                            assert.ok(body.result);
-                            assert.ok(body.data);
-                            done();
-                        });
+                        done();
                     });
                 });
             });
