@@ -983,6 +983,33 @@ describe("testing hosts deployment", function () {
 
     });
 
+    describe("delete deployed services", function () {
+
+        //TODO: add test case for wrong service name
+
+        it("fail - missing required params", function (done) {
+            deleteService(soajsauth, {name: 'dev_controller_v1'}, function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: env"});
+                done();
+            });
+        });
+
+        it("success - will delete deployed service", function (done) {
+            deleteService(soajsauth, {env: 'DEV', name: 'dev_controller_v1'}, function (body) {
+                assert.ok(body);
+                assert.ok(body.data)
+
+                deleteService(soajsauth, {env: 'STG', name: 'dev_gc_myservice_v1'}, function (body) {
+                    assert.ok(body);
+                    assert.ok(body.data)
+
+                    done();
+                });
+            });
+        });
+    });
+
     describe("testing get service logs", function () {
         it("success - list services", function (done) {
             var params = {
@@ -1014,6 +1041,15 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
+            });
+        });
+
+        after("delete nginx service", function (done) {
+            deleteService(soajsauth, {env: 'DEV', name: 'dev_nginxapi'}, function (body) {
+                assert.ok(body);
+                assert.ok(body.data)
+
+                done()
             });
         });
     });
