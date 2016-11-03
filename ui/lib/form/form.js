@@ -61,7 +61,10 @@ function buildForm(context, modal, configuration, cb) {
 		labels: {},
 		formData: {}
 	};
-	
+
+	context.form.closeNote = function () {
+		context.form.submitted = false;
+	};
 	context.form.closeAlert = function (i) {
 		context.form.alerts.splice(i, 1);
 	};
@@ -274,6 +277,7 @@ function buildForm(context, modal, configuration, cb) {
 	assignListener('form.entries');
 	
 	context.form.do = function (functionObj) {
+		context.form.submitted = false;
 		var formDataKeys = Object.keys(context.form.formData);
 		var fileTypes = ['document', 'image', 'audio', 'video'];
 		var customData = [];
@@ -296,11 +300,15 @@ function buildForm(context, modal, configuration, cb) {
 				}
 				functionObj.action(data);
 			}
+			else {
+				context.form.submitted = true;
+			}
 		}
 		else {
 			functionObj.action();
 		}
 	};
+	
 	
 	context.form.callObj = function (functionObj) {
 		if (functionObj) {
