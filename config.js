@@ -2154,6 +2154,28 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
 			}
 		},
 		"/hosts/container/logs": {

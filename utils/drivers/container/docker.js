@@ -164,86 +164,86 @@ var lib = {
 		}
 	},
 
-	"container": function (soajs, dockerInfo, action, cid, model, opts, cb) {
-		lib.getDeployer(dockerInfo, model, function (error, deployer) {
-			checkError(error, cb, function () {
-				var container = deployer.getContainer(cid);
-				container[action](opts || null, function (error, response) {
-
-					checkError(error, cb, function () {
-						if (action === 'start' || action === 'restart') {
-							container.inspect(cb);
-						}
-						else return cb(null, response);
-					});
-				});
-			});
-		});
-	}
+	// "container": function (soajs, dockerInfo, action, cid, model, opts, cb) {
+	// 	lib.getDeployer(dockerInfo, model, function (error, deployer) {
+	// 		checkError(error, cb, function () {
+	// 			var container = deployer.getContainer(cid);
+	// 			container[action](opts || null, function (error, response) {
+	//
+	// 				checkError(error, cb, function () {
+	// 					if (action === 'start' || action === 'restart') {
+	// 						container.inspect(cb);
+	// 					}
+	// 					else return cb(null, response);
+	// 				});
+	// 			});
+	// 		});
+	// 	});
+	// }
 };
 var deployer = {
-	"createContainer": function (soajs, deployerConfig, params, model, cb) {
-		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-			if (error) {
-				return cb(error);
-			}
-			deployer.createContainer(params, function (err, container) {
-				checkError(err, cb, function () {
-					container.inspect(cb);
-				});
-			});
-		});
-	},
-
-	"start": function (soajs, deployerConfig, cid, model, cb) {
-		lib.container(soajs, deployerConfig, "start", cid, model, null, cb);
-	},
-
-	"exec": function (soajs, deployerConfig, cid, model, opts, cb) {
-		lib.container(soajs, deployerConfig, "exec", cid, model, opts, cb);
-	},
-
-	"restart": function (soajs, deployerConfig, cid, model, cb) {
-		lib.container(soajs, deployerConfig, "restart", cid, model, null, cb);
-	},
-
-	"remove": function (soajs, deployerConfig, cid, model, cb) {
-		lib.container(soajs, deployerConfig, "remove", cid, model, {"force": true}, cb);
-	},
-
-	"info": function (soajs, deployerConfig, cid, res, model) {
-		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-			deployer.getContainer(cid).logs({
-					stderr: true,
-					stdout: true,
-					timestamps: false,
-					tail: 200
-				},
-				function (error, stream) {
-					if (error) {
-						soajs.log.error('logStreamContainer error: ', error);
-						return res.json(soajs.buildResponse({"code": 601, "msg": error.message}));
-					}
-					else {
-						var data = '';
-						var chunk;
-						stream.setEncoding('utf8');
-						stream.on('readable', function () {
-							var handle = this;
-							while ((chunk = handle.read()) != null) {
-								data += chunk.toString("utf8");
-							}
-						});
-
-						stream.on('end', function () {
-							stream.destroy();
-							var out = soajs.buildResponse(null, {'data': data});
-							return res.json(out);
-						});
-					}
-				});
-		});
-	},
+	// "createContainer": function (soajs, deployerConfig, params, model, cb) {
+	// 	lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+	// 		if (error) {
+	// 			return cb(error);
+	// 		}
+	// 		deployer.createContainer(params, function (err, container) {
+	// 			checkError(err, cb, function () {
+	// 				container.inspect(cb);
+	// 			});
+	// 		});
+	// 	});
+	// },
+	//
+	// "start": function (soajs, deployerConfig, cid, model, cb) {
+	// 	lib.container(soajs, deployerConfig, "start", cid, model, null, cb);
+	// },
+	//
+	// "exec": function (soajs, deployerConfig, cid, model, opts, cb) {
+	// 	lib.container(soajs, deployerConfig, "exec", cid, model, opts, cb);
+	// },
+	//
+	// "restart": function (soajs, deployerConfig, cid, model, cb) {
+	// 	lib.container(soajs, deployerConfig, "restart", cid, model, null, cb);
+	// },
+	//
+	// "remove": function (soajs, deployerConfig, cid, model, cb) {
+	// 	lib.container(soajs, deployerConfig, "remove", cid, model, {"force": true}, cb);
+	// },
+	//
+	// "info": function (soajs, deployerConfig, cid, res, model) {
+	// 	lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+	// 		deployer.getContainer(cid).logs({
+	// 				stderr: true,
+	// 				stdout: true,
+	// 				timestamps: false,
+	// 				tail: 200
+	// 			},
+	// 			function (error, stream) {
+	// 				if (error) {
+	// 					soajs.log.error('logStreamContainer error: ', error);
+	// 					return res.json(soajs.buildResponse({"code": 601, "msg": error.message}));
+	// 				}
+	// 				else {
+	// 					var data = '';
+	// 					var chunk;
+	// 					stream.setEncoding('utf8');
+	// 					stream.on('readable', function () {
+	// 						var handle = this;
+	// 						while ((chunk = handle.read()) != null) {
+	// 							data += chunk.toString("utf8");
+	// 						}
+	// 					});
+	//
+	// 					stream.on('end', function () {
+	// 						stream.destroy();
+	// 						var out = soajs.buildResponse(null, {'data': data});
+	// 						return res.json(out);
+	// 					});
+	// 				}
+	// 			});
+	// 	});
+	// },
 
 	"addNode": function (soajs, deployerConfig, options, model, cb) {
 		deployerConfig.flags = {
@@ -404,12 +404,15 @@ var deployer = {
 
 				deployer.listTasks(params, function (error, taskRecords) {
 					checkError(error || taskRecords.length === 0, cb, function () {
+						var found;
 						for (var i = 0; i < taskRecords.length; i++) {
 							if (taskRecords[i].Slot == taskNumber) {
-								return cb(null, taskRecords[i]);
+								found = taskRecords[i];
+								break;
 							}
 						}
-						return cb();
+
+						return ((found) ? cb(null, found) : cb());
 					});
 				});
 			});

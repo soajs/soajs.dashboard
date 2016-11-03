@@ -94,8 +94,8 @@ describe("testing hosts deployment", function () {
                     "id" : "aacrh437ty7tnfui56phe3pzx",
                     "name" : "docker-mock",
                     "ip" : "127.0.0.1",
-                    "dockerPort" : 5354,
-                    "swarmPort" : 5355,
+                    "dockerPort" : 2376,
+                    "swarmPort" : 2377,
                     "availability" : "active",
                     "role" : "manager",
                     "resources" : {
@@ -113,7 +113,7 @@ describe("testing hosts deployment", function () {
 
                     var validDeployerRecord = {
                 		"type" : "container",
-                		"selected" : "container.docker.remote",
+                		"selected" : "container.docker.local",
                 		"container" : {
                 			"docker" : {
                 				"local" : {
@@ -158,152 +158,304 @@ describe("testing hosts deployment", function () {
         });
     });
 
+    before('create dashboard environment record', function (done) {
+        var dashEnv = {
+            "code": "DASHBOARD",
+            "domain": "soajs.org",
+            "locked": true,
+            "port": 80,
+            "profile": "/opt/soajs/FILES/profiles/profile.js",
+            "deployer": {
+                "type" : "container",
+                "selected" : "container.docker.local",
+                "container" : {
+                    "docker" : {
+                        "local" : {
+                            "socketPath" : "/var/run/docker.sock"
+                        },
+                        "remote" : {
+                            "nodes" : ["docker-mock"]
+                        }
+                    }
+                }
+            },
+            "description": "this is the Dashboard environment",
+            "dbs": {
+                "clusters": {
+                    "dash_cluster": {
+                        "servers": [
+                            {
+                                "host": "192.168.99.107",
+                                "port": 27017
+                            }
+                        ],
+                        "credentials": null,
+                        "URLParam": {
+                            "connectTimeoutMS": 0,
+                            "socketTimeoutMS": 0,
+                            "maxPoolSize": 5,
+                            "wtimeoutMS": 0,
+                            "slaveOk": true
+                        },
+                        "extraParam": {
+                            "db": {
+                                "native_parser": true
+                            },
+                            "server": {
+                                "auto_reconnect": true
+                            }
+                        }
+                    }
+                },
+                "config": {
+                    "prefix": "",
+                    "session": {
+                        "cluster": "dash_cluster",
+                        "name": "core_session",
+                        "store": {},
+                        "collection": "sessions",
+                        "stringify": false,
+                        "expireAfter": 1209600000
+                    }
+                },
+                "databases": {
+                    "urac": {
+                        "cluster": "dash_cluster",
+                        "tenantSpecific": true
+                    }
+                }
+            },
+            "services": {
+                "controller": {
+                    "maxPoolSize": 100,
+                    "authorization": true,
+                    "requestTimeout": 30,
+                    "requestTimeoutRenewal": 0
+                },
+                "config": {
+                    "awareness": {
+                        "healthCheckInterval": 5000,
+                        "autoRelaodRegistry": 3600000,
+                        "maxLogCount": 5,
+                        "autoRegisterService": true
+                    },
+                    "agent": {
+                        "topologyDir": "/opt/soajs/"
+                    },
+                    "key": {
+                        "algorithm": "aes256",
+                        "password": "soajs key lal massa"
+                    },
+                    "logger": {
+                        "level": "fatal",
+                        "formatter": {
+                            "outputMode": "short"
+                        }
+                    },
+                    "cors": {
+                        "enabled": true,
+                        "origin": "*",
+                        "credentials": "true",
+                        "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+                        "headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
+                        "maxage": 1728000
+                    },
+                    "oauth": {
+                        "grants": [
+                            "password",
+                            "refresh_token"
+                        ],
+                        "debug": false
+                    },
+                    "ports": {
+                        "controller": 4000,
+                        "maintenanceInc": 1000,
+                        "randomInc": 100
+                    },
+                    "cookie": {
+                        "secret": "this is a secret sentence"
+                    },
+                    "session": {
+                        "name": "soajsID",
+                        "secret": "this is antoine hage app server",
+                        "cookie": {
+                            "path": "/",
+                            "httpOnly": true,
+                            "secure": false,
+                            "maxAge": null
+                        },
+                        "resave": false,
+                        "saveUninitialized": false,
+                        "rolling": false,
+                        "unset": "keep"
+                    }
+                }
+            }
+        };
+        mongo.insert("environment", dashEnv, function (error) {
+            assert.ifError(error);
+            done();
+        });
+    });
+
     after(function (done) {
         mongo.closeDb();
         server.close();
 	    done();
     });
 
-    describe("testing controller deployment", function () {
-        before('create dashboard environment record', function (done) {
-            var dashEnv = {
-                "code": "DASHBOARD",
-                "domain": "soajs.org",
-                "locked": true,
-                "port": 80,
-                "profile": "/opt/soajs/FILES/profiles/profile.js",
-                "deployer": {
-                    "type" : "container",
-                    "selected" : "container.docker.remote",
-                    "container" : {
-                        "docker" : {
-                            "local" : {
-                                "socketPath" : "/var/run/docker.sock"
-                            },
-                            "remote" : {
-                                "nodes" : ["docker-mock"]
-                            }
-                        }
+    describe("testing cluster nodes", function () {
+
+        describe("testing list cluster nodes", function () {
+
+            it("success - will list nodes", function (done) {
+                var params = {
+                    header: {
+                        soajsauth: soajsauth
                     }
-                },
-                "description": "this is the Dashboard environment",
-                "dbs": {
-                    "clusters": {
-                        "dash_cluster": {
-                            "servers": [
-                                {
-                                    "host": "192.168.99.107",
-                                    "port": 27017
-                                }
-                            ],
-                            "credentials": null,
-                            "URLParam": {
-                                "connectTimeoutMS": 0,
-                                "socketTimeoutMS": 0,
-                                "maxPoolSize": 5,
-                                "wtimeoutMS": 0,
-                                "slaveOk": true
-                            },
-                            "extraParam": {
-                                "db": {
-                                    "native_parser": true
-                                },
-                                "server": {
-                                    "auto_reconnect": true
-                                }
-                            }
-                        }
+                };
+
+                executeMyRequest(params, "hacloud/nodes/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    assert.equal(body.data.length, 1);
+                    done();
+                });
+            });
+
+        });
+
+        describe("testing add cluster node", function () {
+
+            it("fail - wrong node address provided", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
                     },
-                    "config": {
-                        "prefix": "",
-                        "session": {
-                            "cluster": "dash_cluster",
-                            "name": "core_session",
-                            "store": {},
-                            "collection": "sessions",
-                            "stringify": false,
-                            "expireAfter": 1209600000
-                        }
-                    },
-                    "databases": {
-                        "urac": {
-                            "cluster": "dash_cluster",
-                            "tenantSpecific": true
-                        }
+                    form: {
+                        env: 'DASHBOARD',
+                        host: '192.168.99.100',
+                        port: 2376,
+                        role: 'manager'
                     }
-                },
-                "services": {
-                    "controller": {
-                        "maxPoolSize": 100,
-                        "authorization": true,
-                        "requestTimeout": 30,
-                        "requestTimeoutRenewal": 0
+                };
+
+                executeMyRequest(params, "hacloud/nodes/add", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 801, 'message': errorCodes[801]});
+                    done();
+                });
+            });
+
+            it("fail - missing required params", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
                     },
-                    "config": {
-                        "awareness": {
-                            "healthCheckInterval": 5000,
-                            "autoRelaodRegistry": 3600000,
-                            "maxLogCount": 5,
-                            "autoRegisterService": true
-                        },
-                        "agent": {
-                            "topologyDir": "/opt/soajs/"
-                        },
-                        "key": {
-                            "algorithm": "aes256",
-                            "password": "soajs key lal massa"
-                        },
-	                    "logger": {
-		                    "level": "fatal",
-		                    "formatter": {
-			                    "outputMode": "short"
-		                    }
-	                    },
-                        "cors": {
-                            "enabled": true,
-                            "origin": "*",
-                            "credentials": "true",
-                            "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-                            "headers": "key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type",
-                            "maxage": 1728000
-                        },
-                        "oauth": {
-                            "grants": [
-                                "password",
-                                "refresh_token"
-                            ],
-                            "debug": false
-                        },
-                        "ports": {
-                            "controller": 4000,
-                            "maintenanceInc": 1000,
-                            "randomInc": 100
-                        },
-                        "cookie": {
-                            "secret": "this is a secret sentence"
-                        },
-                        "session": {
-                            "name": "soajsID",
-                            "secret": "this is antoine hage app server",
-                            "cookie": {
-                                "path": "/",
-                                "httpOnly": true,
-                                "secure": false,
-                                "maxAge": null
-                            },
-                            "resave": false,
-                            "saveUninitialized": false,
-                            "rolling": false,
-                            "unset": "keep"
-                        }
+                    form: {
+                        env: 'DASHBOARD',
+                        port: 2376,
+                        role: 'manager'
                     }
-                }
-            };
-            mongo.insert("environment", dashEnv, function (error) {
-                assert.ifError(error);
-                done();
+                };
+
+                executeMyRequest(params, "hacloud/nodes/add", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: host"});
+                    done();
+                });
+            });
+
+        });
+
+        describe("testing update cluster node", function () {
+
+            it("fail - invalid update option provided", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'DASHBOARD',
+                        nodeId: 'aacrh437ty7tnfui56phe3pzx'
+                    },
+                    form: {
+                        type: 'hostname',
+                        value: 'test'
+                    }
+                };
+
+                executeMyRequest(params, "hacloud/nodes/update", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 173, 'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"});
+                    done();
+                });
+            });
+
+            it("fail - invalid operation, updating node in local deployment mode", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'DASHBOARD',
+                        nodeId: 'aacrh437ty7tnfui56phe3pzx'
+                    },
+                    form: {
+                        type: 'role',
+                        value: 'worker'
+                    }
+                };
+
+                executeMyRequest(params, "hacloud/nodes/update", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 823, 'message': errorCodes[823]});
+                    done();
+                });
             });
         });
+
+        describe ("testing delete cluster node", function () {
+
+            it("fail - invalid node id provided", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'DASHBOARD',
+                        nodeId: 'aacrh437t'
+                    }
+                };
+
+                executeMyRequest(params, "hacloud/nodes/remove", "get", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 803, 'message': errorCodes[803]});
+                    done();
+                });
+            });
+
+            it("fail - invalid operating - trying to delete a manager node", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'DASHBOARD',
+                        nodeId: 'aacrh437ty7tnfui56phe3pzx'
+                    }
+                };
+
+                executeMyRequest(params, "hacloud/nodes/remove", "get", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 821, 'message': errorCodes[821]});
+                    done();
+                });
+            });
+        });
+    });
+
+    describe("testing controller deployment", function () {
 
         before('add static content record', function (done) {
             var scRecord = {
@@ -321,7 +473,7 @@ describe("testing hosts deployment", function () {
             });
         });
 
-        it("success - deploy 1 controller", function (done) {
+        it("success - deploy 1 controller service and delete it afterwards", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
@@ -344,7 +496,22 @@ describe("testing hosts deployment", function () {
             executeMyRequest(params, "hosts/deployController", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                done();
+
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "qs": {
+                        env: 'DEV',
+                        name: 'dev_controller_v1'
+                    }
+                };
+                executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    done();
+                });
             });
         });
 
@@ -374,7 +541,22 @@ describe("testing hosts deployment", function () {
 			    executeMyRequest(params, "hosts/deployController", "post", function (body) {
 				    assert.ok(body.result);
 				    assert.ok(body.data);
-				    done();
+
+                    params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        },
+                        "qs": {
+                            env: 'DEV',
+                            name: 'dev_controller_v1'
+                        }
+                    };
+                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+
+                        done();
+                    });
 			    });
 		    });
 	    });
@@ -417,12 +599,13 @@ describe("testing hosts deployment", function () {
 				                "branch": "develop",
 				                "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
 			                },
+                            "exposedPort": 8080,
                             "haService": true,
                             "haCount": 1
 		                }
 	                };
 
-	                executeMyRequest(params2, "hosts/deployNginx", "post", function(body){
+	                executeMyRequest(params2, "hosts/deployNginx", "post", function(body) {
 		                assert.ok(body.result);
 		                assert.ok(body.data);
                         done();
@@ -445,6 +628,7 @@ describe("testing hosts deployment", function () {
                     "envCode": "DEV",
                     "owner": "soajs",
                     "repo": "soajs.urac",
+                    "version": 2,
                     "branch": "develop",
                     "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
                     "variables": [
@@ -457,11 +641,26 @@ describe("testing hosts deployment", function () {
             executeMyRequest(params, "hosts/deployService", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                mongo.findOne("docker", {"hostname": /urac_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                mongo.findOne("docker", {"serviceName": "dev_urac_v2"}, function (error, oneContainerRecord) {
                     assert.ifError(error);
                     assert.ok(oneContainerRecord);
                     containerInfo = oneContainerRecord;
-                    done();
+
+                    params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        },
+                        "qs": {
+                            env: 'DEV',
+                            name: 'dev_urac_v2'
+                        }
+                    };
+                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+
+                        done();
+                    });
                 });
             });
         });
@@ -478,6 +677,7 @@ describe("testing hosts deployment", function () {
                         "name": "urac",
                         "envCode": "DEV",
                         "owner": "soajs",
+                        "version": 2,
                         "repo": "soajs.urac",
                         "branch": "develop",
                         "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
@@ -491,18 +691,33 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployService", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    mongo.findOne("docker", {"hostname": /urac_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                    mongo.findOne("docker", {"serviceName": "dev_urac_v2"}, function (error, oneContainerRecord) {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
                         containerInfo = oneContainerRecord;
-                        done();
+
+                        params = {
+                            headers: {
+                                soajsauth: soajsauth
+                            },
+                            "qs": {
+                                env: 'DEV',
+                                name: 'dev_urac_v2'
+                            }
+                        };
+                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                            assert.ok(body.result);
+                            assert.ok(body.data);
+
+                            done();
+                        });
                     });
                 });
             });
         });
 
         it("success - deploy 1 core service that contains cmd values in src", function (done) {
-            var cmdArray = ['ls -l', 'pwd'];
+            var cmdArray = ['sleep 36000'];
             mongo.update('services', {name: 'urac'}, {'$set': {'src.cmd': cmdArray}}, function (error) {
                 assert.ifError(error);
 
@@ -514,6 +729,7 @@ describe("testing hosts deployment", function () {
                         "name": "urac",
                         "envCode": "DEV",
                         "owner": "soajs",
+                        "version": 2,
                         "repo": "soajs.urac",
                         "branch": "develop",
                         "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
@@ -527,11 +743,26 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployService", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    mongo.findOne("docker", {"hostname": /urac_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                    mongo.findOne("docker", {"serviceName": "dev_urac_v2"}, function (error, oneContainerRecord) {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
                         containerInfo = oneContainerRecord;
-                        done();
+
+                        params = {
+                            headers: {
+                                soajsauth: soajsauth
+                            },
+                            "qs": {
+                                env: 'DEV',
+                                name: 'dev_urac_v2'
+                            }
+                        };
+                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                            assert.ok(body.result);
+                            assert.ok(body.data);
+
+                            done();
+                        });
                     });
                 });
             });
@@ -547,6 +778,7 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     "form": {
+                        "name": "gc_articles",
                         "gcName": gcRecord.name,
                         "gcVersion": gcRecord.v,
                         "envCode": "DEV",
@@ -570,55 +802,63 @@ describe("testing hosts deployment", function () {
         });
 
         it("fail - trying to deploy to an environment that is configured to be deployed manually", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                "form": {
-                    "name": "urac",
-                    "envCode": "PROD",
-                    "owner": "soajs",
-                    "repo": "soajs.urac",
-                    "branch": "develop",
-                    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                    "variables": [
-                        "TEST_VAR=mocha"
-                    ],
-                    "haService": true,
-                    "haCount": 1
-                }
-            };
-            executeMyRequest(params, "hosts/deployService", "post", function (body) {
-                assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {'code': 618, 'message': errorCodes[618]});
-                done();
+            mongo.update('environment', {code: 'PROD'}, {$set: {'deployer.type': 'manual'}}, function (error) {
+                assert.ifError(error);
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "urac",
+                        "envCode": "PROD",
+                        "owner": "soajs",
+                        "repo": "soajs.urac",
+                        "branch": "develop",
+                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ],
+                        "haService": true,
+                        "haCount": 1
+                    }
+                };
+                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 618, 'message': errorCodes[618]});
+                    done();
+                });
             });
         });
 
         it("fail - trying to deploy without certificates", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                "form": {
-                    "name": "urac",
-                    "envCode": "STG",
-                    "owner": "soajs",
-                    "repo": "soajs.urac",
-                    "branch": "develop",
-                    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                    "variables": [
-                        "TEST_VAR=mocha"
-                    ],
-                    "haService": true,
-                    "haCount": 1
-                }
-            };
+            mongo.update('environment', {code: 'STG'}, {$set: {'deployer.selected': 'container.docker.remote'}}, function (error) {
+                assert.ifError(error);
 
-            executeMyRequest(params, "hosts/deployService", "post", function (body) {
-                assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {'code': 741, 'message': errorCodes[741]});
-                done();
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "form": {
+                        "name": "urac",
+                        "envCode": "STG",
+                        "owner": "soajs",
+                        "repo": "soajs.urac",
+                        "branch": "develop",
+                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
+                        "variables": [
+                            "TEST_VAR=mocha"
+                        ],
+                        "haService": true,
+                        "haCount": 1
+                    }
+                };
+
+                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {'code': 741, 'message': errorCodes[741]});
+                    done();
+                });
             });
         });
     });
@@ -648,10 +888,25 @@ describe("testing hosts deployment", function () {
             executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                mongo.findOne("docker", {"serviceName": "dev_helloDaemon_v1"}, function (error, oneContainerRecord) {
                     assert.ifError(error);
                     assert.ok(oneContainerRecord);
-                    done();
+
+                    params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        },
+                        "qs": {
+                            env: 'DEV',
+                            name: 'dev_helloDaemon_v1'
+                        }
+                    };
+                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+
+                        done();
+                    });
                 });
             });
         });
@@ -682,17 +937,32 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                    mongo.findOne("docker", {"serviceName": "dev_helloDaemon_v1"}, function (error, oneContainerRecord) {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
-                        done();
+
+                        params = {
+                            headers: {
+                                soajsauth: soajsauth
+                            },
+                            "qs": {
+                                env: 'DEV',
+                                name: 'dev_helloDaemon_v1'
+                            }
+                        };
+                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                            assert.ok(body.result);
+                            assert.ok(body.data);
+
+                            done();
+                        });
                     });
                 });
             });
         });
 
         it("success - deploy 1 daemon that contians cmd info in its src", function (done) {
-            var cmdArray = ['ls -l', 'pwd'];
+            var cmdArray = ['sleep 36000'];
             mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.cmd': cmdArray}}, function (error) {
                 assert.ifError(error);
 
@@ -718,10 +988,25 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    mongo.findOne("docker", {"hostname": /helloDaemon_[a-z0-9]+_dev/}, function (error, oneContainerRecord) {
+                    mongo.findOne("docker", {"serviceName": "dev_helloDaemon_v1"}, function (error, oneContainerRecord) {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
-                        done();
+
+                        params = {
+                            headers: {
+                                soajsauth: soajsauth
+                            },
+                            "qs": {
+                                env: 'DEV',
+                                name: 'dev_helloDaemon_v1'
+                            }
+                        };
+                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                            assert.ok(body.result);
+                            assert.ok(body.data);
+
+                            done();
+                        });
                     });
                 });
             });
@@ -776,15 +1061,12 @@ describe("testing hosts deployment", function () {
                 headers: {
                     soajsauth: soajsauth
                 },
-                "form": {
-                    "serviceName": "urac",
-                    "servicePort": 4001,
-                    "hostname": containerInfo.hostname,
-                    "operation": "hostLogs",
-                    "env": "DEV"
+                "qs": {
+                    "env": "DEV",
+                    "taskName": "dev_nginxapi.1"
                 }
             };
-            executeMyRequest(params, "hosts/maintenanceOperation", "post", function (body) {
+            executeMyRequest(params, "hacloud/services/instances/logs", "get", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -792,90 +1074,96 @@ describe("testing hosts deployment", function () {
         });
     });
 
-    describe("testing service delete", function () {
-        it("success - remove service", function (done) {
-            mongo.findOne('hosts', {"hostname": containerInfo.hostname}, function (error, oneHost) {
-                assert.ifError(error);
-                assert.ok(oneHost);
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "qs": {
-                        "name": "urac",
-                        "hostname": containerInfo.hostname,
-                        "ip": oneHost.ip,
-                        "env": "DEV"
-                    }
-                };
-                executeMyRequest(params, "hosts/delete", "get", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    done();
-                });
-            });
-        });
-    });
-
-    describe("testing scale service", function () {
-
-    });
-
-    describe("testing controller delete", function () {
-        var controllers = [];
-        before(function (done) {
-            mongo.find("hosts", {"name": "controller", "env": "dev"}, function (error, controllerHosts) {
-                assert.ifError(error);
-                assert.ok(controllerHosts);
-                controllerHosts.forEach(function (oneCtrl) {
-                    if (oneCtrl.hostname) {
-                        controllers.push(oneCtrl);
-                    }
-                });
-                done();
-            });
-        });
-
-        it("success - remove controller1", function (done) {
+    describe.skip("testing scale service", function () {
+        it("success - will scale service up to 2 instances", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
                 },
-                "qs": {
-                    "name": "controller",
-                    "hostname": controllers[0].hostname,
-                    "ip": controllers[0].ip,
-                    "env": "DEV"
+                qs: {
+                    env: 'DEV',
+                    name: 'dev_controller_v1',
+                    version: 1
+                },
+                form: {
+                    scale: 2
                 }
             };
-            executeMyRequest(params, "hosts/delete", "get", function (body) {
+
+            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
             });
         });
 
-        it("success - remove controller2", function (done) {
+        it("success - will scale service back to 1 instance", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
                 },
-                "qs": {
-                    "name": "controller",
-                    "hostname": controllers[1].hostname,
-                    "ip": controllers[1].ip,
-                    "env": "DEV"
+                qs: {
+                    env: 'DEV',
+                    name: 'dev_controller_v1',
+                    version: 1
+                },
+                form: {
+                    scale: 1
                 }
             };
-            executeMyRequest(params, "hosts/delete", "get", function (body) {
+
+            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
+                done();
+            });
+        });
+
+        it("fail - invalid scale value", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                qs: {
+                    env: 'dev',
+                    name: 'dev_controller_v1',
+                    version: 1
+                },
+                form: {
+                    scale: 1
+                }
+            };
+
+            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 809, "message": errorCodes[809]});
+                done();
+            });
+        });
+
+        it("fail - missing required params", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                qs: {
+                    name: 'dev_controller_v1',
+                    version: 1
+                },
+                form: {
+                    scale: 2
+                }
+            };
+
+            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: env"});
                 done();
             });
         });
     });
 
-    describe("testing zombie containers", function () {
+    describe.skip("testing zombie containers", function () {
         var serviceName = "gc_myservice";
         var hostname, cid;
         var env = "dev";
@@ -1033,16 +1321,16 @@ describe("testing hosts deployment", function () {
             "info": {}
         };
 
-        before("clean docker collection and inject nginx records in docker collection", function (done) {
-            mongo.remove("docker", {platform: 'nginx'}, function (error) {
-                assert.ifError(error);
-
-                mongo.insert("docker", nginxDockerRecord, function (error) {
-                    assert.ifError(error);
-                    done();
-                });
-            });
-        });
+        // before("clean docker collection and inject nginx records in docker collection", function (done) {
+        //     mongo.remove("docker", {platform: 'nginx'}, function (error) {
+        //         assert.ifError(error);
+        //
+        //         mongo.insert("docker", nginxDockerRecord, function (error) {
+        //             assert.ifError(error);
+        //             done();
+        //         });
+        //     });
+        // });
 
         describe("list nginx hosts", function () {
 
@@ -1069,7 +1357,7 @@ describe("testing hosts deployment", function () {
             });
 
             it("mongo check", function (done) {
-                mongo.count("docker", {platform: 'nginx'}, function (error, count) {
+                mongo.count("docker", {type: 'nginx'}, function (error, count) {
                     assert.ifError(error);
                     assert.equal(count, 1);
                     done();

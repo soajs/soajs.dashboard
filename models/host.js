@@ -49,17 +49,17 @@ var methods = {
 	/**
 	 * DOCKER COLLECTION
 	 */
-	"countContainers": function (soajs, model, env, type, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				"env": env.toLowerCase(),
-				"type": type
-			}
-		};
-
-		model.countEntries(soajs, opts, cb);
-	},
+	// "countContainers": function (soajs, model, env, type, cb) {
+	// 	var opts = {
+	// 		collection: dockerColl,
+	// 		conditions: {
+	// 			"env": env.toLowerCase(),
+	// 			"type": type
+	// 		}
+	// 	};
+	//
+	// 	model.countEntries(soajs, opts, cb);
+	// },
 
 	"getContainers": function (soajs, model, env, type, running, cb) {
 		var opts = {
@@ -112,21 +112,21 @@ var methods = {
 		model.findEntry(soajs, opts, cb);
 	},
 
-	"removeContainer": function (soajs, model, env, hostname, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				"env": env.toLowerCase(),
-				'$or': [
-					{"hostname": hostname + "_" + env.toLowerCase()},
-					{"hostname": hostname},
-					{"cid": hostname}
-				]
-			}
-		};
-
-		model.removeEntry(soajs, opts, cb);
-	},
+	// "removeContainer": function (soajs, model, env, hostname, cb) {
+	// 	var opts = {
+	// 		collection: dockerColl,
+	// 		conditions: {
+	// 			"env": env.toLowerCase(),
+	// 			'$or': [
+	// 				{"hostname": hostname + "_" + env.toLowerCase()},
+	// 				{"hostname": hostname},
+	// 				{"cid": hostname}
+	// 			]
+	// 		}
+	// 	};
+	//
+	// 	model.removeEntry(soajs, opts, cb);
+	// },
 
 	"removeContainerByTask": function (soajs, model, env, taskName, cb) {
 		var opts = {
@@ -151,20 +151,20 @@ var methods = {
 		model.insertEntry(soajs, opts, cb);
 	},
 
-	"updateContainer": function (soajs, model, containerId, data, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: { "cid": containerId },
-			fields: { '$set': { "info": data } },
-			options: {
-				multi: false,
-				upsert: false,
-				safe: true
-			}
-		};
-
-		model.updateEntry(soajs, opts, cb);
-	},
+	// "updateContainer": function (soajs, model, containerId, data, cb) {
+	// 	var opts = {
+	// 		collection: dockerColl,
+	// 		conditions: { "cid": containerId },
+	// 		fields: { '$set': { "info": data } },
+	// 		options: {
+	// 			multi: false,
+	// 			upsert: false,
+	// 			safe: true
+	// 		}
+	// 	};
+	//
+	// 	model.updateEntry(soajs, opts, cb);
+	// },
 
 	"insertContainers": function (soajs, model, records, cb) {
 		var opts = {
@@ -315,15 +315,15 @@ var methods = {
 		model.removeEntry(soajs, opts, cb);
 	},
 
-	"insertHost": function (soajs, model, record, cb) {
-		record.hostname = record.hostname.replace("/", "");
-		var opts = {
-			collection: hostsColl,
-			record: record
-		};
-
-		model.insertEntry(soajs, opts, cb);
-	},
+	// "insertHost": function (soajs, model, record, cb) {
+	// 	record.hostname = record.hostname.replace("/", "");
+	// 	var opts = {
+	// 		collection: hostsColl,
+	// 		record: record
+	// 	};
+	//
+	// 	model.insertEntry(soajs, opts, cb);
+	// },
 
 	"getService": function (soajs, model, condition, cb) {
 		var opts = {
