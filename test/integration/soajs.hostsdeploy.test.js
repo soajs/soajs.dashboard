@@ -58,6 +58,19 @@ function executeMyRequest(params, apiPath, method, cb) {
     }
 }
 
+function deleteService(soajsauth, options, cb) {
+    var params = {
+        headers: {
+            soajsauth: soajsauth
+        },
+        "qs": {
+            env: options.env,
+            name: options.name
+        }
+    };
+    return executeMyRequest(params, "hacloud/services/delete", 'get', cb);
+}
+
 var server;
 var dockerMock = require('docker-mock');
 
@@ -323,6 +336,7 @@ describe("testing hosts deployment", function () {
                 request(params, function (error, response, body) {
                     assert.ifError(error);
 
+                    process.env.SOAJS_TEST = true;
                     done();
                 });
             });
@@ -528,16 +542,7 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
-                params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "qs": {
-                        env: 'DEV',
-                        name: 'dev_controller_v1'
-                    }
-                };
-                executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                deleteService(soajsauth, {env: 'DEV', name: 'dev_controller_v1'}, function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
 
@@ -573,26 +578,12 @@ describe("testing hosts deployment", function () {
 				    assert.ok(body.result);
 				    assert.ok(body.data);
 
-                    params = {
-                        headers: {
-                            soajsauth: soajsauth
-                        },
-                        "qs": {
-                            env: 'DEV',
-                            name: 'dev_controller_v1'
-                        }
-                    };
-                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
-                        assert.ok(body.result);
-                        assert.ok(body.data);
-
-                        done();
-                    });
+                    done();
 			    });
 		    });
 	    });
 
-        it("success - deploy 1 environment with static content", function (done) {
+        it("success - deploy 1 nginx service with static content", function (done) {
             mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
                 assert.ifError(error);
 
@@ -600,47 +591,23 @@ describe("testing hosts deployment", function () {
                     headers: {
                         soajsauth: soajsauth
                     },
-                    "form": {
-                        "number": 1,
+                    "form":{
                         "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.controller",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "name": "controller",
+                        "nginxConfig": {
+                            "customUIId": record._id.toString(),
+                            "branch": "develop",
+                            "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
+                        },
+                        "exposedPort": 8880,
                         "haService": true,
                         "haCount": 1
                     }
                 };
-                executeMyRequest(params, "hosts/deployController", "post", function (body) {
+
+                executeMyRequest(params, "hosts/deployNginx", "post", function(body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-
-	                var params2 = {
-		                headers: {
-			                soajsauth: soajsauth
-		                },
-		                "form":{
-			                "envCode": "DEV",
-			                "nginxConfig": {
-				                "customUIId": record._id.toString(),
-				                "branch": "develop",
-				                "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
-			                },
-                            "exposedPort": 8080,
-                            "haService": true,
-                            "haCount": 1
-		                }
-	                };
-
-	                executeMyRequest(params2, "hosts/deployNginx", "post", function(body) {
-		                assert.ok(body.result);
-		                assert.ok(body.data);
-                        done();
-	                });
+                    done();
                 });
             });
         });
@@ -677,16 +644,7 @@ describe("testing hosts deployment", function () {
                     assert.ok(oneContainerRecord);
                     containerInfo = oneContainerRecord;
 
-                    params = {
-                        headers: {
-                            soajsauth: soajsauth
-                        },
-                        "qs": {
-                            env: 'DEV',
-                            name: 'dev_urac_v2'
-                        }
-                    };
-                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                    deleteService(soajsauth, {env: 'DEV', name: 'dev_urac_v2'}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -727,16 +685,7 @@ describe("testing hosts deployment", function () {
                         assert.ok(oneContainerRecord);
                         containerInfo = oneContainerRecord;
 
-                        params = {
-                            headers: {
-                                soajsauth: soajsauth
-                            },
-                            "qs": {
-                                env: 'DEV',
-                                name: 'dev_urac_v2'
-                            }
-                        };
-                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        deleteService(soajsauth, {env: 'DEV', name: 'dev_urac_v2'}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 
@@ -779,16 +728,7 @@ describe("testing hosts deployment", function () {
                         assert.ok(oneContainerRecord);
                         containerInfo = oneContainerRecord;
 
-                        params = {
-                            headers: {
-                                soajsauth: soajsauth
-                            },
-                            "qs": {
-                                env: 'DEV',
-                                name: 'dev_urac_v2'
-                            }
-                        };
-                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        deleteService(soajsauth, {env: 'DEV', name: 'dev_urac_v2'}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 
@@ -923,16 +863,7 @@ describe("testing hosts deployment", function () {
                     assert.ifError(error);
                     assert.ok(oneContainerRecord);
 
-                    params = {
-                        headers: {
-                            soajsauth: soajsauth
-                        },
-                        "qs": {
-                            env: 'DEV',
-                            name: 'dev_helloDaemon_v1'
-                        }
-                    };
-                    executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                    deleteService(soajsauth, {env: 'DEV', name: 'dev_helloDaemon_v1'}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -972,16 +903,7 @@ describe("testing hosts deployment", function () {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
 
-                        params = {
-                            headers: {
-                                soajsauth: soajsauth
-                            },
-                            "qs": {
-                                env: 'DEV',
-                                name: 'dev_helloDaemon_v1'
-                            }
-                        };
-                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        deleteService(soajsauth, {env: 'DEV', name: 'dev_helloDaemon_v1'}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 
@@ -1023,16 +945,7 @@ describe("testing hosts deployment", function () {
                         assert.ifError(error);
                         assert.ok(oneContainerRecord);
 
-                        params = {
-                            headers: {
-                                soajsauth: soajsauth
-                            },
-                            "qs": {
-                                env: 'DEV',
-                                name: 'dev_helloDaemon_v1'
-                            }
-                        };
-                        executeMyRequest(params, "hacloud/services/delete", 'get', function (body) {
+                        deleteService(soajsauth, {env: 'DEV', name: 'dev_helloDaemon_v1'}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 

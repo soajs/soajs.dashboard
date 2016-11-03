@@ -19,6 +19,7 @@ addons:
 
 before_script:
   - npm install -g grunt-cli
+  - docker pull alpine:latest
 
 after_success:
   - grunt coverage
