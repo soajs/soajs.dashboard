@@ -60,7 +60,7 @@ describe("importing sample data", function () {
 			});
 	});
 
-	after(function (done) {
+	it("Start Services", function (done) {
 		//todo: never change process.env.SOAJS_ENV_WORKDIR to /opt/, contents of the directory will be deleted.
 		process.env.SOAJS_ENV_WORKDIR = __dirname + "/";
 		console.log('test data imported.');
@@ -69,16 +69,39 @@ describe("importing sample data", function () {
 			urac = require("soajs.urac");
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
-				require("./soajs.dashboard.locked.test.js");
-				require("./soajs.dashboard.test.tenants.js");
-				require("./soajs.dashboard.test.js");
-				require("./soajs.dashboard.test.services.js");
-				require("./soajs.contentbuilder.test.js");
-				require("./soajs.hostsdeploy.test.js");
-				require("./soajs.uploadCertificate.test.js");
-				require("./soajs.dashboard.test.gitAccounts.js");
 				done();
 			}, 1000);
 		}, 2000);
+	});
+
+	it("reload controller registry", function (done) {
+		var params = {
+			"uri": "http://127.0.0.1:5000/reloadRegistry",
+			"headers": {
+				"content-type": "application/json"
+			},
+			"json": true
+		};
+		helper.requester("get", params, function (error, response) {
+			assert.ifError(error);
+			assert.ok(response);
+			setTimeout(function () {
+				done();
+			}, 500);
+		});
+	});
+
+	after(function (done) {
+		setTimeout(function () {
+			require("./soajs.dashboard.locked.test.js");
+			require("./soajs.dashboard.test.tenants.js");
+			require("./soajs.dashboard.test.js");
+			require("./soajs.dashboard.test.services.js");
+			require("./soajs.contentbuilder.test.js");
+			require("./soajs.hostsdeploy.test.js");
+			require("./soajs.uploadCertificate.test.js");
+			require("./soajs.dashboard.test.gitAccounts.js");
+			done();
+		}, 100);
 	});
 });
