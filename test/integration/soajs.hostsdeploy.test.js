@@ -1323,7 +1323,7 @@ describe("testing hosts deployment", function () {
                 executeMyRequest(params, 'hosts/nginx/list', 'get', function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    assert.equal(body.data.length, 1);
+                    assert.equal(body.data.length, 0);
                     done();
                 });
             });
@@ -1339,7 +1339,7 @@ describe("testing hosts deployment", function () {
             it("mongo check", function (done) {
                 mongo.count("docker", {type: 'nginx'}, function (error, count) {
                     assert.ifError(error);
-                    assert.equal(count, 1);
+                    assert.equal(count, 0);
                     done();
                 });
             });
