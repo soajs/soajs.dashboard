@@ -49,18 +49,6 @@ var methods = {
 	/**
 	 * DOCKER COLLECTION
 	 */
-	// "countContainers": function (soajs, model, env, type, cb) {
-	// 	var opts = {
-	// 		collection: dockerColl,
-	// 		conditions: {
-	// 			"env": env.toLowerCase(),
-	// 			"type": type
-	// 		}
-	// 	};
-	//
-	// 	model.countEntries(soajs, opts, cb);
-	// },
-
 	"getContainers": function (soajs, model, env, type, running, cb) {
 		var opts = {
 			collection: dockerColl,
@@ -112,22 +100,6 @@ var methods = {
 		model.findEntry(soajs, opts, cb);
 	},
 
-	// "removeContainer": function (soajs, model, env, hostname, cb) {
-	// 	var opts = {
-	// 		collection: dockerColl,
-	// 		conditions: {
-	// 			"env": env.toLowerCase(),
-	// 			'$or': [
-	// 				{"hostname": hostname + "_" + env.toLowerCase()},
-	// 				{"hostname": hostname},
-	// 				{"cid": hostname}
-	// 			]
-	// 		}
-	// 	};
-	//
-	// 	model.removeEntry(soajs, opts, cb);
-	// },
-
 	"removeContainerByTask": function (soajs, model, env, taskName, cb) {
 		var opts = {
 			collection: dockerColl,
@@ -150,21 +122,6 @@ var methods = {
 
 		model.insertEntry(soajs, opts, cb);
 	},
-
-	// "updateContainer": function (soajs, model, containerId, data, cb) {
-	// 	var opts = {
-	// 		collection: dockerColl,
-	// 		conditions: { "cid": containerId },
-	// 		fields: { '$set': { "info": data } },
-	// 		options: {
-	// 			multi: false,
-	// 			upsert: false,
-	// 			safe: true
-	// 		}
-	// 	};
-	//
-	// 	model.updateEntry(soajs, opts, cb);
-	// },
 
 	"insertContainers": function (soajs, model, records, cb) {
 		var opts = {
@@ -315,16 +272,6 @@ var methods = {
 		model.removeEntry(soajs, opts, cb);
 	},
 
-	// "insertHost": function (soajs, model, record, cb) {
-	// 	record.hostname = record.hostname.replace("/", "");
-	// 	var opts = {
-	// 		collection: hostsColl,
-	// 		record: record
-	// 	};
-	//
-	// 	model.insertEntry(soajs, opts, cb);
-	// },
-
 	"getService": function (soajs, model, condition, cb) {
 		var opts = {
 			collection: servicesColl,
@@ -407,62 +354,6 @@ var methods = {
 
 		model.findEntries(soajs, opts, cb);
 	}
-
-
-	/*
-		grid fs
-	 */
-	// "getGFS": function(soajs, cb){
-	// 	if(gfs){
-	// 		return cb(null);
-	// 	}
-	//
-	// 	checkForMongo(soajs);
-	// 	mongo.getMongoSkinDB(function (error, db) {
-	// 		if(error){
-	// 			return cb(error);
-	// 		}
-	//
-	// 		gfs = Grid(db, mongo.mongoSkin);
-	// 		gfsdb = db;
-	// 		return cb(null);
-	// 	});
-	// },
-	//
-	// "getFiles": function(soajs, criteria, cb){
-	// 	checkForMongo(soajs);
-	// 	mongo.find("fs.files", criteria, cb);
-	// },
-	//
-	// "getOneFile": function(soajs, id, cb){
-	// 	checkForMongo(soajs);
-	// 	model.getGFS(soajs, function(error){
-	// 		if(error){
-	// 			return cb(error);
-	// 		}
-	//
-	// 		var gs = new gfs.mongo.GridStore(gfsdb, id, 'r', {
-	// 			root: 'fs',
-	// 			w: 1,
-	// 			fsync: true
-	// 		});
-	//
-	// 		gs.open(function (error, gstore) {
-	// 			if(error){
-	// 				return cb(error);
-	// 			}
-	//
-	// 			gstore.read(function (error, filedata) {
-	// 				if(error){
-	// 					return cb(error);
-	// 				}
-	//
-	// 				gstore.close();
-	// 				return cb(null, filedata);
-	// 			});
-	// 		});
-	// 	});
-	// }
 };
 
 module.exports = methods;
