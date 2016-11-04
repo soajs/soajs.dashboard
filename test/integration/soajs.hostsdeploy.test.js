@@ -996,16 +996,11 @@ describe("testing hosts deployment", function () {
         });
 
         it("success - will delete deployed service", function (done) {
-            deleteService(soajsauth, {env: 'DEV', name: 'dev_controller_v1'}, function (body) {
+            deleteService(soajsauth, {env: 'DEV', name: 'dev_gc_myservice_v1'}, function (body) {
                 assert.ok(body);
-                assert.ok(body.data)
+                assert.ok(body.data);
 
-                deleteService(soajsauth, {env: 'DEV', name: 'dev_gc_myservice_v1'}, function (body) {
-                    assert.ok(body);
-                    assert.ok(body.data)
-
-                    done();
-                });
+                done();
             });
         });
     });
@@ -1054,7 +1049,7 @@ describe("testing hosts deployment", function () {
         });
     });
 
-    describe.skip("testing scale service", function () {
+    describe("testing scale service", function () {
         it("success - will scale service up to 2 instances", function (done) {
             var params = {
                 headers: {
@@ -1118,6 +1113,15 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {"code": 809, "message": errorCodes[809]});
                 done();
+            });
+
+            after("delete service", function (done) {
+                deleteService(soajsauth, {env: 'DEV', name: 'dev_controller_v1'}, function (body) {
+                    assert.ok(body);
+                    assert.ok(body.data);
+
+                    done();
+                });
             });
         });
 
