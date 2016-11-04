@@ -438,12 +438,6 @@ service.init(function () {
 		});
 	});
 
-	service.post("/hosts/nginx/redeploy", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.redeployNginx(config, req.soajs, res);
-		});
-	});
-
 	service.get("/hosts/delete", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.delete(config, req.soajs, res);
@@ -467,11 +461,6 @@ service.init(function () {
 			BL.nginx(config, req.soajs, true, res);
 		});
 	});
-	service.post("/hosts/updateNginx", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.nginx(config, req.soajs, false, res);
-		});
-	});
 	service.post("/hosts/deployService", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.deployService(config, req.soajs, res);
@@ -480,26 +469,6 @@ service.init(function () {
 	service.post("/hosts/deployDaemon", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.deployDaemon(config, req.soajs, res);
-		});
-	});
-	service.get("/hosts/container/logs", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.getContainerLogs(config, req.soajs, res);
-		});
-	});
-	service.get("/hosts/container/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deleteContainer(config, req.soajs, res);
-		});
-	});
-	service.get("/hosts/container/zombie/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.getContainersNoHost(config, req.soajs, res);
-		});
-	});
-	service.get("/hosts/container/zombie/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deleteContainer(config, req.soajs, res);
 		});
 	});
 
