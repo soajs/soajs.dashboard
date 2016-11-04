@@ -101,7 +101,7 @@ function checkForMongo(soajs) {
 
     function errorLogger(error) {
 		if (error) {
-			return req.soajs.log.error(error);
+			return soajs.log.error(error);
 		}
 	}
 }
