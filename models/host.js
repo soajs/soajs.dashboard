@@ -176,7 +176,8 @@ var methods = {
 		criteria.recordType = 'node';
 		var opts = {
 			collection: dockerColl,
-			conditions: criteria
+			conditions: criteria,
+			fields: update
 		};
 
 		model.updateEntry(soajs, opts, cb);
