@@ -99,20 +99,24 @@ var lib = {
 			};
 
 			model.findEntries(soajs, opts, function (error, managerNodes) {
+				soajs.log.debug(managerNodes);
 				checkError(error, cb, function () {
 					async.detect(managerNodes, function (oneNode, callback) {
 						var dockerConfig = buildDockerConfig(oneNode.ip, oneNode.dockerPort, certs);
 						var docker = new Docker(dockerConfig);
 						docker.ping(function (error, response) {
 							//error is insignificant in this case
+							soajs.log.debug('Machine IP: ' + oneNode.ip + ' | ' + response);
 							return callback(response);
 						});
 					}, function (fastestNodeRecord) {
+						soajs.log.debug(fastestNodeRecord);
 						if (!fastestNodeRecord) {
 							return cb({'message': 'ERROR: unable to connect to a manager node'});
 						}
 						var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
 						var docker = new Docker(dockerConfig);
+						soajs.log.debug(docker);
 						return cb(null, docker);
 					});
 				});
