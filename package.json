@@ -36,7 +36,7 @@
     "docker-mock": "aff04/docker-mock.git"
   },
   "dependencies": {
-    "async": "*",
+    "async": "1.5.2",
     "bcrypt": "*",
     "bitbucket-server-nodejs": "^2.10.0",
     "dockerode": "aff04/dockerode.git",
