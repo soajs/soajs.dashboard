@@ -294,6 +294,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function(error, response) {
 			if(error) {
+				currentScope.config.soajsService.db.config[env][dbName] = angular.copy(currentScope.config.soajsService.db.config[env]['gc_' + dbName]);
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
@@ -319,7 +320,6 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function(error, response) {
 			if(error) {
-				currentScope.config.soajsService.db.config[env][dbName] = angular.copy(currentScope.config.soajsService.db.config[env]['gc_' + dbName]);
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
