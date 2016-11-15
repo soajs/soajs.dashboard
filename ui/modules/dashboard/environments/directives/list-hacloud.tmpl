@@ -329,7 +329,7 @@
                                                                 <span class="icon icon-heart"></span>&nbsp;
                                                             </a>
 
-                                                            <a href="" ng-if="access.hacloud.services.logs" ng-show="container.taskName" ng-click="hostLogs(envCode, hosts[service].name, container, hosts[service])">
+                                                            <a href="" ng-if="access.hacloud.services.logs" ng-show="container.taskName" ng-click="hostLogs(container.taskName)">
                                                                 <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
                                                             </a>
                                                         </td>
