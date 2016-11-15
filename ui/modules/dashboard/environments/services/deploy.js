@@ -148,7 +148,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'repo': formData.repo,
 				'branch': branchObj.name,
 				'commit': branchObj.commit.sha,
-				'useLocalSOAJS': formData.useLocalSOAJS
+				'useLocalSOAJS': formData.useLocalSOAJS,
+				'imagePrefix': formData.ctrlImagePrefix
 			};
 
 			if (formData.exposedPort) {
@@ -192,6 +193,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					params.supportSSL = formData.supportSSL;
 					params.haCount = formData.nginxCount;
 					params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
+					params.imagePrefix = formData.nginxImagePrefix;
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployNginx",

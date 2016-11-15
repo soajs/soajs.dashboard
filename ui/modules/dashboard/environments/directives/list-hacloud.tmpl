@@ -21,6 +21,12 @@
 						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
 						<br>
 					</div>
+					<div>
+						<label>Image Prefix</label>
+						<input type="text" class="form-control" ng-required="true" ng-model="currentScope.imagePrefix" />
+						<label class="fieldMsg">The default image that will be used is soajsorg/soajs. Specify a different prefix if you intend to use a custom image</label>
+						<br />
+					</div>
 					<div ng-if="currentScope.service.type === 'nginx'">
 						<label>Exposed Port</label>
 						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort" />

@@ -571,6 +571,14 @@ var environmentsConfig = {
 							'required': false
 						},
 						{
+							'name': 'nginxImagePrefix',
+							'label': 'SOAJS Image Prefix',
+							'type': 'text',
+							'value': 'soajsorg',
+							'fieldMsg': 'The default image that will be used is soajsorg/nginx. Specify a different prefix if you intend to use a custom image',
+							'required': true
+						},
+						{
 							'name': 'supportSSL',
 							'label': 'Do you want to enable SSL for Nginx?',
 							'type': 'radio',
@@ -608,6 +616,14 @@ var environmentsConfig = {
 							'value': 200,
 							'fieldMsg': 'Set a custom memory limit for controller instances',
 							'required': false
+						},
+						{
+							'name': 'ctrlImagePrefix',
+							'label': 'SOAJS Image Prefix',
+							'type': 'text',
+							'value': 'soajsorg',
+							'fieldMsg': 'The default image that will be used is soajsorg/soajs. Specify a different prefix if you intend to use a custom image',
+							'required': true
 						},
 						{
 							'name': 'useLocalSOAJS',
