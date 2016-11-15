@@ -277,7 +277,8 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 
 		for(var env in currentScope.config.soajsService.db.config){
 			var dbName = Object.keys(currentScope.config.soajsService.db.config[env])[0];
-			currentScope.config.soajsService.db.config[env]['gc_' + dbName] = currentScope.config.soajsService.db.config[env][dbName];
+			dbName = dbName.replace(/(gc_)+/g,"");
+			currentScope.config.soajsService.db.config[env]['gc_' + dbName] = angular.copy(currentScope.config.soajsService.db.config[env][dbName]);
 			delete currentScope.config.soajsService.db.config[env][dbName];
 		}
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -293,6 +294,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function(error, response) {
 			if(error) {
+				currentScope.config.soajsService.db.config[env][dbName] = angular.copy(currentScope.config.soajsService.db.config[env]['gc_' + dbName]);
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
