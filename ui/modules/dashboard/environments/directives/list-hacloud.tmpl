@@ -270,7 +270,7 @@
 														<span ng-click="hostLogs(instance.taskName)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 													</a>
 												</td>
-												<td>{{instance.hostname}}</td>
+												<td>{{instance.taskName}}</td>
 												<td>
 													<span style="color: green" ng-if="instance.running"><b>Healthy</b></span>
 													<span style="color: red" ng-if="!instance.running"><b>Unreachable</b></span>
@@ -333,7 +333,7 @@
                                                                 <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
                                                             </a>
                                                         </td>
-                                                        <td>{{container.hostname}}</td>
+                                                        <td>{{container.taskName}}</td>
                                                         <td>
                                                             <span style="color: green" ng-if="container.heartbeat"><b>Healthy</b></span>
                                                             <span style="color: red" ng-if="!container.heartbeat"><b>Unreachable</b></span>
@@ -402,7 +402,7 @@
 	                                                            <span class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>&nbsp;
 	                                                        </a>
 	                                                    </td>
-	                                                    <td>{{container.hostname}}</td>
+	                                                    <td>{{container.taskName}}</td>
 	                                                    <td>
 	                                                        <span style="color: green" ng-if="container.healthy"><b>Healthy</b></span>
 	                                                        <span style="color: red" ng-if="!container.healthy"><b>Unreachable</b></span>
