@@ -9,7 +9,8 @@ var themeToUse = "default";
 var whitelistedDomain = ['localhost', '127.0.0.1', 'dashboard-api.' + mydomain];
 var apiConfiguration = {
 	domain: protocol + '//dashboard-api.' + mydomain,
-	key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
+	//key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
+	key: 'ea3e71007f83fb36ff1cb3704c39a697af281119172a4bff8150558e723fbc16d5df95994e44d4711b7f84f498639d6e1e80f1d50cf314af67188a8dbd946cb05c2ba19f558899eaa55d1dad795a41020243d23a7b7d59a608bf0a92c541759f'
 };
 
 var uiModuleDev = 'modules/dev';
