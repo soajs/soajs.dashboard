@@ -542,57 +542,110 @@ var environmentsConfig = {
 			'actions': {},
 			'entries': [
 				{
+					'name': 'nginx',
+					'label': 'Nginx Configuration',
+					'type': 'group',
+					'entries': [
+						{
+							'name': 'nginxCount',
+							'label': translation.numberOfNginxInstances[LANG],
+							'type': 'number',
+							'value': '',
+							'fieldMsg': 'Specify the number of Nginx instances',
+							'required': true
+						},
+						{
+							'name': 'exposedPort',
+							'label': 'Exposed Port',
+							'type': 'number',
+							'value': "",
+							'fieldMsg': 'Mandatory: Specify a Nginx port to be exposed for this environment',
+							'required': true
+						},
+						{
+							'name': 'nginxMemoryLimit',
+							'label': 'Memory Limit Per Instance for Nginx (in MBytes)',
+							'type': 'number',
+							'value': 200,
+							'fieldMsg': 'Set a custom memory limit for Nginx instances',
+							'required': false
+						},
+						{
+							'name': 'nginxImagePrefix',
+							'label': 'SOAJS Image Prefix',
+							'type': 'text',
+							'value': 'soajsorg',
+							'fieldMsg': 'The default image that will be used is soajsorg/nginx. Specify a different prefix if you intend to use a custom image',
+							'required': true
+						},
+						{
+							'name': 'supportSSL',
+							'label': 'Do you want to enable SSL for Nginx?',
+							'type': 'radio',
+							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+							'required': false
+						}
+					]
+				},
+				{
 					'name': 'controllers',
-					'label': translation.controller[LANG],
-					'type': 'number',
-					'placeholder': '1',
-					'value': '',
-					'tooltip': translation.chooseHowManyControllersDeploy[LANG],
-					'fieldMsg': translation.chooseHowManyControllersDeploy[LANG],
-					'required': true
-				},
-				{
-					'name': 'branch',
-					'label': 'Branch',
-					'type': 'select',
-					'value': [],
-					'fieldMsg': 'Select a branch to deploy from',
-					'required': true
-				},
-				{
-					'name': 'useLocalSOAJS',
-					'label': 'Do you want to accelerate deployment by using the SOAJS package within the image?',
-					'type': 'radio',
-					'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
-					'required': false
-				},
-				{
-					'name': 'exposedPort',
-					'label': 'Exposed Port',
-					'type': 'number',
-					'value': "",
-					'fieldMsg': 'Optional: Specify a Nginx port to be exposed',
-					'required': false
-				},
-				{
-					'name': 'supportSSL',
-					'label': 'Do you want to enable SSL for Nginx?',
-					'type': 'radio',
-					'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
-					'required': false
-				},
-				{
-					'name': 'variables',
-					"label": translation.environmentVariables[LANG],
-					"type": "textarea",
-					"required": false,
-					"tooltip": translation.provideOptionalEnvironmentVariablesSeparatedComma[LANG],
-					"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
-				},
-				{
-					"name": "defaultENVVAR",
-					"type": "html",
-					"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+					'label': 'Controller Configuration',
+					'type': 'group',
+					'entries': [
+						{
+							'name': 'controllers',
+							'label': translation.controller[LANG],
+							'type': 'number',
+							'value': '',
+							'tooltip': translation.chooseHowManyControllersDeploy[LANG],
+							'fieldMsg': translation.chooseHowManyControllersDeploy[LANG],
+							'required': true
+						},
+						{
+							'name': 'branch',
+							'label': 'Branch',
+							'type': 'select',
+							'value': [],
+							'fieldMsg': 'Select a branch to deploy from',
+							'required': true
+						},
+						{
+							'name': 'ctrlMemoryLimit',
+							'label': 'Memory Limit Per Instance for Controllers (in MBytes)',
+							'type': 'number',
+							'value': 200,
+							'fieldMsg': 'Set a custom memory limit for controller instances',
+							'required': false
+						},
+						{
+							'name': 'ctrlImagePrefix',
+							'label': 'SOAJS Image Prefix',
+							'type': 'text',
+							'value': 'soajsorg',
+							'fieldMsg': 'The default image that will be used is soajsorg/soajs. Specify a different prefix if you intend to use a custom image',
+							'required': true
+						},
+						{
+							'name': 'useLocalSOAJS',
+							'label': 'Do you want to accelerate deployment by using the SOAJS package within the image?',
+							'type': 'radio',
+							'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+							'required': false
+						},
+						{
+							'name': 'variables',
+							"label": translation.environmentVariables[LANG],
+							"type": "textarea",
+							"required": false,
+							"tooltip": translation.provideOptionalEnvironmentVariablesSeparatedComma[LANG],
+							"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
+						},
+						{
+							"name": "defaultENVVAR",
+							"type": "html",
+							"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+						}
+					]
 				}
 			]
 		},
@@ -672,6 +725,47 @@ var environmentsConfig = {
 				    "value": {}
 				}
 			]
+		},
+		multiServiceInfo: {
+			'entries': [
+				{
+					'name': 'infoTabs',
+					'label': '',
+					'type': 'tabset',
+					'tabs': []
+				}
+			]
+		},
+		node: {
+			'entries': [
+				{
+					'name': 'ip',
+					'label': translation.nodeIP[LANG],
+					'type': 'text',
+					'tooltip': translation.nodeIP[LANG],
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'port',
+					'label': translation.nodeDockerPort[LANG],
+					'type': 'number',
+					'tooltip': translation.nodeDockerPort[LANG],
+					'required': true,
+					'value': ''
+				},
+				{
+					'name': 'role',
+					'label': translation.nodeRole[LANG],
+					'type': 'select',
+					'value': [
+						{l: 'Manager', v: 'manager'},
+						{l: 'Worker', v: 'worker', selected: true}
+					],
+					'tooltip': translation.nodeRole[LANG],
+					'required': true
+				}
+			]
 		}
 	},
 	nginxRequiredCerts: {
@@ -730,6 +824,20 @@ var environmentsConfig = {
 			"containers": {
 				"restartHost": ['dashboard', '/environment/nginx/redeploy'],
 				"restartNginx": ['dashboard', '/environment/hosts/redeployService']
+			}
+		},
+		"hacloud": {
+			"nodes": {
+				"list": ['dashboard', '/hacloud/nodes/list'],
+				"add": ['dashboard', '/hacloud/nodes/add'],
+				"remove": ['dashboard', '/hacloud/nodes/remove'],
+				"update": ['dashboard', '/hacloud/nodes/update'],
+			},
+			"services": {
+				"add": ['dashboard', '/hacloud/hosts/deployService'],
+				"delete": ['dashboard', '/hacloud/services/delete'],
+				"scale": ['dashboard', '/hacloud/services/scale'],
+				"logs": ['dashboard', '/hacloud/services/instances/logs']
 			}
 		}
 	}

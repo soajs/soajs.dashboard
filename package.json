@@ -36,8 +36,10 @@
     "docker-mock": "aff04/docker-mock.git"
   },
   "dependencies": {
-    "async": "*",
-    "dockerode": "*",
+    "async": "1.5.2",
+    "bcrypt": "*",
+    "bitbucket-server-nodejs": "^2.10.0",
+    "dockerode": "aff04/dockerode.git",
     "formidable": "*",
     "github": "^0.2.4",
     "gridfs-stream": "*",
@@ -47,7 +49,7 @@
     "request": "*",
     "rimraf": "*",
     "shortid": "^2.2.4",
-    "soajs": "0.3.*",
+    "soajs": "soajs/soajs.git#develop",
     "unzip2": "*"
   }
 }

@@ -1,7 +1,7 @@
 "use strict";
 var hostsServices = soajsApp.components;
 hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile', function (ngDataApi, $timeout, $modal, $compile) {
-	
+
 	function listHosts(currentScope, env, noPopulate) {
 		var controllers = [];
 		currentScope.showCtrlHosts = true;
@@ -30,7 +30,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								'ips': []
 							}
 						};
-						
+
 						for (var j = 0; j < response.hosts.length; j++) {
 							if (response.hosts[j].name === 'controller') {
 								var info = {
@@ -62,7 +62,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 			});
 		}
-		
+
 		function updateParent() {
 			var color = 'red';
 			var healthy = false;
@@ -72,7 +72,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					count++;
 				}
 			});
-			
+
 			if (count === currentScope.hosts.controller.ips.length) {
 				color = 'green';
 				healthy = true;
@@ -84,7 +84,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			currentScope.hosts.controller.color = color;
 			currentScope.hosts.controller.healthy = healthy;
 		}
-		
+
 		function invokeHeartbeat(defaultControllerHost) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",
@@ -111,7 +111,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					defaultControllerHost.heartbeat = true;
 					defaultControllerHost.color = 'green';
 					updateParent();
-					
+
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/maintenanceOperation",
@@ -144,13 +144,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 			});
 		}
-		
+
 		function propulateServices(regServices) {
 			var renderedHosts = {};
 			var services = Object.keys(regServices);
 			services.forEach(function (serviceName) {
 				var oneService = regServices[serviceName];
-				
+
 				if (oneService.hosts) {
 					for (var version in oneService.hosts) {
 						//oneService.hosts = oneService.hosts[oneService.hosts.latest];
@@ -169,7 +169,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								}
 								renderedHosts[serviceName].ips[version] = [];
 							}
-							
+
 							regServices[serviceName].hosts[version].forEach(function (oneHostIP) {
 								if (serviceName !== 'controller') {
 									var oneHost = {
@@ -183,7 +183,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 										'port': regServices[serviceName].port,
 										'type': regServices[serviceName].type
 									};
-									
+
 									currentScope.hostList.forEach(function (origHostRec) {
 										if (origHostRec.name === oneHost.name && origHostRec.ip === oneHost.ip) {
 											oneHost.hostname = origHostRec.hostname;
@@ -206,7 +206,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 				}
 			});
-			
+
 			if (Object.keys(renderedHosts).length > 0) {
 				for (var sN in renderedHosts) {
 					currentScope.hosts[sN] = renderedHosts[sN];
@@ -219,10 +219,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 				}
 			}
-			
+			console.log(renderedHosts);
 			buildGroupsDisplay(renderedHosts);
 		}
-		
+
 		function buildGroupsDisplay(renderedHosts) {
 			currentScope.groups = {};
 			for (var hostName in renderedHosts) {
@@ -241,7 +241,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		}
 	}
-	
+
 	function listNginxHosts(currentScope, env) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
@@ -282,7 +282,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function executeHeartbeatTest(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -326,13 +326,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 			}
 		});
-		
+
 		function updateServiceStatus(healthyCheck) {
 			var count = 0, max = 0;
 			var healthy = currentScope.hosts[oneHost.name].healthy;
 			var color = currentScope.hosts[oneHost.name].color;
 			var waitMessage = {};
-			
+
 			if (oneHost.name === 'controller') {
 				checkMyIps(currentScope.hosts[oneHost.name].ips, max, count, healthyCheck, waitMessage);
 			}
@@ -341,7 +341,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					checkMyIps(currentScope.hosts[oneHost.name].ips[version], max, count, healthyCheck, waitMessage);
 				}
 			}
-			
+
 			if (count === max) {
 				color = 'green';
 				healthy = true;
@@ -354,7 +354,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				color = 'yellow';
 				healthy = false;
 			}
-			
+
 			currentScope.hosts[oneHost.name].healthy = healthy;
 			currentScope.hosts[oneHost.name].color = color;
 			if (oneHost.name !== 'controller' && JSON.stringify(waitMessage) !== '{}') {
@@ -362,7 +362,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				currentScope.closeWaitMessage(currentScope.hosts[oneHost.name]);
 			}
 		}
-		
+
 		function checkMyIps(ips, max, count, healthyCheck, waitMessage) {
 			for (var i = 0; i < ips.length; i++) {
 				max++;
@@ -405,7 +405,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		}
 	}
-	
+
 	function updateServicesControllers(currentScope, env, currentCtrl) {
 		for (var serviceName in currentScope.hosts) {
 			if (serviceName === 'controller') {
@@ -414,10 +414,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			if (currentScope.hosts[serviceName].ips && currentScope.hosts[serviceName].ips && Object.keys(currentScope.hosts[serviceName].ips).length > 0) {
 				for (var version in currentScope.hosts[serviceName].ips) {
 					currentScope.hosts[serviceName].ips[version].forEach(function (OneIp) {
-						
+
 						if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
 							OneIp.controllers.forEach(function (oneCtrl) {
-								
+
 								if (oneCtrl.ip === currentCtrl.ip) {
 									oneCtrl.color = 'red';
 								}
@@ -428,7 +428,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		}
 	}
-	
+
 	function executeAwarenessTest(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -452,7 +452,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						if (oneService === 'controller') {
 							continue;
 						}
-						
+
 						if (awarenessResponse[oneService].awarenessStats) {
 							var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
 							ips.forEach(function (serviceIp) {
@@ -463,10 +463,10 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				}
 			}
 		});
-		
+
 		function updateService(response, oneService, serviceIp) {
 			var count = 0, max = 0;
-			
+
 			for (var version in currentScope.hosts[oneService].ips) {
 				for (var i = 0; i < currentScope.hosts[oneService].ips[version].length; i++) {
 					max++;
@@ -479,17 +479,17 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							currentScope.hosts[oneService].ips[version][i].healthy = false;
 							currentScope.hosts[oneService].ips[version][i].color = 'red';
 						}
-						
+
 						var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
 						currentScope.hosts[oneService].ips[version][i].lastCheck = getTimeAgo(lc);
-						
+
 						if (response[oneService].awarenessStats[serviceIp].downSince) {
 							currentScope.hosts[oneService].ips[version][i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
 						}
 						if (response[oneService].awarenessStats[serviceIp].downCount) {
 							currentScope.hosts[oneService].ips[version][i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
 						}
-						
+
 						currentScope.hosts[oneService].ips[version][i].controllers.forEach(function (oneCtrl) {
 							if (oneCtrl.ip === oneHost.ip) {
 								oneCtrl.color = 'green';
@@ -497,15 +497,15 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						});
 					}
 				}
-				
-				
+
+
 				currentScope.hosts[oneService].ips[version].forEach(function (oneIP) {
 					if (oneIP.healthy) {
 						count++;
 					}
 				});
 			}
-			
+
 			var healthy, color;
 			if (count === max) {
 				//if (count === currentScope.hosts[oneService].ips.length) {
@@ -525,7 +525,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			currentScope.generateNewMsg(env, 'success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
 		}
 	}
-	
+
 	//ok from down here
 	function reloadRegistry(currentScope, env, oneHost, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -574,13 +574,13 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							}
 						]
 					};
-					
+
 					buildFormWithModal(currentScope, $modal, options);
 				}
 			}
 		});
 	}
-	
+
 	function loadProvisioning(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -624,12 +624,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					]
 				};
-				
+
 				buildFormWithModal(currentScope, $modal, options);
 			}
 		});
 	}
-	
+
 	function loadDaemonStats(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -673,12 +673,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					]
 				};
-				
+
 				buildFormWithModal(currentScope, $modal, options);
 			}
 		});
 	}
-	
+
 	function removeHost(currentScope, env, serviceName, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
@@ -692,7 +692,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
 						reloadRegistry(currentScope, env, oneCtrl, function () {
 							counter++;
-							
+
 							if (counter === max) {
 								currentScope.listHosts(env);
 							}
@@ -709,7 +709,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						currentScope.hosts[serviceName].ips.splice(i, 1);
 					}
 				}
-				
+
 				if (serviceName === 'controller') {
 					for (var s in currentScope.hosts) {
 						if (currentScope.hosts.hasOwnProperty(s) && s !== 'controller') {
@@ -722,12 +722,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							}
 						}
 					}
-					
+
 					if (currentScope.hosts.controller.ips.length === 0) {
 						delete currentScope.hosts;
 					}
 				}
-				
+
 				if (currentScope.hosts) {
 					currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
 						reloadRegistry(currentScope, env, oneCtrl, function () {
@@ -739,11 +739,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function infoHost(currentScope, env, serviceName, oneHost, serviceInfo) {
-		
+
 	}
-	
+
 	function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
@@ -791,7 +791,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function remove_special(str) {
 		var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
 			/[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
@@ -816,7 +816,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		}
 		return str;
 	}
-	
+
 	function createHost(currentScope, env, runningHosts) {
 		$modal.open({
 			templateUrl: "createHost.tmpl",
@@ -825,11 +825,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-				
+
 				$scope.title = 'Create New Service Host';
 				$scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
 				$scope.currentScope = currentScope;
-				
+
 				currentScope.services = [];
 				currentScope.service = "";
 				currentScope.groupConfigs = "";
@@ -848,7 +848,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 				delete currentScope.useLocalSOAJS;
 				currentScope.message = {};
 				currentScope.defaultEnvVariables = "<ul><li>SOAJS_SRV_AUTOREGISTERHOST=false</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + env + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
-				
+
 				$scope.getServices = function (cb) {
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'send',
@@ -872,7 +872,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 				};
-				
+
 				$scope.getDaemons = function () {
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'send',
@@ -894,7 +894,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 				};
-				
+
 				$scope.addNginx = function () {
 					if (env.toLowerCase() !== 'dashboard') {
 						currentScope.services.unshift({
@@ -904,20 +904,20 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						});
 					}
 				};
-				
+
 				$scope.selectService = function (service) {
 					currentScope.branches = [];
 					currentScope.branch = '';
 					currentScope.groupConfigs = '';
 					currentScope.conflict = '';
 					currentScope.conflictCommits = {};
-					
+
 					if (service.type === 'nginx') return;
-					
+
 					if (service.type === 'daemon' && service.grpConf) {
 						currentScope.groupConfigs = service.grpConf;
 					}
-					
+
 					currentScope.loadingBranches = true;
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'get',
@@ -940,7 +940,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 				};
-				
+
 				$scope.selectBranch = function (branch) {
 					currentScope.conflict = false;
 					currentScope.conflictCommits = {};
@@ -965,12 +965,12 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					}
 				};
-				
+
 				$scope.confirmBranchSelection = function () {
 					//clear previously selected commit if any
 					currentScope.commit = '';
 				};
-				
+
 				$scope.onSubmit = function () {
 					if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || !currentScope.number))) {
 						currentScope.message.danger = "Please select a service, branch, and number of instances";
@@ -998,11 +998,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					}
 				};
-				
+
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
-				
+
 				function allowListing(env, service) {
 					var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
 					var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
@@ -1016,7 +1016,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 					return false;
 				}
-				
+
 				function newController(currentScope, max) {
 					var params = {
 						'envCode': env,
@@ -1025,7 +1025,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						"repo": currentScope.serviceRepo,
 						"useLocalSOAJS": currentScope.useLocalSOAJS
 					};
-					
+
 					if (currentScope.commit && !currentScope.confirmBranch) {
 						params.branch = getBranchFromCommit(currentScope.commit);
 						params.commit = currentScope.commit;
@@ -1033,18 +1033,18 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						params.branch = currentScope.branch.name;
 						params.commit = currentScope.branch.commit.sha;
 					}
-					
+
 					if (currentScope.service.latest) {
 						params.version = currentScope.service.latest;
 					}
-					
+
 					if (currentScope.envVariables && currentScope.envVariables !== '') {
 						params.variables = currentScope.envVariables.split(",");
 						for (var i = 0; i < params.variables.length; i++) {
 							params.variables[i] = params.variables[i].trim();
 						}
 					}
-					
+
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployController",
@@ -1068,7 +1068,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								}
 								else {
 									$modalInstance.close();
-									
+
 									$timeout(function () {
 										listHosts(currentScope, env);
 									}, 2000);
@@ -1077,18 +1077,18 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 				}
-				
+
 				function newService(currentScope, max) {
 					doDeploy(0, max, function () {
 						$modalInstance.close();
-						
+
 						currentScope.hosts.controller.ips.forEach(function (oneCtrl) {
 							reloadRegistry(currentScope, env, oneCtrl, function () {
 								currentScope.listHosts(env);
 							});
 						});
 					});
-					
+
 					function doDeploy(counter, max, cb) {
 						var params = {
 							'envCode': env,
@@ -1096,7 +1096,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							'repo': currentScope.serviceRepo,
 							'useLocalSOAJS': currentScope.useLocalSOAJS
 						};
-						
+
 						if (currentScope.commit && !currentScope.confirmBranch) {
 							params.branch = getBranchFromCommit(currentScope.commit);
 							params.commit = currentScope.commit;
@@ -1104,37 +1104,37 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							params.branch = currentScope.branch.name;
 							params.commit = currentScope.branch.commit.sha;
 						}
-						
+
 						if (currentScope.service.gcId) {
 							params.gcName = currentScope.service.name;
 							params.gcVersion = currentScope.service.version;
 						} else {
 							params.name = currentScope.service.name;
 						}
-						
+
 						if (currentScope.service.latest) {
 							params.version = currentScope.service.latest;
 						}
 						currentScope.port = currentScope.service.port;
-						
+
 						if (currentScope.envVariables && currentScope.envVariables !== '') {
 							params.variables = currentScope.envVariables.split(",");
 							for (var i = 0; i < params.variables.length; i++) {
 								params.variables[i] = params.variables[i].trim();
 							}
 						}
-						
+
 						var config = {
 							"method": "send",
 							"routeName": "/dashboard/hosts/deployService",
 							"data": params
 						};
-						
+
 						if (currentScope.groupConfig) {
 							config.routeName = "/dashboard/hosts/deployDaemon";
 							params.grpConfName = currentScope.groupConfig.daemonConfigGroup;
 						}
-						
+
 						getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
 							if (error) {
 								currentScope.generateNewMsg(env, 'danger', error.message);
@@ -1151,7 +1151,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 										'heartbeat': false
 									};
 								}
-								
+
 								var hosttmpl = {
 									'port': currentScope.port,
 									'cid': response.cid,
@@ -1165,7 +1165,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									'color': 'red',
 									'controllers': []
 								};
-								
+
 								response.controllers.forEach(function (oneCtrl) {
 									hosttmpl.controllers.push({
 										'ip': oneCtrl.ip,
@@ -1175,7 +1175,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 										'downCount': 'N/A'
 									});
 								});
-								
+
 								if (runningHosts[currentScope.service.name].ips[1]) {
 									runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
 								} else {
@@ -1184,11 +1184,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									};
 									runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
 								}
-								
+
 								$timeout(function () {
 									currentScope.executeHeartbeatTest(env, hosttmpl);
 								}, 2000);
-								
+
 								counter++;
 								if (counter === max) {
 									return cb();
@@ -1200,16 +1200,16 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						});
 					}
 				}
-				
+
 				function newNginx(currentScope) {
 					var params = {
 						envCode: env
 					};
-					
+
 					if (currentScope.exposedPort) {
 						params.exposedPort = currentScope.exposedPort;
 					}
-					
+
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'send',
 						routeName: '/dashboard/hosts/deployNginx',
@@ -1226,11 +1226,11 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 					});
 				}
-				
+
 				function getBranchFromCommit(commit) {
 					return currentScope.conflictCommits[commit].branch;
 				}
-				
+
 				//Start here
 				if (currentScope.hosts && currentScope.hosts.controller) {
 					$scope.getServices(function () {
@@ -1248,7 +1248,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function containerLogs(currentScope, env, container) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
@@ -1283,7 +1283,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function deleteContainer(currentScope, env, container) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
@@ -1307,7 +1307,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	function listZombieContainers(currentScope, env) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'get',
@@ -1331,7 +1331,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 			}
 		});
 	}
-	
+
 	return {
 		'listHosts': listHosts,
 		'listNginxHosts': listNginxHosts,
@@ -1348,5 +1348,5 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 		'deleteContainer': deleteContainer,
 		'listZombieContainers': listZombieContainers
 	};
-	
+
 }]);

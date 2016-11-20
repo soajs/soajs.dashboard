@@ -219,8 +219,12 @@ var envTranslation ={
 		"FRA": "Default Environment Variables:"
 	},
 	"controller": {
-		"ENG": "Controller(s)",
-		"FRA": "Controller(s)"
+		"ENG": "Number of Controller Instances",
+		"FRA": "Number of Controller Instances"
+	},
+	"numberOfNginxInstances": {
+		"ENG": "Number of Nginx Instances",
+		"FRA": "Number of Nginx Instances"
 	},
 	"chooseHowManyControllersDeploy": {
 		"ENG": "Choose how many controllers to deploy",
@@ -297,6 +301,22 @@ var envTranslation ={
 	"inOrderToViewNewEnvYouNeedToReLogin": {
 		"ENG": "However, in order to view the newly created environment you need to re-login",
 		"FRA": "However, in order to view the newly created environment you need to re-login"
+	},
+	"hacloud": {
+		"ENG": "High Availability - Cloud",
+		"FRA": "High Availability - Cloud"
+	},
+	"nodeIP": {
+		"ENG": "Node IP/Domain",
+		"FRA": "Node IP/Domain"
+	},
+	"nodeDockerPort": {
+		"ENG": "Node Docker Port",
+		"FRA": "Node Docker Port"
+	},
+	"nodeRole": {
+		"ENG": "Node Role",
+		"FRA": "Node Role"
 	},
 	//controller
 	"addNewEnvironment": {
@@ -1489,6 +1509,46 @@ var environmentsNav = [
 			'position': 3
 		},
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/controller.js', 'modules/dashboard/environments/services/clusters.js', 'modules/dashboard/environments/services/database.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'environments-hacloud',
+		'label': translation.hacloud[LANG],
+		'url': '#/environments-hacloud',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/hacloud/nodes/list'
+		},
+		'icon': 'sphere',
+		'tplPath': 'modules/dashboard/environments/directives/list-hacloud.tmpl',
+		'pillar':{
+			'name': 'deployment',
+			'label': translation.deploy[LANG],
+			'position': 3
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'environments-analytics',
+		'label': 'Analytics',
+		'url': '#/environments-analytics',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/analytics/check'
+		},
+		'icon': 'stats-bars',
+		'tplPath': 'modules/dashboard/environments/directives/analytics.tmpl',
+		'pillar':{
+			'name': 'deployment',
+			'label': translation.deploy[LANG],
+			'position': 3
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/analytics-ctrl.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];

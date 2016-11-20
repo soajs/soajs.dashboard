@@ -32,11 +32,41 @@ module.exports = {
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
 
 	"images": {
-		"nginx": 'soajsorg/nginx',
-		"services": "soajsorg/soajs"
+		"nginx": 'nginx',
+		"services": "soajs"
 	},
 
+	"imagesDir": "/opt/soajs/FILES/deployer/",
+
 	"gitAccounts": {
+		"bitbucket_org": {
+			apiDomain: 'https://api.bitbucket.org/1.0',
+			routes: {
+				getUserRecord: '/users/%USERNAME%',
+				getAllRepos: '/user/repositories',
+				getContent: '/repositories/%USERNAME%/%REPO_NAME%/raw/%BRANCH%/%FILE_PATH%',
+				getBranches: '/repositories/%USERNAME%/%REPO_NAME%/branches'
+			},
+			oauth: {
+				domain: 'https://bitbucket.org/site/oauth2/access_token'
+			},
+			repoConfigsFolder: __dirname + '/repoConfigs',
+			defaultConfigFilePath: "config.js"
+		},
+		"bitbucket_enterprise": {
+			userAgent: "SOAJS Bitbucket App",
+			defaultConfigFilePath: "config.js",
+			repoConfigsFolder: __dirname + '/repoConfigs',
+			// required for OAuth
+			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
+			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
+			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
+			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
+			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
+			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
+			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
+			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+		},
 		"github": {
 			"protocol": "https",
 			"domainName": "api.github.com",
@@ -744,6 +774,13 @@ module.exports = {
 					"required": true
 				}
 			},
+			"platform": {
+				"source": ['query.platform'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"driverName": {
 				"source": ['query.driverName'],
 				"required": true,
@@ -756,111 +793,6 @@ module.exports = {
 				"required": true,
 				"validation": {
 					"type": "array"
-				}
-			}
-		},
-		"/environment/platforms/driver/add": {
-			_apiInfo: {
-				"l": "Add Driver",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"driverName": {
-				"source": ['query.driverName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"local": {
-				"source": ['body.local'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			"cloud": {
-				"source": ['body.cloud'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			"socket": {
-				"source": ['body.socket'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			}
-		},
-		"/environment/platforms/driver/edit": {
-			_apiInfo: {
-				"l": "Update Driver",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"driverName": {
-				"source": ['query.driverName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"local": {
-				"source": ['body.local'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			"cloud": {
-				"source": ['body.cloud'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			},
-			"socket": {
-				"source": ['body.socket'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			}
-		},
-		"/environment/platforms/driver/delete": {
-			_apiInfo: {
-				"l": "Delete Driver Configuration",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"driverName": {
-				"source": ['query.driverName'],
-				"required": true,
-				"validation": {
-					"type": "string"
 				}
 			}
 		},
@@ -1951,6 +1883,42 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"name": {
+				"source": ['body.name'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -1983,6 +1951,35 @@ module.exports = {
 				"required": false,
 				"validation": {
 					"type": "boolean"
+				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
@@ -2073,6 +2070,35 @@ module.exports = {
 				"validation": {
 					"type": "boolean"
 				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
@@ -2146,6 +2172,35 @@ module.exports = {
 				"required": false,
 				"validation": {
 					"type": "boolean"
+				}
+			},
+			"haService": {
+				"source": ['body.haService'],
+				"required": false,
+				"validation": {
+					"type": "boolean"
+				}
+			},
+			"haCount": {
+				"source": ['body.haCount'],
+				"required": false,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"memoryLimit": {
+				"source": ['body.memoryLimit'],
+				"required": false,
+				"default": 209715200,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
@@ -2223,6 +2278,215 @@ module.exports = {
 			}
 		},
 
+		"/hacloud/nodes/list": {
+			"_apiInfo": {
+				"l": "List HA Cloud Nodes",
+				"group": "HA Cloud"
+			}
+		},
+		"/hacloud/nodes/add": {
+			"_apiInfo": {
+				"l": "Add HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['body.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"host": {
+				"source": ['body.host'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"port": {
+				"source": ['body.port'],
+				"required": true,
+				"validation": {
+					"type": "number"
+				}
+			},
+			"role": {
+				"source": ['body.role'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"enum": ['manager', 'worker']
+				}
+			}
+		},
+		"/hacloud/nodes/remove": {
+			"_apiInfo": {
+				"l": "Remove HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"nodeId": {
+				"source": ['query.nodeId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+		"/hacloud/nodes/update": {
+			"_apiInfo": {
+				"l": "Update HA Cloud Node",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"nodeId": {
+				"source": ['query.nodeId'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"type": {
+				"source": ['body.type'],
+				"required": true,
+				"validation": {
+					"type": "string",
+					"enum": ["role", "availability"]
+				}
+			},
+			"value": {
+				"source": ['body.value'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/hacloud/services/scale": {
+			"_apiInfo": {
+				"l": "Scale HA Service",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"name": {
+				"source": ['query.name'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"version": {
+				"source": ['query.version'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"scale": {
+				"source": ['body.scale'],
+				"required": true,
+				"validation": {
+					"type": "number"
+				}
+			}
+		},
+
+		"/hacloud/services/delete": {
+			"_apiInfo": {
+				"l": "Delete HA Service",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"name": {
+				"source": ['query.name'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"version": {
+				"source": ['query.version'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/hacloud/services/instances/logs": {
+			"_apiInfo": {
+				"l": "Get Service Container Logs",
+				"group": "HA Cloud"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"taskName": {
+				"source": ['query.taskName'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/analytics/check": {
+			"_apiInfo": {
+				"l": "Check Analytics Status",
+				"group": "Analytics"
+			},
+			"env": {
+				"source": ['query.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
+		"/analytics/activate": {
+			"_apiInfo": {
+				"l": "Activate Analytics",
+				"group": "Analytics"
+			},
+			"env": {
+				"source": ['body.env'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
+		},
+
 		"/gitAccounts/login": {
 			"_apiInfo": {
 				"l": "Github Login",
@@ -2256,6 +2520,13 @@ module.exports = {
 					"type": "string"
 				}
 			},
+			"domain": {
+				"source": ['body.domain'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"type": {
 				"source": ['body.type'],
 				"required": true,
@@ -2266,6 +2537,20 @@ module.exports = {
 			"access": {
 				"source": ['body.access'],
 				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"oauthKey": {
+				"source": ['body.oauthKey'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"oauthSecret": {
+				"source": ['body.oauthSecret'],
+				"required": false,
 				"validation": {
 					"type": "string"
 				}
@@ -2415,6 +2700,13 @@ module.exports = {
 					"type": "string"
 				}
 			},
+			"project": {
+				"source": ['body.project'],
+				"required": false,
+				"validation": {
+					"type": "string"
+				}
+			},
 			"configBranch": {
 				"source": ['body.configBranch'],
 				"required": true,
@@ -2465,6 +2757,13 @@ module.exports = {
 			"provider": {
 				"source": ['body.provider'],
 				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"project": {
+				"source": ['body.project'],
+				"required": false,
 				"validation": {
 					"type": "string"
 				}

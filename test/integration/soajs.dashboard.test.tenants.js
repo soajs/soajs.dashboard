@@ -2299,6 +2299,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 									}
 								};
 								executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKey_body) {
+									assert.ok(extKey_body.data);
 									assert.ok(extKey_body.data.extKey);
 									params = {
 										qs: {

@@ -2,16 +2,21 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
-	function deployEnvironment(currentScope, envCode) {
+	function deployEnvironment(currentScope, envCode, haMode) {
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 
 		getControllerBranches(currentScope, function (branchInfo) {
 			for (var i = 0; i < formConfig.entries.length; i++) {
-				if (formConfig.entries[i].name === 'branch') {
-					branchInfo.branches.forEach(function (oneBranch) {
-						delete oneBranch.commit.url;
-						formConfig.entries[i].value.push({'v': oneBranch, 'l': oneBranch.name});
-					});
+				if (formConfig.entries[i].name === 'controllers') {
+					var ctrlEntries = formConfig.entries[i].entries;
+					for (var j = 0; j < ctrlEntries.length; j++) {
+						if (ctrlEntries[j].name === 'branch') {
+							branchInfo.branches.forEach(function (oneBranch) {
+								delete oneBranch.commit.url;
+								ctrlEntries[j].value.push({'v': oneBranch, 'l': oneBranch.name});
+							});
+						}
+					}
 				}
 			}
 
@@ -22,7 +27,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 				'required': true,
 				'onAction': function (label, selected, formConfig) {
-					if (selected === 'true' && formConfig.entries[3].name !== 'selectCustomUI') {
+					if (selected === 'true' && (!formConfig.entries[0].entries[5] || formConfig.entries[0].entries[5].name !== 'selectCustomUI')) {
 						listStaticContent(currentScope, function (staticContentSources) {
 							var selectCustomUI = {
 								'name': 'selectCustomUI',
@@ -57,7 +62,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 												selectUIBranch.value.push({'v': oneBranch, 'l': oneBranch.name});
 											});
 
-											formConfig.entries.splice(4, 0, selectUIBranch);
+											formConfig.entries[0].entries.splice(6, 0, selectUIBranch);
 										}
 									});
 								}
@@ -65,25 +70,24 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							staticContentSources.forEach (function (oneSource) {
 								selectCustomUI.value.push ({'v': oneSource, 'l': oneSource.name});
 							});
-							formConfig.entries.splice(3, 0, selectCustomUI);
+							formConfig.entries[0].entries.splice(5, 0, selectCustomUI);
 						});
-					} else if (selected === 'false' && formConfig.entries[3].name === 'selectCustomUI') {
-						if (formConfig.entries[3].name === 'selectCustomUI') {
-							formConfig.entries.splice(3, 1);
-							delete formConfig.formData.selectCustomUI;
-							if (formConfig.entries[3].name === 'selectUIBranch') {
-								formConfig.entries.splice(3, 1);
-							}
+					} else if (selected === 'false' && formConfig.entries[0].entries[5].name === 'selectCustomUI') {
+						if (formConfig.entries[0].entries[6] && formConfig.entries[0].entries[6].name === 'selectUIBranch') {
+							formConfig.entries[0].entries.splice(6, 1);
+							delete formConfig.formData.selectUIBranch;
 						}
+						formConfig.entries[0].entries.splice(5, 1);
+						delete formConfig.formData.selectCustomUI;
 					}
 				}
 			};
-			formConfig.entries.splice(2, 0, customUIEntry);
+			formConfig.entries[0].entries.splice(4, 0, customUIEntry);
 
-			for (var i = 0; i < formConfig.entries.length; i++) {
-				if (formConfig.entries[i].name === 'defaultENVVAR') {
-					formConfig.entries[i].value = formConfig.entries[i].value.replace("%envName%", envCode);
-					formConfig.entries[i].value = formConfig.entries[i].value.replace("%profilePathToUse%", currentScope.profile);
+			for (var i = 0; i < formConfig.entries[1].entries.length; i++) {
+				if (formConfig.entries[1].entries[i].name === 'defaultENVVAR') {
+					formConfig.entries[1].entries[i].value = formConfig.entries[1].entries[i].value.replace("%envName%", envCode);
+					formConfig.entries[1].entries[i].value = formConfig.entries[1].entries[i].value.replace("%profilePathToUse%", currentScope.profile);
 				}
 			}
 
@@ -144,7 +148,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				'repo': formData.repo,
 				'branch': branchObj.name,
 				'commit': branchObj.commit.sha,
-				'useLocalSOAJS': formData.useLocalSOAJS
+				'useLocalSOAJS': formData.useLocalSOAJS,
+				'imagePrefix': formData.ctrlImagePrefix
 			};
 
 			if (formData.exposedPort) {
@@ -168,17 +173,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 			}
 
+			if (haMode) {
+				params.name = 'controller';
+				params.haService = true;
+				params.haCount = formData.controllers;
+				params.memoryLimit = (formData.ctrlMemoryLimit * 1048576);
+			}
+
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "send",
 				"routeName": "/dashboard/hosts/deployController",
 				"data": params
 			}, function(error, response) {
 				if(error) {
-					currentScope.generateNewMsg(envCode, 'danger', error.message);
 					overlay.hide();
+					currentScope.generateNewMsg(envCode, 'danger', error.message);
 				}
 				else {
 					params.supportSSL = formData.supportSSL;
+					params.haCount = formData.nginxCount;
+					params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
+					params.imagePrefix = formData.nginxImagePrefix;
 					getSendDataFromServer(currentScope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/hosts/deployNginx",
@@ -190,8 +205,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						}
 						else {
 							overlay.hide(function(){
-								currentScope.listNginxHosts(envCode);
-								currentScope.listHosts(envCode);
+								if (!haMode) {
+									currentScope.listNginxHosts(envCode);
+									currentScope.listHosts(envCode);
+								}
+								else {
+									currentScope.isDeploying = true;
+									$timeout(function () {
+										currentScope.listNginxServices();
+										currentScope.listServices();
+									}, 15000);
+								}
 							});
 						}
 					});

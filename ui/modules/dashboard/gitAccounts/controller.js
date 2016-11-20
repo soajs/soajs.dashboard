@@ -13,6 +13,8 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     $scope.defaultPageNumber = 1;
     $scope.defaultPerPage = 100;
 
+    $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
+
     $scope.listAccounts = function () {
         getSendDataFromServer($scope, ngDataApi, {
             'method': 'get',
@@ -25,16 +27,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
                 if ($scope.accounts.length > 0) {
                     var counter = 0;
-                    var loadingModal = $modal.open({
-                        templateUrl: "loading.tmpl",
-                        backdrop: true,
-                        keyboard: false,
-                        controller: function ($scope, $modalInstance) {
-                            fixBackDrop();
-                            $scope.imagePath = './themes/' + themeToUse + '/img/loading.gif';
-                        }
-                    });
-                    $scope.listRepos($scope.accounts, counter, 'getRepos', loadingModal);
+                    $scope.listRepos($scope.accounts, counter, 'getRepos');
                 }
             }
         });
@@ -42,37 +35,6 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
     $scope.addAccount = function () {
         var formConfig = angular.copy(gitAccountsAppConfig.form.login);
-        var accountType = {
-            'name': 'type',
-            'label': 'Account Type',
-            'class': 'accountType',
-            'type': 'radio',
-            'value': [{'v': 'personal_public', 'l': 'Personal Account - Public Repositories', 'selected': true},
-                {'v': 'personal_private', 'l': 'Personal Account - Public and Private Repositories'},
-                {'v': 'organization_public', 'l': 'Organization - Public'}],
-            'required': true,
-            onAction: function (label, selected, formConfig) {
-                if (selected.split('_')[1] === 'private' && formConfig.entries[4].name !== 'password') {
-                    var password = {
-                        'name': 'password',
-                        'label': 'Password',
-                        'type': 'password',
-                        'value': '',
-                        'tooltip': 'Account Password',
-                        'placeholder': 'Your Password',
-                        'required': true
-                    };
-                    formConfig.entries.splice(4, 0, password);
-                } else {
-                    if (selected.split('_')[1] !== 'private' && formConfig.entries[4].name === 'password') {
-                        formConfig.entries.splice(4, 1);
-                    }
-                }
-            }
-        };
-
-        formConfig.entries.splice(2, 0, accountType);
-
         var options = {
             timeout: $timeout,
             form: formConfig,
@@ -86,6 +48,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                     'action': function (formData) {
                         var postData = {
                             provider: formData.provider,
+                            domain: formData.providerDomain,
                             label: formData.label,
                             username: formData.username,
                             type: formData.type.split('_')[0],
@@ -96,11 +59,18 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                             postData.password = formData.password;
                         }
 
+                        if (formData.oauthKey && formData.oauthSecret) {
+                            postData.oauthKey = formData.oauthKey;
+                            postData.oauthSecret = formData.oauthSecret;
+                        }
+
+                        overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
                             'method': 'send',
                             'routeName': '/dashboard/gitAccounts/login',
                             'data': postData
                         }, function (error) {
+                            overlayLoading.hide();
                             if (error) {
                                 $scope.form.displayAlert('danger', error.message);
                             } else {
@@ -127,7 +97,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     };
 
     $scope.deleteAccount = function (account) {
-        if (account.access === 'public') {
+        if (account.access === 'public' || account.provider !== 'github') {
             getSendDataFromServer($scope, ngDataApi, {
                 'method': 'get',
                 'routeName': '/dashboard/gitAccounts/logout',
@@ -195,66 +165,55 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
         }
     };
 
-    $scope.listRepos = function (accounts, counter, action, loadingModal) {
-        //in case of one repo only
+    $scope.listRepos = function (accounts, counter, action) {
         if (!Array.isArray(accounts)) {
             accounts = [accounts];
-            counter = (counter) ? counter : 0;
-        }
-        var id = accounts[counter]._id;
-        if (!accounts[counter].nextPageNumber) {
-            accounts[counter].nextPageNumber = $scope.defaultPageNumber;
         }
 
-        getSendDataFromServer($scope, ngDataApi, {
-            "method": "get",
-            "routeName": "/dashboard/gitAccounts/getRepos",
-            "params": {
-                id: id,
-                provider: accounts[counter].provider,
-                per_page: $scope.defaultPerPage,
-                page: (action === 'loadMore') ? accounts[counter].nextPageNumber : $scope.defaultPageNumber
+        //get repos of all accounts in parallel
+        accounts.forEach(function (oneAccount) {
+            var id = oneAccount._id;
+            oneAccount.loading = true;
+            if (!oneAccount.nextPageNumber) {
+                oneAccount.nextPageNumber = $scope.defaultPageNumber;
             }
-        }, function (error, response) {
-            if (error) {
-                $scope.displayAlert('danger', error.message);
-                if (loadingModal) {
-                    loadingModal.close();
+
+            getSendDataFromServer($scope, ngDataApi, {
+                "method": "get",
+                "routeName": "/dashboard/gitAccounts/getRepos",
+                "params": {
+                    id: id,
+                    provider: oneAccount.provider,
+                    per_page: $scope.defaultPerPage,
+                    page: (action === 'loadMore') ? oneAccount.nextPageNumber : $scope.defaultPageNumber
                 }
-            } else {
-                if (action === 'loadMore') {
-                    $scope.appendNewRepos(accounts[counter], response);
-                }
-                else if (action === 'getRepos') {
-
-                    if (accounts[counter].owner === 'soajs') {
-                        accounts[counter].repos = [];
-                        response.forEach (function (oneRepo) {
-                            if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
-                                accounts[counter].repos.push(oneRepo);
-                            }
-                        });
+            }, function (error, response) {
+                oneAccount.loading = false;
+                if (error) {
+                    $scope.displayAlert('danger', error.message);
+                } else {
+                    if (action === 'loadMore') {
+                        $scope.appendNewRepos(oneAccount, response);
                     }
-                    else {
-                        accounts[counter].repos = response;
-                    }
+                    else if (action === 'getRepos') {
 
-                    accounts[counter].nextPageNumber = 2;
-                    accounts[counter].allowLoadMore = (response.length === $scope.defaultPerPage);
-
-                    counter++;
-                    if (counter < accounts.length) {
-                        return $scope.listRepos(accounts, counter, 'getRepos', loadingModal);
-                    } else {
-                        if (loadingModal) {
-                            loadingModal.close();
+                        if (oneAccount.owner === 'soajs') {
+                            oneAccount.repos = [];
+                            response.forEach (function (oneRepo) {
+                                if ($scope.excludedSOAJSRepos.indexOf(oneRepo.full_name) === -1) {
+                                    oneAccount.repos.push(oneRepo);
+                                }
+                            });
                         }
                         else {
-                            $scope.displayAlert('success', translation.listOfReposUpToDate[LANG]);
+                            oneAccount.repos = response;
                         }
+
+                        oneAccount.nextPageNumber = 2;
+                        oneAccount.allowLoadMore = (response.length === $scope.defaultPerPage);
                     }
                 }
-            }
+            });
         });
     };
 
@@ -286,6 +245,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
     $scope.activateRepo = function (account, repo) {
         var formConfig = angular.copy(gitAccountsAppConfig.form.selectConfigBranch);
+        overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/gitAccounts/getBranches',
@@ -296,6 +256,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                 provider: account.provider
             }
         }, function (error, result) {
+            overlayLoading.hide();
             if (error) {
                 $scope.displayAlert('danger', error.message);
             }
@@ -327,6 +288,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                         provider: account.provider,
                                         owner: repo.owner.login,
                                         repo: repo.name,
+                                        project: repo.project ? repo.project.key : null,
                                         configBranch: formData.branch
                                     }
                                 }, function (error, response) {
@@ -423,6 +385,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     };
 
     $scope.syncRepo = function (account, repo) {
+        overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'send',
             routeName: '/dashboard/gitAccounts/repo/sync',
@@ -431,10 +394,12 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             },
             data: {
                 provider: account.provider,
+                project: repo.project ? repo.project.key : null,
                 owner: repo.owner.login,
                 repo: repo.name
             }
         }, function (error, response) {
+            overlayLoading.hide();
             if (error) {
                 $scope.displayAlert('danger', error.message);
             } else {

@@ -1978,95 +1978,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 	describe("platforms tests", function () {
 
-		describe("add drivers", function () {
-
-			it("success - will add a docker machine local driver for DEV", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - local'
-					},
-					form: {
-						local: {
-							host: '127.0.0.1',
-							port: 5354,
-							config: {}
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("success - will add a docker machine cloud driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - cloud'
-					},
-					form: {
-						cloud: {
-							host: 'docker.rackspace.com',
-							port: 2376,
-							config: {},
-							cloudProvider: 'rackspace'
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("success - will add a docker socket driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'docker - socket'
-					},
-					form: {
-						socket: {
-							socketPath: '/var/run/docker.sock'
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - missing required params", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					},
-					form: {
-						local: {
-							host: '127.0.0.1',
-							port: 5354,
-							config: {}
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/add', 'post', function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
-						'code': 172,
-						'message': 'Missing required field: driverName'
-					});
-					done();
-				});
-			});
-		});
-
 		describe("list platforms", function () {
 
 			it("success - will list platforms and available certificates", function (done) {
@@ -2085,93 +1996,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("fail - missing required params", function (done) {
 				executeMyRequest({}, "environment/platforms/list", 'get', function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
-					done();
-				});
-			});
-		});
-
-		describe("edit drivers", function () {
-
-			it("success - will update a docker machine local driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - local'
-					},
-					form: {
-						local: {
-							host: '192,168.99.103',
-							port: 2376,
-							config: {}
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("success - will update a docker machine cloud driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - cloud'
-					},
-					form: {
-						cloud: {
-							host: 'docker.joyent.com',
-							port: 2376,
-							config: {},
-							cloudProvider: 'joyent'
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("success - will update a docker socket driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'docker - socket'
-					},
-					form: {
-						socket: {
-							socketPath: '/var/run/dockerSock.sock'
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - missing required params", function (done) {
-				var params = {
-					qs: {
-						driverName: 'dockermachine - cloud'
-					},
-					form: {
-						cloud: {
-							host: 'docker.joyent.com',
-							port: 2376,
-							config: {},
-							cloudProvider: 'joyent'
-						}
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/edit', 'post', function (body) {
 					assert.ok(body.errors);
 					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
 					done();
@@ -2247,68 +2071,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
-		describe("delete drivers", function () {
-
-			it("success - will delete local driver", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - local'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - trying to delete the driver that is currently selected", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV',
-						driverName: 'dockermachine - cloud - joyent'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
-						'code': 737,
-						'message': 'You are not allowed to delete a driver that is currently selected'
-					});
-					done();
-				});
-			});
-
-			it("success - will delete cloud driver after removing selection", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					},
-					form: {
-						selected: 'container.dockermachine.local'
-					}
-				};
-				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
-					assert.ok(body.data);
-
-					params = {
-						qs: {
-							env: 'DEV',
-							driverName: 'dockermachine - cloud - joyent'
-						}
-					};
-
-					executeMyRequest(params, 'environment/platforms/driver/delete', 'get', function (body) {
-						assert.ok(body.data);
-						done();
-					});
-				});
-			});
-		});
-
 	});
 
 	describe("hosts tests", function () {
@@ -2671,6 +2433,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'password': 'new test case password'
 						}
 					};
+
 					executeMyRequest(params, 'environment/key/update', 'post', function (body) {
 						assert.ok(body.result);
 						done();
@@ -2812,14 +2575,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				},
 				form: {
 					"extKey": tenantExtKey,
-					"extKeyEnv": "DASHBOARD"
+					"extKeyEnv": "DEV"
 				}
 			};
 			executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 				assert.ok(body);
-				if (body.result === false)
-					assert.ifError(body.result);
-
+				assert.ok(body.errors);
 				assert.deepEqual(body.errors.details[0], {"code": 465, "message": errorCodes[465]});
 				done();
 			});

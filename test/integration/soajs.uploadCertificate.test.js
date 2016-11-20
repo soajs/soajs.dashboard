@@ -100,7 +100,7 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'docker',
+                    platform: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -120,7 +120,7 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'docker',
+                    platform: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -135,12 +135,12 @@ describe("Docker Certificates tests", function () {
             });
         });
 
-        it("fail - missing params: driverName", function (done) {
+        it("fail - missing params: driver", function (done) {
             var params = {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'docker'
+                    platform: 'docker'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -158,8 +158,8 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     filename: 'test_cert.pem',
-                    driverName: 'dockermachine - local',
-                    type: 'docker'
+                    driver: 'dockermachine - local',
+                    platform: 'docker'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -187,9 +187,9 @@ describe("Docker Certificates tests", function () {
                     "chunkSize":261120,
                     "aliases":null,
                     "metadata": {
-                        "type": "docker",
+                        "platform": "docker",
                         "env": {
-                            "DEV": ["dockermachine - local"]
+                            "DEV": ["docker.dockermachine - local"] //temp value, dockermachine drivers are depricated. Proper values will be set soon
                         }
                     },
                     "md5":"d8d70241e72d605ca44657aefbf38aed"
@@ -320,7 +320,7 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'docker',
+                    platform: 'docker',
                     driver: 'dockermachine - local'
                 },
                 formData: {
@@ -329,6 +329,7 @@ describe("Docker Certificates tests", function () {
             };
 
             executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
+                console.log(JSON.stringify(body,null,2));
                 assert.ok(body.result);
                 assert.ok(body.data);
 
@@ -336,7 +337,7 @@ describe("Docker Certificates tests", function () {
                     qs: {
                         filename: 'test_cert_2.pem',
                         envCode: 'DEV',
-                        type: 'docker',
+                        platform: 'docker',
                         driver: 'dockermachine - local'
                     },
                     formData: {
@@ -365,6 +366,7 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     env: 'STG',
+                    platform: 'docker',
                     driverName: 'dockermachine - local'
                 },
                 form: {
@@ -382,6 +384,7 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     env: 'STG',
+                    platform: 'docker',
                     driverName: 'dockermachine - cloud - rackspace'
                 },
                 form: {
@@ -398,7 +401,8 @@ describe("Docker Certificates tests", function () {
         it("fail - missing required params", function (done) {
             var params = {
                 qs: {
-                    env: 'STG'
+                    env: 'STG',
+                    platform: 'docker'
                 },
                 form: {
                     certIds: testCerts
@@ -415,6 +419,7 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     env: 'STG',
+                    platform: 'docker',
                     driverName: 'dockermachine - local'
                 },
                 form: {
@@ -432,6 +437,7 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     env: 'STG',
+                    platform: 'docker',
                     driverName: 'dockermachine - local'
                 },
                 form: {
@@ -462,14 +468,14 @@ describe("Docker Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
-                                "type": "docker",
+                                "platform": "docker",
                                 "env": {
                                     "DEV": [
-                                        "dockermachine - local"
+                                        "docker.dockermachine - local"
                                     ],
                                     "STG": [
-                                        "dockermachine - local",
-                                        "dockermachine - cloud - rackspace"
+                                        "docker.dockermachine - local",
+                                        "docker.dockermachine - cloud - rackspace"
                                     ]
                                 }
                             },
@@ -482,14 +488,14 @@ describe("Docker Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
-                                "type": "docker",
+                                "platform": "docker",
                                 "env": {
                                     "DEV": [
-                                        "dockermachine - local"
+                                        "docker.dockermachine - local"
                                     ],
                                     "STG": [
-                                        "dockermachine - local",
-                                        "dockermachine - cloud - rackspace"
+                                        "docker.dockermachine - local",
+                                        "docker.dockermachine - cloud - rackspace"
                                     ]
                                 }
                             },
@@ -498,25 +504,6 @@ describe("Docker Certificates tests", function () {
                     ]
                 );
 
-                done();
-            });
-        });
-
-    });
-
-    describe("delete certificates when a driver gets deleted", function () {
-
-        it("success - will delete docker certificates when driver gets deleted from dev environment", function (done) {
-            var params = {
-                qs: {
-                    env: 'DEV',
-                    driverName: 'dockermachine - cloud - rackspace'
-                }
-            };
-
-            executeMyRequest(params, "environment/platforms/driver/delete", 'get', function (body) {
-	            assert.ok(body.result);
-                assert.ok(body.data);
                 done();
             });
         });
@@ -547,7 +534,7 @@ describe("Nginx Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'nginx',
+                    platform: 'nginx',
                     label: 'certificate'
                 },
                 formData: {
@@ -567,7 +554,7 @@ describe("Nginx Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'nginx',
+                    platform: 'nginx',
                     label: 'certificate'
                 },
                 formData: {
@@ -587,7 +574,7 @@ describe("Nginx Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'nginx'
+                    platform: 'nginx'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -614,7 +601,7 @@ describe("Nginx Certificates tests", function () {
                     "chunkSize":261120,
                     "aliases":null,
                     "metadata": {
-                        "type": "nginx",
+                        "platform": "nginx",
                         "label": "certificate",
                         "env": ["DEV"]
                     },
@@ -638,7 +625,7 @@ describe("Nginx Certificates tests", function () {
                     "chunkSize":261120,
                     "aliases":null,
                     "metadata": {
-                        "type": "nginx",
+                        "platform": "nginx",
                         "label": "certificate",
                         "env": ["DEV"]
                     },
@@ -750,7 +737,7 @@ describe("Nginx Certificates tests", function () {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    type: 'nginx',
+                    platform: 'nginx',
                     label: 'certificate'
                 },
                 formData: {
@@ -766,7 +753,7 @@ describe("Nginx Certificates tests", function () {
                     qs: {
                         filename: 'test_cert_2.pem',
                         envCode: 'DEV',
-                        type: 'nginx',
+                        platform: 'nginx',
                         label: 'privateKey'
                     },
                     formData: {
@@ -869,7 +856,7 @@ describe("Nginx Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
-                                "type": "nginx",
+                                "platform": "nginx",
                                 "label": "certificate",
                                 "env": ["DEV", "STG"]
                             },
@@ -882,7 +869,7 @@ describe("Nginx Certificates tests", function () {
                             "chunkSize": 261120,
                             "aliases": null,
                             "metadata": {
-                                "type": "nginx",
+                                "platform": "nginx",
                                 "label": "privateKey",
                                 "env": ["DEV", "STG"]
                             },
