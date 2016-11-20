@@ -32,10 +32,8 @@ module.exports = {
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
 
 	"images": {
-		//////////////////////////////////////////////////////////////////
-		"nginx": 'soajstest/nginx', //TEMPORARY: USING TEST IMAGE NAME//
-		"services": "soajstest/soajs" //TEMPORARY: USING TEST IMAGE NAME//
-		//////////////////////////////////////////////////////////////////
+		"nginx": 'nginx',
+		"services": "soajs"
 	},
 
 	"imagesDir": "/opt/soajs/FILES/deployer/",
@@ -1914,6 +1912,13 @@ module.exports = {
 				"validation": {
 					"type": "number"
 				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployNginx": {
@@ -1968,6 +1973,13 @@ module.exports = {
 				"default": 209715200,
 				"validation": {
 					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},
@@ -2080,6 +2092,13 @@ module.exports = {
 				"validation": {
 					"type": "number"
 				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
 			}
 		},
 		"/hosts/deployDaemon": {
@@ -2175,6 +2194,13 @@ module.exports = {
 				"default": 209715200,
 				"validation": {
 					"type": "number"
+				}
+			},
+			"imagePrefix": {
+				"source": ['body.imagePrefix'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
 			}
 		},

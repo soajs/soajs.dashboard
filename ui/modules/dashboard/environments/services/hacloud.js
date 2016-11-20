@@ -1116,6 +1116,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 currentScope.useLocalSOAJS = true;
                 currentScope.message = {};
                 currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
+                currentScope.imagePrefix = 'soajsorg';
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
@@ -1354,7 +1355,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         'useLocalSOAJS': currentScope.useLocalSOAJS,
                         'haService': true,
                         'haCount': currentScope.replicaCount,
-                        'memoryLimit': (currentScope.memoryLimit * 1048576) //converting to bytes
+                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+                        "imagePrefix": currentScope.imagePrefix
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {
@@ -1455,7 +1457,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 function newNginx(currentScope) {
                     var params = {
-                        envCode: env
+                        envCode: env,
+                        imagePrefix: currentScope.imagePrefix
                     };
 
                     if (currentScope.exposedPort) {
