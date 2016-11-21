@@ -1,8 +1,6 @@
 'use strict';
 var request = require('request');
 var soajs = require('soajs');
-var Mongo = soajs.mongo;
-var mongo = null;
 
 var config = require('./config.js');
 var environment = require('./lib/environment.js');

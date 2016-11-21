@@ -43,6 +43,7 @@
     "formidable": "*",
     "github": "^0.2.4",
     "gridfs-stream": "*",
+    "kubernetes-client": "^2.2.2",
     "mkdirp": "*",
     "ncp": "*",
     "object-hash": "*",

@@ -264,6 +264,78 @@ var deployer = {
 	},
 
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
+		var haServiceParams = {
+			"env": options.context.dockerParams.env,
+			"Name": options.context.dockerParams.env + '_' + options.context.dockerParams.name + '_v' + soajs.inputmaskData.version,
+			"TaskTemplate": {
+				"ContainerSpec": {
+					"Image": soajs.inputmaskData.imagePrefix + '/' + options.config.images.services,
+					"Env": options.context.dockerParams.variables,
+					"Dir": options.config.imagesDir,
+					"Command": [options.context.dockerParams.Cmd[0]],
+					"Args": options.context.dockerParams.Cmd.splice(1)
+				},
+				"Resources": {
+					"Limits": {
+						"MemoryBytes": soajs.inputmaskData.memoryLimit
+					}
+				},
+				"RestartPolicy": {
+					"Condition": "any",
+					"MaxAttempts": 5
+				}
+			},
+			"Mode": {
+				"Replicated": {
+					"Replicas": soajs.inputmaskData.haCount
+				}
+			},
+			"UpdateConfig": {
+				"Delay": 500.0,
+				"Parallelism": 2,
+				"FailureAction": "pause"
+			},
+			"Networks": [{Target: 'soajsnet'}],
+			"Labels": {
+				"soajs.env": options.context.dockerParams.env,
+				"soajs.service": options.context.dockerParams.name,
+				// "soajs.service.group": options.context.dbRecord.group
+			}
+		};
+
+		haServiceParams.TaskTemplate.ContainerSpec.Env.push('SOAJS_DEPLOY_HA=true');
+
+		if (options.context.origin === 'service') {
+			haServiceParams.TaskTemplate.ContainerSpec.Mounts = [
+				{
+					"Type": "bind",
+					"ReadOnly": true,
+					"Source": "/var/run/docker.sock",
+					"Target": "/var/run/docker.sock",
+				}
+			];
+		}
+		else if (options.context.origin === 'nginx') {
+			haServiceParams.EndpointSpec = {
+				"Mode": "vip",
+				"Ports": [
+					{
+						"Protocol": "tcp",
+						"PublishedPort": soajs.inputmaskData.exposedPort || Math.floor((Math.random() * 100) + 81),
+						"TargetPort": 80
+					}
+				]
+			};
+		}
+
+		if (process.env.SOAJS_TEST) {
+			//using lightweight image and commands to optimize travis builds
+			//the purpose of travis builds is to test the dashboard api, not the docker containers
+			options.context.haServiceParams.TaskTemplate.ContainerSpec.Image = 'alpine:latest';
+			options.context.haServiceParams.TaskTemplate.ContainerSpec.Command = ['sh'];
+			options.context.haServiceParams.TaskTemplate.ContainerSpec.Args = ['-c', 'sleep 36000'];
+		}
+
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.createService(options, cb);
