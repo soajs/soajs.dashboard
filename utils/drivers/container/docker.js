@@ -266,7 +266,7 @@ var deployer = {
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
 		var haServiceParams = {
 			"env": options.context.dockerParams.env,
-			"Name": options.context.dockerParams.env + '_' + options.context.dockerParams.name + '_v' + soajs.inputmaskData.version,
+			"Name": options.context.dockerParams.env + '_' + options.context.dockerParams.name,
 			"TaskTemplate": {
 				"ContainerSpec": {
 					"Image": soajs.inputmaskData.imagePrefix + '/' + options.config.images.services,
@@ -299,13 +299,13 @@ var deployer = {
 			"Labels": {
 				"soajs.env": options.context.dockerParams.env,
 				"soajs.service": options.context.dockerParams.name,
-				// "soajs.service.group": options.context.dbRecord.group
 			}
 		};
 
 		haServiceParams.TaskTemplate.ContainerSpec.Env.push('SOAJS_DEPLOY_HA=true');
 
 		if (options.context.origin === 'service') {
+			haServiceParams.Name += '_v' + soajs.inputmaskData.version;
 			haServiceParams.TaskTemplate.ContainerSpec.Mounts = [
 				{
 					"Type": "bind",
@@ -336,7 +336,7 @@ var deployer = {
 			haServiceParams.TaskTemplate.ContainerSpec.Args = ['-c', 'sleep 36000'];
 		}
 
-		soajs.log.debug('Deployer params: ' + haServiceParams);
+		soajs.log.debug('Deployer params: ' + JSON.stringify (haServiceParams));
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.createService(haServiceParams, cb);
