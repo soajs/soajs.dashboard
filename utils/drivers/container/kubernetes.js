@@ -272,57 +272,206 @@ var deployer = {
         //Create deployment
         //TODO: re-implement X
         //TODO: validate
-        lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-            checkError(error, cb, function () {
-                deployer.extensions.namespaces.deployments.post({body: options}, cb);
-            });
-        });
+		var kubernetesServiceParams = {};
+        var serviceName = options.context.dockerParams.env + '-' + options.context.dockerParams.name;
+		if (options.context.origin === 'service') {
+			serviceName += '-v' + soajs.inputmaskData.version;
+		}
+
+		if (options.context.origin === 'nginx') {
+			kubernetesServiceParams = {
+				"apiVersion": "v1",
+		        "kind": "Service",
+		        "metadata": {
+		            "name": serviceName + '-service',
+		            "labels": {
+		                "type": "soajs-service"
+		            }
+		        },
+		        "spec": {
+		            "type": "NodePort",
+		            "selector": {
+		                "soajs-app": serviceName
+		            },
+		            "ports": [
+		                {
+		                    "protocol": "TCP",
+		                    "port": 80,
+		                    "targetPort": 80,
+		                    "nodePort": soajs.inputmaskData.exposedPort
+		                }
+		            ]
+		        }
+			};
+		}
+		else if (options.context.origin === 'controller') {
+			kubernetesServiceParams = {
+				"apiVersion": "v1",
+				"kind": "Service",
+				"metadata": {
+					"name": serviceName + '-service',
+					"labels": {
+						"type": "soajs-service"
+					}
+				},
+				"spec": {
+					"selector": {
+						"soajs-app": serviceName
+					},
+					"ports": [
+						{
+							"protocol": "TCP",
+							"port": 4000,
+							"targetPort": 4000
+						}
+					]
+				}
+			};
+		}
+
+        var haDeploymentParams = {
+            "apiVersion": "extensions/v1beta1",
+            "kind": "Deployment",
+            "metadata": {
+                "name": serviceName,
+                "labels": {
+                    "soajs.service": options.context.dockerParams.name,
+                    "soajs.env": options.context.dockerParams.env
+                }
+            },
+            "spec": {
+                "replicas": soajs.inputmaskData.haCount,
+                "selector": {
+                    "matchLabels": {
+                        "soajs-app": serviceName,
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "name": serviceName,
+                        "labels": {
+                            "soajs-app": serviceName
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": serviceName,
+                                "image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service') ? options.config.images.services : options.config.images.nginx),
+                                "workingDir": options.config.imagesDir,
+                                "command": [options.context.dockerParams.Cmd[0]],
+                                "args": options.context.dockerParams.Cmd.splice(1),
+                                "env": buildEnvVariables()
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+
+		if (process.env.SOAJS_TEST) {
+			//using lightweight image and commands to optimize travis builds
+			//the purpose of travis builds is to test the dashboard api, not the docker containers
+			haDeploymentParams.spec.template.spec.containers[0].image = 'alpine:latest';
+			haDeploymentParams.spec.template.spec.containers[0].command = ['sh'];
+			haDeploymentParams.spec.template.spec.containers[0].args = ['-c', 'sleep 36000'];
+		}
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+				if (Object.keys(kubernetesServiceParams).length > 0) {
+					deployer.core.namespaces.services.post({body: kubernetesServiceParams}, function (error) {
+						checkError(error, cb, function () {
+							deploy();
+						});
+					});
+				}
+				else {
+					deploy();
+				}
+			});
+		});
+
+
+		function deploy() {
+			soajs.log.debug('Deployer params: ' + JSON.stringify (haDeploymentParams));
+	        deployer.extensions.namespaces.deployments.post({body: haDeploymentParams}, cb);
+		}
+
+		function buildEnvVariables () {
+			var envs = [];
+			options.context.dockerParams.variables.forEach(function (oneEnvVar) {
+				envs.push({
+					name: oneEnvVar.split('=')[0],
+					value: oneEnvVar.split('=')[1]
+				});
+			});
+			envs.push({ "name": "SOAJS_DEPLOY_KUBE", "value": "true" });
+			envs.push({
+				"name": "SOAJS_KUBE_POD_IP",
+				"valueFrom": {
+					"fieldRef": {
+						"fieldPath": "status.podIP"
+					}
+				}
+			});
+			envs.push({
+				"name": "SOAJS_KUBE_POD_NAME",
+				"valueFrom": {
+					"fieldRef": {
+						"fieldPath": "metadata.name"
+					}
+				}
+			});
+
+			return envs;
+		}
 	},
 
 	"scaleHAService": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		var service = deployer.getService(options.serviceName);
-		// 		service.inspect(function (error, serviceInfo) {
-		// 			checkError(error, cb, function () {
-		// 				//docker api does not support updating a service using its name
-		// 				service = deployer.getService(serviceInfo.ID);
-        //
-		// 				var update = serviceInfo.Spec;
-		// 				update.version = serviceInfo.Version.Index;
-		// 				update.Mode.Replicated.Replicas = options.scale;
-		// 				service.update(update, cb);
-		// 			});
-		// 		});
-		// 	});
-		// });
+        //TODO: re-implement X
+		//TODO: validate
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+				var scale = {
+					kind: 'Scale',
+					apiVersion: 'v1beta1',
+					spec: {
+						replicas: options.scale
+					}
+				};
+				deployer.extensions.namespaces.deployments.scale.put({name: options.serviceName, body: scale}, cb);
+			});
+		});
 	},
 
 	"inspectHAService": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		var output = {}, params = {};
-		// 		var service = deployer.getService(options.serviceName);
-		// 		service.inspect(function (error, serviceInfo) {
-		// 			checkError(error, cb, function () {
-		// 				output.service = serviceInfo;
-        //
-		// 				params.filters = {service: [options.serviceName]};
-		// 				deployer.listTasks(params, function (error, serviceTasks) {
-		// 					checkError(error, cb, function () {
-		// 						output.tasks = serviceTasks;
-		// 						return cb(null, output);
-		// 					});
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// });
+        //TODO: re-implement X
+		//TODO: only get pods of selected deployment
+		//TODO: validate
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+				var output = {};
+				deployer.extensions.namespaces.deployments.get(options.serviceName, function (error, deployment) {
+					checkError(error, cb, function () {
+						output.service = deployment;
+
+						deployer.core.namespaces.pods.get({}, function (error, pods) {
+							checkError(error, cb, function () {
+								output.tasks = pods.items;
+								return cb(null, output);
+							});
+						});
+					});
+				});
+			});
+		});
 	},
 
 	"inspectHATask": function (soajs, deployerConfig, options, model, cb) {
+		//Inspect pod
         //TODO: re-implement
 		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 		// 	checkError(error, cb, function () {
