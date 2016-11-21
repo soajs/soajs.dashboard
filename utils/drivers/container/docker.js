@@ -331,14 +331,15 @@ var deployer = {
 		if (process.env.SOAJS_TEST) {
 			//using lightweight image and commands to optimize travis builds
 			//the purpose of travis builds is to test the dashboard api, not the docker containers
-			options.context.haServiceParams.TaskTemplate.ContainerSpec.Image = 'alpine:latest';
-			options.context.haServiceParams.TaskTemplate.ContainerSpec.Command = ['sh'];
-			options.context.haServiceParams.TaskTemplate.ContainerSpec.Args = ['-c', 'sleep 36000'];
+			haServiceParams.TaskTemplate.ContainerSpec.Image = 'alpine:latest';
+			haServiceParams.TaskTemplate.ContainerSpec.Command = ['sh'];
+			haServiceParams.TaskTemplate.ContainerSpec.Args = ['-c', 'sleep 36000'];
 		}
 
+		soajs.log.debug('Deployer params: ' + haServiceParams);
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
-				deployer.createService(options, cb);
+				deployer.createService(haServiceParams, cb);
 			});
 		});
 	},
