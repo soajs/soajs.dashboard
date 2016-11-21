@@ -269,7 +269,7 @@ var deployer = {
 			"Name": options.context.dockerParams.env + '_' + options.context.dockerParams.name,
 			"TaskTemplate": {
 				"ContainerSpec": {
-					"Image": soajs.inputmaskData.imagePrefix + '/' + options.config.images.services,
+					"Image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service') ? options.config.images.services : options.config.images.nginx),
 					"Env": options.context.dockerParams.variables,
 					"Dir": options.config.imagesDir,
 					"Command": [options.context.dockerParams.Cmd[0]],
