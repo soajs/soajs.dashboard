@@ -50,7 +50,7 @@
     "request": "*",
     "rimraf": "*",
     "shortid": "^2.2.4",
-    "soajs": "soajs/soajs.git#feature/kubeDeploy",
+    "soajs": "0.3.*",
     "unzip2": "*"
   }
 }
