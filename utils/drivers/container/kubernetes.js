@@ -17,7 +17,7 @@ function checkError(error, cb, fCb) {
 	return fCb();
 }
 
-function getDockerCerts(certs, gfs, db, cb) {
+function getCerts(certs, gfs, db, cb) {
 	var certBuffers = {};
 	async.each(certs, function (oneCert, callback) {
 		var gs = new gfs.mongo.GridStore(db, oneCert._id, 'r', { //TODO: update to support model injection
@@ -48,121 +48,98 @@ function getDockerCerts(certs, gfs, db, cb) {
 
 var lib = {
 	"getDeployer": function (soajs, deployerConfig, model, cb) {
-        //TODO: re-implement
-		/**
-		 Three options:
-		 - local: use socket port
-		 - remote: get fastest manager node and use it
-		 - remote and target: get deployer for target node
-		 */
-		// var config = utils.cloneObj(deployerConfig);
-		// var docker;
-        //
-		// if (config.socketPath) {
-		// 	docker = new Docker({socketPath: config.socketPath});
-		// 	return cb(null, docker);
-		// }
-        //
-		// getClusterCertificates(config, function (error, certs) {
-		// 	checkError(error, cb, function () {
-        //
-		// 		if (config.flags && (config.flags.newNode || config.flags.targetNode)) {
-		// 			getTargetNode(config, function (error, target) {
-		// 				checkError(error, cb, function () {
-		// 					var dockerConfig = buildDockerConfig(target.host, target.port, certs);
-		// 					docker = new Docker(dockerConfig);
-		// 					return cb(null, docker);
-		// 				});
-		// 			});
-		// 		}
-		// 		else {
-		// 			return getManagerNodeDeployer(config, certs, cb);
-		// 		}
-		// 	});
-		// });
-        //
-        //
-		// function getTargetNode(config, callback) {
-		// 	if (!config.host || !config.port) {
-		// 		return callback({message: 'Missing host/port info'});
-		// 	}
-		// 	return callback(null, {host: config.host, port: config.port});
-		// }
-        //
-		// function getManagerNodeDeployer(config, certs, cb) {
-		// 	if (!config.nodes || config.nodes.length === 0) {
-		// 		return cb({message: 'No manager nodes found in this environment\'s deployer'});
-		// 	}
-        //
-		// 	var opts = {
-		// 		collection: dockerColl,
-		// 		conditions: { recordType: 'node', role: 'manager' }
-		// 	};
-        //
-		// 	model.findEntries(soajs, opts, function (error, managerNodes) {
-		// 		checkError(error, cb, function () {
-		// 			async.detect(managerNodes, function (oneNode, callback) {
-		// 				var dockerConfig = buildDockerConfig(oneNode.ip, oneNode.dockerPort, certs);
-		// 				var docker = new Docker(dockerConfig);
-		// 				docker.ping(function (error, response) {
-		// 					//error is insignificant in this case
-		// 					return callback(response);
-		// 				});
-		// 			}, function (fastestNodeRecord) {
-		// 				if (!fastestNodeRecord) {
-		// 					return cb({'message': 'ERROR: unable to connect to a manager node'});
-		// 				}
-		// 				var dockerConfig = buildDockerConfig(fastestNodeRecord.ip, fastestNodeRecord.dockerPort, certs);
-		// 				var docker = new Docker(dockerConfig);
-		// 				return cb(null, docker);
-		// 			});
-		// 		});
-		// 	});
-		// }
-        //
-		// function buildDockerConfig(host, port, certs) {
-		// 	var dockerConfig = {
-		// 		host: host,
-		// 		port: port
-		// 	};
-        //
-		// 	var certKeys = Object.keys(certs);
-		// 	certKeys.forEach(function (oneCertKey) {
-		// 		dockerConfig[oneCertKey] = certs[oneCertKey];
-		// 	});
-        //
-		// 	return dockerConfig;
-		// }
-        //
-		// function getClusterCertificates(config, callback) {
-		// 	if (!config.envCode) {
-		// 		return callback({message: 'Missing environment code'});
-		// 	}
-        //
-		// 	var opts = {
-		// 		collection: gridfsColl,
-		// 		conditions: {}
-		// 	};
-		// 	opts.conditions['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
-		// 	model.findEntries(soajs, opts, function (error, certs) {
-		// 		checkError(error, callback, function () {
-		// 			if (!certs || (certs && certs.length === 0)) {
-		// 				return callback({
-		// 					code: 741,
-		// 					message: 'No certificates for ' + config.envCode + ' environment found'
-		// 				});
-		// 			}
-        //
-		// 			model.getDb(soajs).getMongoSkinDB(function (error, db) {
-		// 				checkError(error, callback, function () {
-		// 					var gfs = Grid(db, model.getDb(soajs).mongoSkin);
-		// 					var counter = 0;
-		// 					return getDockerCerts(certs, gfs, db, callback);
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// }
+        //TODO: re-implement X
+		//TODO: validate
+
+		var config = utils.cloneObj(deployerConfig);
+		var kubernetes = {};
+
+		getClusterCertificates(config, function (error, certs) {
+			checkError(error, cb, function () {
+				getManagerNodeDeployer(config, certs, cb);
+			});
+		});
+
+		function getManagerNodeDeployer(config, certs, cb) {
+			if (!config.nodes || config.nodes.length === 0) {
+				return cb({message: 'No manager nodes found in this environment\'s deployer'});
+			}
+
+			var opts = {
+				collection: dockerColl,
+				conditions: { recordType: 'node', role: 'manager' }
+			};
+
+			model.findEntries(soajs, opts, function (error, managerNodes) {
+				checkError(error, cb, function () {
+					async.detect(managerNodes, function (oneNode, callback) {
+						var kubeConfig = buildKubeConfig(oneNode.ip, oneNode.kubePort, certs);
+						kubeConfig.version = 'v1';
+						var kubernetes = new K8Api.Core(kubeConfig);
+						kubernetes.namespaces.get({}, function (error, response) {
+							//error is insignificant in this case
+							return callback(response);
+						});
+					}, function (fastestNodeRecord) {
+						if (!fastestNodeRecord) {
+							return cb({'message': 'ERROR: unable to connect to a manager node'});
+						}
+						var kubeConfig = buildKubeConfig(fastestNodeRecord.ip, fastestNodeRecord.kubePort, certs);
+						var kubernetes = {};
+						kubeConfig.version = 'v1';
+						kubernetes.core = new K8Api.Core(kubeConfig);
+						kubeConfig.version = 'v1beta1';
+						kubernetes.extensions = new K8Api.Extensions(kubeConfig);
+
+						return cb(null, kubernetes);
+					});
+				});
+			});
+		}
+
+		function buildKubeConfig(host, port, certs) {
+			var kubeConfig = {
+				url: host,
+				port: port
+			};
+
+			var certKeys = Object.keys(certs);
+			certKeys.forEach(function (oneCertKey) {
+				kubeConfig[oneCertKey] = certs[oneCertKey];
+			});
+
+			return kubeConfig;
+		}
+
+		function getClusterCertificates(config, callback) {
+			if (!config.envCode) {
+				return callback({message: 'Missing environment code'});
+			}
+
+			var opts = {
+				collection: gridfsColl,
+				conditions: {}
+			};
+			opts.conditions['metadata.env.' + config.envCode.toUpperCase()] = config.selectedDriver;
+			model.findEntries(soajs, opts, function (error, certs) {
+				checkError(error, callback, function () {
+					if (!certs || (certs && certs.length === 0)) {
+						return callback({
+							code: 741,
+							message: 'No certificates for ' + config.envCode + ' environment found'
+						});
+					}
+
+					model.getDb(soajs).getMongoSkinDB(function (error, db) {
+						checkError(error, callback, function () {
+							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
+							var counter = 0;
+							return getCerts(certs, gfs, db, callback);
+						});
+					});
+				});
+			});
+		}
 	}
 };
 
