@@ -4,6 +4,10 @@
  * Custom configuration values
  */
 var mydomain = "soajs.org";
+var mydomainport = location.port;
+if(mydomainport !== 80){
+	mydomain += ":" + mydomainport;
+}
 var protocol = window.location.protocol;
 var themeToUse = "default";
 var whitelistedDomain = ['localhost', '127.0.0.1', 'dashboard-api.' + mydomain];
