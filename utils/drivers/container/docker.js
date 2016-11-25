@@ -444,56 +444,99 @@ var deployer = {
 	},
 
 	"getContainerLogs": function (soajs, deployerConfig, options, model, res) {
-		var opts = {
-			collection: dockerColl,
-			conditions: { recordType: 'node', id: options.nodeId }
-		};
-		model.findEntry(soajs, opts, function (error, nodeInfo) {
-			if (error || !nodeInfo) {
-				error = ((error) ? error : {message: 'Node record not found'});
+		deployer.inspectHATask(soajs, deployerConfig, {taskName: options.taskName}, model, function (error, taskInfo) {
+			if (error) {
 				soajs.log.error(error);
-				return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
+				return res.jsonp(soajs.buildResponse({code: 811, msg: error.message}));
 			}
 
-			deployerConfig.host = nodeInfo.ip;
-			deployerConfig.port = nodeInfo.dockerPort;
-			deployerConfig.flags = {targetNode: true};
-			lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-				if (error) {
+			var containerId = taskInfo.Status.ContainerStatus.ContainerID;
+			var opts = {
+				collection: dockerColl,
+				conditions: { recordType: 'node', id: taskInfo.NodeID }
+			};
+			model.findEntry(soajs, opts, function (error, nodeInfo) {
+				if (error || !nodeInfo) {
+					error = ((error) ? error : {message: 'Node record not found'});
 					soajs.log.error(error);
 					return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
 				}
-				var container = deployer.getContainer(options.containerId);
-				var logOptions = {
-					stdout: true,
-					stderr: true,
-					tail: 400
-				};
 
-				container.logs(logOptions, function (error, logStream) {
+				deployerConfig.host = nodeInfo.ip;
+				deployerConfig.port = nodeInfo.dockerPort;
+				deployerConfig.flags = {targetNode: true};
+				lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 					if (error) {
 						soajs.log.error(error);
 						return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
 					}
+					var container = deployer.getContainer(containerId);
+					var logOptions = {
+						stdout: true,
+						stderr: true,
+						tail: 400
+					};
 
-					var data = '';
-					var chunk;
-					logStream.setEncoding('utf8');
-					logStream.on('readable', function () {
-						var handle = this;
-						while ((chunk = handle.read()) !== null) {
-							data += chunk.toString("utf8");
+					container.logs(logOptions, function (error, logStream) {
+						if (error) {
+							soajs.log.error(error);
+							return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
 						}
-					});
 
-					logStream.on('end', function () {
-						logStream.destroy();
-						var out = soajs.buildResponse(null, {'data': data});
-						return res.json(out);
+						var data = '';
+						var chunk;
+						logStream.setEncoding('utf8');
+						logStream.on('readable', function () {
+							var handle = this;
+							while ((chunk = handle.read()) !== null) {
+								data += chunk.toString("utf8");
+							}
+						});
+
+						logStream.on('end', function () {
+							logStream.destroy();
+							var out = soajs.buildResponse(null, {'data': data});
+							return res.json(out);
+						});
 					});
 				});
 			});
 		});
+	},
+
+	"buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
+		async.map(options.serviceInfo.tasks, function (oneInstance, callback) {
+			var info = {
+				nodeId: oneInstance.NodeID,
+				containerId: oneInstance.Status.ContainerStatus.ContainerID
+			};
+			//TODO: inspect container might no longer be needed
+			deployer.inspectContainer(soajs, deployerConfig, info, model, function (error, containerInfo) {
+				if (error) {
+					return callback(error);
+				}
+
+				var newRecord = {
+					type: options.serviceType,
+					env: soajs.inputmaskData.envCode.toLowerCase(),
+					running: true,
+					recordType: 'container',
+					deployer: deployerConfig,
+					taskName: containerInfo.Config.Labels['com.docker.swarm.task.name'],
+					serviceName: containerInfo.Config.Labels['com.docker.swarm.service.name']
+				};
+
+				//cleaning dots from field names to avoid mongo error
+				var labels = Object.keys(containerInfo.Config.Labels);
+				labels.forEach(function (oneLabel) {
+					containerInfo.Config.Labels[oneLabel.replace(/\./g, '-')] = containerInfo.Config.Labels[oneLabel];
+					delete containerInfo.Config.Labels[oneLabel];
+				});
+				newRecord.info = containerInfo;
+
+				return callback(null, newRecord);
+			});
+		}, cb);
 	}
 };
 

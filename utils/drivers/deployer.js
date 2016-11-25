@@ -55,6 +55,11 @@ var deployer = {
     "getContainerLogs": function (soajs, deployerConfig, options, model, res) {
         var deployer = getDeployer(deployerConfig);
         deployer.getContainerLogs(soajs, deployerConfig, options, model, res);
+    },
+
+    "buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.buildContainerRecords(soajs, deployerConfig, options, model, cb);
     }
 };
 
