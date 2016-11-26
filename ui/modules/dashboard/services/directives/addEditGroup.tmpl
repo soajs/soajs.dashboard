@@ -15,9 +15,39 @@
                 <label>{{translation.daemon[LANG]}}</label>
                 <select class="form-control" ng-required="true" ng-options="daemon as daemon.name for daemon in outerScope.grid.rows" ng-model="daemon" ng-change="selectDaemon(daemon)"></select>
                 <br>
-                <label>{{translation.interval[LANG]}}</label>
-                <input type="number" class="form-control" ng-model="postData.interval" ng-required="true" placeholder="{{translation.timeMilliseconds[LANG]}}"/>
-                <label class="fieldMsg">{{translation.timeBetweenJobsAfterPreviousJob[LANG]}}.</label>
+	            <label>{{translation.type[LANG]}}</label>
+	            <select class="form-control" name="type" id="type" ng-required="true" ng-model="postData.type" ng-change="updateTimeSettings();">
+		            <option value="interval">Interval</option>
+		            <option value="cron">Cron</option>
+		            <option value="once">Run Once</option>
+	            </select>
+	            <label class="fieldMsg">{{translation.typeMsg[LANG]}}</label>
+	            <br>
+	
+	            <div ng-show="postData.type ==='once'">
+		            <label>{{translation.once[LANG]}}</label>
+		            <input type="text" class="form-control" ng-model="postData.cronTimeDate" ng-required="false" placeholder="January 1, 2015"/>
+		            <label class="fieldMsg">{{translation.onceMsg[LANG]}} <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank">https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date</a></label>
+		            <br>
+	            </div>
+	            <div ng-show="postData.type ==='cron'">
+		            <label>{{translation.cron[LANG]}}</label>
+		            <input type="text" class="form-control" ng-model="postData.cronTime" ng-required="false" placeholder="* * * * * 1-5"/>
+		            <label class="fieldMsg">{{translation.cronMsg[LANG]}} <a href="https://en.wikipedia.org/wiki/Cron" target="_blank">https://en.wikipedia.org/wiki/Cron</a><br ></label>
+		            <br>
+	            </div>
+	            <div ng-show="postData.type !=='interval'">
+		            <label>{{translation.timezone[LANG]}}</label>
+		            <input type="text" class="form-control" ng-model="postData.timeZone" ng-required="false" placeholder="America/Los_Angeles"/>
+		            <label class="fieldMsg">{{translation.timezoneMsg[LANG]}} <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank">https://en.wikipedia.org/wiki/List_of_tz_database_time_zones</a></label>
+		            <br>
+	            </div>
+	            
+	            <div ng-show="postData.type ==='interval'">
+		            <label>{{translation.interval[LANG]}}</label>
+	                <input type="number" class="form-control" ng-model="postData.interval" ng-required="false" placeholder="{{translation.timeMilliseconds[LANG]}}"/>
+	                <label class="fieldMsg">{{translation.timeBetweenJobsAfterPreviousJob[LANG]}}.</label>
+	            </div>
                 <br>
                 <label>{{translation.status[LANG]}}:&nbsp;&nbsp;</label>
                 <input type="radio" value="1" ng-model="postData.status" ng-required="true">&nbsp;{{translation.active[LANG]}}&nbsp;

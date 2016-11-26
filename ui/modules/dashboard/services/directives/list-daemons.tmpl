@@ -43,7 +43,16 @@
                         <a href="" ng-click="showHide(grpConf)"  ng-if="!grpConf.hide" class="icon icon-{{grpConf.icon || 'minus'}} margin-left-10"></a>
                         {{grpConf.daemonConfigGroup|uppercase}}&nbsp;&nbsp;[ {{grpConf.status|statusDisplay}} ]
                         <span><b>{{translation.soloRun[LANG]}}:</b> {{grpConf.solo}}</span>
-                        <span><b>{{translation.interval[LANG]}}:</b> {{grpConf.interval|timeInMillisConverter}}</span>
+	                    <div ng-if="grpConf.interval">
+		                    <span><b>{{translation.interval[LANG]}}:</b> {{grpConf.interval|timeInMillisConverter}}</span>
+	                    </div>
+	                    <div ng-if="grpConf.type ==='once'">
+		                    <span><b>{{translation.once[LANG]}}:</b> {{grpConf.cronConfig.cronTimeDate|date}}</span>
+	                    </div>
+	                    <div ng-if="grpConf.type ==='cron'">
+		                    <span><b>{{translation.cron[LANG]}}:</b> {{grpConf.cronConfig.cronTime|date}}</span>
+	                    </div>
+                        
                         <span><b>{{translation.daemon[LANG]}}:</b> {{grpConf.daemon}}</span>
                     </div>
                     <div class="body" ng-show="!grpConf.hide">

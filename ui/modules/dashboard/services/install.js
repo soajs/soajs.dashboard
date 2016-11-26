@@ -208,6 +208,38 @@ var srTranslation = {
 		"ENG": "Interval",
 		"FRA": "Interval"
 	},
+	"type": {
+		"ENG": "Type",
+		"FRA": "Type"
+	},
+	"typeMsg":{
+		"ENG": "Choose if you want the daemon to behave as a cron daemon or wait for a specific time interval between jobs.",
+		"FRA": "Choose if you want the daemon to behave as a cron daemon or wait for a specific time interval between jobs."
+	},
+	"cron": {
+		"ENG": "Cron",
+		"FRA": "Cron"
+	},
+	"cronMsg": {
+		"ENG": "If you want the daemon to periodically run on a specific date/time then provide a time configuration. Reference:",
+		"FRA": "If you want the daemon to periodically run on a specific date/time then provide a time configuration. Reference:"
+	},
+	"once": {
+		"ENG": "Run Once on",
+		"FRA": "Run Once on"
+	},
+	"onceMsg": {
+		"ENG": "Provide a Date value for javascript Date. Reference:",
+		"FRA": "Provide a Date value for javascript Date. Reference:"
+	},
+	"timezone": {
+		"ENG": "Timezone",
+		"FRA": "Timezone"
+	},
+	"timezoneMsg": {
+		"ENG": "Provide the time zone value for cron demon. Reference: ( TZ column )",
+		"FRA": "Provide the time zone value for cron demon. Reference: ( TZ column )"
+	},
 	"timeMilliseconds": {
 		"ENG": "Time in Milliseconds",
 		"FRA": "Time in Milliseconds"
