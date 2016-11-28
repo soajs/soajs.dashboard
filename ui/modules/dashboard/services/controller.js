@@ -536,6 +536,17 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 
 				$scope.postData.groupName = grpConf.daemonConfigGroup;
 				$scope.postData.interval = grpConf.interval;
+				$scope.postData.type = grpConf.type;
+				
+				if(grpConf.cronConfig){
+					if(grpConf.cronConfig.cronTimeDate){
+						$scope.postData.cronTimeDate = grpConf.cronConfig.cronTimeDate;
+					}
+					else{
+						$scope.postData.cronTime = grpConf.cronConfig.cronTime;
+					}
+					$scope.postData.timeZone = grpConf.cronConfig.timeZone;
+				}
 				$scope.postData.status = grpConf.status.toString();
 				$scope.postData.processing = grpConf.processing;
 

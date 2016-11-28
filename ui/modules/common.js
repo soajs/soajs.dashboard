@@ -82,10 +82,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	if (options.headers) {
 		for (var i in options.headers) {
 			if (options.headers.hasOwnProperty(i)) {
-				if(options.headers[i] === null){
+				if (options.headers[i] === null) {
 					delete apiOptions.headers[i];
 				}
-				else{
+				else {
 					apiOptions.headers[i] = options.headers[i];
 				}
 			}
@@ -104,6 +104,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	var options = angular.copy(opts);
 	var fieldName = (opts.override && opts.override.fieldName) ? options.override.fieldName : "_id";
 	var token = (opts.override && opts.override.fieldName) ? "%" + options.override.fieldName + "%" : "%id%";
+	var baseRoute = options.routeName;
 	var method = options.method || 'get';
 	var grid = $scope.grid;
 	if (opts.grid) {
@@ -114,7 +115,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			referenceKeys.push(grid.rows[i][fieldName]);
 		}
 	}
-	
+
 	performUpdate(referenceKeys, 0, function () {
 		if (err > 0) {
 			$scope.$parent.displayAlert('danger', opts.msg.error);
@@ -128,35 +129,44 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 	});
 	
 	function performUpdate(referenceKeys, counter, cb) {
-		if (opts.params) {
-			for (var i in opts.params) {
-				if (opts.params[i] === token) {
-					options.params[i] = referenceKeys[counter];
-					if (opts.override && opts.override.fieldReshape) {
-						options.params[i] = opts.override.fieldReshape(opts.params[i]);
+		var oneRoute = angular.copy(baseRoute);
+		var oneValue = referenceKeys[counter];
+		if (opts.routeParam) {
+			oneRoute = oneRoute.replace(token, oneValue);
+		}
+		else {
+			if (opts.params) {
+				for (var i in opts.params) {
+					if (opts.params[i] === token) {
+						options.params[i] = referenceKeys[counter];
+						if (opts.override && opts.override.fieldReshape) {
+							options.params[i] = opts.override.fieldReshape(opts.params[i]);
+						}
+					}
+				}
+			}
+
+			if (opts.data) {
+				for (var i in opts.data) {
+					if (opts.data[i] === token) {
+						options.data[i] = referenceKeys[counter];
+						if (opts.override && opts.override.fieldReshape) {
+							options.data[i] = opts.override.fieldReshape(opts.data[i]);
+						}
 					}
 				}
 			}
 		}
-		
-		if (opts.data) {
-			for (var i in opts.data) {
-				if (opts.data[i] === token) {
-					options.data[i] = referenceKeys[counter];
-					if (opts.override && opts.override.fieldReshape) {
-						options.data[i] = opts.override.fieldReshape(opts.data[i]);
-					}
-				}
-			}
-		}
-		getSendDataFromServer($scope, ngDataApi, {
+
+		var sendOptions = {
 			"method": method,
 			"headers": options.headers,
-			"routeName": options.routeName,
+			"routeName": oneRoute,
 			"params": options.params,
 			"data": options.data,
 			"url": options.url
-		}, function (error, response) {
+		};
+		getSendDataFromServer($scope, ngDataApi, sendOptions, function (error, response) {
 			if (error || !response) {
 				err++;
 			}

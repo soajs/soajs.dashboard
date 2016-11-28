@@ -374,11 +374,33 @@ module.exports = {
 			},
 			'interval': {
 				'source': ['body.interval'],
-				'required': true,
+				'required': false,
 				'validation': {
 					'type': 'number'
 				}
 			},
+			'cronTime': {
+				'source': ['body.cronTime'],
+				'required': false,
+				'validation': {
+					'type': 'text'
+				}
+			},
+			'timeZone': {
+				'source': ['body.timeZone'],
+				'required': false,
+				'validation': {
+					'type': 'text'
+				}
+			},
+			'cronTimeDate': {
+				'source': ['body.cronTimeDate'],
+				'required': false,
+				'validation': {
+					'type': 'text'
+				}
+			},
+			
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -1572,14 +1594,30 @@ module.exports = {
 				"l": "Add Daemon Group Configuration",
 				"group": "Daemons"
 			},
-			'commonFields': ['groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
+			'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+			'type':{
+				"required": true,
+				"source": ["body.type"],
+				"validation":{
+					"type": "string",
+					"enum": ["interval", "cron", "once"]
+				}
+			}
 		},
 		"/daemons/groupConfig/update": {
 			_apiInfo: {
 				"l": "Update Daemon Group Configuration",
 				"group": "Daemons"
 			},
-			'commonFields': ['id', 'groupName', 'daemon', 'interval', 'status', 'processing', 'jobs', 'order', 'solo']
+			'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+			'type':{
+				"required": true,
+				"source": ["body.type"],
+				"validation":{
+					"type": "string",
+					"enum": ["interval", "cron", "once"]
+				}
+			}
 		},
 		"/daemons/groupConfig/delete": {
 			_apiInfo: {
