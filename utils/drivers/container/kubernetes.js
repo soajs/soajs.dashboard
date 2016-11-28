@@ -146,6 +146,22 @@ var deployer = {
 
 	"addNode": function (soajs, deployerConfig, options, model, cb) {
         //TODO: re-implement
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+
+				var nodeParams = {
+					body: {
+						kind: 'Node',
+						apiVersion: 'v1',
+						spec: {
+
+						}
+					}
+				};
+				deployer.core.namespaces.nodes.post(nodeParams, cb);
+			});
+		});
 		// deployerConfig.flags = {
 		// 	newNode: true
 		// };
@@ -191,6 +207,12 @@ var deployer = {
 
 	"removeNode": function (soajs, deployerConfig, options, model, cb, backgroundCB) {
         //TODO: re-implement
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+				deployer.core.namespaces.nodes.delete({name: options.id}, cb);
+			});
+		});
 		/*
 		 - get deployer for target node
 		 - leave swarm
@@ -347,7 +369,7 @@ var deployer = {
 
 		if (process.env.SOAJS_TEST) {
 			//using lightweight image and commands to optimize travis builds
-			//the purpose of travis builds is to test the dashboard api, not the docker containers
+			//the purpose of travis builds is to test the dashboard api, not the containers
 			haDeploymentParams.spec.template.spec.containers[0].image = 'alpine:latest';
 			haDeploymentParams.spec.template.spec.containers[0].command = ['sh'];
 			haDeploymentParams.spec.template.spec.containers[0].args = ['-c', 'sleep 36000'];
@@ -424,7 +446,7 @@ var deployer = {
 
 	"inspectHAService": function (soajs, deployerConfig, options, model, cb) {
         //TODO: re-implement X
-		//TODO: only get pods of selected deployment
+		//TODO: only get pods of selected deployment X
 		//TODO: validate
 
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
@@ -434,7 +456,7 @@ var deployer = {
 					checkError(error, cb, function () {
 						output.service = deployment;
 
-						deployer.core.namespaces.pods.get({}, function (error, pods) {
+						deployer.core.namespaces.pods.get({qs: {labelSelector: 'soajs-app=' + options.serviceName}}, function (error, pods) {
 							checkError(error, cb, function () {
 								output.tasks = pods.items;
 								return cb(null, output);
@@ -470,33 +492,7 @@ var deployer = {
 	},
 
 	"inspectHATask": function (soajs, deployerConfig, options, model, cb) {
-		//Inspect pod
-        //TODO: re-implement
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		var serviceName = options.taskName.split('.')[0];
-		// 		var taskNumber = options.taskName.split('.')[1];
-		// 		var params = {
-		// 			filters: {
-		// 				service: [serviceName]
-		// 			}
-		// 		};
-        //
-		// 		deployer.listTasks(params, function (error, taskRecords) {
-		// 			checkError(error || taskRecords.length === 0, cb, function () {
-		// 				var found;
-		// 				for (var i = 0; i < taskRecords.length; i++) {
-		// 					if (taskRecords[i].Slot == taskNumber) {
-		// 						found = taskRecords[i];
-		// 						break;
-		// 					}
-		// 				}
-        //
-		// 				return ((found) ? cb(null, found) : cb());
-		// 			});
-		// 		});
-		// 	});
-		// });
+        //TODO: Remove
 	},
 
 	"deleteHAService": function (soajs, deployerConfig, options, model, cb) {
@@ -508,89 +504,67 @@ var deployer = {
                 deployer.extensions.namespaces.deployments.delete({name: options.serviceName}, cb);
             });
         });
-
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		var serviceId = options.serviceName;
-		// 		var service = deployer.getService(serviceId);
-		// 		service.remove(cb);
-		// 	});
-		// });
 	},
 
 	"inspectContainer": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement
-		// var opts = {
-		// 	collection: dockerColl,
-		// 	conditions: { recordType: 'node', id: options.nodeId }
-		// };
-		// model.findEntry(soajs, opts, function (error, nodeInfo) {
-		// 	checkError(error || !nodeInfo, cb, function () {
-		// 		deployerConfig.host = nodeInfo.ip;
-		// 		deployerConfig.port = nodeInfo.dockerPort;
-		// 		deployerConfig.flags = {targetNode: true};
-		// 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 			checkError(error, cb, function () {
-		// 				var container = deployer.getContainer(options.containerId);
-		// 				container.inspect(cb);
-		// 			});
-		// 		});
-		// 	});
-		// });
+        //TODO: Remove
 	},
 
 	"getContainerLogs": function (soajs, deployerConfig, options, model, res) {
-        //TODO: re-implement
-		// var opts = {
-		// 	collection: dockerColl,
-		// 	conditions: { recordType: 'node', id: options.nodeId }
-		// };
-		// model.findEntry(soajs, opts, function (error, nodeInfo) {
-		// 	if (error || !nodeInfo) {
-		// 		error = ((error) ? error : {message: 'Node record not found'});
-		// 		soajs.log.error(error);
-		// 		return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
-		// 	}
-        //
-		// 	deployerConfig.host = nodeInfo.ip;
-		// 	deployerConfig.port = nodeInfo.dockerPort;
-		// 	deployerConfig.flags = {targetNode: true};
-		// 	lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 		if (error) {
-		// 			soajs.log.error(error);
-		// 			return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
-		// 		}
-		// 		var container = deployer.getContainer(options.containerId);
-		// 		var logOptions = {
-		// 			stdout: true,
-		// 			stderr: true,
-		// 			tail: 400
-		// 		};
-        //
-		// 		container.logs(logOptions, function (error, logStream) {
-		// 			if (error) {
-		// 				soajs.log.error(error);
-		// 				return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
-		// 			}
-        //
-		// 			var data = '';
-		// 			var chunk;
-		// 			logStream.setEncoding('utf8');
-		// 			logStream.on('readable', function () {
-		// 				var handle = this;
-		// 				while ((chunk = handle.read()) !== null) {
-		// 					data += chunk.toString("utf8");
-		// 				}
-		// 			});
-        //
-		// 			logStream.on('end', function () {
-		// 				logStream.destroy();
-		// 				var out = soajs.buildResponse(null, {'data': data});
-		// 				return res.json(out);
-		// 			});
-		// 		});
-		// 	});
-		// });
+		//TODO: re-implement X
+		//TODO: validate
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			if (error) {
+				soajs.log.error(error);
+				return res.jsonp(soajs.buildResponse({code: 774, message: error.message}));
+			}
+
+			var params = {
+				name: options.taskName, //pod name
+				qs: {
+					tailLines: 400
+				}
+			};
+
+			deployer.core.namespaces.pods.get(params, function (error, logStream) {
+				if (error) {
+					soajs.log.error(error);
+					return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
+				}
+
+				var data = '';
+				var chunk;
+				logStream.setEncoding('utf8');
+				logStream.on('readable', function () {
+					var handle = this;
+					while ((chunk = handle.read()) !== null) {
+						data += chunk.toString("utf8");
+					}
+				});
+
+				logStream.on('end', function () {
+					logStream.destroy();
+					var out = soajs.buildResponse(null, {'data': data});
+					return res.json(out);
+				});
+			});
+		});
+	},
+
+	"buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
+		async.map(options.serviceInfo.tasks, function (onePod, callback) {
+			var newRecord = {
+				type: ((soajs.customData && soajs.customData.type) ? soajs.customData.type : 'service'),
+				env: soajs.inputmaskData.envCode.toLowerCase(),
+				running: true,
+				recordType: 'container',
+				deployer: deployerConfig,
+				taskName: onePod.metadata.name,
+				serviceName: options.serviceName
+			};
+
+			return callback(null, newRecord);
+		}, cb);
 	}
 };
 
