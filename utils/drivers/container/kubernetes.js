@@ -355,7 +355,7 @@ var deployer = {
                         "containers": [
                             {
                                 "name": serviceName,
-                                "image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service') ? options.config.images.services : options.config.images.nginx),
+                                "image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service' || options.context.origin === 'controller') ? options.config.images.services : options.config.images.nginx),
                                 "workingDir": options.config.imagesDir,
                                 "command": [options.context.dockerParams.Cmd[0]],
                                 "args": options.context.dockerParams.Cmd.splice(1),
