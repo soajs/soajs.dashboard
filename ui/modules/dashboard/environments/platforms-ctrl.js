@@ -9,6 +9,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
     $scope.platforms = [];
 
     $scope.dockerImagePath = "./themes/" + themeToUse + "/img/docker_logo.png";
+    $scope.kubernetesImagePath = "./themes/" + themeToUse + "/img/kubernetes_logo.png";
     $scope.nginxImagePath = "./themes/" + themeToUse + "/img/nginx_logo.png";
 
     $scope.deployer = {
@@ -39,9 +40,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
     }
 
     $scope.listPlatforms = function (envCode) {
-        envPlatforms.listPlatforms($scope, envCode, function () {
-            $scope.listNginxCerts();
-        });
+        envPlatforms.listPlatforms($scope, envCode);
     };
 
     $scope.editDriverConfig = function (driver) {
@@ -62,14 +61,6 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
 
     $scope.changeDeployerType = function () {
         envPlatforms.changeDeployerType ($scope);
-    };
-
-    $scope.listNginxCerts = function () {
-        envPlatforms.listNginxCerts($scope);
-    };
-
-    $scope.deleteNginxCert = function (certId) {
-        envPlatforms.deleteNginxCert($scope, certId);
     };
 
     if ($scope.access.platforms.list) {
