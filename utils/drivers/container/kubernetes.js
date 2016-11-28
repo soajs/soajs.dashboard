@@ -560,7 +560,7 @@ var deployer = {
 				recordType: 'container',
 				deployer: deployerConfig,
 				taskName: onePod.metadata.name,
-				serviceName: options.serviceInfo.metadata.name
+				serviceName: options.serviceInfo.service.metadata.name
 			};
 
 			return callback(null, newRecord);
