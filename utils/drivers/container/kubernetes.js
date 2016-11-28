@@ -404,6 +404,7 @@ var deployer = {
 					value: oneEnvVar.split('=')[1]
 				});
 			});
+			envs.push({ "name": "SOAJS_DEPLOY_HA", "value": "true" });
 			envs.push({ "name": "SOAJS_DEPLOY_KUBE", "value": "true" });
 			envs.push({
 				"name": "SOAJS_KUBE_POD_IP",
