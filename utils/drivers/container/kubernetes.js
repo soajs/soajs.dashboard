@@ -272,7 +272,7 @@ var deployer = {
         //TODO: validate
 		var kubernetesServiceParams = {};
         var serviceName = options.context.dockerParams.env + '-' + options.context.dockerParams.name;
-		if (options.context.origin === 'service') {
+		if (options.context.origin === 'service' || options.context.origin === 'controller') {
 			serviceName += '-v' + soajs.inputmaskData.version;
 		}
 
