@@ -385,6 +385,30 @@ var deployer = {
 		});
 	},
 
+
+	"getServiceComponents": function (soajs, deployerConfig, options, model, cb) {
+		deployer.inspectHAService(soajs, deployerConfig, model, function (error, serviceInfo) {
+			checkError(error, cb, function () {
+				var runningTasks = [];
+				serviceInfo.tasks.forEach(function (oneTask) {
+					if (oneTask.Status.State === 'running') {
+						runningTasks.push(oneTask);
+					}
+				});
+
+				if (runningTasks.length !== options.serviceCount) {
+					setTimeout(function () {
+						return lib.getServiceComponents(soajs, deployerConfig, options, model, cb);
+					}, 500);
+				}
+				else {
+					serviceInfo.tasks = runningTasks;
+					return cb(null, serviceInfo);
+				}
+			});
+		});
+	},
+
 	"inspectHATask": function (soajs, deployerConfig, options, model, cb) {
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {

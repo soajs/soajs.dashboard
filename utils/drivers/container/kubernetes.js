@@ -76,7 +76,7 @@ var lib = {
 						var kubeConfig = buildKubeConfig(oneNode.ip, oneNode.kubePort, certs);
 						kubeConfig.version = 'v1';
 						var kubernetes = new K8Api.Core(kubeConfig);
-						kubernetes.namespaces.get({}, function (error, response) {
+						kubernetes.namespaces.pods.get({}, function (error, response) { //TODO: find better ping call
 							//error is insignificant in this case
 							return callback(response);
 						});
@@ -99,8 +99,7 @@ var lib = {
 
 		function buildKubeConfig(host, port, certs) {
 			var kubeConfig = {
-				url: host,
-				port: port
+				url: 'https://' + host + ':' + port
 			};
 
 			var certKeys = Object.keys(certs);
@@ -366,14 +365,14 @@ var deployer = {
 				else {
 					deploy();
 				}
+
+
+				function deploy() {
+					soajs.log.debug('Deployer params: ' + JSON.stringify (haDeploymentParams));
+			        deployer.extensions.namespaces.deployments.post({body: haDeploymentParams}, cb);
+				}
 			});
 		});
-
-
-		function deploy() {
-			soajs.log.debug('Deployer params: ' + JSON.stringify (haDeploymentParams));
-	        deployer.extensions.namespaces.deployments.post({body: haDeploymentParams}, cb);
-		}
 
 		function buildEnvVariables () {
 			var envs = [];
@@ -443,6 +442,29 @@ var deployer = {
 						});
 					});
 				});
+			});
+		});
+	},
+
+	getServiceComponents: function (soajs, deployerConfig, options, model, cb) {
+		deployer.inspectHAService(soajs, deployerConfig, options, model, function (error, serviceInfo) {
+			checkError(error, cb, function () {
+				var runningPods = [];
+				serviceInfo.tasks.forEach(function (onePod) {
+					if (onePod.metadata.labels['soajs-app'] === options.serviceName && onePod.status.phase === 'Running') {
+	                    runningPods.push(onePod);
+	                }
+				});
+
+				if (runningPods.length !== options.serviceCount) {
+					setTimeout(function () {
+						return lib.getServiceComponents(soajs, deployerConfig, options, model, cb);
+					}, 500);
+				}
+				else {
+					serviceInfo.tasks = runningPods;
+					return cb(null, serviceInfo);
+				}
 			});
 		});
 	},

@@ -37,6 +37,11 @@ var deployer = {
         deployer.inspectHAService(soajs, deployerConfig, options, model, cb);
     },
 
+    "getServiceComponents": function (soajs, deployerConfig, options, model, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.getServiceComponents(soajs, deployerConfig, options, model, cb);
+    },
+
     "inspectHATask": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.inspectHATask(soajs, deployerConfig, options, model, cb);
