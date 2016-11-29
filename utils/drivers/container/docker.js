@@ -387,7 +387,7 @@ var deployer = {
 
 
 	"getServiceComponents": function (soajs, deployerConfig, options, model, cb) {
-		deployer.inspectHAService(soajs, deployerConfig, model, function (error, serviceInfo) {
+		deployer.inspectHAService(soajs, deployerConfig, options, model, function (error, serviceInfo) {
 			checkError(error, cb, function () {
 				var runningTasks = [];
 				serviceInfo.tasks.forEach(function (oneTask) {
