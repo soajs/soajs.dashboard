@@ -267,9 +267,6 @@ var deployer = {
 	},
 
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
-        //Create deployment
-        //TODO: re-implement X
-        //TODO: validate
 		var kubernetesServiceParams = {};
         var serviceName = options.context.dockerParams.env + '-' + options.context.dockerParams.name;
 		if (options.context.origin === 'service' || options.context.origin === 'controller') {
@@ -428,9 +425,6 @@ var deployer = {
 	},
 
 	"scaleHAService": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement X
-		//TODO: validate
-
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.extensions.namespaces.deployments.get({name: options.serviceName}, function (error, deployment) {
@@ -444,10 +438,6 @@ var deployer = {
 	},
 
 	"inspectHAService": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement X
-		//TODO: only get pods of selected deployment X
-		//TODO: validate
-
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				var output = {};
@@ -495,9 +485,6 @@ var deployer = {
 	},
 
 	"deleteHAService": function (soajs, deployerConfig, options, model, cb) {
-        //Delete deployment
-        //TODO: re-implement X
-        //TODO: validate
         lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
             checkError(error, cb, function () {
                 deployer.extensions.namespaces.deployments.delete({name: options.serviceName}, cb);
