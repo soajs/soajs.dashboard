@@ -398,7 +398,7 @@ var deployer = {
 
 				if (runningTasks.length !== options.serviceCount) {
 					setTimeout(function () {
-						return lib.getServiceComponents(soajs, deployerConfig, options, model, cb);
+						return deployer.getServiceComponents(soajs, deployerConfig, options, model, cb);
 					}, 500);
 				}
 				else {
