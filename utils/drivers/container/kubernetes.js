@@ -512,8 +512,6 @@ var deployer = {
 	},
 
 	"getContainerLogs": function (soajs, deployerConfig, options, model, res) {
-		//TODO: re-implement X
-		//TODO: validate
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			if (error) {
 				soajs.log.error(error);
@@ -527,27 +525,13 @@ var deployer = {
 				}
 			};
 
-			deployer.core.namespaces.pods.get(params, function (error, logStream) {
+			deployer.core.namespaces.pods.log(params, function (error, logStream) {
 				if (error) {
 					soajs.log.error(error);
 					return res.jsonp(soajs.buildResponse({code: 601, msg: error.message}));
 				}
 
-				var data = '';
-				var chunk;
-				logStream.setEncoding('utf8');
-				logStream.on('readable', function () {
-					var handle = this;
-					while ((chunk = handle.read()) !== null) {
-						data += chunk.toString("utf8");
-					}
-				});
-
-				logStream.on('end', function () {
-					logStream.destroy();
-					var out = soajs.buildResponse(null, {'data': data});
-					return res.json(out);
-				});
+				return res.jsonp(soajs.buildResponse(null, {data: logStream}));
 			});
 		});
 	},
