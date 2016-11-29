@@ -304,7 +304,7 @@ var deployer = {
 
 		haServiceParams.TaskTemplate.ContainerSpec.Env.push('SOAJS_DEPLOY_HA=true');
 
-		if (options.context.origin === 'service') {
+		if (options.context.origin === 'service' || options.context.origin === 'controller') {
 			haServiceParams.Name += '-v' + soajs.inputmaskData.version;
 			haServiceParams.TaskTemplate.ContainerSpec.Mounts = [
 				{
