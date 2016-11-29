@@ -400,7 +400,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-			
+
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -2418,8 +2418,8 @@ module.exports = {
 				"l": "Scale HA Service",
 				"group": "HA Cloud"
 			},
-			"env": {
-				"source": ['query.env'],
+			"envCode": {
+				"source": ['query.envCode'],
 				"required": true,
 				"validation": {
 					"type": "string"

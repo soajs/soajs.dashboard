@@ -562,7 +562,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.onSubmit = function () {
                     var params = {
-                        env: $scope.service.env,
+                        envCode: $scope.service.env,
                         name: $scope.service.name,
                         version: $scope.service.version
                     };
