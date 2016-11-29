@@ -551,11 +551,47 @@ var deployer = {
 	},
 
 	"getNewInstances": function (soajs, deployerConfig, options, model, cb) {
-		//TODO: implement
+		var newInstances = [];
+		async.each(options.serviceInfo.tasks, function (onePod, callback) {
+			var found = false;
+			var podName = onePod.metadata.name;
+			for (var i = 0; i < options.dockerRecords.length; i++) {
+				if (options.dockerRecords[i].taskName === podName) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				newInstances.push(onePod);
+			}
+
+			return callback(null, true);
+		}, function (error, result) {
+			return cb(newInstances);
+		});
 	},
 
 	"getRemovedInstances": function (soajs, deployerConfig, options, model, cb) {
-		//TODO: implement
+		var rmInstances = [];
+		async.each(options.dockerRecords, function (oneRecord, callback) {
+			var found = false;
+			for (var i = 0; i < options.serviceInfo.tasks.length; i++) {
+				var podName = options.serviceInfo.tasks[i].metadata.name;
+				if (podName === oneRecord.taskName) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				rmInstances.push(oneRecord);
+			}
+
+			return callback(null, true);
+		}, function (error, result) {
+			return cb(rmInstances);
+		});
 	}
 };
 
