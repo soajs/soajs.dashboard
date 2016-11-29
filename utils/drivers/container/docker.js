@@ -266,10 +266,10 @@ var deployer = {
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
 		var haServiceParams = {
 			"env": options.context.dockerParams.env,
-			"Name": options.context.dockerParams.env + '_' + options.context.dockerParams.name,
+			"Name": options.context.dockerParams.env + '-' + options.context.dockerParams.name,
 			"TaskTemplate": {
 				"ContainerSpec": {
-					"Image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service') ? options.config.images.services : options.config.images.nginx),
+					"Image": soajs.inputmaskData.imagePrefix + '/' + ((options.context.origin === 'service' || options.context.origin === 'controller') ? options.config.images.services : options.config.images.nginx),
 					"Env": options.context.dockerParams.variables,
 					"Dir": options.config.imagesDir,
 					"Command": [options.context.dockerParams.Cmd[0]],
@@ -305,7 +305,7 @@ var deployer = {
 		haServiceParams.TaskTemplate.ContainerSpec.Env.push('SOAJS_DEPLOY_HA=true');
 
 		if (options.context.origin === 'service') {
-			haServiceParams.Name += '_v' + soajs.inputmaskData.version;
+			haServiceParams.Name += '-v' + soajs.inputmaskData.version;
 			haServiceParams.TaskTemplate.ContainerSpec.Mounts = [
 				{
 					"Type": "bind",
