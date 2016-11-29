@@ -561,6 +561,50 @@ var deployer = {
 				return callback(null, newRecord);
 			});
 		}, cb);
+	},
+
+	"getNewInstances": function (soajs, deployerConfig, options, model, cb) {
+		var newInstances = [];
+		async.each(options.serviceInfo.tasks, function (oneTask, callback) {
+			var found = false;
+			var taskName = options.serviceInfo.service.Spec.Name + '.' + oneTask.Slot;
+			for (var i = 0; i < options.dockerRecords.length; i++) {
+				if (options.dockerRecords[i].taskName === taskName) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				newInstances.push(oneTask);
+			}
+
+			return callback(null, true);
+		}, function (error, result) {
+			return cb(newInstances);
+		});
+	},
+
+	"getRemovedInstances": function (soajs, deployerConfig, options, model, cb) {
+		var rmInstances = [];
+		async.each(options.dockerRecords, function (oneRecord, callback) {
+			var found = false;
+			for (var i = 0; i < options.serviceInfo.tasks.length; i++) {
+				var taskName = options.serviceInfo.service.Spec.Name + '.' + options.serviceInfo.tasks[i].Slot;
+				if (taskName === oneRecord.taskName) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				rmInstances.push(oneRecord);
+			}
+
+			return callback(null, true);
+		}, function (error, result) {
+			return cb(rmInstances);
+		});
 	}
 };
 

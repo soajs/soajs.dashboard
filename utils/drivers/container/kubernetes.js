@@ -433,14 +433,12 @@ var deployer = {
 
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
-				var scale = {
-					kind: 'Scale',
-					apiVersion: 'v1beta1',
-					spec: {
-						replicas: options.scale
-					}
-				};
-				deployer.extensions.namespaces.deployments.scale.put({name: options.serviceName, body: scale}, cb);
+				deployer.extensions.namespaces.deployments.get({name: options.serviceName}, function (error, deployment) {
+					checkError(error, cb, function () {
+						deployment.spec.replicas = options.scale
+						deployer.extensions.namespaces.deployments.put({name: options.serviceName, body: deployment}, cb);
+					});
+				});
 			});
 		});
 	},
@@ -550,6 +548,14 @@ var deployer = {
 
 			return callback(null, newRecord);
 		}, cb);
+	},
+
+	"getNewInstances": function (soajs, deployerConfig, options, model, cb) {
+		//TODO: implement
+	},
+
+	"getRemovedInstances": function (soajs, deployerConfig, options, model, cb) {
+		//TODO: implement
 	}
 };
 

@@ -65,6 +65,16 @@ var deployer = {
     "buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.buildContainerRecords(soajs, deployerConfig, options, model, cb);
+    },
+
+    "getNewInstances": function (soajs, deployerConfig, options, model, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.getNewInstances(soajs, deployerConfig, options, model, cb);
+    },
+
+    "getRemovedInstances": function (soajs, deployerConfig, options, model, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.getRemovedInstances(soajs, deployerConfig, options, model, cb);
     }
 };
 
