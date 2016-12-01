@@ -171,6 +171,7 @@ var deployer = {
 			newNode: true
 		};
 
+		var nodeInfo = {};
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.info(function (error, nodeInfo) {
@@ -179,7 +180,14 @@ var deployer = {
 							checkError(error, cb, function () {
 								if (options.role === 'manager') {
 									var node = deployer.getNode(nodeInfo.Name);
-									node.inspect(cb);
+									node.inspect(function (error, node) {
+										nodeInfo = {
+											role: 'manager',
+											name: node.Description.Hostname
+										};
+
+										return cb(null, node, nodeInfo);
+									});
 								}
 								else {
 									//get manager node from swarm and inspect newly added node
@@ -193,6 +201,12 @@ var deployer = {
 												checkError(error, cb, function () {
 													for (var i = 0; i < nodes.length; i++) {
 														if (nodes[i].Description.Hostname === nodeInfo.Name) {
+
+															nodeInfo = {
+																role: 'worker',
+																name: nodes[i].Description.Hostname
+															};
+
 															return cb(null, nodes[i]);
 														}
 													}

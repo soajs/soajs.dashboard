@@ -145,17 +145,14 @@ var lib = {
 var deployer = {
 
 	"addNode": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement X
-		//TODO: validate
-
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
-				deployer.core.namespaces.nodes.get({}, function (error, nodeList) {
+				deployer.core.node.get({}, function (error, nodeList) {
 					checkError(error, cb, function () {
 						async.detect(nodeList.items, function (oneNode, callback) {
 							for (var i = 0; i < oneNode.status.addresses.length; i++) {
 								if (oneNode.status.addresses[i].type === 'LegacyHostIP') {
-									return callback(oneNode.status.addresses[i].address === soajs.inputmaskData.ip);
+									return callback(oneNode.status.addresses[i].address === soajs.inputmaskData.host);
 								}
 							}
 
@@ -165,7 +162,12 @@ var deployer = {
 								return cb({'message': 'ERROR: Could not find node in cluster, aborting ...'});
 							}
 
-							return cb(null, targetNodeRecord);
+							var nodeInfo = {
+								role: targetNodeRecord.role,
+								name: targetNodeRecord.name
+							};
+
+							return cb(null, targetNodeRecord, nodeInfo);
 						});
 					});
 				});
@@ -174,12 +176,9 @@ var deployer = {
 	},
 
 	"removeNode": function (soajs, deployerConfig, options, model, cb, backgroundCB) {
-        //TODO: re-implement X
-		//TODO: validate
-
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
-				deployer.core.namespaces.nodes.delete({name: options.id}, cb);
+				deployer.core.node.delete({name: options.name}, cb);
 			});
 		});
 	},
@@ -214,7 +213,7 @@ var deployer = {
 			if (unit === 'Ki') value += '000';
 			else if (unit === 'Mi') value += '000000';
 
-			return value.toNumber();
+			return parseInt(value);
 		}
 
 		function getIP (addresses) {
@@ -232,8 +231,8 @@ var deployer = {
 			recordType: 'node',
 			id: options.node.metadata.uid,
 			name: options.node.metadata.name,
-			availability: 'active',
-			role: options.node.metadata.labels['kubeadm.alpha.kubernetes.io/role'],
+			availability: ((!options.node.spec.unschedulable) ? 'active' : 'drained'),
+			role: options.node.metadata.labels['kubeadm.alpha.kubernetes.io/role'] || 'worker',
 			ip: getIP (options.node.status.addresses),
 			port: options.node.status.daemonEndpoints.kubeletEndpoint.Port,
 			resources: {
