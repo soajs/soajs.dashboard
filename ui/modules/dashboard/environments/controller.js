@@ -269,6 +269,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							$cookies.putObject("myEnv", oneEnv);
 						}
 					});
+
+					$scope.$parent.reRenderMenu('deploy');
 				}
 			});
 		}
