@@ -184,24 +184,21 @@ var deployer = {
 	},
 
 	"updateNode": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		var node = deployer.getNode(options.nodeId);
-        //
-		// 		//need to inspect node in order to get its current version and pass it to update call
-		// 		node.inspect(function (error, nodeRecord) {
-		// 			checkError(error, cb, function () {
-		// 				options.version = nodeRecord.Version.Index;
-		// 				node.update(options, function (error, result) {
-		// 					checkError(error, cb, function () {
-		// 						return cb(null, true);
-		// 					});
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// });
+		//Only supports availability for now, role update not included yet
+		var updateValue;
+		if (options.Availability === 'active') updateValue = false;
+		else if (options.Availability === 'drain') updateValue = true;
+
+		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
+			checkError(error, cb, function () {
+				deployer.core.node.get({name: options.nodeName}, function (error, node) {
+					checkError(error, cb, function () {
+						node.spec.unschedulable = updateValue;
+						deployer.core.nodes.put({name: options.nodeName, body: node}, cb);
+					});
+				});
+			});
+		});
 	},
 
 	"buildNodeRecord": function (soajs, deployerConfig, options, model, cb) {

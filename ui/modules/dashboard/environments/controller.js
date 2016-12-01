@@ -222,6 +222,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.$parent.displayAlert('warning', translation.environmentCreatedSuccessfully[LANG] + ' ' + translation.inOrderToViewNewEnvYouNeedToReLogin[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
+								getEnvironments();
 								$scope.updateEnvironment(data[0]);
 							}
 						});
@@ -249,6 +250,28 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		};
 
 		buildFormWithModal($scope, $modal, options);
+
+		function getEnvironments() {
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/permissions/get"
+			}, function (error, response) {
+				if (error) {
+					$localStorage.soajs_user = null;
+					$cookies.remove('soajs_auth');
+					$cookies.remove('soajs_dashboard_key');
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				}
+				else {
+					$localStorage.environments = response.environments;
+					response.environments.forEach(function (oneEnv) {
+						if (oneEnv.code.toLowerCase() === 'dashboard') {
+							$cookies.putObject("myEnv", oneEnv);
+						}
+					});
+				}
+			});
+		}
 	};
 
 	$scope.updateEnvironment = function (data) {
