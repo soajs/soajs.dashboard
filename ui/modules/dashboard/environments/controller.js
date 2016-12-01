@@ -122,11 +122,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		$scope.jsonEditor.custom.data = angular.copy ($scope.grid.rows[0].custom);
 
 		$scope.editorLoaded(instance, 'custom');
-	}
+	};
 
 	$scope.loggerLoaded = function (instance) {
 		$scope.editorLoaded(instance, 'logger');
-	}
+	};
 
 	$scope.editorLoaded = function (instance, source) {
 		//bug in jsoneditor: setting default mode to 'code' does not display data
@@ -222,8 +222,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.$parent.displayAlert('warning', translation.environmentCreatedSuccessfully[LANG] + ' ' + translation.inOrderToViewNewEnvYouNeedToReLogin[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
-								getEnvironments();
-								$scope.updateEnvironment(data[0]);
+								getEnvironments(function(){
+									$scope.updateEnvironment(data[0]);
+								});
 							}
 						});
 					}
@@ -251,7 +252,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 		buildFormWithModal($scope, $modal, options);
 
-		function getEnvironments() {
+		function getEnvironments(cb) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
 				"routeName": "/dashboard/permissions/get"
@@ -271,6 +272,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					});
 
 					$scope.$parent.reRenderMenu('deploy');
+					return cb();
 				}
 			});
 		}
