@@ -22,6 +22,11 @@ var deployer = {
         deployer.updateNode(soajs, deployerConfig, options, model, cb);
     },
 
+    "buildNodeRecord": function (soajs, deployerConfig, options, model, cb) {
+        var deployer = getDeployer(deployerConfig);
+        deployer.buildNodeRecord(soajs, deployerConfig, options, model, cb);
+    },
+
     "deployHAService": function (soajs, deployerConfig, options, model, cb) {
         var deployer = getDeployer(deployerConfig);
         deployer.deployHAService(soajs, deployerConfig, options, model, cb);

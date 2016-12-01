@@ -263,6 +263,33 @@ var deployer = {
 		});
 	},
 
+	"buildNodeRecord": function (soajs, deployerConfig, options, model, cb) {
+		var record = {
+			recordType: 'node',
+			id: options.node.ID,
+			name: options.node.Description.Hostname,
+			availability: options.node.Spec.Availability,
+			role: options.node.Spec.Role,
+			resources: {
+				cpuCount: options.node.Description.Resources.NanoCPUs / 1000000000,
+				memory: options.node.Description.Resources.MemoryBytes
+			},
+			tokens: options.managerNodes[0].tokens
+		};
+
+		if (record.role === 'manager') {
+			record.ip = options.node.ManagerStatus.Addr.split(':')[0];
+			record.dockerPort = soajs.inputmaskData.port;
+			record.swarmPort = options.node.ManagerStatus.Addr.split(':')[1];
+		}
+		else {
+			record.ip = soajs.inputmaskData.host;
+			record.dockerPort = soajs.inputmaskData.port;
+			record.swarmPort = options.swarmPort;
+		}
+		return cb(record);
+	},
+
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
 		var haServiceParams = {
 			"env": options.context.dockerParams.env,

@@ -145,104 +145,43 @@ var lib = {
 var deployer = {
 
 	"addNode": function (soajs, deployerConfig, options, model, cb) {
-        //TODO: re-implement
+        //TODO: re-implement X
+		//TODO: validate
 
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
+				deployer.core.namespaces.nodes.get({}, function (error, nodeList) {
+					checkError(error, cb, function () {
+						async.detect(nodeList.items, function (oneNode, callback) {
+							for (var i = 0; i < oneNode.status.addresses.length; i++) {
+								if (oneNode.status.addresses[i].type === 'LegacyHostIP') {
+									return callback(oneNode.status.addresses[i].address === soajs.inputmaskData.ip);
+								}
+							}
 
-				var nodeParams = {
-					body: {
-						kind: 'Node',
-						apiVersion: 'v1',
-						spec: {
+							return callback(false);
+						}, function (targetNodeRecord) {
+							if (!targetNodeRecord) {
+								return cb({'message': 'ERROR: Could not find node in cluster, aborting ...'});
+							}
 
-						}
-					}
-				};
-				deployer.core.namespaces.nodes.post(nodeParams, cb);
+							return cb(null, targetNodeRecord);
+						});
+					});
+				});
 			});
 		});
-		// deployerConfig.flags = {
-		// 	newNode: true
-		// };
-        //
-		// lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 	checkError(error, cb, function () {
-		// 		deployer.info(function (error, nodeInfo) {
-		// 			checkError(error, cb, function () {
-		// 				deployer.swarmJoin(options, function (error) {
-		// 					checkError(error, cb, function () {
-		// 						if (options.role === 'manager') {
-		// 							var node = deployer.getNode(nodeInfo.Name);
-		// 							node.inspect(cb);
-		// 						}
-		// 						else {
-		// 							//get manager node from swarm and inspect newly added node
-		// 							delete deployerConfig.flags;
-		// 							delete deployerConfig.host;
-		// 							delete deployerConfig.port;
-        //
-		// 							lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 								checkError(error, cb, function () {
-		// 									deployer.listNodes(function (error, nodes) {
-		// 										checkError(error, cb, function () {
-		// 											for (var i = 0; i < nodes.length; i++) {
-		// 												if (nodes[i].Description.Hostname === nodeInfo.Name) {
-		// 													return cb(null, nodes[i]);
-		// 												}
-		// 											}
-		// 											return cb();
-		// 										});
-		// 									});
-		// 								});
-		// 							});
-		// 						}
-		// 					});
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// });
 	},
 
 	"removeNode": function (soajs, deployerConfig, options, model, cb, backgroundCB) {
-        //TODO: re-implement
+        //TODO: re-implement X
+		//TODO: validate
 
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			checkError(error, cb, function () {
 				deployer.core.namespaces.nodes.delete({name: options.id}, cb);
 			});
 		});
-		/*
-		 - get deployer for target node
-		 - leave swarm
-		 - return success response
-		 - get deployer of a manager node in the swarm
-		 - remove node
-		 */
-
-		// var targetDeployerConfig = JSON.parse(JSON.stringify(deployerConfig));
-		// targetDeployerConfig.host = options.ip;
-		// targetDeployerConfig.port = options.dockerPort;
-		// targetDeployerConfig.flags = {targetNode: true};
-		// lib.getDeployer(soajs, targetDeployerConfig, model, function (error, targetDeployer) {
-		// 	checkError(error, cb, function () {
-		// 		targetDeployer.swarmLeave(function (error) {
-		// 			checkError(error, cb, function () {
-        //
-		// 				//return response and remove node entry from swarm in the background
-		// 				cb(null, true);
-        //
-		// 				lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
-		// 					var node = deployer.getNode(options.id);
-		// 					setTimeout(function () {
-		// 						node.remove(backgroundCB);
-		// 					}, 20000);
-		// 				});
-		// 			});
-		// 		});
-		// 	});
-		// });
 	},
 
 	"updateNode": function (soajs, deployerConfig, options, model, cb) {
@@ -264,6 +203,47 @@ var deployer = {
 		// 		});
 		// 	});
 		// });
+	},
+
+	"buildNodeRecord": function (soajs, deployerConfig, options, model, cb) {
+
+		function calcMemory (memory) {
+			var value = memory.substring(0, options.node.status.capacity.memory.length - 2);
+			var unit = memory.substring(memory.length - 2);
+
+			if (unit === 'Ki') value += '000';
+			else if (unit === 'Mi') value += '000000';
+
+			return value.toNumber();
+		}
+
+		function getIP (addresses) {
+			var ip = '';
+			for (var i = 0; i < addresses.length; i++) {
+				if (addresses[i].type === 'LegacyHostIP') {
+					ip = addresses[i].address;
+				}
+			}
+
+			return ip;
+		}
+
+		var record = {
+			recordType: 'node',
+			id: options.node.metadata.uid,
+			name: options.node.metadata.name,
+			availability: 'active',
+			role: options.node.metadata.labels['kubeadm.alpha.kubernetes.io/role'],
+			ip: getIP (options.node.status.addresses),
+			port: options.node.status.daemonEndpoints.kubeletEndpoint.Port,
+			resources: {
+				cpuCount: options.node.status.capacity.cpu,
+				memory: calcMemory(options.node.status.capacity.memory)
+			},
+			tokens: options.managerNodes[0].tokens || {}
+		};
+
+		return cb(record);
 	},
 
 	"deployHAService": function (soajs, deployerConfig, options, model, cb) {
