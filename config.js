@@ -2343,14 +2343,14 @@ module.exports = {
 			},
 			"port": {
 				"source": ['body.port'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "number"
 				}
 			},
 			"role": {
 				"source": ['body.role'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"enum": ['manager', 'worker']
