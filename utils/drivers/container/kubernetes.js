@@ -48,9 +48,6 @@ function getCerts(certs, gfs, db, cb) {
 
 var lib = {
 	"getDeployer": function (soajs, deployerConfig, model, cb) {
-        //TODO: re-implement X
-		//TODO: validate
-
 		var config = utils.cloneObj(deployerConfig);
 		var kubernetes = {};
 
@@ -476,7 +473,7 @@ var deployer = {
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			if (error) {
 				soajs.log.error(error);
-				return res.jsonp(soajs.buildResponse({code: 774, message: error.message}));
+				return res.jsonp(soajs.buildResponse({code: 774, msg: error.message}));
 			}
 
 			var params = {
