@@ -497,7 +497,7 @@ var deployer = {
 	"buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
 		async.map(options.serviceInfo.tasks, function (onePod, callback) {
 			var newRecord = {
-				type: ((soajs.customData && soajs.customData.type) ? soajs.customData.type : 'service'),
+				type: options.serviceType,
 				env: soajs.inputmaskData.envCode.toLowerCase(),
 				running: true,
 				recordType: 'container',
