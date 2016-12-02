@@ -172,8 +172,8 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.getDeploymentDriver = function (deployer, value, technology, type) {
 		deployer.ui[value] = (deployer.selected === technology + '.' + value);
 	};
-
-	function getEnvironments(cb) {
+	
+	function getEnvironments(newEnvRecord, cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/permissions/get"
@@ -186,18 +186,23 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 			else {
 				$localStorage.environments = response.environments;
-				response.environments.forEach(function (oneEnv) {
-					if (oneEnv.code.toLowerCase() === 'dashboard') {
-						$cookies.putObject("myEnv", oneEnv);
-					}
-				});
-
-				$scope.$parent.reRenderMenu('deploy');
+				
+				if (newEnvRecord) {
+					$cookies.putObject("myEnv", newEnvRecord);
+				}
+				else {
+					response.environments.forEach(function (oneEnv) {
+						if (oneEnv.code.toLowerCase() === 'dashboard') {
+							$cookies.putObject("myEnv", oneEnv);
+						}
+					});
+				}
+				$scope.$parent.reRenderMenu('deployment');
 				return cb();
 			}
 		});
 	}
-
+	
 	$scope.addEnvironment = function () {
 		var configuration = environmentsConfig.form.template;
 		$scope.grid.rows.forEach(function (oneEnv) {
@@ -244,10 +249,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('warning', translation.environmentCreatedSuccessfully[LANG]);
+								$scope.$parent.displayAlert('success', translation.environmentCreatedSuccessfully[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
-								getEnvironments(function(){
+								getEnvironments({
+									code: data[0].code,
+									_id: data[0]._id.toString(),
+									deployer: data[0].deployer
+								}, function () {
 									$scope.updateEnvironment(data[0]);
 								});
 							}
@@ -320,15 +329,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
 			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
 			"data": postData
-		}, function (error) {
+		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
 				var successMessage = translation.environment[LANG] + ' ' + (($scope.newEntry) ? translation.created[LANG] : translation.updated[LANG]) + ' ' + translation.successfully[LANG];
-				getEnvironments(function(){
-					$scope.$parent.displayAlert(($scope.newEntry) ? 'warning' : 'success', successMessage);
-				});
+				
+				$scope.$parent.displayAlert('success', successMessage);
 			}
 		});
 	};
@@ -398,7 +406,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			else {
 				if (response) {
 					$scope.$parent.displayAlert('success', translation.selectedEnvironmentRemoved[LANG]);
-					getEnvironments(function(){
+					getEnvironments(null, function () {
 						$scope.listEnvironments();
 					});
 				}

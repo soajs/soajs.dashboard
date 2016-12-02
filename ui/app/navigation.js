@@ -26,17 +26,19 @@ var navigation = [
 		'scripts': ['modules/dashboard/myAccount/config.js', 'modules/dashboard/myAccount/controller.js'],
 		'footerMenu': true
 	},
-	//{
-	//	'id': 'help',
-	//	'label': 'Help',
-	//	'url': '#/help',
-	//	'guestMenu': true,
-	//	'userMenu': true,
-	//	'private': true,
-	//	'icon': 'question',
-	//	'scripts': ['modules/dashboard/config.js', 'modules/dashboard/controller.js'],
-	//	'tplPath': 'modules/dashboard/directives/help.tmpl'
-	//},
+	{
+		'id': 'noEnv',
+		'label': 'No Environment Found',
+		'url': '#/home/env',
+		'pillar': {
+			'name': 'deploy',
+			'label': translation.deploy[LANG],
+			'position': 3
+		},
+		'order': 2,
+		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
+		'tplPath': 'modules/dashboard/home/directives/noenv.tmpl'
+	},
 	{
 		'id': 'help2',
 		'label': translation.help[LANG],
