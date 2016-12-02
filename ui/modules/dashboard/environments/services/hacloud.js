@@ -531,7 +531,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     }
 
     function deleteService(currentScope, serviceName, serviceVersion) {
-        console.log (serviceName);
         var params = {
             env: currentScope.envCode,
             name: serviceName,
