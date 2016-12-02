@@ -226,7 +226,7 @@ var deployer = {
 			id: options.node.metadata.uid,
 			name: options.node.metadata.name,
 			availability: ((!options.node.spec.unschedulable) ? 'active' : 'drained'),
-			role: options.node.metadata.labels['kubeadm.alpha.kubernetes.io/role'] || 'worker',
+			role: ((options.node.metadata.labels['kubeadm.alpha.kubernetes.io/role'] === 'master') ? 'manager' : 'worker'),
 			ip: getIP (options.node.status.addresses),
 			port: options.node.status.daemonEndpoints.kubeletEndpoint.Port,
 			resources: {
