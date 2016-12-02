@@ -48,9 +48,6 @@ function getCerts(certs, gfs, db, cb) {
 
 var lib = {
 	"getDeployer": function (soajs, deployerConfig, model, cb) {
-        //TODO: re-implement X
-		//TODO: validate
-
 		var config = utils.cloneObj(deployerConfig);
 		var kubernetes = {};
 
@@ -476,7 +473,7 @@ var deployer = {
 		lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
 			if (error) {
 				soajs.log.error(error);
-				return res.jsonp(soajs.buildResponse({code: 774, message: error.message}));
+				return res.jsonp(soajs.buildResponse({code: 774, msg: error.message}));
 			}
 
 			var params = {
@@ -500,7 +497,7 @@ var deployer = {
 	"buildContainerRecords": function (soajs, deployerConfig, options, model, cb) {
 		async.map(options.serviceInfo.tasks, function (onePod, callback) {
 			var newRecord = {
-				type: ((soajs.customData && soajs.customData.type) ? soajs.customData.type : 'service'),
+				type: options.serviceType,
 				env: soajs.inputmaskData.envCode.toLowerCase(),
 				running: true,
 				recordType: 'container',

@@ -533,13 +533,6 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
-			},
-			"deployer": {
-				"source": ['body.deployer'],
-				"required": true,
-				"validation": {
-					"type": "object"
-				}
 			}
 		},
 		"/environment/delete": {
@@ -2343,14 +2336,14 @@ module.exports = {
 			},
 			"port": {
 				"source": ['body.port'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "number"
 				}
 			},
 			"role": {
 				"source": ['body.role'],
-				"required": true,
+				"required": false,
 				"validation": {
 					"type": "string",
 					"enum": ['manager', 'worker']

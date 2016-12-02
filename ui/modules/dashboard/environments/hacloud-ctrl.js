@@ -73,6 +73,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
+	$scope.envDeployer = $cookies.getObject("myEnv").deployer;
+	$scope.envPlatform = $scope.envDeployer.selected.split('.')[1];
 
 	if ($scope.access.hacloud.nodes.list) {
 		$scope.listNodes();
@@ -80,7 +82,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	if ($scope.access.listHosts) {
 		$scope.listServices();
 	}
-	
+
 }]);
 
 

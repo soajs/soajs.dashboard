@@ -17,9 +17,18 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     }
 
     function addNode(currentScope) {
+        var formConfig = angular.copy(environmentsConfig.form.node);
+        if (currentScope.envPlatform === 'kubernetes') {
+            for (var i = formConfig.entries.length - 1; i >= 0; i--) {
+                if (formConfig.entries[i].name === 'port' || formConfig.entries[i].name === 'role') {
+                    formConfig.entries.splice(i, 1);
+                }
+            }
+        }
+
         var options = {
 			timeout: $timeout,
-			form: environmentsConfig.form.node,
+			form: formConfig,
 			name: 'addNode',
 			label: 'Add New Node',
 			actions: [
