@@ -533,13 +533,6 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
-			},
-			"deployer": {
-				"source": ['body.deployer'],
-				"required": true,
-				"validation": {
-					"type": "object"
-				}
 			}
 		},
 		"/environment/delete": {

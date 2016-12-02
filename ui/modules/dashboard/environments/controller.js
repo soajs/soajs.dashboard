@@ -172,7 +172,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.getDeploymentDriver = function (deployer, value, technology, type) {
 		deployer.ui[value] = (deployer.selected === technology + '.' + value);
 	};
-	
+
 	function getEnvironments(cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -191,13 +191,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						$cookies.putObject("myEnv", oneEnv);
 					}
 				});
-				
+
 				$scope.$parent.reRenderMenu('deploy');
 				return cb();
 			}
 		});
 	}
-	
+
 	$scope.addEnvironment = function () {
 		var configuration = environmentsConfig.form.template;
 		$scope.grid.rows.forEach(function (oneEnv) {
@@ -314,37 +314,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		}
 
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
-
-
-		postData.deployer = {
-			"type": "",
-			"selected": "",
-			"container":{
-				"dockermachine":{
-					"local": {
-						"host": "",
-						"port": 0,
-						"config":{
-							"HostConfig": {
-								"NetworkMode": ""
-							},
-							"MachineName": ""
-						}
-					},
-					"cloud":{
-						"rackspace": {
-							"host": "",
-							"port": 0
-						}
-					}
-				},
-				"docker": {
-					"socket": {
-						"socketPath": "/var/run/docker.sock"
-					}
-				}
-			}
-		};
 
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",

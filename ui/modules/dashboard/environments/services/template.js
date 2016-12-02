@@ -4,20 +4,7 @@ var env_template = {
 	"domain": "",
 	"profile": "",
 	"description": "",
-	"deployer" : {
-		"type" : "",
-		"selected" : "",
-		"container" : {
-			"docker" : {
-				"local" : {
-					"socketPath" : "/var/run/docker.sock"
-				},
-				"remote" : {
-					"nodes" : []
-				}
-			}
-		}
-	},
+	//deployer object is added on the api level
 	"services": {
 		"controller": {
 			"maxPoolSize": 100,
