@@ -92,3 +92,9 @@ environmentsApp.filter('bytesToGbytes', function () {
 		return number.toFixed(2);
 	}
 });
+
+environmentsApp.filter('capitalizeFirst', function () {
+	return function (string) {
+		return string.charAt(0).toUpperCase() + string.substring(1);
+	}
+});
