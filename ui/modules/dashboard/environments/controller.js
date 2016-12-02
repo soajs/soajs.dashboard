@@ -9,7 +9,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	$scope.formEnvironment.config_loggerObj = '';
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
-
+	
 	$scope.waitMessage = {
 		type: "",
 		message: "",
@@ -18,7 +18,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			$scope.waitMessage.type = '';
 		}
 	};
-
+	
 	$scope.jsonEditor = {
 		custom: {
 			options: {
@@ -36,7 +36,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			jsonIsValid: true,
 		}
 	};
-
+	
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.grid.rows.forEach(function (oneEnvRecord) {
 			if (oneEnvRecord.code === env) {
@@ -46,7 +46,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						"message": msg
 					}
 				};
-
+				
 				$timeout(function () {
 					oneEnvRecord.hostInfo.waitMessage.message = '';
 					oneEnvRecord.hostInfo.waitMessage.type = '';
@@ -54,7 +54,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
+	
 	$scope.closeWaitMessage = function (context) {
 		if (!context) {
 			context = $scope;
@@ -62,7 +62,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		context.waitMessage.message = '';
 		context.waitMessage.type = '';
 	};
-
+	
 	$scope.listEnvironments = function (environmentId) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -87,7 +87,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 									$scope.jsonEditor.logger.data = $scope.formEnvironment.config_loggerObj;
 								}
 							}
-
+							
 							break;
 						}
 					}
@@ -114,26 +114,26 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
+	
 	$scope.customLoaded = function (instance) {
 		if (!$scope.grid.rows[0].custom) {
 			$scope.grid.rows[0].custom = {};
 		}
-		$scope.jsonEditor.custom.data = angular.copy ($scope.grid.rows[0].custom);
-
+		$scope.jsonEditor.custom.data = angular.copy($scope.grid.rows[0].custom);
+		
 		$scope.editorLoaded(instance, 'custom');
 	};
-
+	
 	$scope.loggerLoaded = function (instance) {
 		$scope.editorLoaded(instance, 'logger');
 	};
-
+	
 	$scope.editorLoaded = function (instance, source) {
 		//bug in jsoneditor: setting default mode to 'code' does not display data
 		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
 		$timeout(function () {
 			$scope.jsonEditor[source].options.mode = 'code';
-
+			
 			$timeout(function () {
 				instance.editor.getSession().on('change', function () {
 					try {
@@ -147,33 +147,33 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}, 600);
 		}, 500);
 	};
-
+	
 	$scope.saveCustomRegistry = function () {
 		if (!$scope.jsonEditor.custom.jsonIsValid) {
 			$scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
 			return;
 		}
-
+		
 		$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
 		$scope.formEnvironment.custom = $scope.jsonEditor.custom.data;
 		$scope.newEntry = false;
 		$scope.envId = $scope.formEnvironment._id;
-
+		
 		$scope.save();
 	};
-
+	
 	$scope.getDeploymentMode = function (deployer, value) {
 		if (!deployer.ui) {
 			deployer.ui = {};
 		}
 		deployer.ui[value] = (deployer.type === value);
 	};
-
+	
 	$scope.getDeploymentDriver = function (deployer, value, technology, type) {
 		deployer.ui[value] = (deployer.selected === technology + '.' + value);
 	};
 	
-	function getEnvironments(cb) {
+	function getEnvironments(newEnvRecord, cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/permissions/get"
@@ -186,13 +186,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 			else {
 				$localStorage.environments = response.environments;
-				response.environments.forEach(function (oneEnv) {
-					if (oneEnv.code.toLowerCase() === 'dashboard') {
-						$cookies.putObject("myEnv", oneEnv);
-					}
-				});
 				
-				$scope.$parent.reRenderMenu('deploy');
+				if (newEnvRecord) {
+					$cookies.putObject("myEnv", newEnvRecord);
+				}
+				else {
+					response.environments.forEach(function (oneEnv) {
+						if (oneEnv.code.toLowerCase() === 'dashboard') {
+							$cookies.putObject("myEnv", oneEnv);
+						}
+					});
+				}
+				$scope.$parent.reRenderMenu('deployment');
 				return cb();
 			}
 		});
@@ -222,19 +227,19 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						tmpl.code = formData.code;
 						tmpl.domain = formData.domain;
 						tmpl.description = formData.description;
-
+						
 						if (formData.apiPrefix) {
 							tmpl.apiPrefix = formData.apiPrefix;
 						}
-
+						
 						if (formData.sitePrefix) {
 							tmpl.sitePrefix = formData.sitePrefix;
 						}
-
+						
 						tmpl.services.config.key.password = formData.tKeyPass;
 						tmpl.services.config.cookie.secret = formData.sessionCookiePass;
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
-
+						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "send",
 							"routeName": "/dashboard/environment/add",
@@ -244,10 +249,14 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('warning', translation.environmentCreatedSuccessfully[LANG]);
+								$scope.$parent.displayAlert('success', translation.environmentCreatedSuccessfully[LANG]);
 								$scope.modalInstance.close('ok');
 								$scope.form.formData = {};
-								getEnvironments(function(){
+								getEnvironments({
+									code: data[0].code,
+									_id: data[0]._id.toString(),
+									deployer: data[0].deployer
+								}, function () {
 									$scope.updateEnvironment(data[0]);
 								});
 							}
@@ -274,17 +283,17 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 			]
 		};
-
+		
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.updateEnvironment = function (data) {
 		$scope.$parent.go('/environments/environment/' + data._id);
 	};
-
+	
 	$scope.save = function () {
 		var postData = angular.copy($scope.formEnvironment);
-
+		
 		if (typeof($scope.formEnvironment.services.config.session.proxy) == 'undefined') {
 			postData.services.config.session.proxy = 'undefined';
 		}
@@ -300,11 +309,11 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '').split(",");
 			}
 		}
-
+		
 		postData.services.config.agent = {
 			"topologyDir": "/opt/soajs/"
 		};
-
+		
 		if ($scope.formEnvironment.config_loggerObj) {
 			if (!$scope.jsonEditor.logger.jsonIsValid) {
 				$scope.displayAlert('danger', 'Logger Config: Invalid JSON Object');
@@ -312,26 +321,26 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 			postData.services.config.logger = $scope.jsonEditor.logger.data;
 		}
-
+		
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
-
-
+		
+		
 		postData.deployer = {
 			"type": "",
 			"selected": "",
-			"container":{
-				"dockermachine":{
+			"container": {
+				"dockermachine": {
 					"local": {
 						"host": "",
 						"port": 0,
-						"config":{
+						"config": {
 							"HostConfig": {
 								"NetworkMode": ""
 							},
 							"MachineName": ""
 						}
 					},
-					"cloud":{
+					"cloud": {
 						"rackspace": {
 							"host": "",
 							"port": 0
@@ -345,25 +354,24 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 				}
 			}
 		};
-
+		
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
 			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
 			"data": postData
-		}, function (error) {
+		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
 				var successMessage = translation.environment[LANG] + ' ' + (($scope.newEntry) ? translation.created[LANG] : translation.updated[LANG]) + ' ' + translation.successfully[LANG];
-				getEnvironments(function(){
-					$scope.$parent.displayAlert(($scope.newEntry) ? 'warning' : 'success', successMessage);
-				});
+				
+				$scope.$parent.displayAlert('success', successMessage);
 			}
 		});
 	};
-
+	
 	$scope.UpdateTenantSecurity = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -392,7 +400,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							});
 						});
 					}
-
+					
 					var currentScope = $scope;
 					var keyUpdateSuccess = $modal.open({
 						templateUrl: 'keyUpdateSuccess.tmpl',
@@ -402,7 +410,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						controller: function ($scope) {
 							fixBackDrop();
 							$scope.currentScope = currentScope;
-
+							
 							$scope.reloadDashboard = function () {
 								location.reload(true);
 								keyUpdateSuccess.close();
@@ -416,7 +424,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
+	
 	$scope.removeEnvironment = function (row) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -429,7 +437,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			else {
 				if (response) {
 					$scope.$parent.displayAlert('success', translation.selectedEnvironmentRemoved[LANG]);
-					getEnvironments(function(){
+					getEnvironments(null, function () {
 						$scope.listEnvironments();
 					});
 				}
@@ -439,7 +447,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			}
 		});
 	};
-
+	
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	//default operation
 	if ($routeParams.id) {
