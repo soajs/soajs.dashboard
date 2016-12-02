@@ -36,6 +36,10 @@ var navigation = [
 			'position': 3
 		},
 		'order': 2,
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/environment/list'
+		},
 		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
 		'tplPath': 'modules/dashboard/home/directives/noenv.tmpl'
 	},
