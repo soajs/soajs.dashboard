@@ -234,7 +234,7 @@
                 <button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy New Service</button>
                 <button class="btn btn-primary f-right" ng-click="listServices()" ng-if="access.listHosts"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
                 <br /><br />
-				<fieldset class="groupFieldset" ng-if="nginxHosts">
+				<fieldset class="groupFieldset" ng-if="nginxHosts && nginxHosts.length > 0">
 					<legend>
                         <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>
                         Nginx Instances
@@ -306,7 +306,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
                                                 <li>&nbsp;Deployment</li>
                                                 <li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(serviceInfo.ips)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-                                                <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(serviceInfo.serviceHAName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                                <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(serviceInfo.ips[0].serviceName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
                                                 <li>&nbsp;Maintenance</li>
                                                 <li><a href="" ng-click="reloadServiceRegistry('controller', serviceInfo.ips)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
                                                 <li><a href="" ng-click="awarenessStat('controller', serviceInfo.ips)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
