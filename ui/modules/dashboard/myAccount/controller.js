@@ -369,6 +369,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 						response.environments.forEach(function (oneEnv) {
 							if (oneEnv.code.toLowerCase() === 'dashboard') {
 								$cookies.putObject("myEnv", oneEnv);
+								$scope.$parent.currentDeployer.type = oneEnv.deployer.type;
 							}
 						});
 						$scope.$parent.$emit("loadUserInterface", {});
