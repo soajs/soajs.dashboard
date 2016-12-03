@@ -13,7 +13,8 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 			"routeName": "/dashboard/tenant/list",
 			"method": "get",
 			"params": {
-				//"type": "client"
+				"type": "admin",
+				"negate": true
 			}
 		};
 		getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {

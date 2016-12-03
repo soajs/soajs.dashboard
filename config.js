@@ -1064,6 +1064,14 @@ module.exports = {
 					"type": "string",
 					"enum": ["admin", "product", "client"]
 				}
+			},
+			"negate": {
+				"source": ['query.negate'],
+				"required": false,
+				"default": false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		"/tenant/add": {
