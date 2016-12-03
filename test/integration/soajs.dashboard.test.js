@@ -274,7 +274,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 172,
-						"message": "Missing required field: domain, deployer, services"
+						"message": "Missing required field: domain, services"
 					});
 					done();
 				});
@@ -2344,6 +2344,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'envCode': 'DEV',
 						'owner': 'soajs',
 						'repo': 'soajs.controller',
+						'imagePrefix': 'soajsorg',
 						'branch': 'develop',
 						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
 						'number': 1
@@ -2363,6 +2364,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'envCode': 'DEV',
 						'owner': 'soajs',
 						'repo': 'soajs.urac',
+						'imagePrefix': 'soajsorg',
 						'branch': 'develop',
 						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
 					}

@@ -150,6 +150,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 0,
 							"solo": true,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -169,6 +170,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 0,
 							"solo": true,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -192,6 +194,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 0,
 							"solo": true,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -227,6 +230,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 1,
 							"solo": false,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -250,6 +254,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 1,
 							"solo": false,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -270,6 +275,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 1,
 							"solo": false,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {},
 							"order": []
 						}
@@ -346,6 +352,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 0,
 							"solo": true,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {
 								someJob: {
 									type: "global",
@@ -506,6 +513,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"status": 1,
 							"solo": true,
 							"processing": "parallel",
+							"type": "interval",
 							"jobs": {
 								anotherJob: {
 									"type": "tenant",

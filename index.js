@@ -160,26 +160,6 @@ service.init(function () {
 			BL.changeDeployerType(config, req, res);
 		});
 	});
-	service.post("/environment/nginx/cert/upload", function (req, res) {
-		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.uploadCerts(config, req, res);
-		});
-	});
-	service.get("/environment/nginx/cert/list", function (req, res) {
-		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.listNginxCerts(config, req, res);
-		});
-	});
-	service.get("/environment/nginx/cert/delete", function (req, res) {
-		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.removeNginxCert(config, req, res);
-		});
-	});
-	service.post("/environment/nginx/cert/choose", function (req, res) {
-		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.chooseExistingNginxCerts(config, req, res);
-		});
-	});
 
 	/**
 	 * Products features
