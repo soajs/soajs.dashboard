@@ -21,7 +21,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
     $scope.removeNode = function (nodeId) {
         hacloudSrv.removeNode($scope, nodeId);
     };
-
+	
+	$scope.showHideGroupContent = function (groupName) {
+		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
+	};
+	
     $scope.updateNode = function (node, type, newStatus) {
         hacloudSrv.updateNode($scope, node, type, newStatus);
     };
