@@ -37,7 +37,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
                 $scope.jsoneditorConfig.jsonIsValid = false;
             }
         });
-    }
+    };
 
     $scope.listPlatforms = function (envCode) {
         envPlatforms.listPlatforms($scope, envCode);
