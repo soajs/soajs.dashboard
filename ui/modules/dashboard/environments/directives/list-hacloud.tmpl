@@ -242,10 +242,10 @@
                 <br /><br />
 				<fieldset class="groupFieldset" ng-if="nginxHosts && nginxHosts.length > 0">
 					<legend>
-                        <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('controller')"></a>
+                        <a href="" class="icon" ng-class="{'icon-minus': showCtrlHosts, 'icon-plus': !showCtrlHosts}" ng-click="showHideContent('nginx')"></a>
                         Nginx Instances
                     </legend>
-					<div class="entryBoxes">
+					<div class="entryBoxes" ng-show="showNginxHosts">
 						<div class="entryBox mb20">
 							<div class="header">
 								<span class="serviceLabelBox">Nginx</span>
