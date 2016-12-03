@@ -6,7 +6,7 @@
         <tab heading="{{translation.upload[LANG]}}">
             <br>
             <div class="form">
-                <alert type="warning"><b><u>Note:</u></b><br />If you are using Kubernetes, please make sure to rename the certificates before you upload them to the following convention:<br />
+                <alert ng-if="outerScope.deployer.platform === 'kubernetes'" type="warning"><b><u>Note:</u></b><br />Since you are using Kubernetes, please make sure to rename the certificates to the following convention before you upload them:<br />
                     <ul>
                         <li>ca.[crt | pem] &raquo; ca.crt</li>
                         <li>apiserver.[crt | pem] &raquo; cert.crt</li>

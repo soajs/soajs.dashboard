@@ -14,6 +14,7 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
 
     $scope.deployer = {
         type: "",
+        platform: "",
         selected: ""
     };
 

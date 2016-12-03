@@ -21,14 +21,15 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 	function renderDisplay(currentScope, record, cb) {
 		currentScope.deployer.type = record.type;
 		currentScope.originalDeployerType = record.type;//used to detect changes in type on UI level
+		currentScope.currentSelected = record.selected.split('.');
 
-		if (record.selected.split('.')[0] === 'container') {
-			currentScope.deployer.selected = record.selected.substring(record.selected.indexOf('.') + 1, record.selected.length);
+		if (currentScope.currentSelected[0] === 'container') {
+			currentScope.deployer.selected = currentScope.currentSelected[1] + '.' + currentScope.currentSelected[2];
+			currentScope.deployer.platform = currentScope.currentSelected[1];
 		}
 
 		currentScope.allowSelect = currentScope.deployer.type === 'container';
 
-		console.log (record.certs);
 		currentScope.availableCerts = {}; //used later to view available certificates and allow user to choose them for other drivers
 		record.certs.forEach(function (oneCert) {
 			if (!currentScope.availableCerts[oneCert.metadata.platform]) {
@@ -285,6 +286,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			} else {
 				currentScope.$parent.displayAlert('success', translation.selectedDriverUpdated[LANG]);
 				currentScope.deployer.selected = platform + '.' + driverName;
+				currentScope.deployer.platform = platform;
 				currentScope.originalDeployer = currentScope.deployer.selected;
 			}
 		});

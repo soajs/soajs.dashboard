@@ -1333,6 +1333,10 @@ var envTranslation ={
 		"ENG": "Service Name",
 		"FRA": "Service Name"
 	},
+	"serviceVersion": {
+		"ENG": "Service Version",
+		"FRA": "Service Version"
+	},
 	"daemonGroupConfig": {
 		"ENG": "Daemon Group Configuration",
 		"FRA": "Daemon Group Configuration"
