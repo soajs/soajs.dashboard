@@ -1175,16 +1175,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     });
                 };
 
-                $scope.addNginx = function () {
-                    if (env.toLowerCase() !== 'dashboard') {
-                        currentScope.services.unshift({
-                            UIGroup: 'Web Servers',
-                            name: 'Nginx',
-                            type: 'nginx'
-                        });
-                    }
-                };
-
                 $scope.selectService = function (service) {
                     currentScope.versions = Object.keys(service.versions);
                     if (currentScope.version) {
@@ -1507,7 +1497,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 if (currentScope.hosts && currentScope.hosts.controller) {
                     $scope.getServices(function () {
                         $scope.getDaemons();
-                        $scope.addNginx();
                     });
                 }
                 else {
