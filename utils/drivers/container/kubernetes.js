@@ -460,7 +460,10 @@ var deployer = {
 	"deleteHAService": function (soajs, deployerConfig, options, model, cb) {
         lib.getDeployer(soajs, deployerConfig, model, function (error, deployer) {
             checkError(error, cb, function () {
-                deployer.extensions.namespaces.deployments.delete({name: options.serviceName}, cb);
+				var body = {
+					gracePeriodSeconds: 0
+				};
+                deployer.extensions.namespaces.deployments.delete({name: options.serviceName, body: body}, cb);
             });
         });
 	},
