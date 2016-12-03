@@ -1096,7 +1096,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							'repo': currentScope.serviceRepo,
 							'useLocalSOAJS': currentScope.useLocalSOAJS
 						};
-
+						
 						if (currentScope.commit && !currentScope.confirmBranch) {
 							params.branch = getBranchFromCommit(currentScope.commit);
 							params.commit = currentScope.commit;
@@ -1123,7 +1123,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 								params.variables[i] = params.variables[i].trim();
 							}
 						}
-
+						params.version = parseInt(params.version);
 						var config = {
 							"method": "send",
 							"routeName": "/dashboard/hosts/deployService",
