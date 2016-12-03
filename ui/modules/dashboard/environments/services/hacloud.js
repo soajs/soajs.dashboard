@@ -1108,6 +1108,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 currentScope.services = [];
                 currentScope.service = "";
+                currentScope.versions = [];
+                currentScope.version = "";
                 currentScope.groupConfigs = "";
                 currentScope.groupConfig = "";
                 currentScope.branches = [];
@@ -1184,6 +1186,14 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 };
 
                 $scope.selectService = function (service) {
+                    currentScope.versions = Object.keys(service.versions);
+                    if (currentScope.version) {
+                        currentScope.version = "";
+                    }
+                    if (currentScope.versions.length === 1) {
+                        currentScope.version = currentScope.versions[0];
+                    }
+
                     currentScope.branches = [];
                     currentScope.branch = '';
                     currentScope.groupConfigs = '';
@@ -1365,7 +1375,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         'haService': true,
                         'haCount': currentScope.replicaCount,
                         'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                        "imagePrefix": currentScope.imagePrefix
+                        "imagePrefix": currentScope.imagePrefix,
+                        "version": currentScope.version
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {
@@ -1383,9 +1394,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         params.name = currentScope.service.name;
                     }
 
-                    if (currentScope.service.latest) {
-                        params.version = currentScope.service.latest;
-                    }
                     currentScope.port = currentScope.service.port;
 
                     if (currentScope.envVariables && currentScope.envVariables !== '') {
