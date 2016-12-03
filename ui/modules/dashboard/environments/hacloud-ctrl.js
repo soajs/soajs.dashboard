@@ -21,7 +21,20 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
     $scope.removeNode = function (nodeId) {
         hacloudSrv.removeNode($scope, nodeId);
     };
-
+	
+	$scope.showHideContent = function (type) {
+		if (type === 'nginx') {
+			$scope.showNginxHosts = !$scope.showNginxHosts;
+		}
+		else if (type === 'controller') {
+			$scope.showCtrlHosts = !$scope.showCtrlHosts;
+		}
+	};
+	
+	$scope.showHideGroupContent = function (groupName) {
+		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
+	};
+	
     $scope.updateNode = function (node, type, newStatus) {
         hacloudSrv.updateNode($scope, node, type, newStatus);
     };

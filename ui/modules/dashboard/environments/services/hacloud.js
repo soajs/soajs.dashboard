@@ -1376,7 +1376,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         'haCount': currentScope.replicaCount,
                         'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
                         "imagePrefix": currentScope.imagePrefix,
-                        "version": currentScope.version
+                        "version": parseInt(currentScope.version)
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {
