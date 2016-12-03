@@ -263,7 +263,7 @@
 												<td class="maintenanceHeader">Maintenance</td>
 												<td class="hostnameHeader">Hostname</td>
 												<td class="statusHeader">Status</td>
-												<td class="ipHeader">IP Address</td>
+												<td ng-if="envPlatform === 'docker'" class="ipHeader">IP Address</td>
 											</tr>
 										</thead>
 										<tbody>
@@ -278,7 +278,7 @@
 													<span style="color: green" ng-if="instance.running"><b>Healthy</b></span>
 													<span style="color: red" ng-if="!instance.running"><b>Unreachable</b></span>
 												</td>
-												<td>{{instance.networkInfo.ip}}</td>
+												<td ng-if="envPlatform === 'docker'">{{instance.networkInfo.ip}}</td>
 											</tr>
 										</tbody>
 									</table>
