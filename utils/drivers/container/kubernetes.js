@@ -6,6 +6,7 @@ var Grid = require('gridfs-stream');
 var fs = require('fs');
 var rimraf = require('rimraf');
 var async = require('async');
+var request = require('request');
 
 var dockerColl = 'docker';
 var gridfsColl = 'fs.files';
@@ -463,21 +464,170 @@ var deployer = {
 				var body = {
 					gracePeriodSeconds: 0
 				};
-                deployer.extensions.namespaces.deployments.delete({name: options.serviceName, body: body}, function (error, result) {
+
+				var requestOptions = {
+					uri: deployer.extensions.url + deployer.extensions.path + '/namespaces/default/replicasets',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					json: true,
+					ca: deployer.extensions.requestOptions.ca,
+					cert: deployer.extensions.requestOptions.cert,
+					key: deployer.extensions.requestOptions.key
+				};
+
+				deployer.extensions.namespaces.deployments.get({name: options.serviceName}, function (error, deployment) {
 					checkError(error, cb, function () {
-						var kubeServiceName = options.serviceName + '-service';
-						deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
+						deployment.spec.replicas = 0;
+						deployer.extensions.namespaces.deployments.put({name: options.serviceName, body: deployment}, function (error) {
 							checkError(error, cb, function () {
-								if (service) {
-									deployer.core.namespaces.services.delete({name: kubeServiceName, body: body}, cb);
-								}
-								else {
-									return cb(null, true);
-								}
+								ensureDeployment(deployer, function (error) {
+									checkError(error, cb, function () {
+										getReplicaSet(utils.cloneObj(requestOptions), function (error, replicaSet) {
+											checkError(error, cb, function () {
+												updateReplicaSet(utils.cloneObj(requestOptions), replicaSet, {replicas: 0}, function (error) {
+													checkError(error, cb, function () {
+														ensureReplicaSet(deployer, utils.cloneObj(requestOptions), function (error) {
+															checkError(error, cb, function () {
+																deleteReplicaSet(utils.cloneObj(requestOptions), {rsName: replicaSet.metadata.name}, function (error) {
+																	checkError(error, cb, function () {
+																		deleteKubeService(deployer, function (error) {
+																			checkError(error, cb, function () {
+																				deleteDeployment(deployer, function (error) {
+																					checkError(error, cb, function () {
+
+																						cb(null, true);
+																						//delete pods in background
+																						deletePods(deployer, function (error) {
+																							if (error) {
+																								soajs.log.error('Unable to delete pods of ' + options.serviceName);
+																							}
+																							else {
+																								soajs.log.debug('Pods of ' + options.serviceName + ' deleted successfully');
+																							}
+																						});
+																					});
+																				});
+																			});
+																		});
+																	});
+																});
+															});
+														});
+													});
+												});
+											});
+										});
+									});
+								});
 							});
 						});
 					});
 				});
+
+				function getReplicaSet(requestOptions, cb) {
+					requestOptions = injectCerts(requestOptions);
+					requestOptions.qs = {
+						labelSelector: 'soajs-app=' + options.serviceName
+					};
+
+					request.get(requestOptions, function (error, response, body) {
+						var rs = ((body && body.items && body.items[0]) ? body.items[0] : null); //replicaset list must contain only one item in this case
+						return cb(error, rs);
+					});
+				}
+
+				function deleteReplicaSet(requestOptions, params, cb) {
+					requestOptions = injectCerts(requestOptions);
+					requestOptions.uri += '/' + params.rsName;
+					requestOptions.body = {
+						gracePeriodSeconds: 0
+					};
+
+					request.delete(requestOptions, function (error, response, body) {
+						return cb(error, body);
+					});
+				}
+
+				function updateReplicaSet(requestOptions, replicaSet, params, cb) {
+					requestOptions = injectCerts(requestOptions);
+					requestOptions.uri += '/' + replicaSet.metadata.name;
+					replicaSet.spec.replicas = params.replicas;
+
+					request.put(requestOptions, function (error, response, body) {
+						return cb(error, body);
+					});
+				}
+
+				function ensureReplicaSet(deployer, requestOptions, callback) {
+					getReplicaSet(requestOptions, function (error, replicaSet) {
+						if (error) {
+							return callback(error);
+						}
+
+						if (!replicaSet) {
+							return callback(null, true)
+						}
+
+						if (replicaSet.spec.replicas === 0) {
+							return callback(null, true)
+						}
+						else {
+							setTimeout(function () {
+								return ensureReplicaSet(deployer, requestOptions, callback);
+							}, 500);
+						}
+					});
+				}
+
+				function deleteKubeService(deployer, callback) {
+					var kubeServiceName = options.serviceName + '-service';
+					deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
+						checkError(error, cb, function () {
+							if (service) {
+								deployer.core.namespaces.services.delete({name: kubeServiceName, body: body}, callback);
+							}
+							else {
+								return callback(null, true);
+							}
+						});
+					});
+				}
+
+				function deleteDeployment(deployer, callback) {
+					deployer.extensions.namespaces.deployments.delete({name: options.serviceName, body: body}, callback);
+				}
+
+				function ensureDeployment(deployer, callback) {
+					deployer.extensions.namespaces.deployments.get({name: options.serviceName}, function (error, deployment) {
+						checkError(error, cb, function () {
+							if (deployment.spec.replicas === 0) {
+								return callback(null, true);
+							}
+							else {
+								setTimeout(function () {
+									return ensureDeployment(deployer, callback);
+								}, 500);
+							}
+						});
+					});
+				}
+
+				function deletePods(deployer, callback) {
+					var params = {
+						qs: {
+							labelSelector: 'soajs-app=' + options.serviceName
+						}
+					};
+					deployer.core.namespaces.pods.delete(params, callback);
+				}
+
+				function injectCerts (requestOptions) {
+					requestOptions.ca = deployer.extensions.requestOptions.ca;
+					requestOptions.cert = deployer.extensions.requestOptions.cert;
+					requestOptions.key = deployer.extensions.requestOptions.key;
+					return requestOptions;
+				}
             });
         });
 	},

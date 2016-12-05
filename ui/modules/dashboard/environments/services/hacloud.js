@@ -537,11 +537,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             version: serviceVersion
         };
 
+        overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'get',
             routeName: '/dashboard/hacloud/services/delete',
             params: params
         }, function (error, response) {
+            overlayLoading.hide();
             if (error) {
                 currentScope.displayAlert('danger', error.message);
             }
