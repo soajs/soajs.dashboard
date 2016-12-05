@@ -32,8 +32,7 @@
     "jshint": "*",
     "lodash": "*",
     "mocha": "*",
-    "shelljs": "*",
-    "docker-mock": "aff04/docker-mock.git"
+    "shelljs": "*"
   },
   "dependencies": {
     "async": "1.5.2",
