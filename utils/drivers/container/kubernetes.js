@@ -463,7 +463,21 @@ var deployer = {
 				var body = {
 					gracePeriodSeconds: 0
 				};
-                deployer.extensions.namespaces.deployments.delete({name: options.serviceName, body: body}, cb);
+                deployer.extensions.namespaces.deployments.delete({name: options.serviceName, body: body}, function (error, result) {
+					checkError(error, cb, function () {
+						var kubeServiceName = options.serviceName + '-service';
+						deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
+							checkError(error, cb, function () {
+								if (service) {
+									deployer.core.namespaces.services.delete({name: kubeServiceName}, cb);
+								}
+								else {
+									return cb(null, true);
+								}
+							});
+						});
+					});
+				});
             });
         });
 	},
