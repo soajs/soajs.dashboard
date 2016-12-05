@@ -150,40 +150,41 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 		var services = currentScope.currentApplication.services;
 		var envCodes = currentScope.environments_codes;
 		var parentAcl = currentScope.currentApplication.parentPckgAcl;
-		
 		for (var i = 0; i < services.length; i++) {
-			services[i].fixList = groupApisForDisplay(services[i].apisList, 'group');
-			var newList;
-			service = services[i];
-			envCodes.forEach(function (oneEnv) {
-				var parentEnvAcl = {};
-				if (parentAcl[oneEnv.code.toLowerCase()]) {
-					parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
-				}
-				if (currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name]) {
-					if (parentEnvAcl && (parentEnvAcl.apisPermission === 'restricted')) {
-						newList = [];
-						service.forceRestricted = true;
-						for (var j = 0; j < service.apisList.length; j++) {
-							var v = service.apisList[j].v;
-							if (service.apisList[j].m) {
-								if (parentEnvAcl[service.apisList[j].m]) {
-									if (parentEnvAcl[service.apisList[j].m].apis[v]) {
+			if (services[i].apisList) {
+				services[i].fixList = groupApisForDisplay(services[i].apisList, 'group');
+				var newList;
+				service = services[i];
+				envCodes.forEach(function (oneEnv) {
+					var parentEnvAcl = {};
+					if (parentAcl[oneEnv.code.toLowerCase()]) {
+						parentEnvAcl = parentAcl[oneEnv.code.toLowerCase()][service.name];
+					}
+					if (currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name]) {
+						if (parentEnvAcl && (parentEnvAcl.apisPermission === 'restricted')) {
+							newList = [];
+							service.forceRestricted = true;
+							for (var j = 0; j < service.apisList.length; j++) {
+								var v = service.apisList[j].v;
+								if (service.apisList[j].m) {
+									if (parentEnvAcl[service.apisList[j].m]) {
+										if (parentEnvAcl[service.apisList[j].m].apis[v]) {
+											newList.push(service.apisList[j]);
+										}
+									}
+								}
+								if (parentEnvAcl.apis) {
+									if (parentEnvAcl.apis[v]) {
 										newList.push(service.apisList[j]);
 									}
 								}
 							}
-							if (parentEnvAcl.apis) {
-								if (parentEnvAcl.apis[v]) {
-									newList.push(service.apisList[j]);
-								}
-							}
+							service.fixList = groupApisForDisplay(newList, 'group');
 						}
-						service.fixList = groupApisForDisplay(newList, 'group');
+						currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name] = angular.copy(service);
 					}
-					currentScope.currentApplication.servicesEnv[oneEnv.code.toUpperCase()][service.name] = angular.copy(service);
-				}
-			});
+				});
+			}
 		}
 	}
 	
