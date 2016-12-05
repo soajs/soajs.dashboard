@@ -200,6 +200,7 @@ var gitAccountsAppConfig = {
 		'soajs/soajs.jsconfbeirut',
 		"soajs/soajs.installer",
 		"soajs/soajs.sdk",
-		"soajs/soajs.dashboard.ui"
+		"soajs/soajs.dashboard.ui",
+		"soajs/soajs.website.ui"
 	]
 };
