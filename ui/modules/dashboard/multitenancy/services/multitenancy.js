@@ -185,10 +185,6 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 					}
 				});
 			}
-			else {
-				console.log('skip Controller');
-			}
-
 		}
 	}
 	
