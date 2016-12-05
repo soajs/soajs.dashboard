@@ -469,7 +469,7 @@ var deployer = {
 						deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
 							checkError(error, cb, function () {
 								if (service) {
-									deployer.core.namespaces.services.delete({name: kubeServiceName}, cb);
+									deployer.core.namespaces.services.delete({name: kubeServiceName, body: body}, cb);
 								}
 								else {
 									return cb(null, true);
