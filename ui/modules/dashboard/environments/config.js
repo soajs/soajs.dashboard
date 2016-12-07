@@ -125,14 +125,6 @@ var environmentsConfig = {
 					'value': '',
 					'placeholder': translation.myTenantKeyAES256Password[LANG],
 					'required': true
-				},
-				{
-					'name': 'sessionCookiePass',
-					'label': translation.sessionCookieEncryptionPassword[LANG],
-					'type': 'text',
-					'value': '',
-					'placeholder': translation.myPasswordDoNotTellAnyone[LANG],
-					'required': true
 				}
 			]
 		},

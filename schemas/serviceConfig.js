@@ -56,19 +56,11 @@ var serviceConfig = {
 				"randomInc": {"type": "integer", "required": true, "min": 100}
 			}
 		},
-		"cookie": {
-			"type": "object",
-			"required": true,
-			"properties": {
-				"secret": {"type": "string", "required": true, "minLength": 5}
-			}
-		},
 		"session": {
 			"type": "object",
 			"required": true,
 			"properties": {
 				"name": {"type": "string", "required": true, "minLength": 5},
-				"secret": {"type": "string", "required": true, "minLength": 5},
 				"resave": {"type": "boolean", "required": true},
 				"saveUninitialized": {"type": "boolean", "required": true},
 				"proxy": {"type": 'string', "required": true, "enum": ['true', 'false', 'undefined']},
@@ -81,7 +73,6 @@ var serviceConfig = {
 						"path": {"type": "string", "required": true},
 						"httpOnly": {"type": "boolean", "required": true},
 						"secure": {"type": "boolean", "required": true},
-						//"domain": {"type": "string", "required": true},
 						"maxAge": {"type": ["integer", "null"], "required": false}
 					}
 				}

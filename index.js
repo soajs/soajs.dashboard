@@ -59,7 +59,7 @@ service.init(function () {
 	 */
 	service.post("/environment/add", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.add(config, req, res);
+			BL.add(config, service, dbModel, req, res);
 		});
 	});
 	service.get("/environment/delete", function (req, res) {
