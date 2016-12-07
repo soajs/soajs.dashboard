@@ -223,21 +223,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 		before(function (done) {
 			mongo.remove('environment', {}, function (error) {
 				assert.ifError(error);
-				done();
+
+				mongo.insert('environment', validEnvRecord, function (error) {
+					assert.ifError(error);
+
+					done();
+				});
 			});
 		});
 
 		describe("add environment tests", function () {
-			it("success - will add environment", function (done) {
-				var params = {
-					form: validEnvRecord
-				};
-				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
 			it("success - will add environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'STG';
@@ -299,9 +294,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					delete envRecord.profile;
 
 					var tester = util.cloneObj(validEnvRecord);
-					tester.dbs = {clusters: {}, config: {}, databases: {}};
-					delete tester.services.config.session.proxy;
 					delete tester.profile;
+					delete tester._id;
 					assert.deepEqual(envRecord, tester);
 					done();
 				});
@@ -463,12 +457,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-			it("success - will add environment", function (done) {
-				var params = {
-					form: validEnvRecord
-				};
-				executeMyRequest(params, 'environment/add', 'post', function (body) {
-					assert.ok(body.data);
+			it("success - will manually add environment", function (done) {
+				mongo.insert('environment', validEnvRecord, function (error) {
+					assert.ifError(error);
 					done();
 				});
 			});
@@ -482,9 +473,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 							delete oneEnv._id;
 							delete oneEnv.profile;
 							var tester = util.cloneObj(validEnvRecord);
-							tester.dbs = {clusters: {}, config: {}, databases: {}};
-							delete tester.services.config.session.proxy;
+							// tester.dbs = {clusters: {}, config: {}, databases: {}};
+							// delete tester.services.config.session.proxy;
 							delete tester.profile;
+							delete tester._id;
 							assert.deepEqual(oneEnv, tester);
 						}
 					});
@@ -499,7 +491,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {
 							env: "dev",
-							"name": "cluster1"
+							"name": "cluster2"
 						},
 						form: {
 							'cluster': validCluster
@@ -515,7 +507,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {
 							'env': 'dev',
-							'name': 'cluster1'
+							'name': 'cluster2'
 						},
 						form: {
 							//"cluster": {}
@@ -553,7 +545,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				it('mongo - testing db', function (done) {
 					mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 						assert.ifError(error);
-						assert.deepEqual(envRecord.dbs.clusters['cluster1'], validCluster);
+						assert.deepEqual(envRecord.dbs.clusters['cluster2'], validCluster);
 						done();
 					});
 				});
@@ -600,7 +592,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {
 							env: "dev",
-							"name": "cluster2"
+							"name": "cluster3"
 						},
 						form: {
 							'cluster': validCluster
@@ -665,25 +657,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
-				it('mongo test', function (done) {
-					mongo.find('environment', {}, {}, function (error, records) {
-						assert.ifError(error);
-						assert.ok(records);
-						assert.equal(JSON.stringify(records[0].dbs.clusters), '{}');
-						done();
-					});
-				});
 			});
 
 			describe("list environment clusters", function () {
-				it('success - returns empty list', function (done) {
+				it('success - returns one cluster', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
 					};
 					executeMyRequest(params, 'environment/clusters/list', 'get', function (body) {
 						assert.ok(body.data);
-						assert.equal(Object.keys(body.data).length, 0);
+						assert.equal(Object.keys(body.data).length, 1);
 						done();
 					});
 				});
@@ -704,13 +687,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it('success - returns one entry in list', function (done) {
+				it('success - returns two entries in the list', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
 					};
 					executeMyRequest(params, 'environment/clusters/list', 'get', function (body) {
 						assert.ok(body.data);
-						assert.equal(Object.keys(body.data).length, 1);
+						assert.equal(Object.keys(body.data).length, 2);
 						done();
 					});
 				});
@@ -726,7 +709,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							env: "dev"
 						},
 						form: {
-							'name': 'urac',
+							'name': 'urac_2',
 							'tenantSpecific': true,
 							'cluster': 'cluster1'
 						}
@@ -743,7 +726,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							env: "dev"
 						},
 						form: {
-							'name': 'session',
+							'name': 'session_test',
 							'cluster': 'cluster1',
 							'sessionInfo': {
 								"cluster": "cluster1",
@@ -1188,14 +1171,29 @@ describe("DASHBOARD UNIT Tests:", function () {
 					mongo.findOne('environment', {'code': "DEV"}, function (error, record) {
 						assert.ifError(error);
 						assert.ok(record);
-						assert.equal(JSON.stringify(record.dbs.databases), '{}');
-						assert.equal(JSON.stringify(record.dbs.config), '{}');
+						assert.deepEqual(record.dbs.databases, {
+							"urac_2":{
+								"cluster":"cluster1",
+								"tenantSpecific":true
+							},
+							"session_test":{
+								"cluster":"cluster1",
+								"tenantSpecific":false
+							}
+						});
 						done();
 					});
 				});
 			});
 
 			describe("list environment dbs", function () {
+				before("clean env record", function (done) {
+					mongo.update('environment', {code: 'DEV'}, {'$set': {'dbs.databases': {}, 'dbs.config': {}}}, function (error) {
+						assert.ifError(error);
+						done();
+					});
+				});
+
 				it('success - no session and no databases', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
@@ -1329,6 +1327,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					delete record._id;
 					delete record.deployer;
 					delete record.profile;
+					delete record.proxy;
 					assert.deepEqual(record, {
 						"code": "DEV",
 						"domain": "api.myDomain.com",
@@ -1388,6 +1387,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"session": {
 									"name": "soajsID",
 									"secret": "this is antoine hage app server",
+									"proxy" : "undefined",
 									"rolling": false,
 									"unset": "keep",
 									"cookie": {
@@ -1405,6 +1405,29 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"dbs": {
 							"clusters": {
 								"cluster1": {
+									"URLParam": {
+										"connectTimeoutMS": 0,
+										"socketTimeoutMS": 0,
+										"maxPoolSize": 5,
+										"wtimeoutMS": 0,
+										"slaveOk": true
+									},
+									"servers": [
+										{
+											"host": "127.0.0.1",
+											"port": 27017
+										}
+									],
+									"extraParam": {
+										"db": {
+											"native_parser": true
+										},
+										"server": {
+											"auto_reconnect": true
+										}
+									}
+								},
+								"cluster2": {
 									"URLParam": {
 										"connectTimeoutMS": 0,
 										"socketTimeoutMS": 0,
