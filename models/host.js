@@ -72,6 +72,19 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 
+	"getServiceType": function (soajs, model, options, cb) {
+		var opts = {
+			collection: dockerColl,
+			conditions: {
+				env: options.env.toLowerCase(),
+				serviceName: options.serviceName,
+				fields: { type: 1 }
+			}
+		};
+
+		model.findEntry(soajs, opts, cb);
+	},
+
 	"getOneContainer": function (soajs, model, env, hostname, cb) {
 		var opts = {
 			collection: dockerColl,

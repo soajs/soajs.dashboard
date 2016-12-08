@@ -582,17 +582,17 @@ var deployer = {
 				}
 
 				function deleteKubeService(deployer, callback) {
-					var kubeServiceName = options.serviceName + '-service';
-					deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
-						checkError(error, cb, function () {
-							if (service) {
+					if (options.serviceType === 'controller' || options.serviceType === 'nginx') {
+						var kubeServiceName = options.serviceName + '-service';
+						deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
+							checkError(error, cb, function () {
 								deployer.core.namespaces.services.delete({name: kubeServiceName, body: body}, callback);
-							}
-							else {
-								return callback(null, true);
-							}
+							});
 						});
-					});
+					}
+					else {
+						return callback(null, true);
+					}
 				}
 
 				function deleteDeployment(deployer, callback) {
