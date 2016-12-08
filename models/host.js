@@ -77,9 +77,9 @@ var methods = {
 			collection: dockerColl,
 			conditions: {
 				env: options.env.toLowerCase(),
-				serviceName: options.serviceName,
-				fields: { type: 1 }
-			}
+				serviceName: options.serviceName
+			},
+			fields: { type: 1 }
 		};
 
 		model.findEntry(soajs, opts, cb);
