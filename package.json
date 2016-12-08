@@ -35,7 +35,7 @@
     "shelljs": "*"
   },
   "dependencies": {
-    "async": "1.5.2",
+    "async": "*",
     "bcrypt": "*",
     "bitbucket-server-nodejs": "^2.10.0",
     "cron": "*",

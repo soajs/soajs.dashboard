@@ -76,9 +76,10 @@ var lib = {
 						var kubernetes = new K8Api.Core(kubeConfig);
 						kubernetes.namespaces.pods.get({}, function (error, response) { //TODO: find better ping call
 							//error is insignificant in this case
-							return callback(response);
+							return callback(null, response);
 						});
-					}, function (fastestNodeRecord) {
+					}, function (error, fastestNodeRecord) {
+						//error is insignificant in this case
 						if (!fastestNodeRecord) {
 							return cb({'message': 'ERROR: unable to connect to a manager node'});
 						}
