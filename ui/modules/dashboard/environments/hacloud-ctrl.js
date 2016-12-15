@@ -84,6 +84,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.hostLogs($scope, taskName);
 	};
 
+	$scope.checkCerts = function(env) {
+		hacloudSrv.checkCerts($scope, env);
+	}
+
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
 	$scope.envDeployer = $cookies.getObject("myEnv").deployer;
@@ -91,6 +95,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	if ($scope.access.hacloud.nodes.list) {
 		$scope.listNodes();
+		$scope.certsExist = true;
+		if($scope.envDeployer.selected.split('.')[1] === "kubernetes" || ($scope.envDeployer.selected.split('.')[1] === "docker" &&
+            $scope.envDeployer.selected.split('.')[2] === "remote")){
+            $scope.checkCerts($scope.envCode);
+		}
 	}
 	if ($scope.access.listHosts) {
 		$scope.listServices();

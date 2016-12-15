@@ -2,6 +2,27 @@
 var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
+    function checkCerts(currentScope, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "get",
+            "routeName": "/dashboard/environment/platforms/list",
+            "params": {
+                env: env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
+            } else {
+                if(response.certs.length === 3) {
+                    currentScope.certsExist = true;
+                }
+                else{
+                    currentScope.certsExist = false;
+                }
+            }
+        });
+    }
+
     function listNodes(currentScope) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "get",
@@ -1527,7 +1548,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'executeHeartbeatTest': executeHeartbeatTest,
         'hostLogs': hostLogs,
         'deployNewService': deployNewService,
-        'listNginxHosts': listNginxHosts
+        'listNginxHosts': listNginxHosts,
+        'checkCerts' : checkCerts
     };
 
 }]);
