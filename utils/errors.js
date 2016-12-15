@@ -210,6 +210,7 @@ var errors = {
 	"786": "Validation Error",
 	"787": "Missing field name in config.js",
 	"788": "Invalid or no type provided in config.js",
+
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
