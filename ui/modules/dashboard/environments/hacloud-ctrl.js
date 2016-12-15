@@ -96,10 +96,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	if ($scope.access.hacloud.nodes.list) {
 		$scope.listNodes();
 		$scope.certsExist = true;
-		if($scope.envDeployer.selected.split('.')[1] === "kubernetes" || ($scope.envDeployer.selected.split('.')[1] === "docker" &&
-            $scope.envDeployer.selected.split('.')[2] === "remote")){
-            $scope.checkCerts($scope.envCode);
-		}
+		$scope.checkCerts($scope.envCode);
 	}
 	if ($scope.access.listHosts) {
 		$scope.listServices();

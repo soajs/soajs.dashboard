@@ -10,11 +10,23 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 env: env
             }
         }, function (error, response) {
+            console.log(JSON.stringify(response,null,2))
             if (error) {
                 currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
-            } else {
+            } else if(response.selected.split('.')[1] === "kubernetes" || (response.selected.split('.')[1] === "docker" &&
+                response.selected.split('.')[2] === "remote")){
+                console.log(response.selected)
                 if(response.certs.length === 3) {
+
                     currentScope.certsExist = true;
+                    var temp = response.selected.split('.')[1] + "." + response.selected.split('.')[2];
+
+                    for(var i = 0; i < response.certs.length ; i++){
+                        if(!(response.certs[i].metadata.env[env] && response.certs[i].metadata.env[env].indexOf(temp) !== -1)){
+                            currentScope.certsExist = false;
+                            break;
+                        }
+                    }
                 }
                 else{
                     currentScope.certsExist = false;
