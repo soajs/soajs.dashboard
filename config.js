@@ -26,6 +26,7 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
 

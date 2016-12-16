@@ -64,6 +64,13 @@ var modelObj = {
 	}
 };
 var environmentsConfig = {
+	deployer: {
+    	kubernetes: {
+        "minPort": 30000,
+        "maxPort": 32767
+    	}
+	},
+
 	form: {
 		template: {
 			'name': '',
