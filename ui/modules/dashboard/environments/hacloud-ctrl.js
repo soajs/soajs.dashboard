@@ -4,8 +4,6 @@ var environmentsApp = soajsApp.components;
 environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
-	$scope.certsLink = "http://dashboard.soajs.org:" + location.port + "/#/environments-platforms";
-
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
