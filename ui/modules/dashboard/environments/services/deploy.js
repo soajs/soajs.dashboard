@@ -119,7 +119,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                                 else {
                                     if(currentScope.deployer.selected.split('.')[1] === "kubernetes")
                                     	formData.exposedPort = formData.exposedPort + kubeConfig.minPort;
-                                    console.log(formData.exposedPort)
+                                    
                                     currentScope.modalInstance.dismiss("ok");
                                     var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
                                     text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
