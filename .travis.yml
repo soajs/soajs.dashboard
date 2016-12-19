@@ -23,8 +23,3 @@ before_script:
 
 script:
   - grunt coverage
-
-after_success:
-  deploy:
-    provider: npm
-    api_key: $myNpmKey
