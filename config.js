@@ -1964,6 +1964,20 @@ module.exports = {
 				"validation": {
 					"type": "string"
 				}
+			},
+			"exposedPort":{
+                "source": ['body.exposedPort'],
+                "required": false,
+                "validation": {
+                    "type": "number"
+                }
+			},
+			"isKubernetes": {
+                "source": ['body.isKubernetes'],
+                "required": false,
+                "validation": {
+                    "type": "boolean"
+                }
 			}
 		},
 		"/hosts/deployNginx": {

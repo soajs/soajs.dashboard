@@ -110,35 +110,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         'label': translation.submit[LANG],
                         'btn': 'primary',
                         'action': function(formData) {
-                            if(((formData.exposedPort < kubeConfig.minPort) || (formData.exposedPort > kubeConfig.maxPort))
-                                && currentScope.deployer.selected.split('.')[1] === "kubernetes"){
+                            if(!formData.controllers || formData.controllers < 1) {
                                 $timeout(function() {
-                                    alert("The Nginx chosen exposed port (" + formData.exposedPort + ") is outside the range of valid exposed ports: (" + kubeConfig.minPort + " - " + kubeConfig.maxPort +").");
+                                    alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
                                 }, 100);
                             }
-                            else{
-                                if(!formData.controllers || formData.controllers < 1) {
-                                    $timeout(function() {
-                                        alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
-                                    }, 100);
-                                }
-                                else {
-                                    formData.exposedPort = formData.exposedPort + kubeConfig.minPort;
-                                    currentScope.modalInstance.dismiss("ok");
-                                    var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
-                                    text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
-                                    text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                                    text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
-                                    jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                    jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                    overlay.show();
+                            else {
+                                currentScope.modalInstance.dismiss("ok");
+                                var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
+                                text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
+                                text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
+                                text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
+                                jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+                                jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+                                overlay.show();
 
-                                    formData.owner = branchInfo.owner;
-                                    formData.repo = branchInfo.repo;
+                                formData.owner = branchInfo.owner;
+                                formData.repo = branchInfo.repo;
 
-                                    deployEnvironment(formData);
-                                }
+                                deployEnvironment(formData);
                             }
+
                         }
                     },
                     {
@@ -168,6 +160,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 'useLocalSOAJS': formData.useLocalSOAJS,
                 'imagePrefix': formData.ctrlImagePrefix
             };
+
+            if(currentScope.isKubernetes) {
+                params.isKubernetes = true;
+            }
 
             if (formData.exposedPort) {
                 params.exposedPort = formData.exposedPort;
