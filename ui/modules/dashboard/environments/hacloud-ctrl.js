@@ -86,7 +86,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	$scope.checkCerts = function(env) {
 		hacloudSrv.checkCerts($scope, env);
-	}
+	};
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;
