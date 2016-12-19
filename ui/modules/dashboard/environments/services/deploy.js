@@ -10,7 +10,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         if(currentScope.isKubernetes){
             formConfig.entries[0].entries[1].min = kubeConfig.minPort;
             formConfig.entries[0].entries[1].max = kubeConfig.maxPort;
-            formConfig.entries[0].entries[1].fieldMsg += ". Kubernetees port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
+            formConfig.entries[0].entries[1].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
 
         getControllerBranches(currentScope, function (branchInfo) {
@@ -128,7 +128,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                                 formData.owner = branchInfo.owner;
                                 formData.repo = branchInfo.repo;
 
-                                deployEnvironment(formData);
+                                return deployEnvironment(formData);
                             }
 
                         }
@@ -200,8 +200,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             }, function(error, response) {
                 if(error) {
                     overlay.hide();
-                    //currentScope.generateNewMsg(envCode, 'danger', error.message);
-                    currentScope.displayAlert('danger', error.message);
+                    currentScope.form.displayAlert('danger', error.message);
+                    return false;
                 }
                 else {
                     params.supportSSL = formData.supportSSL;
@@ -214,10 +214,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         "data": params
                     }, function(error, response) {
                         if(error) {
-                            currentScope.generateNewMsg(envCode, 'danger', error.message);
+                            currentScope.form.displayAlert('danger', error.message);
                             overlay.hide();
+                            return false;
                         }
                         else {
+                            return true;
                             overlay.hide(function(){
                                 if (!haMode) {
                                     currentScope.listNginxHosts(envCode);
