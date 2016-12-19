@@ -8,9 +8,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         currentScope.isKubernetes = (currentScope.deployer.selected.split('.')[1] === "kubernetes");
         if(currentScope.isKubernetes){
-            formConfig.entries[1].min = kubeConfig.minPort;
-            formConfig.entries[1].max = kubeConfig.maxPort;
-            formConfig.entries[1].fieldMsg += ", Kubernetes allows port range between 0 and 2767";
+            formConfig.entries[0].entries[1].min = kubeConfig.minPort;
+            formConfig.entries[0].entries[1].max = kubeConfig.maxPort;
+            formConfig.entries[0].entries[1].fieldMsg += ". Kubernetees port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
 
         getControllerBranches(currentScope, function (branchInfo) {
