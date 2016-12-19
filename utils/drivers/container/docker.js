@@ -155,6 +155,7 @@ var lib = {
 
 					model.getDb(soajs).getMongoSkinDB(function (error, db) {
 						checkError(error, callback, function () {
+
 							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);

@@ -39,6 +39,11 @@ module.exports = {
 
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
+	"kubeNginx": {
+		"minPort": 0,
+		"maxPort": 2767
+	},
+
 	"gitAccounts": {
 		"bitbucket_org": {
 			apiDomain: 'https://api.bitbucket.org/1.0',

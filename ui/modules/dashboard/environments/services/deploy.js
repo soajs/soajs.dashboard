@@ -6,6 +6,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         var formConfig = angular.copy(environmentsConfig.form.deploy);
         var kubeConfig = environmentsConfig.deployer.kubernetes;
 
+        currentScope.isKubernetes = (currentScope.deployer.selected.split('.')[1] === "kubernetes");
+        if(currentScope.isKubernetes){
+            formConfig.entries[1].min = kubeConfig.minPort;
+            formConfig.entries[1].max = kubeConfig.maxPort;
+            formConfig.entries[1].fieldMsg += ", Kubernetes allows port range between 0 and 2767";
+        }
+
         getControllerBranches(currentScope, function (branchInfo) {
             for (var i = 0; i < formConfig.entries.length; i++) {
                 if (formConfig.entries[i].name === 'controllers') {
@@ -103,38 +110,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         'label': translation.submit[LANG],
                         'btn': 'primary',
                         'action': function(formData) {
-                            if(((kubeConfig.minPort + formData.exposedPort < kubeConfig.minPort) || (kubeConfig.minPort + formData.exposedPort > kubeConfig.maxPort))
-                                && currentScope.deployer.selected.split('.')[1] === "kubernetes"){
+                            if(!formData.controllers || formData.controllers < 1) {
                                 $timeout(function() {
-                                	var portRange = (kubeConfig.maxPort - kubeConfig.minPort);
-                                    alert("The Nginx chosen exposed port (" + formData.exposedPort + ") is outside the rage of valid exposed ports: (0 - " + portRange +")");
+                                    alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
                                 }, 100);
                             }
-                            else{
-                                if(!formData.controllers || formData.controllers < 1) {
-                                    $timeout(function() {
-                                        alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
-                                    }, 100);
-                                }
-                                else {
-                                    if(currentScope.deployer.selected.split('.')[1] === "kubernetes")
-                                    	formData.exposedPort = formData.exposedPort + kubeConfig.minPort;
-                                    console.log(formData.exposedPort)
-                                    currentScope.modalInstance.dismiss("ok");
-                                    var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
-                                    text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
-                                    text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                                    text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
-                                    jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                                    jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                                    overlay.show();
+                            else {
+                                currentScope.modalInstance.dismiss("ok");
+                                var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
+                                text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
+                                text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
+                                text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
+                                jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
+                                jQuery("#overlay .content").css("width", "40%").css("left", "30%");
+                                overlay.show();
 
-                                    formData.owner = branchInfo.owner;
-                                    formData.repo = branchInfo.repo;
+                                formData.owner = branchInfo.owner;
+                                formData.repo = branchInfo.repo;
 
-                                    deployEnvironment(formData);
-                                }
+                                deployEnvironment(formData);
                             }
+
                         }
                     },
                     {
