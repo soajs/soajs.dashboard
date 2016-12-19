@@ -116,7 +116,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                                 }, 100);
                             }
                             else {
-                                currentScope.modalInstance.dismiss("ok");
                                 var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
                                 text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
                                 text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
@@ -128,7 +127,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                                 formData.owner = branchInfo.owner;
                                 formData.repo = branchInfo.repo;
 
-                                return deployEnvironment(formData);
+                                deployEnvironment(formData);
                             }
 
                         }
@@ -201,7 +200,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 if(error) {
                     overlay.hide();
                     currentScope.form.displayAlert('danger', error.message);
-                    return false;
                 }
                 else {
                     params.supportSSL = formData.supportSSL;
@@ -216,10 +214,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         if(error) {
                             currentScope.form.displayAlert('danger', error.message);
                             overlay.hide();
-                            return false;
                         }
                         else {
-                            return true;
+                            currentScope.modalInstance.dismiss("ok");
                             overlay.hide(function(){
                                 if (!haMode) {
                                     currentScope.listNginxHosts(envCode);
