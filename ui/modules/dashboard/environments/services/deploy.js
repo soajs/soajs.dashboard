@@ -118,6 +118,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                             else {
                                 var text = "<h2>" + translation.deployingNew[LANG] + envCode + " Environment</h2>";
                                 text += "<p>" +  translation.deploying[LANG] + formData.controllers + translation.newControllersEnvironment[LANG] + envCode + ".</p>";
+                                text += "<p>" +  translation.deploying[LANG] + formData.nginxCount + translation.newNginxEnvironment[LANG] + envCode + ".</p>";
                                 text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
                                 text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
                                 jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");

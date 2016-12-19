@@ -576,9 +576,13 @@ var envTranslation ={
 		"FRA": "Deploying "
 	},
 	"newControllersEnvironment": {
-		"ENG": " new controllers for environment ",
-		"FRA": " new controllers for environment "
+		"ENG": " new controller(s) for environment ",
+		"FRA": " new controllers(s) for environment "
 	},
+    "newNginxEnvironment": {
+        "ENG": " new nginx instance(s) for environment ",
+        "FRA": " new nginx instance(s) for environment "
+    },
 	"zombieContainers": {
 		"ENG": "Zombie Containers",
 		"FRA": "Zombie Containers"
