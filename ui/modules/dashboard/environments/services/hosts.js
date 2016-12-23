@@ -87,7 +87,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 		function invokeHeartbeat(defaultControllerHost) {
 			getSendDataFromServer(currentScope, ngDataApi, {
-				"method": "send",
+				"method": "post",
 				"routeName": "/dashboard/hosts/maintenanceOperation",
 				"data": {
 					"serviceName": "controller",
@@ -113,7 +113,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					updateParent();
 
 					getSendDataFromServer(currentScope, ngDataApi, {
-						"method": "send",
+						"method": "post",
 						"routeName": "/dashboard/hosts/maintenanceOperation",
 						"data": {
 							"serviceName": "controller",
@@ -285,7 +285,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function executeHeartbeatTest(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -431,7 +431,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function executeAwarenessTest(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -529,7 +529,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	//ok from down here
 	function reloadRegistry(currentScope, env, oneHost, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -583,7 +583,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function loadProvisioning(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -632,7 +632,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function loadDaemonStats(currentScope, env, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -681,7 +681,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function removeHost(currentScope, env, serviceName, oneHost) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/hosts/delete",
 			"params": {'env': env, 'ip': oneHost.ip, 'name': oneHost.name, 'hostname': oneHost.hostname}
 		}, function (error) {
@@ -746,7 +746,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 	function hostLogs(currentScope, env, serviceName, oneHost, serviceInfo) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/hosts/maintenanceOperation",
 			"data": {
 				"serviceName": oneHost.name,
@@ -851,7 +851,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 				$scope.getServices = function (cb) {
 					getSendDataFromServer(currentScope, ngDataApi, {
-						method: 'send',
+						method: 'post',
 						routeName: '/dashboard/services/list'
 					}, function (error, response) {
 						if (error) {
@@ -875,7 +875,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 
 				$scope.getDaemons = function () {
 					getSendDataFromServer(currentScope, ngDataApi, {
-						method: 'send',
+						method: 'post',
 						routeName: '/dashboard/daemons/list',
 						params: {
 							'getGroupConfigs': true
@@ -1046,7 +1046,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 
 					getSendDataFromServer(currentScope, ngDataApi, {
-						"method": "send",
+						"method": "post",
 						"routeName": "/dashboard/hosts/deployController",
 						"data": params
 					}, function (error, response) {
@@ -1125,7 +1125,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 						}
 						params.version = parseInt(params.version);
 						var config = {
-							"method": "send",
+							"method": "post",
 							"routeName": "/dashboard/hosts/deployService",
 							"data": params
 						};
@@ -1211,7 +1211,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					}
 
 					getSendDataFromServer(currentScope, ngDataApi, {
-						method: 'send',
+						method: 'post',
 						routeName: '/dashboard/hosts/deployNginx',
 						data: params
 					}, function (error, response) {

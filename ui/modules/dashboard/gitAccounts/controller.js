@@ -66,7 +66,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
                         overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
-                            'method': 'send',
+                            'method': 'post',
                             'routeName': '/dashboard/gitAccounts/login',
                             'data': postData
                         }, function (error) {
@@ -99,7 +99,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     $scope.deleteAccount = function (account) {
         if (account.access === 'public' || account.provider !== 'github') {
             getSendDataFromServer($scope, ngDataApi, {
-                'method': 'get',
+                'method': 'delete',
                 'routeName': '/dashboard/gitAccounts/logout',
                 'params': {
                     id: account._id.toString(),
@@ -134,7 +134,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                 password: formData.password
                             };
                             getSendDataFromServer($scope, ngDataApi, {
-                                'method': 'get',
+                                'method': 'delete',
                                 'routeName': '/dashboard/gitAccounts/logout',
                                 'params': params
                             }, function (error) {
@@ -278,7 +278,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                             'action': function (formData) {
                                 overlayLoading.show();
 	                            getSendDataFromServer($scope, ngDataApi, {
-                                    method: 'send',
+                                    method: 'post',
                                     routeName: '/dashboard/gitAccounts/repo/activate',
                                     params: {
                                         id: account._id.toString(),
@@ -358,7 +358,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
     $scope.deactivateRepo = function (accountId, repo) {
         getSendDataFromServer($scope, ngDataApi, {
-            method: 'get',
+            method: 'put',
             routeName: '/dashboard/gitAccounts/repo/deactivate',
             params: {
                 id: accountId.toString(),
@@ -387,7 +387,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
     $scope.syncRepo = function (account, repo) {
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
-            method: 'send',
+            method: 'put',
             routeName: '/dashboard/gitAccounts/repo/sync',
             params: {
                 id: account._id.toString()
@@ -418,7 +418,7 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 
                             $scope.reactivate = function () {
                                 getSendDataFromServer($scope, ngDataApi, {
-                                    method: 'get',
+                                    method: 'put',
                                     routeName: '/dashboard/gitAccounts/repo/deactivate',
                                     params: {
                                         id: account._id.toString(),

@@ -75,7 +75,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
-                            "method": "send",
+                            "method": "post",
                             "routeName": "/dashboard/hacloud/nodes/add",
                             "data": postData
                         }, function (error, response) {
@@ -109,7 +109,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function removeNode(currentScope, nodeId) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "get",
+            "method": "delete",
             "routeName": "/dashboard/hacloud/nodes/remove",
             "params": {
                 env: currentScope.envCode,
@@ -138,7 +138,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         };
 
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "put",
             "routeName": "/dashboard/hacloud/nodes/update",
             params: params,
             data: postData
@@ -245,7 +245,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
         function invokeHeartbeat(defaultControllerHost) {
             getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "send",
+                "method": "post",
                 "routeName": "/dashboard/hosts/maintenanceOperation",
                 "data": {
                     "serviceName": "controller",
@@ -271,7 +271,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     updateParent();
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/maintenanceOperation",
                         "data": {
                             "serviceName": "controller",
@@ -405,7 +405,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -568,7 +568,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
         overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
+            method: 'delete',
             routeName: '/dashboard/hacloud/services/delete',
             params: params
         }, function (error, response) {
@@ -613,7 +613,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'put',
                         routeName: '/dashboard/hacloud/services/scale',
                         params: params,
                         data: postData
@@ -639,7 +639,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function reloadRegistry(currentScope, env, oneHost, cb) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -731,7 +731,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function loadProvisioning(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -811,7 +811,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeAwarenessTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -978,7 +978,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -1162,7 +1162,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/services/list'
                     }, function (error, response) {
                         if (error) {
@@ -1186,7 +1186,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.getDaemons = function () {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/daemons/list',
                         params: {
                             'getGroupConfigs': true
@@ -1355,7 +1355,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/deployController",
                         "data": params
                     }, function (error, response) {
@@ -1425,7 +1425,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     var config = {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/deployService",
                         "data": params
                     };
@@ -1504,7 +1504,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/hosts/deployNginx',
                         data: params
                     }, function (error, response) {
