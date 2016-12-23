@@ -136,7 +136,8 @@ var staticContentNav = [
         'label': translation.staticContent[LANG],
         'checkPermission': {
             'service': 'dashboard',
-            'route': '/staticContent/list'
+            'route': '/staticContent/list',
+            'method': 'post'
         },
         'url': '#/static-content',
         'tplPath': 'modules/dashboard/staticContent/directives/list.tmpl',

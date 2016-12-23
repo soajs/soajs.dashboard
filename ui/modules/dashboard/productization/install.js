@@ -138,7 +138,8 @@ var productizationNav =[
 		'label': translation.productization[LANG],
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/product/list'
+			'route':'/product/list',
+			'method': 'get'
 		},
 		'url': '#/productization',
 		'tplPath': 'modules/dashboard/productization/directives/list.tmpl',
@@ -162,7 +163,8 @@ var productizationNav =[
 		'tracker': true,
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/product/packages/update'
+			'route':'/product/packages/update',
+			'method': 'put'
 		},
 		'pillar':{
 			'name': 'management',

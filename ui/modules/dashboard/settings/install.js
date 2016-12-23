@@ -28,7 +28,8 @@ var settingsNav = [
 		'label': translation.settings[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/settings/tenant/get'
+			'route': '/settings/tenant/get',
+			'method': 'get'
 		},
 		'url': '#/settings',
 		'tplPath': 'modules/dashboard/settings/directives/list.tmpl',

@@ -98,13 +98,13 @@ var productizationConfig = {
 		}
 	},
 	'permissions':{
-		'listProduct' :['dashboard', '/product/list'],
-		'addProduct' : ['dashboard', '/product/add'],
-		'deleteProduct' :['dashboard', '/product/delete'],
-		'editProduct':['dashboard', '/product/update'],
-		'listPck' : ['dashboard', '/product/packages/list'],
-		'addPck' : ['dashboard', '/product/packages/add'],
-		'deletePck' : ['dashboard', '/product/packages/delete'],
-		'updatePck' : ['dashboard', '/product/packages/update']
+		'listProduct' :['dashboard', '/product/list', 'get'],
+		'addProduct' : ['dashboard', '/product/add', 'post'],
+		'deleteProduct' :['dashboard', '/product/delete', 'delete'],
+		'editProduct':['dashboard', '/product/update', 'put'],
+		'listPck' : ['dashboard', '/product/packages/list', 'get'],
+		'addPck' : ['dashboard', '/product/packages/add', 'post'],
+		'deletePck' : ['dashboard', '/product/packages/delete', 'delete'],
+		'updatePck' : ['dashboard', '/product/packages/update', 'put']
 	}
 };
