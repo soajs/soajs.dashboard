@@ -64,18 +64,18 @@ var membersConfig = {
 	permissions: {
 		"adminAll": ['urac', '/admin/all'],
 		'adminUser': {
-			'list': ['urac', '/admin/listUsers'],
-			'changeStatusAccess': ['urac', '/admin/changeStatusAccess'],
-			'editUser': ['urac', '/admin/editUser'],
-			'editUserConfig': ['urac', '/admin/editUserConfig'],
-			'addUser': ['urac', '/admin/addUser']
+			'list': ['urac', '/admin/listUsers','get'],
+			'changeStatusAccess': ['urac', '/admin/changeUserStatus','get'],
+			'editUser': ['urac', '/admin/editUser','post'],
+			'editUserConfig': ['urac', '/admin/editUserConfig','post'],
+			'addUser': ['urac', '/admin/addUser','post']
 		},
 		'adminGroup': {
-			'list': ['urac', '/admin/group/list'],
-			'add': ['urac', '/admin/group/add'],
-			'edit': ['urac', '/admin/group/edit'],
-			'delete': ['urac', '/admin/group/delete'],
-			'addUsers': ['urac', '/admin/group/addUsers']
+			'list': ['urac', '/admin/group/list','get'],
+			'add': ['urac', '/admin/group/add','post'],
+			'edit': ['urac', '/admin/group/edit','post'],
+			'delete': ['urac', '/admin/group/delete','delete'],
+			'addUsers': ['urac', '/admin/group/addUsers','post']
 		}
 	}
 };

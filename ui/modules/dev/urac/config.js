@@ -6,22 +6,22 @@ var usersModuleDevConfig = {
 	permissions: {
 		"listTenants": ['dashboard', '/tenant/list'],
 		'adminUser': {
-			'list': ['urac', '/owner/admin/listUsers'],
-			'changeStatusAccess': ['urac', '/owner/admin/changeStatusAccess'],
-			'editUser': ['urac', '/owner/admin//editUser'],
-			'editUserConfig': ['urac', '/owner/admin//editUserConfig'],
-			'addUser': ['urac', '/owner/admin/addUser']
+			'list': ['urac', '/owner/admin/listUsers','get'],
+			'changeStatusAccess': ['urac', '/owner/admin/changeUserStatus','get'],
+			'editUser': ['urac', '/owner/admin/editUser','post'],
+			'editUserConfig': ['urac', '/owner/admin/editUserConfig','post'],
+			'addUser': ['urac', '/owner/admin/addUser','post']
 		},
 		'adminGroup': {
-			'list': ['urac', '/owner/admin/group/list'],
-			'add': ['urac', '/owner/admin/group/add'],
-			'edit': ['urac', '/owner/admin/group/edit'],
-			'delete': ['urac', '/owner/admin/group/delete'],
-			'addUsers': ['urac', '/owner/admin/group/addUsers']
+			'list': ['urac', '/owner/admin/group/list','get'],
+			'add': ['urac', '/owner/admin/group/add','post'],
+			'edit': ['urac', '/owner/admin/group/edit','post'],
+			'delete': ['urac', '/owner/admin/group/delete','delete'],
+			'addUsers': ['urac', '/owner/admin/group/addUsers','post']
 		},
 		'adminToken': {
-			'list': ['urac', '/owner/admin/tokens/list'],
-			'delete': ['urac', '/owner/admin/tokens/delete']
+			'list': ['urac', '/owner/admin/tokens/list','get'],
+			'delete': ['urac', '/owner/admin/tokens/delete','delete']
 		}
 	},
 	

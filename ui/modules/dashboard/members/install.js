@@ -184,7 +184,8 @@ var membersNav = [
 		'label': translation.tenantOrganizationChart[LANG],
 		'checkPermission': {
 			'service': 'urac',
-			'route': '/admin/all'
+			'route': '/admin/all',
+			'method':'get'
 		},
 		'url': '#/tenants-members',
 		'tplPath': 'modules/dashboard/members/directives/tenant.tmpl',
@@ -209,7 +210,8 @@ var membersNav = [
 		'label': translation.myOrganizationChart[LANG],
 		'checkPermission': {
 			'service': 'urac',
-			'route': '/admin/listUsers'
+			'route': '/admin/listUsers',
+			'method':'get'
 		},
 		'url': '#/members',
 		'tplPath': 'modules/dashboard/members/directives/list.tmpl',
@@ -235,7 +237,8 @@ var membersNav = [
 		'tracker': true,
 		'checkPermission': {
 			'service': 'urac',
-			'route': '/admin/editUser'
+			'route': '/admin/editUser',
+			'method' : 'post'
 		},
 		'pillar': {
 			'name': 'management',
