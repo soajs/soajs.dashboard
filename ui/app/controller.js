@@ -494,7 +494,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 										$scope.displayAlert('danger', 'You do not have permissions to access this section');
 										$timeout(function () {
 											$scope.closeAlert();
-											$scope.go("/dashboard");
+											$scope.go("/help");
 										}, 9000);
 									}
 								}
@@ -572,7 +572,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				console.log('Missing user object');
 			}
 			$scope.enableInterface = true;
-			$scope.go("/dashboard");
+			$scope.go("/myaccount");
 		});
 		
 		$scope.buildPermittedEnvOperation = function (serviceName, routePath, method, env, cb) {

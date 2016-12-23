@@ -4,10 +4,6 @@
 
 var navigation = [
 	// {
-	// 	// 'checkPermission': {
-	// 	// 	'service': 'dashboard',
-	// 	// 	'route': '/environment/list'
-	// 	// },
 	// 	'id': 'home',
 	// 	'label': translation.home[LANG],
 	// 	'url': '#/dashboard',
