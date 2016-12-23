@@ -405,7 +405,7 @@ describe("Content Builder Tests", function () {
                     'config': cbConfig
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(!body.result);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 172, "message": "Missing required field: id"});
@@ -425,7 +425,7 @@ describe("Content Builder Tests", function () {
                     'config': cbConfig
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(!body.result);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 701, "message": errorCodes[701]});
@@ -450,7 +450,7 @@ describe("Content Builder Tests", function () {
                     'config': cbConfig
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(!body.result);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 702, "message": errorCodes[702]});
@@ -477,7 +477,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(!body.result);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 704, "message": errorCodes[704]});
@@ -499,7 +499,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(!body.result);
                 assert.deepEqual(body.errors.details[0],
                     {"code": 704, "message": errorCodes[704]});
@@ -520,7 +520,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -554,7 +554,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -589,7 +589,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -633,7 +633,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -677,7 +677,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -723,7 +723,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -769,7 +769,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -800,7 +800,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -830,7 +830,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -869,7 +869,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -908,7 +908,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -941,7 +941,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {
@@ -973,7 +973,7 @@ describe("Content Builder Tests", function () {
                     'config': data
                 }
             };
-            executeMyRequest(params, 'cb/update', 'post', function (body) {
+            executeMyRequest(params, 'cb/update', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 mongo.count('gc_versioning', {}, function (error, count) {

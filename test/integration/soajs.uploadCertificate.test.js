@@ -223,7 +223,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - cloud'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -238,7 +238,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -253,7 +253,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -267,7 +267,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
                 done();
@@ -282,7 +282,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 730,'message': errorCodes[730]});
                 done();
@@ -297,7 +297,7 @@ describe("Docker Certificates tests", function () {
                     driverName: 'dockermachine - local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 701, 'message': errorCodes[701]});
                 done();
@@ -373,7 +373,7 @@ describe("Docker Certificates tests", function () {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -391,7 +391,7 @@ describe("Docker Certificates tests", function () {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -408,7 +408,7 @@ describe("Docker Certificates tests", function () {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: driverName'});
                 done();
@@ -426,7 +426,7 @@ describe("Docker Certificates tests", function () {
                     certIds: ['1234567890']
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 701, 'message': errorCodes[701]});
                 done();
@@ -444,7 +444,7 @@ describe("Docker Certificates tests", function () {
                     certIds: [testCerts[0], '123456789012345678901234']
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 730, 'message': errorCodes[730]});
                 done();

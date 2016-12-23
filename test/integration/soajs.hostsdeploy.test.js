@@ -68,7 +68,7 @@ function deleteService(soajsauth, options, cb) {
             name: options.name
         }
     };
-    return executeMyRequest(params, "hacloud/services/delete", 'get', cb);
+    return executeMyRequest(params, "hacloud/services/delete", 'delete', cb);
 }
 
 describe("testing hosts deployment", function () {
@@ -425,7 +425,7 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/update", "post", function (body) {
+                executeMyRequest(params, "hacloud/nodes/update", "put", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 173, 'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"});
                     done();
@@ -447,7 +447,7 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/update", "post", function (body) {
+                executeMyRequest(params, "hacloud/nodes/update", "put", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 823, 'message': errorCodes[823]});
                     done();
@@ -468,7 +468,7 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/remove", "get", function (body) {
+                executeMyRequest(params, "hacloud/nodes/remove", "delete", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 803, 'message': errorCodes[803]});
                     done();
@@ -486,7 +486,7 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/remove", "get", function (body) {
+                executeMyRequest(params, "hacloud/nodes/remove", "delete", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 821, 'message': errorCodes[821]});
                     done();
@@ -986,7 +986,7 @@ describe("testing hosts deployment", function () {
                 }
             };
 
-            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -1008,7 +1008,7 @@ describe("testing hosts deployment", function () {
                 }
             };
 
-            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -1030,7 +1030,7 @@ describe("testing hosts deployment", function () {
                 }
             };
 
-            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {"code": 809, "message": errorCodes[809]});
                 done();
@@ -1060,7 +1060,7 @@ describe("testing hosts deployment", function () {
                 }
             };
 
-            executeMyRequest(params, "hacloud/services/scale", "post", function (body) {
+            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: envCode"});
                 done();
