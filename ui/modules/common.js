@@ -11,7 +11,7 @@ function constructModulePermissions(scope, access, permissionsObj) {
 			if (exclude.indexOf(permissionsObj[permission][0]) === -1) {
 				env = scope.$parent.currentSelectedEnvironment.toLowerCase();
 			}
-			scope.buildPermittedEnvOperation(permissionsObj[permission][0], permissionsObj[permission][1], env, function (hasAccess) {
+			scope.buildPermittedEnvOperation(permissionsObj[permission][0], permissionsObj[permission][1], permissionsObj[permission][2], env, function (hasAccess) {
 				access[permission] = hasAccess;
 				if (!scope.$$phase) {
 					scope.$apply();
