@@ -660,14 +660,6 @@ module.exports = {
 				"commonFields": ['id']
 			},
 
-			"/tenant/acl/get": {
-				_apiInfo: {
-					"l": "Get Current Tenant Access Level",
-					"group": "Tenant"
-				},
-				"commonFields": ['id']
-			},
-
 			"/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -1260,6 +1252,29 @@ module.exports = {
 				}
 			},
 
+			"/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
+				_apiInfo: {
+					"l": "Delete Tenant Application External Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key', 'extKey'],
+				"extKeyEnv": {
+					"source": ['body.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/tenant/acl/get": { //TODO: should be changed from post to get
+				_apiInfo: {
+					"l": "Get Current Tenant Access Level",
+					"group": "Tenant"
+				},
+				"commonFields": ['id']
+			},
+
 			"/settings/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
@@ -1292,6 +1307,21 @@ module.exports = {
 				"commonFields": ['appId', 'key', 'expDate', 'device', 'geo'],
 				"env": {
 					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
+				_apiInfo: {
+					"l": "Delete Tenant Application External Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key', 'extKey'],
+				"extKeyEnv": {
+					"source": ['body.extKeyEnv'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2644,21 +2674,6 @@ module.exports = {
 				"commonFields": ['id', 'appId', 'key']
 			},
 
-			"/tenant/application/key/ext/delete": {
-				_apiInfo: {
-					"l": "Delete Tenant Application External Key",
-					"group": "Tenant Application"
-				},
-				"commonFields": ['id', 'appId', 'key', 'extKey'],
-				"extKeyEnv": {
-					"source": ['body.extKeyEnv'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
 			"/settings/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -2680,21 +2695,6 @@ module.exports = {
 					"group": "Tenant Settings"
 				},
 				"commonFields": ['appId', 'key']
-			},
-
-			"/settings/tenant/application/key/ext/delete": {
-				_apiInfo: {
-					"l": "Delete Tenant Application External Key",
-					"group": "Tenant Settings"
-				},
-				"commonFields": ['appId', 'key', 'extKey'],
-				"extKeyEnv": {
-					"source": ['body.extKeyEnv'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
 			},
 
 			"/daemons/groupConfig/delete": {

@@ -137,7 +137,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 							postData.cluster.clusterType = type;
 
 							getSendDataFromServer(currentScope, ngDataApi, {
-								"method": "send",
+								"method": "post",
 								"routeName": "/dashboard/environment/clusters/add",
 								"params": {"env": env, "name": formData.name},
 								"data": postData
@@ -323,7 +323,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 						}
 
 						getSendDataFromServer(currentScope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/environment/clusters/update",
 							"params": {"env": env, "name": name},
 							"data": postData
@@ -356,7 +356,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 
 	function removeCluster(currentScope, env, name) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/environment/clusters/delete",
 			"params": {"env": env, 'name': name}
 		}, function (error, response) {
