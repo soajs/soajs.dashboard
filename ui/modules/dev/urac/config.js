@@ -4,7 +4,6 @@ var usersModuleDevConfig = {
 	apiEndLimit: 1000,
 	
 	permissions: {
-		"listTenants": ['dashboard', '/tenant/list'],
 		'adminUser': {
 			'list': ['urac', '/owner/admin/listUsers','get'],
 			'changeStatusAccess': ['urac', '/owner/admin/changeUserStatus','get'],

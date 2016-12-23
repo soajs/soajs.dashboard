@@ -199,6 +199,7 @@ soajsApp.service('checkApiHasAccess', function () {
 		
 		function validateAccess(environments, i, cb) {
 			var envCode = environments[i].toLowerCase();
+			
 			if (!aclObject[envCode] || !aclObject[envCode][serviceName]) {
 				i++;
 				if (i === environments.length) {
@@ -253,7 +254,7 @@ soajsApp.service('checkApiHasAccess', function () {
 					return aclObj;
 				}
 			}
-
+			
 			system = getAclObj(system);
 			
 			var api = (system && system.apis ? system.apis[routePath] : null);
@@ -563,7 +564,7 @@ soajsApp.service("aclDrawHelpers", function () {
 				var service = angular.copy(aclEnvFill[serviceName]);
 				if (service.include === true) {
 					aclEnvObj[serviceName] = {};
-
+					
 					if (service.accessType === 'private') {
 						aclEnvObj[serviceName].access = true;
 					}

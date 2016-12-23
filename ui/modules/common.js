@@ -3,14 +3,22 @@
 /**
  * build the access permissions of a module from permissionsObj
  */
-function constructModulePermissions(scope, access, permissionsObj) {
+function constructModulePermissions(scope, access, permissionsObj, forceEnv) {
 	var exclude = ['urac', 'dashboard'];
 	for (var permission in permissionsObj) {
 		if (Array.isArray(permissionsObj[permission])) {
-			var env = 'dashboard';
-			if (exclude.indexOf(permissionsObj[permission][0]) === -1) {
-				env = scope.$parent.currentSelectedEnvironment.toLowerCase();
+			var env;
+			if (forceEnv) {
+				env = forceEnv;
 			}
+			else {
+				env = 'dashboard';
+				if (exclude.indexOf(permissionsObj[permission][0]) === -1) {
+					env = scope.$parent.currentSelectedEnvironment.toLowerCase();
+				}
+			}
+			
+			env = env.toLowerCase();
 			scope.buildPermittedEnvOperation(permissionsObj[permission][0], permissionsObj[permission][1], permissionsObj[permission][2], env, function (hasAccess) {
 				access[permission] = hasAccess;
 				if (!scope.$$phase) {
@@ -20,7 +28,7 @@ function constructModulePermissions(scope, access, permissionsObj) {
 		}
 		else if (typeof(permissionsObj[permission]) === 'object') {
 			access[permission] = {};
-			constructModulePermissions(scope, access[permission], permissionsObj[permission]);
+			constructModulePermissions(scope, access[permission], permissionsObj[permission], forceEnv);
 		}
 	}
 }
@@ -115,7 +123,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			referenceKeys.push(grid.rows[i][fieldName]);
 		}
 	}
-
+	
 	performUpdate(referenceKeys, 0, function () {
 		if (err > 0) {
 			$scope.$parent.displayAlert('danger', opts.msg.error);
@@ -145,7 +153,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 					}
 				}
 			}
-
+			
 			if (opts.data) {
 				for (var i in opts.data) {
 					if (opts.data[i] === token) {
@@ -157,7 +165,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 				}
 			}
 		}
-
+		
 		var sendOptions = {
 			"method": method,
 			"headers": options.headers,

@@ -5,7 +5,10 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
-	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
+	var permissions = {
+		"listTenants": ['dashboard', '/tenant/list', 'get']
+	};
+	constructModulePermissions($scope, $scope.access, permissions);
 	
 	$scope.listTenants = function () {
 		overlayLoading.show();
@@ -65,10 +68,10 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 
 uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
 	$scope.$parent.isUserLoggedIn();
-	
 	$scope.access = {};
-	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
-	
+	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
+	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions, $scope.selectedEnv);
+
 	$scope.tName = $cookies.getObject('urac_merchant').name;
 	$scope.userCookie = $localStorage.soajs_user;
 	$scope.backToList = function () {
