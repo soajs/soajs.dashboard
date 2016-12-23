@@ -474,7 +474,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/hacloud/services/scale", function (req, res) {
+	service.put("/hacloud/services/scale", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.scaleHAService(config, req.soajs, res);
 		});

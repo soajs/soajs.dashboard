@@ -177,14 +177,14 @@ var gitAccountsAppConfig = {
 		}
 	},
 	'permissions': {
-		listAccounts: ['dashboard', '/gitAccounts/accounts/list'],
-		login: ['dashboard', '/gitAccounts/login'],
-		logout: ['dashboard', '/gitAccounts/logout'],
-		activateRepo: ['dashboard', '/gitAccounts/repo/activate'],
-		deactivateRepo: ['dashboard', '/gitAccounts/repo/deactivate'],
-		syncRepo: ['dashboard', '/gitAccounts/repo/sync'],
-		getRepos: ['dashboard', '/gitAccounts/getRepos'],
-		getBranches: ['dashboard', '/gitAccounts/getBranches']
+		listAccounts: ['dashboard', '/gitAccounts/accounts/list', 'get'],
+		login: ['dashboard', '/gitAccounts/login', 'post'],
+		logout: ['dashboard', '/gitAccounts/logout', 'delete'],
+		activateRepo: ['dashboard', '/gitAccounts/repo/activate', 'post'],
+		deactivateRepo: ['dashboard', '/gitAccounts/repo/deactivate', 'put'],
+		syncRepo: ['dashboard', '/gitAccounts/repo/sync', 'put'],
+		getRepos: ['dashboard', '/gitAccounts/getRepos', 'get'],
+		getBranches: ['dashboard', '/gitAccounts/getBranches', 'get']
 	},
 
 	"blacklistedRepos": [

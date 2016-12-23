@@ -2406,6 +2406,41 @@ module.exports = {
 				}
 			},
 
+			"/hacloud/services/scale": {
+				"_apiInfo": {
+					"l": "Scale HA Service",
+					"group": "HA Cloud"
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"scale": {
+					"source": ['body.scale'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
+				}
+			},
+
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
