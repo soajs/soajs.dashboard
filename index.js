@@ -363,7 +363,7 @@ service.init(function () {
 		});
 	});
 
-	service.delete("/tenant/application/key/ext/delete", function (req, res) {
+	service.post("/tenant/application/key/ext/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.deleteApplicationExtKeys(config, req, res);
 		});
@@ -733,7 +733,7 @@ service.init(function () {
 			});
 		});
 	});
-	service.delete("/settings/tenant/application/key/ext/delete", function (req, res) {
+	service.post("/settings/tenant/application/key/ext/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.deleteApplicationExtKeys(config, req, res);

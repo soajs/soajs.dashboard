@@ -316,7 +316,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"services": data2.services
 					}
 				};
-				executeMyRequest(params, 'environment/update', 'post', function (body) {
+				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -335,7 +335,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"services": data2.services
 					}
 				};
-				executeMyRequest(params, 'environment/update', 'post', function (body) {
+				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -351,7 +351,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"services": validEnvRecord.services
 					}
 				};
-				executeMyRequest(params, 'environment/update', 'post', function (body) {
+				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -365,7 +365,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"description": 'this is a dummy description'
 					}
 				};
-				executeMyRequest(params, 'environment/update', 'post', function (body) {
+				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 172,
 						"message": "Missing required field: domain, services"
@@ -384,7 +384,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"services": validEnvRecord.services
 					}
 				};
-				executeMyRequest(params, 'environment/update', 'post', function (body) {
+				executeMyRequest(params, 'environment/update', 'put', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
 					done();
 				});
@@ -413,7 +413,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				var params = {
 					qs: {}
 				};
-				executeMyRequest(params, 'environment/delete', 'get', function (body) {
+				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: id"});
 					done();
 				});
@@ -423,7 +423,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				var params = {
 					qs: {'id': 'aaaabbcdddd'}
 				};
-				executeMyRequest(params, 'environment/delete', 'get', function (body) {
+				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
 					done();
 				});
@@ -433,7 +433,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				var params = {
 					qs: {'id': envId}
 				};
-				executeMyRequest(params, 'environment/delete', 'get', function (body) {
+				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -562,7 +562,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': validCluster
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/clusters/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -578,7 +578,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							//"cluster": {}
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/clusters/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: cluster"
@@ -598,7 +598,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': validCluster
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/clusters/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 502,
 							"message": "Invalid cluster name provided"
@@ -623,7 +623,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'env': 'dev'
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/clusters/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: name"
@@ -639,7 +639,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'name': 'invalid'
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/clusters/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 508, "message": errorCodes[508]});
 						done();
 					});
@@ -652,7 +652,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'name': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/clusters/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/clusters/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -900,7 +900,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -917,7 +917,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -941,7 +941,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -956,7 +956,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: name"
@@ -976,7 +976,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'invalid'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 502,
 							"message": "Invalid cluster name provided"
@@ -995,7 +995,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 507,
 							"message": "Invalid db Information provided for session database"
@@ -1015,7 +1015,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'cluster': 'cluster1'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 512,
 							"message": "environment database does not exist"
@@ -1050,7 +1050,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 						mongo.save('environment', record, function (error) {
 							assert.ifError(error);
-							executeMyRequest(params, 'environment/dbs/update', 'post', function (body) {
+							executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
 								assert.deepEqual(body.errors.details[0], {
 									"code": 511,
 									"message": "environment session database does not exist"
@@ -1084,7 +1084,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							env: "dev"
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: name"
@@ -1100,7 +1100,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "invalid"
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 512,
 							"message": "environment database does not exist"
@@ -1125,7 +1125,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						mongo.save('environment', record, function (error) {
 							assert.ifError(error);
 
-							executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
+							executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 								assert.deepEqual(body.errors.details[0], {
 									"code": 511,
 									"message": "environment session database does not exist"
@@ -1148,7 +1148,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "urac"
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1161,7 +1161,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "session"
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/delete', 'get', function (body) {
+					executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1284,7 +1284,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'prefix': 'soajs_'
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/updatePrefix', 'put', function (body) {
 						assert.ok(body.data);
 
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
@@ -1304,7 +1304,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'prefix': ''
 						}
 					};
-					executeMyRequest(params, 'environment/dbs/updatePrefix', 'post', function (body) {
+					executeMyRequest(params, 'environment/dbs/updatePrefix', 'put', function (body) {
 						assert.ok(body.data);
 
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
@@ -1647,7 +1647,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"name": "test tenant updated"
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/update', 'post', function (body) {
+				executeMyRequest(params, 'settings/tenant/update', 'put', function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -1689,7 +1689,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"redirectURI": "http://www.myredirecturi.com/"
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/oauth/update/', 'post', function (body) {
+				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
 					assert.ok(body.data);
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -1716,7 +1716,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will delete oauth", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/delete/', 'get', function (body) {
+				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/delete/', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1754,7 +1754,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"password": "password2"
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/oauth/users/update/', 'post', function (body) {
+				executeMyRequest(params, 'settings/tenant/oauth/users/update/', 'put', function (body) {
 					assert.ok(body.data);
 					mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -1770,7 +1770,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest({
 					'headers': {'soajsauth': soajsauth},
 					qs: {'uId': oauthUserId}
-				}, 'settings/tenant/oauth/users/delete/', 'get', function (body) {
+				}, 'settings/tenant/oauth/users/delete/', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1896,7 +1896,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/application/key/ext/update/', 'post', function (body) {
+				executeMyRequest(params, 'settings/tenant/application/key/ext/update/', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1955,7 +1955,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/application/key/config/update', 'post', function (body) {
+				executeMyRequest(params, 'settings/tenant/application/key/config/update', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1990,7 +1990,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'key': key.toString()
 					}
 				};
-				executeMyRequest(params, 'settings/tenant/application/key/delete', 'get', function (body) {
+				executeMyRequest(params, 'settings/tenant/application/key/delete', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -2038,7 +2038,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 
-				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
+				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -2051,7 +2051,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 
-				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'post', function (body) {
+				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
 					assert.ok(body.errors);
 					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
 					done();
@@ -2071,7 +2071,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'post', function (body) {
+				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -2084,7 +2084,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'post', function (body) {
+				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
 					assert.ok(body.errors);
 					assert.deepEqual(body.errors.details[0], {
 						'code': 172,
@@ -2334,7 +2334,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'post', function (body) {
+				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -2410,7 +2410,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'name': hosts[0].name,
 						'ip': hosts[0].ip
 					}
-				}, 'hosts/delete', 'get', function (body) {
+				}, 'hosts/delete', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -2459,7 +2459,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					};
 
-					executeMyRequest(params, 'environment/key/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/key/update', 'put', function (body) {
 						assert.ok(body.result);
 						done();
 					});
@@ -2504,7 +2504,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'password': 'new test case password'
 						}
 					};
-					executeMyRequest(params, 'environment/key/update', 'post', function (body) {
+					executeMyRequest(params, 'environment/key/update', 'put', function (body) {
 						assert.ok(!body.result);
 						assert.deepEqual(body.errors.details[0], {"code": 781, "message": errorCodes[781]});
 						done();
@@ -2546,7 +2546,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 
-			executeMyRequest(params, 'tenant/delete', 'get', function (body) {
+			executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
@@ -2563,7 +2563,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					"appId": appId
 				}
 			};
-			executeMyRequest(params, 'tenant/application/delete', 'get', function (body) {
+			executeMyRequest(params, 'tenant/application/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
@@ -2581,7 +2581,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					"key": key
 				}
 			};
-			executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+			executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
@@ -2617,7 +2617,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					'id': productId
 				}
 			};
-			executeMyRequest(params, 'product/delete', 'get', function (body) {
+			executeMyRequest(params, 'product/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
@@ -2634,7 +2634,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					'code': packageCode.split("_")[1]
 				}
 			};
-			executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+			executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
