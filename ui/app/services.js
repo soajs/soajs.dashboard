@@ -10,10 +10,10 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			if(response.result === true){
+			if (response.result === true) {
 				return cb(null, response);
 			}
-			else{
+			else {
 				var str = '';
 				for (var i = 0; i < response.errors.details.length; i++) {
 					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
@@ -193,7 +193,7 @@ soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cook
 
 soajsApp.service('checkApiHasAccess', function () {
 	
-	return function (aclObject, serviceName, routePath, userGroups, callback) {
+	return function (aclObject, serviceName, routePath, method, userGroups, callback) {
 		var environments = Object.keys(aclObject);
 		return validateAccess(environments, 0, callback);
 		
@@ -210,15 +210,52 @@ soajsApp.service('checkApiHasAccess', function () {
 			}
 			else {
 				var system = aclObject[envCode][serviceName];
-				var access = checkSystem(system) || false;
-				return cb(access);
+				if (system) {
+					var access = checkSystem(system);
+					return cb(access);
+				}
+				else {
+					return cb(false);
+				}
 			}
 		}
 		
 		function checkSystem(system) {
-			var api = (system && system.apis ? system.apis[routePath] : null);
+			function getAclObj(aclObj) {
+				if (aclObj && (aclObj.apis || aclObj.apisRegExp)) {
+					return aclObj;
+				}
+				if (method) {
+					if (aclObj[method] && typeof aclObj[method] === "object") {
+						var newAclObj = {};
+						if (aclObj.hasOwnProperty('access')) {
+							newAclObj.access = aclObj.access;
+						}
+						if (aclObj[method].hasOwnProperty('apis')) {
+							newAclObj.apis = aclObj[method].apis;
+						}
+						if (aclObj[method].hasOwnProperty('apisRegExp')) {
+							newAclObj.apisRegExp = aclObj[method].apisRegExp;
+						}
+						if (aclObj[method].hasOwnProperty('apisPermission')) {
+							newAclObj.apisPermission = aclObj[method].apisPermission;
+						}
+						else if (aclObj.hasOwnProperty('apisPermission')) {
+							newAclObj.apisPermission = aclObj.apisPermission;
+						}
+						return newAclObj;
+					}
+				}
+				else {
+					return aclObj;
+				}
+			}
+
+			system = getAclObj(system);
 			
-			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+			var api = (system.apis ? system.apis[routePath] : null);
+			
+			if (!api && system.apisRegExp && Object.keys(system.apisRegExp).length) {
 				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
 					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
 						api = system.apisRegExp[jj];
@@ -226,7 +263,7 @@ soajsApp.service('checkApiHasAccess', function () {
 					}
 				}
 			}
-			if (system && system.access) {
+			if (Object.hasOwnProperty.call(system, 'access')) {
 				if (Array.isArray(system.access)) {
 					var checkAPI = false;
 					if (userGroups) {
@@ -244,7 +281,7 @@ soajsApp.service('checkApiHasAccess', function () {
 				return api_checkPermission(system, userGroups, api);
 			}
 			
-			if (api || (system && (system.apisPermission === 'restricted'))) {
+			if (api || (system.apisPermission === 'restricted')) {
 				return api_checkPermission(system, userGroups, api);
 			}
 			else {
