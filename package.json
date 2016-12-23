@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "async": "*",
-    "bcrypt": "*",
     "bitbucket-server-nodejs": "^2.10.0",
     "cron": "*",
     "dockerode": "aff04/dockerode.git",
