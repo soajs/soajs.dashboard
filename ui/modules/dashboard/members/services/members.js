@@ -135,7 +135,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 								};
 								overlayLoading.show();
 								var opts = {
-									"method": "send",
+									"method": "post",
 									"routeName": "/urac/admin/addUser",
 									"data": postData
 								};
@@ -245,7 +245,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 									'status': (Array.isArray(formData.status)) ? formData.status.join(",") : formData.status
 								};
 								var opts = {
-									"method": "send",
+									"method": "post",
 									"routeName": "/urac/admin/editUser",
 									"params": {"uId": data['_id']},
 									"data": postData
@@ -290,6 +290,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			"headers": {
 				"key": currentScope.key
 			},
+			'method': 'get',
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'active'},
 			'msg': {
@@ -310,6 +311,7 @@ membersService.service('membersHelper', ['ngDataApi', '$timeout', '$modal', func
 			"headers": {
 				"key": currentScope.key
 			},
+			'method': 'get',
 			'routeName': "/urac/admin/changeUserStatus",
 			"params": {'uId': '%id%', 'status': 'inactive'},
 			'msg': {

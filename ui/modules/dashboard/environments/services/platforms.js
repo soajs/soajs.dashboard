@@ -140,7 +140,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					});
 
 					var options = {
-						method: "send",
+						method: "put",
 						routeName: "/dashboard/environment/platforms/cert/choose",
 						params: {
 							env: currentScope.envCode,
@@ -256,7 +256,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 	function removeCert(currentScope, certId, platform, driverName) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/environment/platforms/cert/delete",
 			"params": {
 				"id": certId,
@@ -276,7 +276,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 	function selectDriver(currentScope, platform, driverName, type) {
 		var driver = type + "." + platform + '.' + driverName;
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/environment/platforms/driver/changeSelected",
 			"params": {env: currentScope.envCode},
 			"data": {selected: driver}
@@ -298,7 +298,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 			deployerType: currentScope.deployer.type
 		};
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/environment/platforms/deployer/type/change",
 			"params": {
 				env: currentScope.envCode
