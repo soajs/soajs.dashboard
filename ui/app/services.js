@@ -173,6 +173,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	return {
 		'get': getData,
 		'send': sendData,
+		'post': sendData,
 		'put': putData,
 		'del': delData
 	};

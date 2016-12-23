@@ -71,7 +71,7 @@ var uracModuleDevNav = [
 		'mainMenu': true,
 		'contentMenu': true,
 		'tracker': true,
-		'order': 1,
+		'order': 100,
 		'scripts': [uracModuleDev + '/config.js', uracModuleDev + '/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},

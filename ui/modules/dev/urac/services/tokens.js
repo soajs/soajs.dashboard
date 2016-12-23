@@ -24,7 +24,9 @@ serviceUracApp.service('tokensModuleDevHelper', ['ngDataApi', '$timeout', '$cook
 				}
 				else {
 					if (firsCall) {
+						currentScope.totalCount = response.totalCount;
 						currentScope.showNext = (currentScope.totalCount > currentScope.endLimit);
+						currentScope.totalPagesActive = Math.ceil(currentScope.totalCount / currentScope.endLimit);
 					}
 					else {
 						var nextLimit = currentScope.startLimit + currentScope.increment;

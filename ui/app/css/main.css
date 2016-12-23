@@ -1515,7 +1515,11 @@ td.apiNavigation {
 }
 
 td.apiNavigationWide {
-    width: 230px;
+    width: 240px;
+}
+
+td.apiNavigationWide .pagination a {
+    font-size: 11px;
 }
 
 .totalCount {

@@ -1,7 +1,7 @@
 "use strict";
 
 var usersModuleDevConfig = {
-	apiEndLimit: 1000,
+	apiEndLimit: 500,
 	
 	permissions: {
 		'adminUser': {
@@ -87,7 +87,7 @@ var usersModuleDevConfig = {
 	},
 	groups: {
 		grid: {
-			recordsPerPageArray: [5, 10, 50, 100],
+			recordsPerPageArray: [10, 50, 100],
 			'columns': [
 				{'label': translation.code[LANG], 'field': 'code'},
 				{'label': translation.name[LANG], 'field': 'name'},

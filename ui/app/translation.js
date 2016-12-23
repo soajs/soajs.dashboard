@@ -23,7 +23,7 @@ var translation = {
 	},
 	"getPrevious": {
 		"ENG": "Previous",
-		"FRA": "Précédent"
+		"FRA": "Précéd"
 	},
 	"getNext": {
 		"ENG": "Next",
