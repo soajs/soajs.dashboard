@@ -56,21 +56,21 @@ var servicesConfig = {
 		}
 	},
 	permissions: {
-		'listServices': ['dashboard', '/services/list'],
+		'listServices': ['dashboard', '/services/list', 'post'],
 		'daemons': {
-			'list': ['dashboard', '/daemons/list'],
+			'list': ['dashboard', '/daemons/list', 'post']
 		},
 		'daemonGroupConfig': {
-			'list': ['dashboard', '/daemons/groupConfig/list'],
-			'update': ['dashboard', '/daemons/groupConfig/update'],
-			'delete': ['dashboard', '/daemons/groupConfig/delete'],
-			'add': ['dashboard', '/daemons/groupConfig/add']
+			'list': ['dashboard', '/daemons/groupConfig/list', 'post'],
+			'update': ['dashboard', '/daemons/groupConfig/update', 'put'],
+			'delete': ['dashboard', '/daemons/groupConfig/delete', 'delete'],
+			'add': ['dashboard', '/daemons/groupConfig/add', 'post']
 		},
 		'tenants': {
-			'list': ['dashboard', '/tenant/list']
+			'list': ['dashboard', '/tenant/list', 'get']
 		},
 		'environments': {
-			'list': ['dashboard', '/environment/list']
+			'list': ['dashboard', '/environment/list', 'get']
 		}
 	}
 };

@@ -192,7 +192,8 @@ var myAccountNav = [
 		'id': 'myAccount',
 		'checkPermission': {
 			'service': 'urac',
-			'route': '/account/editProfile'
+			'route': '/account/editProfile',
+			'method': 'post'
 		},
 		'label': translation.myAccount[LANG],
 		'url': '#/myaccount',
