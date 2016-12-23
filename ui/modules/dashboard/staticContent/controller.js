@@ -9,7 +9,7 @@ staticContentApp.controller ('staticContentCtrl', ['$scope', '$timeout', '$modal
 
     $scope.listSources = function () {
         getSendDataFromServer($scope, ngDataApi, {
-            'method': 'send',
+            'method': 'post',
             'routeName': '/dashboard/staticContent/list'
         }, function (error, response) {
             if (error) {

@@ -107,7 +107,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.clearOauth = function () {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/settings/tenant/oauth/delete",
 			"params": {}
 		}, function (error) {
@@ -127,7 +127,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 			'description': $scope.tenant.description
 		};
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/settings/tenant/update",
 			"data": postData,
 			"params": {"id": $scope.tenant['_id']}
@@ -141,7 +141,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						'secret': $scope.tenant.oauth.secret
 					};
 					getSendDataFromServer($scope, ngDataApi, {
-						"method": "send",
+						"method": "put",
 						"routeName": "/dashboard/settings/tenant/oauth/update",
 						"data": oAuthData,
 						"params": {}
@@ -173,7 +173,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.removeAppKey = function (app, key, event) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/settings/tenant/application/key/delete",
 			"params": {"appId": app.appId, "key": key}
 		}, function (error) {
@@ -218,7 +218,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						}
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
 							"params": {'uId': user['_id']}
@@ -276,7 +276,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "post",
 							"routeName": "/dashboard/settings/tenant/oauth/users/add",
 							"data": postData
 						}, function (error) {
@@ -325,7 +325,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.removeTenantOauthUser = function (user) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/settings/tenant/oauth/users/delete",
 			"params": {'uId': user['_id']}
 		}, function (error) {
@@ -359,7 +359,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 							'password': formData.password
 						};
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/settings/tenant/oauth/users/update",
 							"data": postData,
 							"params": {'uId': user['_id']}
@@ -393,7 +393,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.addNewKey = function (appId) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/settings/tenant/application/key/add",
 			"params": {"appId": appId}
 		}, function (error) {
@@ -415,7 +415,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		};
 
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/settings/tenant/application/key/config/update",
 			"data": postData,
 			"params": {"appId": appId, "key": key}
@@ -459,7 +459,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/settings/tenant/application/key/config/update",
 							"data": postData,
 							"params": {"appId": appId, "key": key}
@@ -538,7 +538,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						};
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "post",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/add",
 							"data": postData,
 							"params": {"appId": appId, "key": key}
@@ -619,7 +619,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						}
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/settings/tenant/application/key/ext/update",
 							"data": postData,
 							"params": {"appId": appId, "key": key, "extKeyEnv": data.env}
@@ -652,7 +652,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.removeExtKey = function (appId, data, key) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "delete",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey, 'extKeyEnv': data.env},
 			"params": {"appId": appId, "key": key}
