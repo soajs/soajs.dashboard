@@ -245,6 +245,9 @@ soajsApp.service('checkApiHasAccess', function () {
 						}
 						return newAclObj;
 					}
+					else {
+						return aclObj;
+					}
 				}
 				else {
 					return aclObj;
@@ -253,9 +256,9 @@ soajsApp.service('checkApiHasAccess', function () {
 
 			system = getAclObj(system);
 			
-			var api = (system.apis ? system.apis[routePath] : null);
+			var api = (system && system.apis ? system.apis[routePath] : null);
 			
-			if (!api && system.apisRegExp && Object.keys(system.apisRegExp).length) {
+			if (!api && system && system.apisRegExp && Object.keys(system.apisRegExp).length) {
 				for (var jj = 0; jj < system.apisRegExp.length; jj++) {
 					if (system.apisRegExp[jj].regExp && routePath.match(system.apisRegExp[jj].regExp)) {
 						api = system.apisRegExp[jj];
@@ -281,7 +284,7 @@ soajsApp.service('checkApiHasAccess', function () {
 				return api_checkPermission(system, userGroups, api);
 			}
 			
-			if (api || (system.apisPermission === 'restricted')) {
+			if (api || (system && system.apisPermission === 'restricted')) {
 				return api_checkPermission(system, userGroups, api);
 			}
 			else {
@@ -560,7 +563,7 @@ soajsApp.service("aclDrawHelpers", function () {
 				var service = angular.copy(aclEnvFill[serviceName]);
 				if (service.include === true) {
 					aclEnvObj[serviceName] = {};
-					aclEnvObj[serviceName].apis = {};
+
 					if (service.accessType === 'private') {
 						aclEnvObj[serviceName].access = true;
 					}
@@ -626,6 +629,7 @@ soajsApp.service("aclDrawHelpers", function () {
 						}
 					}
 					if (service.apis) {
+						aclEnvObj[serviceName].apis = {};
 						for (apiName in service.apis) {
 							if (service.apis.hasOwnProperty(apiName)) {
 								var api = service.apis[apiName];
