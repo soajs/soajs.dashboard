@@ -560,7 +560,7 @@ soajsApp.service("aclDrawHelpers", function () {
 				var service = angular.copy(aclEnvFill[serviceName]);
 				if (service.include === true) {
 					aclEnvObj[serviceName] = {};
-					aclEnvObj[serviceName].apis = {};
+
 					if (service.accessType === 'private') {
 						aclEnvObj[serviceName].access = true;
 					}
@@ -626,6 +626,7 @@ soajsApp.service("aclDrawHelpers", function () {
 						}
 					}
 					if (service.apis) {
+						aclEnvObj[serviceName].apis = {};
 						for (apiName in service.apis) {
 							if (service.apis.hasOwnProperty(apiName)) {
 								var api = service.apis[apiName];
