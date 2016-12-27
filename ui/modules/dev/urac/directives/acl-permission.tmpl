@@ -8,7 +8,7 @@
 			<legend>{{grp}}</legend>
 			<div ng-if="val.apisRest">
 				<fieldset ng-repeat="(method, apisList) in val.apisRest">
-					<legend>{{method}}</legend>
+					<legend class="perMethod">{{method}}</legend>
 					<div class="apiListing-container clearfix">
 						<div class="apiListing clearfix" ng-repeat="myApi in apisList" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last, selected:api.selected}">
 							<div class="apiLabel">

@@ -38,8 +38,9 @@ function configureRouteNavigation(navigation, scope) {
 		}
 	});
 	
+	var defaultRoute = navigation[0].url.replace('#', '');
 	routeProvider.otherwise({
-		redirectTo: navigation[0].url.replace('#', '')
+		redirectTo: defaultRoute
 	});
 }
 
@@ -537,11 +538,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			}
 			else {
 				var user = $localStorage.soajs_user;
-				$scope.footerMenu.links.forEach(function (oneMenuEntry) {
-					if (oneMenuEntry.id === 'home') {
-						oneMenuEntry.url = '#/dashboard';
-					}
-				});
 				if ($scope.footerMenu.selectedMenu === '#/login') {
 					$scope.footerMenu.selectedMenu = '#/dashboard';
 				}
@@ -554,11 +550,6 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		
 		$scope.$on("loadUserInterface", function (event, args) {
 			doEnvPerNav();
-			$scope.footerMenu.links.forEach(function (oneMenuEntry) {
-				if (oneMenuEntry.id === 'home') {
-					oneMenuEntry.url = '#/dashboard';
-				}
-			});
 			if ($scope.footerMenu.selectedMenu === '#/login') {
 				$scope.footerMenu.selectedMenu = '#/dashboard';
 			}
