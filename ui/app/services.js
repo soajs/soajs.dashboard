@@ -10,18 +10,20 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			if (response.result === false) {
+			var decodedString = String.fromCharCode.apply(null, new Uint8Array(response));
+			var res = JSON.parse(decodedString);
+			if (res.result === false) {
 				var str = '';
-				for (var i = 0; i < response.errors.details.length; i++) {
-					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+				for (var i = 0; i < res.errors.details.length; i++) {
+					str += "Error[" + res.errors.details[i].code + "]: " + res.errors.details[i].message;
 				}
 				var errorObj = {
 					message: str,
-					codes: response.errors.codes,
-					details: response.errors.details
+					codes: res.errors.codes,
+					details: res.errors.details
 				};
-				if (response.errors.codes && response.errors.codes[0]) {
-					errorObj.code = response.errors.codes[0];
+				if (res.errors.codes && res.errors.codes[0]) {
+					errorObj.code = res.errors.codes[0];
 				}
 				return cb(errorObj);
 			}
