@@ -174,6 +174,11 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			"data": options.data,
 			"url": options.url
 		};
+		
+		if(opts.proxy){
+			sendOptions.proxy = opts.proxy;
+		}
+		
 		getSendDataFromServer($scope, ngDataApi, sendOptions, function (error, response) {
 			if (error || !response) {
 				err++;
