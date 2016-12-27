@@ -175,7 +175,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		'send': sendData,
 		'post': sendData,
 		'put': putData,
-		'del': delData
+		'del': delData,
+		'delete': delData
 	};
 }]);
 

@@ -2284,7 +2284,16 @@ module.exports = {
 					"l": "Update Tenant",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['name', 'description']
+				"commonFields": ['name', 'description'],
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"default": "client",
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
+				}
 			},
 
 			"/settings/tenant/oauth/update": {
