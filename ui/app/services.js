@@ -10,10 +10,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			if (response.result === true) {
-				return cb(null, response);
-			}
-			else {
+			if (response.result === false) {
 				var str = '';
 				for (var i = 0; i < response.errors.details.length; i++) {
 					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
@@ -27,6 +24,9 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 					errorObj.code = response.errors.codes[0];
 				}
 				return cb(errorObj);
+			}
+			else {
+				return cb(null, response);
 			}
 		}
 		else if (response && response.result === true) {
