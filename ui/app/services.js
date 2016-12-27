@@ -562,7 +562,6 @@ soajsApp.service("aclDrawHelpers", function () {
 	
 	function prepareSaveObject(aclEnvFill, aclEnvObj) {
 		var code, grpCodes;
-		
 		for (var serviceName in aclEnvFill) {
 			if (aclEnvFill.hasOwnProperty(serviceName)) {
 				var service = angular.copy(aclEnvFill[serviceName]);
@@ -585,7 +584,7 @@ soajsApp.service("aclDrawHelpers", function () {
 								}
 							}
 						}
-						if (aclEnvObj[serviceName].access.length == 0) {
+						if (aclEnvObj[serviceName].access.length === 0) {
 							return {'valid': false};
 						}
 					}
@@ -632,8 +631,11 @@ soajsApp.service("aclDrawHelpers", function () {
 								}
 							}
 						}
+						if (service.apis) {
+							delete service.apis;
+						}
 					}
-					if (service.apis) {
+					else if (service.apis) {
 						aclEnvObj[serviceName].apis = {};
 						for (apiName in service.apis) {
 							if (service.apis.hasOwnProperty(apiName)) {
