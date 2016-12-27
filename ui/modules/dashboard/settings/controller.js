@@ -124,7 +124,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 	$scope.saveTenant = function () {
 		var postData = {
 			'name': $scope.tenant.name,
-			'description': $scope.tenant.description
+			'description': $scope.tenant.description,
+			'type': $scope.tenant.type
 		};
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "put",
