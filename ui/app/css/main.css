@@ -887,6 +887,12 @@ fieldset legend {
     padding-right: 10px;
 }
 
+legend.perMethod {
+    font-size: 16px;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .apiListing {
     display: block;
     vertical-align: top;

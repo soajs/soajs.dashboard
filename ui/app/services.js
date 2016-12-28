@@ -10,23 +10,25 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			if (response.result === true) {
-				return cb(null, response);
-			}
-			else {
+			var decodedString = String.fromCharCode.apply(null, new Uint8Array(response));
+			var res = JSON.parse(decodedString);
+			if (res.result === false) {
 				var str = '';
-				for (var i = 0; i < response.errors.details.length; i++) {
-					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+				for (var i = 0; i < res.errors.details.length; i++) {
+					str += "Error[" + res.errors.details[i].code + "]: " + res.errors.details[i].message;
 				}
 				var errorObj = {
 					message: str,
-					codes: response.errors.codes,
-					details: response.errors.details
+					codes: res.errors.codes,
+					details: res.errors.details
 				};
-				if (response.errors.codes && response.errors.codes[0]) {
-					errorObj.code = response.errors.codes[0];
+				if (res.errors.codes && res.errors.codes[0]) {
+					errorObj.code = res.errors.codes[0];
 				}
 				return cb(errorObj);
+			}
+			else {
+				return cb(null, response);
 			}
 		}
 		else if (response && response.result === true) {
@@ -560,7 +562,6 @@ soajsApp.service("aclDrawHelpers", function () {
 	
 	function prepareSaveObject(aclEnvFill, aclEnvObj) {
 		var code, grpCodes;
-		
 		for (var serviceName in aclEnvFill) {
 			if (aclEnvFill.hasOwnProperty(serviceName)) {
 				var service = angular.copy(aclEnvFill[serviceName]);
@@ -583,7 +584,7 @@ soajsApp.service("aclDrawHelpers", function () {
 								}
 							}
 						}
-						if (aclEnvObj[serviceName].access.length == 0) {
+						if (aclEnvObj[serviceName].access.length === 0) {
 							return {'valid': false};
 						}
 					}
@@ -630,8 +631,11 @@ soajsApp.service("aclDrawHelpers", function () {
 								}
 							}
 						}
+						if (service.apis) {
+							delete service.apis;
+						}
 					}
-					if (service.apis) {
+					else if (service.apis) {
 						aclEnvObj[serviceName].apis = {};
 						for (apiName in service.apis) {
 							if (service.apis.hasOwnProperty(apiName)) {

@@ -3,24 +3,21 @@
  */
 
 var navigation = [
-	// {
-	// 	'id': 'home',
-	// 	'label': translation.home[LANG],
-	// 	'url': '#/dashboard',
-	// 	'tplPath': 'modules/dashboard/home/directives/dashboard.tmpl',
-	// 	'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
-	// 	'icon': 'home',
-	// 	//'userMenu': true,
-	// 	//'mainMenu': true,
-	// 	'tracker': true
-	// },
 	{
 		'id': 'home',
 		'label': translation.home[LANG],
+		'url': '#/dashboard',
+		'tplPath': 'modules/dashboard/home/directives/dashboard.tmpl',
+		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
+		'footerMenu': true,
+		'tracker': true
+	},
+	{
+		'id': 'login',
+		'label': translation.home[LANG],
 		'url': '#/login',
 		'tplPath': 'modules/dashboard/myAccount/directives/login.tmpl',
-		'scripts': ['modules/dashboard/myAccount/config.js', 'modules/dashboard/myAccount/controller.js'],
-		'footerMenu': true
+		'scripts': ['modules/dashboard/myAccount/config.js', 'modules/dashboard/myAccount/controller.js']
 	},
 	{
 		'id': 'noEnv',
@@ -87,6 +84,7 @@ var navigation = [
 		}
 
 		var head = document.getElementsByTagName("head")[0];
+
 		function getFile(entry) {
 			var x = document.createElement("script");
 			x.type = "text/javascript";
