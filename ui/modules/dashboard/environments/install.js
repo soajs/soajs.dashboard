@@ -576,9 +576,13 @@ var envTranslation ={
 		"FRA": "Deploying "
 	},
 	"newControllersEnvironment": {
-		"ENG": " new controllers for environment ",
-		"FRA": " new controllers for environment "
+		"ENG": " new controller(s) for environment ",
+		"FRA": " new controllers(s) for environment "
 	},
+    "newNginxEnvironment": {
+        "ENG": " new nginx instance(s) for environment ",
+        "FRA": " new nginx instance(s) for environment "
+    },
 	"zombieContainers": {
 		"ENG": "Zombie Containers",
 		"FRA": "Zombie Containers"
@@ -1401,7 +1405,8 @@ var environmentsNav = [
 		'id': 'environments',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/list'
+			'route': '/environment/list',
+			'method': 'get'
 		},
 		'label': translation.registries[LANG],
 		'url': '#/environments',
@@ -1421,7 +1426,8 @@ var environmentsNav = [
 		'id': 'environments-platforms',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/platforms/list'
+			'route': '/environment/platforms/list',
+			'method': 'get'
 		},
 		'label': translation.platformsAndCertificates[LANG],
 		'url': '#/environments-platforms',
@@ -1441,7 +1447,8 @@ var environmentsNav = [
 		'id': 'environments-clusters',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/clusters/list'
+			'route': '/environment/clusters/list',
+			'method': 'get'
 		},
 		'label': translation.clusters[LANG],
 		'url': '#/environments-clusters',
@@ -1461,7 +1468,8 @@ var environmentsNav = [
 		'id': 'environments-dbs',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/dbs/list'
+			'route': '/environment/dbs/list',
+			'method': 'get'
 		},
 		'label': translation.databases[LANG],
 		'url': '#/environments-dbs',
@@ -1481,7 +1489,8 @@ var environmentsNav = [
 		'id': 'environments-hosts',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/hosts/list'
+			'route': '/hosts/list',
+			'method': 'get'
 		},
 		'label': translation.hosts[LANG],
 		'url': '#/environments-hosts',
@@ -1503,7 +1512,8 @@ var environmentsNav = [
 		'url': '#/environments/environment/:id?',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/update'
+			'route': '/environment/update',
+			'method': 'put'
 		},
 		'tplPath': 'modules/dashboard/environments/directives/edit.tmpl',
 		'tracker': true,
@@ -1521,7 +1531,8 @@ var environmentsNav = [
 		'url': '#/environments-hacloud',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/environment/hacloud/nodes/list'
+			'route': '/environment/hacloud/nodes/list',
+			'method': 'get'
 		},
 		'icon': 'sphere',
 		'tplPath': 'modules/dashboard/environments/directives/list-hacloud.tmpl',

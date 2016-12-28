@@ -96,7 +96,7 @@ var cmModuleDevTranslation = {
 		"ENG": "No Content Management Services are deployed yet. Head to the",
 		"FRA": "No Content Management Services are deployed yet. Head to the"
 	},
-	
+
 	"sectionAndDeployThem": {
 		"ENG": "Section and deploy them.",
 		"FRA": "Section and deploy them."
@@ -119,7 +119,8 @@ var cmModuleDevNav = [
 		'label': translation.contentManagement[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/cb/list'
+			'route': '/cb/list',
+			'method': 'get'
 		},
 		'url': '#/content-management',
 		'tplPath': cmModuleDev + '/directives/list.tmpl',

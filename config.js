@@ -26,6 +26,7 @@ module.exports = {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
 
@@ -37,6 +38,15 @@ module.exports = {
 	},
 
 	"imagesDir": "/opt/soajs/FILES/deployer/",
+
+	"kubeNginx": {
+		"minPort": 0,
+		"maxPort": 2767
+	},
+
+	"certificates": {
+		types: ['ca', 'cert', 'key']
+	},
 
 	"gitAccounts": {
 		"bitbucket_org": {
@@ -481,2404 +491,2354 @@ module.exports = {
 				}
 			}
 		},
-		"/environment/list": {
-			_apiInfo: {
-				"l": "List Environments",
-				"group": "Environment",
-				"groupMain": true
-			},
-			"short": {
-				"required": false,
-				"source": ["query.short", "body.short"],
-				"validation": {
-					"type": "boolean"
-				}
-			}
-		},
-		"/environment/add": {
-			_apiInfo: {
-				"l": "Add Environment",
-				"group": "Environment"
-			},
-			"commonFields": ['description', 'services'],
-			"code": {
-				"source": ['body.code'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 4
-				}
-			},
-			"domain": {
-				"source": ['body.domain'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "hostname"
-				}
-			},
-			"apiPrefix": {
-				"source": ['body.apiPrefix'],
-				"required": false,
-				"default": "api",
-				"validation": {
-					"type": "string"
-				}
-			},
-			"sitePrefix": {
-				"source": ['body.sitePrefix'],
-				"required": false,
-				"default": "site",
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/environment/delete": {
-			_apiInfo: {
-				"l": "Delete Environment",
-				"group": "Environment"
-			},
-			"commonFields": ['id']
-		},
-		"/environment/update": {
-			_apiInfo: {
-				"l": "Update Environment",
-				"group": "Environment"
-			},
-			"commonFields": ['id', 'description', 'services'],
-			"domain": {
-				"source": ['body.domain'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "hostname"
-				}
-			},
-			"apiPrefix": {
-				"source": ['body.apiPrefix'],
-				"required": false,
-				"default": "api",
-				"validation": {
-					"type": "string"
-				}
-			},
-			"sitePrefix": {
-				"source": ['body.sitePrefix'],
-				"required": false,
-				"default": "site",
-				"validation": {
-					"type": "string"
-				}
-			},
-			"custom": {
-				"source": ['body.custom'],
-				"required": false,
-				"validation": {
-					"type": "object"
-				}
-			}
-		},
-		"/environment/key/update": {
-			_apiInfo: {
-				"l": "Update Environment Tenant Key Security",
-				"group": "Environment"
-			},
-			"commonFields": ['id'],
-			"algorithm": {
-				"source": ['body.algorithm'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['body.password'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/environment/dbs/list": {
-			_apiInfo: {
-				"l": "List Environment Databases",
-				"group": "Environment Databases"
+		"get": {
+			"/environment/list": {
+				_apiInfo: {
+					"l": "List Environments",
+					"group": "Environment",
+					"groupMain": true
+				},
+				"short": {
+					"required": false,
+					"source": ["query.short", "body.short"],
+					"validation": {
+						"type": "boolean"
+					}
+				}
 			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/dbs/add": {
-			_apiInfo: {
-				"l": "Add Environment Database",
-				"group": "Environment Databases"
+
+			"/environment/dbs/list": {
+				_apiInfo: {
+					"l": "List Environment Databases",
+					"group": "Environment Databases"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
-			"cluster": {
-				"source": ['body.cluster'],
-				"required": true,
-				"validation": {"type": "string", "required": true}
+
+			"/environment/clusters/list": {
+				_apiInfo: {
+					"l": "List Environment Database Clusters",
+					"group": "Environment Clusters"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			"tenantSpecific": {
-				"source": ['body.tenantSpecific'],
-				"required": false,
-				"validation": {"type": "boolean", "required": true}
-			},
-			"sessionInfo": {
-				"source": ['body.sessionInfo'],
-				"required": false,
-				"validation": {
-					"type": "object",
+
+			"/environment/platforms/list": {
+				_apiInfo: {
+					"l": "List Environment Platforms",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
 					"required": true,
-					"properties": {
-						"store": {"type": "object", "required": true},
-						"dbName": {"type": "string", "required": true},
-						"expireAfter": {"type": "integer", "required": true},
-						"collection": {"type": "string", "required": true},
-						"stringify": {"type": "boolean", "required": true}
+					"validation": {
+						"type": "string",
+						"required": true
 					}
 				}
-			}
-		},
-		"/environment/dbs/update": {
-			_apiInfo: {
-				"l": "Update Environment Database",
-				"group": "Environment Databases"
 			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
-			"cluster": {
-				"source": ['body.cluster'],
-				"required": true,
-				"validation": {"type": "string", "required": true}
+
+			"/product/list": {
+				_apiInfo: {
+					"l": "List Products",
+					"group": "Product",
+					"groupMain": true
+				}
 			},
-			"tenantSpecific": {
-				"source": ['body.tenantSpecific'],
-				"required": false,
-				"validation": {"type": "boolean", "required": true}
+
+			"/product/get": {
+				_apiInfo: {
+					"l": "Get Product",
+					"group": "Product"
+				},
+				"commonFields": ['id']
 			},
-			"sessionInfo": {
-				"source": ['body.sessionInfo'],
-				"required": false,
-				"validation": {
-					"type": "object",
+
+			"/product/packages/list": {
+				_apiInfo: {
+					"l": "List Product Packages",
+					"group": "Product"
+				},
+				"commonFields": ['id']
+			},
+
+			"/product/packages/get": {
+				_apiInfo: {
+					"l": "Get Product Package",
+					"group": "Product"
+				},
+				"packageCode": {
+					"source": ["query.packageCode"],
 					"required": true,
-					"properties": {
-						"store": {"type": "object", "required": true},
-						"dbName": {"type": "string", "required": true},
-						"expireAfter": {"type": "integer", "required": true},
-						"collection": {"type": "string", "required": true},
-						"stringify": {"type": "boolean", "required": true}
+					"validation": {
+						"type": "string"
+					}
+				},
+				"productCode": {
+					"source": ["query.productCode"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 6
+					}
+				}
+			},
+
+			"/permissions/get": {
+				_apiInfo: {
+					"l": "Get Tenant Security Permissions",
+					"group": "Tenant"
+				},
+				"envCode": {
+					"source": ["query.envCode"],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric"
+					}
+				}
+			},
+
+			"/key/get": {
+				_apiInfo: {
+					"l": "Get the user dashboard key",
+					"group": "Tenant"
+				}
+			},
+
+			"/tenant/list": {
+				_apiInfo: {
+					"l": "List Tenants",
+					"group": "Tenant",
+					"groupMain": true
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
+				},
+				"negate": {
+					"source": ['query.negate'],
+					"required": false,
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				}
+			},
+
+			"/tenant/get": {
+				_apiInfo: {
+					"l": "Get Tenant",
+					"group": "Tenant"
+				},
+				"commonFields": ['id']
+			},
+
+			"/tenant/oauth/list": {
+				_apiInfo: {
+					"l": "Get Tenant oAuth Configuration",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id']
+			},
+
+			"/tenant/oauth/users/list": {
+				_apiInfo: {
+					"l": "List Tenant oAuth Users",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id']
+			},
+
+			"/tenant/application/list": {
+				_apiInfo: {
+					"l": "List Tenant Applications",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id']
+			},
+
+			"/tenant/application/key/list": {
+				_apiInfo: {
+					"l": "List Tenant Application Keys",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId']
+			},
+
+			"/tenant/application/key/ext/list": {
+				_apiInfo: {
+					"l": "List Tenant Application External Keys",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key']
+			},
+
+			"/tenant/application/key/config/list": {
+				_apiInfo: {
+					"l": "List Tenant Application Key Configuration",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key']
+			},
+
+			"/tenant/db/keys/list": {
+				_apiInfo: {
+					"l": "List Dashboard Tenant Keys",
+					"group": "Dashboard Tenants",
+					"groupMain": true
+				}
+			},
+
+			"/settings/tenant/get": {
+				_apiInfo: {
+					"l": "Get Tenant",
+					"group": "Tenant Settings"
+				}
+			},
+
+			"/settings/tenant/oauth/list": {
+				_apiInfo: {
+					"l": "Get Tenant oAuth Configuration",
+					"group": "Tenant Settings"
+				}
+			},
+
+			"/settings/tenant/oauth/users/list": {
+				_apiInfo: {
+					"l": "List Tenant oAuth Users",
+					"group": "Tenant Settings"
+				}
+			},
+
+			"/settings/tenant/application/list": {
+				_apiInfo: {
+					"l": "List Tenant Applications",
+					"group": "Tenant Settings"
+				}
+			},
+
+			"/settings/tenant/application/key/list": {
+				_apiInfo: {
+					"l": "List Tenant Application Keys",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId']
+			},
+
+			"/settings/tenant/application/key/ext/list": {
+				_apiInfo: {
+					"l": "List Tenant Application External Keys",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key']
+			},
+
+			"/settings/tenant/application/key/config/list": {
+				_apiInfo: {
+					"l": "List Tenant Application Key Configuration",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key']
+			},
+
+			"/services/list": {
+				_apiInfo: {
+					"l": "List Services",
+					"group": "Services"
+				},
+				'serviceNames': {
+					'source': ['body.serviceNames'],
+					'required': false,
+					"validation": {
+						"type": "array",
+						'items': {'type': 'string'}
+					}
+				}
+			},
+
+			"/daemons/list": {
+				_apiInfo: {
+					"l": "List Daemons",
+					"group": "Daemons"
+				},
+				'daemonNames': {
+					'source': ['body.daemonNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				},
+				'getGroupConfigs': {
+					'source': ['query.getGroupConfigs'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				}
+			},
+
+			"/daemons/groupConfig/list": {
+				_apiInfo: {
+					"l": "List Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'grpConfNames': {
+					'source': ['body.grpConfNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				}
+			},
+
+			"/daemons/groupConfig/serviceConfig/list": {
+				_apiInfo: {
+					"l": "List Service Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['id', 'jobName']
+			},
+
+			"/daemons/groupConfig/tenantExtKeys/list": {
+				_apiInfo: {
+					"l": "List Job's External Keys",
+					"group": "Daemons"
+				},
+				'commonFields': ['id', 'jobName']
+			},
+
+			"/staticContent/list": {
+				_apiInfo: {
+					"l": "List Static Content",
+					"group": "Static Content"
+				},
+				'staticContentNames': {
+					'source': ['body.staticContentNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				}
+			},
+
+			"/hosts/list": {
+				_apiInfo: {
+					"l": "List Hosts",
+					"group": "Hosts",
+					"groupMain": true
+				},
+				'env': {
+					'source': ['query.env'],
+					'required': true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				}
+			},
+
+			"/hosts/nginx/list": {
+				_apiInfo: {
+					'l': 'List Nginx Hosts',
+					'group': 'Hosts'
+				},
+				'env': {
+					'source': ['query.env'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				}
+			},
+
+			"/hosts/container/logs": {
+				"_apiInfo": {
+					"l": "Get Container Logs",
+					"group": "Hosts"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"cid": {
+					"source": ['query.cid'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/hosts/container/zombie/list": {
+				"_apiInfo": {
+					"l": "List Zombie Containers",
+					"group": "Hosts"
+				},
+				"env": {
+					"source": ["query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/hacloud/nodes/list": {
+				"_apiInfo": {
+					"l": "List HA Cloud Nodes",
+					"group": "HA Cloud"
+				}
+			},
+
+			"/hacloud/services/instances/logs": {
+				"_apiInfo": {
+					"l": "Get Service Container Logs",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"taskName": {
+					"source": ['query.taskName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/gitAccounts/accounts/list": {
+				"_apiInfo": {
+					"l": "List Git Accounts",
+					"group": "Git Accounts"
+				}
+			},
+
+			"/gitAccounts/getRepos": {
+				"_apiInfo": {
+					"l": "Get Repositories",
+					"group": "Git Accounts"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['query.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"page": {
+					"source": ['query.page'],
+					"required": true,
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				},
+				"per_page": {
+					"source": ['query.per_page'],
+					"required": true,
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				}
+			},
+
+			"/gitAccounts/getBranches": {
+				"_apiInfo": {
+					"l": "Get Repository Branches",
+					"group": "Git Accounts"
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['query.provider'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/cb/list": {
+				"_apiInfo": {
+					"l": "List Content Schema",
+					"group": "Content Builder",
+					"groupMain": true
+				},
+				'port': {
+					'required': false,
+					'source': ['query.port'],
+					'validation': {
+						'type': 'boolean'
+					}
+				}
+			},
+
+			"/cb/get": {
+				"_apiInfo": {
+					"l": "Get One Content Schema",
+					"group": "Content Builder"
+				},
+				"commonFields": ["id"],
+				"version": {
+					"required": false,
+					"source": ["query.version"],
+					"validation": {
+						"type": "integer"
+					}
+				}
+			},
+
+			"/cb/listRevisions": {
+				"_apiInfo": {
+					"l": "List Content Schema Revisions",
+					"group": "Content Builder"
+				}
+			}
+		},
+
+		"post": {
+			"/environment/add": {
+				_apiInfo: {
+					"l": "Add Environment",
+					"group": "Environment"
+				},
+				"commonFields": ['description', 'services'],
+				"code": {
+					"source": ['body.code'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 4
+					}
+				},
+				"domain": {
+					"source": ['body.domain'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "hostname"
+					}
+				},
+				"apiPrefix": {
+					"source": ['body.apiPrefix'],
+					"required": false,
+					"default": "api",
+					"validation": {
+						"type": "string"
+					}
+				},
+				"sitePrefix": {
+					"source": ['body.sitePrefix'],
+					"required": false,
+					"default": "site",
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/environment/dbs/add": {
+				_apiInfo: {
+					"l": "Add Environment Database",
+					"group": "Environment Databases"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
+				"cluster": {
+					"source": ['body.cluster'],
+					"required": true,
+					"validation": {"type": "string", "required": true}
+				},
+				"tenantSpecific": {
+					"source": ['body.tenantSpecific'],
+					"required": false,
+					"validation": {"type": "boolean", "required": true}
+				},
+				"sessionInfo": {
+					"source": ['body.sessionInfo'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"store": {"type": "object", "required": true},
+							"dbName": {"type": "string", "required": true},
+							"expireAfter": {"type": "integer", "required": true},
+							"collection": {"type": "string", "required": true},
+							"stringify": {"type": "boolean", "required": true}
+						}
+					}
+				}
+			},
+
+			"/environment/clusters/add": {
+				_apiInfo: {
+					"l": "Add Environment Database Cluster",
+					"group": "Environment Clusters"
+				},
+				"commonFields": ['cluster'],
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+			},
+
+			"/environment/platforms/cert/upload": {
+				_apiInfo: {
+					"l": "Upload Certificate",
+					"group": "Environment Platforms"
+				}
+			},
+
+			"/product/add": {
+				_apiInfo: {
+					"l": "Add Product",
+					"group": "Product"
+				},
+				"commonFields": ['description', 'name'],
+				"code": {
+					"source": ['body.code'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 6
+					}
+				}
+			},
+
+			"/product/packages/add": {
+				_apiInfo: {
+					"l": "Add Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
+				"code": {
+					"source": ["body.code"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"minLength": 4,
+						"maxLength": 6
+					}
+				}
+			},
+
+			"/tenant/add": {
+				_apiInfo: {
+					"l": "Add Tenant",
+					"group": "Tenant"
+				},
+				"commonFields": ['name', 'description'],
+				"code": {
+					"source": ['body.code'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric",
+						"maxLength": 4
+					}
+				},
+				"email": {
+					"source": ['body.email'],
+					"required": true,
+					"validation": {
+						"type": "email"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"default": "client",
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
+				},
+				"tag": {
+					"source": ['body.tag'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/tenant/oauth/add": {
+				_apiInfo: {
+					"l": "Add Tenant oAuth Configuration",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id', 'secret', 'redirectURI']
+			},
+
+			"/tenant/oauth/users/add": {
+				_apiInfo: {
+					"l": "Add Tenant oAuth User",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id', 'userId', 'password']
+			},
+
+			"/tenant/application/add": {
+				_apiInfo: {
+					"l": "Add Tenant Application",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode']
+			},
+
+			"/tenant/application/key/add": {
+				_apiInfo: {
+					"l": "Add Tenant Application Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId']
+			},
+
+			"/tenant/application/key/ext/add": {
+				_apiInfo: {
+					"l": "Add Tenant Application External Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
+				_apiInfo: {
+					"l": "Delete Tenant Application External Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key', 'extKey'],
+				"extKeyEnv": {
+					"source": ['body.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/tenant/acl/get": { //TODO: should be changed from post to get
+				_apiInfo: {
+					"l": "Get Current Tenant Access Level",
+					"group": "Tenant"
+				},
+				"commonFields": ['id']
+			},
+
+			"/settings/tenant/oauth/add": {
+				_apiInfo: {
+					"l": "Add Tenant oAuth Configuration",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['secret', 'redirectURI']
+			},
+
+			"/settings/tenant/oauth/users/add": {
+				_apiInfo: {
+					"l": "Add Tenant oAuth User",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['userId', 'password']
+			},
+
+			"/settings/tenant/application/key/add": {
+				_apiInfo: {
+					"l": "Add Tenant Application Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId']
+			},
+
+			"/settings/tenant/application/key/ext/add": {
+				_apiInfo: {
+					"l": "Add Tenant Application External Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key', 'expDate', 'device', 'geo'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
+				_apiInfo: {
+					"l": "Delete Tenant Application External Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key', 'extKey'],
+				"extKeyEnv": {
+					"source": ['body.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/daemons/groupConfig/add": {
+				_apiInfo: {
+					"l": "Add Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'type':{
+					"required": true,
+					"source": ["body.type"],
+					"validation":{
+						"type": "string",
+						"enum": ["interval", "cron", "once"]
+					}
+				}
+			},
+
+			"/hosts/deployController": {
+				"_apiInfo": {
+					"l": "Deploy New Controller",
+					"group": "Hosts"
+				},
+				"commonFields": ['envCode'],
+				"number": {
+					"required": true,
+					"source": ["body.number"],
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				},
+				"version": {
+					"required": true,
+					"source": ["body.version"],
+					"default": 1,
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				},
+				"variables": {
+					"required": false,
+					"source": ['body.variables'],
+					"validation": {
+						"type": "array",
+						"minItems": 1,
+						"items": {"type": "string"}
+					}
+				},
+				"owner": {
+					"source": ['body.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['body.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"commit": {
+					"source": ['body.commit'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"useLocalSOAJS": {
+					"source": ['body.useLocalSOAJS'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"name": {
+					"source": ['body.name'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"haService": {
+					"source": ['body.haService'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haCount": {
+					"source": ['body.haCount'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"memoryLimit": {
+					"source": ['body.memoryLimit'],
+					"required": false,
+					"default": 209715200,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"imagePrefix": {
+					"source": ['body.imagePrefix'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"exposedPort":{
+	                "source": ['body.exposedPort'],
+	                "required": false,
+	                "validation": {
+	                    "type": "number"
+	                }
+				},
+				"isKubernetes": {
+	                "source": ['body.isKubernetes'],
+	                "required": false,
+	                "validation": {
+	                    "type": "boolean"
+	                }
+				}
+			},
+
+			"/hosts/deployNginx": {
+				"_apiInfo": {
+					"l": "Deploy New Nginx",
+					"group": "Hosts"
+				},
+				"commonFields": ['envCode'],
+				"nginxConfig": {
+					"source": ["body.nginxConfig"],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"customUIId": {"type": "string", "required": true},
+							"branch": {"type": "string", "required": true},
+							"commit": {"type": "string", "required": true}
+						}
+					}
+				},
+				"exposedPort": {
+					"source": ["body.exposedPort"],
+					"required": false,
+					"validation":{
+						"type":"number"
+					}
+				},
+				"supportSSL": {
+					"source": ['body.supportSSL'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haService": {
+					"source": ['body.haService'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haCount": {
+					"source": ['body.haCount'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"memoryLimit": {
+					"source": ['body.memoryLimit'],
+					"required": false,
+					"default": 209715200,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"imagePrefix": {
+					"source": ['body.imagePrefix'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/hosts/deployService": {
+				"_apiInfo": {
+					"l": "Deploy New Service",
+					"group": "Hosts"
+				},
+				"commonFields": ['envCode'],
+				"name": {
+					"required": false,
+					"source": ['body.name'],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"required": true,
+					"source": ["body.version"],
+					"default": 1,
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				},
+				"gcName": {
+					"required": false,
+					"source": ['body.gcName'],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"gcVersion": {
+					"required": false,
+					"source": ['body.gcVersion'],
+					"validation": {
+						"type": "integer",
+						"minimum": 1
+					}
+				},
+				"variables": {
+					"required": false,
+					"source": ['body.variables'],
+					"validation": {
+						"type": "array",
+						"minItems": 1,
+						"items": {"type": "string"}
+					}
+				},
+				"owner": {
+					"source": ['body.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['body.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"commit": {
+					"source": ['body.commit'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"useLocalSOAJS": {
+					"source": ['body.useLocalSOAJS'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haService": {
+					"source": ['body.haService'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haCount": {
+					"source": ['body.haCount'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"memoryLimit": {
+					"source": ['body.memoryLimit'],
+					"required": false,
+					"default": 209715200,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"imagePrefix": {
+					"source": ['body.imagePrefix'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			"/hosts/deployDaemon": {
+				"_apiInfo": {
+					"l": "Deploy New Daemon",
+					"group": "Hosts"
+				},
+				"commonFields": ['envCode'],
+				"name": {
+					"required": false,
+					"source": ['body.name'],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"required": true,
+					"source": ["body.version"],
+					"default": 1,
+					"validation": {
+						"type": "number",
+						"minimum": 1
+					}
+				},
+				"variables": {
+					"required": false,
+					"source": ['body.variables'],
+					"validation": {
+						"type": "array",
+						"minItems": 1,
+						"items": {"type": "string"}
+					}
+				},
+				"grpConfName": {
+					"required": true,
+					"source": ['body.grpConfName'],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['body.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['body.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"commit": {
+					"source": ['body.commit'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"useLocalSOAJS": {
+					"source": ['body.useLocalSOAJS'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haService": {
+					"source": ['body.haService'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
+				"haCount": {
+					"source": ['body.haCount'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"memoryLimit": {
+					"source": ['body.memoryLimit'],
+					"required": false,
+					"default": 209715200,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"imagePrefix": {
+					"source": ['body.imagePrefix'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/hacloud/nodes/add": {
+				"_apiInfo": {
+					"l": "Add HA Cloud Node",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"host": {
+					"source": ['body.host'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"port": {
+					"source": ['body.port'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"role": {
+					"source": ['body.role'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ['manager', 'worker']
+					}
+				}
+			},
+
+			"/gitAccounts/login": {
+				"_apiInfo": {
+					"l": "Github Login",
+					"group": "Git Accounts"
+				},
+				"username": {
+					"source": ['body.username'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"password": {
+					"source": ['body.password'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"label": {
+					"source": ['body.label'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['body.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"domain": {
+					"source": ['body.domain'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"access": {
+					"source": ['body.access'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"oauthKey": {
+					"source": ['body.oauthKey'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"oauthSecret": {
+					"source": ['body.oauthSecret'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/gitAccounts/repo/activate": {
+				"_apiInfo": {
+					"l": "Activate Repository",
+					"group": "Git Accounts"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['body.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['body.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"project": {
+					"source": ['body.project'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"configBranch": {
+					"source": ['body.configBranch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/cb/add": {
+				"_apiInfo": {
+					"l": "Add New Content Schema",
+					"group": "Content Builder"
+				},
+				"commonFields": ["name"],
+				"config": {
+					"required": true,
+					"source": ["body.config"],
+					"validation": cbSchema
+				}
+			},
+
+			"/hosts/maintenanceOperation": {
+				"_apiInfo": {
+					"l": "Perform Maintenance Operation",
+					"group": "Hosts"
+				},
+				"operation": {
+					"required": true,
+					"source": ['body.operation'],
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost', 'daemonStats']
+					}
+				},
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceHost": {
+					"source": ['body.serviceHost'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"servicePort": {
+					"source": ['body.servicePort'],
+					"required": true,
+					"validation": {
+						"type": "integer",
+						"min": 4000
+					}
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"hostname": {
+					"source": ['body.hostname'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			}
 		},
-		"/environment/dbs/delete": {
-			_apiInfo: {
-				"l": "Delete Environment Database",
-				"group": "Environment Databases"
-			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/dbs/updatePrefix": {
-			_apiInfo: {
-				"l": "Update Environment Databases Prefix",
-				"group": "Environment Databases"
-			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"prefix": {
-				"source": ['body.prefix'],
-				"required": false,
-				"validation": {"type": "string", "required": false}
-			}
-		},
 
-		"/environment/clusters/list": {
-			_apiInfo: {
-				"l": "List Environment Database Clusters",
-				"group": "Environment Clusters"
-			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/clusters/add": {
-			_apiInfo: {
-				"l": "Add Environment Database Cluster",
-				"group": "Environment Clusters"
-			},
-			"commonFields": ['cluster'],
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/clusters/update": {
-			_apiInfo: {
-				"l": "Update Environment Database Cluster",
-				"group": "Environment Clusters"
-			},
-			"commonFields": ['cluster'],
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/clusters/delete": {
-			_apiInfo: {
-				"l": "Delete Environment Database Cluster",
-				"group": "Environment Clusters"
-			},
-			"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
-			"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
-		},
-		"/environment/platforms/list": {
-			_apiInfo: {
-				"l": "List Environment Platforms",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"/environment/platforms/cert/upload": {
-			_apiInfo: {
-				"l": "Upload Certificate",
-				"group": "Environment Platforms"
-			}
-		},
-		"/environment/platforms/cert/delete": {
-			_apiInfo: {
-				"l": "Remove Certificate",
-				"group": "Environment Platforms"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"driverName": {
-				"source": ['query.driverName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/environment/platforms/cert/choose": {
-			_apiInfo: {
-				"l": "Choose Existing Certificates",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"platform": {
-				"source": ['query.platform'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"driverName": {
-				"source": ['query.driverName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"certIds": {
-				"source": ['body.certIds'],
-				"required": true,
-				"validation": {
-					"type": "array"
-				}
-			}
-		},
-		"/environment/platforms/driver/changeSelected": {
-			_apiInfo: {
-				"l": "Change Selected Driver",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"selected": {
-				"source": ['body.selected'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/environment/platforms/deployer/type/change": {
-			_apiInfo: {
-				"l": "Change Deployer Type",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			"deployerType": {
-				"source": ['body.deployerType'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"enum": ["manual", "container"]
-				}
-			}
-		},
-		"/environment/nginx/cert/upload": {
-			_apiInfo: {
-				"l": "Upload Nginx Certificates",
-				"group": "Environment Platforms"
-			}
-		},
-		"/environment/nginx/cert/list": {
-			_apiInfo: {
-				"l": "List Nginx Certificates",
-				"group": "Environment Platforms"
-			}
-		},
-		"/environment/nginx/cert/delete": {
-			_apiInfo: {
-				"l": "Delete Nginx Certificates",
-				"group": "Environment Platforms"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/environment/nginx/cert/choose": {
-			_apiInfo: {
-				"l": "Choose Existing Nginx Certificates",
-				"group": "Environment Platforms"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"certIds": {
-				"source": ['body.certIds'],
-				"required": true,
-				"validation": {
-					"type": "array"
-				}
-			}
-		},
-
-		"/product/list": {
-			_apiInfo: {
-				"l": "List Products",
-				"group": "Product",
-				"groupMain": true
-			}
-		},
-		"/product/get": {
-			_apiInfo: {
-				"l": "Get Product",
-				"group": "Product"
-			},
-			"commonFields": ['id']
-		},
-		"/product/add": {
-			_apiInfo: {
-				"l": "Add Product",
-				"group": "Product"
-			},
-			"commonFields": ['description', 'name'],
-			"code": {
-				"source": ['body.code'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 6
-				}
-			}
-		},
-		"/product/delete": {
-			_apiInfo: {
-				"l": "Delete Product",
-				"group": "Product"
-			},
-			"commonFields": ['id']
-		},
-		"/product/update": {
-			_apiInfo: {
-				"l": "Update Product",
-				"group": "Product"
-			},
-			"commonFields": ['id', 'name', 'description']
-		},
-
-		"/product/packages/delete": {
-			_apiInfo: {
-				"l": "Delete Product Package",
-				"group": "Product"
-			},
-			"commonFields": ['id'],
-			"code": {
-				"source": ['query.code'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric"
-				}
-			}
-		},
-		"/product/packages/list": {
-			_apiInfo: {
-				"l": "List Product Packages",
-				"group": "Product"
-			},
-			"commonFields": ['id']
-		},
-		"/product/packages/get": {
-			_apiInfo: {
-				"l": "Get Product Package",
-				"group": "Product"
-			},
-			"packageCode": {
-				"source": ["query.packageCode"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"productCode": {
-				"source": ["query.productCode"],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 6
-				}
-			}
-		},
-		"/product/packages/add": {
-			_apiInfo: {
-				"l": "Add Product Package",
-				"group": "Product"
-			},
-			"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
-			"code": {
-				"source": ["body.code"],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"minLength": 4,
-					"maxLength": 6
-				}
-			}
-		},
-		"/product/packages/update": {
-			_apiInfo: {
-				"l": "Update Product Package",
-				"group": "Product"
-			},
-			"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
-			"code": {
-				"source": ["query.code"],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric"
-				}
-			}
-		},
-
-		"/permissions/get": {
-			_apiInfo: {
-				"l": "Get Tenant Security Permissions",
-				"group": "Tenant"
-			},
-			"envCode": {
-				"source": ["query.envCode"],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric"
-				}
-			}
-		},
-
-		"/key/get": {
-			_apiInfo: {
-				"l": "Get the user dashboard key",
-				"group": "Tenant"
-			}
-		},
-
-		"/tenant/list": {
-			_apiInfo: {
-				"l": "List Tenants",
-				"group": "Tenant",
-				"groupMain": true
-			},
-			"type": {
-				"source": ['query.type'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"enum": ["admin", "product", "client"]
-				}
-			},
-			"negate": {
-				"source": ['query.negate'],
-				"required": false,
-				"default": false,
-				"validation": {
-					"type": "boolean"
-				}
-			}
-		},
-		"/tenant/add": {
-			_apiInfo: {
-				"l": "Add Tenant",
-				"group": "Tenant"
-			},
-			"commonFields": ['name', 'description'],
-			"code": {
-				"source": ['body.code'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"format": "alphanumeric",
-					"maxLength": 4
-				}
-			},
-			"email": {
-				"source": ['body.email'],
-				"required": true,
-				"validation": {
-					"type": "email"
-				}
-			},
-			"type": {
-				"source": ['body.type'],
-				"required": false,
-				"default": "client",
-				"validation": {
-					"type": "string",
-					"enum": ["admin", "product", "client"]
-				}
-			},
-			"tag": {
-				"source": ['body.tag'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/tenant/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant",
-				"group": "Tenant"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/get": {
-			_apiInfo: {
-				"l": "Get Tenant",
-				"group": "Tenant"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/update": {
-			_apiInfo: {
-				"l": "Update Tenant",
-				"group": "Tenant"
-			},
-			"commonFields": ['id', 'name', 'description'],
-			"type": {
-				"source": ['body.type'],
-				"required": false,
-				"default": "client",
-				"validation": {
-					"type": "string",
-					"enum": ["admin", "product", "client"]
-				}
-			},
-			"tag": {
-				"source": ['body.tag'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/tenant/oauth/list": {
-			_apiInfo: {
-				"l": "Get Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/oauth/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/oauth/add": {
-			_apiInfo: {
-				"l": "Add Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id', 'secret', 'redirectURI']
-		},
-		"/tenant/oauth/update": {
-			_apiInfo: {
-				"l": "Update Tenant oAuth Configuration",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id', 'secret', 'redirectURI']
-		},
-
-		"/tenant/oauth/users/list": {
-			_apiInfo: {
-				"l": "List Tenant oAuth Users",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/oauth/users/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant oAuth User",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id', 'uId']
-		},
-		"/tenant/oauth/users/add": {
-			_apiInfo: {
-				"l": "Add Tenant oAuth User",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id', 'userId', 'password']
-		},
-		"/tenant/oauth/users/update": {
-			_apiInfo: {
-				"l": "Update Tenant oAuth User",
-				"group": "Tenant oAuth"
-			},
-			"commonFields": ['id', 'uId'],
-			"userId": {
-				"source": ['body.userId'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['body.password'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/tenant/application/list": {
-			_apiInfo: {
-				"l": "List Tenant Applications",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id']
-		},
-		"/tenant/application/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId']
-		},
-		"/tenant/application/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode']
-		},
-		"/tenant/application/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application",
-				"group": "Tenant Application"
-			},
-			"_TTL": {
-				"source": ['body._TTL'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"enum": ['6', '12', '24', '48', '72', '96', '120', '144', '168']
-				}
-			},
-			"commonFields": ['id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
-		},
-		"/tenant/acl/get": {
-			_apiInfo: {
-				"l": "Get Current Tenant Access Level",
-				"group": "Tenant"
-			},
-			"commonFields": ['id']
-		},
-
-		"/tenant/application/key/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application Key",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId']
-		},
-		"/tenant/application/key/list": {
-			_apiInfo: {
-				"l": "List Tenant Application Keys",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId']
-		},
-		"/tenant/application/key/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application Key",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key']
-		},
-
-		"/tenant/application/key/ext/list": {
-			_apiInfo: {
-				"l": "List Tenant Application External Keys",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key']
-		},
-		"/tenant/application/key/ext/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application External Key",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key', 'expDate', 'device', 'geo'],
-			"env": {
-				"source": ['body.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/tenant/application/key/ext/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application External Key",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
-			"extKeyEnv": {
-				"source": ['query.extKeyEnv'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/tenant/application/key/ext/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application External Key",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key', 'extKey'],
-			"extKeyEnv": {
-				"source": ['body.extKeyEnv'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/tenant/application/key/config/list": {
-			_apiInfo: {
-				"l": "List Tenant Application Key Configuration",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key']
-		},
-		"/tenant/application/key/config/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application Key Configuration",
-				"group": "Tenant Application"
-			},
-			"commonFields": ['id', 'appId', 'key', 'envCode', 'config']
-		},
-
-		"/tenant/db/keys/list": {
-			_apiInfo: {
-				"l": "List Dashboard Tenant Keys",
-				"group": "Dashboard Tenants",
-				"groupMain": true
-			}
-		},
-
-		"/settings/tenant/get": {
-			_apiInfo: {
-				"l": "Get Tenant",
-				"group": "Tenant Settings"
-			}
-		},
-		"/settings/tenant/update": {
-			_apiInfo: {
-				"l": "Update Tenant",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['name', 'description']
-		},
-
-		"/settings/tenant/oauth/list": {
-			_apiInfo: {
-				"l": "Get Tenant oAuth Configuration",
-				"group": "Tenant Settings"
-			}
-		},
-		"/settings/tenant/oauth/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant oAuth Configuration",
-				"group": "Tenant Settings"
-			}
-		},
-		"/settings/tenant/oauth/add": {
-			_apiInfo: {
-				"l": "Add Tenant oAuth Configuration",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['secret', 'redirectURI']
-		},
-		"/settings/tenant/oauth/update": {
-			_apiInfo: {
-				"l": "Update Tenant oAuth Configuration",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['secret', 'redirectURI']
-		},
-
-		"/settings/tenant/oauth/users/list": {
-			_apiInfo: {
-				"l": "List Tenant oAuth Users",
-				"group": "Tenant Settings"
-			}
-		},
-		"/settings/tenant/oauth/users/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant oAuth User",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['uId']
-		},
-		"/settings/tenant/oauth/users/add": {
-			_apiInfo: {
-				"l": "Add Tenant oAuth User",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['userId', 'password']
-		},
-		"/settings/tenant/oauth/users/update": {
-			_apiInfo: {
-				"l": "Update Tenant oAuth User",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['uId'],
-			"userId": {
-				"source": ['body.userId'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['body.password'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/settings/tenant/application/list": {
-			_apiInfo: {
-				"l": "List Tenant Applications",
-				"group": "Tenant Settings"
-			}
-		},
-
-		"/settings/tenant/application/key/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application Key",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId']
-		},
-		"/settings/tenant/application/key/list": {
-			_apiInfo: {
-				"l": "List Tenant Application Keys",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId']
-		},
-		"/settings/tenant/application/key/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application Key",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key']
-		},
-
-		"/settings/tenant/application/key/ext/list": {
-			_apiInfo: {
-				"l": "List Tenant Application External Keys",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key']
-		},
-		"/settings/tenant/application/key/ext/add": {
-			_apiInfo: {
-				"l": "Add Tenant Application External Key",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key', 'expDate', 'device', 'geo'],
-			"env": {
-				"source": ['body.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/settings/tenant/application/key/ext/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application External Key",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
-			"extKeyEnv": {
-				"source": ['query.extKeyEnv'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/settings/tenant/application/key/ext/delete": {
-			_apiInfo: {
-				"l": "Delete Tenant Application External Key",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key', 'extKey'],
-			"extKeyEnv": {
-				"source": ['body.extKeyEnv'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-
-		"/settings/tenant/application/key/config/list": {
-			_apiInfo: {
-				"l": "List Tenant Application Key Configuration",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key']
-		},
-		"/settings/tenant/application/key/config/update": {
-			_apiInfo: {
-				"l": "Update Tenant Application Key Configuration",
-				"group": "Tenant Settings"
-			},
-			"commonFields": ['appId', 'key', 'envCode', 'config']
-		},
-
-		"/services/list": {
-			_apiInfo: {
-				"l": "List Services",
-				"group": "Services"
-			},
-			'serviceNames': {
-				'source': ['body.serviceNames'],
-				'required': false,
-				"validation": {
-					"type": "array",
-					'items': {'type': 'string'}
-				}
-			}
-		},
-
-		"/daemons/list": {
-			_apiInfo: {
-				"l": "List Daemons",
-				"group": "Daemons"
-			},
-			'daemonNames': {
-				'source': ['body.daemonNames'],
-				'required': false,
-				'validation': {
-					'type': 'array',
-					'items': {'type': 'string'}
-				}
-			},
-			'getGroupConfigs': {
-				'source': ['query.getGroupConfigs'],
-				'required': false,
-				'validation': {
-					'type': 'boolean'
-				}
-			}
-		},
-
-		"/daemons/groupConfig/list": {
-			_apiInfo: {
-				"l": "List Daemon Group Configuration",
-				"group": "Daemons"
-			},
-			'grpConfNames': {
-				'source': ['body.grpConfNames'],
-				'required': false,
-				'validation': {
-					'type': 'array',
-					'items': {'type': 'string'}
-				}
-			}
-		},
-		"/daemons/groupConfig/add": {
-			_apiInfo: {
-				"l": "Add Daemon Group Configuration",
-				"group": "Daemons"
-			},
-			'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-			'type':{
-				"required": true,
-				"source": ["body.type"],
-				"validation":{
-					"type": "string",
-					"enum": ["interval", "cron", "once"]
-				}
-			}
-		},
-		"/daemons/groupConfig/update": {
-			_apiInfo: {
-				"l": "Update Daemon Group Configuration",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-			'type':{
-				"required": true,
-				"source": ["body.type"],
-				"validation":{
-					"type": "string",
-					"enum": ["interval", "cron", "once"]
-				}
-			}
-		},
-		"/daemons/groupConfig/delete": {
-			_apiInfo: {
-				"l": "Delete Daemon Group Configuration",
-				"group": "Daemons"
-			},
-			'commonFields': ['id']
-		},
-
-		"/daemons/groupConfig/serviceConfig/update": {
-			_apiInfo: {
-				"l": "Update Service Configuration",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'jobName'],
-			'env': {
-				'source': ['body.env'],
-				'required': true,
-				'validation': {
-					'type': 'string'
-				}
-			},
-			'config': {
-				'source': ['body.config'],
-				'required': true,
-				'validation': {
-					'type': 'object'
-				}
-			}
-		},
-		"/daemons/groupConfig/serviceConfig/list": {
-			_apiInfo: {
-				"l": "List Service Configuration",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'jobName']
-		},
-
-		"/daemons/groupConfig/tenantExtKeys/update": {
-			_apiInfo: {
-				"l": "Update Job's External Keys",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'jobName'],
-			'tenantExtKeys': {
-				'source': ['body.tenantExtKeys'],
-				'required': true,
-				'validation': {
-					'type': 'array'
-				}
-			},
-			'tenantsInfo': {
-				'source': ['body.tenantsInfo'],
-				'required': true,
-				'validation': {
-					'type': 'array'
-				}
-			}
-		},
-		"/daemons/groupConfig/tenantExtKeys/list": {
-			_apiInfo: {
-				"l": "List Job's External Keys",
-				"group": "Daemons"
-			},
-			'commonFields': ['id', 'jobName']
-		},
-
-		"/staticContent/list": {
-			_apiInfo: {
-				"l": "List Static Content",
-				"group": "Static Content"
-			},
-			'staticContentNames': {
-				'source': ['body.staticContentNames'],
-				'required': false,
-				'validation': {
-					'type': 'array',
-					'items': {'type': 'string'}
-				}
-			}
-		},
-
-		"/hosts/list": {
-			_apiInfo: {
-				"l": "List Hosts",
-				"group": "Hosts",
-				"groupMain": true
-			},
-			'env': {
-				'source': ['query.env'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"/hosts/nginx/list": {
-			_apiInfo: {
-				'l': 'List Nginx Hosts',
-				'group': 'Hosts'
-			},
-			'env': {
-				'source': ['query.env'],
-				'required': true,
-				'validation': {
-					'type': 'string'
-				}
-			}
-		},
-		"/hosts/nginx/redeploy": {
-			_apiInfo: {
-				'l': 'Redeploy Nginx Hosts',
-				'group': 'Hosts'
-			},
-			'envCode': {
-				'source': ['query.envCode'],
-				'required': true,
-				'validation': {
-					'type': 'string'
-				}
-			},
-			"ssl":{
-				'source': ['body.ssl'],
-				'required': true,
-				'validation': {
-					'type': 'boolean'
-				}
-			},
-			"nginxConfig": {
-				"source": ["body.nginxConfig"],
-				"required": false,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"customUIId": {"type": "string", "required": true},
-						"branch": {"type": "string", "required": true},
-						"commit": {"type": "string", "required": true}
+		"put": {
+			"/environment/update": {
+				_apiInfo: {
+					"l": "Update Environment",
+					"group": "Environment"
+				},
+				"commonFields": ['id', 'description', 'services'],
+				"domain": {
+					"source": ['body.domain'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "hostname"
+					}
+				},
+				"apiPrefix": {
+					"source": ['body.apiPrefix'],
+					"required": false,
+					"default": "api",
+					"validation": {
+						"type": "string"
+					}
+				},
+				"sitePrefix": {
+					"source": ['body.sitePrefix'],
+					"required": false,
+					"default": "site",
+					"validation": {
+						"type": "string"
+					}
+				},
+				"custom": {
+					"source": ['body.custom'],
+					"required": false,
+					"validation": {
+						"type": "object"
 					}
 				}
 			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/delete": {
-			_apiInfo: {
-				"l": "Delete Hosts",
-				"group": "Hosts"
-			},
-			'env': {
-				'source': ['query.env'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			'name': {
-				'source': ['query.name'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			'hostname': {
-				'source': ['query.hostname'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			},
-			'ip': {
-				'source': ['query.ip'],
-				'required': true,
-				"validation": {
-					"type": "string",
-					"required": true
-				}
-			}
-		},
-		"/hosts/maintenanceOperation": {
-			"_apiInfo": {
-				"l": "Perform Maintenance Operation",
-				"group": "Hosts"
-			},
-			"operation": {
-				"required": true,
-				"source": ['body.operation'],
-				"validation": {
-					"type": "string",
-					"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost', 'daemonStats']
-				}
-			},
-			"serviceName": {
-				"source": ['body.serviceName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"serviceHost": {
-				"source": ['body.serviceHost'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"servicePort": {
-				"source": ['body.servicePort'],
-				"required": true,
-				"validation": {
-					"type": "integer",
-					"min": 4000
-				}
-			},
-			"env": {
-				"source": ['body.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"hostname": {
-				"source": ['body.hostname'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/deployController": {
-			"_apiInfo": {
-				"l": "Deploy New Controller",
-				"group": "Hosts"
-			},
-			"commonFields": ['envCode'],
-			"number": {
-				"required": true,
-				"source": ["body.number"],
-				"validation": {
-					"type": "number",
-					"minimum": 1
-				}
-			},
-			"version": {
-				"required": true,
-				"source": ["body.version"],
-				"default": 1,
-				"validation": {
-					"type": "number",
-					"minimum": 1
-				}
-			},
-			"variables": {
-				"required": false,
-				"source": ['body.variables'],
-				"validation": {
-					"type": "array",
-					"minItems": 1,
-					"items": {"type": "string"}
-				}
-			},
-			"owner": {
-				"source": ['body.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"repo": {
-				"source": ['body.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"branch": {
-				"source": ['body.branch'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"commit": {
-				"source": ['body.commit'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"useLocalSOAJS": {
-				"source": ['body.useLocalSOAJS'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"name": {
-				"source": ['body.name'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"memoryLimit": {
-				"source": ['body.memoryLimit'],
-				"required": false,
-				"default": 209715200,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"imagePrefix": {
-				"source": ['body.imagePrefix'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/deployNginx": {
-			"_apiInfo": {
-				"l": "Deploy New Nginx",
-				"group": "Hosts"
-			},
-			"commonFields": ['envCode'],
-			"nginxConfig": {
-				"source": ["body.nginxConfig"],
-				"required": false,
-				"validation": {
-					"type": "object",
-					"properties": {
-						"customUIId": {"type": "string", "required": true},
-						"branch": {"type": "string", "required": true},
-						"commit": {"type": "string", "required": true}
+
+			"/environment/key/update": {
+				_apiInfo: {
+					"l": "Update Environment Tenant Key Security",
+					"group": "Environment"
+				},
+				"commonFields": ['id'],
+				"algorithm": {
+					"source": ['body.algorithm'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"password": {
+					"source": ['body.password'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},
-			"exposedPort": {
-				"source": ["body.exposedPort"],
-				"required": false,
-				"validation":{
-					"type":"number"
+
+			"/environment/dbs/update": {
+				_apiInfo: {
+					"l": "Update Environment Database",
+					"group": "Environment Databases"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['body.name'], "required": true, "validation": {"type": "string", "required": true}},
+				"cluster": {
+					"source": ['body.cluster'],
+					"required": true,
+					"validation": {"type": "string", "required": true}
+				},
+				"tenantSpecific": {
+					"source": ['body.tenantSpecific'],
+					"required": false,
+					"validation": {"type": "boolean", "required": true}
+				},
+				"sessionInfo": {
+					"source": ['body.sessionInfo'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"store": {"type": "object", "required": true},
+							"dbName": {"type": "string", "required": true},
+							"expireAfter": {"type": "integer", "required": true},
+							"collection": {"type": "string", "required": true},
+							"stringify": {"type": "boolean", "required": true}
+						}
+					}
 				}
 			},
-			"supportSSL": {
-				"source": ['body.supportSSL'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
+
+			"/environment/dbs/updatePrefix": {
+				_apiInfo: {
+					"l": "Update Environment Databases Prefix",
+					"group": "Environment Databases"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"prefix": {
+					"source": ['body.prefix'],
+					"required": false,
+					"validation": {"type": "string", "required": false}
 				}
 			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
+
+			"/environment/clusters/update": {
+				_apiInfo: {
+					"l": "Update Environment Database Cluster",
+					"group": "Environment Clusters"
+				},
+				"commonFields": ['cluster'],
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
+			},
+
+			"/environment/platforms/cert/choose": {
+				_apiInfo: {
+					"l": "Choose Existing Certificates",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"platform": {
+					"source": ['query.platform'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"driverName": {
+					"source": ['query.driverName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"certIds": {
+					"source": ['body.certIds'],
+					"required": true,
+					"validation": {
+						"type": "array"
+					}
 				}
 			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
+
+			"/environment/platforms/driver/changeSelected": {
+				_apiInfo: {
+					"l": "Change Selected Driver",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"selected": {
+					"source": ['body.selected'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"memoryLimit": {
-				"source": ['body.memoryLimit'],
-				"required": false,
-				"default": 209715200,
-				"validation": {
-					"type": "number"
+
+			"/environment/platforms/deployer/type/change": {
+				_apiInfo: {
+					"l": "Change Deployer Type",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"deployerType": {
+					"source": ['body.deployerType'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["manual", "container"]
+					}
 				}
 			},
-			"imagePrefix": {
-				"source": ['body.imagePrefix'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/updateNginx": {
-			"_apiInfo": {
-				"l": "Deploy New Nginx",
-				"group": "Hosts"
+
+			"/product/update": {
+				_apiInfo: {
+					"l": "Update Product",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'name', 'description']
 			},
-			"commonFields": ['envCode']
-		},
-		"/hosts/deployService": {
-			"_apiInfo": {
-				"l": "Deploy New Service",
-				"group": "Hosts"
-			},
-			"commonFields": ['envCode'],
-			"name": {
-				"required": false,
-				"source": ['body.name'],
-				"validation": {
-					"type": "string"
+
+			"/product/packages/update": {
+				_apiInfo: {
+					"l": "Update Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['id', 'name', 'description', '_TTL', 'acl'],
+				"code": {
+					"source": ["query.code"],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric"
+					}
 				}
 			},
-			"version": {
-				"required": true,
-				"source": ["body.version"],
-				"default": 1,
-				"validation": {
-					"type": "number",
-					"minimum": 1
+
+			"/tenant/update": {
+				_apiInfo: {
+					"l": "Update Tenant",
+					"group": "Tenant"
+				},
+				"commonFields": ['id', 'name', 'description'],
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"default": "client",
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
+				},
+				"tag": {
+					"source": ['body.tag'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"gcName": {
-				"required": false,
-				"source": ['body.gcName'],
-				"validation": {
-					"type": "string"
+
+			"/tenant/oauth/update": {
+				_apiInfo: {
+					"l": "Update Tenant oAuth Configuration",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id', 'secret', 'redirectURI']
+			},
+
+			"/tenant/oauth/users/update": {
+				_apiInfo: {
+					"l": "Update Tenant oAuth User",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id', 'uId'],
+				"userId": {
+					"source": ['body.userId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"password": {
+					"source": ['body.password'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"gcVersion": {
-				"required": false,
-				"source": ['body.gcVersion'],
-				"validation": {
-					"type": "integer",
-					"minimum": 1
+
+			"/tenant/application/update": {
+				_apiInfo: {
+					"l": "Update Tenant Application",
+					"group": "Tenant Application"
+				},
+				"_TTL": {
+					"source": ['body._TTL'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ['6', '12', '24', '48', '72', '96', '120', '144', '168']
+					}
+				},
+				"commonFields": ['id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
+			},
+
+			"/tenant/application/key/ext/update": {
+				_apiInfo: {
+					"l": "Update Tenant Application External Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
+				"extKeyEnv": {
+					"source": ['query.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"variables": {
-				"required": false,
-				"source": ['body.variables'],
-				"validation": {
-					"type": "array",
-					"minItems": 1,
-					"items": {"type": "string"}
+
+			"/tenant/application/key/config/update": {
+				_apiInfo: {
+					"l": "Update Tenant Application Key Configuration",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key', 'envCode', 'config']
+			},
+
+			"/settings/tenant/update": {
+				_apiInfo: {
+					"l": "Update Tenant",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['name', 'description'],
+				"type": {
+					"source": ['body.type'],
+					"required": false,
+					"default": "client",
+					"validation": {
+						"type": "string",
+						"enum": ["admin", "product", "client"]
+					}
 				}
 			},
-			"owner": {
-				"source": ['body.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
+
+			"/settings/tenant/oauth/update": {
+				_apiInfo: {
+					"l": "Update Tenant oAuth Configuration",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['secret', 'redirectURI']
+			},
+
+			"/settings/tenant/oauth/users/update": {
+				_apiInfo: {
+					"l": "Update Tenant oAuth User",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['uId'],
+				"userId": {
+					"source": ['body.userId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"password": {
+					"source": ['body.password'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"repo": {
-				"source": ['body.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
+
+			"/settings/tenant/application/key/ext/update": {
+				_apiInfo: {
+					"l": "Update Tenant Application External Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key', 'extKey', 'expDate', 'device', 'geo'],
+				"extKeyEnv": {
+					"source": ['query.extKeyEnv'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"branch": {
-				"source": ['body.branch'],
-				"required": true,
-				"validation": {
-					"type": "string"
+
+			"/settings/tenant/application/key/config/update": {
+				_apiInfo: {
+					"l": "Update Tenant Application Key Configuration",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key', 'envCode', 'config']
+			},
+
+			"/daemons/groupConfig/update": {
+				_apiInfo: {
+					"l": "Update Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'type':{
+					"required": true,
+					"source": ["body.type"],
+					"validation":{
+						"type": "string",
+						"enum": ["interval", "cron", "once"]
+					}
 				}
 			},
-			"commit": {
-				"source": ['body.commit'],
-				"required": true,
-				"validation": {
-					"type": "string"
+
+			"/daemons/groupConfig/serviceConfig/update": {
+				_apiInfo: {
+					"l": "Update Service Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['id', 'jobName'],
+				'env': {
+					'source': ['body.env'],
+					'required': true,
+					'validation': {
+						'type': 'string'
+					}
+				},
+				'config': {
+					'source': ['body.config'],
+					'required': true,
+					'validation': {
+						'type': 'object'
+					}
 				}
 			},
-			"useLocalSOAJS": {
-				"source": ['body.useLocalSOAJS'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
+
+			"/daemons/groupConfig/tenantExtKeys/update": {
+				_apiInfo: {
+					"l": "Update Job's External Keys",
+					"group": "Daemons"
+				},
+				'commonFields': ['id', 'jobName'],
+				'tenantExtKeys': {
+					'source': ['body.tenantExtKeys'],
+					'required': true,
+					'validation': {
+						'type': 'array'
+					}
+				},
+				'tenantsInfo': {
+					'source': ['body.tenantsInfo'],
+					'required': true,
+					'validation': {
+						'type': 'array'
+					}
 				}
 			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
+
+			"/hacloud/nodes/update": {
+				"_apiInfo": {
+					"l": "Update HA Cloud Node",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"nodeId": {
+					"source": ['query.nodeId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["role", "availability"]
+					}
+				},
+				"value": {
+					"source": ['body.value'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
+
+			"/hacloud/services/scale": {
+				"_apiInfo": {
+					"l": "Scale HA Service",
+					"group": "HA Cloud"
+				},
+				"envCode": {
+					"source": ['query.envCode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"scale": {
+					"source": ['body.scale'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
 				}
 			},
-			"memoryLimit": {
-				"source": ['body.memoryLimit'],
-				"required": false,
-				"default": 209715200,
-				"validation": {
-					"type": "number"
+
+			"/gitAccounts/repo/sync": {
+				"_apiInfo": {
+					"l": "Deactivate Repository",
+					"group": "Git Accounts"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['body.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"project": {
+					"source": ['body.project'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['body.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"imagePrefix": {
-				"source": ['body.imagePrefix'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/deployDaemon": {
-			"_apiInfo": {
-				"l": "Deploy New Daemon",
-				"group": "Hosts"
-			},
-			"commonFields": ['envCode'],
-			"name": {
-				"required": false,
-				"source": ['body.name'],
-				"validation": {
-					"type": "string"
+
+			"/cb/update": {
+				"_apiInfo": {
+					"l": "Update Content Schema",
+					"group": "Content Builder"
+				},
+				"commonFields": ["id"],
+				"config": {
+					"required": true,
+					"source": ["body.config"],
+					"validation": cbSchema
 				}
 			},
-			"version": {
-				"required": true,
-				"source": ["body.version"],
-				"default": 1,
-				"validation": {
-					"type": "number",
-					"minimum": 1
+
+			"/gitAccounts/repo/deactivate": {
+				"_apiInfo": {
+					"l": "Deactivate Repository",
+					"group": "Git Accounts"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"variables": {
-				"required": false,
-				"source": ['body.variables'],
-				"validation": {
-					"type": "array",
-					"minItems": 1,
-					"items": {"type": "string"}
-				}
-			},
-			"grpConfName": {
-				"required": true,
-				"source": ['body.grpConfName'],
-				"validation": {
-					"type": "string"
-				}
-			},
-			"owner": {
-				"source": ['body.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"repo": {
-				"source": ['body.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"branch": {
-				"source": ['body.branch'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"commit": {
-				"source": ['body.commit'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"useLocalSOAJS": {
-				"source": ['body.useLocalSOAJS'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haService": {
-				"source": ['body.haService'],
-				"required": false,
-				"validation": {
-					"type": "boolean"
-				}
-			},
-			"haCount": {
-				"source": ['body.haCount'],
-				"required": false,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"memoryLimit": {
-				"source": ['body.memoryLimit'],
-				"required": false,
-				"default": 209715200,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"imagePrefix": {
-				"source": ['body.imagePrefix'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/container/logs": {
-			"_apiInfo": {
-				"l": "Get Container Logs",
-				"group": "Hosts"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/container/delete": {
-			"_apiInfo": {
-				"l": "Delete Container",
-				"group": "Hosts"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/container/zombie/list": {
-			"_apiInfo": {
-				"l": "List Zombie Containers",
-				"group": "Hosts"
-			},
-			"env": {
-				"source": ["query.env"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hosts/container/zombie/delete": {
-			"_apiInfo": {
-				"l": "Delete Zombie Container",
-				"group": "Hosts"
-			},
-			"env": {
-				"source": ["query.env"],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"cid": {
-				"source": ['query.cid'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
 		},
 
-		"/hacloud/nodes/list": {
-			"_apiInfo": {
-				"l": "List HA Cloud Nodes",
-				"group": "HA Cloud"
-			}
-		},
-		"/hacloud/nodes/add": {
-			"_apiInfo": {
-				"l": "Add HA Cloud Node",
-				"group": "HA Cloud"
+		"delete": {
+			"/environment/delete": {
+				_apiInfo: {
+					"l": "Delete Environment",
+					"group": "Environment"
+				},
+				"commonFields": ['id']
 			},
-			"env": {
-				"source": ['body.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"host": {
-				"source": ['body.host'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"port": {
-				"source": ['body.port'],
-				"required": false,
-				"validation": {
-					"type": "number"
-				}
-			},
-			"role": {
-				"source": ['body.role'],
-				"required": false,
-				"validation": {
-					"type": "string",
-					"enum": ['manager', 'worker']
-				}
-			}
-		},
-		"/hacloud/nodes/remove": {
-			"_apiInfo": {
-				"l": "Remove HA Cloud Node",
-				"group": "HA Cloud"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"nodeId": {
-				"source": ['query.nodeId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/hacloud/nodes/update": {
-			"_apiInfo": {
-				"l": "Update HA Cloud Node",
-				"group": "HA Cloud"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"nodeId": {
-				"source": ['query.nodeId'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"type": {
-				"source": ['body.type'],
-				"required": true,
-				"validation": {
-					"type": "string",
-					"enum": ["role", "availability"]
-				}
-			},
-			"value": {
-				"source": ['body.value'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/hacloud/services/scale": {
-			"_apiInfo": {
-				"l": "Scale HA Service",
-				"group": "HA Cloud"
+			"/environment/dbs/delete": {
+				_apiInfo: {
+					"l": "Delete Environment Database",
+					"group": "Environment Databases"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			"envCode": {
-				"source": ['query.envCode'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"name": {
-				"source": ['query.name'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"version": {
-				"source": ['query.version'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"scale": {
-				"source": ['body.scale'],
-				"required": true,
-				"validation": {
-					"type": "number"
-				}
-			}
-		},
 
-		"/hacloud/services/delete": {
-			"_apiInfo": {
-				"l": "Delete HA Service",
-				"group": "HA Cloud"
+			"/environment/clusters/delete": {
+				_apiInfo: {
+					"l": "Delete Environment Database Cluster",
+					"group": "Environment Clusters"
+				},
+				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
+				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"name": {
-				"source": ['query.name'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"version": {
-				"source": ['query.version'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/hacloud/services/instances/logs": {
-			"_apiInfo": {
-				"l": "Get Service Container Logs",
-				"group": "HA Cloud"
-			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
+			"/environment/platforms/cert/delete": {
+				_apiInfo: {
+					"l": "Remove Certificate",
+					"group": "Environment Platforms"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"driverName": {
+					"source": ['query.driverName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
-			"taskName": {
-				"source": ['query.taskName'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/analytics/check": {
-			"_apiInfo": {
-				"l": "Check Analytics Status",
-				"group": "Analytics"
+			"/product/delete": {
+				_apiInfo: {
+					"l": "Delete Product",
+					"group": "Product"
+				},
+				"commonFields": ['id']
 			},
-			"env": {
-				"source": ['query.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/analytics/activate": {
-			"_apiInfo": {
-				"l": "Activate Analytics",
-				"group": "Analytics"
-			},
-			"env": {
-				"source": ['body.env'],
-				"required": true,
-				"validation": {
-					"type": "string"
+			"/product/packages/delete": {
+				_apiInfo: {
+					"l": "Delete Product Package",
+					"group": "Product"
+				},
+				"commonFields": ['id'],
+				"code": {
+					"source": ['query.code'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"format": "alphanumeric"
+					}
 				}
-			}
-		},
+			},
 
-		"/gitAccounts/login": {
-			"_apiInfo": {
-				"l": "Github Login",
-				"group": "Git Accounts"
+			"/tenant/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant",
+					"group": "Tenant"
+				},
+				"commonFields": ['id']
 			},
-			"username": {
-				"source": ['body.username'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['body.password'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"label": {
-				"source": ['body.label'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['body.provider'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"domain": {
-				"source": ['body.domain'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"type": {
-				"source": ['body.type'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"access": {
-				"source": ['body.access'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"oauthKey": {
-				"source": ['body.oauthKey'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"oauthSecret": {
-				"source": ['body.oauthSecret'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/gitAccounts/logout": {
-			"_apiInfo": {
-				"l": "Github Logout",
-				"group": "Git Accounts"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['query.provider'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"username": {
-				"source": ['query.username'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"password": {
-				"source": ['query.password'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/gitAccounts/accounts/list": {
-			"_apiInfo": {
-				"l": "List Git Accounts",
-				"group": "Git Accounts"
-			}
-		},
-		"/gitAccounts/getRepos": {
-			"_apiInfo": {
-				"l": "Get Repositories",
-				"group": "Git Accounts"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['query.provider'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"page": {
-				"source": ['query.page'],
-				"required": true,
-				"validation": {
-					"type": "number",
-					"minimum": 1
-				}
-			},
-			"per_page": {
-				"source": ['query.per_page'],
-				"required": true,
-				"validation": {
-					"type": "number",
-					"minimum": 1
-				}
-			}
-		},
 
-		"/gitAccounts/getBranches": {
-			"_apiInfo": {
-				"l": "Get Repository Branches",
-				"group": "Git Accounts"
+			"/tenant/oauth/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant oAuth Configuration",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id']
 			},
-			"name": {
-				"source": ['query.name'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"type": {
-				"source": ['query.type'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['query.provider'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/gitAccounts/repo/activate": {
-			"_apiInfo": {
-				"l": "Activate Repository",
-				"group": "Git Accounts"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['body.provider'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"owner": {
-				"source": ['body.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"repo": {
-				"source": ['body.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"project": {
-				"source": ['body.project'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"configBranch": {
-				"source": ['body.configBranch'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/gitAccounts/repo/deactivate": {
-			"_apiInfo": {
-				"l": "Deactivate Repository",
-				"group": "Git Accounts"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"owner": {
-				"source": ['query.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"repo": {
-				"source": ['query.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
-		"/gitAccounts/repo/sync": {
-			"_apiInfo": {
-				"l": "Deactivate Repository",
-				"group": "Git Accounts"
-			},
-			"id": {
-				"source": ['query.id'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"provider": {
-				"source": ['body.provider'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"project": {
-				"source": ['body.project'],
-				"required": false,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"owner": {
-				"source": ['body.owner'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			},
-			"repo": {
-				"source": ['body.repo'],
-				"required": true,
-				"validation": {
-					"type": "string"
-				}
-			}
-		},
 
-		"/cb/list": {
-			"_apiInfo": {
-				"l": "List Content Schema",
-				"group": "Content Builder",
-				"groupMain": true
+			"/tenant/oauth/users/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant oAuth User",
+					"group": "Tenant oAuth"
+				},
+				"commonFields": ['id', 'uId']
 			},
-			'port': {
-				'required': false,
-				'source': ['query.port'],
-				'validation': {
-					'type': 'boolean'
+
+			"/tenant/application/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant Application",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId']
+			},
+
+			"/tenant/application/key/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant Application Key",
+					"group": "Tenant Application"
+				},
+				"commonFields": ['id', 'appId', 'key']
+			},
+
+			"/settings/tenant/oauth/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant oAuth Configuration",
+					"group": "Tenant Settings"
 				}
-			}
-		},
-		"/cb/add": {
-			"_apiInfo": {
-				"l": "Add New Content Schema",
-				"group": "Content Builder"
 			},
-			"commonFields": ["name"],
-			"config": {
-				"required": true,
-				"source": ["body.config"],
-				"validation": cbSchema
-			}
-		},
-		"/cb/update": {
-			"_apiInfo": {
-				"l": "Update Content Schema",
-				"group": "Content Builder"
+
+			"/settings/tenant/oauth/users/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant oAuth User",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['uId']
 			},
-			"commonFields": ["id"],
-			"config": {
-				"required": true,
-				"source": ["body.config"],
-				"validation": cbSchema
-			}
-		},
-		"/cb/get": {
-			"_apiInfo": {
-				"l": "Get One Content Schema",
-				"group": "Content Builder"
+
+			"/settings/tenant/application/key/delete": {
+				_apiInfo: {
+					"l": "Delete Tenant Application Key",
+					"group": "Tenant Settings"
+				},
+				"commonFields": ['appId', 'key']
 			},
-			"commonFields": ["id"],
-			"version": {
-				"required": false,
-				"source": ["query.version"],
-				"validation": {
-					"type": "integer"
+
+			"/daemons/groupConfig/delete": {
+				_apiInfo: {
+					"l": "Delete Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['id']
+			},
+
+			"/hosts/delete": {
+				_apiInfo: {
+					"l": "Delete Hosts",
+					"group": "Hosts"
+				},
+				'env': {
+					'source': ['query.env'],
+					'required': true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				'name': {
+					'source': ['query.name'],
+					'required': true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				'hostname': {
+					'source': ['query.hostname'],
+					'required': true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				'ip': {
+					'source': ['query.ip'],
+					'required': true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
 				}
-			}
-		},
-		"/cb/listRevisions": {
-			"_apiInfo": {
-				"l": "List Content Schema Revisions",
-				"group": "Content Builder"
+			},
+
+			"/hacloud/nodes/remove": {
+				"_apiInfo": {
+					"l": "Remove HA Cloud Node",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"nodeId": {
+					"source": ['query.nodeId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/hacloud/services/delete": {
+				"_apiInfo": {
+					"l": "Delete HA Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"source": ['query.name'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/gitAccounts/logout": {
+				"_apiInfo": {
+					"l": "Github Logout",
+					"group": "Git Accounts"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"provider": {
+					"source": ['query.provider'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"username": {
+					"source": ['query.username'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"password": {
+					"source": ['query.password'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
 		}
 	}

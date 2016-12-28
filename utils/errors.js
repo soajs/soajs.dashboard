@@ -142,7 +142,6 @@ var errors = {
 	"728": "Unable to get certificate(s)",
 	"729": "Unable to remove certificate",
 	"730": "One or more certificates do not exist",
-	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 
 	"732": "Unable to list drivers",
 	"733": "Unable to add driver",
@@ -161,6 +160,8 @@ var errors = {
 	"742": "Unable to list static content sources",
 
 	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
+
+	"744": "Certificate type must be one of [ca, cert, key]",
 
 	"750": "Invalid Request.",
 
@@ -211,6 +212,8 @@ var errors = {
 	"787": "Missing field name in config.js",
 	"788": "Invalid or no type provided in config.js",
 
+	"795": "Invalid Operation, service/daemon record not found in Database.",
+
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
  	"801": "Unable to add node, make sure the new node is configured properly",
  	"802": "Unable to save new node record. However, the new node was added to the cluster",
@@ -235,6 +238,7 @@ var errors = {
  	"821": "You are not allowed you remove a manager node. You need to demote it to worker first",
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
+	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
 
 	"901": "Error Logging out from environments",
 	"902": "Error Logging in to environments",

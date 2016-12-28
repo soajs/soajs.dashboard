@@ -2,7 +2,7 @@
 var configDashbrd = {
 	'permissions': {
 		'environment': {
-			'list': ['dashboard', '/environment/list']
+			'list': ['dashboard', '/environment/list', 'get']
 		}
 	}
 };

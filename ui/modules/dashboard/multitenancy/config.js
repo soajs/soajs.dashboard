@@ -416,50 +416,49 @@ var tenantConfig = {
 	},
 	'permissions':{
 		'product':{
-			'list' : ['dashboard', '/product/list']
+			'list' : ['dashboard', '/product/list', 'get']
 		},
 		'environment':{
-			'list': ['dashboard', '/environment/list']
+			'list': ['dashboard', '/environment/list', 'get']
 		},
 		'tenant':{
-			'add' : ['dashboard', '/tenant/add'],
-			'delete' : ['dashboard', '/tenant/delete'],
-			'update' : ['dashboard', '/tenant/update'],
-			'list' : ['dashboard', '/tenant/list'],
+			'add' : ['dashboard', '/tenant/add', 'post'],
+			'delete' : ['dashboard', '/tenant/delete', 'delete'],
+			'update' : ['dashboard', '/tenant/update', 'put'],
+			'list' : ['dashboard', '/tenant/list', 'get'],
 			'oauth':{
-				'list' : ['dashboard', '/tenant/oauth/list'],
-				'update' : ['dashboard', '/tenant/oauth/update'],
-				'delete' : ['dashboard', '/tenant/oauth/delete'],
+				'list' : ['dashboard', '/tenant/oauth/list', 'get'],
+				'update' : ['dashboard', '/tenant/oauth/update', 'put'],
+				'delete' : ['dashboard', '/tenant/oauth/delete', 'delete'],
 				'users':{
-					'list' : ['dashboard', '/tenant/oauth/users/list'],
-					'add' : ['dashboard', '/tenant/oauth/users/add'],
-					'update' : ['dashboard', '/tenant/oauth/users/update'],
-					'delete' : ['dashboard', '/tenant/oauth/users/delete']
+					'list' : ['dashboard', '/tenant/oauth/users/list', 'get'],
+					'add' : ['dashboard', '/tenant/oauth/users/add', 'post'],
+					'update' : ['dashboard', '/tenant/oauth/users/update', 'put'],
+					'delete' : ['dashboard', '/tenant/oauth/users/delete', 'delete']
 				}
 			},
 			'application':{
-				'add' : ['dashboard', '/tenant/application/add'],
-				'delete' : ['dashboard', '/tenant/application/delete'],
-				'update' : ['dashboard', '/tenant/application/update'],
-				'list' : ['dashboard', '/tenant/application/list']
+				'add' : ['dashboard', '/tenant/application/add', 'post'],
+				'delete' : ['dashboard', '/tenant/application/delete', 'delete'],
+				'update' : ['dashboard', '/tenant/application/update', 'put'],
+				'list' : ['dashboard', '/tenant/application/list', 'get']
 			},
 			'appKeys':{
-				'list' : ['dashboard', '/tenant/application/key/list'],
-				'add' : ['dashboard', '/tenant/application/key/add'],
-				'delete' : ['dashboard', '/tenant/application/key/delete'],
-				'listConfig' : ['dashboard', '/tenant/application/key/config/list'],
-				'updateConfig' : ['dashboard', '/tenant/application/key/config/update']
+				'list' : ['dashboard', '/tenant/application/key/list', 'get'],
+				'add' : ['dashboard', '/tenant/application/key/add', 'post'],
+				'delete' : ['dashboard', '/tenant/application/key/delete', 'delete'],
+				'listConfig' : ['dashboard', '/tenant/application/key/config/list', 'get'],
+				'updateConfig' : ['dashboard', '/tenant/application/key/config/update', 'put']
 			},
 			'externalKeys':{
-				'add' : ['dashboard', '/tenant/application/key/ext/add'],
-				'list' : ['dashboard', '/tenant/application/key/ext/list'],
-				'delete' : ['dashboard', '/tenant/application/key/ext/delete'],
-				'update' : ['dashboard', '/tenant/application/key/ext/update']
+				'add' : ['dashboard', '/tenant/application/key/ext/add', 'post'],
+				'list' : ['dashboard', '/tenant/application/key/ext/list', 'get'],
+				'delete' : ['dashboard', '/tenant/application/key/ext/delete', 'delete'],
+				'update' : ['dashboard', '/tenant/application/key/ext/update', 'put']
 			}
 		},
         'db':{
-            'listKeys': ['dashboard', "/tenant/db/keys/list"],
-            'addKey': ['dashboard', "/tenant/db/keys/add"],
+            'listKeys': ['dashboard', "/tenant/db/keys/list", 'get']
         }
 	}
 

@@ -26,7 +26,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 
 	function removeDatabase(currentScope, env, name) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/environment/dbs/delete",
 			"params": {"env": env, 'name': name}
 		}, function (error, response) {
@@ -76,7 +76,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 						}
 
 						getSendDataFromServer(currentScope, ngDataApi, {
-							"method": "send",
+							"method": "post",
 							"routeName": "/dashboard/environment/dbs/add",
 							"params": {"env": env},
 							"data": postData
@@ -165,7 +165,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 						}
 
 						getSendDataFromServer(currentScope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/environment/dbs/update",
 							"params": {"env": env},
 							"data": postData
@@ -199,7 +199,7 @@ dbServices.service('envDB', ['ngDataApi', '$timeout', '$modal', function (ngData
 
 	function updateDbPrefix(currentScope, env, prefix) {
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/environment/dbs/updatePrefix",
 			"params": {"env": env},
 			"data": {'prefix': prefix}

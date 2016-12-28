@@ -33,7 +33,7 @@ function getDockerCerts(certs, gfs, db, cb) {
 						gstore.close();
 
 						var certName = oneCert.filename.split('.')[0];
-						certBuffers[certName] = filedata;
+						certBuffers[oneCert.metadata.certType] = filedata;
 						return callback(null, true);
 					});
 				});
@@ -105,9 +105,10 @@ var lib = {
 						var docker = new Docker(dockerConfig);
 						docker.ping(function (error, response) {
 							//error is insignificant in this case
-							return callback(response);
+							return callback(null, response);
 						});
-					}, function (fastestNodeRecord) {
+					}, function (error, fastestNodeRecord) {
+						//error is insignificant in this case
 						if (!fastestNodeRecord) {
 							return cb({'message': 'ERROR: unable to connect to a manager node'});
 						}
@@ -154,6 +155,7 @@ var lib = {
 
 					model.getDb(soajs).getMongoSkinDB(function (error, db) {
 						checkError(error, callback, function () {
+
 							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);

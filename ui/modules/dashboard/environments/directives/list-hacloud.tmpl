@@ -222,7 +222,14 @@
         </tab>
         <tab heading="Services" ng-if="access.listHosts">
             <br />
-            <div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0)">
+
+			<div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && !certsExist.all">
+				<alert type="warning" ng-style="{'text-align': 'center'}">
+					Deploying this environment in high-availability mode requires certificates. <br />
+					Click on this link <a href="#/environments-platforms"><b>Platforms and Certificates</b></a>, upload the certificates for the chosen driver, before resuming deployment.
+				</alert>
+			</div>
+            <div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && certsExist.all">
 				<div ng-if="!isDeploying">
 					<alert type="warning" ng-style="{'text-align': 'center'}">
 	                    This environment has not been deployed yet!
@@ -236,6 +243,7 @@
 	                </alert>
 				</div>
             </div>
+
             <div ng-if="hosts.controller || (nginxHosts && nginxHosts.length > 0)">
                 <button class="btn btn-primary" ng-if="access.hacloud.services.add" ng-click="deployNewService()">Deploy New Service</button>
                 <button class="btn btn-primary f-right" ng-click="listServices()" ng-if="access.listHosts"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>

@@ -91,7 +91,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				var params = {
 					qs: {'id': envId}
 				};
-				executeMyRequest(params, 'environment/delete', 'get', function (body) {
+				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {
 						"code": 500,
@@ -123,7 +123,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						"name": "test product updated"
 					}
 				};
-				executeMyRequest(params, 'product/update', 'post', function (body) {
+				executeMyRequest(params, 'product/update', 'put', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -136,7 +136,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				var params = {
 					qs: {'id': productId}
 				};
-				executeMyRequest(params, 'product/delete', 'get', function (body) {
+				executeMyRequest(params, 'product/delete', 'delete', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -179,7 +179,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						}
 					}
 				};
-				executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+				executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
@@ -193,7 +193,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				var params = {
 					qs: {"id": productId, 'code': 'DEFLT'}
 				};
-				executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+				executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
@@ -229,7 +229,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						"name": "test tenant updated"
 					}
 				};
-				executeMyRequest(params, 'tenant/update', 'post', function (body) {
+				executeMyRequest(params, 'tenant/update', 'put', function (body) {
 					assert.ok(body);
 					done();
 				});
@@ -237,7 +237,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 
 			it("FAIL - locked. cant delete tenant", function (done) {
-				executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'get', function (body) {
+				executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'delete', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0],
 						{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -277,7 +277,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 						"redirectURI": "http://www.myredirecturi.com/"
 					}
 				};
-				executeMyRequest(params, 'tenant/oauth/update/', 'post', function (body) {
+				executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
@@ -288,7 +288,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 
 			it("FAIL - locked. - cant delete oauth", function (done) {
-				executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'get', function (body) {
+				executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'delete', function (body) {
 					assert.ok(body);
 					assert.deepEqual(body.errors.details[0], {
 						"code": 501,
@@ -337,7 +337,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.ok(body);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -355,7 +355,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'id': tenantId,
 							'appId': applicationId
 						}
-					}, 'tenant/application/delete/', 'get', function (body) {
+					}, 'tenant/application/delete/', 'delete', function (body) {
 						assert.ok(body);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -396,7 +396,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'key': key.toString()
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+					executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 						assert.ok(body);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -451,7 +451,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'geo': {}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
 						assert.ok(body);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 501, "message": "This record is locked. You cannot modify or delete it"});
@@ -501,7 +501,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 							'config': {}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.ok(body);
 						done();
 					});
@@ -564,7 +564,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					"code": "CLIENT"
 				}
 			};
-			executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+			executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 				assert.ok(body);
 				assert.ok(body.data);
 				done();

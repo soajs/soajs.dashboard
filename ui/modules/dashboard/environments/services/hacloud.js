@@ -2,6 +2,44 @@
 var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
+    function checkCerts(currentScope, env) {
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "get",
+            "routeName": "/dashboard/environment/platforms/list",
+            "params": {
+                env: env
+            }
+        }, function (error, response) {
+            if (error) {
+                currentScope.$parent.displayAlert("danger", error.code, true, 'dashboard', error.message);
+            }
+            else if (response.selected.split('.')[1] === "kubernetes" || (response.selected.split('.')[1] === "docker" && response.selected.split('.')[2] === "remote")) {
+                var requiredCerts = environmentsConfig.deployer.certificates.required;
+                currentScope.certsExist = {
+                    all: false,
+                    ca: false,
+                    cert: false,
+                    key: false
+                };
+
+                requiredCerts.forEach(function (oneCertType) {
+                    for (var i = 0; i < response.certs.length; i++) {
+                        if (response.certs[i].metadata.env[currentScope.envCode.toUpperCase()] && response.certs[i].metadata.env[currentScope.envCode.toUpperCase()].length > 0) {
+                            var currentSelected = response.selected.split('.')[1] + "." + response.selected.split('.')[2];
+                            if (response.certs[i].metadata.env[currentScope.envCode.toUpperCase()].indexOf(currentSelected) !== -1) {
+                                if (response.certs[i].metadata.certType === oneCertType) {
+                                    currentScope.certsExist[oneCertType] = true;
+                                }
+                            }
+                        }
+                    }
+                });
+
+                currentScope.certsExist.all = (currentScope.certsExist.ca && currentScope.certsExist.cert && currentScope.certsExist.key);
+            }
+        });
+    }
+
     function listNodes(currentScope) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "get",
@@ -46,7 +84,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
-                            "method": "send",
+                            "method": "post",
                             "routeName": "/dashboard/hacloud/nodes/add",
                             "data": postData
                         }, function (error, response) {
@@ -80,7 +118,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function removeNode(currentScope, nodeId) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "get",
+            "method": "delete",
             "routeName": "/dashboard/hacloud/nodes/remove",
             "params": {
                 env: currentScope.envCode,
@@ -109,7 +147,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         };
 
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "put",
             "routeName": "/dashboard/hacloud/nodes/update",
             params: params,
             data: postData
@@ -216,7 +254,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
         function invokeHeartbeat(defaultControllerHost) {
             getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "send",
+                "method": "post",
                 "routeName": "/dashboard/hosts/maintenanceOperation",
                 "data": {
                     "serviceName": "controller",
@@ -242,7 +280,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     updateParent();
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/maintenanceOperation",
                         "data": {
                             "serviceName": "controller",
@@ -376,7 +414,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -539,7 +577,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
         overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'get',
+            method: 'delete',
             routeName: '/dashboard/hacloud/services/delete',
             params: params
         }, function (error, response) {
@@ -584,7 +622,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'put',
                         routeName: '/dashboard/hacloud/services/scale',
                         params: params,
                         data: postData
@@ -610,7 +648,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function reloadRegistry(currentScope, env, oneHost, cb) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -702,7 +740,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function loadProvisioning(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -782,7 +820,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeAwarenessTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -949,7 +987,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
     function executeHeartbeatTest(currentScope, env, oneHost) {
         getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "send",
+            "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
                 "serviceName": oneHost.name,
@@ -1133,7 +1171,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/services/list'
                     }, function (error, response) {
                         if (error) {
@@ -1157,7 +1195,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.getDaemons = function () {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/daemons/list',
                         params: {
                             'getGroupConfigs': true
@@ -1326,7 +1364,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/deployController",
                         "data": params
                     }, function (error, response) {
@@ -1396,7 +1434,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     var config = {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/deployService",
                         "data": params
                     };
@@ -1475,7 +1513,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     }
 
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'send',
+                        method: 'post',
                         routeName: '/dashboard/hosts/deployNginx',
                         data: params
                     }, function (error, response) {
@@ -1527,7 +1565,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         'executeHeartbeatTest': executeHeartbeatTest,
         'hostLogs': hostLogs,
         'deployNewService': deployNewService,
-        'listNginxHosts': listNginxHosts
+        'listNginxHosts': listNginxHosts,
+        'checkCerts' : checkCerts
     };
 
 }]);

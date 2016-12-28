@@ -611,10 +611,10 @@ var cbConfig = {
 	},
 
 	permissions: {
-		'listServices': ['dashboard', '/cb/list'],
-		'addService': ['dashboard', '/cb/add'],
-		'updateService': ['dashboard', '/cb/update'],
-		'getService': ['dashboard', '/cb/get'],
-		'servicesRevisions': ['dashboard', '/cb/listRevisions']
+		'listServices': ['dashboard', '/cb/list', 'get'],
+		'addService': ['dashboard', '/cb/add', 'post'],
+		'updateService': ['dashboard', '/cb/update', 'put'],
+		'getService': ['dashboard', '/cb/get', 'get'],
+		'servicesRevisions': ['dashboard', '/cb/listRevisions', 'get']
 	}
 };

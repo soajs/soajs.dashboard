@@ -191,7 +191,8 @@ var multitenancyNav = [
 		'label': translation.multiTenancy[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/product/list'
+			'route': '/product/list',
+			'method': 'get'
 		},
 		'url': '#/multi-tenancy',
 		'tplPath': 'modules/dashboard/multitenancy/directives/list.tmpl',
@@ -215,7 +216,8 @@ var multitenancyNav = [
 		'tracker': true,
 		'checkPermission':{
 			'service':'dashboard',
-			'route':'/tenant/application/update'
+			'route':'/tenant/application/update',
+			'method': 'put'
 		},
 		'pillar': {
 			'name': 'management',

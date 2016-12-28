@@ -5,7 +5,10 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 	$scope.$parent.isUserLoggedIn();
 	$scope.access = {};
 	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
-	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
+	var permissions = {
+		"listTenants": ['dashboard', '/tenant/list', 'get']
+	};
+	constructModulePermissions($scope, $scope.access, permissions);
 	
 	$scope.listTenants = function () {
 		overlayLoading.show();
@@ -65,10 +68,16 @@ uracApp.controller("uracListTenantsModuleDevCtrl", ['$scope', 'ngDataApi', '$coo
 
 uracApp.controller('uracMembersModuleDevCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
 	$scope.$parent.isUserLoggedIn();
-	
 	$scope.access = {};
-	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions);
-	
+	$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
+	constructModulePermissions($scope, $scope.access, usersModuleDevConfig.permissions, $scope.selectedEnv);
+
+	$scope.access.owner = {};
+	var permissions = {
+		"listTenants": ['dashboard', '/tenant/list', 'get']
+	};
+	constructModulePermissions($scope, $scope.access.owner, permissions);
+
 	$scope.tName = $cookies.getObject('urac_merchant').name;
 	$scope.userCookie = $localStorage.soajs_user;
 	$scope.backToList = function () {
@@ -211,15 +220,15 @@ uracApp.controller('tenantGroupsModuleDevCtrl', ['$scope', '$cookies', 'tenantGr
 }]);
 
 uracApp.controller('tokensModuleDevCtrl', ['$scope', 'ngDataApi', '$cookies', 'tokensModuleDevHelper', function ($scope, ngDataApi, $cookies, tokensModuleDevHelper) {
-	$scope.tokens = angular.extend($scope);
-	$scope.tokens.access = $scope.$parent.access;
-	
 	$scope.startLimit = 0;
 	$scope.totalCount = 0;
 	$scope.endLimit = usersModuleDevConfig.apiEndLimit;
 	$scope.increment = usersModuleDevConfig.apiEndLimit;
 	$scope.showNext = true;
 	$scope.pageActive = 1;
+
+	$scope.tokens = angular.extend($scope);
+	$scope.tokens.access = $scope.$parent.access;
 	
 	$scope.getPrev = function () {
 		$scope.tokens.startLimit = $scope.tokens.startLimit - $scope.tokens.increment;
@@ -257,44 +266,13 @@ uracApp.controller('tokensModuleDevCtrl', ['$scope', 'ngDataApi', '$cookies', 't
 			$scope.tokens.showNext = false;
 		}
 	};
-	
-	$scope.tokens.countTokens = function (cb) {
-		var opts = {
-			"method": "get",
-			"routeName": "/urac/owner/admin/tokens/list",
-			"proxy": true,
-			"params": {
-				"tCode": $cookies.getObject('urac_merchant').code,
-				"__env": $scope.tokens.currentSelectedEnvironment.toUpperCase()
-			}
-		};
-		if ($scope.keywords) {
-			opts.params.keywords = $scope.keywords;
-		}
-		getSendDataFromServer($scope.tokens, ngDataApi, opts, function (error, response) {
-			if (error) {
-				overlayLoading.hide();
-				$scope.tokens.$parent.displayAlert("danger", error.code, true, 'urac', error.message);
-			}
-			else {
-				$scope.tokens.totalCount = response.totalCount;
-				$scope.tokens.totalPagesActive = Math.ceil($scope.tokens.totalCount / $scope.endLimit);
-			}
-			cb();
-		});
-		
-	};
-	
+
 	$scope.tokens.listTokens = function (firstCall) {
 		if (firstCall) {
+			$scope.tokens.startLimit = 0;
 			$scope.tokens.pageActive = 1;
-			$scope.tokens.countTokens(function () {
-				tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig, firstCall);
-			});
 		}
-		else {
-			tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig, firstCall);
-		}
+		tokensModuleDevHelper.listTokens($scope.tokens, tokensModuleDevConfig, firstCall);
 	};
 	
 	$scope.tokens.deleteTokens = function () {

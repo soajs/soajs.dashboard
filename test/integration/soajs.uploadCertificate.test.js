@@ -101,7 +101,8 @@ describe("Docker Certificates tests", function () {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
                     platform: 'docker',
-                    driver: 'dockermachine - local'
+                    driver: 'local',
+                    certType: 'ca'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -115,32 +116,13 @@ describe("Docker Certificates tests", function () {
             });
         });
 
-        it("fail - docker certificate already exists", function (done) {
-            var params = {
-                qs: {
-                    filename: 'test_cert.pem',
-                    envCode: 'DEV',
-                    platform: 'docker',
-                    driver: 'dockermachine - local'
-                },
-                formData: {
-                    file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
-                }
-            };
-
-            executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
-                assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {'code': 731, 'message': errorCodes[731]});
-                done();
-            });
-        });
-
         it("fail - missing params: driver", function (done) {
             var params = {
                 qs: {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
-                    platform: 'docker'
+                    platform: 'docker',
+                    certType: 'cert'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -158,8 +140,9 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     filename: 'test_cert.pem',
-                    driver: 'dockermachine - local',
-                    platform: 'docker'
+                    driver: 'local',
+                    platform: 'docker',
+                    certType: 'cert'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -188,8 +171,9 @@ describe("Docker Certificates tests", function () {
                     "aliases":null,
                     "metadata": {
                         "platform": "docker",
+                        "certType": "ca",
                         "env": {
-                            "DEV": ["docker.dockermachine - local"] //temp value, dockermachine drivers are depricated. Proper values will be set soon
+                            "DEV": ["docker.local"]
                         }
                     },
                     "md5":"d8d70241e72d605ca44657aefbf38aed"
@@ -206,7 +190,7 @@ describe("Docker Certificates tests", function () {
                 assert.ifError(error);
                 assert.ok(certRecord);
                 certId = certRecord._id.toString();
-                certRecord.metadata.env['DASHBOARD'] = ['dockermachine - local', 'dockermachine - cloud'];
+                certRecord.metadata.env['DASHBOARD'] = ['local', 'remote'];
                 mongo.save("fs.files", certRecord, function (error, result) {
                     assert.ifError(error);
                     assert.ok(result);
@@ -220,10 +204,10 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     id: certId,
                     env: 'DASHBOARD',
-                    driverName: 'dockermachine - cloud'
+                    driverName: 'remote'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -235,10 +219,10 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     id: certId,
                     env: 'DASHBOARD',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -250,10 +234,10 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     id: certId,
                     env: 'DEV',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -264,10 +248,10 @@ describe("Docker Certificates tests", function () {
             var params = {
                 qs: {
                     id: certId,
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
                 done();
@@ -279,10 +263,10 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     id: certId,
                     env: 'DEV',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 730,'message': errorCodes[730]});
                 done();
@@ -294,10 +278,10 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     id: "123:::321",
                     env: 'DEV',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/delete', 'get', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/delete', 'delete', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 701, 'message': errorCodes[701]});
                 done();
@@ -321,7 +305,8 @@ describe("Docker Certificates tests", function () {
                     filename: 'test_cert.pem',
                     envCode: 'DEV',
                     platform: 'docker',
-                    driver: 'dockermachine - local'
+                    driver: 'local',
+                    certType: 'cert'
                 },
                 formData: {
                     file: fs.createReadStream(testUploadFilesDir + 'test_cert.pem')
@@ -329,7 +314,6 @@ describe("Docker Certificates tests", function () {
             };
 
             executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
-                console.log(JSON.stringify(body,null,2));
                 assert.ok(body.result);
                 assert.ok(body.data);
 
@@ -338,7 +322,8 @@ describe("Docker Certificates tests", function () {
                         filename: 'test_cert_2.pem',
                         envCode: 'DEV',
                         platform: 'docker',
-                        driver: 'dockermachine - local'
+                        driver: 'local',
+                        certType: 'key'
                     },
                     formData: {
                         file: fs.createReadStream(testUploadFilesDir + 'test_cert_2.pem')
@@ -362,36 +347,36 @@ describe("Docker Certificates tests", function () {
             });
         });
 
-        it("success - will choose existing docker certificates for dockermachine - local", function (done) {
+        it("success - will choose existing docker certificates for local", function (done) {
             var params = {
                 qs: {
                     env: 'STG',
                     platform: 'docker',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 },
                 form: {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
             });
         });
 
-        it("success - will choose existing docker certificates for dockermachine - cloud - rackspace", function (done) {
+        it("success - will choose existing docker certificates for docker remote", function (done) {
             var params = {
                 qs: {
                     env: 'STG',
                     platform: 'docker',
-                    driverName: 'dockermachine - cloud - rackspace'
+                    driverName: 'remote'
                 },
                 form: {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
                 done();
@@ -408,7 +393,7 @@ describe("Docker Certificates tests", function () {
                     certIds: testCerts
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: driverName'});
                 done();
@@ -420,13 +405,13 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     env: 'STG',
                     platform: 'docker',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 },
                 form: {
                     certIds: ['1234567890']
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 701, 'message': errorCodes[701]});
                 done();
@@ -438,13 +423,13 @@ describe("Docker Certificates tests", function () {
                 qs: {
                     env: 'STG',
                     platform: 'docker',
-                    driverName: 'dockermachine - local'
+                    driverName: 'local'
                 },
                 form: {
                     certIds: [testCerts[0], '123456789012345678901234']
                 }
             };
-            executeMyRequest(params, 'environment/platforms/cert/choose', 'post', function (body) {
+            executeMyRequest(params, 'environment/platforms/cert/choose', 'put', function (body) {
                 assert.ok(body.errors);
                 assert.deepEqual(body.errors.details[0], {'code': 730, 'message': errorCodes[730]});
                 done();
@@ -469,13 +454,14 @@ describe("Docker Certificates tests", function () {
                             "aliases": null,
                             "metadata": {
                                 "platform": "docker",
+                                "certType": "cert",
                                 "env": {
                                     "DEV": [
-                                        "docker.dockermachine - local"
+                                        "docker.local"
                                     ],
                                     "STG": [
-                                        "docker.dockermachine - local",
-                                        "docker.dockermachine - cloud - rackspace"
+                                        "docker.local",
+                                        "docker.remote"
                                     ]
                                 }
                             },
@@ -489,13 +475,14 @@ describe("Docker Certificates tests", function () {
                             "aliases": null,
                             "metadata": {
                                 "platform": "docker",
+                                "certType": "key",
                                 "env": {
                                     "DEV": [
-                                        "docker.dockermachine - local"
+                                        "docker.local"
                                     ],
                                     "STG": [
-                                        "docker.dockermachine - local",
-                                        "docker.dockermachine - cloud - rackspace"
+                                        "docker.local",
+                                        "docker.remote"
                                     ]
                                 }
                             },

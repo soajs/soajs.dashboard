@@ -34,7 +34,7 @@ function getCerts(certs, gfs, db, cb) {
 						gstore.close();
 
 						var certName = oneCert.filename.split('.')[0];
-						certBuffers[certName] = filedata;
+						certBuffers[oneCert.metadata.certType] = filedata;
 						return callback(null, true);
 					});
 				});
@@ -76,9 +76,10 @@ var lib = {
 						var kubernetes = new K8Api.Core(kubeConfig);
 						kubernetes.namespaces.pods.get({}, function (error, response) { //TODO: find better ping call
 							//error is insignificant in this case
-							return callback(response);
+							return callback(null, response);
 						});
-					}, function (fastestNodeRecord) {
+					}, function (error, fastestNodeRecord) {
+						//error is insignificant in this case
 						if (!fastestNodeRecord) {
 							return cb({'message': 'ERROR: unable to connect to a manager node'});
 						}
@@ -581,17 +582,17 @@ var deployer = {
 				}
 
 				function deleteKubeService(deployer, callback) {
-					var kubeServiceName = options.serviceName + '-service';
-					deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
-						checkError(error, cb, function () {
-							if (service) {
+					if (options.serviceType === 'controller' || options.serviceType === 'nginx') {
+						var kubeServiceName = options.serviceName + '-service';
+						deployer.core.namespaces.services.get({name: kubeServiceName}, function (error, service) {
+							checkError(error, cb, function () {
 								deployer.core.namespaces.services.delete({name: kubeServiceName, body: body}, callback);
-							}
-							else {
-								return callback(null, true);
-							}
+							});
 						});
-					});
+					}
+					else {
+						return callback(null, true);
+					}
 				}
 
 				function deleteDeployment(deployer, callback) {

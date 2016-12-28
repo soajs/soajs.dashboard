@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -35,8 +35,7 @@
     "shelljs": "*"
   },
   "dependencies": {
-    "async": "1.5.2",
-    "bcrypt": "*",
+    "async": "*",
     "bitbucket-server-nodejs": "^2.10.0",
     "cron": "*",
     "dockerode": "aff04/dockerode.git",

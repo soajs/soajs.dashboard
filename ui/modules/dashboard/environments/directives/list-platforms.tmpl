@@ -27,7 +27,7 @@
                         {{driver|uppercase}}
                         <span ng-if="deployer.selected === platform + '.' + driver && allowSelect" ng-style="{'color': 'green'}"><span class="icon icon-checkmark"></span>Active</span>
                         <span class="rightActions">
-                            <a href="" ng-if="access.platforms.certs.upload && !config.socketPath" ng-click="uploadCerts(platform, driver)">
+                            <a href="" ng-if="access.platforms.certs.upload && !config.socketPath && deployer.selected === platform + '.' + driver && allowSelect" ng-click="uploadCerts(platform, driver)">
                                 <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                             </a>
                             <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(platform, driver)">
@@ -50,7 +50,7 @@
                             <div class="staticDiv">
                                 <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
                                     <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in config.certs">
-                                        <b>{{cert.filename}}</b>
+                                        <b>{{cert.filename}} [{{cert.certType}}]</b>
                                         <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, platform, driver)">
                                             <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
                                         </a>
