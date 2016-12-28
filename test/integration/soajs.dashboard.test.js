@@ -2249,6 +2249,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
+            it("fail - invalid ip address", function (done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'servicePort': 4000,
+                        'hostname': 'controller',
+                        'operation': 'heartbeat',
+                        'serviceHost': '71.255.67.89'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
+                	assert.equal(body.result, false);
+                	assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+                    done();
+                });
+            });
+
 			it("success - heartbeat controller and service", function (done) {
 				var params = {
 					form: {
