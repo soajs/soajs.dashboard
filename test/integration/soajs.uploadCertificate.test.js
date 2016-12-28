@@ -329,7 +329,6 @@ describe("Docker Certificates tests", function () {
             };
 
             executeMyRequest(params, 'environment/platforms/cert/upload', 'post', function (body) {
-                console.log(JSON.stringify(body,null,2));
                 assert.ok(body.result);
                 assert.ok(body.data);
 
