@@ -153,10 +153,10 @@ var lib = {
 						});
 					}
 
-					model.getDb(soajs).getMongoSkinDB(function (error, db) {
+					model.getDb(soajs).getMongoDB(function (error, db) {
 						checkError(error, callback, function () {
 
-							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
+							var gfs = Grid(db, model.getDb(soajs).mongodb);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);
 						});
