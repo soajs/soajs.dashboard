@@ -33,7 +33,7 @@ function getDockerCerts(certs, gfs, db, cb) {
 						gstore.close();
 
 						var certName = oneCert.filename.split('.')[0];
-						certBuffers[certName] = filedata;
+						certBuffers[oneCert.metadata.certType] = filedata;
 						return callback(null, true);
 					});
 				});

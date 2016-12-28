@@ -50,7 +50,7 @@
                             <div class="staticDiv">
                                 <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
                                     <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in config.certs">
-                                        <b>{{cert.filename}}</b>
+                                        <b>{{cert.filename}} [{{cert.certType}}]</b>
                                         <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, platform, driver)">
                                             <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
                                         </a>

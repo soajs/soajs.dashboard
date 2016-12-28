@@ -142,7 +142,6 @@ var errors = {
 	"728": "Unable to get certificate(s)",
 	"729": "Unable to remove certificate",
 	"730": "One or more certificates do not exist",
-	"731": "Certificate with the same name exists. Either change its name or select it using the 'Choose Existing' feature",
 
 	"732": "Unable to list drivers",
 	"733": "Unable to add driver",
@@ -161,6 +160,8 @@ var errors = {
 	"742": "Unable to list static content sources",
 
 	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
+
+	"744": "Certificate type must be one of [ca, cert, key]",
 
 	"750": "Invalid Request.",
 

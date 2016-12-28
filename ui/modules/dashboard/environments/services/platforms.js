@@ -50,7 +50,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					if (record.certs[i].metadata.platform === platform && record.certs[i].metadata.env[currentScope.envCode] && record.certs[i].metadata.env[currentScope.envCode].indexOf(platform + '.' + driver) !== -1) {
 						currentScope.platforms[platform][driver].certs.push({
 							_id: record.certs[i]._id,
-							filename: record.certs[i].filename
+							filename: record.certs[i].filename,
+							certType: record.certs[i].metadata.certType
 						});
 					}
 				}
@@ -76,10 +77,12 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					certificates: {}
 				};
 				$scope.certs = {
-					selected: {}
+					selected: {},
+					types: ['ca', 'cert', 'key']
 				};
 
 				$scope.platform = platform;
+				$scope.driver = driverName;
 				if (platform === 'nginx') {
 					$scope.nginxRequiredCerts = angular.copy(environmentsConfig.nginxRequiredCerts);
 					currentScope.nginx.certs.forEach(function (oneCert) {
@@ -171,15 +174,24 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 
 				$scope.getAvailableCerts = function () {
 					$scope.certsToDisplay = [];
+					$scope.availableCertTypes = [];
 					if (currentScope.availableCerts[$scope.platform]) {
 						currentScope.availableCerts[$scope.platform].forEach(function (oneCert) {
 							if (oneCert.metadata.platform === $scope.platform) {
 								$scope.certsToDisplay.push({
 									_id: oneCert._id,
 									name: oneCert.filename,
-									env: Object.keys(oneCert.metadata.env)
+									env: Object.keys(oneCert.metadata.env),
+									certType: oneCert.metadata.certType
 								});
 							}
+						});
+					}
+					//check the types of the certicates that are currently available for this driver
+					//do not allow user to upload more than one certificate with the same type [ca, cert, key]
+					if (currentScope.platforms[$scope.platform][$scope.driver].certs && currentScope.platforms[$scope.platform][$scope.driver].certs.length > 0) {
+						currentScope.platforms[$scope.platform][$scope.driver].certs.forEach(function (oneCert) {
+							$scope.availableCertTypes.push(oneCert.certType);
 						});
 					}
 				};
@@ -206,6 +218,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						params: {
 							envCode: currentScope.envCode,
 							filename: $scope.formData.certificates[$scope.index[counter]].name,
+							certType: $scope.index[counter],
 							platform: platform,
 							driver: driverName
 						},

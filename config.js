@@ -44,6 +44,10 @@ module.exports = {
 		"maxPort": 2767
 	},
 
+	"certificates": {
+		types: ['ca', 'cert', 'key']
+	},
+
 	"gitAccounts": {
 		"bitbucket_org": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
