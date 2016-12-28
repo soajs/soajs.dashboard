@@ -3,10 +3,10 @@
 var servicesApp = soajsApp.components;
 servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
-
+	
 	$scope.showHide = function (service) {
 		if (!service.hide) {
 			jQuery('#s_' + service._id + " .body").slideUp();
@@ -21,7 +21,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			service.hide = false;
 		}
 	};
-
+	
 	$scope.listServices = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "send",
@@ -56,11 +56,12 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			}
 		});
 	};
-
+	
 	$scope.sortByDescending = function (versions) {
 		function compareNumbers(a, b) {
 			return b - a;
 		}
+		
 		var keys = Object.keys(versions);
 		var keysInt = [];
 		keys.forEach(function (key) {
@@ -70,7 +71,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		keysInt = keysInt.sort(compareNumbers);
 		return keysInt
 	};
-
+	
 	$scope.arrGroupByField = function (arr, f, version) {
 		var result = {};
 		var l = arr.length;
@@ -88,7 +89,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			}
 			result[g].apis.push(arr[i]);
 		}
-
+		
 		var label;
 		for (label in result) {
 			if (result.hasOwnProperty(label)) {
@@ -103,24 +104,28 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		result._ver = version;
 		return result;
 	};
-
+	
+	$scope.swaggerTest = function () {
+		window.open('',''); //we will add the url that will open in the new tab
+	};
+	
 	if ($scope.access.listServices) {
 		injectFiles.injectCss("modules/dashboard/services/services.css");
 		$scope.listServices();
 	}
-
+	
 }]);
 
 servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$modal', 'injectFiles', function ($scope, ngDataApi, $timeout, $modal, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
-
+	
 	$scope.showHide = function (entry) {
 		entry.hide = entry.hide ? false : true;
 	};
-
+	
 	$scope.getTenants = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -153,7 +158,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.getEnvironments = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -166,12 +171,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				response.forEach(function (oneEnv) {
 					$scope.environmentsList.push(oneEnv.code);
 				});
-
+				
 				if (cb) cb();
 			}
 		});
 	};
-
+	
 	$scope.reloadServiceConfig = function (groupId, jobName) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -193,17 +198,17 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.updateConfiguration = function (env, jobName, jobData, groupId) {
 		var formConfig = angular.copy(servicesConfig.form.jobServiceConfig);
 		formConfig.entries.forEach(function (oneEntry) {
 			if (oneEntry.name === "env") {
 				oneEntry.value = env;
 			} else if (oneEntry.name === "config") {
-				oneEntry.value = angular.copy (jobData.serviceConfig[env]);
+				oneEntry.value = angular.copy(jobData.serviceConfig[env]);
 			}
 		});
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -248,7 +253,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.clearConfiguration = function (env, jobName, jobData, groupId) {
 		var postData = {
 			env: env,
@@ -268,7 +273,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.selectTenantExternalKeys = function (grpConf, jobName) { //groupId, jobName
 		var outerScope = $scope;
 		$modal.open({
@@ -278,7 +283,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.title = translation.selectTenantExternalKeys[LANG];
 				$scope.message = {}; //used to display errors inside modal
@@ -288,14 +293,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					tenantExtKeys: [],
 					tenantsInfo: []
 				};
-
+				
 				$scope.markSelectedTenants = function () {
 					grpConf.jobs[jobName].tenantsInfo.forEach(function (oneTenant) {
 						$scope.selectedTenants[oneTenant.extKeyEnv + '.' + oneTenant.extKey] = oneTenant;
 					});
 				};
 				$scope.markSelectedTenants();
-
+				
 				$scope.filterData = function (query) {
 					if (query && query !== "") {
 						query = query.toLowerCase();
@@ -313,7 +318,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					for (var i in $scope.selectedTenants) {
 						if ($scope.selectedTenants[i]) {
@@ -339,14 +344,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					})
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.listTenantExtKeys = function (grpConf, jobName) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -364,7 +369,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.listDaemons = function (cb) {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -394,7 +399,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.listDaemonGroupConfig = function (cb) {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -413,7 +418,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.addDaemonGroupConfig = function () {
 		var outerScope = $scope;
 		$modal.open({
@@ -423,28 +428,28 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
 				$scope.title = translation.addDaemonGroupConfiguration[LANG];
-
+				
 				//Default values
 				$scope.postData.status = "1";
 				$scope.postData.solo = "true";
-
+				
 				$scope.checkIfOnlyJob = function (jobName) {
 					if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
 						$scope.selectedJobs[jobName]['order'] = 1;
 					}
 				};
-
+				
 				$scope.selectDaemon = function (daemon) {
 					$scope.postData.daemon = daemon.name;
 					$scope.daemonJobsList = daemon.jobs;
 					$scope.selectedJobs = {};
 				};
-
+				
 				$scope.generateOrderArray = function () {
 					if ($scope.postData.processing === "sequential" && Object.keys($scope.selectedJobs).length > 0) {
 						var order = [];
@@ -464,13 +469,13 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						for (var i = 0; i < order.length; i++) {
 							order[i] = order[i].name;
 						}
-
+						
 						$scope.postData.order = order;
 					} else if ($scope.postData.processing === "parallel") {
 						$scope.postData.order = [];
 					}
 				};
-
+				
 				$scope.getSelectedJobs = function () {
 					$scope.postData.jobs = {};
 					for (var oneJob in $scope.selectedJobs) {
@@ -484,15 +489,15 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					$scope.generateOrderArray();
 					$scope.getSelectedJobs();
 					$scope.postData.status = parseInt($scope.postData.status);
-
+					
 					if ($scope.postData.solo === "true") $scope.postData.solo = true;
 					else $scope.postData.solo = false;
-
+					
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "send",
 						"routeName": "/dashboard/daemons/groupConfig/add",
@@ -510,14 +515,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					});
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.updateDaemonGroupConfig = function (grpConf) {
 		var outerScope = $scope;
 		$modal.open({
@@ -527,39 +532,39 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
 				$scope.originalDaemon = grpConf.daemon; //used to detect if user changed daemon
 				$scope.title = translation.editDaemonGroupConfiguration[LANG];
-
+				
 				$scope.postData.groupName = grpConf.daemonConfigGroup;
 				$scope.postData.interval = grpConf.interval;
 				$scope.postData.type = grpConf.type;
 				
-				if(grpConf.cronConfig){
-					if(grpConf.cronConfig.cronTimeDate){
+				if (grpConf.cronConfig) {
+					if (grpConf.cronConfig.cronTimeDate) {
 						$scope.postData.cronTimeDate = grpConf.cronConfig.cronTimeDate;
 					}
-					else{
+					else {
 						$scope.postData.cronTime = grpConf.cronConfig.cronTime;
 					}
 					$scope.postData.timeZone = grpConf.cronConfig.timeZone;
 				}
 				$scope.postData.status = grpConf.status.toString();
 				$scope.postData.processing = grpConf.processing;
-
+				
 				//conversion from boolean to string is done for display purposes only
 				if (grpConf.solo) $scope.postData.solo = "true";
 				else $scope.postData.solo = "false";
-
+				
 				$scope.checkIfOnlyJob = function (jobName) {
 					if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
 						$scope.selectedJobs[jobName]['order'] = 1;
 					}
 				};
-
+				
 				$scope.fetchSelectedDaemon = function () {
 					for (var i = 0; i < outerScope.grid.rows.length; i++) {
 						if (outerScope.grid.rows[i].name === grpConf.daemon) {
@@ -571,7 +576,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					}
 				};
 				$scope.fetchSelectedDaemon();
-
+				
 				$scope.markSelectedJobs = function () {
 					$scope.selectedJobs = {};
 					if ($scope.postData.processing === "sequential") {
@@ -594,16 +599,16 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							}
 						}
 					}
-
+					
 				};
 				$scope.markSelectedJobs();
-
+				
 				$scope.selectDaemon = function (daemon) {
 					$scope.postData.daemon = daemon.name;
 					$scope.daemonJobsList = daemon.jobs;
 					$scope.selectedJobs = {};
 				};
-
+				
 				$scope.generateOrderArray = function () {
 					if ($scope.postData.processing === "sequential" && Object.keys($scope.selectedJobs).length > 0) {
 						var order = [];
@@ -623,13 +628,13 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						for (var i = 0; i < order.length; i++) {
 							order[i] = order[i].name;
 						}
-
+						
 						$scope.postData.order = order;
 					} else if ($scope.postData.processing === "parallel") {
 						$scope.postData.order = [];
 					}
 				};
-
+				
 				$scope.getSelectedJobs = function () {
 					$scope.postData.jobs = {};
 					for (var oneJob in $scope.selectedJobs) {
@@ -654,7 +659,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					$scope.generateOrderArray();
 					$scope.getSelectedJobs();
@@ -679,14 +684,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					});
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.deleteDaemonGroupConfig = function (grpConf) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -704,15 +709,15 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
-	$scope.refreshListing = function (){
+	
+	$scope.refreshListing = function () {
 		if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 			$scope.listDaemons(function () {
 				$scope.listDaemonGroupConfig();
 			});
 		}
 	};
-
+	
 	if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 		$scope.listDaemons(function () {
 			$scope.listDaemonGroupConfig();
@@ -724,6 +729,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	}
+}]);
+servicesApp.controller('swaggerCtrl', ['$scope', function ($scope) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
+	
 }]);
 
 servicesApp.filter('timeInMillisConverter', function () {
@@ -757,7 +768,7 @@ servicesApp.filter('statusDisplay', function () {
 		} else if (status === 0) {
 			return "Inactive";
 		}
-
+		
 		return "Unknown";
 	};
 });

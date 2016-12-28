@@ -50,7 +50,7 @@ var servicesConfig = {
 				    'height': '200px',
 				    "value": {},
 				    'required': true,
-					"tooltip": translation.serviceConfiguration[LANG],
+					"tooltip": translation.serviceConfiguration[LANG]
 				}
 			]
 		}
@@ -58,7 +58,10 @@ var servicesConfig = {
 	permissions: {
 		'listServices': ['dashboard', '/services/list'],
 		'daemons': {
-			'list': ['dashboard', '/daemons/list'],
+			'list': ['dashboard', '/daemons/list']
+		},
+		'swaggerEditor' : {
+			'list': ['dashboard', '/swaggerEditor/list']
 		},
 		'daemonGroupConfig': {
 			'list': ['dashboard', '/daemons/groupConfig/list'],

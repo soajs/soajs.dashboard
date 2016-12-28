@@ -415,6 +415,27 @@ var servicesNav = [
 		'order': 2,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'swagger',
+		'label': 'Swagger Editor',
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/swagger/list'
+		},
+		'url': '#/swaggerEditor',
+		'tplPath': 'modules/dashboard/services/directives/swaggerEditor.tmpl',
+		'icon': 'magic-wand',
+		'pillar': {
+			'name': 'development',
+			'label': translation.develop[LANG],
+			'position': 1
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'order': 5,
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
+		'ancestor': [translation.home[LANG]]
 	}
 ];
 navigation = navigation.concat(servicesNav);
