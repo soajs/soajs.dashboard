@@ -563,7 +563,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				console.log('Missing user object');
 			}
 			$scope.enableInterface = true;
-			$scope.go("/myaccount");
+			var defaultRoute = navigation[0].url.replace('#', '');
+			$scope.go("defaultRoute");
 		});
 		
 		$scope.buildPermittedEnvOperation = function (serviceName, routePath, method, env, cb) {
