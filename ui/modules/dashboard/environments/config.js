@@ -66,9 +66,12 @@ var modelObj = {
 var environmentsConfig = {
 	deployer: {
     	kubernetes: {
-        "minPort": 0,
-        "maxPort": 2767
-    	}
+        	"minPort": 0,
+        	"maxPort": 2767
+    	},
+		certificates: {
+			required: ['ca', 'cert', 'key']
+		}
 	},
 
 	form: {
@@ -778,6 +781,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
+
 	jsoneditorConfig: {
 		'options': {
 			'mode': 'code',
