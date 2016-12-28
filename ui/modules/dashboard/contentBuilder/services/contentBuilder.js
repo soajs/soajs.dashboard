@@ -308,7 +308,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 	function updateContentSchema(currentScope, serviceId, cb) {
 		remapPostedConfig(currentScope.config);
 		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/cb/update",
 			"params": {"id": serviceId},
 			"data": {
