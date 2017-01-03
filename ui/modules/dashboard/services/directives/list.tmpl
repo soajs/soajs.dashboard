@@ -40,12 +40,14 @@
 						<td>
 							<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
 						</td>
-						<!--Adding the test button for testing purpose, Add ng-if="swagger"-->
+						<!--Add swagger icon if a service were created using swagger editor-->
 						<td>
-							<a href="" ng-click="swaggerTest()" title="click to run swagger simulation">
-								<span><img style="max-height:25px; max-width:25px;vertical-align:middle" src="modules/dashboard/services/directives/images/swagger-icon.png">
+							<div style="height: 25px; width: 25px; margin-left: 0px">
+							<a href="" ng-click="swaggerTest()" title="click to run swagger simulation" ng-if="service['swagger']">
+								<span><img style="height: 25px; width:25px;" src="modules/dashboard/services/directives/images/swagger-icon.png">
 								</span>
 							</a>
+							</div>
 						</td>
 					</tr>
 				</table>

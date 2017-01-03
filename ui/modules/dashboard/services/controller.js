@@ -103,7 +103,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		result._ver = version;
 		return result;
 	};
-	
+	//open new tab having the swagger ui to test our APIs
 	$scope.swaggerTest = function () {
 		window.open('',''); //we will add the url that will open in the new tab
 	};
