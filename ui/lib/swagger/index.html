@@ -1,0 +1,26 @@
+<!doctype html>
+<html ng-app="swagger-editor-example">
+  <head>
+      <meta charset="utf-8">
+      <title>Swagger editor</title>
+      <script>document.write('<base href="' + document.location + '" />');</script>
+      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+      <link rel="stylesheet" href="dist/swagger-editor.min.css">
+      <script src="bower_components/jquery/dist/jquery.js"></script>
+      <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+      <script src="bower_components/angular/angular.js"></script>
+      <script src="mock.js"></script>
+      <script src="example.js"></script>
+
+      <script src="dist/swagger-editor.js"></script>
+  </head>
+  <body>
+    <div class="container" ng-controller="SwaggerEditorExampleCtrl">
+      <swagger-editor doc="doc"></swagger-editor>
+
+      <button type="button" ng-click="updateJson()">Click to see updated the doc</button>
+      <textarea class="form-control" rows="40" ng-model="jsonDoc"></textarea>
+    </div>
+    
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<table class="table table-hover">
+  <tr>
+    <th></th>
+    <th>Method</th>
+    <th>Name</th>
+    <th>Summary</th>
+  </tr>
+
+  <tr ng-repeat="operation in api.operations" ng-click="editOperation(operation)">
+    <td><button type="button" ng-click="deleteOp(api, $index)"> Delete </button></td>
+    <td> {{ operation.method }} </td>
+    <td> {{ operation.nickname }} </td>
+    <td> {{ operation.summary }} </td>
+  </tr>
+
+</table>
