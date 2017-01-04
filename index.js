@@ -410,6 +410,13 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
+
+	service.get("/hosts/env/list", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.listHostEnv(config, req.soajs, res);
+		});
+	});
+
 	service.get("/hosts/nginx/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.listNginx(config, req.soajs, res);

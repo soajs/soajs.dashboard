@@ -235,6 +235,21 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 
+	"getHostEnv": function (soajs, model, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				'name': soajs.inputmaskData.service
+			},
+			fields: {
+				'_id': 0,
+				'env': 1
+			}
+		};
+
+		model.findEntries(soajs, opts, cb);
+	},
+
 	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
 		var opts = {
 			collection: hostsColl,

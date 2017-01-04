@@ -847,6 +847,20 @@ module.exports = {
 				}
 			},
 
+			"/hosts/env/list": {
+				_apiInfo: {
+					"l": "List The Environment Where A Service Is Deployed",
+					"group": "Hosts"
+				},
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/hosts/nginx/list": {
 				_apiInfo: {
 					'l': 'List Nginx Hosts',
