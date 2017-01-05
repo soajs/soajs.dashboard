@@ -415,11 +415,6 @@ service.init(function () {
 		});
 	});
 
-	service.delete("/hosts/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.delete(config, req.soajs, res);
-		});
-	});
 	service.post("/hosts/maintenanceOperation", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.maintenanceOperation(config, req.soajs, res);

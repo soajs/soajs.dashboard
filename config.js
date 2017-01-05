@@ -1924,7 +1924,7 @@ module.exports = {
 					"source": ['body.operation'],
 					"validation": {
 						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost', 'daemonStats']
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
 					}
 				},
 				"serviceName": {
