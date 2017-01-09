@@ -2900,6 +2900,12 @@ module.exports = {
 				"l": "List Content Schema Revisions",
 				"group": "Content Builder"
 			}
+		},
+		"/test/simulate": {
+			"_apiInfo": {
+				"l": "Api simulation service",
+				"group": "Simulate"
+			}
 		}
 	}
 };
