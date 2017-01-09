@@ -332,7 +332,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, data, model, options, cb) {
+    "getJSONContent": function (soajs, data, model, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 
@@ -379,6 +379,33 @@ module.exports = {
                             });
                         });
                     });
+                });
+            });
+        });
+    },
+
+    "getAnyContent": function (soajs, data, model, options, cb) {
+        lib.getRepoContent(options, function (error, response) {
+            checkIfError(error, {}, cb, function () {
+                // bitbucketClient returns file content as an array of lines
+                // concatenate them in one string
+                var content = "";
+                for (var i = 0; i < response.lines.length; ++i) {
+                    content += response.lines[i].text + "\n";
+                }
+
+                //%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?raw
+                var downloadLink = 'https://' + config.gitAccounts.bitbucket_enterprise.downloadUrl
+                    .replace('%PROVIDER_DOMAIN%', options.provider)
+                    .replace('%PROJECT_NAME%', options.project)
+                    .replace('%REPO_NAME%', options.repo)
+                    .replace('%PATH%', options.path)
+                    .replace('%BRANCH%', options.ref || 'master');
+
+                return cb(null, {
+                    token: options.token,
+                    downloadLink: downloadLink,
+                    content: content
                 });
             });
         });

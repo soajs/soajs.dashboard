@@ -385,7 +385,7 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, data, model, options, cb) {
+    "getJSONContent": function (soajs, data, model, options, cb) {
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
 				checkIfError(!response.sha || !response.content, {code: 763}, cb, function () {
@@ -421,5 +421,17 @@ module.exports = {
 				});
             });
         });
-    }
+    },
+
+	"getAnyContent": function (soajs, data, model, options, cb) {
+		lib.getRepoContent(options, function (error, response) {
+			checkIfError(error, {}, cb, function () {
+				return cb(null, {
+					token: options.token,
+					downloadLink: response.download_link,
+					content: new Buffer(response.content, 'base64').toString()
+				});
+			});
+		});
+	}
 };

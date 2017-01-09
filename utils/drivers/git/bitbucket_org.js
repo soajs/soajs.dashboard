@@ -458,7 +458,7 @@ module.exports = {
         });
     },
 
-    getContent: function (soajs, data, model, options, cb) {
+    getJSONContent: function (soajs, data, model, options, cb) {
         data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
@@ -495,6 +495,37 @@ module.exports = {
 
                                         return cb (null, repoConfig, '');
                                     });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    },
+
+    getAnyContent: function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
+            checkIfError(error, {}, cb, function () {
+                lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
+                    checkIfError(error, {}, cb, function () {
+                        if (updated) {
+                            options.token = newTokenInfo.token;
+                            options.tokenInfo = newTokenInfo.tokenInfo;
+                        }
+
+                        lib.getRepoContent(options, function (error, response) {
+                            checkIfError(error, {}, cb, function () {
+                                var downloadLink = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
+                                    .replace('%USERNAME%', data.user)
+                                    .replace('%REPO_NAME%', data.repo)
+                                    .replace('%BRANCH%', data.ref || 'master')
+                                    .replace('%FILE_PATH%', data.path);
+
+                                return cb(null, {
+                                    token: options.token,
+                                    downloadLink: downloadLink,
+                                    content: response
                                 });
                             });
                         });
