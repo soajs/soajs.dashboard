@@ -69,13 +69,7 @@ module.exports = {
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			// required for OAuth
 			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
-			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
-			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
-			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
-			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
-			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
-			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
-			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+			downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
 		},
 		"github": {
 			"protocol": "https",
@@ -1080,7 +1074,35 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				}
-			}
+			},
+
+			"/gitAccounts/getYaml": {
+				"_apiInfo": {
+					"l": "Get Yaml file",
+					"group": "Git Accounts"
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 		},
 
 		"post": {

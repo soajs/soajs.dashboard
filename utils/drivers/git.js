@@ -51,13 +51,22 @@ var git = {
         driver.getBranches(soajs, data, model, options, cb);
     },
 
-    "getContent": function (soajs, data, model, options, cb) {
+    "getJSONContent": function (soajs, data, model, options, cb) {
         var driver = getGitDriver({provider: options.provider});
         if (!driver) {
             return cb ({code: 778, message: 'Git driver does not exist'});
         }
 
-        driver.getContent(soajs, data, model, options, cb);
+        driver.getJSONContent(soajs, data, model, options, cb);
+    },
+
+    "getAnyContent": function (soajs, data, model, options, cb) {
+        var driver = getGitDriver({provider: options.provider});
+        if (!driver) {
+            return cb ({code: 778, message: 'Git driver does not exist'});
+        }
+
+        driver.getAnyContent(soajs, data, model, options, cb);
     }
 };
 

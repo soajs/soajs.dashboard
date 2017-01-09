@@ -212,6 +212,7 @@ var errors = {
 	"786": "Validation Error",
 	"787": "Missing field name in config.js",
 	"788": "Invalid or no type provided in config.js",
+	"789": "Unable to get content from git provider",
 
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 

@@ -547,6 +547,12 @@ service.init(function () {
 		});
 	});
 
+	service.get("/gitAccounts/getYaml", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getYaml(config, req, res);
+		});
+	});
+
 	/**
 	 * Services features
 	 */
