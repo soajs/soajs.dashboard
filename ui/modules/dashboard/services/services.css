@@ -36,3 +36,6 @@ fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"]{
     color: #a94442;
     cursor:pointer;
 }
+.modal-xlg {
+    width: 90%;
+}

@@ -39,7 +39,12 @@
 						</td>
 						<td>
 							<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
-						</td>
+						</td><td class="">
+                            <a href="" ng-click="swaggerTest(service)" title="click to run swagger simulation">
+                                <span><img style="max-height:25px; max-width:25px;vertical-align:middle" src="modules/dashboard/services/directives/images/swagger-icon.png">
+                                </span>
+                            </a>
+                        </td>
 					</tr>
 				</table>
 			</div>

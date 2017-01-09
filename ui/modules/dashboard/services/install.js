@@ -396,6 +396,27 @@ var servicesNav = [
 		'ancestor': [translation.home[LANG]]
 	},
 	{
+		'id': 'swagger',
+		'label': "Swagger Test",
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/services/swagger'
+		},
+		'url': '#/swaggerTest',
+		'tplPath': 'modules/dashboard/services/directives/swagger.tmpl',
+		'icon': 'cloud',
+		'pillar': {
+			'name': 'development',
+			'label': "Swagger Test",
+			'position': 1
+		},
+		'mainMenu': true,
+		'tracker': true,
+		'order': 1,
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
+		'ancestor': [translation.home[LANG]]
+	},
+	{
 		'id': 'daemons',
 		'label': 'Daemons',
 		'checkPermission': {

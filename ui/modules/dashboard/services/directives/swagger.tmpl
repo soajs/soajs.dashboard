@@ -1,0 +1,25 @@
+<div class="modal-header">
+ 	<a class="pull-right" ng-click="closeModal()" href="">
+ 		<span class="icon icon-cross" tooltip="{{translation.close[LANG]}}"></span>
+ 	</a>
+ 	<h3 class="modal-title">{{title}}</h3>
+ </div>
+ <div class="modal-body">
+ 	<div class="form">
+ 		<alert type="danger" ng-if="message.danger">{{message.text}}</alert>
+ 		<form name="swaggerTester" id="swaggerTester" novalidate ng-submit="swaggerTester.$valid && onSubmit()">
+ 			<div class="form-group">
+ 				<br>
+ 				<textarea>
+ 		           {{service}}
+ 	           </textarea>
+
+ 				<div class="pull-right">
+ 					<input type="submit" class="btn btn-primary" value="{{translation.save[LANG]}}"/>
+ 					<input type="button" class="btn btn-danger" value="{{translation.cancel[LANG]}}" ng-click="closeModal()"/>
+ 				</div>
+ 				<br/>
+ 			</div>
+ 		</form>
+ 	</div>
+ </div>

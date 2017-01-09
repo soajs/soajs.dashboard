@@ -103,7 +103,54 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		result._ver = version;
 		return result;
 	};
-
+	
+	$scope.swaggerTest = function (service) {
+		var outerScope = $scope;
+		$modal.open({
+			templateUrl: "modules/dashboard/services/directives/swagger.tmpl",
+			size: 'xlg',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				$scope.title = "Swagger";
+				$scope.service = service;
+				fixBackDrop();
+				
+				$scope.outerScope = outerScope;
+				$scope.message = {};
+				
+				$scope.onSubmit = function () {
+					
+					overlayLoading.show();
+					var options = {
+						"method": "send",
+						// "routeName": "/knowledgebase/merchant/promoCodes/add",
+						"params": {},
+						"data": {}
+					};
+					getSendDataFromServer(outerScope, ngDataApi, options, function (error, response) {
+						overlayLoading.hide();
+						if (error) {
+							$scope.message.danger = true;
+							$scope.message.text = error.message;
+						}
+						else {
+							// outerScope.$parent.displayAlert('success', translation.promoAddedSuccessfully[LANG]);
+							// $modalInstance.close();
+							// outerScope.listCodes();
+							// outerScope.editPromo(response);
+						}
+					});
+				};
+				
+				$scope.closeModal = function () {
+					$modalInstance.close();
+				};
+			}
+		});
+		
+	};
+	
 	if ($scope.access.listServices) {
 		injectFiles.injectCss("modules/dashboard/services/services.css");
 		$scope.listServices();
