@@ -521,6 +521,11 @@ service.init(function () {
 			BL.getRepos(config, req, res);
 		});
 	});
+	service.get("/gitAccounts/getYaml", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getYaml(config, req, res);
+		});
+	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.getBranches(config, req, res);

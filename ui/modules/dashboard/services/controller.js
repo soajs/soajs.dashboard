@@ -105,7 +105,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	};
 	//open new tab having the swagger ui to test our APIs
 	$scope.swaggerTest = function () {
-		window.open('',''); //we will add the url that will open in the new tab
+		window.open("/modules/dashboard/services/directives/swagger-ui/index.html"); //we will add the url that will open in the new tab
 	};
 	
 	if ($scope.access.listServices) {
