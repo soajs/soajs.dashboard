@@ -427,8 +427,8 @@ module.exports = {
 		lib.getRepoContent(options, function (error, response) {
 			checkIfError(error, {}, cb, function () {
 				return cb(null, {
-					token: options.token,
-					downloadLink: response.download_link,
+					token: options.token || null,
+					downloadLink: response.download_url,
 					content: new Buffer(response.content, 'base64').toString()
 				});
 			});

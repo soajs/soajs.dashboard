@@ -1046,7 +1046,35 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				}
-			}
+			},
+
+			"/gitAccounts/getYaml": {
+				"_apiInfo": {
+					"l": "Get Yaml file",
+					"group": "Git Accounts"
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 		},
 
 		"post": {
