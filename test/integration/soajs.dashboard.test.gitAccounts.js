@@ -876,6 +876,30 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		});
 
 	});
+	/**
+	 * When clicking the test swagger icon a new tab will be opened and we should
+	 * return the APIs documentation based on the yaml file located in the user
+	 * github/bitbucket account where the service provided exists.
+	 * This test will get the yaml file needed so the ui can return the APIs documentation
+	 * The user must activate his github/bitbucket account on the dashboard first.
+	 */
+	describe("pull from a repo in github or bitbucket", function(){
+		var params = {
+			qs: {
+				"owner" : "soajs",
+				"repo" : "soajs.dashboard",
+				"filepath" : "config.js",
+				"branch" : "swagger"
+			}
+		};
+		it("success - the user is logged in and provided an existing repo and file path", function(done){
+			executeMyRequest(params, 'gitAccounts/getYaml', get, function(body){
+				console.log(body);
+				assert.ok(body.result);
+				assert.deepEqual(body.data.downloadLink, "https://raw.githubusercontent.com/soajs/soajs.dashboard/swagger/config.js");
+			});
+		})
+	});
 
 	describe("github logout tests", function () {
 
