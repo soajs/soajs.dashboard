@@ -3,6 +3,12 @@ var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
     function checkCerts(currentScope, env) {
+        currentScope.certsExist = {
+            all: false,
+            ca: false,
+            cert: false,
+            key: false
+        };
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "get",
             "routeName": "/dashboard/environment/platforms/list",
@@ -15,12 +21,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
             }
             else if (response.selected.split('.')[1] === "kubernetes" || (response.selected.split('.')[1] === "docker" && response.selected.split('.')[2] === "remote")) {
                 var requiredCerts = environmentsConfig.deployer.certificates.required;
-                currentScope.certsExist = {
-                    all: false,
-                    ca: false,
-                    cert: false,
-                    key: false
-                };
 
                 requiredCerts.forEach(function (oneCertType) {
                     for (var i = 0; i < response.certs.length; i++) {
@@ -36,6 +36,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                 });
 
                 currentScope.certsExist.all = (currentScope.certsExist.ca && currentScope.certsExist.cert && currentScope.certsExist.key);
+            }
+            else {
+                //docker local does not require certificates, it uses unix socket
+                currentScope.certsExist.all = true;
             }
         });
     }
