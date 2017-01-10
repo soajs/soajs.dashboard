@@ -938,34 +938,6 @@ module.exports = {
 					"group": "Git Accounts"
 				}
 			},
-			
-			"/gitAccounts/getYaml": {
-				"_apiInfo": {
-					"l": "Get Yaml file",
-					"group": "Git Accounts"
-				},
-				"serviceName": {
-					"source": ['query.id'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"provider": {
-					"source": ['query.provider'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"token": {
-					"source": ['query.token'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
 
 			"/gitAccounts/getRepos": {
 				"_apiInfo": {
@@ -1102,7 +1074,7 @@ module.exports = {
 						"type": "string"
 					}
 				}
-			},
+			}
 		},
 
 		"post": {
