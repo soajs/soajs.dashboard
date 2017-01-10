@@ -1073,6 +1073,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"branch": {
+					"source": ['query.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 		},
