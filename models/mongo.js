@@ -53,7 +53,7 @@ function checkForMongo(soajs) {
 		mongo.ensureIndex(environmentCollectionName, {locked: 1}, errorLogger);
 
 		//fs.files
-		mongo.ensureIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
+		// mongo.ensureIndex(gridfsCollectionName, {filename: 1}, {unique: true}, errorLogger);
 		mongo.ensureIndex(gridfsCollectionName, {filename: 1, 'metadata.type': 1}, errorLogger);
 		mongo.ensureIndex(gridfsCollectionName, {'metadata.type': 1}, errorLogger);
 		mongo.ensureIndex(gridfsCollectionName, {'metadata.env': 1}, errorLogger);

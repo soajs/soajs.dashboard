@@ -379,7 +379,8 @@ var servicesNav = [
 		'label': translation.services[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/services/list'
+			'route': '/services/list',
+			'method': 'post'
 		},
 		'url': '#/services',
 		'tplPath': 'modules/dashboard/services/directives/list.tmpl',
@@ -421,7 +422,8 @@ var servicesNav = [
 		'label': 'Daemons',
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/daemons/list'
+			'route': '/daemons/list',
+			'method': 'post'
 		},
 		'url': '#/daemons',
 		'tplPath': 'modules/dashboard/services/directives/list-daemons.tmpl',

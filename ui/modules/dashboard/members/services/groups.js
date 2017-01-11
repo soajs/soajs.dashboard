@@ -99,7 +99,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							'tCode': tenantCode
 						};
 						var opts = {
-							"method": "send",
+							"method": "post",
 							"routeName": "/urac/admin/group/add",
 							"data": postData
 						};
@@ -156,7 +156,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 							'description': formData.description
 						};
 						var opts = {
-							"method": "send",
+							"method": "post",
 							"routeName": "/urac/admin/group/edit",
 							"params": {"gId": data['_id']},
 							"data": postData
@@ -196,7 +196,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 
 	function deleteGroups(currentScope) {
 		var config = {
-			"method": "del",
+			"method": "delete",
 			'routeName': "/urac/admin/group/delete",
 			"headers": {
 				"key": currentScope.key
@@ -217,7 +217,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 		var userCookie = currentScope.$parent.userCookie;
 		var tenantId = (useCookie) ? userCookie.tenant.id : currentScope.tId;
 		var opts = {
-			"method": "del",
+			"method": "delete",
 			"routeName": "/urac/admin/group/delete",
 			"params": {
 				"gId": data._id,
@@ -289,7 +289,7 @@ groupsService.service('groupsHelper', ['ngDataApi', '$timeout', '$modal', functi
 									'users': formData.users
 								};
 								var opts = {
-									"method": "send",
+									"method": "post",
 									"routeName": "/urac/admin/group/addUsers",
 									"params": {'tId': tenantId},
 									"data": postData

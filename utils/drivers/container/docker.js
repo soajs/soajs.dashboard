@@ -33,7 +33,7 @@ function getDockerCerts(certs, gfs, db, cb) {
 						gstore.close();
 
 						var certName = oneCert.filename.split('.')[0];
-						certBuffers[certName] = filedata;
+						certBuffers[oneCert.metadata.certType] = filedata;
 						return callback(null, true);
 					});
 				});
@@ -153,10 +153,10 @@ var lib = {
 						});
 					}
 
-					model.getDb(soajs).getMongoSkinDB(function (error, db) {
+					model.getDb(soajs).getMongoDB(function (error, db) {
 						checkError(error, callback, function () {
 
-							var gfs = Grid(db, model.getDb(soajs).mongoSkin);
+							var gfs = Grid(db, model.getDb(soajs).mongodb);
 							var counter = 0;
 							return getDockerCerts(certs, gfs, db, callback);
 						});

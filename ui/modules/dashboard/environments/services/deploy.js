@@ -194,7 +194,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             }
 
             getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "send",
+                "method": "post",
                 "routeName": "/dashboard/hosts/deployController",
                 "data": params
             }, function(error, response) {
@@ -208,7 +208,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
                     params.imagePrefix = formData.nginxImagePrefix;
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "send",
+                        "method": "post",
                         "routeName": "/dashboard/hosts/deployNginx",
                         "data": params
                     }, function(error, response) {
@@ -239,7 +239,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         function listStaticContent (currentScope, cb) {
             getSendDataFromServer(currentScope, ngDataApi, {
-                'method': 'send',
+                'method': 'post',
                 'routeName': '/dashboard/staticContent/list'
             }, function (error, response) {
                 if (error) {

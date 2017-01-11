@@ -241,7 +241,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						tmpl.services.config.session.secret = formData.sessionCookiePass;
 
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "post",
 							"routeName": "/dashboard/environment/add",
 							"data": tmpl
 						}, function (error, data) {
@@ -325,7 +325,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
 
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": (($scope.newEntry) ? "post" : "put"),
 			"routeName": "/dashboard/environment/" + (($scope.newEntry) ? "add" : "update"),
 			"params": ($scope.newEntry) ? {} : {"id": $scope.envId},
 			"data": postData
@@ -343,7 +343,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.UpdateTenantSecurity = function () {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/environment/key/update",
 			"params": {"id": $scope.envId},
 			"data": {
@@ -396,7 +396,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.removeEnvironment = function (row) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/environment/delete",
 			"params": {"id": row['_id']}
 		}, function (error, response) {

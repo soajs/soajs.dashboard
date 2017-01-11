@@ -70,9 +70,6 @@ var staticContentConfig = {
         }
     },
     permissions: {
-        'list': ['dashboard', '/staticContent/list'],
-        'add': ['dashboard', '/staticContent/add'],
-        'update': ['dashboard', '/staticContent/update'],
-        'delete': ['dashboard', '/staticContent/delete']
+        'list': ['dashboard', '/staticContent/list', 'post']
     }
 };

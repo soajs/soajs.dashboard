@@ -385,7 +385,8 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 	}
 	else {
 		//$scope.$parent.displayAlert('danger', translation.youAreAlreadyLoggedIn[LANG]);
-		$scope.$parent.go($scope.$parent.mainMenu.links[0].entries[0].url.replace("#", ""));
+		var gotoUrl = $scope.$parent.mainMenu.links[0].entries[0].url.replace("#", "");
+		$scope.$parent.go(gotoUrl);
 	}
 
 }]);

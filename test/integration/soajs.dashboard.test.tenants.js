@@ -157,7 +157,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "test product updated"
 						}
 					};
-					executeMyRequest(params, 'product/update', 'post', function (body) {
+					executeMyRequest(params, 'product/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -183,7 +183,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"description": 'this is a dummy description'
 						}
 					};
-					executeMyRequest(params, 'product/update', 'post', function (body) {
+					executeMyRequest(params, 'product/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: name"
@@ -201,7 +201,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": 'test product updated'
 						}
 					};
-					executeMyRequest(params, 'product/update', 'post', function (body) {
+					executeMyRequest(params, 'product/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 409, "message": errorCodes[409]});
 
 						done();
@@ -231,7 +231,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {}
 					};
-					executeMyRequest(params, 'product/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -245,7 +245,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {'id': "aaaabbbbccccdddd"}
 					};
-					executeMyRequest(params, 'product/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 409, "message": errorCodes[409]});
 
 						done();
@@ -274,7 +274,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {'id': tProd2}
 					};
-					executeMyRequest(params, 'product/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -584,7 +584,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 405,
 							"message": "Invalid environment id provided"
@@ -614,7 +614,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.ok(body.data);
 
 						mongo.findOne('products', {'code': 'TPROD'}, function (error, record) {
@@ -663,7 +663,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -683,7 +683,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {}
 						}
 					};
-					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
@@ -710,7 +710,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'product/packages/update', 'post', function (body) {
+					executeMyRequest(params, 'product/packages/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 405, "message": errorCodes[405]});
 						done();
 					});
@@ -727,7 +727,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": "PACKA"
 						}
 					};
-					executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 						assert.ifError(body.errors);
 						assert.ok(body.data);
 						done();
@@ -738,7 +738,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {}
 					};
-					executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: code, id"
@@ -752,7 +752,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {"id": productId, 'code': 'BASI4'}
 					};
-					executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 419, "message": errorCodes[419]});
 						done();
 					});
@@ -762,7 +762,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					var params = {
 						qs: {"id": productId, 'code': 'BASIC'}
 					};
-					executeMyRequest(params, 'product/packages/delete', 'get', function (body) {
+					executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
@@ -1042,7 +1042,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": "test tenant updated"
 						}
 					};
-					executeMyRequest(params, 'tenant/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1084,7 +1084,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"tag": 'myTag'
 						}
 					};
-					executeMyRequest(params, 'tenant/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1098,7 +1098,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": 'test tenant updated'
 						}
 					};
-					executeMyRequest(params, 'tenant/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1115,7 +1115,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"name": 'test tenant updated'
 						}
 					};
-					executeMyRequest(params, 'tenant/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 438, "message": errorCodes[438]});
 
 						done();
@@ -1126,7 +1126,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			describe("delete tenant tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({}, 'tenant/delete', 'get', function (body) {
+					executeMyRequest({}, 'tenant/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1136,14 +1136,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 
 				it('fail - invalid tenant id provided', function (done) {
-					executeMyRequest({qs: {id: 'aaaabdddd'}}, 'tenant/delete', 'get', function (body) {
+					executeMyRequest({qs: {id: 'aaaabdddd'}}, 'tenant/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 438, "message": errorCodes[438]});
 						done();
 					});
 				});
 
 				it("success - will delete tenant", function (done) {
-					executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'get', function (body) {
+					executeMyRequest({'qs': {id: tenantId}}, 'tenant/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 
 						done();
@@ -1277,7 +1277,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"redirectURI": "http://www.myredirecturi2.com/"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
 						assert.ok(body.data);
 						mongo.findOne('tenants', {'code': 'TSTN'}, function (error, tenantRecord) {
 							assert.ifError(error);
@@ -1299,7 +1299,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"redirectURI": "http://www.myredirecturi.com/"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1312,7 +1312,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			describe("delete oauth tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {}}, 'tenant/oauth/delete', 'get', function (body) {
+					executeMyRequest({qs: {}}, 'tenant/oauth/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1323,7 +1323,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 
 				it("success - will delete oauth", function (done) {
-					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'get', function (body) {
+					executeMyRequest({qs: {id: tenantId}}, 'tenant/oauth/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1425,7 +1425,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password2"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/update/', 'put', function (body) {
 						assert.ok(body.data);
 						mongo.findOne('oauth_urac', {'userId': 'oauth_user_up'}, function (error, tenantRecord) {
 							assert.ifError(error);
@@ -1446,7 +1446,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						},
 						form: {}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/update/', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 451,
 							"message": "Unable to updated tenant oAuth User"
@@ -1465,7 +1465,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password2"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1486,7 +1486,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password2"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 447,
 							"message": "Unable to get tenant oAuth Users"
@@ -1507,7 +1507,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"password": "password2"
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 439,
 							"message": "Invalid tenant oauth user Id provided"
@@ -1542,7 +1542,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"password": "password2"
 							}
 						};
-						executeMyRequest(params, 'tenant/oauth/users/update/', 'post', function (body) {
+						executeMyRequest(params, 'tenant/oauth/users/update/', 'put', function (body) {
 							assert.deepEqual(body.errors.details[0], {
 								"code": 448,
 								"message": "tenant oAuth User already exists"
@@ -1556,7 +1556,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			describe("delete oauth tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {uId: oauthUserId}}, 'tenant/oauth/users/delete', 'get', function (body) {
+					executeMyRequest({qs: {uId: oauthUserId}}, 'tenant/oauth/users/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: id"
@@ -1572,7 +1572,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							id: tenantId,
 							uId: 'abcde'
 						}
-					}, 'tenant/oauth/users/delete', 'get', function (body) {
+					}, 'tenant/oauth/users/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 439,
 							"message": "Invalid tenant oauth user Id provided"
@@ -1588,7 +1588,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							id: tenantId,
 							'uId': oauthUserId
 						}
-					}, 'tenant/oauth/users/delete/', 'get', function (body) {
+					}, 'tenant/oauth/users/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1613,7 +1613,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							uId: oauthUserId2
 						}
 					};
-					executeMyRequest(params, 'tenant/oauth/users/delete/', 'get', function (body) {
+					executeMyRequest(params, 'tenant/oauth/users/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1737,7 +1737,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1755,7 +1755,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
@@ -1770,7 +1770,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"_TTL": '12'
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: productCode"
@@ -1790,7 +1790,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"_TTL": '12'
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
 
 						done();
@@ -1807,7 +1807,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"_TTL": '12'
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 434, "message": errorCodes[434]});
 
 						done();
@@ -1857,7 +1857,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"acl": {}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/update', 'put', function (body) {
 						assert.ok(body);
 						assert.ok(body.data);
 						mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
@@ -1883,7 +1883,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			describe("delete applications tests", function () {
 				it('fail - missing params', function (done) {
-					executeMyRequest({qs: {'id': tenantId}}, 'tenant/application/delete/', 'get', function (body) {
+					executeMyRequest({qs: {'id': tenantId}}, 'tenant/application/delete/', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: appId"
@@ -1898,7 +1898,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'id': tenantId,
 							'appId': applicationId
 						}
-					}, 'tenant/application/delete/', 'get', function (body) {
+					}, 'tenant/application/delete/', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -1909,7 +1909,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'id': tenantId,
 							'appId': 'fdfdsfs'
 						}
-					}, 'tenant/application/delete/', 'get', function (body) {
+					}, 'tenant/application/delete/', 'delete', function (body) {
 						assert.ok(body.errors);
 						done();
 					});
@@ -2065,7 +2065,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'key': key.toString()
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+					executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -2078,7 +2078,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'key': 'gdsgsfds'
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+					executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 						assert.ok(body);
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {
@@ -2096,7 +2096,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'appId': applicationId
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+					executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: key"
@@ -2473,7 +2473,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -2498,7 +2498,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 441,
 							"message": "Unable to update the tenant application ext Key"
@@ -2524,7 +2524,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/ext/update/', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/ext/update/', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: extKeyEnv, extKey"
@@ -2745,7 +2745,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'config': {}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -2770,7 +2770,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.ok(body.data);
 						done();
 					});
@@ -2795,7 +2795,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0],
 							{"code": 445, "message": "Unable to update the tenant application configuration"});
@@ -2815,7 +2815,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'envCode': 'DEV'
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
 							"message": "Missing required field: config"
@@ -2843,7 +2843,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							}
 						}
 					};
-					executeMyRequest(params, 'tenant/application/key/config/update', 'post', function (body) {
+					executeMyRequest(params, 'tenant/application/key/config/update', 'put', function (body) {
 						assert.deepEqual(body.errors.details[0], {"code": 446, "message": errorCodes[446]});
 						done();
 					});
@@ -3035,7 +3035,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'id': tenantId
 					}
 				};
-				executeMyRequest(params, 'tenant/delete', 'get', function (body) {
+				executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body);
 
@@ -3055,7 +3055,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"appId": appId
 					}
 				};
-				executeMyRequest(params, 'tenant/application/delete', 'get', function (body) {
+				executeMyRequest(params, 'tenant/application/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body.result);
 
@@ -3076,7 +3076,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"key": key
 					}
 				};
-				executeMyRequest(params, 'tenant/application/key/delete', 'get', function (body) {
+				executeMyRequest(params, 'tenant/application/key/delete', 'delete', function (body) {
 					if (body.result === false)
 						assert.ifError(body.result);
 

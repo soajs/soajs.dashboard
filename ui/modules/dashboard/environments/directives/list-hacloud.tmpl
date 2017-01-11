@@ -223,13 +223,13 @@
         <tab heading="Services" ng-if="access.listHosts">
             <br />
 
-			<div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && !certsExist">
+			<div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && !certsExist.all">
 				<alert type="warning" ng-style="{'text-align': 'center'}">
 					Deploying this environment in high-availability mode requires certificates. <br />
 					Click on this link <a href="#/environments-platforms"><b>Platforms and Certificates</b></a>, upload the certificates for the chosen driver, before resuming deployment.
 				</alert>
 			</div>
-            <div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && certsExist">
+            <div ng-if="!hosts.controller && (!nginxHosts || nginxHosts.length === 0) && certsExist.all">
 				<div ng-if="!isDeploying">
 					<alert type="warning" ng-style="{'text-align': 'center'}">
 	                    This environment has not been deployed yet!

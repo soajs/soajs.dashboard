@@ -66,9 +66,12 @@ var modelObj = {
 var environmentsConfig = {
 	deployer: {
     	kubernetes: {
-        "minPort": 0,
-        "maxPort": 2767
-    	}
+        	"minPort": 0,
+        	"maxPort": 2767
+    	},
+		certificates: {
+			required: ['ca', 'cert', 'key']
+		}
 	},
 
 	form: {
@@ -778,6 +781,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
+
 	jsoneditorConfig: {
 		'options': {
 			'mode': 'code',
@@ -786,57 +790,50 @@ var environmentsConfig = {
 		'height': '200px'
 	},
 	permissions: {
-		"listEnvironments": ['dashboard', '/environment/list'],
-		"addEnvironment": ['dashboard', '/environment/add'],
-		"deleteEnvironment": ['dashboard', '/environment/delete'],
-		"editEnvironment": ['dashboard', '/environment/update'],
-		"listHosts": ['dashboard', '/hosts/list'],
+		"listEnvironments": ['dashboard', '/environment/list', 'get'],
+		"addEnvironment": ['dashboard', '/environment/add', 'post'],
+		"deleteEnvironment": ['dashboard', '/environment/delete', 'delete'],
+		"editEnvironment": ['dashboard', '/environment/update', 'put'],
+		"listHosts": ['dashboard', '/hosts/list', 'get'],
 		"dbs": {
-			"list": ['dashboard', '/environment/dbs/list'],
-			"add": ['dashboard', '/environment/dbs/add'],
-			"delete": ['dashboard', '/environment/dbs/delete'],
-			"update": ['dashboard', '/environment/dbs/update'],
-			"updatePrefix": ['dashboard', '/environment/dbs/updatePrefix']
+			"list": ['dashboard', '/environment/dbs/list', 'get'],
+			"add": ['dashboard', '/environment/dbs/add', 'post'],
+			"delete": ['dashboard', '/environment/dbs/delete', 'delete'],
+			"update": ['dashboard', '/environment/dbs/update', 'put'],
+			"updatePrefix": ['dashboard', '/environment/dbs/updatePrefix', 'put']
 		},
 		"clusters": {
-			"list": ['dashboard', '/environment/clusters/list'],
-			"add": ['dashboard', '/environment/clusters/add'],
-			"delete": ['dashboard', '/environment/clusters/delete'],
-			"update": ['dashboard', '/environment/clusters/update']
+			"list": ['dashboard', '/environment/clusters/list', 'get'],
+			"add": ['dashboard', '/environment/clusters/add', 'post'],
+			"delete": ['dashboard', '/environment/clusters/delete', 'delete'],
+			"update": ['dashboard', '/environment/clusters/update', 'put']
 		},
 		"platforms": {
-			"list": ['dashboard', '/environment/platforms/list'],
+			"list": ['dashboard', '/environment/platforms/list', 'get'],
 			"drivers": {
-				"add": ['dashboard', '/environment/platforms/driver/add'],
-				"edit": ['dashboard', '/environment/platforms/driver/edit'],
-				"delete": ['dashboard', '/environment/platforms/driver/delete'],
-				"changeSelected": ['dashboard', '/environment/platforms/driver/changeSelected']
+				"changeSelected": ['dashboard', '/environment/platforms/driver/changeSelected', 'put']
 			},
 			"deployer": {
-				"changeDeployerType": ['dashboard', '/environment/platforms/deployer/type/change']
+				"changeDeployerType": ['dashboard', '/environment/platforms/deployer/type/change', 'put']
 			},
 			"certs": {
-				"upload": ['dashboard', '/environment/platforms/cert/upload'],
-				"choose": ['dashboard', '/environment/platforms/cert/choose'],
-				"delete": ['dashboard', '/environment/platforms/cert/delete']
-			},
-			"containers": {
-				"restartHost": ['dashboard', '/environment/nginx/redeploy'],
-				"restartNginx": ['dashboard', '/environment/hosts/redeployService']
+				"upload": ['dashboard', '/environment/platforms/cert/upload', 'post'],
+				"choose": ['dashboard', '/environment/platforms/cert/choose', 'put'],
+				"delete": ['dashboard', '/environment/platforms/cert/delete', 'delete']
 			}
 		},
 		"hacloud": {
 			"nodes": {
-				"list": ['dashboard', '/hacloud/nodes/list'],
-				"add": ['dashboard', '/hacloud/nodes/add'],
-				"remove": ['dashboard', '/hacloud/nodes/remove'],
-				"update": ['dashboard', '/hacloud/nodes/update'],
+				"list": ['dashboard', '/hacloud/nodes/list', 'get'],
+				"add": ['dashboard', '/hacloud/nodes/add', 'post'],
+				"remove": ['dashboard', '/hacloud/nodes/remove', 'delete'],
+				"update": ['dashboard', '/hacloud/nodes/update', 'put'],
 			},
 			"services": {
-				"add": ['dashboard', '/hacloud/hosts/deployService'],
-				"delete": ['dashboard', '/hacloud/services/delete'],
-				"scale": ['dashboard', '/hacloud/services/scale'],
-				"logs": ['dashboard', '/hacloud/services/instances/logs']
+				"add": ['dashboard', '/hacloud/hosts/deployService', 'post'],
+				"delete": ['dashboard', '/hacloud/services/delete', 'delete'],
+				"scale": ['dashboard', '/hacloud/services/scale', 'put'],
+				"logs": ['dashboard', '/hacloud/services/instances/logs', 'get']
 			}
 		}
 	}

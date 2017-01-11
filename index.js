@@ -1,5 +1,4 @@
 'use strict';
-var request = require('request');
 var soajs = require('soajs');
 
 var config = require('./config.js');
@@ -62,12 +61,12 @@ service.init(function () {
 			BL.add(config, service, dbModel, req, res);
 		});
 	});
-	service.get("/environment/delete", function (req, res) {
+	service.delete("/environment/delete", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.delete(config, req, res);
 		});
 	});
-	service.post("/environment/update", function (req, res) {
+	service.put("/environment/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.update(config, req, res);
 		});
@@ -77,7 +76,7 @@ service.init(function () {
 			BL.list(config, req, res);
 		});
 	});
-	service.post("/environment/key/update", function (req, res) {
+	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.keyUpdate(config, req, res);
 		});
@@ -88,7 +87,7 @@ service.init(function () {
 			BL.listDbs(config, req, res);
 		});
 	});
-	service.get("/environment/dbs/delete", function (req, res) {
+	service.delete("/environment/dbs/delete", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.deleteDb(config, req, res);
 		});
@@ -98,13 +97,13 @@ service.init(function () {
 			BL.addDb(config, req, res);
 		});
 	});
-	service.post("/environment/dbs/update", function (req, res) {
+	service.put("/environment/dbs/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.updateDb(config, req, res);
 		});
 	});
 
-	service.post("/environment/dbs/updatePrefix", function (req, res) {
+	service.put("/environment/dbs/updatePrefix", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.updateDbsPrefix(config, req, res);
 		});
@@ -115,12 +114,12 @@ service.init(function () {
 			BL.addCluster(config, req, res);
 		});
 	});
-	service.get("/environment/clusters/delete", function (req, res) {
+	service.delete("/environment/clusters/delete", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.deleteCluster(config, req, res);
 		});
 	});
-	service.post("/environment/clusters/update", function (req, res) {
+	service.put("/environment/clusters/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.updateCluster(config, req, res);
 		});
@@ -140,22 +139,22 @@ service.init(function () {
 			BL.uploadCerts(config, req, res);
 		});
 	});
-	service.get("/environment/platforms/cert/delete", function (req, res) {
+	service.delete("/environment/platforms/cert/delete", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.removeCert(config, req, res);
 		});
 	});
-	service.post("/environment/platforms/cert/choose", function (req, res) {
+	service.put("/environment/platforms/cert/choose", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.chooseExistingCerts(config, req, res);
 		});
 	});
-	service.post("/environment/platforms/driver/changeSelected", function (req, res) {
+	service.put("/environment/platforms/driver/changeSelected", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.changeSelectedDriver(config, req, res);
 		});
 	});
-	service.post("/environment/platforms/deployer/type/change", function (req, res) {
+	service.put("/environment/platforms/deployer/type/change", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
 			BL.changeDeployerType(config, req, res);
 		});
@@ -169,12 +168,12 @@ service.init(function () {
 			BL.add(config, req, res);
 		});
 	});
-	service.get("/product/delete", function (req, res) {
+	service.delete("/product/delete", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
 			BL.delete(config, req, res);
 		});
 	});
-	service.post("/product/update", function (req, res) {
+	service.put("/product/update", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
 			BL.update(config, req, res);
 		});
@@ -205,12 +204,12 @@ service.init(function () {
 			BL.addPackage(config, req, res);
 		});
 	});
-	service.post("/product/packages/update", function (req, res) {
+	service.put("/product/packages/update", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
 			BL.updatePackage(config, req, res);
 		});
 	});
-	service.get("/product/packages/delete", function (req, res) {
+	service.delete("/product/packages/delete", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
 			BL.deletePackage(config, req, res);
 		});
@@ -225,7 +224,7 @@ service.init(function () {
 		});
 	});
 
-	service.get("/tenant/delete", function (req, res) {
+	service.delete("/tenant/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.delete(config, req, res);
 		});
@@ -237,7 +236,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/update", function (req, res) {
+	service.put("/tenant/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.update(config, req, res);
 		});
@@ -261,13 +260,13 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/oauth/update", function (req, res) {
+	service.put("/tenant/oauth/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
 		});
 	});
 
-	service.get("/tenant/oauth/delete", function (req, res) {
+	service.delete("/tenant/oauth/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.deleteOAuth(config, req, res);
 		});
@@ -279,7 +278,7 @@ service.init(function () {
 		});
 	});
 
-	service.get("/tenant/oauth/users/delete", function (req, res) {
+	service.delete("/tenant/oauth/users/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.deleteOAuthUsers(config, req, res);
 		});
@@ -291,7 +290,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/oauth/users/update", function (req, res) {
+	service.put("/tenant/oauth/users/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.updateOAuthUsers(config, req, res);
 		});
@@ -309,13 +308,13 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/application/update", function (req, res) {
+	service.put("/tenant/application/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.updateApplication(config, req, res);
 		});
 	});
 
-	service.get("/tenant/application/delete", function (req, res) {
+	service.delete("/tenant/application/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.deleteApplication(config, req, res);
 		});
@@ -339,7 +338,7 @@ service.init(function () {
 		});
 	});
 
-	service.get("/tenant/application/key/delete", function (req, res) {
+	service.delete("/tenant/application/key/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.deleteApplicationKey(config, req, res);
 		});
@@ -357,7 +356,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/application/key/ext/update", function (req, res) {
+	service.put("/tenant/application/key/ext/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.updateApplicationExtKeys(config, req, res);
 		});
@@ -369,7 +368,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/tenant/application/key/config/update", function (req, res) {
+	service.put("/tenant/application/key/config/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
 			BL.updateApplicationConfig(config, req, res);
 		});
@@ -416,7 +415,7 @@ service.init(function () {
 		});
 	});
 
-	service.get("/hosts/delete", function (req, res) {
+	service.delete("/hosts/delete", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.delete(config, req.soajs, res);
 		});
@@ -463,23 +462,23 @@ service.init(function () {
 			BL.addNode(config, req.soajs, res);
 		});
 	});
-	service.get("/hacloud/nodes/remove", function (req, res) {
+	service.delete("/hacloud/nodes/remove", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.removeNode(config, req.soajs, res);
 		});
 	});
-	service.post("/hacloud/nodes/update", function (req, res) {
+	service.put("/hacloud/nodes/update", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.updateNode(config, req.soajs, res);
 		});
 	});
 
-	service.post("/hacloud/services/scale", function (req, res) {
+	service.put("/hacloud/services/scale", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.scaleHAService(config, req.soajs, res);
 		});
 	});
-	service.get("/hacloud/services/delete", function (req, res) {
+	service.delete("/hacloud/services/delete", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.deleteHAService(config, req.soajs, res);
 		});
@@ -492,21 +491,6 @@ service.init(function () {
 	});
 
 	/**
-	 * Analytics Features
-	 */
-	service.get("/analytics/check", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.checkAnalytics(config, req.soajs, res);
-		});
-	});
-
-	service.post("/analytics/activate", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.activateAnalytics(config, req.soajs, res);
-		});
-	});
-
-	/**
 	 * Git App features gitAccountsBL
 	 */
 	service.post("/gitAccounts/login", function (req, res) {
@@ -514,7 +498,7 @@ service.init(function () {
 			BL.login(config, req, res);
 		});
 	});
-	service.get("/gitAccounts/logout", function (req, res) {
+	service.delete("/gitAccounts/logout", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.logout(config, req, res);
 		});
@@ -539,12 +523,12 @@ service.init(function () {
 			BL.activateRepo(config, req, res);
 		});
 	});
-	service.get('/gitAccounts/repo/deactivate', function (req, res) {
+	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.deactivateRepo(config, req, res);
 		});
 	});
-	service.post('/gitAccounts/repo/sync', function (req, res) {
+	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.syncRepo(config, req, res);
 		});
@@ -576,17 +560,17 @@ service.init(function () {
 			BL.addGroupConfig(config, req, res);
 		});
 	});
-	service.post("/daemons/groupConfig/update", function (req, res) {
+	service.put("/daemons/groupConfig/update", function (req, res) {
 		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
 			BL.updateGroupConfig(config, req, res);
 		});
 	});
-	service.get("/daemons/groupConfig/delete", function (req, res) {
+	service.delete("/daemons/groupConfig/delete", function (req, res) {
 		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
 			BL.deleteGroupConfig(config, req, res);
 		});
 	});
-	service.post("/daemons/groupConfig/serviceConfig/update", function (req, res) {
+	service.put("/daemons/groupConfig/serviceConfig/update", function (req, res) {
 		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
 			BL.updateServiceConfig(config, req, res);
 		});
@@ -596,7 +580,7 @@ service.init(function () {
 			BL.listServiceConfig(config, req, res);
 		});
 	});
-	service.post("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
+	service.put("/daemons/groupConfig/tenantExtKeys/update", function (req, res) {
 		initBLModel(req, res, daemonsBL, dbModel, function (BL) {
 			BL.updateTenantExtKeys(config, req, res);
 		});
@@ -618,7 +602,7 @@ service.init(function () {
 	/**
 	 * Settings features
 	 */
-	service.post("/settings/tenant/update", function (req, res) {
+	service.put("/settings/tenant/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.update(config, req, res);
@@ -653,14 +637,14 @@ service.init(function () {
 			});
 		});
 	});
-	service.post("/settings/tenant/oauth/update", function (req, res) {
+	service.put("/settings/tenant/oauth/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
 			});
 		});
 	});
-	service.get("/settings/tenant/oauth/delete", function (req, res) {
+	service.delete("/settings/tenant/oauth/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.deleteOAuth(config, req, res);
@@ -675,7 +659,7 @@ service.init(function () {
 			});
 		});
 	});
-	service.get("/settings/tenant/oauth/users/delete", function (req, res) {
+	service.delete("/settings/tenant/oauth/users/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.deleteOAuthUsers(config, req, res);
@@ -689,7 +673,7 @@ service.init(function () {
 			});
 		});
 	});
-	service.post("/settings/tenant/oauth/users/update", function (req, res) {
+	service.put("/settings/tenant/oauth/users/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.updateOAuthUsers(config, req, res);
@@ -719,7 +703,7 @@ service.init(function () {
 			});
 		});
 	});
-	service.get("/settings/tenant/application/key/delete", function (req, res) {
+	service.delete("/settings/tenant/application/key/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.deleteApplicationKey(config, req, res);
@@ -741,7 +725,7 @@ service.init(function () {
 			});
 		});
 	});
-	service.post("/settings/tenant/application/key/ext/update", function (req, res) {
+	service.put("/settings/tenant/application/key/ext/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.updateApplicationExtKeys(config, req, res);
@@ -756,7 +740,7 @@ service.init(function () {
 		});
 	});
 
-	service.post("/settings/tenant/application/key/config/update", function (req, res) {
+	service.put("/settings/tenant/application/key/config/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
 				BL.updateApplicationConfig(config, req, res);
@@ -794,7 +778,7 @@ service.init(function () {
 			BL.add(config, req, res);
 		});
 	});
-	service.post("/cb/update", function (req, res) {
+	service.put("/cb/update", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
 			BL.update(config, req, res);
 		});

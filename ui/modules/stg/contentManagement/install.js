@@ -117,7 +117,8 @@ var cmModuleStgNav = [
 		'label': translation.contentManagement[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/cb/list'
+			'route': '/cb/list',
+			'method': 'get'
 		},
 		'url': '#/content-management',
 		'tplPath': 'modules/stg/contentManagement/directives/list.tmpl',

@@ -235,7 +235,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"order": []
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -259,7 +259,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"order": []
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/update", "put", function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {code: 701, message: errorCodes[701]});
 						done();
@@ -280,7 +280,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"order": []
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/update", "put", function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
@@ -294,7 +294,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 			describe("delete group config tests", function () {
 
 				it("fail - missing required param", function (done) {
-					executeMyRequest({}, "daemons/groupConfig/delete", "get", function (body) {
+					executeMyRequest({}, "daemons/groupConfig/delete", "delete", function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
@@ -310,7 +310,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"id": groupId
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/delete", "get", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/delete", "delete", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -388,7 +388,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							config: {"testProperty": "testValue"}
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -406,7 +406,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							config: {}
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -420,7 +420,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							config: {"testProperty": "testValue"}
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "put", function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
@@ -447,7 +447,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							}
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/serviceConfig/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -525,7 +525,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							"order": []
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -553,7 +553,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							]
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "put", function (body) {
 						assert.ok(body.data);
 						assert.deepEqual(body.data, true);
 						done();
@@ -580,7 +580,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 							]
 						}
 					};
-					executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "post", function (body) {
+					executeMyRequest(params, "daemons/groupConfig/tenantExtKeys/update", "put", function (body) {
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details[0], {
 							"code": 172,
@@ -645,7 +645,7 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 						"id": groupId
 					}
 				};
-				executeMyRequest(params, "daemons/groupConfig/delete", "get", function (body) {
+				executeMyRequest(params, "daemons/groupConfig/delete", "delete", function (body) {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, true);
 					done();

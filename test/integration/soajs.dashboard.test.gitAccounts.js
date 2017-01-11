@@ -541,7 +541,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							"provider": "github"
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 						assert.ok(body);
 						// assert.equal(body.result, false);
 						// assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
@@ -564,7 +564,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoSingleSuccess
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 						assert.ok(body);
 						done();
 					});
@@ -591,7 +591,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 									repo: repoSingleSuccess
 								}
 							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 								assert.ok(body);
 								done();
 							});
@@ -622,7 +622,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 									repo: repoMultiSuccess
 								}
 							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 								debugLog(body);
 								assert.ok(body);
 								//assert.ok(body.data);
@@ -667,7 +667,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 										repo: repoMultiSuccess
 									}
 								};
-								executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+								executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 									debugLog(body);
 									assert.ok(body);
 									// assert.ok(body.errors);
@@ -720,7 +720,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 									repo: repoMultiSuccess
 								}
 							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 								debugLog(body);
 								assert.ok(body);
 								//assert.ok(body.data);
@@ -754,7 +754,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 									repo: repoMultiSuccess
 								}
 							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 								assert.ok(body);
 								//assert.ok(body.data);
 								done();
@@ -794,7 +794,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 										repo: repoSingleSuccess
 									}
 								};
-								executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+								executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 									assert.ok(body);
 									// assert.equal(body.data.status, 'outOfSync');
 									done();
@@ -819,7 +819,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoSingleSuccess
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 						assert.ok(body);
 						//assert.ok(body.data);
 						done();
@@ -834,7 +834,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoMultiSuccess
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 						assert.ok(body);
 						//assert.ok(body.data);
 						done();
@@ -849,7 +849,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoStaticContent
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 						assert.ok(body);
 						//assert.ok(body.data);
 						done();
@@ -864,7 +864,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoSingleDaemon
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 						assert.ok(body);
 						//assert.ok(body.data);
 						done();
@@ -888,7 +888,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"provider": "github"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 				assert.ok(body);
 				//assert.deepEqual(body.errors.details[0], {"code": 701, "message": errorCodes[701]});
 				done();
@@ -904,7 +904,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"provider": "bitbucket"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 				assert.ok(body);
 				//assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
 				done();
@@ -920,7 +920,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"provider": "github"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 				assert.ok(body);
 				done();
 			});
@@ -935,7 +935,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					"provider": "github"
 				}
 			};
-			executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 				assert.ok(body);
 				//assert.deepEqual(body.errors.details[0], {"code": 753, "message": errorCodes[753]});
 				done();
@@ -1043,7 +1043,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							"provider": "github"
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 						assert.equal(body.result, false);
 						assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
 						done();
@@ -1065,7 +1065,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: repoSingleSuccess
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/sync', 'post', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
 						assert.ok(body);
 						done();
 					});
@@ -1090,7 +1090,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 								repo: repoMultiSuccess
 							}
 						};
-						executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+						executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 							debugLog(body);
 							assert.ok(body);
 							//assert.equal(body.errors.codes[0], 766);
@@ -1174,7 +1174,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 							repo: 'soajs.urac'
 						}
 					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'get', function (body) {
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
 						assert.ok(body);
 						//assert.deepEqual(body.errors.details[0], {"code": 766, "message": errorCodes[766]});
 						done();
@@ -1240,7 +1240,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						"provider": "github"
 					}
 				};
-				executeMyRequest(params, 'gitAccounts/logout', 'get', function (body) {
+				executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
 					assert.ok(body);
 					done();
 				});

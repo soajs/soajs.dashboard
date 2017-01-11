@@ -866,7 +866,8 @@ var cbNav = [
 		'label': translation.contentBuilder[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/cb/get'
+			'route': '/cb/get',
+			'method': 'get'
 		},
 		'url': '#/content-builder',
 		'tplPath': 'modules/dashboard/contentBuilder/directives/list.tmpl',
@@ -890,7 +891,8 @@ var cbNav = [
 		'tracker': true,
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/cb/add'
+			'route': '/cb/add',
+			'method': 'post'
 		},
 		'pillar': {
 			'name': 'development',
@@ -908,7 +910,8 @@ var cbNav = [
 		'tracker': true,
 		'checkPermission': {
 			'service': 'dashboard',
-			'route': '/cb/update'
+			'route': '/cb/update',
+			'method': 'put'
 		},
 		'pillar': {
 			'name': 'development',

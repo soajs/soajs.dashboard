@@ -24,7 +24,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 	$scope.listServices = function () {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "post",
 			"routeName": "/dashboard/services/list"
 		}, function (error, response) {
 			if (error) {
@@ -266,7 +266,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						postData.env = env;
 						postData.config = formData.config;
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "send",
+							"method": "put",
 							"routeName": "/dashboard/daemons/groupConfig/serviceConfig/update",
 							"params": {"id": groupId, jobName: jobName},
 							"data": postData
@@ -302,7 +302,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			config: {}
 		};
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "send",
+			"method": "put",
 			"routeName": "/dashboard/daemons/groupConfig/serviceConfig/update",
 			"params": {"id": groupId, jobName: jobName},
 			"data": postData
@@ -369,7 +369,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 					getSendDataFromServer($scope, ngDataApi, {
-						"method": "send",
+						"method": "put",
 						"routeName": "/dashboard/daemons/groupConfig/tenantExtKeys/update",
 						"params": {id: grpConf._id, jobName: jobName},
 						"data": $scope.postData
@@ -541,7 +541,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					else $scope.postData.solo = false;
 
 					getSendDataFromServer($scope, ngDataApi, {
-						"method": "send",
+						"method": "post",
 						"routeName": "/dashboard/daemons/groupConfig/add",
 						"data": $scope.postData
 					}, function (error) {
@@ -584,7 +584,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				$scope.postData.groupName = grpConf.daemonConfigGroup;
 				$scope.postData.interval = grpConf.interval;
 				$scope.postData.type = grpConf.type;
-				
+
 				if(grpConf.cronConfig){
 					if(grpConf.cronConfig.cronTimeDate){
 						$scope.postData.cronTimeDate = grpConf.cronConfig.cronTimeDate;
@@ -709,7 +709,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					if ($scope.postData.solo === "true") $scope.postData.solo = true;
 					else $scope.postData.solo = false;
 					getSendDataFromServer($scope, ngDataApi, {
-						"method": "send",
+						"method": "put",
 						"routeName": "/dashboard/daemons/groupConfig/update",
 						"params": {"id": grpConf._id},
 						"data": $scope.postData
@@ -736,7 +736,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 
 	$scope.deleteDaemonGroupConfig = function (grpConf) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
+			"method": "delete",
 			"routeName": "/dashboard/daemons/groupConfig/delete",
 			"params": {
 				"id": grpConf._id
