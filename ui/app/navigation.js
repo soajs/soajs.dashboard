@@ -50,7 +50,15 @@ var navigation = [
 		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
 		'tplPath': 'modules/dashboard/home/directives/help.tmpl',
 		'footerMenu': true
-	}
+	},
+	{
+		'id': 'swaggerui',
+		'label': "Swagger Ui",
+		'url': '#/swaggerui',
+		'scripts': ['modules/dashboard/home/config.js', 'modules/dashboard/home/controller.js'],
+		'tplPath': 'modules/dashboard/home/directives/swaggerui.tmpl',
+		'footerMenu': true
+	},
 ];
 
 (function () {
