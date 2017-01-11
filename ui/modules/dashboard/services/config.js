@@ -60,9 +60,6 @@ var servicesConfig = {
 		'daemons': {
 			'list': ['dashboard', '/daemons/list', 'post']
 		},
-		'swaggerEditor' : {
-			'list': ['dashboard', '/swaggerEditor/list', 'get']
-		},
 		'daemonGroupConfig': {
 			'list': ['dashboard', '/daemons/groupConfig/list', 'post'],
 			'update': ['dashboard', '/daemons/groupConfig/update', 'put'],

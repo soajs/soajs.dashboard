@@ -2172,7 +2172,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ifError(error);
 					mongo.insert('hosts', swaggerDev, function (error) {
 						assert.ifError(error);
-						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'hosts/env/list', 'get', function (body) {
+						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'services/env/list', 'get', function (body) {
 							assert.ok(body.result);
 							assert.deepEqual(body.data,{
 								"dev": "api.api.myDomain.com",
@@ -2185,7 +2185,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 			
 			it("success - will get the env list in case the service has one env", function (done) {
-			executeMyRequest({qs: {'service': 'dashboard'}}, 'hosts/env/list', 'get', function (body) {
+			executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
 				assert.ok(body.result);
 				assert.deepEqual(body.data, {"dev": "api.api.myDomain.com"});
 				done();
@@ -2193,7 +2193,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 			
 			it("fail - service doesn't exist", function (done) {
-				executeMyRequest({qs: {'service': 'noService'}}, 'hosts/env/list', 'get', function (body) {
+				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
 					done();
 				});

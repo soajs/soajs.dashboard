@@ -884,21 +884,68 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 	 * The user must activate his github/bitbucket account on the dashboard first.
 	 */
 	describe("pull from a repo in github or bitbucket", function(){
-		var params = {
-			qs: {
-				"owner" : "soajs",
-				"repo" : "soajs.dashboard",
-				"filepath" : "config.js",
-				"branch" : "swagger"
-			}
-		};
+		
 		it("success - the user is logged in and provided an existing repo and file path", function(done){
-			executeMyRequest(params, 'gitAccounts/getYaml', get, function(body){
-				console.log(body);
+			var params = {
+				qs: {
+					"owner" : "soajs",
+					"repo" : "soajs.dashboard",
+					"filepath" : "config.js",
+					"branch" : "swagger"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
 				assert.ok(body.result);
 				assert.deepEqual(body.data.downloadLink, "https://raw.githubusercontent.com/soajs/soajs.dashboard/swagger/config.js");
+				done();
 			});
-		})
+		});
+		it("fail - the user isn't logged in", function(done){
+			var params = {
+				qs: {
+					"owner" : "michel-el-hajj",
+					"repo" : "soajs.dashboard",
+					"filepath" : "config.js",
+					"branch" : "swagger"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+				assert.equal(body.result, false);
+				assert.deepEqual(body.errors.details, [ { code: 757, message: 'Unable to get git user account' } ]);
+				done();
+			});
+		});
+		it("fail - the repo doesn't exist", function(done){
+			var params = {
+				qs: {
+					"owner" : "soajs",
+					"repo" : "soajs.unknown",
+					"filepath" : "config.js",
+					"branch" : "swagger"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+				console.log(body.errors.details);
+				assert.equal(body.result, false);
+				done();
+			});
+		});
+		it("fail - wrong file path", function(done){
+			var params = {
+				qs: {
+					"owner" : "soajs",
+					"repo" : "soajs.dashboard",
+					"filepath" : "configs.js",
+					"branch" : "swagger"
+				}
+			};
+			executeMyRequest(params, 'gitAccounts/getYaml', 'get', function(body){
+				assert.equal(body.result, false);
+				assert.deepEqual(body.errors.details, [ { code: 789,
+					message: 'Unable to get content from git provider' } ]);
+				done();
+			});
+		});
 	});
 
 	describe("github logout tests", function () {

@@ -756,7 +756,25 @@ module.exports = {
 					}
 				}
 			},
-
+			/*
+			 * This API will return the env where a service is deployed.
+			 * it takes the service name and renders an object having the following form :
+			 * "env name : apiPrefix.domain"
+			 */
+			"/services/env/list": {
+				_apiInfo: {
+					"l": "List The Environment Where A Service Is Deployed",
+					"group": "Hosts"
+				},
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -837,20 +855,6 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"required": true
-					}
-				}
-			},
-
-			"/hosts/env/list": {
-				_apiInfo: {
-					"l": "List The Environment Where A Service Is Deployed",
-					"group": "Hosts"
-				},
-				'service': {
-					'source': ['query.service'],
-					'required': true,
-					"validation": {
-						"type": "string"
 					}
 				}
 			},
@@ -1047,7 +1051,11 @@ module.exports = {
 					"group": "Content Builder"
 				}
 			},
-
+/*
+* this API will get the content and the url of any file located on a specific
+* github/bitbucket account for a certain repo.
+* In our case we need to get the yaml file and its content
+ */
 			"/gitAccounts/getYaml": {
 				"_apiInfo": {
 					"l": "Get Yaml file",
