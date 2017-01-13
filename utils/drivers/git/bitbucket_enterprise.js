@@ -129,6 +129,7 @@ var lib = {
                 // We set the owner.login as the project repo, which is ('~' + username)
                 for (var i = 0; i < allRepos.length; ++i) {
                     var repo = allRepos[i];
+                    repo.name = repo.slug; //overwrite the name with the slug, slug is required for api calls
                     repo.full_name = repo.project.key + "/" + repo.slug;
                     repo.owner = {
                         login: repo.project.key
