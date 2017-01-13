@@ -85,8 +85,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "test/simulate", 'post', function (result) {
-				console.log(JSON.stringify("==============", null, 2));// 2del
-				console.log(JSON.stringify(result, null, 2));// 2del
 				assert.ok(result.data);
 				done();
 			});
@@ -117,11 +115,93 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "test/simulate", 'post', function (result) {
-				console.log(JSON.stringify("==============", null, 2));// 2del
-				console.log(JSON.stringify(result, null, 2));// 2del
 				assert.ok(result.data);
 				done();
 			});
 		});
 	});
+	
+	
+	describe("Testing complex simulation api", function () {
+		it("success - will check input", function (done) {
+			var params = {
+				headers: {
+					// soajsauth: soajsauth
+				},
+				"form": {
+					"data": {
+						"input": {
+							"number": "xx",
+							"flag": "invalid"
+						},
+						"imfv": {
+							"flag": {
+								"source": ["body.flag"],
+								"required": true,
+								"validation": {
+									"type": "bool"
+								}
+							},
+							"number": {
+								"source": ["body.number"],
+								"required": true,
+								"validation": {
+									"type": "number"
+								}
+							}
+							,
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "test/simulate", 'post', function (result) {
+				console.log(JSON.stringify("==============", null, 2));// 2del
+				console.log(JSON.stringify(result, null, 2));// 2del
+				assert.ok(1);
+				done();
+			});
+		});
+	});
+	
+	
+	describe("Testing missing item simulation api", function () {
+		it("success - will check input", function (done) {
+			var params = {
+				headers: {
+					// soajsauth: soajsauth
+				},
+				"form": {
+					"data": {
+						"input": {
+							"number": "xx"
+						},
+						"imfv": {
+							"flag": {
+								"source": ["body.flag"],
+								"required": true,
+								"validation": {
+									"type": "bool"
+								}
+							},
+							"number": {
+								"source": ["body.number"],
+								"required": true,
+								"validation": {
+									"type": "number"
+								}
+							}
+							,
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "test/simulate", 'post', function (result) {
+				console.log(JSON.stringify("==============", null, 2));// 2del
+				console.log(JSON.stringify(result, null, 2));// 2del
+				assert.ok(1);
+				done();
+			});
+		});
+	});
+	
 });
