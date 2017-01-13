@@ -120,8 +120,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-	
-	
 	describe("Testing complex simulation api", function () {
 		it("success - will check input", function (done) {
 			var params = {
@@ -162,8 +160,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-	
-	
 	describe("Testing missing item simulation api", function () {
 		it("success - will check input", function (done) {
 			var params = {
@@ -203,8 +199,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-	
-	
 	describe("Testing item with multiple errors", function () {
 		it("success - will check input", function (done) {
 			var params = {
