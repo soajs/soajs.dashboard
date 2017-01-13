@@ -430,7 +430,7 @@ service.init(function () {
 	});
 	service.post("/hosts/deployNginx", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.nginx(config, req.soajs, true, res);
+			BL.nginx(config, req.soajs, res);
 		});
 	});
 	service.post("/hosts/deployService", function (req, res) {

@@ -1488,7 +1488,7 @@ module.exports = {
 				},
 				"exposedPort": {
 					"source": ["body.exposedPort"],
-					"required": false,
+					"required": true,
 					"validation":{
 						"type":"number"
 					}
