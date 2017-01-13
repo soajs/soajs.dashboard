@@ -100,7 +100,7 @@ var lib = {
     },
 
     "getRepoContent": function (options, cb) {
-        bitbucketClient.repos.browse(options.project, options.repo, {path: options.path})
+        bitbucketClient.repos.browse(options.project, options.repo, {path: options.path, args: {at: options.ref}})
             .then(function (result) {
                 return cb(null, result);
             })
