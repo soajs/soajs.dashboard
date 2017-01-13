@@ -153,10 +153,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "test/simulate", 'post', function (result) {
-				console.log(JSON.stringify("==============", null, 2));// 2del
-				console.log(JSON.stringify(result, null, 2));// 2del
-				assert.ok(1);
-				done();
+				assert.ok(result.errors);
+				done()
 			});
 		});
 	});
@@ -192,10 +190,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "test/simulate", 'post', function (result) {
-				console.log(JSON.stringify("==============", null, 2));// 2del
-				console.log(JSON.stringify(result, null, 2));// 2del
-				assert.ok(1);
+				assert.ok(result.errors);
 				done();
+				
 			});
 		});
 	});
@@ -214,15 +211,34 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"imfv": {
 							"number1": {
 								"source": ["body.number"],
-								"required": true,
+								"required": false,
+								default: 0,
 								"validation": {
 									"type": "number"
 								}
 							}
 							,
 							"number2": {
-								"source": ["body.number"],
 								"required": true,
+								default: "x",
+								"validation": {
+									"type": "number"
+								}
+							}
+							,
+							"number3": {
+								"source": [],
+								"required": false,
+								default: "x",
+								"validation": {
+									"type": "number"
+								}
+							}
+							,
+							"number4": {
+								"source": "invalid",
+								"required": false,
+								default: "1",
 								"validation": {
 									"type": "number"
 								}
@@ -232,9 +248,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "test/simulate", 'post', function (result) {
-				console.log(JSON.stringify("==============", null, 2));// 2del
-				console.log(JSON.stringify(result, null, 2));// 2del
-				assert.ok(1);
+				assert.ok(result.errors);
 				done();
 			});
 		});

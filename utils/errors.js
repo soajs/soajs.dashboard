@@ -239,7 +239,10 @@ var errors = {
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
 	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
-
+	
+	
+	"850": "The simulator returned an error",
+	
 	"901": "Error Logging out from environments",
 	"902": "Error Logging in to environments",
 	"903": "You do not have access to this environment %envCode%",
