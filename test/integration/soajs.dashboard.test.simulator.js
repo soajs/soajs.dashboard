@@ -204,4 +204,46 @@ describe("DASHBOARD UNIT Tests:", function () {
 		});
 	});
 	
+	
+	describe("Testing item with multiple errors", function () {
+		it("success - will check input", function (done) {
+			var params = {
+				headers: {
+					// soajsauth: soajsauth
+				},
+				"form": {
+					"data": {
+						"input": {
+							"number1": "xx",
+							"number2": "xx"
+						},
+						"imfv": {
+							"number1": {
+								"source": ["body.number"],
+								"required": true,
+								"validation": {
+									"type": "number"
+								}
+							}
+							,
+							"number2": {
+								"source": ["body.number"],
+								"required": true,
+								"validation": {
+									"type": "number"
+								}
+							}
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "test/simulate", 'post', function (result) {
+				console.log(JSON.stringify("==============", null, 2));// 2del
+				console.log(JSON.stringify(result, null, 2));// 2del
+				assert.ok(1);
+				done();
+			});
+		});
+	});
+	
 });
