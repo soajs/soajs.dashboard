@@ -1,41 +1,38 @@
-fieldset.serviceAPIs tr td input[type='text']{
-    width:90%;
+fieldset.serviceAPIs tr td input[type='text'] {
+    width: 90%;
 }
 
-fieldset.serviceAPIs #apiMain-wrapper ul{
-    padding:0;
+fieldset.serviceAPIs #apiMain-wrapper ul {
+    padding: 0;
 }
-fieldset.serviceAPIs #apiMain-wrapper ul li{
-    float:left;
-    list-style-type:none;
-    margin-right:10px;
-}
-
-fieldset.serviceAPIs #apiMain-wrapper ul li input{
-    margin-right:5px;
+fieldset.serviceAPIs #apiMain-wrapper ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 10px;
 }
 
-fieldset.serviceAPIs table tr{
-    float:left;
-    width:24%;
-    height:90px;
-    border-bottom:solid 1px #ccc;
+fieldset.serviceAPIs #apiMain-wrapper ul li input {
+    margin-right: 5px;
 }
 
-fieldset.serviceAPIs table tr td{
-    width:100%;
-    display:block;
+fieldset.serviceAPIs table tr {
+    float: left;
+    width: 24%;
+    height: 90px;
+    border-bottom: solid 1px #ccc;
 }
 
-fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"]{
-    width:4%;
+fieldset.serviceAPIs table tr td {
+    width: 100%;
+    display: block;
 }
 
-.red{
+fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"] {
+    width: 4%;
+}
+
+.red {
     border-color: #ebccd1;
     color: #a94442;
-    cursor:pointer;
-}
-.modal-xlg {
-    width: 90%;
+    cursor: pointer;
 }

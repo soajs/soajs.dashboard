@@ -409,6 +409,7 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
+
 	service.get("/hosts/nginx/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.listNginx(config, req.soajs, res);
@@ -513,6 +514,12 @@ service.init(function () {
 			BL.getRepos(config, req, res);
 		});
 	});
+	// get any file content in a repo, in our case the yaml file
+	service.get("/gitAccounts/getYaml", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getYaml(config, req, res);
+		});
+	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.getBranches(config, req, res);
@@ -540,6 +547,12 @@ service.init(function () {
 	service.post("/services/list", function (req, res) {
 		initBLModel(req, res, servicesBL, dbModel, function (BL) {
 			BL.list(config, req, res);
+		});
+	});
+	// get the env where a service is deployed
+	service.get("/services/env/list", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.listHostEnv(config, req.soajs, res);
 		});
 	});
 	/**

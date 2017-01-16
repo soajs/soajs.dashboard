@@ -235,6 +235,40 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 
+	"getHostEnv": function (soajs, model, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				'name': soajs.inputmaskData.service
+			},
+			fields: {
+				'_id': 0,
+				'env': 1
+			}
+		};
+
+		model.findEntries(soajs, opts, cb);
+	},
+	
+	"getEnvInfo": function (soajs, model,options, cb) {
+		var opts = {
+			collection: envColl,
+			conditions: {
+				'code': {
+					$in: options.envList
+				}
+			},
+			fields: {
+				'_id': 0,
+				'code': 1,
+				'apiPrefix': 1,
+				'domain': 1
+			}
+		};
+		
+		model.findEntries(soajs, opts, cb);
+	},
+	
 	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
 		var opts = {
 			collection: hostsColl,

@@ -196,6 +196,7 @@ var config = {
 				"requestTimeoutRenewal": {"type": "integer", "max": 10},
 				"extKeyRequired": {"type": "boolean"},
 				"session": {"type": "boolean"},
+				"swagger": {"type": "boolean"},
 				"acl": {"type": "boolean"},
 				"oauth": {"type": "boolean"},
 				"security": {"type": "boolean"},
@@ -248,7 +249,7 @@ var config = {
 				"serviceGroup": {"type": "string", "minLength": "3", "required": false},
 				"servicePort": {"type": "integer", "min": 4100, "required": true},
 				"prerequisites": {"type": "object", "required": true},
-
+				"swagger": {"type": "boolean"},
 				"errors": {
 					"oneOf":[
 						{

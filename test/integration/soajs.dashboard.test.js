@@ -2151,6 +2151,54 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
+		//testing the services API in which env are deployed
+		describe("return environments where a service is deployed", function () {
+			var swaggerDev = {
+				"env": "dev",
+				"name": "swaggerSample",
+				"ip": "127.0.0.1",
+				"hostname": "dashboard",
+				"version": 1
+			};
+			var swaggerDash = {
+				"env": "prod",
+				"name": "swaggerSample",
+				"ip": "127.0.0.1",
+				"hostname": "production",
+				"version": 1
+			};
+			it("success - will get the env list in case the service has more than 1 env", function (done) {
+				mongo.insert('hosts', swaggerDash, function (error) {
+					assert.ifError(error);
+					mongo.insert('hosts', swaggerDev, function (error) {
+						assert.ifError(error);
+						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'services/env/list', 'get', function (body) {
+							assert.ok(body.result);
+							assert.deepEqual(body.data,{
+								"dev": "api.api.myDomain.com",
+								"prod": "api.api.myDomain.com"
+							});
+							done();
+						});
+					});
+				});
+			});
+			
+			it("success - will get the env list in case the service has one env", function (done) {
+			executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
+				assert.ok(body.result);
+				assert.deepEqual(body.data, {"dev": "api.api.myDomain.com"});
+				done();
+			});
+		});
+			
+			it("fail - service doesn't exist", function (done) {
+				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
+					assert.equal(body.result, false);
+					done();
+				});
+			});
+		});
 
 		describe("maintenance operation Hosts", function () {
 			//afterEach(function(done){

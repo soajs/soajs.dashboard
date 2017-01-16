@@ -69,13 +69,7 @@ module.exports = {
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			// required for OAuth
 			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
-			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
-			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
-			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
-			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
-			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
-			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
-			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+			downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
 		},
 		"github": {
 			"protocol": "https",
@@ -747,22 +741,25 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
-
-			"/services/list": {
+			/*
+			 * This API will return the env where a service is deployed.
+			 * it takes the service name and renders an object having the following form :
+			 * "env name : apiPrefix.domain"
+			 */
+			"/services/env/list": {
 				_apiInfo: {
-					"l": "List Services",
+					"l": "List The Environment Where A Service Is Deployed",
 					"group": "Services"
 				},
-				'serviceNames': {
-					'source': ['body.serviceNames'],
-					'required': false,
+				'service': {
+					'source': ['query.service'],
+					'required': true,
 					"validation": {
-						"type": "array",
-						'items': {'type': 'string'}
+						"type": "string"
 					}
 				}
 			},
-
+			
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -1038,10 +1035,63 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				}
+			},
+/*
+* this API will get the content and the url of any file located on a specific
+* github/bitbucket account for a certain repo.
+* In our case we need to get the yaml file and its content
+ */
+			"/gitAccounts/getYaml": {
+				"_apiInfo": {
+					"l": "Get Yaml file",
+					"group": "Git Accounts"
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['query.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
 		},
 
 		"post": {
+			"/services/list": {
+				_apiInfo: {
+					"l": "List Services",
+					"group": "Services"
+				},
+				'serviceNames': {
+					'source': ['body.serviceNames'],
+					'required': false,
+					"validation": {
+						"type": "array",
+						'items': {'type': 'string'}
+					}
+				}
+			},
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
