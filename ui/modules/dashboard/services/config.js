@@ -57,6 +57,9 @@ var servicesConfig = {
 	},
 	permissions: {
 		'listServices': ['dashboard', '/services/list', 'post'],
+
+		'getEnv': ['dashboard', '/services/env/list', 'get'],
+
 		'daemons': {
 			'list': ['dashboard', '/daemons/list', 'post']
 		},

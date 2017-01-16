@@ -741,21 +741,6 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
-
-			"/services/list": {
-				_apiInfo: {
-					"l": "List Services",
-					"group": "Services"
-				},
-				'serviceNames': {
-					'source': ['body.serviceNames'],
-					'required': false,
-					"validation": {
-						"type": "array",
-						'items': {'type': 'string'}
-					}
-				}
-			},
 			/*
 			 * This API will return the env where a service is deployed.
 			 * it takes the service name and renders an object having the following form :
@@ -764,7 +749,7 @@ module.exports = {
 			"/services/env/list": {
 				_apiInfo: {
 					"l": "List The Environment Where A Service Is Deployed",
-					"group": "Hosts"
+					"group": "Services"
 				},
 				'service': {
 					'source': ['query.service'],
@@ -1093,6 +1078,20 @@ module.exports = {
 		},
 
 		"post": {
+			"/services/list": {
+				_apiInfo: {
+					"l": "List Services",
+					"group": "Services"
+				},
+				'serviceNames': {
+					'source': ['body.serviceNames'],
+					'required': false,
+					"validation": {
+						"type": "array",
+						'items': {'type': 'string'}
+					}
+				}
+			},
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",

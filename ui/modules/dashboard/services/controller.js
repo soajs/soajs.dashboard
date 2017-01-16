@@ -1,7 +1,7 @@
 "use strict";
 
 var servicesApp = soajsApp.components;
-servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload) {
+servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', '$routeParams', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload, $routeParams) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -104,8 +104,8 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		return result;
 	};
 	//open new tab having the swagger ui to test our APIs
-	$scope.swaggerTest = function () {
-		window.open("/modules/dashboard/services/directives/swaggerTest.tmpl","_blank"); //we will add the url that will open in the new tab
+	$scope.swaggerTest = function (serviceName) {
+		window.open("#/services/swaggerui/"+serviceName,"_blank");
 	};
 	
 	if ($scope.access.listServices) {
@@ -113,6 +113,94 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		$scope.listServices();
 	}
 
+}]);
+
+servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi','injectFiles', function ($scope, $routeParams, ngDataApi, injectFiles) {
+	$scope.access = {};
+	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
+	$scope.serviceName = $routeParams.serviceName;
+	// this function will get the owner, repo and the id if the service to use in other functions
+	$scope.getServiceInfo = function () {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/services/list",
+			"data": {serviceNames: [$scope.serviceName]}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+				$scope.id = response[0]._id;
+				$scope.owner = response[0].src.owner;
+				$scope.repo = response[0].src.repo;
+				$scope.getYaml();
+			}
+		});
+	};
+	/*
+	*This function will fill the select DDL with the environments where a service is deployed
+    */
+	$scope.getEnv = function () {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/services/env/list",
+			"params": {service: $scope.serviceName}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+			
+				delete response.soajsauth;
+				var env = Object.keys(response);
+				env.forEach(function (oneEnv) {
+					$scope.environments.values.push(oneEnv);
+				});
+			}
+		});
+	};
+	// $scope.envSelected = false;
+	$scope.environments = {
+		value: "---Please choose---",
+		values: ["---Please choose---"]
+	};
+	// this scope will save the environment selected
+	$scope.selectedEnv = function() {
+		var selected = $scope.environments.value;
+		if(selected !== "---Please choose---"){
+			$scope.envSelected = true;
+		} else {
+			$scope.envSelected = false;
+		}
+	};
+	// this function will call the getYaml API that will return the yaml content and the url
+	// that will be inserted in $scope.url so the swagger UI will render the documentation
+	$scope.getYaml = function () {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/gitAccounts/getYaml",
+			"params": {
+				owner: $scope.owner,
+				repo: $scope.repo,
+				filepath: "config.js",
+				branch: "master" //Todo change it when amir integrate it
+			}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+				$scope.yamlContent = response.content;
+				$scope.link = response.downloadLink;
+			}
+		});
+	};
+	//init form for swagger UI
+	$scope.isLoading = false;
+	// Todo change this to $scope.downloadLink instead of the given url
+	$scope.url = $scope.swaggerUrl = 'https://raw.githubusercontent.com/michel-el-hajj/testSwagger/master/swaggerTest.yml';
+	
+	if ($scope.access.getEnv) {
+		$scope.getEnv();
+		$scope.getServiceInfo();
+	}
 }]);
 
 servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$modal', 'injectFiles', function ($scope, ngDataApi, $timeout, $modal, injectFiles) {

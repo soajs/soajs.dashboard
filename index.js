@@ -409,12 +409,6 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
-// get the env where a service is deployed
-	service.get("/services/env/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.listHostEnv(config, req.soajs, res);
-		});
-	});
 
 	service.get("/hosts/nginx/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
@@ -553,6 +547,12 @@ service.init(function () {
 	service.post("/services/list", function (req, res) {
 		initBLModel(req, res, servicesBL, dbModel, function (BL) {
 			BL.list(config, req, res);
+		});
+	});
+	// get the env where a service is deployed
+	service.get("/services/env/list", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.listHostEnv(config, req.soajs, res);
 		});
 	});
 	/**

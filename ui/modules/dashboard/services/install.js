@@ -419,6 +419,19 @@ var servicesNav = [
 		'ancestor': [translation.home[LANG]]
 	},
 	{
+		'id': 'swaggerui',
+		'label': "Swagger Ui",
+		'url': '#/services/swaggerui/:serviceName',
+		'pillar': {
+			'name': 'development',
+			'label': translation.develop[LANG],
+			'position': 1
+		},
+		'tracker': true,
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
+		'tplPath': 'modules/dashboard/services/directives/swaggerTest.tmpl'
+	},
+	{
 		'id': 'swagger',
 		'label': 'Swagger Editor',
 		'checkPermission': {

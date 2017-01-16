@@ -43,7 +43,7 @@
 						<!--Add swagger icon if a service were created using swagger editor-->
 						<td>
 							<div style="height: 25px; width: 25px; margin-left: 0px">
-							<a href="" ng-click="swaggerTest()" title="click to run swagger simulation" ng-if="service['swagger']">
+							<a href="" ng-click="swaggerTest(service.name)" title="click to run swagger simulation" ng-if="service['swagger']">
 								<span><img style="height: 25px; width:25px;" src="modules/dashboard/services/directives/images/swagger-icon.png">
 								</span>
 							</a>

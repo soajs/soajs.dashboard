@@ -1,0 +1,25 @@
+<style>
+	.helpPage .tab-content{
+		line-height: 1.9em;
+	}
+	.helpPage .tab-content p{
+		margin-top: 5px;
+	}
+</style>
+<section ng-controller="swaggerTestCtrl">
+<div style="horiz-align: center">
+		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" style="display: block; font-size: 16px; margin: auto; height: 30px; text-align-last:center">
+		</select>
+</div><br>
+<section style="float: left; width: 25%; height: 620px" ng-if="envSelected">
+	<p>
+		{{yamlContent}}
+	</p>
+</section>
+<section style="float: right; width: 75%; height: 620px; overflow:auto" ng-if="envSelected">
+	<h2 style="text-align: center">Swagger UI</h2>
+	<hr />
+	<div ng-show="content">loading ...</div>
+	<div swagger-ui parser="yaml" url="swaggerUrl" loading="content" error-handler="myErrorHandler" trusted-sources="true" loading="isLoading"></div>
+</section>
+</section>
