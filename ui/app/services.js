@@ -11,7 +11,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
 			var decodedString = String.fromCharCode.apply(null, new Uint8Array(response));
-			if (decodedString.indexOf('"result":false') !== -1) {
+			var res = JSON.parse(decodedString);
+			if (res.result === false) {
 				var res = JSON.parse(decodedString);
 				var str = '';
 				for (var i = 0; i < res.errors.details.length; i++) {
