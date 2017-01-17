@@ -241,13 +241,10 @@ var methods = {
 			conditions: {
 				'name': soajs.inputmaskData.service
 			},
-			fields: {
-				'_id': 0,
-				'env': 1
-			}
+			fields: 'env'
 		};
 
-		model.findEntries(soajs, opts, cb);
+		model.distinctEntries(soajs, opts, cb);
 	},
 	
 	"getEnvInfo": function (soajs, model,options, cb) {

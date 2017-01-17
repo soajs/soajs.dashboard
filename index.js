@@ -517,7 +517,7 @@ service.init(function () {
 	// get any file content in a repo, in our case the yaml file
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getYaml(config, req, res);
+			BL.getFile(config, req, res);
 		});
 	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
@@ -797,13 +797,9 @@ service.init(function () {
 		});
 	});
 	
-	/**************************************
-	 * Test related Api's
-	 *
-	 **************************************/
-	// simulation api that should take a yamkl input and
-	// simulate an api with it's imfv
-	service.post("/test/simulate", function (req, res) {
+	// simulation api that mimics a service api behavior used by swagger feature.
+	// Api takes a yaml input and simulate the imfv validation of a requested service API
+	service.post("/swagger/simulate", function (req, res) {
 		initBLModel(req, res, simulatorBL, dbModel, function (BL) {
 		 	BL.test(config, req, res);
 		});

@@ -30,8 +30,8 @@ describe("importing sample data", function () {
 	it("update environment before starting service", function (done) {
 		var setDoc = {
 			"$set": {
-				"services.config.logger.level": "debug",
-				"services.config.logger.formatter.outputMode": "long"
+				"services.config.logger.level": "fatal",
+				"services.config.logger.formatter.outputMode": "short"
 			},
 			"$unset": {
 				"services.config.logger.src": ""
@@ -93,23 +93,15 @@ describe("importing sample data", function () {
 
 	after(function (done) {
 		setTimeout(function () {
-			
-			
-			
-			require("./soajs.dashboard.test.simulator.js");
-			
-			
-			/*
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");
 			require("./soajs.dashboard.test.js");
 			require("./soajs.dashboard.test.services.js");
-			
-			*/
-			// require("./soajs.contentbuilder.test.js");
-			// require("./soajs.hostsdeploy.test.js");
-			// require("./soajs.uploadCertificate.test.js");
-			// require("./soajs.dashboard.test.gitAccounts.js");
+			require("./soajs.contentbuilder.test.js");
+			require("./soajs.hostsdeploy.test.js");
+			require("./soajs.uploadCertificate.test.js");
+			require("./soajs.dashboard.test.gitAccounts.js");
+			require("./soajs.dashboard.test.simulator.js");
 			done();
 		}, 100);
 	});

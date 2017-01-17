@@ -84,7 +84,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				}
 			};
-			executeMyRequest(params, "test/simulate", 'post', function (result) {
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
 				assert.ok(result.data);
 				done();
 			});
@@ -114,7 +114,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				}
 			};
-			executeMyRequest(params, "test/simulate", 'post', function (result) {
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
 				assert.ok(result.data);
 				done();
 			});
@@ -152,7 +152,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				}
 			};
-			executeMyRequest(params, "test/simulate", 'post', function (result) {
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
 				assert.ok(result.errors);
 				done()
 			});
@@ -189,7 +189,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				}
 			};
-			executeMyRequest(params, "test/simulate", 'post', function (result) {
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
 				assert.ok(result.errors);
 				done();
 				
@@ -247,7 +247,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				}
 			};
-			executeMyRequest(params, "test/simulate", 'post', function (result) {
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
 				assert.ok(result.errors);
 				done();
 			});
