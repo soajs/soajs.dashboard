@@ -180,8 +180,8 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			"params": {
 				owner: $scope.owner,
 				repo: $scope.repo,
-				filepath: "config.js",
-				branch: "master" //Todo change it when amir integrate it
+				filepath: "swagger.yml",
+				branch: "swagger" //Todo change it when amir integrate it
 			}
 		}, function (error, response) {
 			if (error) {
@@ -189,14 +189,14 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			} else {
 				$scope.yamlContent = response.content;
 				$scope.link = response.downloadLink;
+				//init form for swagger UI
+				$scope.isLoading = false;
+				// Todo change this to $scope.downloadLink instead of the given url
+				$scope.swaggerUrl = $scope.link;
 			}
 		});
 	};
-	//init form for swagger UI
-	$scope.isLoading = false;
-	// Todo change this to $scope.downloadLink instead of the given url
-	$scope.url = $scope.swaggerUrl = 'https://raw.githubusercontent.com/michel-el-hajj/testSwagger/master/swaggerTest.yml';
-	
+
 	if ($scope.access.getEnv) {
 		$scope.getEnv();
 		$scope.getServiceInfo();
