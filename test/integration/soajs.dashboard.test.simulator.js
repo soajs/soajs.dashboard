@@ -1,27 +1,8 @@
 "use strict";
 var assert = require('assert');
 var request = require("request");
-var soajs = require('soajs');
-var util = require('soajs/lib/utils');
-var helper = require("../helper.js");
-var dashboard;
-
-var config = helper.requireModule('./config');
-var errorCodes = config.errors;
-
-var Mongo = soajs.mongo;
-var dbConfig = require("./db.config.test.js");
-
-var dashboardConfig = dbConfig();
-dashboardConfig.name = "core_provision";
-var mongo = new Mongo(dashboardConfig);
-
-var uracConfig = dbConfig();
-uracConfig.name = 'test_urac';
-var uracMongo = new Mongo(uracConfig);
-
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-// /tenant/application/acl/get
+
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
@@ -64,20 +45,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD UNIT Tests:", function () {
-	var expDateValue = new Date().toISOString();
-	var envId;
-	
-	after(function (done) {
-		mongo.closeDb();
-		done();
-	});
-
-	describe.skip("Testing simple validation`", function () {
-		it("success - will check input", function (done) {
+	describe("Testing source", function () {
+		it("fail - will check input no source", function (done) {
 			var params = {
 				"form": {
 					"data": {
-						"input": {"number" : 10},
+						"input": {"number": 10},
 						"imfv": {
 							"type": "number"
 						}
@@ -85,7 +58,45 @@ describe("DASHBOARD UNIT Tests:", function () {
 				}
 			};
 			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
-				assert.ok(result.data);
+				assert.ok(result.errors);
+				done();
+			});
+		});
+		
+		it("fail - will check input invalid source", function (done) {
+			var params = {
+				"form": {
+					"data": {
+						"input": {"number": 10},
+						"imfv": {
+							"number": {
+								"source": "body"
+							}
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
+				assert.ok(result.errors);
+				done();
+			});
+		});
+		
+		it("fail - will check input empty source", function (done) {
+			var params = {
+				"form": {
+					"data": {
+						"input": {"number": 10},
+						"imfv": {
+							"number": {
+								"source": []
+							}
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "swagger/simulate", 'post', function (result) {
+				assert.ok(result.errors);
 				done();
 			});
 		});
@@ -94,9 +105,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 	describe("Testing simulation api", function () {
 		it("success - will check input", function (done) {
 			var params = {
-				headers: {
-					// soajsauth: soajsauth
-				},
 				"form": {
 					"data": {
 						"input": {
@@ -120,12 +128,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
+	
 	describe("Testing complex simulation api", function () {
 		it("success - will check input", function (done) {
 			var params = {
-				headers: {
-					// soajsauth: soajsauth
-				},
 				"form": {
 					"data": {
 						"input": {
@@ -147,7 +153,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"type": "number"
 								}
 							}
-							,
 						}
 					}
 				}
@@ -158,12 +163,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
+	
 	describe("Testing missing item simulation api", function () {
 		it("success - will check input", function (done) {
 			var params = {
-				headers: {
-					// soajsauth: soajsauth
-				},
 				"form": {
 					"data": {
 						"input": {
@@ -184,7 +187,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"type": "number"
 								}
 							}
-							,
 						}
 					}
 				}
@@ -196,12 +198,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
+	
 	describe("Testing item with multiple errors", function () {
 		it("success - will check input", function (done) {
 			var params = {
-				headers: {
-					// soajsauth: soajsauth
-				},
 				"form": {
 					"data": {
 						"input": {
@@ -212,33 +212,30 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"number1": {
 								"source": ["body.number"],
 								"required": false,
-								default: 0,
+								"default": 0,
 								"validation": {
 									"type": "number"
 								}
-							}
-							,
+							},
 							"number2": {
 								"required": true,
-								default: "x",
+								"default": "x",
 								"validation": {
 									"type": "number"
 								}
-							}
-							,
+							},
 							"number3": {
 								"source": [],
 								"required": false,
-								default: "x",
+								"default": "x",
 								"validation": {
 									"type": "number"
 								}
-							}
-							,
+							},
 							"number4": {
 								"source": "invalid",
 								"required": false,
-								default: "1",
+								"default": "1",
 								"validation": {
 									"type": "number"
 								}
@@ -253,5 +250,4 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-	
 });
