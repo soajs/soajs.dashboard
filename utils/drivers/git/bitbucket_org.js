@@ -238,11 +238,11 @@ var lib = {
         if (allRepos && Array.isArray(allRepos)) {
             allRepos.forEach(function (oneRepo) {
                 repos.push({
-                    full_name: oneRepo.owner + '/' + oneRepo.name,
+                    full_name: oneRepo.owner + '/' + oneRepo.slug,
                     owner: {
                         login: oneRepo.owner
                     },
-                    name: oneRepo.name
+                    name: oneRepo.slug
                 });
             });
         }
