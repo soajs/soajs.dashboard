@@ -36,3 +36,13 @@ fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"] {
     color: #a94442;
     cursor: pointer;
 }
+
+.helpPage .tab-content {
+    line-height: 1.9em;
+}
+
+.helpPage .tab-content p {
+    margin-top: 5px;
+}
+
+.ace_editor { height: 600px; }

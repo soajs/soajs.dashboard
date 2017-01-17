@@ -1,5 +1,4 @@
 "use strict";
-
 var servicesApp = soajsApp.components;
 servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', '$routeParams', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload, $routeParams) {
 	$scope.$parent.isUserLoggedIn();
@@ -116,8 +115,14 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 }]);
 
 servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi','injectFiles', function ($scope, $routeParams, ngDataApi, injectFiles) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.id = "";
+	$scope.owner = "";
+	$scope.repo = "";
+	$scope.yamlContent = "";
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
+	
 	$scope.serviceName = $routeParams.serviceName;
 	// this function will get the owner, repo and the id if the service to use in other functions
 	$scope.getServiceInfo = function () {
@@ -132,7 +137,7 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 				$scope.id = response[0]._id;
 				$scope.owner = response[0].src.owner;
 				$scope.repo = response[0].src.repo;
-				$scope.getYaml();
+				//$scope.getYaml();
 			}
 		});
 	};
@@ -162,18 +167,30 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 		value: "---Please choose---",
 		values: ["---Please choose---"]
 	};
+	
 	// this scope will save the environment selected
 	$scope.selectedEnv = function() {
 		var selected = $scope.environments.value;
-		if(selected !== "---Please choose---"){
-			$scope.envSelected = true;
-		} else {
-			$scope.envSelected = false;
-		}
+		$scope.envSelected = selected !== "---Please choose---";
 	};
+	
+	$scope.aceLoaded = function(_editor){
+		$scope.getYaml(function(done){
+			if(done){
+				_editor.setValue($scope.yamlContent);
+			}
+			else{
+				_editor.setValue("");
+			}
+			
+			// _editor.resize();
+			_editor.setReadOnly(true);
+		});
+	};
+	
 	// this function will call the getYaml API that will return the yaml content and the url
 	// that will be inserted in $scope.url so the swagger UI will render the documentation
-	$scope.getYaml = function () {
+	$scope.getYaml = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/gitAccounts/getYaml",
@@ -186,21 +203,26 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				return cb(false);
 			} else {
 				$scope.yamlContent = response.content;
+				
 				$scope.link = response.downloadLink;
 				//init form for swagger UI
 				$scope.isLoading = false;
 				// Todo change this to $scope.downloadLink instead of the given url
 				$scope.swaggerUrl = $scope.link;
+				return cb(true);
 			}
 		});
 	};
-
+	
+	
 	if ($scope.access.getEnv) {
 		$scope.getEnv();
 		$scope.getServiceInfo();
 	}
+	injectFiles.injectCss("modules/dashboard/services/services.css");
 }]);
 
 servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$modal', 'injectFiles', function ($scope, ngDataApi, $timeout, $modal, injectFiles) {
