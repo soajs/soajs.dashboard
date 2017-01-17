@@ -11,15 +11,25 @@
 		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" style="display: block; font-size: 16px; margin: auto; height: 30px; text-align-last:center">
 		</select>
 </div><br>
-<section style="float: left; width: 25%; height: 620px" ng-if="envSelected">
-	<p>
+<section style="float: left; width: 40%; height: 620px; overflow:auto" ng-if="envSelected">
+<!--<div ui-ace="{-->
+  <!--useWrapMode : true,-->
+  <!--showGutter: false,-->
+  <!--theme:'twilight',-->
+  <!--mode: 'yaml',-->
+  <!--firstLineNumber: 1,-->
+  <!--onLoad: aceLoaded,-->
+  <!--onChange: aceChanged}" style="border: hidden">-->
+<!--{{yamlContent}}-->
+<!--</div>-->
+	<pre style="border: hidden; font-family: 'Arial'; font-size: 15px">
 		{{yamlContent}}
-	</p>
+	</pre>
 </section>
-<section style="float: right; width: 75%; height: 620px; overflow:auto" ng-if="envSelected">
+<section style="float: right; width: 60%; height: 620px; overflow:auto" ng-if="envSelected">
 	<h2 style="text-align: center">Swagger UI</h2>
 	<hr />
 	<div ng-show="content">loading ...</div>
-	<div swagger-ui parser="yaml" url="swaggerUrl" loading="content" error-handler="myErrorHandler" trusted-sources="true" loading="isLoading"></div>
+	<div swagger-ui parser="yaml" url="swaggerUrl" loading="content" error-handler="myErrorHandler" trusted-sources="true" loading="isLoading" api-explorer="true"></div>
 </section>
 </section>
