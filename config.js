@@ -2890,6 +2890,26 @@ module.exports = {
 					}
 				}
 			}
+		},
+		"/test/simulate": {
+			"_apiInfo": {
+				"l": "Api simulation service",
+				"group": "Simulate"
+			},
+	 
+			"data": {
+				"required": true,
+				"source": ['body.data'],
+				"validation": {
+					"type": "object",
+					"properties": {
+						"input": {"type": "object", "properties": {}},
+						"imfv": {"type": "object", "properties": {}},
+				 
+					}
+				}
+			},
+			
 		}
 	}
 };

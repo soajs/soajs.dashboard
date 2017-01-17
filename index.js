@@ -15,9 +15,9 @@ var staticContentBL = require('./lib/staticContent.js');
 var gitAccountsBL = require("./lib/git.js");
 var environmentBL = require('./lib/environment.js');
 var cbBL = require("./lib/contentbuilder.js");
-
+var simulatorBL = require("./lib/simulator.js");
 var gitAccounts = require("./lib/git.js");
-var services = require("./lib/services.js");
+var services = require("./lib/services.js");// ja : unnecessary replication
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
@@ -796,7 +796,19 @@ service.init(function () {
 			BL.update(config, req, res);
 		});
 	});
-
+	
+	/**************************************
+	 * Test related Api's
+	 *
+	 **************************************/
+	// simulation api that should take a yamkl input and
+	// simulate an api with it's imfv
+	service.post("/test/simulate", function (req, res) {
+		initBLModel(req, res, simulatorBL, dbModel, function (BL) {
+		 	BL.test(config, req, res);
+		});
+	});
+	
 	/**
 	 * Service Start
 	 */

@@ -51,6 +51,7 @@
     "rimraf": "*",
     "shortid": "^2.2.4",
     "soajs": "0.4.*",
+    "typeof": "^1.0.0",
     "unzip2": "*"
   }
 }
