@@ -1,4 +1,10 @@
 <section ng-controller="swaggerTestCtrl">
+	<form>
+		<div class="header">
+			<h3>Testing {{serviceName}}</h3>
+		</div>
+	</form>
+	
 	<div ng-show="environments.values.length > 0">
 		<label style="margin-top: 7px;" class="f-left">Select which environment you want to test the service in:&nbsp;&nbsp;</label>
 		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" class="form-control f-left c45" ng-disabled="tempDisable"></select>

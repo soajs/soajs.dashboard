@@ -45,11 +45,13 @@ fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"] {
     margin-top: 5px;
 }
 
-.ace_editor { height: 600px; margin-bottom: 0px; margin-left: 0px;margin-right: 0px}
-
 .w49{
   width:49%;
 }
 .w2{
     width:2%;
+}
+
+.ace_editor{
+    height: 600px;
 }

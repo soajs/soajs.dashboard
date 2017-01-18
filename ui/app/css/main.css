@@ -1536,3 +1536,12 @@ td.apiNavigationWide .pagination a {
     width: 190px;
     text-align: right;
 }
+
+.ace_editor {
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    width:100%;
+    border-radius:10px;
+    border:solid 1px #ccc;
+}
