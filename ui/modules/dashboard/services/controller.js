@@ -114,17 +114,24 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 }]);
 
-servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi','injectFiles', function ($scope, $routeParams, ngDataApi, injectFiles) {
+servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi','injectFiles', 'swaggerParser', '$timeout', function ($scope, $routeParams, ngDataApi, injectFiles, swaggerParser, $timeout) {
 	$scope.$parent.isUserLoggedIn();
-	// $scope.id = "";
-	// $scope.owner = "";
-	// $scope.repo = "";
 	$scope.yamlContent = "";
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
 	
+	//read service name from route params
 	$scope.serviceName = $routeParams.serviceName;
-	// this function will get the owner, repo and the id if the service to use in other functions
+	
+	//set the default option value of the environments drop-down menu
+	$scope.environments = {
+		value: "---Please choose---",
+		values: ["---Please choose---"]
+	};
+	
+	/*
+	 * This function will get the owner, repo and the id if the service to use in other functions
+	 */
 	$scope.getServiceInfo = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "post",
@@ -137,13 +144,13 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 				$scope.id = response[0]._id;
 				$scope.owner = response[0].src.owner;
 				$scope.repo = response[0].src.repo;
-				//$scope.getYaml();
 			}
 		});
 	};
+	
 	/*
-	*This function will fill the select DDL with the environments where a service is deployed
-    */
+	 * This function will fill the select DDL with the environments where a service is deployed
+     */
 	$scope.getEnv = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -153,35 +160,42 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			} else {
-			
 				delete response.soajsauth;
-				var env = Object.keys(response);
-				env.forEach(function (oneEnv) {
+				$scope.serviceEnvironments = response;
+				Object.keys($scope.serviceEnvironments).forEach(function (oneEnv) {
 					$scope.environments.values.push(oneEnv);
 				});
 			}
 		});
 	};
-	// $scope.envSelected = false;
-	$scope.environments = {
-		value: "---Please choose---",
-		values: ["---Please choose---"]
-	};
 	
-	// this scope will save the environment selected
+	/*
+	 * This scope will save the environment selected
+	 */
 	$scope.selectedEnv = function() {
-		var selected = $scope.environments.value;
-		$scope.envSelected = selected !== "---Please choose---";
-		
-		if($scope.envSelected){
-			fillmyEditor($scope.editor);
+		if($scope.environments.value === '---Please choose---'){
+			$scope.envDomain = null;
+			$scope.yamlContent = "";
+			$scope.envSelected = null;
 		}
+		else{
+			$scope.envSelected = $scope.environments.value;
+			$scope.envDomain = $scope.serviceEnvironments[$scope.envSelected];
+		}
+		
+		//call fill ace editor
+		fillmyEditor($scope.editor);
 	};
 	
+	//event listener that hooks ace editor to the scope
 	$scope.aceLoaded = function(_editor){
 		$scope.editor = _editor;
 	};
 	
+	/*
+	 * This function uses the editor instance to fill the new data values
+	 * Then it calls the simulator of swagger
+	 */
 	function fillmyEditor(_editor){
 		$scope.getYaml(function(done){
 			if(done){
@@ -190,14 +204,36 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			else{
 				_editor.setValue("");
 			}
-			
-			// _editor.resize();
-			_editor.setReadOnly(true);
+			$timeout(function(){
+				watchSwaggerSimulator();
+			}, 100);
 		});
 	}
 	
-	// this function will call the getYaml API that will return the yaml content and the url
-	// that will be inserted in $scope.url so the swagger UI will render the documentation
+	/*
+	 * This function updates the host value of the swagger simulator
+	 */
+	function watchSwaggerSimulator(){
+		//grab the swagger info
+		var x = swaggerParser.fetch();
+		if(x.length === 0){
+			$timeout(function() {
+				watchSwaggerSimulator();
+			}, 100);
+		}
+		else{
+			//modify the host value with the new domain
+			x[3].host = $scope.envDomain;
+			x[3].info.host = $scope.envDomain;
+			//apply the changes
+			swaggerParser.execute.apply(null, x);
+		}
+	}
+	
+	/*
+	 * This function will call the getYaml API that will return the yaml content and the url
+	 * that will be inserted in $scope.url so the swagger UI will render the documentation
+	 */
 	$scope.getYaml = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -224,7 +260,6 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			}
 		});
 	};
-	
 	
 	if ($scope.access.getEnv) {
 		$scope.getEnv();
