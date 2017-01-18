@@ -209,7 +209,7 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				_editor.setValue("");
 			}
 			
-			_editor.scrollToLine(1, true, true);
+			_editor.scrollToLine(0, true, true);
 			_editor.scrollPageUp();
 			_editor.clearSelection();
 			watchSwaggerSimulator();
@@ -248,7 +248,7 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 			"params": {
 				owner: $scope.owner,
 				repo: $scope.repo,
-				filepath: "swagger.yml",
+				filepath: "/swagger.yml",
 				branch: "swagger" //Todo change it when amir integrate it
 			}
 		}, function (error, response) {

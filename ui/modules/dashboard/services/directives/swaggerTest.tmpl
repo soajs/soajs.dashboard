@@ -1,7 +1,7 @@
 <section ng-controller="swaggerTestCtrl">
 	<div ng-show="environments.values.length > 0">
 		<label style="margin-top: 7px;" class="f-left">Select which environment you want to test the service in:&nbsp;&nbsp;</label>
-		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" class="form-control f-left w10" ng-disabled="tempDisable"></select>
+		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" class="form-control f-left c45" ng-disabled="tempDisable"></select>
 		<div class="fieldMsg hint" >Only the environments where the service is deployed are available.</div>
 	</div>
 	<div ng-show="environments.values.length === 0">
@@ -12,7 +12,7 @@
 	<div class="f-left w49"ng-show="envSelected" >
 		<h2 style="text-align: center">Yaml Code</h2>
 		<hr/>
-		<div id="editorTab" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded}"></div>
+		<div id="editorTab" readonly="true" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded}"></div>
 	</div>
 	<div class="f-left w2">&nbsp;</div>
 	<div class="f-left w49" ng-show="envSelected">
