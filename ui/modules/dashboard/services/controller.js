@@ -204,7 +204,11 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			else{
 				_editor.setValue("");
 			}
+			
 			$timeout(function(){
+				_editor.scrollToLine(1, true, true);
+				_editor.scrollPageUp();
+				_editor.clearSelection();
 				watchSwaggerSimulator();
 			}, 100);
 		});
