@@ -116,9 +116,9 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi','injectFiles', function ($scope, $routeParams, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-	$scope.id = "";
-	$scope.owner = "";
-	$scope.repo = "";
+	// $scope.id = "";
+	// $scope.owner = "";
+	// $scope.repo = "";
 	$scope.yamlContent = "";
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
@@ -172,9 +172,17 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 	$scope.selectedEnv = function() {
 		var selected = $scope.environments.value;
 		$scope.envSelected = selected !== "---Please choose---";
+		
+		if($scope.envSelected){
+			fillmyEditor($scope.editor);
+		}
 	};
 	
 	$scope.aceLoaded = function(_editor){
+		$scope.editor = _editor;
+	};
+	
+	function fillmyEditor(_editor){
 		$scope.getYaml(function(done){
 			if(done){
 				_editor.setValue($scope.yamlContent);
@@ -186,7 +194,7 @@ servicesApp.controller('swaggerTestCtrl',['$scope', '$routeParams', 'ngDataApi',
 			// _editor.resize();
 			_editor.setReadOnly(true);
 		});
-	};
+	}
 	
 	// this function will call the getYaml API that will return the yaml content and the url
 	// that will be inserted in $scope.url so the swagger UI will render the documentation
