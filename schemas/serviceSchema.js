@@ -368,5 +368,7 @@ var pckg = {
 
 module.exports = {
 	"config": config,
+	"service": config.oneOf[0],
+	"daemon": config.oneOf[1],
 	"package": pckg
 };

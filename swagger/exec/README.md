@@ -1,0 +1,1 @@
+this folder is used to generate services via the swagger editor.
