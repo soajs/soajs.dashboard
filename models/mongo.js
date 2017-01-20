@@ -18,7 +18,6 @@ var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
-var dockerCollectionName = 'docker';
 var gcCollectionName = 'gc';
 
 function checkForMongo(soajs) {
@@ -86,13 +85,6 @@ function checkForMongo(soajs) {
 		mongo.ensureIndex(gitAccountsCollectionName, {_id: 1, 'repos.name': 1}, errorLogger);
 		mongo.ensureIndex(gitAccountsCollectionName, {'repos.name': 1}, errorLogger);
 		mongo.ensureIndex(gitAccountsCollectionName, {owner: 1, provider: 1}, errorLogger);
-
-		//docker
-		mongo.ensureIndex(dockerCollectionName, {cid: 1}, errorLogger);
-		mongo.ensureIndex(dockerCollectionName, {env: 1, hostname: 1}, errorLogger);
-		mongo.ensureIndex(dockerCollectionName, {env: 1, cid: 1}, errorLogger);
-		mongo.ensureIndex(dockerCollectionName, {env: 1, running: 1}, errorLogger);
-		mongo.ensureIndex(dockerCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
 
 		//gc
 		mongo.ensureIndex(gcCollectionName, {name: 1}, errorLogger);
