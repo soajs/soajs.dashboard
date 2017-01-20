@@ -1453,6 +1453,31 @@ div.entryBox .body .btn-primary.noFloat {
     cursor: pointer;
 }
 
+.dbsList tr {
+    float: left;
+    width: 20%;
+    margin-bottom: 0px;
+}
+
+.dbsList tr td {
+    display: block;
+    width: 95%;
+}
+
+/*.dbsList tr[class^="form-group tr-removeServer"] {*/
+    /*width: 6%;*/
+/*}*/
+
+/*.dbsList tr[class^="form-group tr-removeServer"] td {*/
+    /*text-align: right;*/
+    /*padding-top: 45px;*/
+/*}*/
+
+.dbsList .red {
+    color: #a94442;
+    cursor: pointer;
+}
+
 .preBox {
     width: 100%;
     overflow: auto;

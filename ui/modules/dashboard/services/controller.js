@@ -892,12 +892,6 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 		});
 	}
 }]);
-servicesApp.controller('swaggerCtrl', ['$scope', function ($scope) {
-	$scope.$parent.isUserLoggedIn();
-	$scope.access = {};
-	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
-	
-}]);
 
 servicesApp.filter('timeInMillisConverter', function () {
 	return function (time) {

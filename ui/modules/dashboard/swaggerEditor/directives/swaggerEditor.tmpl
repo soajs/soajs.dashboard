@@ -1,0 +1,39 @@
+<section ng-controller="swaggerEditorCtrl">
+	<p>
+		lezim nektoub paragraph enno yaba lashou hal shi killo w shou el flow men wara
+	</p>
+	<tabset ng-if="access.generate"> 
+		<tab heading="Service Information">  <br>
+			<p>
+				lezim nektoub shi sentence enno howde el bel form lashou aw kel input na3ti fieldMs
+			</p>
+			<div class='form'>
+				<ngform></ngform>
+			</div>
+		</tab>
+		<tab heading="Swagger Editor">  <br>
+			<div>
+				<p>
+					Use the below Swagger Editor and write the Yaml code that represents the REST Layer of the service you are trying to build.<br />
+					While you are writing the Yaml code, Swagger will render it and show you a live preview along with test capability in the right panel.<br />
+				</p>
+			</div>
+			<div class="w100 c-both">
+				<div class="f-left w47">
+					<h2 class="text-center">Swagger Editor</h2>
+					<hr/>
+					<div id="schemaCode" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded, onChange: updateScopeValue}" ng-model="schemaCode"></div>
+				</div>
+				<div class="f-left w6"><input type="button" class="btn btn-primary" value="Run >" ng-click="moveYamlRight()"/></div>
+				<div class="f-left w47">
+					<h2 class="text-center">Swagger Simulator</h2>
+					<hr/>
+					<div swagger-ui parser="yaml" input-type="yaml" input="schemaCodeF" loading="content" error-handler="myErrorHandler" trusted-sources="true" loading="isLoading" api-explorer="true"></div>
+				</div>
+			</div>
+		</tab>
+	</tabset>
+	<div class="w100 c-both text-center"><br /><br />
+		<input type="button" value="Generate Service" ng-click="GenerateService" class="btn btn-primary"/>
+	</div>
+</section>
