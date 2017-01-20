@@ -24,6 +24,7 @@
     "grunt": "0.4.5",
     "grunt-contrib-jshint": "*",
     "grunt-jsdoc": "*",
+    "grunt-contrib-copy": "*",
     "grunt-contrib-clean": "*",
     "grunt-mocha-test": "*",
     "grunt-env": "*",
@@ -51,6 +52,8 @@
     "rimraf": "*",
     "shortid": "^2.2.4",
     "soajs": "0.4.*",
-    "unzip2": "*"
+    "unzip2": "*",
+    "yamljs" : "0.2.8",
+    "zip-folder": "1.0.0"
   }
 }

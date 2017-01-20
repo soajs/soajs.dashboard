@@ -93,7 +93,7 @@ describe("importing sample data", function () {
 
 	after(function (done) {
 		setTimeout(function () {
-			require("./soajs.dashboard.test.simulator.js");
+			require("./soajs.dashboard.test.swagger.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");
 			require("./soajs.dashboard.test.js");

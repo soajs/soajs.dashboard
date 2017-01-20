@@ -1,0 +1,113 @@
+"use strict";
+
+//variable should be equivalent to the database in the registry
+var database = "myEsDatabase";
+
+var lib = {
+
+	/**
+	 * function that returns the default value if needed
+	 * @param database {String}
+	 */
+	"defaults": function (customDatabase) {
+		return customDatabase || database;
+	},
+
+	/**
+     * function that pings the elasticsearch cluster
+     * @param soajs {Object}
+     * @param opts {Object}
+     * @param cb {Function}
+     */
+    "ping": function (soajs, opts, cb) {
+        var database = lib.defaults(opts.databaseName);
+        soajs.es[database].ping.then(function (response) {
+            return cb(null, response);
+        }, function (error) {
+            soajs.log.error(error);
+            return cb(error);
+        });
+    },
+
+    /**
+     * function that checks if an index in elasticsearch exists
+     * @param soajs {Object}
+     * @param opts {Object}
+     * @param cb {Function}
+     */
+    "checkIndex": function (soajs, opts, cb) {
+        var database = lib.defaults(opts.databaseName);
+        soajs.es[database].checkIndex(opts.indexName).then(function (response) {
+            return cb(null, response);
+        }, function (error) {
+            soajs.log.error(error);
+            return cb(error);
+        });
+    },
+
+    /**
+     * function that deletes an index from elasticsearch
+     * @param soajs {Object}
+     * @param opts {Object}
+     * @param cb {Function}
+     */
+    "deleteIndex": function (soajs, opts, cb) {
+        var database = lib.defaults(opts.databaseName);
+        soajs.es[database].deleteIndex(opts.indexName).then(function (response) {
+            return cb(null, response);
+        }, function (error) {
+            soajs.log.error(error);
+            return cb(error);
+        });
+    },
+
+    /**
+     * function that creates a new index in elasticsearch
+     * @param soajs {Object}
+     * @param opts {Object}
+     * @param cb {Function}
+     */
+    "deleteIndex": function (soajs, opts, cb) {
+        var database = lib.defaults(opts.databaseName);
+        soajs.es[database].createIndex(opts.indexName, opts.mapping || null, opts.settings || null).then(function (response) {
+            return cb(null, response);
+        }, function (error) {
+            soajs.log.error(error);
+            return cb(error);
+        });
+    },
+
+	/**
+	 * function that executes a search operation in elasticsearch
+	 * @param soajs {Object}
+	 * @param opts {Object}
+	 * @param cb {Function}
+	 */
+	"search": function (soajs, condition, cb) {
+		var database = lib.defaults(opts.databaseName);
+		soajs.es[database].search(opts.condition).then(function (response) {
+			return cb(null, response);
+		}, function (error) {
+			soajs.log.error(error);
+			return cb(error);
+		});
+	},
+
+	/**
+     * function that executes a bulk operation in elasticsearch
+     * @param soajs {Object}
+     * @param opts {Object}
+     * @param cb {Function}
+     */
+    "bulk": function (soajs, records, cb) {
+        var database = lib.defaults(opts.databaseName);
+        soajs.es[database].bulk(opts.records).then(function (response) {
+            return cb(null, response);
+        }, function (error) {
+            soajs.log.error(error);
+            return cb(error);
+        });
+    }
+};
+
+module.exports = lib;

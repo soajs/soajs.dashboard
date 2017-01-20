@@ -1,0 +1,25 @@
+sudo: required
+
+language: node_js
+
+node_js: 0.10
+
+services:
+  - mongodb
+  - docker
+
+branches:
+  only:
+    - staging
+    - master
+
+addons:
+  hosts:
+    - localhost
+
+before_script:
+  - npm install -g grunt-cli
+  - docker pull alpine:latest
+
+script:
+  - grunt coverage

@@ -1,0 +1,22 @@
+swagger: "2.0"
+info:
+  description: Move your app forward with SOAJS
+  version: 1.0.0
+  title: Swagger sample
+host: localhost
+basePath: /swaggerSample
+schemes:
+- "http"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+definitions:
+  error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
