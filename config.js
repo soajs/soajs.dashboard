@@ -1005,6 +1005,21 @@ module.exports = {
 		},
 
 		"post": {
+			"/services/list": {
+				_apiInfo: {
+					"l": "List Services",
+					"group": "Services"
+				},
+				'serviceNames': {
+					'source': ['body.serviceNames'],
+					'required': false,
+					"validation": {
+						"type": "array",
+						'items': {'type': 'string'}
+					}
+				}
+			},
+			
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
