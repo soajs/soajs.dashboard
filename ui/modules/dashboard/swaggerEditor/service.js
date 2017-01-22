@@ -1,14 +1,94 @@
 "use strict";
 var swaggerEditorSrv = soajsApp.components;
 
-swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', function ($timeout) {
+swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function ($timeout, ngDataApi) {
 	
-	function swaggerService(){
+	function generateService(currentScope){
+		var extKeyRequired = false;
+		if(Array.isArray(currentScope.form.formData.extKeyRequired)){
+			extKeyRequired = (currentScope.form.formData.extKeyRequired[0] === 'true');
+		}
+		else{
+			extKeyRequired = (currentScope.form.formData.extKeyRequired === 'true');
+		}
 		
+		var oauth = false;
+		if(Array.isArray(currentScope.form.formData.oauth)){
+			oauth = (currentScope.form.formData.oauth[0] === 'true');
+		}
+		else{
+			oauth = (currentScope.form.formData.oauth === 'true');
+		}
+		
+		var session = false;
+		if(Array.isArray(currentScope.form.formData.session)){
+			session = (currentScope.form.formData.session[0] === 'true');
+		}
+		else{
+			session = (currentScope.form.formData.session === 'true');
+		}
+		
+		var dbs = [];
+		for(var i =0; i < currentScope.form.formData.dbCount; i++){
+			var dbObj = {
+				prefix: currentScope.form.formData['prefix' + i],
+				name: currentScope.form.formData['name' + i]
+			};
+			
+			if(Array.isArray(currentScope.form.formData['model' + i])){
+				dbObj.model = currentScope.form.formData['model' + i][0];
+			}
+			else{
+				dbObj.model= currentScope.form.formData['model' + i];
+			}
+			
+			if(dbObj.model === 'mongo'){
+				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
+			}
+			
+			dbs.push(dbObj);
+		}
+		
+		var options = {
+			"method": "send",
+			"routeName": "/dashboard/swagger/generate",
+			"headers": {
+				"Accept": "application/zip"
+			},
+			"responseType": 'arraybuffer',
+			"data": {
+				"data": {
+					"service": {
+						"serviceName": currentScope.form.formData.serviceName,
+						"serviceGroup": currentScope.form.formData.serviceGroup,
+						"servicePort": currentScope.form.formData.servicePort,
+						"serviceVersion": currentScope.form.formData.serviceVersion,
+						"requestTimeout": currentScope.form.formData.requestTimeout,
+						"requestTimeoutRenewal": currentScope.form.formData.requestTimeoutRenewal,
+						"extKeyRequired": extKeyRequired,
+						"oauth": oauth,
+						"session": session,
+						"dbs": dbs
+					},
+					"yaml": currentScope.schemaCode
+				}
+			}
+		};
+		
+		getSendDataFromServer(currentScope, ngDataApi, options, function (error, response) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				openSaveAsDialog(currentScope.form.formData.serviceName + ".zip", response, "application/zip");
+			}
+		});
 	}
+	
 	function buildSwaggerForm(currentScope) {
 		var count = 0;
 		var infoForm = swaggerEditorConfig.form;
+		infoForm.timeout = $timeout;
 		infoForm.entries.forEach(function (entry) {
 				if (entry.name === 'dbs') {
 					entry.entries = [];
@@ -32,13 +112,17 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', function ($timeout) {
 							}
 						});
 						count++;
+						form.formData.dbCount = count;
 					};
 				}
 			});
-			buildForm(currentScope,null, infoForm);
+			
+			buildForm(currentScope,null, infoForm, function(){
+				currentScope.form.formData.dbCount = count;
+			});
 		}
 	return {
-		'swaggerService': swaggerService,
+		'generateService': generateService,
 		'buildSwaggerForm': buildSwaggerForm
 	}
 }]);

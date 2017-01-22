@@ -9,23 +9,23 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
 	
-	$scope.buildEditorForm = function(){
+	$scope.buildEditorForm = function () {
 		swaggerEditorSrv.buildSwaggerForm($scope);
 	};
 	
-	$scope.moveYamlRight = function(){
+	$scope.moveYamlRight = function () {
 		$scope.schemaCodeF = $scope.schemaCode;
-		watchSwaggerSimulator(function(){
+		watchSwaggerSimulator(function () {
 			console.log("swagger ui info has been updated");
 		});
 	};
 	
-	$scope.aceLoaded = function(_editor){
+	$scope.aceLoaded = function (_editor) {
 		$scope.editor = _editor;
 		_editor.setShowPrintMargin(false);
 	};
 	
-	$scope.updateScopeValue = function(){
+	$scope.updateScopeValue = function () {
 		$scope.schemaCode = $scope.editor.getValue();
 	};
 	
@@ -47,7 +47,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 			x[3].info.host = dashboardDomain;
 			x[3].basePath = "/dashboard/swagger/simulate";
 			x[3].info.basePath = "/dashboard/swagger/simulate";
-
+			
 			console.log("switching to host and basepath to swagger simulate api in dashboard:", x[3].host + x[3].basePath);
 			//apply the changes
 			swaggerParser.execute.apply(null, x);
@@ -55,18 +55,17 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 		}
 	}
 	
-	$scope.GenerateService = function(){
-		if($scope.access.generate){
-			//todo: do the get send data call to the generate api
-			//todo: add accept: application/zip
-			//todo: create blob from api response
+	$scope.GenerateService = function () {
+		if ($scope.access.generate) {
+			swaggerEditorSrv.generateService($scope);
 		}
 	};
 	
-	if($scope.access.generate){
+	if ($scope.access.generate) {
 		//show the form
 		$scope.buildEditorForm();
 	}
 	
 	injectFiles.injectCss("modules/dashboard/swaggerEditor/swaggerEditor.css");
-}]);
+}])
+;
