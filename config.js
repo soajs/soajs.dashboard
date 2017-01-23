@@ -760,44 +760,7 @@ module.exports = {
 					}
 				}
 			},
-			
-			"/daemons/list": {
-				_apiInfo: {
-					"l": "List Daemons",
-					"group": "Daemons"
-				},
-				'daemonNames': {
-					'source': ['body.daemonNames'],
-					'required': false,
-					'validation': {
-						'type': 'array',
-						'items': {'type': 'string'}
-					}
-				},
-				'getGroupConfigs': {
-					'source': ['query.getGroupConfigs'],
-					'required': false,
-					'validation': {
-						'type': 'boolean'
-					}
-				}
-			},
-			
-			"/daemons/groupConfig/list": {
-				_apiInfo: {
-					"l": "List Daemon Group Configuration",
-					"group": "Daemons"
-				},
-				'grpConfNames': {
-					'source': ['body.grpConfNames'],
-					'required': false,
-					'validation': {
-						'type': 'array',
-						'items': {'type': 'string'}
-					}
-				}
-			},
-			
+
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -1380,6 +1343,43 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+			
+			"/daemons/list": { //TODO: switch to GET method
+				_apiInfo: {
+					"l": "List Daemons",
+					"group": "Daemons"
+				},
+				'daemonNames': {
+					'source': ['body.daemonNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				},
+				'getGroupConfigs': {
+					'source': ['query.getGroupConfigs'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				}
+			},
+			
+			"/daemons/groupConfig/list": { //TODO: switch to GET method
+				_apiInfo: {
+					"l": "List Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'grpConfNames': {
+					'source': ['body.grpConfNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
 					}
 				}
 			},

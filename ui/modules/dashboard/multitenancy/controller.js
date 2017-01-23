@@ -1499,7 +1499,7 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 						aclHelper.fillAcl($scope);
 						var serviceNames = $scope.currentApplication.serviceNames;
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "get",
+							"method": "send",
 							"routeName": "/dashboard/services/list",
 							"data": {"serviceNames": serviceNames}
 						}, function (error, response) {

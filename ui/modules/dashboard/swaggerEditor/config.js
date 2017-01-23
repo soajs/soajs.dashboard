@@ -117,7 +117,7 @@ var swaggerEditorConfig = {
 				'value': '',
 				'tooltip': "Enter your service version",
 				'required': true,
-				"fieldMsg": "The service port should be equal or greater than 1"
+				"fieldMsg": "The service version should be equal or greater than 1"
 			},
 			{
 				'name': 'requestTimeout',
@@ -127,7 +127,8 @@ var swaggerEditorConfig = {
 				'placeholder': "0",
 				'value': '',
 				'tooltip': "Enter the timeout of any request",
-				'required': true
+				'required': true,
+				'fieldMsg': "Specify how many seconds the controller should wait before considering the request as a timeout."
 			},
 			{
 				'name': 'requestTimeoutRenewal',
@@ -137,7 +138,8 @@ var swaggerEditorConfig = {
 				'placeholder': "0",
 				'value': '',
 				'tooltip': "Enter the timeout renewal of any request",
-				'required': true
+				'required': true,
+				'fieldMsg': "Specify how many attempts the controller should make after timing out before eventually giving up."
 			},
 			{
 				'name': 'session',
