@@ -85,3 +85,7 @@
 #addDb-wrapper{
     float:left;
 }
+
+a.tooltipToggle {
+    outline: 0;
+}
