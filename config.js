@@ -2428,6 +2428,27 @@ module.exports = {
 				}
 			},
 
+			"/hacloud/services/redeploy": {
+				"_apiInfo": {
+					"l": "Redeploy HA Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",

@@ -478,6 +478,11 @@ service.init(function () {
 			BL.deleteHAService(config, req.soajs, res);
 		});
 	});
+	service.put("/hacloud/services/redeploy", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.redeployHAService(config, req.soajs, res);
+		});
+	});
 
 	service.get("/hacloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
