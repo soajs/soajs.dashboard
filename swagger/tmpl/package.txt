@@ -3,7 +3,7 @@
   "description": "%service_description%",
   "version": "%repo_version%",
   "author": {
-    "name": "",
+    "name": "%author_name%",
     "email": ""
   },
   "repository": {
