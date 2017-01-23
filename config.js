@@ -915,8 +915,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"taskName": {
-					"source": ['query.taskName'],
+				"taskId": {
+					"source": ['query.taskId'],
 					"required": true,
 					"validation": {
 						"type": "string"
