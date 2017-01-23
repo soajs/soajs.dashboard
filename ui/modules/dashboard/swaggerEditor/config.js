@@ -68,6 +68,7 @@ var dbForm = {
 								oneEntry.entries.splice(i, 1);
 							}
 						}
+						form.formData.dbCount = number;
 					}
 				});
 			}

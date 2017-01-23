@@ -11,24 +11,30 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
 			var decodedString = String.fromCharCode.apply(null, new Uint8Array(response));
-			var res = JSON.parse(decodedString);
-			if (res.result === false) {
+			try{
 				var res = JSON.parse(decodedString);
-				var str = '';
-				for (var i = 0; i < res.errors.details.length; i++) {
-					str += "Error[" + res.errors.details[i].code + "]: " + res.errors.details[i].message;
+				if (res.result === false) {
+					var res = JSON.parse(decodedString);
+					var str = '';
+					for (var i = 0; i < res.errors.details.length; i++) {
+						str += "Error[" + res.errors.details[i].code + "]: " + res.errors.details[i].message;
+					}
+					var errorObj = {
+						message: str,
+						codes: res.errors.codes,
+						details: res.errors.details
+					};
+					if (res.errors.codes && res.errors.codes[0]) {
+						errorObj.code = res.errors.codes[0];
+					}
+					return cb(errorObj);
 				}
-				var errorObj = {
-					message: str,
-					codes: res.errors.codes,
-					details: res.errors.details
-				};
-				if (res.errors.codes && res.errors.codes[0]) {
-					errorObj.code = res.errors.codes[0];
+				else {
+					return cb(null, response);
 				}
-				return cb(errorObj);
 			}
-			else {
+			catch(e){
+				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream");
 				return cb(null, response);
 			}
 		}

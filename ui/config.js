@@ -5,7 +5,7 @@
  */
 var mydomain = "soajs.org";
 var mydomainport = location.port;
-if(mydomainport !== 80){
+if(mydomainport && mydomainport !== 80){
 	mydomain += ":" + mydomainport;
 }
 var protocol = window.location.protocol;
