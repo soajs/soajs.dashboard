@@ -6,8 +6,14 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.access = {};
 	$scope.schemaCode = '';
 	$scope.schemaCodeF = '';
+	$scope.hideToolTip = false;
 	
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
+	
+	$scope.hideShowToolTip = function(){
+		$scope.hideToolTip = !$scope.hideToolTip;
+		return $scope.hideToolTip;
+	};
 	
 	$scope.buildEditorForm = function () {
 		swaggerEditorSrv.buildSwaggerForm($scope);
