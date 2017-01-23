@@ -6,12 +6,35 @@ var accessSchema = {
 	]
 };
 
+var apisObject = {
+	"type": "object",
+	"required": false,
+	"patternProperties": {
+		"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
+			"type": "object",
+			"required": true,
+			"properties": {
+				"access": accessSchema
+			},
+			"additionalProperties": false
+		}
+	}
+};
+
+var aclMethod = {
+	"type": "object",
+	"required": false,
+	"properties": {
+		"apis": apisObject
+	}
+};
+
 var acl = {
 	'source': ['body.acl'],
 	'required': false,
-	'validation':{
-		"type":"object",
-		"patternProperties":{
+	'validation': {
+		"type": "object",
+		"patternProperties": {
 			"^[a-zA-Z0-9]{4}$": {
 				"type": "object",
 				"additionalProperties": {
@@ -19,21 +42,14 @@ var acl = {
 					"required": false,
 					"properties": {
 						"access": accessSchema,
-						"apisPermission": {"type": "string", "enum": ["restricted"], "required": false},
-						"apis": {
-							"type": "object",
-							"required": false,
-							"patternProperties": {
-								"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
-									"type": "object",
-									"required": true,
-									"properties": {
-										"access": accessSchema
-									},
-									"additionalProperties": false
-								}
-							}
+						"apisPermission": {
+							"type": "string", "enum": ["restricted"], "required": false
 						},
+						"apis": apisObject,
+						"get": aclMethod,
+						"post": aclMethod,
+						"put": aclMethod,
+						"delete": aclMethod,
 						"apisRegExp": {
 							"type": "array",
 							"required": false,

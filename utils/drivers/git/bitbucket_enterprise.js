@@ -96,13 +96,25 @@ var lib = {
     },
 
     "getRepoContent": function (options, cb) {
-        bitbucketClient.repos.browse(options.project, options.repo, {path: options.path, args: {at: options.ref}})
-            .then(function (result) {
-                return cb(null, result);
-            })
-            .catch(function (error) {
-                return cb(error);
-            });
+        var lines = [];
+        get(0, cb);
+
+        function get(start, cb) {
+            bitbucketClient.repos.browse(options.project, options.repo, {path: options.path, args: {at: options.ref, start: start}})
+                .then(function (response) {
+                    lines = lines.concat(response.lines);
+
+                    if (!response.isLastPage) {
+                        return get((response.start + response.size), cb);
+                    }
+                    else {
+                        return cb(null, {lines: lines});
+                    }
+                })
+                .catch(function (error) {
+                    return cb(error);
+                });
+        }
     },
 
     "getAllRepos": function (options, cb) {
