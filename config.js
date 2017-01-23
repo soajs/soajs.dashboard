@@ -1423,13 +1423,6 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"haService": {
-					"source": ['body.haService'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
 				"haCount": {
 					"source": ['body.haCount'],
 					"required": false,
@@ -1495,13 +1488,6 @@ module.exports = {
 				},
 				"supportSSL": {
 					"source": ['body.supportSSL'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haService": {
-					"source": ['body.haService'],
 					"required": false,
 					"validation": {
 						"type": "boolean"
@@ -1612,13 +1598,6 @@ module.exports = {
 						"type": "boolean"
 					}
 				},
-				"haService": {
-					"source": ['body.haService'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
 				"haCount": {
 					"source": ['body.haCount'],
 					"required": false,
@@ -1710,13 +1689,6 @@ module.exports = {
 				},
 				"useLocalSOAJS": {
 					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haService": {
-					"source": ['body.haService'],
 					"required": false,
 					"validation": {
 						"type": "boolean"
