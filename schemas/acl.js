@@ -6,6 +6,29 @@ var accessSchema = {
 	]
 };
 
+var apisObject = {
+	"type": "object",
+	"required": false,
+	"patternProperties": {
+		"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
+			"type": "object",
+			"required": true,
+			"properties": {
+				"access": accessSchema
+			},
+			"additionalProperties": false
+		}
+	}
+};
+
+var aclMethod = {
+	"type": "object",
+	"required": false,
+	"properties": {
+		"apis": apisObject
+	}
+};
+
 var acl = {
 	'source': ['body.acl'],
 	'required': false,
@@ -22,36 +45,11 @@ var acl = {
 						"apisPermission": {
 							"type": "string", "enum": ["restricted"], "required": false
 						},
-						"apis": {
-							"type": "object",
-							"required": false,
-							"patternProperties": {
-								"^[_a-z\/][_a-zA-Z0-9\/:]*$": { //pattern to match an api route
-									"type": "object",
-									"required": true,
-									"properties": {
-										"access": accessSchema
-									},
-									"additionalProperties": false
-								}
-							}
-						},
-						"get": {
-							"type": "object",
-							"required": false
-						},
-						"post": {
-							"type": "object",
-							"required": false
-						},
-						"put": {
-							"type": "object",
-							"required": false
-						},
-						"delete": {
-							"type": "object",
-							"required": false
-						},
+						"apis": apisObject,
+						"get": aclMethod,
+						"post": aclMethod,
+						"put": aclMethod,
+						"delete": aclMethod,
 						"apisRegExp": {
 							"type": "array",
 							"required": false,
