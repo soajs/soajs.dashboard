@@ -861,27 +861,6 @@ module.exports = {
 				}
 			},
 
-			"/hosts/container/logs": {
-				"_apiInfo": {
-					"l": "Get Container Logs",
-					"group": "Hosts"
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"cid": {
-					"source": ['query.cid'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
 			"/hosts/container/zombie/list": {
 				"_apiInfo": {
 					"l": "List Zombie Containers",
