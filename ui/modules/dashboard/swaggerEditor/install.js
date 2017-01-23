@@ -3,11 +3,10 @@ var swaggerEditorNav = [
 	{
 		'id': 'swaggerEditor',
 		'label': 'Swagger Editor',
-		//todo: re-enable the permissions once the generate api has been defined
-		// 'checkPermission': {
-		// 	'service': 'dashboard',
-		// 	'route': '/swagger/generate'
-		// },
+		'checkPermission': {
+			'service': 'dashboard',
+			'route': '/swagger/generate'
+		},
 		'url': '#/swaggerEditor',
 		'tplPath': 'modules/dashboard/swaggerEditor/directives/swaggerEditor.tmpl',
 		'icon': 'magic-wand',

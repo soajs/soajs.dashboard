@@ -3,7 +3,7 @@
 	<h3>Welcome to the easiest place to create your service!!</h3><br>
 	All you have to do is to set your service information in the first tab, write your APIs in the second tab where you can run your code to check for any type of errors, click on generate so we will build the essential files to your service(index, config, middleware, model, test, etc...) in a zipped file that will be downloaded, write your business logic, upload your repository to your git account and finally go to the dashboard and activate this repository in the git accounts page. Reload your page, go to the services page, click on the swagger test button, choose your environment and you will get your yaml code in the editor on the left side(read only mode) as well you can test your APIs using the swagger UI shown on the right side.
 	</p>
-	<tabset ng-if="access.generate"> 
+	<tabset ng-if="access.generate" class="swaggerEditor"> 
 		<tab heading="Service Information">  <br>
 			<p>
 			<h4>These inputs will help us build the config file according to our standards</h4>
@@ -20,21 +20,36 @@
 				</p>
 			</div>
 			<div class="w100 c-both">
-				<div class="f-left w47">
-					<h2 class="text-center">Swagger Editor</h2>
+				<div class="f-left w49">
+					<div class="c-both w100 table">
+						<h4 class="f-left">Swagger Editor</h4>
+						<a class="btn btn-danger f-right" ng-click="clearYamlRight()" ng-show="schemaCodeF && schemaCodeF!== ''">
+							<span class="icon icon-cross"></span>
+							Clear
+						</a>
+						<a class="btn btn-success f-right mr5" ng-click="moveYamlRight()" ng-show="schemaCode && schemaCode!== ''">
+							<span class="icon icon-play3"></span>
+							Run
+						</a>
+					</div>
 					<hr/>
 					<div id="schemaCode" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded, onChange: updateScopeValue}" ng-model="schemaCode"></div>
 				</div>
-				<div class="f-left w6"><input type="button" class="btn btn-primary" value="Run >" ng-click="moveYamlRight()"/></div>
-				<div class="f-left w47">
-					<h2 class="text-center">Swagger Simulator</h2>
+				<div class="f-left w2">
+					<span >&nbsp;</span>
+				</div>
+				<div class="f-left w49">
+					<div class="c-both w100 table">
+						<h4>Swagger Simulator</h4>
+					</div>
 					<hr/>
 					<div swagger-ui parser="yaml" input-type="yaml" input="schemaCodeF" trusted-sources="true" loading="true" api-explorer="true" permalinks="false"></div>
 				</div>
 			</div>
 		</tab>
 	</tabset>
-	<div class="w100 c-both text-center"><br /><br />
+	<div class="w100 c-both text-center">
+		<br /><hr /><br />
 		<input type="button" value="Generate Service" ng-click="GenerateService()" class="btn btn-primary"/>
 	</div>
 </section>

@@ -48,6 +48,66 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 			
 			dbs.push(dbObj);
 		}
+		var yaml = currentScope.schemaCode.trim();
+		
+		if(yaml === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'No YAML Code Found');
+			return false;
+		}
+		
+		var serviceName = '';
+		if(currentScope.form.formData.serviceName){
+			serviceName = currentScope.form.formData.serviceName.trim();
+		}
+		if(serviceName === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : service name');
+			return false;
+		}
+		
+		var serviceGroup = '';
+		if(currentScope.form.formData.serviceGroup){
+			serviceGroup = currentScope.form.formData.serviceGroup.trim();
+		}
+		if(serviceGroup === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : service group');
+			return false;
+		}
+		
+		var servicePort = '';
+		if(currentScope.form.formData.servicePort){
+			servicePort = currentScope.form.formData.servicePort;
+		}
+		if(servicePort === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : service port');
+			return false;
+		}
+		
+		var serviceVersion = '';
+		if(currentScope.form.formData.serviceVersion){
+			serviceVersion = currentScope.form.formData.serviceVersion;
+		}
+		if(serviceVersion === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : service version');
+			return false;
+		}
+		
+		var requestTimeout = '';
+		if(currentScope.form.formData.requestTimeout){
+			requestTimeout = currentScope.form.formData.requestTimeout;
+		}
+		if(requestTimeout === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : requestTimeout');
+			return false;
+		}
+		
+		var requestTimeoutRenewal = '';
+		if(currentScope.form.formData.requestTimeoutRenewal){
+			requestTimeoutRenewal = currentScope.form.formData.requestTimeoutRenewal;
+		}
+		if(requestTimeoutRenewal === ''){
+			currentScope.$parent.displayAlert('danger', 172, true, 'dashboard', 'Missing required field : requestTimeoutRenewal');
+			return false;
+		}
 		
 		var options = {
 			"method": "send",
@@ -59,18 +119,18 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 			"data": {
 				"data": {
 					"service": {
-						"serviceName": currentScope.form.formData.serviceName,
-						"serviceGroup": currentScope.form.formData.serviceGroup,
-						"servicePort": currentScope.form.formData.servicePort,
-						"serviceVersion": currentScope.form.formData.serviceVersion,
-						"requestTimeout": currentScope.form.formData.requestTimeout,
-						"requestTimeoutRenewal": currentScope.form.formData.requestTimeoutRenewal,
+						"serviceName": serviceName,
+						"serviceGroup": serviceGroup,
+						"servicePort": servicePort,
+						"serviceVersion": serviceVersion,
+						"requestTimeout": requestTimeout,
+						"requestTimeoutRenewal": requestTimeoutRenewal,
 						"extKeyRequired": extKeyRequired,
 						"oauth": oauth,
 						"session": session,
 						"dbs": dbs
 					},
-					"yaml": currentScope.schemaCode
+					"yaml": yaml
 				}
 			}
 		};
@@ -93,8 +153,17 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 				if (entry.name === 'dbs') {
 					entry.entries = [];
 					var oneClone = angular.copy(dbForm.db);
+					var mtRef;
 					for (var i = 0; i < oneClone.length; i++) {
 						oneClone[i].name = oneClone[i].name.replace("%count%", count);
+						if(oneClone[i].name === "multitenant" + count){
+							mtRef = oneClone[i];
+						}
+						if(oneClone[i].name === "model" + count){
+							oneClone[i].onAction = function (id, data, form) {
+								mtRef.disabled = (data === "es");
+							}
+						}
 					}
 					entry.entries = entry.entries.concat(oneClone);
 					count++;
@@ -103,10 +172,20 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 				if (entry.name === 'addDb') {
 					entry.onAction = function (id, data, form) {
 						var oneClone = angular.copy(dbForm.db);
+						var mtRef;
 						form.entries.forEach(function (entry) {
 							if (entry.name === 'dbs' && entry.type === 'group') {
 								for (var i = 0; i < oneClone.length; i++) {
 									oneClone[i].name = oneClone[i].name.replace("%count%", count);
+									
+									if(oneClone[i].name === "multitenant" + count){
+										mtRef = oneClone[i];
+									}
+									if(oneClone[i].name === "model" + count){
+										oneClone[i].onAction = function (id, data, form) {
+											mtRef.disabled = (data === "es");
+										}
+									}
 								}
 								entry.entries = entry.entries.concat(oneClone);
 							}
@@ -268,43 +347,6 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 		});
 		
 		operation.parameters.push(customBody);
-		
-		// {
-		// 	"data" : {
-		// 		"input":{
-		// 			"type":"object",
-		// 			"properties":{
-		// 				"body":{
-		// 					"name":"cersei",
-		// 					"status":"cat"
-		// 				}
-		// 			}
-		// 		},
-		// 		"imfv":{
-		// 			"body":{
-		// 				"required":true,
-		// 				"source":["body.body"],
-		// 				"validation":{}
-		//			}
-		// 		}
-		// 	}
-		// }
-		// "data": {
-		// 	"input": {
-		// 		"number": 10
-		// 	},
-		// 	"imfv": {
-		// 		"number": {
-		// 			"source": ["body.number"],
-		// 				"required": true,
-		// 				"validation": {
-		// 				"type": "number"
-		// 			}
-		// 		}
-		// 	}
-		// }		console.log("after");
-		console.log(operation);
-		console.log(values);
 	}
 	
 	/**

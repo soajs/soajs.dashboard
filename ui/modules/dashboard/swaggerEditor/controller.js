@@ -20,6 +20,10 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 		});
 	};
 	
+	$scope.clearYamlRight = function(){
+		$scope.schemaCodeF = "";
+	};
+	
 	$scope.aceLoaded = function (_editor) {
 		$scope.editor = _editor;
 		_editor.setShowPrintMargin(false);
@@ -34,10 +38,8 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	 */
 	function watchSwaggerSimulator(cb) {
 		//grab the swagger info
-		if(swaggerParser.fetch()== undefined)
-			alert("yaml code error!!");
 		var x = swaggerParser.fetch();
-		if (!x || x.length === 0) {
+		if (!x || x.length === 0 || !Array.isArray(x[3]) || x[3].length === 0) {
 			$timeout(function () {
 				watchSwaggerSimulator(cb);
 			}, 100);
