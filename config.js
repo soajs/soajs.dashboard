@@ -748,21 +748,6 @@ module.exports = {
 				"commonFields": ['appId', 'key']
 			},
 
-			"/services/list": {
-				_apiInfo: {
-					"l": "List Services",
-					"group": "Services"
-				},
-				'serviceNames': {
-					'source': ['body.serviceNames'],
-					'required': false,
-					"validation": {
-						"type": "array",
-						'items': {'type': 'string'}
-					}
-				}
-			},
-
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -1019,7 +1004,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
@@ -1354,10 +1339,10 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type':{
+				'type': {
 					"required": true,
 					"source": ["body.type"],
-					"validation":{
+					"validation": {
 						"type": "string",
 						"enum": ["interval", "cron", "once"]
 					}
@@ -1467,19 +1452,19 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"exposedPort":{
-	                "source": ['body.exposedPort'],
-	                "required": false,
-	                "validation": {
-	                    "type": "number"
-	                }
+				"exposedPort": {
+					"source": ['body.exposedPort'],
+					"required": false,
+					"validation": {
+						"type": "number"
+					}
 				},
 				"isKubernetes": {
-	                "source": ['body.isKubernetes'],
-	                "required": false,
-	                "validation": {
-	                    "type": "boolean"
-	                }
+					"source": ['body.isKubernetes'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
@@ -1504,8 +1489,8 @@ module.exports = {
 				"exposedPort": {
 					"source": ["body.exposedPort"],
 					"required": false,
-					"validation":{
-						"type":"number"
+					"validation": {
+						"type": "number"
 					}
 				},
 				"supportSSL": {
@@ -2374,10 +2359,10 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type':{
+				'type': {
 					"required": true,
 					"source": ["body.type"],
-					"validation":{
+					"validation": {
 						"type": "string",
 						"enum": ["interval", "cron", "once"]
 					}

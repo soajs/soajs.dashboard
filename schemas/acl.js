@@ -9,9 +9,9 @@ var accessSchema = {
 var acl = {
 	'source': ['body.acl'],
 	'required': false,
-	'validation':{
-		"type":"object",
-		"patternProperties":{
+	'validation': {
+		"type": "object",
+		"patternProperties": {
 			"^[a-zA-Z0-9]{4}$": {
 				"type": "object",
 				"additionalProperties": {
@@ -19,7 +19,9 @@ var acl = {
 					"required": false,
 					"properties": {
 						"access": accessSchema,
-						"apisPermission": {"type": "string", "enum": ["restricted"], "required": false},
+						"apisPermission": {
+							"type": "string", "enum": ["restricted"], "required": false
+						},
 						"apis": {
 							"type": "object",
 							"required": false,
@@ -33,6 +35,22 @@ var acl = {
 									"additionalProperties": false
 								}
 							}
+						},
+						"get": {
+							"type": "object",
+							"required": false
+						},
+						"post": {
+							"type": "object",
+							"required": false
+						},
+						"put": {
+							"type": "object",
+							"required": false
+						},
+						"delete": {
+							"type": "object",
+							"required": false
 						},
 						"apisRegExp": {
 							"type": "array",
