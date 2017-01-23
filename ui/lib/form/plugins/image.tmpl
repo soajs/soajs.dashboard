@@ -12,7 +12,9 @@
         </a>&nbsp;
     </div>
     <input type="file" class="form-control" id="{{entry.name}}_{{i}}" name="{{entry.name}}_{{i}}"
-           file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple"/>
+           file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple" ng-if="entry.disabled" disabled/>
+	<input type="file" class="form-control" id="{{entry.name}}_{{i}}" name="{{entry.name}}_{{i}}"
+           file-model="form.formData[entry.name+'_'+i]" tooltip="{{entry.tooltip}}" multiple="multiple" ng-if="!entry.disabled"/>
 </div>
 <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
 <div ng-if="entry.addMore">
