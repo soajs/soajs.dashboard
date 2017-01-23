@@ -572,11 +572,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         listNginxHosts(currentScope, currentScope.envCode);
     }
 
-    function deleteService(currentScope, serviceName, serviceVersion) {
+    function deleteService(currentScope, serviceId) {
         var params = {
             env: currentScope.envCode,
-            name: serviceName,
-            version: serviceVersion
+            serviceId: serviceId
         };
 
         overlayLoading.show();
@@ -615,9 +614,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
                 $scope.onSubmit = function () {
                     var params = {
-                        envCode: $scope.service.env,
-                        name: $scope.service.name,
-                        version: $scope.service.version
+                        env: $scope.service.env,
+                        serviceId: $scope.service.id
                     };
 
                     var postData = {

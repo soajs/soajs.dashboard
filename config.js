@@ -2426,23 +2426,16 @@ module.exports = {
 					"l": "Scale HA Service",
 					"group": "HA Cloud"
 				},
-				"envCode": {
-					"source": ['query.envCode'],
+				"env": {
+					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
-				"name": {
-					"source": ['query.name'],
+				"serviceId": {
+					"source": ['query.serviceId'],
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"source": ['query.version'],
-					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -2762,16 +2755,9 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"name": {
-					"source": ['query.name'],
+				"serviceId": {
+					"source": ['query.serviceId'],
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"source": ['query.version'],
-					"required": false,
 					"validation": {
 						"type": "string"
 					}

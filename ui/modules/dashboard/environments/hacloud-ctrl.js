@@ -21,7 +21,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
     $scope.removeNode = function (nodeId) {
         hacloudSrv.removeNode($scope, nodeId);
     };
-	
+
 	$scope.showHideContent = function (type) {
 		if (type === 'nginx') {
 			$scope.showNginxHosts = !$scope.showNginxHosts;
@@ -30,11 +30,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 			$scope.showCtrlHosts = !$scope.showCtrlHosts;
 		}
 	};
-	
+
 	$scope.showHideGroupContent = function (groupName) {
 		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
 	};
-	
+
     $scope.updateNode = function (node, type, newStatus) {
         hacloudSrv.updateNode($scope, node, type, newStatus);
     };
@@ -52,8 +52,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		$scope.listNginxServices($scope, $scope.envCode);
 	};
 
-	$scope.deleteService = function (serviceName, serviceVersion) {
-		hacloudSrv.deleteService($scope, serviceName, serviceVersion);
+	$scope.deleteService = function (serviceId) {
+		hacloudSrv.deleteService($scope, serviceId);
 	};
 
 	$scope.scaleService = function (serviceInfo, serviceVersion) {
