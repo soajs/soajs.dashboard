@@ -194,6 +194,7 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 	//event listener that hooks ace editor to the scope
 	$scope.aceLoaded = function (_editor) {
 		$scope.editor = _editor;
+		_editor.setShowPrintMargin(false);
 	};
 	
 	/*

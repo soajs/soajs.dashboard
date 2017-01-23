@@ -32,6 +32,8 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	 */
 	function watchSwaggerSimulator() {
 		//grab the swagger info
+		if(swaggerParser.fetch()== undefined)
+			alert("yaml code error!!");
 		var x = swaggerParser.fetch();
 		if (!x || x.length === 0) {
 			$timeout(function () {
@@ -46,8 +48,6 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 			x[3].basePath = "/dashboard/swagger/simulate";
 			x[3].info.basePath = "/dashboard/swagger/simulate";
 
-			console.log("switching to host and basepath to swagger simulate api in dashboard:", x[3].host + x[3].basePath);
-			//apply the changes
 			swaggerParser.execute.apply(null, x);
 		}
 	}
@@ -56,9 +56,6 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 		if($scope.access.generate){
 			
 		}
-	};
-	$scope.TestValidApi = function() {
-		
 	};
 	
 	if($scope.access.generate){

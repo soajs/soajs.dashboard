@@ -1,11 +1,12 @@
 <section ng-controller="swaggerEditorCtrl">
 	<p>
-		lezim nektoub paragraph enno yaba lashou hal shi killo w shou el flow men wara
+	<h3>Welcome to the easiest place to create your service!!</h3><br>
+	All you have to do is to set your service information in the first tab, write your APIs in the second tab where you can run your code to check for any type of errors, click on generate so we will build the essential files to your service(index, config, middleware, model, test, etc...) in a zipped file that will be downloaded, write your business logic, upload your repository to your git account and finally go to the dashboard and activate this repository in the git accounts page. Reload your page, go to the services page, click on the swagger test button, choose your environment and you will get your yaml code in the editor on the left side(read only mode) as well you can test your APIs using the swagger UI shown on the right side.
 	</p>
 	<tabset ng-if="access.generate"> 
 		<tab heading="Service Information">  <br>
 			<p>
-				lezim nektoub shi sentence enno howde el bel form lashou aw kel input na3ti fieldMs
+			<h4>These inputs will help us build the config file according to our standards</h4>
 			</p>
 			<div class='form'>
 				<ngform></ngform>
@@ -15,7 +16,7 @@
 			<div>
 				<p>
 					Use the below Swagger Editor and write the Yaml code that represents the REST Layer of the service you are trying to build.<br />
-					While you are writing the Yaml code, Swagger will render it and show you a live preview along with test capability in the right panel.<br />
+					When you are write the Yaml code, click on Run so Swagger will render it and show you your API documentation along with test capability of your IMFV in the right panel. The Swagger won't render the documentation unless your code is well indented and has its minimal specification.<br />
 				</p>
 			</div>
 			<div class="w100 c-both">
