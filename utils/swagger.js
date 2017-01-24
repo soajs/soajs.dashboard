@@ -2,53 +2,59 @@
 var soajsUtils = require("soajs/lib/utils");
 
 var lib = {
-	"extractValidation": function(commonFields, oneInput, tempInput, inputObj){
+	"extractValidation": function (commonFields, oneInput, tempInput, inputObj) {
 		
 		//if param is in common field ( used for objects only )
-		if(oneInput.schema && oneInput.schema['$ref']){
+		if (oneInput.schema && oneInput.schema['$ref']) {
 			inputObj.validation = lib.getIMFVfromCommonFields(commonFields, oneInput.schema['$ref']);
 		}
 		//if param is a combination of array and common field
-		else if(oneInput.schema && oneInput.schema.type === 'array' && oneInput.schema.items['$ref']){
+		else if (oneInput.schema && oneInput.schema.type === 'array' && oneInput.schema.items['$ref']) {
 			inputObj.validation = {
 				"type": "array",
 				"items": lib.getIMFVfromCommonFields(commonFields, oneInput.schema.items['$ref'])
 			};
 		}
+		else if (oneInput.schema && oneInput.schema.properties && oneInput.schema.properties.items && oneInput.schema.properties.items.type === 'array' && oneInput.schema.properties.items.items['$ref']) {
+			inputObj.validation = {
+				"type": "array",
+				"items": lib.getIMFVfromCommonFields(commonFields, oneInput.schema.properties.items.items['$ref'])
+			};
+		}
 		//if param is not a common field
-		else{
+		else {
 			inputObj.validation = tempInput;
 		}
 	},
 	
-	"getIMFVfromCommonFields" : function(commonFields, source){
+	"getIMFVfromCommonFields": function (commonFields, source) {
 		var commonFieldInputName = source.toLowerCase().split("/");
-		commonFieldInputName = commonFieldInputName[commonFieldInputName.length -1];
+		commonFieldInputName = commonFieldInputName[commonFieldInputName.length - 1];
 		return commonFields[commonFieldInputName].validation;
 	},
 	
-	"populateCommonFields": function(commonFields){
+	"populateCommonFields": function (commonFields) {
 		//loop in all common fields
-		for(var oneCommonField in commonFields){
+		for (var oneCommonField in commonFields) {
 			recursiveMapping(commonFields[oneCommonField].validation);
 		}
 		
 		//loop through one common field recursively constructing and populating all its children imfv
-		function recursiveMapping(source){
-			if(source.type === 'array'){
-				if(source.items['$ref'] || source.items.type === 'object'){
+		function recursiveMapping(source) {
+			if (source.type === 'array') {
+				if (source.items['$ref'] || source.items.type === 'object') {
 					source.items = mapSimpleField(source.items);
 				}
-				else if(source.items.type === 'object'){
+				else if (source.items.type === 'object') {
 					recursiveMapping(source.items);
 				}
 			}
-			else if(source.type === 'object'){
-				for(var property in source.properties){
-					if(source.properties[property]['$ref']){
+			else if (source.type === 'object') {
+				for (var property in source.properties) {
+					if (source.properties[property]['$ref']) {
 						source.properties[property] = mapSimpleField(source.properties[property]);
 					}
-					else if(source.properties[property].type ==='object' || source.properties[property].type ==='array'){
+					else if (source.properties[property].type === 'object' || source.properties[property].type === 'array') {
 						recursiveMapping(source.properties[property]);
 					}
 				}
@@ -60,8 +66,8 @@ var lib = {
 		}
 		
 		//if this input is a ref, get the ref and replace it.
-		function mapSimpleField(oneField){
-			if(oneField['$ref']){
+		function mapSimpleField(oneField) {
+			if (oneField['$ref']) {
 				return lib.getIMFVfromCommonFields(commonFields, oneField['$ref']);
 			}
 		}
@@ -71,11 +77,11 @@ var lib = {
 var swagger = {
 	
 	"validateYaml": function (yamlJson) {
-		if(typeof yamlJson !== 'object'){
+		if (typeof yamlJson !== 'object') {
 			throw new Error("Yaml file was converted to a string");
 		}
 		
-		if(!yamlJson.paths || Object.keys(yamlJson.paths).length === 0){
+		if (!yamlJson.paths || Object.keys(yamlJson.paths).length === 0) {
 			throw new Error("Yaml file is missing api schema");
 		}
 	},
@@ -111,8 +117,8 @@ var swagger = {
 		var commonFields = {};
 		
 		//extract common fields
-		if(definitions && Object.keys(definitions).length > 0){
-			for(var onecommonInput in definitions){
+		if (definitions && Object.keys(definitions).length > 0) {
+			for (var onecommonInput in definitions) {
 				commonFields[onecommonInput.toLowerCase()] = {
 					"validation": definitions[onecommonInput]
 				};
@@ -131,10 +137,10 @@ var swagger = {
 				}
 				
 				//collect the error codes while at it
-				if(apiPath[route][oneMethod].responses && Object.keys(apiPath[route][oneMethod].responses).length > 0){
-					for(var errorCode in apiPath[route][oneMethod].responses){
+				if (apiPath[route][oneMethod].responses && Object.keys(apiPath[route][oneMethod].responses).length > 0) {
+					for (var errorCode in apiPath[route][oneMethod].responses) {
 						var code = parseInt(errorCode, 10);
-						if(!isNaN(code) && code !== 200){
+						if (!isNaN(code) && code !== 200) {
 							all_errors[code] = apiPath[route][oneMethod].responses[errorCode].description;
 						}
 					}
@@ -154,7 +160,7 @@ var swagger = {
 			var methods = Object.keys(apiPath[route]);
 			methods.forEach(function (oneMethod) {
 				
-				if(apiPath[route][oneMethod]){
+				if (apiPath[route][oneMethod]) {
 					var soajsRoute = route.replace(/\{/g, ":").replace(/\}/g, "");
 					
 					var mwFile = soajsRoute.replace(/\\/g, "_").replace(/:/g, "_").replace(/\//g, "_").replace(/[_]{2,}/g, "_");
@@ -169,21 +175,24 @@ var swagger = {
 							"l": apiPath[route][oneMethod].summary,
 							"group": apiPath[route][oneMethod].tags[0]
 						},
-						"mw": "./lib/mw/" + mwFile
+						"mw": '%dirname% + "/lib/mw/' + mwFile + '"'
 					};
 					
 					//map the parameters
 					
 					if (apiPath[route][oneMethod].parameters && apiPath[route][oneMethod].parameters.length > 0) {
-						for(var input in apiPath[route][oneMethod].parameters){
+						for (var input in apiPath[route][oneMethod].parameters) {
 							var oneInput = apiPath[route][oneMethod].parameters[input];
 							var tempInput = soajsUtils.cloneObj(oneInput);
 							var sourcePrefix = tempInput.in;
-							if(sourcePrefix === 'path'){
+							if (sourcePrefix === 'path') {
 								sourcePrefix = "params";
 							}
-							if(sourcePrefix === 'header'){
+							if (sourcePrefix === 'header') {
 								sourcePrefix = "headers";
+							}
+							if (sourcePrefix === 'formData') {
+								sourcePrefix = "body";
 							}
 							var inputObj = {
 								"required": tempInput.required,

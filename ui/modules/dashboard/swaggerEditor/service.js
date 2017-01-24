@@ -247,6 +247,12 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 				"items": getIMFVfromCommonFields(commonFields, tempInput.schema.items['$ref'])
 			};
 		}
+		else if (tempInput.schema && tempInput.schema.properties && tempInput.schema.properties.items && tempInput.schema.properties.items.type === 'array' && tempInput.schema.properties.items.items['$ref']) {
+			inputObj.validation = {
+				"type": "array",
+				"items": getIMFVfromCommonFields(commonFields, tempInput.schema.properties.items.items['$ref'])
+			};
+		}
 		//if param is not a common field
 		else{
 			inputObj.validation = tempInput;
@@ -259,11 +265,12 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 		return commonFields[commonFieldInputName].validation;
 	}
 	
-	function populateCommonFields(commonFields){
+	function populateCommonFields(commonFields, cb){
 		//loop in all common fields
 		for(var oneCommonField in commonFields){
 			recursiveMapping(commonFields[oneCommonField].validation);
 		}
+		return cb();
 		
 		//loop through one common field recursively constructing and populating all its children imfv
 		function recursiveMapping(source){
@@ -281,7 +288,7 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 						source.properties[property] = mapSimpleField(source.properties[property]);
 					}
 					else if(source.properties[property].type ==='object' || source.properties[property].type ==='array'){
-						recursiveMapping(source.properties[property]);
+								recursiveMapping(source.properties[property]);
 					}
 				}
 			}
@@ -307,7 +314,6 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 		var oldValues = angular.copy(values);
 		
 		operation.parameters = [];
-		values = {};
 		
 		//extract common fields
 		var commonFields = {};
@@ -317,36 +323,54 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 					"validation": definitions[onecommonInput]
 				};
 			}
-			populateCommonFields(commonFields);
+			populateCommonFields(commonFields, function(){
+				resumeE();
+			});
+		}
+		else{
+			resumeE();
 		}
 		
-		//define new parameter for api
-		var customBody = {
-			"input": {},
-			"imfv": {}
-		};
-		
-		oldParams.forEach(function(swaggerParam){
-			var sourcePrefix = swaggerParam.in;
-			if(sourcePrefix === 'path'){
-				sourcePrefix = "params";
-			}
-			if(sourcePrefix === 'header'){
-				sourcePrefix = "headers";
-			}
-			var inputObj = {
-				"required": swaggerParam.required,
-				"source": [sourcePrefix + "." + swaggerParam.name],
-				"validation": {}
+		function resumeE(){
+			//define new parameter for api
+			var customBody = {
+				"input": {},
+				"imfv": {}
 			};
 			
-			extractValidation(commonFields, swaggerParam, inputObj);
+			oldParams.forEach(function(swaggerParam){
+				var sourcePrefix = swaggerParam.in;
+				if(sourcePrefix === 'path'){
+					sourcePrefix = "params";
+				}
+				if(sourcePrefix === 'header'){
+					sourcePrefix = "headers";
+				}
+				var inputObj = {
+					"required": swaggerParam.required,
+					"source": [sourcePrefix + "." + swaggerParam.name],
+					"validation": {}
+				};
+				
+				extractValidation(commonFields, swaggerParam, inputObj);
+				
+				customBody.imfv[swaggerParam.name] = inputObj;
+				
+				if(typeof(oldValues[swaggerParam.name]) === 'string' && oldValues[swaggerParam.name] !== '' && (inputObj.validation.type === 'object' || inputObj.validation.type === 'array')){
+					try{
+						customBody.input[swaggerParam.name] = JSON.parse(oldValues[swaggerParam.name]);
+					}
+					catch(e){
+						customBody.input[swaggerParam.name] = oldValues[swaggerParam.name];
+					}
+				}
+				else{
+					customBody.input[swaggerParam.name] = oldValues[swaggerParam.name];
+				}
+			});
 			
-			customBody.imfv[swaggerParam.name] = inputObj;
-			customBody.input[swaggerParam.name] = JSON.parse(oldValues[swaggerParam.name]);
-		});
-		
-		operation.parameters.push(customBody);
+			operation.parameters.push(customBody);
+		}
 	}
 	
 	/**
@@ -356,11 +380,6 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 		var oldParams = angular.copy(operation.parameters);
 		var oldValues = angular.copy(values);
 		
-		/**
-		 * call custom method to override the defaults
-		 */
-		overrideDefaultInputs(swagger.definitions, operation, values);
-		
 		var deferred = $q.defer(),
 			query = {},
 			headers = {
@@ -369,6 +388,10 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 			},
 			path = '/dashboard/swagger/simulate';
 		
+		/**
+		 * call custom method to override the defaults
+		 */
+		overrideDefaultInputs(swagger.definitions, operation, values);
 		/**
 		 * hook the headers
 		 */
@@ -410,7 +433,7 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 						values = oldValues;
 					});
 			};
-
+		
 		// execute modules
 		swaggerModules
 			.execute(swaggerModules.BEFORE_EXPLORER_LOAD, options)
@@ -420,7 +443,7 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 					.then(callback)
 					.catch(callback);
 			});
-
+		
 		return deferred.promise;
 	};
 }]);
