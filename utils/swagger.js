@@ -93,8 +93,8 @@ var swagger = {
 		var config = {
 			"type": "service",
 			"prerequisites": {
-				"cpu": '',
-				"memory": ''
+				"cpu": " ",
+				"memory": " "
 			},
 			"swagger": true,
 			"dbs": serviceInfo.dbs,
