@@ -120,6 +120,8 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 	$scope.yamlContent = "";
 	$scope.access = {};
 	$scope.tempDisable = true;
+	$scope.collapsed = false;
+	
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
 	
 	//read service name from route params
@@ -129,6 +131,10 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 	$scope.environments = {
 		value: "---Please choose---",
 		values: ["---Please choose---"]
+	};
+	
+	$scope.collapseExpand = function(){
+		$scope.collapsed = !$scope.collapsed;
 	};
 	
 	/*

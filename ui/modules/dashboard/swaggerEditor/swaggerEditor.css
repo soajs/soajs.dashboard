@@ -89,3 +89,10 @@
 a.tooltipToggle {
     outline: 0;
 }
+
+.block{
+    display:block;
+}
+.hidden{
+    display:hidden;
+}
