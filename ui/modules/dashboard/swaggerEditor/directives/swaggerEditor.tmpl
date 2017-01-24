@@ -1,10 +1,14 @@
 <section ng-controller="swaggerEditorCtrl">
+	<h3>Welcome to Swagger Microservice Generator</h3><br>
 	<div ng-hide="hideToolTip">
-		<h3>Welcome to Swagger Microservice Generator</h3><br>
 		<p>
 			This module provides you with the ability to generate a microservice by writing its documentation.<br />
-			Simply provide the general inforamtion of your service and a yaml code that documents the REST layer and click <b>Generate Service</b>. <br />
-			The dashboard will then perform a reverse engineering on the documentation you have provided and generate all the folders/files needed to build a microservice; All you need after that is to fill in your custom code for the business logic.<br />
+			Simply provide the general information of your service and a yaml code that documents the REST layer and click <b>Generate Service</b>. <br />
+			The dashboard will then perform a reverse engineering on the documentation you have given it and generate all the folders/files needed to build a microservice.<br />
+			All you need after that is to fill in your custom code for the business logic.<br />
+		</p>
+		<hr />
+		<p>
 			The generated files Include:
 		</p>
 		<table width="100%" border="0">
@@ -12,65 +16,62 @@
 				<td>
 					<ul>
 						<li>100% complete REST Layer</li>
-						<li>Templated Business Logic files</li>
+						<li>100% ready configuration File(s)</li>
 						<li>100% ready Models for both Mongo and/or Elastic Search</li>
 					</ul>
 				</td>
 				<td>
 					<ul>
-						<li>100% complete REST Layer</li>
+						<li>100% ready files: gitignore - travis.yml - README.md - Grunt.js - package.json</li>
 						<li>Templated Business Logic files</li>
-						<li>100% ready Models for both Mongo and/or Elastic Search</li>
+						<li>Templated test cases files for both Unit and Integration</li>
 					</ul>
 				</td>
 			</tr>
 		</table>
+		<hr />
+		<p>
+			Write your Yaml code using the below Swagger Editor then click <b>Run</b> and Swagger will render your code and show you how your APIs documentation will look like.<br />
+			Swagger will also provide you with testing capability for your IMFV, and will not render the documentation unless your code is valid, well indented and has the minimal specification that the Swagger engine needs.<br />
+		</p>
 		<br />
 	</div>
 	<a href="" class="tooltipToggle f-right" ng-click="hideShowToolTip()">
-		<span class="icon" ng-class="{'icon-plus': hideToolTip, 'icon-minus': !hideToolTip }" tooltip="Click to Hide/Show the tooltip"></span>
+		<span class="icon" ng-class="{'icon-circle-down': hideToolTip, 'icon-circle-up': !hideToolTip }" tooltip="Click to Hide/Show the tooltip"></span>
 	</a>
 	<tabset ng-if="access.generate" class="swaggerEditor"> 
 		<tab heading="Service Information">  <br>
-			<p>
-				Fill out the General Information of the service you want to build in the form below.
-			</p>
 			<div class='form'>
 				<ngform></ngform>
 			</div>
 		</tab>
-		<tab heading="Swagger Editor">  <br>
-			<div>
-				<p>
-					Use the below Swagger Editor and write the Yaml code that represents the REST Layer of the service you are trying to build.<br />
-					Once you finish writing the Yaml code, click on Run and Swagger will render your code and show you how your APIs documentation will look like.<br />
-					In Addition, Swagger will provide you with test capability for your IMFV, and will not render the documentation unless your code is valid and well indented and has the minimal specification that the Swagger engine needs.<br />
-				</p>
+		<tab heading="YAML Documentation">  <br>
+			<div class="c-both w100 table">
+				<h4 class="f-left">Swagger Editor</h4>
+				<a class="btn btn-primary f-right" ng-click="collapseExpand()" ng-show="schemaCodeF && schemaCodeF!== ''">
+					<span class="icon icon-circle-left" ng-show="!collapsed"></span>
+					{{(collapsed) ? "Expand" : "Collapse"}} Editor
+					<span class="icon icon-circle-right" ng-show="collapsed"></span>
+				</a>
+				<a class="btn btn-danger f-right mr5" ng-click="clearYamlRight()" ng-show="schemaCodeF && schemaCodeF!== ''">
+					<span class="icon icon-cross"></span>
+					Clear
+				</a>
+				<a class="btn btn-success f-right mr5" ng-click="moveYamlRight()" ng-show="schemaCode && schemaCode!== ''">
+					<span class="icon icon-play3"></span>
+					Run
+				</a>
 			</div>
+			<hr/>
+			
 			<div class="w100 c-both">
-				<div class="f-left w49">
-					<div class="c-both w100 table">
-						<h4 class="f-left">Swagger Editor</h4>
-						<a class="btn btn-danger f-right" ng-click="clearYamlRight()" ng-show="schemaCodeF && schemaCodeF!== ''">
-							<span class="icon icon-cross"></span>
-							Clear
-						</a>
-						<a class="btn btn-success f-right mr5" ng-click="moveYamlRight()" ng-show="schemaCode && schemaCode!== ''">
-							<span class="icon icon-play3"></span>
-							Run
-						</a>
-					</div>
-					<hr/>
+				<div class="f-left w49" ng-class="{'block': !collapsed, 'hidden': collapsed}">
 					<div id="schemaCode" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded, onChange: updateScopeValue}" ng-model="schemaCode"></div>
 				</div>
-				<div class="f-left w2">
+				<div class="f-left w2" ng-class="{'block': !collapsed, 'hidden': collapsed}">
 					<span >&nbsp;</span>
 				</div>
-				<div class="f-left w49">
-					<div class="c-both w100 table">
-						<h4>Swagger Simulator</h4>
-					</div>
-					<hr/>
+				<div class="f-left" ng-class="{'w100': collapsed, 'w49': !collapsed}">
 					<div swagger-ui parser="yaml" input-type="yaml" input="schemaCodeF" trusted-sources="true" loading="true" api-explorer="true" permalinks="false"></div>
 				</div>
 			</div>

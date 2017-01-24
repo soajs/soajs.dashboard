@@ -7,8 +7,13 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.schemaCode = '';
 	$scope.schemaCodeF = '';
 	$scope.hideToolTip = false;
+	$scope.collapsed = false;
 	
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
+	
+	$scope.collapseExpand = function(){
+		$scope.collapsed = !$scope.collapsed;
+	};
 	
 	$scope.hideShowToolTip = function(){
 		$scope.hideToolTip = !$scope.hideToolTip;
