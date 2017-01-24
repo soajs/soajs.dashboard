@@ -7,6 +7,7 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 
 var hostBL = require("./lib/host.js");
+var cloudBL = require("./lib/cloud.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -409,8 +410,8 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
-	service.get("/hosts/nginx/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.get("/hosts/nginx/list", function (req, res) { //TODO: deprecate
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.listNginx(config, req.soajs, res);
 		});
 	});
@@ -420,72 +421,80 @@ service.init(function () {
 			BL.maintenanceOperation(config, req.soajs, res);
 		});
 	});
-	service.post("/hosts/deployController", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			req.soajs.customData = {
-				type: 'controller'
-			};
-			BL.deployService(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployNginx", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.nginx(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployService", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployDaemon", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deployDaemon(config, req.soajs, res);
-		});
-	});
+	// service.post("/hosts/deployController", function (req, res) { //TODO: deprecate
+	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
+	// 		BL.deployService(config, req.soajs, res);
+	// 	});
+	// });
+	// service.post("/hosts/deployNginx", function (req, res) { //TODO: deprecate
+	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
+	// 		BL.nginx(config, req.soajs, res);
+	// 	});
+	// });
+	// service.post("/hosts/deployService", function (req, res) { //TODO: deprecate
+	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
+	// 		req.soajs.custom = { type: 'service' };
+	// 		BL.deployService(config, req.soajs, res);
+	// 	});
+	// });
+	// service.post("/hosts/deployDaemon", function (req, res) { //TODO: deprecate
+	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
+	// 		req.soajs.custom = { type: 'daemon' };
+	// 		BL.deployService(config, req.soajs, res);
+	// 	});
+	// });
 
 	/**
 	 * High Availability Cloud features
 	 */
-	service.get("/hacloud/nodes/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.get("/cloud/nodes/list", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.listNodes(config, req.soajs, res);
 		});
 	});
-	service.post("/hacloud/nodes/add", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.post("/cloud/nodes/add", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.addNode(config, req.soajs, res);
 		});
 	});
-	service.delete("/hacloud/nodes/remove", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.delete("/cloud/nodes/remove", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.removeNode(config, req.soajs, res);
 		});
 	});
-	service.put("/hacloud/nodes/update", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.put("/cloud/nodes/update", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.updateNode(config, req.soajs, res);
 		});
 	});
 
-	service.put("/hacloud/services/scale", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.scaleHAService(config, req.soajs, res);
+	service.get("/cloud/services/list", function (req, res) { //TODO: implement
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.listServices(config, req.soajs, res);
 		});
 	});
-	service.delete("/hacloud/services/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deleteHAService(config, req.soajs, res);
+	service.post("/cloud/services/deploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deployService(config, req.soajs, res);
 		});
 	});
-	service.put("/hacloud/services/redeploy", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.redeployHAService(config, req.soajs, res);
+	service.put("/cloud/services/redeploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.redeployService(config, req.soajs, res);
 		});
 	});
-
-	service.get("/hacloud/services/instances/logs", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.put("/cloud/services/scale", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.scaleService(config, req.soajs, res);
+		});
+	});
+	service.delete("/cloud/services/delete", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deleteService(config, req.soajs, res);
+		});
+	});
+	service.get("/cloud/services/instances/logs", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res);
 		});
 	});

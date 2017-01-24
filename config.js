@@ -875,14 +875,14 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/nodes/list": {
+			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
 					"group": "HA Cloud"
 				}
 			},
 
-			"/hacloud/services/instances/logs": {
+			"/cloud/services/instances/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
@@ -1328,23 +1328,36 @@ module.exports = {
 				}
 			},
 
-			"/hosts/deployController": {
+			"/cloud/services/deploy": {
 				"_apiInfo": {
-					"l": "Deploy New Controller",
-					"group": "Hosts"
+					"l": "Deploy A New Service",
+					"group": "HA Cloud"
 				},
-				"commonFields": ['envCode'],
-				"number": {
+				"env": {
+					"source": ['body.env'],
 					"required": true,
-					"source": ["body.number"],
 					"validation": {
-						"type": "number",
-						"minimum": 1
+						"type": "string"
+					}
+				},
+				"type": {
+					"required": true,
+					"source": ['body.type'],
+					"validation": {
+						"type": "string",
+						"enum": ['service', 'daemon', 'nginx']
+					}
+				},
+				"name": {
+					"required": false,
+					"source": ['body.name'],
+					"validation": {
+						"type": "string"
 					}
 				},
 				"version": {
-					"required": true,
-					"source": ["body.version"],
+					"source": ['body.version'],
+					"required": false,
 					"default": 1,
 					"validation": {
 						"type": "number",
@@ -1360,344 +1373,77 @@ module.exports = {
 						"items": {"type": "string"}
 					}
 				},
-				"owner": {
-					"source": ['body.owner'],
+				"gitSource": {
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"exposedPort":{
-	                "source": ['body.exposedPort'],
-	                "required": false,
-	                "validation": {
-	                    "type": "number"
-	                }
-				},
-				"isKubernetes": {
-	                "source": ['body.isKubernetes'],
-	                "required": false,
-	                "validation": {
-	                    "type": "boolean"
-	                }
-				}
-			},
-
-			"/hosts/deployNginx": {
-				"_apiInfo": {
-					"l": "Deploy New Nginx",
-					"group": "Hosts"
-				},
-				"commonFields": ['envCode'],
-				"nginxConfig": {
-					"source": ["body.nginxConfig"],
-					"required": false,
+					"source": ['body.gitSource'],
 					"validation": {
 						"type": "object",
+						"required": true,
 						"properties": {
-							"customUIId": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
+							"owner": { "required": true, "type": "string" },
+							"repo": { "required": true, "type": "string" },
+							"branch": { "required": true, "type": "string" },
+							"commit": { "required": true, "type": "string" }
 						}
 					}
 				},
-				"exposedPort": {
-					"source": ["body.exposedPort"],
+				"deployConfig": {
 					"required": true,
-					"validation":{
-						"type":"number"
+					"source": ['body.deployConfig'],
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"useLocalSOAJS": { "required": false, "type": "boolean" },
+							"replicas": { "required": true, "type": "number" },
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
+							"exposedPort": { "required": false, "type": "number" }, //NOTE: only required in case of nginx deployment
+							"isKubernetes": { "required": false, "type": "boolean" } //NOTE: only required in case of controller deployment
+						}
 					}
 				},
-				"supportSSL": {
-					"source": ['body.supportSSL'],
+				"contentConfig": {
 					"required": false,
+					"source": ['body.contentConfig'],
 					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
+						"type": "object",
+						"properties": {
+							"service": {
+								"required": false,
+								"properties": {
+									"gc": { "required": true, "type": "boolean" },
+									"gcName": { "required": true, "type": "string" },
+									"gcVersion": { "required": true, "type": "string" }
+								}
+							},
+							"daemon": {
+								"required": false,
+								"properties": {
+									"grpConfName": { "required": true, "type": "string" }
+								}
+							},
+							"nginx": {
+								"required": false,
+								"properties": {
+									"ui": {
+										"type": "object",
+										"required": false,
+										"properties": {
+											"id": { "type": "string", "required": true },
+											"branch": { "type": "string", "required": true },
+											"commit": { "type": "string", "required": true }
+										}
+									},
+									"supportSSL": { "required": false, "type": "boolean" }
+								}
+							}
+						}
 					}
 				}
 			},
 
-			"/hosts/deployService": {
-				"_apiInfo": {
-					"l": "Deploy New Service",
-					"group": "Hosts"
-				},
-				"commonFields": ['envCode'],
-				"name": {
-					"required": false,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"required": true,
-					"source": ["body.version"],
-					"default": 1,
-					"validation": {
-						"type": "number",
-						"minimum": 1
-					}
-				},
-				"gcName": {
-					"required": false,
-					"source": ['body.gcName'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"gcVersion": {
-					"required": false,
-					"source": ['body.gcVersion'],
-					"validation": {
-						"type": "integer",
-						"minimum": 1
-					}
-				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
-					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
-					}
-				},
-				"owner": {
-					"source": ['body.owner'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-			"/hosts/deployDaemon": {
-				"_apiInfo": {
-					"l": "Deploy New Daemon",
-					"group": "Hosts"
-				},
-				"commonFields": ['envCode'],
-				"name": {
-					"required": false,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"required": true,
-					"source": ["body.version"],
-					"default": 1,
-					"validation": {
-						"type": "number",
-						"minimum": 1
-					}
-				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
-					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
-					}
-				},
-				"grpConfName": {
-					"required": true,
-					"source": ['body.grpConfName'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"owner": {
-					"source": ['body.owner'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/hacloud/nodes/add": {
+			"/cloud/nodes/add": {
 				"_apiInfo": {
 					"l": "Add HA Cloud Node",
 					"group": "HA Cloud"
@@ -2364,7 +2110,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/nodes/update": {
+			"/cloud/nodes/update": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node",
 					"group": "HA Cloud"
@@ -2400,7 +2146,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/services/scale": {
+			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
 					"group": "HA Cloud"
@@ -2428,7 +2174,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/services/redeploy": {
+			"/cloud/services/redeploy": {
 				"_apiInfo": {
 					"l": "Redeploy HA Service",
 					"group": "HA Cloud"
@@ -2722,7 +2468,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/nodes/remove": {
+			"/cloud/nodes/remove": {
 				"_apiInfo": {
 					"l": "Remove HA Cloud Node",
 					"group": "HA Cloud"
@@ -2743,7 +2489,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/services/delete": {
+			"/cloud/services/delete": {
 				"_apiInfo": {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"

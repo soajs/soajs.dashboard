@@ -151,33 +151,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         function deployEnvironment(formData) {
             var branchObj = JSON.parse(formData.branch);
             var params = {
-                'envCode': envCode,
-                "number": formData.controllers,
-                'owner': formData.owner,
-                'repo': formData.repo,
-                'branch': branchObj.name,
-                'commit': branchObj.commit.sha,
-                'useLocalSOAJS': formData.useLocalSOAJS,
-                'imagePrefix': formData.ctrlImagePrefix
+                env: envCode,
+                type: 'service',
+                name: 'controller',
+                gitSource: {
+                    owner: formData.owner,
+                    repo: formData.repo,
+                    branch: branchObj.name,
+                    commit: branchObj.commit.sha
+                },
+                deployConfig: {
+                    useLocalSOAJS: formData.useLocalSOAJS,
+                    replicas: formData.controllers,
+                    memoryLimit: formData.ctrlMemoryLimit * 1048576,
+                    imagePrefix: formData.ctrlImagePrefix,
+                    exposedPort: formData.exposedPort,
+                    isKubernetes: (currentScope.isKubernetes ? true : false)
+                },
+                contentConfig: {}
             };
-
-            if(currentScope.isKubernetes) {
-                params.isKubernetes = true;
-            }
-
-            if (formData.exposedPort) {
-                params.exposedPort = formData.exposedPort;
-            }
-
-            if (formData.useCustomUI) {
-                formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
-                formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
-                params.nginxConfig = {
-                    customUIId: formData.selectCustomUI._id,
-                    branch: formData.selectUIBranch.name,
-                    commit: formData.selectUIBranch.commit.sha
-                };
-            }
 
             if(formData.variables && formData.variables !== ''){
                 params.variables = formData.variables.split(",");
@@ -186,16 +178,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 }
             }
 
-            if (haMode) {
-                params.name = 'controller';
-                params.haService = true;
-                params.haCount = formData.controllers;
-                params.memoryLimit = (formData.ctrlMemoryLimit * 1048576);
-            }
-
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",
-                "routeName": "/dashboard/hosts/deployController",
+                "routeName": "/dashboard/cloud/services/deploy",
                 "data": params
             }, function(error, response) {
                 if(error) {
@@ -203,13 +188,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     currentScope.form.displayAlert('danger', error.message);
                 }
                 else {
-                    params.supportSSL = formData.supportSSL;
-                    params.haCount = formData.nginxCount;
-                    params.memoryLimit = (formData.nginxMemoryLimit * 1048576);
-                    params.imagePrefix = formData.nginxImagePrefix;
+                    params.type = 'nginx';
+                    delete params.name;
+                    params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
+                    params.deployConfig.replicas = formData.nginxCount;
+                    params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
+                    params.deployConfig.imagePrefix = formData.nginxImagePrefix;
+
+                    if (formData.useCustomUI) {
+                        formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
+                        formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
+
+                        params.contentConfig.nginx.ui = {
+                            id: formData.selectCustomUI._id,
+                            branch: formData.selectUIBranch.name,
+                            commit: formData.selectUIBranch.commit.sha
+                        };
+                    }
+                    
                     getSendDataFromServer(currentScope, ngDataApi, {
                         "method": "post",
-                        "routeName": "/dashboard/hosts/deployNginx",
+                        "routeName": "/dashboard/cloud/services/deploy",
                         "data": params
                     }, function(error, response) {
                         if(error) {
