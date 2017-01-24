@@ -70,6 +70,9 @@ var lib = {
 			if (oneField['$ref']) {
 				return lib.getIMFVfromCommonFields(commonFields, oneField['$ref']);
 			}
+			else{
+				return oneField;
+			}
 		}
 	}
 };

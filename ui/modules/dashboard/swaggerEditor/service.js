@@ -288,7 +288,7 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 						source.properties[property] = mapSimpleField(source.properties[property]);
 					}
 					else if(source.properties[property].type ==='object' || source.properties[property].type ==='array'){
-								recursiveMapping(source.properties[property]);
+						recursiveMapping(source.properties[property]);
 					}
 				}
 			}
@@ -302,6 +302,9 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 		function mapSimpleField(oneField){
 			if(oneField['$ref']){
 				return getIMFVfromCommonFields(commonFields, oneField['$ref']);
+			}
+			else{
+				return oneField;
 			}
 		}
 	}
