@@ -52,7 +52,7 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "0.4.*",
-    "unzip2": "0.2.5"
+    "unzip2": "0.2.5",
     "yamljs": "0.2.8",
     "zip-folder": "1.0.0"
   }

@@ -10,11 +10,12 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			var decodedString = String.fromCharCode.apply(null, new Uint8Array(response));
 			try{
-				var res = JSON.parse(decodedString);
+				var res = String.fromCharCode.apply(null, new Uint8Array(response));
+				if(typeof res !== 'object'){
+					res = JSON.parse(res);
+				}
 				if (res.result === false) {
-					var res = JSON.parse(decodedString);
 					var str = '';
 					for (var i = 0; i < res.errors.details.length; i++) {
 						str += "Error[" + res.errors.details[i].code + "]: " + res.errors.details[i].message;
@@ -34,7 +35,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 				}
 			}
 			catch(e){
-				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream");
+				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream and too large.");
 				return cb(null, response);
 			}
 		}
