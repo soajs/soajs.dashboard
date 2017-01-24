@@ -875,6 +875,20 @@ module.exports = {
 				}
 			},
 
+			"/cloud/services/list": {
+				"_apiInfo": {
+					"l": "List Cloud Services",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ["query.env"],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
