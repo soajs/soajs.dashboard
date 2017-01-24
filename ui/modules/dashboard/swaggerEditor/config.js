@@ -123,23 +123,23 @@ var swaggerEditorConfig = {
 				'name': 'requestTimeout',
 				'label': "Request Timeout",
 				'type': 'number',
-				'min': 0,
-				'placeholder': "0",
+				'min': 1,
+				'placeholder': "1",
 				'value': '',
 				'tooltip': "Enter the timeout of any request",
 				'required': true,
-				'fieldMsg': "Specify how many seconds the controller should wait before considering the request as a timeout."
+				'fieldMsg': "Specify how many seconds the controller should wait before considering the request as a timeout, value must be equal or greater than 1."
 			},
 			{
 				'name': 'requestTimeoutRenewal',
 				'label': "Request Timeout Renewal",
 				'type': 'number',
-				'min': 0,
-				'placeholder': "0",
+				'min': 1,
+				'placeholder': "1",
 				'value': '',
 				'tooltip': "Enter the timeout renewal of any request",
 				'required': true,
-				'fieldMsg': "Specify how many attempts the controller should make after timing out before eventually giving up."
+				'fieldMsg': "Specify how many attempts the controller should make after timing out before eventually giving up, value must be equal or greater than 1."
 			},
 			{
 				'name': 'session',

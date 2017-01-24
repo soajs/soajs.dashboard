@@ -92,7 +92,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		}
 		
 		var requestTimeout = '';
-		if(currentScope.form.formData.requestTimeout){
+		if(Object.hasOwnProperty.call(currentScope.form.formData, "requestTimeout")){
 			requestTimeout = currentScope.form.formData.requestTimeout;
 		}
 		if(requestTimeout === ''){
@@ -101,7 +101,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		}
 		
 		var requestTimeoutRenewal = '';
-		if(currentScope.form.formData.requestTimeoutRenewal){
+		if(Object.hasOwnProperty.call(currentScope.form.formData, "requestTimeoutRenewal")){
 			requestTimeoutRenewal = currentScope.form.formData.requestTimeoutRenewal;
 		}
 		if(requestTimeoutRenewal === ''){
