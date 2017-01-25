@@ -45,8 +45,9 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 			if(dbObj.model === 'mongo'){
 				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
 			}
-			
-			dbs.push(dbObj);
+			if(Object.keys(dbObj).length > 0){
+				dbs.push(dbObj);
+			}
 		}
 		var yaml = currentScope.schemaCode.trim();
 		
