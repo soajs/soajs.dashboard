@@ -176,7 +176,7 @@ var swagger = {
 					all_apis[oneMethod.toLowerCase()][soajsRoute] = {
 						"_apiInfo": {
 							"l": apiPath[route][oneMethod].summary,
-							"group": apiPath[route][oneMethod].tags[0]
+							"group": (apiPath[route][oneMethod].tags) ? apiPath[route][oneMethod].tags[0] : ""
 						},
 						"mw": '%dirname% + "/lib/mw/' + mwFile + '"'
 					};
