@@ -1409,11 +1409,18 @@ module.exports = {
 						"required": true,
 						"properties": {
 							"useLocalSOAJS": { "required": false, "type": "boolean" },
-							"replicas": { "required": true, "type": "number" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
 							"exposedPort": { "required": false, "type": "number" }, //NOTE: only required in case of nginx deployment
-							"isKubernetes": { "required": false, "type": "boolean" } //NOTE: only required in case of controller deployment
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+							"replication": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
+									"replicas": { "required": false, "type": "number" }
+								}
+							}
 						}
 					}
 				},
@@ -1425,6 +1432,7 @@ module.exports = {
 						"properties": {
 							"service": {
 								"required": false,
+								"type": "object",
 								"properties": {
 									"gc": { "required": true, "type": "boolean" },
 									"gcName": { "required": true, "type": "string" },
@@ -1433,12 +1441,14 @@ module.exports = {
 							},
 							"daemon": {
 								"required": false,
+								"type": "object",
 								"properties": {
 									"grpConfName": { "required": true, "type": "string" }
 								}
 							},
 							"nginx": {
 								"required": false,
+								"type": "object",
 								"properties": {
 									"ui": {
 										"type": "object",

@@ -162,14 +162,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 },
                 deployConfig: {
                     useLocalSOAJS: formData.useLocalSOAJS,
-                    replicas: formData.controllers,
                     memoryLimit: formData.ctrlMemoryLimit * 1048576,
                     imagePrefix: formData.ctrlImagePrefix,
                     exposedPort: formData.exposedPort,
-                    isKubernetes: (currentScope.isKubernetes ? true : false)
+                    isKubernetes: (currentScope.isKubernetes ? true : false),
+                    replication: {
+                        mode: formData.replicationMode
+                    }
                 },
                 contentConfig: {}
             };
+
+            if (formData.ctrlReplMode === 'replicated') {
+                params.deployConfig.replication.replicas = formData.controllers;
+            }
 
             if(formData.variables && formData.variables !== ''){
                 params.variables = formData.variables.split(",");
@@ -191,9 +197,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     params.type = 'nginx';
                     delete params.name;
                     params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
-                    params.deployConfig.replicas = formData.nginxCount;
                     params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
                     params.deployConfig.imagePrefix = formData.nginxImagePrefix;
+                    params.deployerConfig.replication = {
+                        mode: formData.nginxReplMode
+                    };
+
+                    if (formData.nginxReplMode === 'replicated') {
+                        params.deployerConfig.replication.replicas = formData.nginxCount;
+                    }
 
                     if (formData.useCustomUI) {
                         formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
@@ -205,7 +217,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                             commit: formData.selectUIBranch.commit.sha
                         };
                     }
-                    
+
                     getSendDataFromServer(currentScope, ngDataApi, {
                         "method": "post",
                         "routeName": "/dashboard/cloud/services/deploy",

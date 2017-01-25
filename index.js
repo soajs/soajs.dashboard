@@ -421,28 +421,6 @@ service.init(function () {
 			BL.maintenanceOperation(config, req.soajs, res);
 		});
 	});
-	// service.post("/hosts/deployController", function (req, res) { //TODO: deprecate
-	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
-	// 		BL.deployService(config, req.soajs, res);
-	// 	});
-	// });
-	// service.post("/hosts/deployNginx", function (req, res) { //TODO: deprecate
-	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
-	// 		BL.nginx(config, req.soajs, res);
-	// 	});
-	// });
-	// service.post("/hosts/deployService", function (req, res) { //TODO: deprecate
-	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
-	// 		req.soajs.custom = { type: 'service' };
-	// 		BL.deployService(config, req.soajs, res);
-	// 	});
-	// });
-	// service.post("/hosts/deployDaemon", function (req, res) { //TODO: deprecate
-	// 	initBLModel(req, res, hostBL, dbModel, function (BL) {
-	// 		req.soajs.custom = { type: 'daemon' };
-	// 		BL.deployService(config, req.soajs, res);
-	// 	});
-	// });
 
 	/**
 	 * High Availability Cloud features
@@ -468,7 +446,7 @@ service.init(function () {
 		});
 	});
 
-	service.get("/cloud/services/list", function (req, res) { //TODO: implement
+	service.get("/cloud/services/list", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.listServices(config, req.soajs, res);
 		});
@@ -493,6 +471,7 @@ service.init(function () {
 			BL.deleteService(config, req.soajs, res);
 		});
 	});
+	
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res);
