@@ -1536,11 +1536,21 @@ module.exports = {
 								}
 							},
 							"restartPolicy": {
-								"required": false,
+								"required": true,
 								"type": "object",
 								"properties": {
 									"condition": { "required": true, "type": "string", "enum": ['none', 'on-failure', 'any']},
 									"maxAttempts": { "required": true, "type": "number" }
+								}
+							},
+							"volume": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"type": { "required": true, "type": "string", "enum": ['bind', 'volume'] },
+									"readOnly": { "required": false, "type": "boolean" },
+									"source": { "required": true, "type": "string" },
+									"target": { "required": true, "type": "string" }
 								}
 							}
 						}
