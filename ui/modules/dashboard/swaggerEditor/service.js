@@ -2,7 +2,10 @@
 var swaggerEditorSrv = soajsApp.components;
 
 swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function ($timeout, ngDataApi) {
-	
+	/*
+	* This function generate the service by testing all the required fields in the service info tab and the YAML code
+	* in the swagger documentation , catching their values and downloading the service files following the composer notation.
+	 */
 	function generateService(currentScope){
 		var extKeyRequired = false;
 		if(Array.isArray(currentScope.form.formData.extKeyRequired)){
@@ -145,7 +148,10 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 			}
 		});
 	}
-	
+	/*
+	 * This function builds the service information form, add an empty database and give you the ability to add another
+	 * database will keeping the index dynamic.
+	 */
 	function buildSwaggerForm(currentScope) {
 		var count = 0;
 		var infoForm = swaggerEditorConfig.form;
@@ -162,6 +168,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 						}
 						if(oneClone[i].name === "model" + count){
 							oneClone[i].onAction = function (id, data, form) {
+								// to disable the multitenant feature if es is selected
 								mtRef.disabled = (data === "es");
 							}
 						}
@@ -184,6 +191,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 									}
 									if(oneClone[i].name === "model" + count){
 										oneClone[i].onAction = function (id, data, form) {
+											// to disable the multitenant feature if es is selected
 											mtRef.disabled = (data === "es");
 										}
 									}
