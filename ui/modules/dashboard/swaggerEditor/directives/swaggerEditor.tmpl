@@ -79,6 +79,7 @@
 	</tabset>
 	<div class="w100 c-both text-center">
 		<br /><hr /><br />
-		<input type="button" value="Generate Service" ng-click="GenerateService()" class="btn btn-primary"/>
+		<input type="button" value="Generate Service" disabled class="btn btn-primary" ng-show="!swaggerCode"/>
+		<input type="button" value="Generate Service" ng-click="GenerateService()" class="btn btn-primary" ng-show="swaggerCode"/>
 	</div>
 </section>

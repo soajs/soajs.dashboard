@@ -22,6 +22,6 @@
 </div>
 <div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
 <div ng-if="entry.addMore">
-    <input type="button" ng-click="form.addNewInput(entry);" value="Add Another" class="btn btn-sm btn-success" ng-if="entry.disabled" disabled//>
-    <input type="button" ng-click="form.addNewInput(entry);" value="Add Another" class="btn btn-sm btn-success" ng-if="!entry.disabled"//>
+    <input type="button" ng-click="form.addNewInput(entry);" value="Add Another" class="btn btn-sm btn-success" ng-if="entry.disabled" disabled/>
+    <input type="button" ng-click="form.addNewInput(entry);" value="Add Another" class="btn btn-sm btn-success" ng-if="!entry.disabled"/>
 </div>

@@ -8,6 +8,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	$scope.schemaCodeF = '';
 	$scope.hideToolTip = false;
 	$scope.collapsed = false;
+	$scope.swaggerCode = false;
 	
 	constructModulePermissions($scope, $scope.access, swaggerEditorConfig.permissions);
 	
@@ -33,6 +34,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	
 	$scope.clearYamlRight = function(){
 		$scope.schemaCodeF = "";
+		$scope.swaggerCode = false;
 	};
 	
 	$scope.aceLoaded = function (_editor) {
@@ -50,7 +52,7 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	function watchSwaggerSimulator(cb) {
 		//grab the swagger info
 		var x = swaggerParser.fetch();
-		if (!x || x.length === 0 || !Array.isArray(x[3]) || x[3].length === 0) {
+		if (!x || x.length === 0 || typeof(x[3]) !== 'object' || Object.keys(x[3]).length === 0) {
 			$timeout(function () {
 				watchSwaggerSimulator(cb);
 			}, 100);
@@ -62,8 +64,8 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 			x[3].info.host = dashboardDomain;
 			x[3].basePath = "/dashboard/swagger/simulate";
 			x[3].info.basePath = "/dashboard/swagger/simulate";
-			
 			console.log("switching to host and basepath to swagger simulate api in dashboard:", x[3].host + x[3].basePath);
+			$scope.swaggerCode = x[4];
 			//apply the changes
 			swaggerParser.execute.apply(null, x);
 			return cb(null, true);
