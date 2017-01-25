@@ -451,9 +451,14 @@ service.init(function () {
 			BL.listServices(config, req.soajs, res);
 		});
 	});
-	service.post("/cloud/services/deploy", function (req, res) {
+	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.deployService(config, req.soajs, res);
+		});
+	});
+	service.post("/cloud/services/custom/deploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deployCustomService(config, req.soajs, res);
 		});
 	});
 	service.put("/cloud/services/redeploy", function (req, res) {
@@ -471,7 +476,7 @@ service.init(function () {
 			BL.deleteService(config, req.soajs, res);
 		});
 	});
-	
+
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res);

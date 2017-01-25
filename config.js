@@ -1342,9 +1342,9 @@ module.exports = {
 				}
 			},
 
-			"/cloud/services/deploy": {
+			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
-					"l": "Deploy A New Service",
+					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
 				"env": {
@@ -1465,6 +1465,87 @@ module.exports = {
 						}
 					}
 				}
+			},
+
+			"/cloud/services/custom/deploy": {
+				"_apiInfo": {
+					"l": "Add A New Custom Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"name": {
+					"required": true,
+					"source": ['body.name'],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"variables": {
+					"required": false,
+					"source": ['body.variables'],
+					"validation": {
+						"type": "array",
+						"minItems": 1,
+						"items": {"type": "string"}
+					}
+				},
+				"labels": {
+					"required": false,
+					"source": ['body.labels'],
+					"default": {},
+					"validation": {
+						"type": "object"
+					}
+				},
+				"command": {
+					"required": false,
+					"source": ['body.command'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"cmd": { "required": false, "type": "array" },
+							"args": { "required": false, "type": "array" }
+						}
+					}
+				},
+				"deployConfig": {
+					"required": true,
+					"source": ['body.deployConfig'],
+					"validation": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"image": { "required": true, "type": "string" },
+							"workDir": { "required": false, "type": "string" },
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"network": { "required": false, "type": "string" },
+							"exposedPort": { "required": false, "type": "number" },
+							"targetPort": { "required": false, "type": "number" },
+							"replication": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
+									"replicas": { "required": false, "type": "number" }
+								}
+							},
+							"restartPolicy": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"condition": { "required": true, "type": "string", "enum": ['none', 'on-failure', 'any']},
+									"maxAttempts": { "required": true, "type": "number" }
+								}
+							}
+						}
+					}
+				},
 			},
 
 			"/cloud/nodes/add": {

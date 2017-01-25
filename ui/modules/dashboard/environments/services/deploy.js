@@ -186,7 +186,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",
-                "routeName": "/dashboard/cloud/services/deploy",
+                "routeName": "/dashboard/cloud/services/soajs/deploy",
                 "data": params
             }, function(error, response) {
                 if(error) {
@@ -220,7 +220,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                     getSendDataFromServer(currentScope, ngDataApi, {
                         "method": "post",
-                        "routeName": "/dashboard/cloud/services/deploy",
+                        "routeName": "/dashboard/cloud/services/soajs/deploy",
                         "data": params
                     }, function(error, response) {
                         if(error) {
