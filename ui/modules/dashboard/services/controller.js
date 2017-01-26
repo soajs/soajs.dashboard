@@ -115,7 +115,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 	
 }]);
 
-servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi', 'injectFiles', 'swaggerParser', '$timeout', function ($scope, $routeParams, ngDataApi, injectFiles, swaggerParser, $timeout) {
+servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi', 'injectFiles', 'swaggerParser', '$timeout', 'swaggerClient', function ($scope, $routeParams, ngDataApi, injectFiles, swaggerParser, $timeout, swaggerClient) {
 	$scope.$parent.isUserLoggedIn();
 	$scope.yamlContent = "";
 	$scope.access = {};
