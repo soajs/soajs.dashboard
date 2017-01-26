@@ -1,7 +1,0 @@
-"use strict";
-describe("Calling Server %type%", function () {
-	it("Running Tests", function (done) {
-		require("./%service_name%.test.js");
-		done();
-	});
-});
