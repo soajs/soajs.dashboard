@@ -33,10 +33,6 @@
     "shelljs": "0.7.5"
   },
   "dependencies": {
-    "async": "2.1.4",
-    "jsonschema": "1.1.1",
-    "soajs.composer": "*",
-    "util": "0.10.3",
-    "yamljs": "0.2.8"
+    "soajs.composer": "*"
   }
 }

@@ -165,8 +165,16 @@ module.exports = function (grunt) {
 		},
 
 		swagger2soajs: {
-            generate: {
+            build: {
                 options:{
+                    op: "generate",
+                    configPath: __dirname + "/config.js",
+                    swaggerPath: __dirname + "/swagger.yaml"
+                }
+            },
+            rebuild: {
+                options:{
+                    op: "regenerate",
                     configPath: __dirname + "/config.js",
                     swaggerPath: __dirname + "/swagger.yaml"
                 }
