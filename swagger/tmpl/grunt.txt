@@ -184,7 +184,8 @@ module.exports = function (grunt) {
 
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
-	grunt.registerTask("generate", ['swagger2soajs:generate']);
+	grunt.registerTask("build", ['swagger2soajs:build']);
+    grunt.registerTask("rebuild", ['swagger2soajs:rebuild']);
 	grunt.registerTask("integration", ['env:mochaTest', 'mochaTest:integration']);
 	grunt.registerTask("unit", ['env:mochaTest', 'mochaTest:unit']);
 	grunt.registerTask("test", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
