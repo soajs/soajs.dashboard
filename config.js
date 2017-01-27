@@ -1525,8 +1525,18 @@ module.exports = {
 							"workDir": { "required": false, "type": "string" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"network": { "required": false, "type": "string" },
-							"exposedPort": { "required": false, "type": "number" },
-							"targetPort": { "required": false, "type": "number" },
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean" },
+										"published": { "required": false, "type": "number" },
+										"target": { "required": false, "type": "number" }
+									}
+								}
+							},
 							"replication": {
 								"required": true,
 								"type": "object",
