@@ -37,6 +37,8 @@ module.exports = {
 		"services": "soajs"
 	},
 
+	"network": 'soajsnet',
+
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"kubeNginx": {
@@ -2327,6 +2329,49 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+
+			"/cloud/services/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
 					}
 				}
 			},

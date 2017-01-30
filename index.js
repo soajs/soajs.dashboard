@@ -476,6 +476,11 @@ service.init(function () {
 			BL.deleteService(config, req.soajs, res);
 		});
 	});
+	service.put("/cloud/services/maintenance", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.maintenance(config, req.soajs, res);
+		});
+	});
 
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
