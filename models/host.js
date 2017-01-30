@@ -235,18 +235,6 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 
-	"getHostEnv": function (soajs, model, cb) {
-		var opts = {
-			collection: hostsColl,
-			conditions: {
-				'name': soajs.inputmaskData.service
-			},
-			fields: 'env'
-		};
-
-		model.distinctEntries(soajs, opts, cb);
-	},
-	
 	"getEnvInfo": function (soajs, model,options, cb) {
 		var opts = {
 			collection: envColl,
