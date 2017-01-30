@@ -54,6 +54,7 @@
     "soajs": "0.4.*",
     "soajs.core.drivers": "soajs/soajs.core.drivers.git#feature/DASHBOARD-50",
     "unzip2": "0.2.5",
+    "yamljs": "0.2.8",
     "zip-folder": "1.0.0"
   }
 }
