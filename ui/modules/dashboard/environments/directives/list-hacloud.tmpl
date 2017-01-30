@@ -169,7 +169,7 @@
             <div class="entryBoxes">
                 <div ng-repeat="node in nodes.list" class="entryBox mb20">
                     <div class="header">
-                        {{node.name}}
+                        {{node.hostname}}
                         <span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
                             <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
                                 <span class="icon icon-cross" tooltip="Remove Node"></span>
@@ -196,7 +196,6 @@
                                 <thead>
                                     <tr class="header">
                                         <td>IP Address</td>
-                                        <td>{{envPlatform|capitalizeFirst}} Port</td>
                                         <td>Role</td>
                                         <td>Availability</td>
                                         <td>Memory Resources</td>
@@ -206,12 +205,10 @@
                                 <tbody>
                                     <tr>
                                         <td>{{node.ip}}</td>
-                                        <td ng-if="envPlatform === 'docker'">{{node.dockerPort}}</td>
-										<td ng-if="envPlatform === 'kubernetes'">{{node.kubePort}}</td>
-                                        <td>{{node.role}}</td>
-                                        <td>{{node.availability}}</td>
+                                        <td>{{node.spec.role}}</td>
+                                        <td>{{node.spec.availability}}</td>
                                         <td>{{node.resources.memory | bytesToGbytes}} GB</td>
-                                        <td>{{node.resources.cpuCount}}</td>
+                                        <td>{{node.resources.cpus}}</td>
                                     </tr>
                                 </tbody>
                             </table>

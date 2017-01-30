@@ -47,10 +47,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     function listNodes(currentScope) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "get",
-            "routeName": "/dashboard/hacloud/nodes/list",
+            "routeName": "/dashboard/cloud/nodes/list",
         }, function (error, response) {
             if (error) {
-                currentScope.displayAlert('danger', 'Unable to list nodes');
+                currentScope.displayAlert('danger', error.message);
             }
             else {
                 currentScope.nodes.list = response;
@@ -89,7 +89,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
                             "method": "post",
-                            "routeName": "/dashboard/hacloud/nodes/add",
+                            "routeName": "/dashboard/cloud/nodes/add",
                             "data": postData
                         }, function (error, response) {
                             overlayLoading.hide();
@@ -123,7 +123,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
     function removeNode(currentScope, nodeId) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "delete",
-            "routeName": "/dashboard/hacloud/nodes/remove",
+            "routeName": "/dashboard/cloud/nodes/remove",
             "params": {
                 env: currentScope.envCode,
                 nodeId: nodeId
@@ -152,7 +152,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
 
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "put",
-            "routeName": "/dashboard/hacloud/nodes/update",
+            "routeName": "/dashboard/cloud/nodes/update",
             params: params,
             data: postData
         }, function (error, response) {
@@ -581,7 +581,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
         overlayLoading.show();
         getSendDataFromServer(currentScope, ngDataApi, {
             method: 'delete',
-            routeName: '/dashboard/hacloud/services/delete',
+            routeName: '/dashboard/cloud/services/delete',
             params: params
         }, function (error, response) {
             overlayLoading.hide();
@@ -625,7 +625,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', functi
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'put',
-                        routeName: '/dashboard/hacloud/services/scale',
+                        routeName: '/dashboard/cloud/services/scale',
                         params: params,
                         data: postData
                     }, function (error, result) {
