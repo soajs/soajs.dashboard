@@ -453,7 +453,7 @@ service.init(function () {
 	});
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, res);
+			BL.deployService(config, req.soajs, service.registry, res);
 		});
 	});
 	service.post("/cloud/services/custom/deploy", function (req, res) {
