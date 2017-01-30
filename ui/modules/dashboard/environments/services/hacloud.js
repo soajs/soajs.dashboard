@@ -2,6 +2,8 @@
 var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce', function (ngDataApi, $timeout, $modal, $sce) {
 
+    $scope.deploymentModes = ['replicated', 'global'];
+
     function checkCerts(currentScope, env) {
         currentScope.certsExist = {
             all: false,
@@ -1076,19 +1078,22 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
                 function newController(currentScope, max) {
                     var params = {
-                        'envCode': env,
-                        "number": max,
+                        'env': env,
+                        'name': 'controller',
+                        'type': 'service',
+                    };
+
+                    params.gitSource = {
                         "owner": currentScope.serviceOwner,
                         "repo": currentScope.serviceRepo,
-                        "useLocalSOAJS": currentScope.useLocalSOAJS
                     };
 
                     if (currentScope.commit && !currentScope.confirmBranch) {
-                        params.branch = getBranchFromCommit(currentScope.commit);
-                        params.commit = currentScope.commit;
+                        params.gitSource.branch = getBranchFromCommit(currentScope.commit);
+                        params.gitSource.commit = currentScope.commit;
                     } else {
-                        params.branch = currentScope.branch.name;
-                        params.commit = currentScope.branch.commit.sha;
+                        params.gitSource.branch = currentScope.branch.name;
+                        params.gitSource.commit = currentScope.branch.commit.sha;
                     }
 
                     if (currentScope.service.latest) {
@@ -1102,9 +1107,19 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         }
                     }
 
+                    //Fill deployConfig information
+                    params.deployConfig = {
+                        "useLocalSOAJS": currentScope.useLocalSOAJS,
+                        "imagePrefix": currentScope.imagePrefix,
+                        "replication": {
+                            "mode": currentScope.mode,
+                            "number": max,
+                        }
+                    };
+
                     getSendDataFromServer(currentScope, ngDataApi, {
                         "method": "post",
-                        "routeName": "/dashboard/hosts/deployController",
+                        "routeName": "/cloud/services/soajs/deploy",
                         "data": params
                     }, function (error, response) {
                         if (error) {
@@ -1112,58 +1127,43 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                             $modalInstance.close();
                         }
                         else {
-                            getSendDataFromServer(currentScope, ngDataApi, {
-                                "method": "send",
-                                "routeName": "/dashboard/hosts/updateNginx",
-                                "data": {
-                                    'envCode': env
-                                }
-                            }, function (error, response) {
-                                if (error) {
-                                    currentScope.generateNewMsg(env, 'danger', error.message);
-                                    $modalInstance.close();
-                                }
-                                else {
-                                    $modalInstance.close();
-
-                                    $timeout(function () {
-                                        listHosts(currentScope, env);
-                                    }, 2000);
-                                }
-                            });
+                            listHosts(currentScope, env);
                         }
                     });
                 }
 
                 function newService(currentScope, max) {
                     var params = {
-                        'envCode': env,
-                        'owner': currentScope.serviceOwner,
-                        'repo': currentScope.serviceRepo,
-                        'useLocalSOAJS': currentScope.useLocalSOAJS,
-                        'haService': true,
-                        'haCount': currentScope.replicaCount,
-                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                        "imagePrefix": currentScope.imagePrefix,
+                        'env': env,
+                        'type': 'service',
                         "version": parseInt(currentScope.version)
                     };
 
+                    params.gitSource = {
+                        "owner": currentScope.serviceOwner,
+                        "repo": currentScope.serviceRepo,
+                    };
+
                     if (currentScope.commit && !currentScope.confirmBranch) {
-                        params.branch = getBranchFromCommit(currentScope.commit);
-                        params.commit = currentScope.commit;
+                        params.gitSource.branch = getBranchFromCommit(currentScope.commit);
+                        params.gitSource.commit = currentScope.commit;
                     } else {
-                        params.branch = currentScope.branch.name;
-                        params.commit = currentScope.branch.commit.sha;
+                        params.gitSource.branch = currentScope.branch.name;
+                        params.gitSource.commit = currentScope.branch.commit.sha;
                     }
 
                     if (currentScope.service.gcId) {
-                        params.gcName = currentScope.service.name;
-                        params.gcVersion = currentScope.service.version;
+                        params.contentConfig = {
+                            "service" : {
+                                "gc" : true,
+                                "gcName" : currentScope.service.name,
+                                "gcVersion" : currentScope.service.version
+                            }
+                        }
+
                     } else {
                         params.name = currentScope.service.name;
                     }
-
-                    currentScope.port = currentScope.service.port;
 
                     if (currentScope.envVariables && currentScope.envVariables !== '') {
                         params.variables = currentScope.envVariables.split(",");
@@ -1172,16 +1172,28 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         }
                     }
 
-                    var config = {
-                        "method": "post",
-                        "routeName": "/dashboard/hosts/deployService",
-                        "data": params
+                    if (currentScope.groupConfig) {
+                        params.type = 'daemon';
+                        params.contentConfig = {
+                            "grpConfName" : currentScope.groupConfig.daemonConfigGroup
+                        }
+                    }
+
+                    params.deployConfig = {
+                        'useLocalSOAJS': currentScope.useLocalSOAJS,
+                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+                        "imagePrefix": currentScope.imagePrefix,
+                        "replication": {
+                            "mode": currentScope.mode,
+                            "number": max,
+                        }
                     };
 
-                    if (currentScope.groupConfig) {
-                        config.routeName = "/dashboard/hosts/deployDaemon";
-                        params.grpConfName = currentScope.groupConfig.daemonConfigGroup;
-                    }
+                    var config = {
+                        "method": "post",
+                        "routeName": "/cloud/services/soajs/deploy",
+                        "data": params
+                    };
 
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
@@ -1191,50 +1203,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                             $modalInstance.close();
                         }
                         else {
-                            currentScope.displayAlert('success', translation.newServiceHostsAdded[LANG]);
-                            if (!runningHosts[currentScope.service.name]) {
-                                runningHosts[currentScope.service.name] = {
-                                    'name': currentScope.service.name,
-                                    'port': currentScope.port,
-                                    'ips': {},
-                                    'color': 'red',
-                                    'heartbeat': false
-                                };
-                            }
-
-                            var hosttmpl = {
-                                'port': currentScope.port,
-                                'cid': response.cid,
-                                'hostname': response.hostname,
-                                'ip': response.ip,
-                                'name': currentScope.service.name,
-                                'downCount': 'N/A',
-                                'downSince': 'N/A',
-                                'lastCheck': 'N/A',
-                                'healthy': true,
-                                'color': 'red',
-                                'controllers': []
-                            };
-
-                            response.controllers.forEach(function (oneCtrl) {
-                                hosttmpl.controllers.push({
-                                    'ip': oneCtrl.ip,
-                                    'color': 'green',
-                                    'lastCheck': 'N/A',
-                                    'downSince': 'N/A',
-                                    'downCount': 'N/A'
-                                });
-                            });
-
-                            if (runningHosts[currentScope.service.name].ips[1]) {
-                                runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
-                            } else {
-                                runningHosts[currentScope.service.name].ips = {
-                                    1: []
-                                };
-                                runningHosts[currentScope.service.name].ips[1].push(hosttmpl);
-                            }
-
                             currentScope.displayAlert('success', 'New service deployed successfully and will be available in a few minutes');
                             $modalInstance.close();
                         }
@@ -1243,17 +1211,39 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
                 function newNginx(currentScope) {
                     var params = {
-                        envCode: env,
-                        imagePrefix: currentScope.imagePrefix
+                        "env": env,
+                        'type': 'nginx',
+                        "version": parseInt(currentScope.version)
+                    };
+
+                    params.deployConfig = {
+                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+                        "imagePrefix": currentScope.imagePrefix,
+                        "replication": {
+                            "mode": currentScope.mode,
+                            "number": max,
+                        }
                     };
 
                     if (currentScope.exposedPort) {
-                        params.exposedPort = currentScope.exposedPort;
+                        params.deployConfig.exposedPort = currentScope.exposedPort;
+                    }
+                    //todo: fill the value with the right ones
+                    if (currentScope.service.gcId) {
+                        params.contentConfig = {
+                            "nginx" : {
+                                "ui": {
+                                    "id": null,
+                                    "branch": null,
+                                    "commit": null
+                                }
+                            }
+                        }
                     }
 
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'post',
-                        routeName: '/dashboard/hosts/deployNginx',
+                        routeName: '/cloud/services/soajs/deploy',
                         data: params
                     }, function (error, response) {
                         if (error) {

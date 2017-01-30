@@ -453,7 +453,7 @@ service.init(function () {
 	});
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, res);
+			BL.deployService(config, req.soajs, service.registry, res);
 		});
 	});
 	service.post("/cloud/services/custom/deploy", function (req, res) {
@@ -474,6 +474,11 @@ service.init(function () {
 	service.delete("/cloud/services/delete", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.deleteService(config, req.soajs, res);
+		});
+	});
+	service.put("/cloud/services/maintenance", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.maintenance(config, req.soajs, res);
 		});
 	});
 

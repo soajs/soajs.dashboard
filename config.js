@@ -37,6 +37,8 @@ module.exports = {
 		"services": "soajs"
 	},
 
+	"network": 'soajsnet',
+
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"kubeNginx": {
@@ -1483,7 +1485,18 @@ module.exports = {
 							"useLocalSOAJS": { "required": false, "type": "boolean" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
-							"exposedPort": { "required": false, "type": "number" }, //NOTE: only required in case of nginx deployment
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": false, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
 							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
@@ -1523,15 +1536,15 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"ui": {
-										"type": "object",
-										"required": false,
-										"properties": {
-											"id": { "type": "string", "required": true },
-											"branch": { "type": "string", "required": true },
-											"commit": { "type": "string", "required": true }
-										}
-									},
-									"supportSSL": { "required": false, "type": "boolean" }
+                                        "type": "object",
+                                        "required": false,
+                                        "properties": {
+                                            "id": { "type": "string", "required": true },
+                                            "branch": { "type": "string", "required": true },
+                                            "commit": { "type": "string", "required": true }
+                                        }
+                                    },
+                                        "supportSSL": { "required": false, "type": "boolean" }
 								}
 							}
 						}
@@ -1603,9 +1616,9 @@ module.exports = {
 								"items": {
 									"type": "object",
 									"properties": {
-										"isPublished": { "required": false, "type": "boolean" },
-										"published": { "required": false, "type": "number" },
-										"target": { "required": false, "type": "number" }
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": true, "type": "number" },
+										"published": { "required": false, "type": "number" }
 									}
 								}
 							},
@@ -2503,6 +2516,49 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+
+			"/cloud/services/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
 					}
 				}
 			},
