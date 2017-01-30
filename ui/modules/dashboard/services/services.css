@@ -1,38 +1,78 @@
-fieldset.serviceAPIs tr td input[type='text']{
-    width:90%;
+fieldset.serviceAPIs tr td input[type='text'] {
+    width: 90%;
 }
 
-fieldset.serviceAPIs #apiMain-wrapper ul{
-    padding:0;
+fieldset.serviceAPIs #apiMain-wrapper ul {
+    padding: 0;
 }
-fieldset.serviceAPIs #apiMain-wrapper ul li{
-    float:left;
-    list-style-type:none;
-    margin-right:10px;
-}
-
-fieldset.serviceAPIs #apiMain-wrapper ul li input{
-    margin-right:5px;
+fieldset.serviceAPIs #apiMain-wrapper ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 10px;
 }
 
-fieldset.serviceAPIs table tr{
-    float:left;
-    width:24%;
-    height:90px;
-    border-bottom:solid 1px #ccc;
+fieldset.serviceAPIs #apiMain-wrapper ul li input {
+    margin-right: 5px;
 }
 
-fieldset.serviceAPIs table tr td{
-    width:100%;
+fieldset.serviceAPIs table tr {
+    float: left;
+    width: 24%;
+    height: 90px;
+    border-bottom: solid 1px #ccc;
+}
+
+fieldset.serviceAPIs table tr td {
+    width: 100%;
+    display: block;
+}
+
+fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"] {
+    width: 4%;
+}
+
+.red {
+    border-color: #ebccd1;
+    color: #a94442;
+    cursor: pointer;
+}
+
+.helpPage .tab-content {
+    line-height: 1.9em;
+}
+
+.helpPage .tab-content p {
+    margin-top: 5px;
+}
+
+.w49{
+  width:49%;
+}
+.w2{
+    width:2%;
+}
+
+.block{
     display:block;
 }
 
-fieldset.serviceAPIs table tr[class^="form-group tr-removeAPI"]{
-    width:4%;
+.hidden{
+    display:none;
 }
 
-.red{
-    border-color: #ebccd1;
-    color: #a94442;
-    cursor:pointer;
+.ace_editor{
+    height: 600px;
+}
+
+.table{
+    margin-bottom: 0;
+}
+
+hr{
+    margin-top:0px;
+}
+
+.table a{
+    outline: 0;
+    text-underline: none;
 }

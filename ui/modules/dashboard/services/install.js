@@ -417,6 +417,19 @@ var servicesNav = [
 		'order': 2,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
+	},
+	{
+		'id': 'swaggerui',
+		'label': "Swagger Ui",
+		'url': '#/services/swaggerui/:serviceName',
+		'pillar': {
+			'name': 'development',
+			'label': translation.develop[LANG],
+			'position': 1
+		},
+		'tracker': true,
+		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js', 'modules/dashboard/services/service.js'],
+		'tplPath': 'modules/dashboard/services/directives/swaggerTest.tmpl'
 	}
 ];
 navigation = navigation.concat(servicesNav);

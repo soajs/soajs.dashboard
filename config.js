@@ -69,13 +69,7 @@ module.exports = {
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			// required for OAuth
 			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
-			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
-			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
-			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
-			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
-			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
-			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
-			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+			downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
 		},
 		"github": {
 			"protocol": "https",
@@ -96,6 +90,7 @@ module.exports = {
 	},
 
 	"errors": require("./utils/errors"),
+	
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -747,18 +742,21 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
-
-			"/services/list": {
+			/*
+			 * This API will return the env where a service is deployed.
+			 * it takes the service name and renders an object having the following form :
+			 * "env name : apiPrefix.domain"
+			 */
+			"/services/env/list": {
 				_apiInfo: {
-					"l": "List Services",
+					"l": "List The Environment Where A Service Is Deployed",
 					"group": "Services"
 				},
-				'serviceNames': {
-					'source': ['body.serviceNames'],
-					'required': false,
+				'service': {
+					'source': ['query.service'],
+					'required': true,
 					"validation": {
-						"type": "array",
-						'items': {'type': 'string'}
+						"type": "string"
 					}
 				}
 			},
@@ -1031,10 +1029,70 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				}
+			},
+			/*
+			 * this API will get the content and the url of any file located on a specific
+			 * github/bitbucket account for a certain repo.
+			 * In our case we need to get the yaml file and its content
+			 */
+			"/gitAccounts/getYaml": {
+				"_apiInfo": {
+					"l": "Get Yaml file",
+					"group": "Git Accounts"
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
 		},
 
 		"post": {
+			"/services/list": {
+				_apiInfo: {
+					"l": "List Services",
+					"group": "Services"
+				},
+				'serviceNames': {
+					'source': ['body.serviceNames'],
+					'required': false,
+					"validation": {
+						"type": "array",
+						'items': {'type': 'string'}
+					}
+				}
+			},
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
@@ -1785,6 +1843,121 @@ module.exports = {
 						"type": "string"
 					}
 				}
+			},
+			
+			"/swagger/simulate": {
+				"_apiInfo": {
+					"l": "Api simulation service",
+					"group": "Simulate",
+					"groupMain": true
+				},
+				"data": {
+					"required": true,
+					"source": ['body.data'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"input": {
+								"type": "object",
+								"properties": {}
+							},
+							"imfv": {
+								"type": "object",
+								"properties": {}
+							}
+						}
+					}
+				}
+				
+			},
+			
+			"/swagger/generate": {
+				"_apiInfo": {
+					"l": "Generate Service via Swagger",
+					"group": "swagger",
+					"groupMain": true
+				},
+				"language": {
+					"required": false,
+					"source": ["body.language"],
+					"default": "soajs",
+					"validation": {
+						"type": "string",
+						"enum": ["soajs", "nodejs", "php", "asp"]
+					}
+				},
+				"data": {
+					"required": true,
+					"source": ['body.data'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"service": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"serviceName": {
+										"type": "string",
+										"required": true
+									},
+									"serviceVersion": {
+										"type": "number",
+										"required": true,
+										"min": 1
+									},
+									"serviceGroup": {
+										"type": "string",
+										"required": true
+									},
+									"servicePort": {
+										"type": "number",
+										"required": true,
+										"min": 4100
+									},
+									"requestTimeout": {
+										"type": "number",
+										"required": true
+									},
+									"requestTimeoutRenewal": {
+										"type": "number",
+										"required": true
+									},
+									"extKeyRequired": {
+										"type": "boolean",
+										"required": true
+									},
+									"session": {
+										"type": "boolean",
+										"required": false
+									},
+									"oauth": {
+										"type": "boolean",
+										"required": false
+									},
+									"dbs": {
+										"type": "array",
+										"required": false,
+										"items": {
+											"type": "object",
+											"properties": {
+												"prefix": {"type": "string"},
+												"name": {"type": "string", "required": true},
+												"multitenant": {"type": "boolean"},
+												"model": {"type": "string", "required": true}
+											}
+										},
+										"minItems": 1,
+										"uniqueItems": true
+									}
+								}
+							},
+							"yaml": {
+								"type": "string",
+								"required": true
+							}
+						}
+					}
+				}
 			}
 		},
 
@@ -2401,7 +2574,7 @@ module.exports = {
 						"type": "string"
 					}
 				}
-			},
+			}
 		},
 
 		"delete": {

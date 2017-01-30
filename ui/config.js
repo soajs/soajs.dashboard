@@ -5,7 +5,7 @@
  */
 var mydomain = "soajs.org";
 var mydomainport = location.port;
-if(mydomainport !== 80){
+if(mydomainport && mydomainport !== 80){
 	mydomain += ":" + mydomainport;
 }
 var protocol = window.location.protocol;
@@ -26,7 +26,8 @@ var modules = {
 			services: 'modules/dashboard/services/install.js',
 			contentBuilder: 'modules/dashboard/contentBuilder/install.js',
 			staticContent: 'modules/dashboard/staticContent/install.js',
-			githubApp: 'modules/dashboard/gitAccounts/install.js'
+			githubApp: 'modules/dashboard/gitAccounts/install.js',
+			swaggerEditorApp: 'modules/dashboard/swaggerEditor/install.js'
 		}
 	},
 	"manage": {

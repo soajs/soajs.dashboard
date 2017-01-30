@@ -5,11 +5,7 @@ var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
 var config = require('../../../config.js');
-var aes = require('../../../utils/crypto/aes.js');
 var BitbucketClient = require('bitbucket-server-nodejs').Client;
-
-var DEFAULT_GIT_ACCOUNTS_SECRET = 'Shhh, I am secret!';
-var GIT_ACCOUNTS_SECRET = process.env.GIT_ACCOUNTS_SECRET || DEFAULT_GIT_ACCOUNTS_SECRET;
 
 var bitbucketClient;
 
@@ -297,7 +293,6 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
                     options.token = new Buffer(accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
@@ -326,7 +321,6 @@ module.exports = {
                 options.domain = accountRecord.domain;
 
                 if (accountRecord.token) {
-                    // options.token = aes.decrypt(accountRecord.token, GIT_ACCOUNTS_SECRET);
                     options.token = new Buffer (accountRecord.token, 'base64').toString();
                     lib.authenticate(options);
                 }
@@ -345,13 +339,77 @@ module.exports = {
         });
     },
 
-    "getContent": function (soajs, data, model, options, cb) {
+    "getJSONContent": function (soajs, data, model, options, cb) {
+        data.getAccount(soajs, model, options, function (error, accountRecord) {
+            checkIfError(error || !accountRecord, {}, cb, function () {
+                if (accountRecord.token) {
+                    options.token = new Buffer(accountRecord.token, 'base64').toString();
+                    options.domain = accountRecord.domain;
+                    lib.authenticate(options);
+                }
+
+                lib.getRepoContent(options, function (error, response) {
+                    checkIfError(error, {}, cb, function () {
+
+                        // bitbucketClient returns no 'sha', use the path instead, its unique
+                        var configSHA = options.repo + options.path;
+
+                        // bitbucketClient returns file content as an array of lines
+                        // concatenate them in one string
+                        var content = "";
+                        for (var i = 0; i < response.lines.length; ++i) {
+                            content += response.lines[i].text + "\n";
+                        }
+
+                        // remove all "require('...')" occurrences
+                        var configFile = content;
+                        configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
+
+                        var repoConfigsFolder = config.gitAccounts.bitbucket_enterprise.repoConfigsFolder;
+                        var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
+
+                        var fileInfo = {
+                            configDirPath: configDirPath,
+                            configFilePath: repoConfigsFolder + options.path,
+                            configFile: configFile,
+                            soajs: soajs
+                        };
+
+                        lib.writeFile(fileInfo, function (error) {
+                            checkIfError(error, {}, cb, function () {
+                                var repoConfig;
+                                if (require.resolve(fileInfo.configFilePath)) {
+                                    delete require.cache[require.resolve(fileInfo.configFilePath)];
+                                }
+                                try {
+                                    repoConfig = require(fileInfo.configFilePath);
+                                }
+                                catch (e) {
+                                    return cb(e);
+                                }
+
+                                lib.clearDir({repoConfigsFolder: repoConfigsFolder}, function (error) {
+                                    checkIfError(error, {}, cb, function () {
+                                        return cb(null, repoConfig, configSHA);
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    },
+
+    "getAnyContent": function (soajs, data, model, options, cb) {
+        if (options.accountRecord.token) {
+            options.token = new Buffer(options.accountRecord.token, 'base64').toString();
+            options.domain = options.accountRecord.domain;
+            lib.authenticate(options);
+        }
+
         lib.getRepoContent(options, function (error, response) {
             checkIfError(error, {}, cb, function () {
-
-                // bitbucketClient returns no 'sha', use the path instead, its unique
-                var configSHA = options.repo + options.path;
-
                 // bitbucketClient returns file content as an array of lines
                 // concatenate them in one string
                 var content = "";
@@ -359,39 +417,17 @@ module.exports = {
                     content += response.lines[i].text + "\n";
                 }
 
-                // remove all "require('...')" occurrences
-                var configFile = content;
-                configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
+                var downloadLink = 'https://' + config.gitAccounts.bitbucket_enterprise.downloadUrl
+                    .replace('%PROVIDER_DOMAIN%', options.domain)
+                    .replace('%PROJECT_NAME%', options.project)
+                    .replace('%REPO_NAME%', options.repo)
+                    .replace('%PATH%', options.path)
+                    .replace('%BRANCH%', options.ref || 'master');
 
-                var repoConfigsFolder = config.gitAccounts.bitbucket_enterprise.repoConfigsFolder;
-                var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
-
-                var fileInfo = {
-                    configDirPath: configDirPath,
-                    configFilePath: repoConfigsFolder + options.path,
-                    configFile: configFile,
-                    soajs: soajs
-                };
-
-                lib.writeFile(fileInfo, function (error) {
-                    checkIfError(error, {}, cb, function () {
-                        var repoConfig;
-                        if (require.resolve(fileInfo.configFilePath)) {
-                            delete require.cache[require.resolve(fileInfo.configFilePath)];
-                        }
-                        try {
-                            repoConfig = require(fileInfo.configFilePath);
-                        }
-                        catch (e) {
-                            return cb(e);
-                        }
-
-                        lib.clearDir({repoConfigsFolder: repoConfigsFolder}, function (error) {
-                            checkIfError(error, {}, cb, function () {
-                                return cb(null, repoConfig, configSHA);
-                            });
-                        });
-                    });
+                return cb(null, {
+                    token: options.token,
+                    downloadLink: downloadLink,
+                    content: content
                 });
             });
         });

@@ -178,5 +178,10 @@ module.exports = {
     "updateEntry": function (soajs, opts, cb) {
         checkForMongo(soajs);
         mongo.update(opts.collection, opts.conditions, opts.fields, opts.options || {}, opts.versioning || false, cb);
-    }
+    },
+	
+	"distinctEntries": function(soajs, opts, cb){
+    	checkForMongo(soajs);
+    	mongo.distinct(opts.collection, opts.fields, opts.conditions, cb);
+	}
 };

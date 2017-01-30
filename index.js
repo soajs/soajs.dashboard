@@ -16,9 +16,9 @@ var staticContentBL = require('./lib/staticContent.js');
 var gitAccountsBL = require("./lib/git.js");
 var environmentBL = require('./lib/environment.js');
 var cbBL = require("./lib/contentbuilder.js");
-
+var swaggerBL = require("./lib/swagger.js");
 var gitAccounts = require("./lib/git.js");
-var services = require("./lib/services.js");
+var services = require("./lib/services.js");// ja : unnecessary replication
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
@@ -506,6 +506,12 @@ service.init(function () {
 			BL.getRepos(config, req, res);
 		});
 	});
+	// get any file content in a repo, in our case the yaml file
+	service.get("/gitAccounts/getYaml", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getFile(config, req, res);
+		});
+	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.getBranches(config, req, res);
@@ -533,6 +539,12 @@ service.init(function () {
 	service.post("/services/list", function (req, res) {
 		initBLModel(req, res, servicesBL, dbModel, function (BL) {
 			BL.list(config, req, res);
+		});
+	});
+	// get the env where a service is deployed
+	service.get("/services/env/list", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.listHostEnv(config, req.soajs, res);
 		});
 	});
 	/**
@@ -776,7 +788,26 @@ service.init(function () {
 			BL.update(config, req, res);
 		});
 	});
-
+	
+	// simulation api that mimics a service api behavior used by swagger feature.
+	// Api takes a yaml input and simulate the imfv validation of a requested service API
+	service.post("/swagger/simulate", function (req, res) {
+		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
+		 	BL.test(config, req, res);
+		});
+	});
+	
+	// swagger generate service API
+	// Api takes service information and yaml code as service api schema
+	// attempts to communicate remote git repo
+	// if no errors are found in neither code nor git communication
+	// it generates a folder schema for the service and pushes it to the remote api repo
+	service.post("/swagger/generate", function (req, res) {
+		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
+			BL.generate(config, req, res);
+		});
+	});
+	
 	/**
 	 * Service Start
 	 */

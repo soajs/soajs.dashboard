@@ -47,7 +47,7 @@ var lib = {
 module.exports = function (grunt) {
 	//Loading the needed plugins to run the grunt tasks
 	var pluginsRootPath = lib.findRoot();
-	lib.loadTasks(grunt, pluginsRootPath, ['grunt-contrib-jshint', 'grunt-jsdoc', 'grunt-contrib-clean', 'grunt-mocha-test', 'grunt-env'
+	lib.loadTasks(grunt, pluginsRootPath, ['grunt-contrib-jshint', 'grunt-jsdoc', 'grunt-contrib-clean', 'grunt-contrib-copy', 'grunt-mocha-test', 'grunt-env'
 		, 'grunt-istanbul', 'grunt-coveralls']);
 	grunt.initConfig({
 		//Defining jshint tasks
@@ -120,9 +120,27 @@ module.exports = function (grunt) {
 				src: ['test/coverage/']
 			}
 		},
+		
+		copy:{
+			main: {
+				files: [
+					{expand: true, src: ['swagger/*/*.txt'], dest: 'test/coverage/instrument/', filter: 'isFile'},
+				]
+			}
+		},
 
 		instrument: {
-			files: ['config.js', 'index.js', 'lib/*.js', 'models/*.js', 'schemas/*.js', 'utils/*.js', 'utils/*/*.js', 'utils/*/*/*.js', 'test/*.js'],
+			files: [
+				'config.js',
+				'index.js',
+				'lib/*.js',
+				'models/*.js',
+				'schemas/*.js',
+				'utils/*.js',
+				'utils/*/*.js',
+				'utils/*/*/*.js',
+				'test/*.js'
+			],
 			options: {
 				lazy: false,
 				basePath: 'test/coverage/instrument/'
@@ -182,8 +200,8 @@ module.exports = function (grunt) {
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:mochaTest', 'mochaTest:integration']);
 	grunt.registerTask("unit", ['env:mochaTest', 'mochaTest:unit']);
-	grunt.registerTask("test", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
-	grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport', 'coveralls']);
+	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
+	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport', 'coveralls']);
 	//grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 
 };

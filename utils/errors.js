@@ -113,6 +113,7 @@ var errors = {
 	"618": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section.",
 	"619": "The Deployer of this environment is configured to be manual. Unable to perform requested maintenance operation.",
 	"620": "Make sure upload directory exists :",
+	"621": "The requested service is not deployed in any environment",
 
 	"700": "This Content Schema already Exist",
 	"701": "Invalid Id provided",
@@ -152,19 +153,13 @@ var errors = {
 	"738": "Unable to change deployer type",
 
 	"739": "Missing required param(s). Make sure you specify certificate filename, type, and environment code. If type is docker, specify driver name and if type is nginx, specify certificate label",
-
 	"740": "This application does not have access to specified environment. Either update its package's ACL or choose a different environment",
-
 	"741": "No platform certificates found for this environment. Please upload them in the Platforms section",
-
 	"742": "Unable to list static content sources",
-
 	"743": "Missing environment deployer settings. Please specify deployment type, selected driver, and driver settings in the Platforms section",
-
 	"744": "Certificate type must be one of [ca, cert, key]",
 
 	"750": "Invalid Request.",
-
 	"751": "Unable to login",
 	"752": "User account already exists",
 	"753": "Unable to logout",
@@ -178,7 +173,7 @@ var errors = {
 	"761": "Failed to activate repository, make sure config.js file is available in your repository and it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
 	"763": "Unable to reach the GitHub API. Please try again.",
-
+	
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",
 	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
@@ -194,24 +189,21 @@ var errors = {
 
 	"775": "Missing account provider param",
 	"776": "GitHub API returned an error: API rate limit exceeded for this IP. It is advised to use an authenticated account to proceed or try again later",
-
 	"777": "You are not allowed to delete this container. At least one instance of nginx must be available",
-
 	"778": "The git account provider is missing or not supported",
-
 	"779": "Unable to complete Reload Registry operation for controllers",
 	"780": "Unable to redeploy service",
-
 	"781": "You are not the owner of this application. You cannot perform this operation.",
 
 	"783": "Missing folders paths multi repository",
 	"784": "Error in multi repository folders array",
 	"785": "Folders array is empty",
-
 	"786": "Validation Error",
 	"787": "Missing field name in config.js",
 	"788": "Invalid or no type provided in config.js",
-
+	"789": "Unable to get content from git provider",
+	"790": "Error while pushing code to remote repository",
+	
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
@@ -239,13 +231,18 @@ var errors = {
  	"822": "Unable to update environments' deployer. However, the node was updated successfully",
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
 	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
-
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
-
+	
+	"850": "The simulator returned an error",
+	"851": "Invalid YAML code provided",
+	"852": "Error Cleaning up generated Service Code",
+	"853": "Error Generating Folders for Service",
+	"854": "Error Generating Files for Service",
+	"855": "Error Returning Generated service Code",
+	
 	"901": "Error Logging out from environments",
 	"902": "Error Logging in to environments",
 	"903": "You do not have access to this environment %envCode%",
-
 	"904": "Check your internet connection"
 };
 
