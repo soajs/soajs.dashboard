@@ -235,6 +235,22 @@ var methods = {
 		model.findEntries(soajs, opts, cb);
 	},
 
+	"getHostEnv": function (soajs, model, cb) {
+		var opts = {
+			collection: hostsColl,
+			conditions: {
+				'name': soajs.inputmaskData.service
+			},
+			fields: 'env'
+		};
+		
+		if(soajs.inputmaskData.version){
+			opts.conditions.version = soajs.inputmaskData.version;
+		}
+
+		model.distinctEntries(soajs, opts, cb);
+	},
+	
 	"getEnvInfo": function (soajs, model,options, cb) {
 		var opts = {
 			collection: envColl,

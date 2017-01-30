@@ -152,6 +152,11 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				$scope.id = response[0]._id;
 				$scope.owner = response[0].src.owner;
 				$scope.repo = response[0].src.repo;
+				
+				var versions = Object.keys(response[0].versions);
+				versions.sort();
+				//loop in versions and get the latest one
+				$scope.version = versions[versions.length -1];
 				return cb();
 			}
 		});
@@ -164,7 +169,10 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
 			"routeName": "/dashboard/services/env/list",
-			"params": {service: $scope.serviceName}
+			"params": {
+				service: $scope.serviceName,
+				version: $scope.version
+			}
 		}, function (error, response) {
 			if (error) {
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
@@ -257,7 +265,8 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				repo: $scope.repo,
 				filepath: "/swagger.yml",
 				env: $scope.envSelected,
-				service: $scope.serviceName
+				serviceName: $scope.serviceName,
+				version: $scope.version
 			}
 		}, function (error, response) {
 			if (error) {

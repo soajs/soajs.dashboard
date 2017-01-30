@@ -758,6 +758,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				'version': {
+					'source': ['query.version'],
+					'required': false,
+					"validation": {
+						"type": "integer"
+					}
 				}
 			},
 
@@ -1066,6 +1073,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "integer"
 					}
 				},
 				"env": {
