@@ -256,7 +256,8 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				owner: $scope.owner,
 				repo: $scope.repo,
 				filepath: "/swagger.yml",
-				branch: "swagger" //Todo change it when amir integrate it
+				env: $scope.envSelected,
+				service: $scope.serviceName
 			}
 		}, function (error, response) {
 			if (error) {

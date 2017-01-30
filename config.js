@@ -1031,8 +1031,15 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"branch": {
-					"source": ['query.branch'],
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"env": {
+					"source": ['query.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
