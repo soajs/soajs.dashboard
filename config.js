@@ -1411,7 +1411,18 @@ module.exports = {
 							"useLocalSOAJS": { "required": false, "type": "boolean" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
-							"exposedPort": { "required": false, "type": "number" }, //NOTE: only required in case of nginx deployment
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": false, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
 							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
@@ -1525,8 +1536,18 @@ module.exports = {
 							"workDir": { "required": false, "type": "string" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"network": { "required": false, "type": "string" },
-							"exposedPort": { "required": false, "type": "number" },
-							"targetPort": { "required": false, "type": "number" },
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": true, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
 							"replication": {
 								"required": true,
 								"type": "object",

@@ -149,6 +149,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 
         function deployEnvironment(formData) {
+            //temp values for now///////////////////
+            formData.ctrlReplMode = 'replicated';
+            formData.nginxReplMode = 'replicated';
+            ////////////////////////////////////////
+
             var branchObj = JSON.parse(formData.branch);
             var params = {
                 env: envCode,
@@ -164,10 +169,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     useLocalSOAJS: formData.useLocalSOAJS,
                     memoryLimit: formData.ctrlMemoryLimit * 1048576,
                     imagePrefix: formData.ctrlImagePrefix,
-                    exposedPort: formData.exposedPort,
                     isKubernetes: (currentScope.isKubernetes ? true : false),
                     replication: {
-                        mode: formData.replicationMode
+                        mode: formData.ctrlReplMode
                     }
                 },
                 contentConfig: {}
@@ -199,13 +203,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
                     params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
                     params.deployConfig.imagePrefix = formData.nginxImagePrefix;
-                    params.deployerConfig.replication = {
+                    params.deployConfig.replication = {
                         mode: formData.nginxReplMode
                     };
 
                     if (formData.nginxReplMode === 'replicated') {
-                        params.deployerConfig.replication.replicas = formData.nginxCount;
+                        params.deployConfig.replication.replicas = formData.nginxCount;
                     }
+
+                    params.deployConfig.ports = [
+                        {
+                            isPublished: true,
+                            published: formData.exposedPort
+                        }
+                    ];
 
                     if (formData.useCustomUI) {
                         formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
