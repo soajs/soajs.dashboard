@@ -83,7 +83,7 @@ ul {
 }
 
 .maintenanceHeader {
-    width: 10% !important;
+    width: 15% !important;
 }
 
 .hostnameHeader {
@@ -165,4 +165,17 @@ ul {
     margin-left: 30%;
     width: 40%;
     text-align: center;
+}
+
+.ctrl-tooltip{
+    min-width:15% !important;
+    width:auto;
+    display:table !important;
+    white-space: nowrap !important;
+    padding:5px;
+}
+.ctrl-tooltip > * {
+    text-align: left !important;
+    float: left !important;
+    max-width:none;
 }

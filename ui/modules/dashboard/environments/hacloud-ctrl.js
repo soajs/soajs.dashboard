@@ -22,13 +22,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
         hacloudSrv.removeNode($scope, nodeId);
     };
 
-	$scope.showHideContent = function (type) {
-		if (type === 'nginx') {
-			$scope.showNginxHosts = !$scope.showNginxHosts;
-		}
-		else if (type === 'controller') {
-			$scope.showCtrlHosts = !$scope.showCtrlHosts;
-		}
+	$scope.showHideContent = function (service) {
+		service.expanded = !service.expanded;
 	};
 
 	$scope.showHideGroupContent = function (groupName) {
@@ -49,39 +44,46 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
 	$scope.listServices = function () {
 		hacloudSrv.listServices($scope);
-		$scope.listNginxServices($scope, $scope.envCode);
 	};
 
-	$scope.deleteService = function (serviceId) {
-		hacloudSrv.deleteService($scope, serviceId);
+	$scope.deleteService = function (service) {
+		hacloudSrv.deleteService($scope, service);
 	};
 
-	$scope.scaleService = function (serviceInfo, serviceVersion) {
-		hacloudSrv.scaleService($scope, serviceInfo, serviceVersion);
+	$scope.scaleService = function (service) {
+		hacloudSrv.scaleService($scope, service);
+	};
+	
+	$scope.inspectService = function (service) {
+		hacloudSrv.inspectService($scope, service);
 	};
 
-	$scope.listNginxServices = function () {
-		hacloudSrv.listNginxHosts($scope, $scope.envCode);
+	$scope.reloadServiceRegistry = function (service) {
+		hacloudSrv.reloadServiceRegistry($scope, service);
 	};
 
-	$scope.reloadServiceRegistry = function (source, service) {
-		hacloudSrv.reloadServiceRegistry($scope, source, service);
+	$scope.loadServiceProvision = function (service) {
+		hacloudSrv.loadServiceProvision($scope, service);
 	};
 
-	$scope.loadServiceProvision = function (source, service) {
-		hacloudSrv.loadServiceProvision($scope, source, service);
+	$scope.awarenessStat = function (service) {
+		hacloudSrv.awarenessStat($scope, service);
 	};
 
-	$scope.awarenessStat = function (source, service) {
-		hacloudSrv.awarenessStat($scope, source, service);
+	$scope.executeHeartbeatTest = function (task) {
+		hacloudSrv.executeHeartbeatTest($scope, task);
 	};
 
-	$scope.executeHeartbeatTest = function (env, oneHost) {
-		hacloudSrv.executeHeartbeatTest($scope, env, oneHost);
+	$scope.loadDaemonStat = function(service){
+		hacloudSrv.loadDaemonStat($scope, service);
 	};
-
-	$scope.hostLogs = function (taskName) {
-		hacloudSrv.hostLogs($scope, taskName);
+	
+	$scope.loadDaemonGroupConfig = function(service){
+		hacloudSrv.loadDaemonGroupConfig($scope, service);
+	};
+	
+	$scope.hostLogs = function (task) {
+		hacloudSrv.hostLogs($scope, task);
 	};
 
 	$scope.checkCerts = function(env) {
@@ -103,7 +105,6 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	}
 
 }]);
-
 
 environmentsApp.filter('bytesToGbytes', function () {
 	return function (number) {
