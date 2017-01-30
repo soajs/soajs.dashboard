@@ -1464,15 +1464,15 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"ui": {
-										"type": "object",
-										"required": false,
-										"properties": {
-											"id": { "type": "string", "required": true },
-											"branch": { "type": "string", "required": true },
-											"commit": { "type": "string", "required": true }
-										}
-									},
-									"supportSSL": { "required": false, "type": "boolean" }
+                                        "type": "object",
+                                        "required": false,
+                                        "properties": {
+                                            "id": { "type": "string", "required": true },
+                                            "branch": { "type": "string", "required": true },
+                                            "commit": { "type": "string", "required": true }
+                                        }
+                                    },
+                                        "supportSSL": { "required": false, "type": "boolean" }
 								}
 							}
 						}
