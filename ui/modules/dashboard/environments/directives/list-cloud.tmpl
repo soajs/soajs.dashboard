@@ -70,9 +70,8 @@
 						<br>
 					</div>
 					<div>
-                        {{currentScope.deploymentModes}}
 						<label>Deployment Mode</label>
-						<select class="form-control" ng-required="true" ng-options="mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
+						<select class="form-control" ng-required="true" ng-options="mode in deploymentModes" ng-model="mode"></select>
 						<br>
 					</div>
 					<div ng-if="currentScope.mode == 'replicated'">
