@@ -904,6 +904,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 };
 
                 $scope.selectService = function (service) {
+                    console.log(service);
                     currentScope.versions = Object.keys(service.versions);
                     if (currentScope.version) {
                         currentScope.version = "";
