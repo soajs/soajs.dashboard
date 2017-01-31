@@ -2,8 +2,6 @@
 var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce', function (ngDataApi, $timeout, $modal, $sce) {
 
-    $scope.deploymentModes = ['replicated', 'global'];
-
     function checkCerts(currentScope, env) {
         currentScope.certsExist = {
             all: false,
@@ -221,7 +219,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         for (var j = 0; j < response.length; j++) {
                         	response[j].expanded = true;
                         	if(response[j].labels['soajs.content'] === 'true'){
-                        		if(response[j].labels['soajs.service.group'] === 'nginx'){
+                        		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
 			                        response[j].ui = {
 				                        'color': 'red',
 				                        'heartbeat': false
@@ -253,12 +251,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			                        'color': 'red',
 			                        'heartbeat': false
 		                        };
-		                        currentScope.hosts.miscellaneous.list.push(response[j]);
+		                        
+		                        var myGroup = 'miscellaneous';
+		                        if(response[j].labels && response[j].labels['soajs.service.group']){
+			                        myGroup = response[j].labels['soajs.service.group'];
+		                        }
+		                        currentScope.hosts[myGroup].list.push(response[j]);
 		                        break;
 	                        }
                         }
-	                    console.log(currentScope.hosts);
-	                    console.log(currentScope.controllers);
 	                    updateControllersList();
                     }
                 }
@@ -266,10 +267,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         }
         
         function updateControllersList(){
-			//todo: need to do awareness on all controllers and use the output to do the state check
 			var j = 0;
 			currentScope.controllers.forEach(function(oneController){
-				
+				awarenessStat(currentScope, oneController);
 				
 				j++;
 				if(j === currentScope.controllers.length){
@@ -303,7 +303,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     function deleteService(currentScope, service) {
         var params = {
             env: currentScope.envCode,
-            serviceId: serviceId
+            serviceId: service.id
         };
 
         overlayLoading.show();
@@ -332,30 +332,19 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
             controller: function ($scope, $modalInstance) {
                 fixBackDrop();
 
-                $scope.service = {
-                    name: serviceInfo[0].serviceName, //all instances must have the same service name
-                    version: serviceVersion,
-                    env: currentScope.envCode,
-                    currentScale: serviceInfo.length
-                };
-                $scope.title = $scope.service.name + ' | Scale Service';
+                $scope.currentScale = service.tasks.length;
+                $scope.title = service.name + ' | Scale Service';
 
                 $scope.onSubmit = function () {
-                    var params = {
-                        env: $scope.service.env,
-                        serviceId: $scope.service.id
-                    };
-
-                    var postData = {
-                        scale: $scope.service.newScale
-                    };
-
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'put',
                         routeName: '/dashboard/cloud/services/scale',
-                        params: params,
-                        data: postData
+                        data: {
+	                        env: service.env,
+	                        serviceId: service.id,
+	                        scale: $scope.newScale
+                        }
                     }, function (error, result) {
                         overlayLoading.hide();
                         $modalInstance.close();
@@ -385,279 +374,224 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 */
     function reloadServiceRegistry (currentScope, service) {
         //reload registry for all service instances in parallel
-        currentScope.registryInfo = [];
-        if (source === 'controller') {
-            service.forEach(function (oneServiceIp) {
-                reloadRegistry(currentScope, currentScope.envCode, oneServiceIp);
-            });
-        }
-        else {
-            service.forEach(function (oneInstance) {
-                reloadRegistry(currentScope, currentScope.envCode, oneInstance);
-            });
-        }
-
-        var stopWatching = currentScope.$watchCollection('registryInfo', function () {
-            if (currentScope.registryInfo.length === service.length) {
-                stopWatching();
-                var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-                formConfig.entries[0].tabs = currentScope.registryInfo;
-                var options = {
-                    timeout: $timeout,
-                    form: formConfig,
-                    name: 'reloadRegistry',
-                    label: "Reloaded Registry of " + service[0].serviceName,
-                    actions: [
-                        {
-                            'type': 'reset',
-                            'label': translation.ok[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                currentScope.modalInstance.dismiss('cancel');
-                                currentScope.registryInfo = [];
-                                currentScope.form.formData = {};
-                            }
-                        }
-                    ]
-                };
-
-                buildFormWithModal(currentScope, $modal, options);
-            }
-        });
-		
-		function reloadRegistry(currentScope, env, service, cb) {
-			getSendDataFromServer(currentScope, ngDataApi, {
-				"method": "post",
-				"routeName": "/dashboard/hosts/maintenanceOperation",
-				"data": {
-					"serviceName": oneHost.name,
-					"operation": "reloadRegistry",
-					"serviceHost": oneHost.ip,
-					"servicePort": oneHost.port,
-					"hostname": oneHost.hostname,
-					"env": env
-				}
-			}, function (error, response) {
-				if (error) {
-					currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
-						oneHost.name +
-						" " + translation.onIP[LANG] + " " +
-						oneHost.ip +
-						":" +
-						oneHost.port +
-						" @ " +
-						new Date().toISOString());
-				}
-				else {
-					if (cb) {
-						return cb();
-					}
-					else {
-						currentScope.registryInfo.push({
-							'label': oneHost.ip,
-							'entries': [
-								{
-									'label': 'Registry information for: ' + oneHost.taskName,
-									'name': oneHost.name,
-									'type': 'jsoneditor',
-									'options': {
-										'mode': 'view',
-										'availableModes': []
-									},
-									'height': '500px',
-									"value": response
-								}
-							]
-						});
-					}
-				}
-			});
-		}
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/hosts/maintenanceOperation",
+			"data": {
+				"serviceId": service.id,
+				"operation": "reloadRegistry",
+				"env": currentScope.envCode
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.generateNewMsg(currentScope.envCode, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " + service.name + " @ " + new Date().toISOString());
+			}
+			else {
+				//todo: needs revision
+				currentScope.registryInfo.push({
+					'label': service.name,
+					'entries': [
+						{
+							'label': 'Registry information for: ' + service.name,
+							'name': service.name,
+							'type': 'jsoneditor',
+							'options': {
+								'mode': 'view',
+								'availableModes': []
+							},
+							'height': '500px',
+							"value": response
+						}
+					]
+				});
+				
+				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+				formConfig.entries[0].tabs = currentScope.registryInfo;
+				var options = {
+					timeout: $timeout,
+					form: formConfig,
+					name: 'reloadRegistry',
+					label: "Reloaded Registry of " + service.name,
+					actions: [
+						{
+							'type': 'reset',
+							'label': translation.ok[LANG],
+							'btn': 'primary',
+							'action': function (formData) {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.registryInfo = [];
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
+				
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
     }
 
     function loadServiceProvision (currentScope, service) {
         //reload provision for all service instances in parallel
-        currentScope.provisionInfo = [];
-        service.forEach(function (oneInstance) {
-            loadProvisioning(currentScope, currentScope.envCode, oneInstance);
-        });
 	    
-        var stopWatching = currentScope.$watchCollection('provisionInfo', function () {
-            if (currentScope.provisionInfo.length === service.length) {
-                stopWatching();
-                var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-                formConfig.entries[0].tabs = currentScope.provisionInfo;
-                var options = {
-                    timeout: $timeout,
-                    form: formConfig,
-                    name: 'reloadProvision',
-                    label: "Reloaded Provisioned Data of " + service[0].serviceName,
-                    actions: [
-                        {
-                            'type': 'reset',
-                            'label': translation.ok[LANG],
-                            'btn': 'primary',
-                            'action': function (formData) {
-                                currentScope.modalInstance.dismiss('cancel');
-                                currentScope.provisionInfo = [];
-                                currentScope.form.formData = {};
-                            }
-                        }
-                    ]
-                };
-
-                buildFormWithModal(currentScope, $modal, options);
-            }
-        });
-	    
-        function loadProvisioning(currentScope, env, oneHost, cb) {
-		    getSendDataFromServer(currentScope, ngDataApi, {
-			    "method": "post",
-			    "routeName": "/dashboard/hosts/maintenanceOperation",
-			    "data": {
-				    "serviceName": oneHost.name,
-				    "operation": "loadProvision",
-				    "serviceHost": oneHost.ip,
-				    "servicePort": oneHost.port,
-				    "hostname": oneHost.hostname,
-				    "env": env
-			    }
-		    }, function (error, response) {
-			    if (error) {
-				    currentScope.generateNewMsg(env, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " +
-					    oneHost.name +
-					    " " + translation.onIP[LANG] + " " +
-					    oneHost.ip +
-					    ":" +
-					    oneHost.port +
-					    " @ " +
-					    new Date().toISOString());
-			    }
-			    else {
-				    currentScope.provisionInfo.push({
-					    'label': oneHost.ip,
-					    'entries': [
-						    {
-							    'label': 'Provision information for: ' + oneHost.taskName,
-							    'name': oneHost.name,
-							    'type': 'jsoneditor',
-							    'options': {
-								    'mode': 'view',
-								    'availableModes': []
-							    },
-							    'height': '500px',
-							    "value": response
+	    getSendDataFromServer(currentScope, ngDataApi, {
+		    "method": "post",
+		    "routeName": "/dashboard/hosts/maintenanceOperation",
+		    "data": {
+			    "serviceId": service.id,
+			    "operation": "loadProvision",
+			    "env": currentScope.envCode
+		    }
+	    }, function (error, response) {
+		    if (error) {
+			    currentScope.generateNewMsg(currentScope.envCode, 'danger', translation.errorExecutingReloadRegistryTest[LANG] + " " + service.name + " @ " + new Date().toISOString());
+		    }
+		    else {
+		    	//todo: needs revision
+			    currentScope.provisionInfo.push({
+				    'label': service.name,
+				    'entries': [
+					    {
+						    'label': 'Provision information for: ' + service.name,
+						    'name': service.name,
+						    'type': 'jsoneditor',
+						    'options': {
+							    'mode': 'view',
+							    'availableModes': []
+						    },
+						    'height': '500px',
+						    "value": response
+					    }
+				    ]
+			    });
+			
+			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+			    formConfig.entries[0].tabs = currentScope.provisionInfo;
+			    var options = {
+				    timeout: $timeout,
+				    form: formConfig,
+				    name: 'reloadProvision',
+				    label: "Reloaded Provisioned Data of " + service.name,
+				    actions: [
+					    {
+						    'type': 'reset',
+						    'label': translation.ok[LANG],
+						    'btn': 'primary',
+						    'action': function (formData) {
+							    currentScope.modalInstance.dismiss('cancel');
+							    currentScope.provisionInfo = [];
+							    currentScope.form.formData = {};
 						    }
-					    ]
-				    });
-			    }
-		    });
-	    }
+					    }
+				    ]
+			    };
+			
+			    buildFormWithModal(currentScope, $modal, options);
+		    }
+	    });
     }
 
-    function awarenessStat (currentScope, service) {
+    function awarenessStat (currentScope, controller) {
+	    // console.log(currentScope.hosts);
+	    // console.log(currentScope.controllers);
+	    
         //excute awareness test for all service instances in parallel
-        service.forEach(function (oneServiceIp) {
-            executeAwarenessTest(currentScope, currentScope.envCode, oneServiceIp);
-        });
+        // getSendDataFromServer(currentScope, ngDataApi, {
+		 //    "method": "put",
+		 //    "routeName": "/dashboard/cloud/services/maintenance",
+		 //    "data": {
+			//     "serviceId": controller.id,
+			//     "type": "controller",
+			//     "operation": "awarenessStat",
+			//     "env": env
+		 //    }
+        // }, function (error, awarenessResponse) {
+		 //    if (error || !awarenessResponse.result || !awarenessResponse.data) {
+			//     currentScope.generateNewMsg(env, 'danger', translation.errorExecutingAwarnessTestControllerIP[LANG] + controller.name + " @ " + new Date().toISOString());
+		 //    }
+		 //    else {
+			//     awarenessResponse = awarenessResponse.data.services;
+			//     console.log(awarenessResponse);
+			//     //todo: need to loop and record all the servicenames found
+			//
+			//     // for (var oneService in awarenessResponse) {
+			// 	 //    if (awarenessResponse.hasOwnProperty(oneService)) {
+			// 		//     if (oneService === 'controller') {
+			// 		// 	    continue;
+			// 		//     }
+			// 		//     if (awarenessResponse[oneService].awarenessStats) {
+			// 		// 	    var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
+			// 		// 	    ips.forEach(function (serviceIp) {
+			// 		// 		    updateService(awarenessResponse, oneService, serviceIp);
+			// 		// 	    });
+			// 		//     }
+			// 	 //    }
+			//     // }
+		 //    }
+        // });
+        //
+        // function updateService(response, oneService, serviceIp) {
+		 //    var count = 0, max = 0;
+        //
+		 //    for(var version in currentScope.hosts[oneService].ips){
+			//     for (var i = 0; i < currentScope.hosts[oneService].ips[version].length; i++) {
+			// 	    max++;
+			// 	    if (currentScope.hosts[oneService].ips[version][i].ip === serviceIp) {
+			// 		    if (response[oneService].awarenessStats[serviceIp].healthy) {
+			// 			    currentScope.hosts[oneService].ips[version][i].healthy = true;
+			// 			    currentScope.hosts[oneService].ips[version][i].color = 'green';
+			// 		    }
+			// 		    else {
+			// 			    currentScope.hosts[oneService].ips[version][i].healthy = false;
+			// 			    currentScope.hosts[oneService].ips[version][i].color = 'red';
+			// 		    }
+			//
+			// 		    var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
+			// 		    currentScope.hosts[oneService].ips[version][i].lastCheck = getTimeAgo(lc);
+			//
+			// 		    if (response[oneService].awarenessStats[serviceIp].downSince) {
+			// 			    currentScope.hosts[oneService].ips[version][i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
+			// 		    }
+			// 		    if (response[oneService].awarenessStats[serviceIp].downCount) {
+			// 			    currentScope.hosts[oneService].ips[version][i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
+			// 		    }
+			//
+			// 		    currentScope.hosts[oneService].ips[version][i].controllers.forEach(function (oneCtrl) {
+			// 			    if (oneCtrl.ip === oneHost.ip) {
+			// 				    oneCtrl.color = 'green';
+			// 			    }
+			// 		    });
+			// 	    }
+			//     }
+			//
+			//
+			//     currentScope.hosts[oneService].ips[version].forEach(function (oneIP) {
+			// 	    if (oneIP.healthy) {
+			// 		    count++;
+			// 	    }
+			//     });
+		 //    }
+        //
+		 //    var healthy, color;
+		 //    if (count === max) {
+			//     //if (count === currentScope.hosts[oneService].ips.length) {
+			//     color = 'green';
+			//     healthy = true;
+		 //    }
+		 //    else if (count === 0) {
+			//     color = 'red';
+			//     healthy = false;
+		 //    }
+		 //    else {
+			//     color = 'yellow';
+			//     healthy = false;
+		 //    }
+		 //    currentScope.hosts[oneService].healthy = healthy;
+		 //    currentScope.hosts[oneService].color = color;
+		 //    // currentScope.generateNewMsg(env, 'success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
+		 //    currentScope.displayAlert('success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
+        // }
 	
-	    function executeAwarenessTest(currentScope, env, oneHost) {
-		    getSendDataFromServer(currentScope, ngDataApi, {
-			    "method": "post",
-			    "routeName": "/dashboard/hosts/maintenanceOperation",
-			    "data": {
-				    "serviceName": oneHost.name,
-				    "operation": "awarenessStat",
-				    "serviceHost": oneHost.ip,
-				    "servicePort": oneHost.port,
-				    "hostname": oneHost.hostname,
-				    "env": env
-			    }
-		    }, function (error, awarenessResponse) {
-			    if (error || !awarenessResponse.result || !awarenessResponse.data) {
-				    currentScope.generateNewMsg(env, 'danger', translation.errorExecutingAwarnessTestControllerIP[LANG] + oneHost.ip + ":" + oneHost.port + " @ " + new Date().toISOString());
-			    }
-			    else {
-				    awarenessResponse = awarenessResponse.data.services;
-				    for (var oneService in awarenessResponse) {
-					    if (awarenessResponse.hasOwnProperty(oneService)) {
-						    if (oneService === 'controller') {
-							    continue;
-						    }
-						
-						    if (awarenessResponse[oneService].awarenessStats) {
-							    var ips = Object.keys(awarenessResponse[oneService].awarenessStats);
-							    ips.forEach(function (serviceIp) {
-								    updateService(awarenessResponse, oneService, serviceIp);
-							    });
-						    }
-					    }
-				    }
-			    }
-		    });
-		
-		    function updateService(response, oneService, serviceIp) {
-			    var count = 0, max = 0;
-			
-			    for(var version in currentScope.hosts[oneService].ips){
-				    for (var i = 0; i < currentScope.hosts[oneService].ips[version].length; i++) {
-					    max++;
-					    if (currentScope.hosts[oneService].ips[version][i].ip === serviceIp) {
-						    if (response[oneService].awarenessStats[serviceIp].healthy) {
-							    currentScope.hosts[oneService].ips[version][i].healthy = true;
-							    currentScope.hosts[oneService].ips[version][i].color = 'green';
-						    }
-						    else {
-							    currentScope.hosts[oneService].ips[version][i].healthy = false;
-							    currentScope.hosts[oneService].ips[version][i].color = 'red';
-						    }
-						
-						    var lc = response[oneService].awarenessStats[serviceIp].lastCheck;
-						    currentScope.hosts[oneService].ips[version][i].lastCheck = getTimeAgo(lc);
-						
-						    if (response[oneService].awarenessStats[serviceIp].downSince) {
-							    currentScope.hosts[oneService].ips[version][i].downSince = new Date(response[oneService].awarenessStats[serviceIp].downSince).toISOString();
-						    }
-						    if (response[oneService].awarenessStats[serviceIp].downCount) {
-							    currentScope.hosts[oneService].ips[version][i].downCount = response[oneService].awarenessStats[serviceIp].downCount;
-						    }
-						
-						    currentScope.hosts[oneService].ips[version][i].controllers.forEach(function (oneCtrl) {
-							    if (oneCtrl.ip === oneHost.ip) {
-								    oneCtrl.color = 'green';
-							    }
-						    });
-					    }
-				    }
-				
-				
-				    currentScope.hosts[oneService].ips[version].forEach(function (oneIP) {
-					    if (oneIP.healthy) {
-						    count++;
-					    }
-				    });
-			    }
-			
-			    var healthy, color;
-			    if (count === max) {
-				    //if (count === currentScope.hosts[oneService].ips.length) {
-				    color = 'green';
-				    healthy = true;
-			    }
-			    else if (count === 0) {
-				    color = 'red';
-				    healthy = false;
-			    }
-			    else {
-				    color = 'yellow';
-				    healthy = false;
-			    }
-			    currentScope.hosts[oneService].healthy = healthy;
-			    currentScope.hosts[oneService].color = color;
-			    // currentScope.generateNewMsg(env, 'success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
-			    currentScope.displayAlert('success', translation.awarenessTestControllerIP[LANG] + " " + oneHost.ip + ":" + oneHost.port + " " + translation.wasSuccesful[LANG] + " @ " + new Date().toISOString());
-		    }
-	    }
     }
 
     function hostLogs (currentScope, task) {
@@ -667,7 +601,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
             routeName: "/dashboard/hacloud/services/instances/logs",
             params: {
                 env: currentScope.envCode,
-                taskName: taskName
+                taskName: task.id
             }
         }, function (error, response) {
             overlayLoading.hide();
@@ -695,52 +629,51 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 });
             }
         });
+	
+	    function remove_special(str) {
+		    var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
+			    /[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
+			    /[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
+			    /[\xD2-\xD4]/g, /[\xF2-\xF4]/g,
+			    /[\xD9-\xDB]/g, /[\xF9-\xFB]/g,
+			    /\xD1/, /\xF1/g,
+			    "/[\u00a0|\u1680|[\u2000-\u2009]|u200a|\u200b|\u2028|\u2029|\u202f|\u205f|\u3000|\xa0]/g",
+			    /\uFFFD/g,
+			    /\u000b/g, '/[\u180e|\u000c]/g',
+			    /\u2013/g, /\u2014/g,
+			    /\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g];
+		    var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...'];
+		    for (var i = 0; i < rExps.length; i++) {
+			    str = str.replace(rExps[i], repChar[i]);
+		    }
+		    for (var x = 0; x < str.length; x++) {
+			    var charcode = str.charCodeAt(x);
+			    if ((charcode < 32 || charcode > 126) && charcode != 10 && charcode != 13) {
+				    str = str.replace(str.charAt(x), "");
+			    }
+		    }
+		    return str;
+	    }
     }
 
-    function remove_special(str) {
-        var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
-            /[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
-            /[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
-            /[\xD2-\xD4]/g, /[\xF2-\xF4]/g,
-            /[\xD9-\xDB]/g, /[\xF9-\xFB]/g,
-            /\xD1/, /\xF1/g,
-            "/[\u00a0|\u1680|[\u2000-\u2009]|u200a|\u200b|\u2028|\u2029|\u202f|\u205f|\u3000|\xa0]/g",
-            /\uFFFD/g,
-            /\u000b/g, '/[\u180e|\u000c]/g',
-            /\u2013/g, /\u2014/g,
-            /\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g];
-        var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...'];
-        for (var i = 0; i < rExps.length; i++) {
-            str = str.replace(rExps[i], repChar[i]);
-        }
-        for (var x = 0; x < str.length; x++) {
-            var charcode = str.charCodeAt(x);
-            if ((charcode < 32 || charcode > 126) && charcode != 10 && charcode != 13) {
-                str = str.replace(str.charAt(x), "");
-            }
-        }
-        return str;
-    }
-
-    function executeHeartbeatTest(currentScope, task) {
+    function executeHeartbeatTest(currentScope, service, task) {
         getSendDataFromServer(currentScope, ngDataApi, {
             "method": "post",
             "routeName": "/dashboard/hosts/maintenanceOperation",
             "data": {
-                "serviceName": oneHost.name,
+                "serviceId": service.id,
+	            "taskId": task.id,
                 "operation": "heartbeat",
-                "serviceHost": oneHost.ip,
-                "servicePort": oneHost.port,
-                "hostname": oneHost.hostname,
-                "env": env
+                "env": currentScope.envCode
             }
         }, function (error, heartbeatResponse) {
             if (error) {
                 updateServiceStatus(false);
-                currentScope.displayAlert('danger', translation.errorExecutingHeartbeatTest[LANG] + " " + oneHost.name + " " + translation.onHostName[LANG] +" " + oneHost.hostname + " @ " + new Date().toISOString());
-                updateServicesControllers(currentScope, env, oneHost);
+                currentScope.displayAlert('danger', translation.errorExecutingHeartbeatTest[LANG] + " " + service.name + " " + translation.onHostName[LANG] + " " + task.name + " @ " + new Date().toISOString());
+                updateServicesControllers(task);
             }
             else {
+            	//todo: needs revision
                 if (heartbeatResponse.result) {
                     for(var version in currentScope.hosts[oneHost.name].ips){
                         for (var i = 0; i < currentScope.hosts[oneHost.name].ips[version].length; i++) {
@@ -843,29 +776,41 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 }
             }
         }
+	
+	    function updateServicesControllers(currentScope, env, currentCtrl) {
+		    for (var serviceName in currentScope.hosts) {
+			    if (serviceName === 'controller') {
+				    continue;
+			    }
+			    if (currentScope.hosts[serviceName].ips && currentScope.hosts[serviceName].ips && Object.keys(currentScope.hosts[serviceName].ips).length > 0) {
+				    for(var version in currentScope.hosts[serviceName].ips){
+					    currentScope.hosts[serviceName].ips[version].forEach(function (OneIp) {
+						
+						    if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
+							    OneIp.controllers.forEach(function (oneCtrl) {
+								
+								    if (oneCtrl.ip === currentCtrl.ip) {
+									    oneCtrl.color = 'red';
+								    }
+							    });
+						    }
+					    });
+				    }
+			    }
+		    }
+	    }
     }
 
-    function updateServicesControllers(currentScope, env, currentCtrl) {
-        for (var serviceName in currentScope.hosts) {
-            if (serviceName === 'controller') {
-                continue;
-            }
-            if (currentScope.hosts[serviceName].ips && currentScope.hosts[serviceName].ips && Object.keys(currentScope.hosts[serviceName].ips).length > 0) {
-	            for(var version in currentScope.hosts[serviceName].ips){
-		            currentScope.hosts[serviceName].ips[version].forEach(function (OneIp) {
-
-			            if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
-				            OneIp.controllers.forEach(function (oneCtrl) {
-
-					            if (oneCtrl.ip === currentCtrl.ip) {
-						            oneCtrl.color = 'red';
-					            }
-				            });
-			            }
-		            });
-	            }
-            }
-        }
+    function inspectService(currentScope, service){
+    	
+    }
+    
+    function loadDaemonStat(currentScope, service){
+    	
+    }
+    
+    function loadDaemonGroupConfig(currentScope, service){
+    	
     }
 	
 	/**
@@ -873,6 +818,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 * @param currentScope
 	 */
 	function deployNewService (currentScope) {
+		currentScope.deploymentModes = ['replicated', 'global'];
         var env = currentScope.envCode;
         var runningHosts = currentScope.hosts;
         $modal.open({
@@ -1277,8 +1223,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
             }
         });
     }
-
-
+	
     return {
         'listNodes': listNodes,
         'addNode': addNode,
@@ -1289,11 +1234,14 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         'deleteService': deleteService,
         'scaleService': scaleService,
         
-	    'reloadServiceRegistry': reloadServiceRegistry,
-        'loadServiceProvision': loadServiceProvision,
         'awarenessStat': awarenessStat,
         'executeHeartbeatTest': executeHeartbeatTest,
         'hostLogs': hostLogs,
+	    'reloadServiceRegistry': reloadServiceRegistry,
+        'loadServiceProvision': loadServiceProvision,
+        'inspectService': inspectService,
+        'loadDaemonStat': loadDaemonStat,
+        'loadDaemonGroupConfig': loadDaemonGroupConfig,
         
 	    'deployNewService': deployNewService,
         'checkCerts' : checkCerts

@@ -109,10 +109,10 @@
 	</div>
 	<div class="modal-body text-align-center">
 		<div class="form">
-			<label>This service is currently running as a replica of {{service.currentScale}} instance(s)</label>
+			<label>This service is currently running as a replica of {{currentScale}} instance(s)</label>
 			<br/>
 			<label>How many instances should this service be scaled to?</label>
-			<input type="number" class="form-control centeredInput" required="true" ng-model="service.newScale"/>
+			<input type="number" class="form-control centeredInput" required="true" ng-model="newScale"/>
 			<br/>
 			<alert type="info" class="text-align-center">
 				Scaling a service is a process that might take some time to complete.
@@ -297,7 +297,8 @@
 													<span class="caret"></span>
 												</button>
 												<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
-													<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
+													<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect</a></li>
+													<li><a href="" ng-click="executeHeartbeatTest(service)"><span class="icon icon-heart"></span> Heart Beat</a></li>
 													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonStats(service)"><span class="icon icon-stats-dots"></span>&nbsp;{{translation.loadDaemonStatisticsOperation[LANG]}}</a></li>
 													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonGroupConfig(service)"><span class="icon icon-equalizer"></span>&nbsp;{{translation.loadDaemonGroupConfig[LANG]}}</a></li>
 													<li><a href="" ng-if="service.labels['soajs.service.name'] !== 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
@@ -314,7 +315,7 @@
 												<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
 													<thead>
 														<tr class="header">
-															<td class="maintenanceHeader">Container Operation</td>
+															<td>Logs</td>
 															<td>Container Name</td>
 															<td>Started On</td>
 															<td>Status</td>
@@ -324,9 +325,6 @@
 													<tbody>
 														<tr ng-repeat="instance in service.tasks">
 															<td>
-																<a href="" >
-																	<span ng-click="executeHeartbeatTest(instance)" class="icon icon-heart" title="{{translation.executeHeartbeatOperation[LANG]}}"></span>
-																</a>&nbsp;
 																<a href="" ng-if="access.hacloud.services.logs">
 																	<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 																</a>

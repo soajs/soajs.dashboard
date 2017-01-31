@@ -70,8 +70,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.awarenessStat($scope, service);
 	};
 
-	$scope.executeHeartbeatTest = function (task) {
-		hacloudSrv.executeHeartbeatTest($scope, task);
+	$scope.executeHeartbeatTest = function (service, task) {
+		hacloudSrv.executeHeartbeatTest($scope, service, task);
 	};
 
 	$scope.loadDaemonStat = function(service){
