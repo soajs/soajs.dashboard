@@ -69,9 +69,14 @@
 						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;{{translation.understandTheRiskToDeploy[LANG]}}</label><br>
 						<br>
 					</div>
-					<div ng-if="currentScope.service.type !== 'nginx'">
+					<div>
+						<label>Deployment Mode</label>
+						<select class="form-control" ng-required="true" ng-options="mode in deploymentModes" ng-model="currentScope.mode"></select>
+						<br>
+					</div>
+					<div ng-if="currentScope.mode == 'replicated'">
 						<label>Replica Count</label>
-						<input type="number" class="form-control" ng-model="currentScope.replicaCount" ng-required="true"/>
+						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" />
 						<br>
 					</div>
 					<div>
@@ -286,7 +291,9 @@
 								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
 							</legend>
 							<div class="entryBoxes" ng-show="group.expanded">
-								
+
+								<button class="btn btn-primary" ng-click="deployNewService()">Deploy Service</button>
+
 								<fieldset ng-repeat="service in group.list">
 									<div class="entryBox mb20">
 										<div class="header">
