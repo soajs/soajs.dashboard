@@ -833,6 +833,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                 $scope.currentScope = currentScope;
 
+                currentScope.mode = "";
                 currentScope.services = [];
                 currentScope.service = "";
                 currentScope.versions = [];
