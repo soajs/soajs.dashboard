@@ -858,7 +858,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'post',
+                        method: 'get',
                         routeName: '/dashboard/services/list'
                     }, function (error, response) {
                         if (error) {
