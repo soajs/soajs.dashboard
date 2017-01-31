@@ -854,34 +854,6 @@ module.exports = {
 				}
 			},
 
-			"/hosts/nginx/list": {
-				_apiInfo: {
-					'l': 'List Nginx Hosts',
-					'group': 'Hosts'
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					'validation': {
-						'type': 'string'
-					}
-				}
-			},
-
-			"/hosts/container/zombie/list": {
-				"_apiInfo": {
-					"l": "List Zombie Containers",
-					"group": "Hosts"
-				},
-				"env": {
-					"source": ["query.env"],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1688,7 +1660,43 @@ module.exports = {
 					}
 				}
 			},
-
+			
+			"/cloud/services/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['query.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
+					}
+				}
+			},
+			
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -2520,49 +2528,6 @@ module.exports = {
 				}
 			},
 
-			"/cloud/services/maintenance": {
-				"_apiInfo": {
-					"l": "Perform A Maintenance Operation on a Deployed Service",
-					"group": "HA Cloud"
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"serviceId": {
-					"source": ['query.serviceId'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"serviceName": {
-					"source": ['query.serviceName'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"type": {
-					"source": ['query.type'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"operation": {
-					"source": ['body.operation'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
-					}
-				}
-			},
-
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -2795,45 +2760,6 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['id']
-			},
-
-			"/hosts/delete": {
-				_apiInfo: {
-					"l": "Delete Hosts",
-					"group": "Hosts"
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'name': {
-					'source': ['query.name'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'hostname': {
-					'source': ['query.hostname'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'ip': {
-					'source': ['query.ip'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				}
 			},
 
 			"/cloud/nodes/remove": {
