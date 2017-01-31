@@ -2485,14 +2485,14 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"env": {
-					"source": ['query.env'],
+					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
 				"serviceId": {
-					"source": ['query.serviceId'],
+					"source": ['body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2513,14 +2513,14 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"env": {
-					"source": ['query.env'],
+					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
 				"serviceId": {
-					"source": ['query.serviceId'],
+					"source": ['body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
