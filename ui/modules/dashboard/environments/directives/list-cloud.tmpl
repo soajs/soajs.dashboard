@@ -230,6 +230,7 @@
 			<tabset>
 				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}">
 					<br/>
+                    <button class="btn btn-primary f-right" ng-click="deployNewService()">Deploy Service</button>
 					<button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
 					<br/><br/>
 					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
@@ -291,8 +292,6 @@
 								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
 							</legend>
 							<div class="entryBoxes" ng-show="group.expanded">
-
-								<button class="btn btn-primary" ng-click="deployNewService()">Deploy Service</button>
 
 								<fieldset ng-repeat="service in group.list">
 									<div class="entryBox mb20">
