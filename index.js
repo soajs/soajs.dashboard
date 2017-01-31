@@ -410,11 +410,6 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
-	service.get("/hosts/nginx/list", function (req, res) { //TODO: deprecate
-		initBLModel(req, res, cloudBL, dbModel, function (BL) {
-			BL.listNginx(config, req.soajs, res);
-		});
-	});
 
 	service.post("/hosts/maintenanceOperation", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
@@ -476,7 +471,7 @@ service.init(function () {
 			BL.deleteService(config, req.soajs, res);
 		});
 	});
-	service.put("/cloud/services/maintenance", function (req, res) {
+	service.post("/cloud/services/maintenance", function (req, res) {
 		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.maintenance(config, req.soajs, res);
 		});
