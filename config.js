@@ -1680,6 +1680,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"type": {
 					"source": ['body.type'],
 					"required": true,
