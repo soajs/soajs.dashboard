@@ -464,11 +464,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 $scope.onSubmit = function () {
-                    console.log(currentScope.service)
-                    console.log(currentScope.service.type)
-                    console.log(currentScope.branch)
-                    console.log(currentScope.mode)
-                    console.log(currentScope.replicaCount)
 
                     if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || (currentScope.mode === "replicated" && !currentScope.number)))) {
                         currentScope.message.danger = "Please select a service, branch, and number of instances";
