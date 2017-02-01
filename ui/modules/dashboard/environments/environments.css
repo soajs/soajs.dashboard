@@ -82,6 +82,10 @@ ul {
     width: 10%;
 }
 
+.logsHeader{
+    width: 5% !important;
+}
+
 .maintenanceHeader {
     width: 15% !important;
 }
@@ -92,6 +96,10 @@ ul {
 
 .statusHeader {
     width: 15% !important;
+}
+
+.statusHeader2 {
+    width: 30% !important;
 }
 
 .ipHeader {
@@ -182,4 +190,16 @@ ul {
 
 .ace_editor{
     height: 500px;
+}
+
+.red{
+    color:red;
+}
+
+.yellow{
+    color: gold;
+}
+
+.green{
+    color:green;
 }

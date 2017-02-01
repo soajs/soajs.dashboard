@@ -310,7 +310,7 @@
 									<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
 								</div>
 								<fieldset ng-repeat="service in group.list">
-									<div class="entryBox mb20">
+									<div class="entryBox mb20 {{service.color}}">
 										<div class="header">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
 											<div class="dropdown serviceOpsDropdown">
@@ -335,11 +335,13 @@
 												<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
 													<thead>
 														<tr class="header">
-															<td>Logs</td>
-															<td>Container Name</td>
-															<td>Started On</td>
-															<td>Status</td>
-															<td ng-if="service.labels['soajs.service.name'] !== 'controller'">Controllers</td>
+															<td class="logsHeader">Logs</td>
+															<td class="maintenanceHeader">Container Name</td>
+															<td class="maintenanceHeader">Started On</td>
+															<td class="maintenanceHeader">Last Check On</td>
+															<td class="statusHeader2" ng-if="service.labels['soajs.service.name'] === 'controller'">Status</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Status</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Controllers</td>
 														</tr>
 													</thead>
 													<tbody>
@@ -351,11 +353,18 @@
 															</td>
 															<td>{{instance.name}}</td>
 															<td>{{instance.status.ts}}</td>
+															<td ng-show="instance.status.lastTs">{{instance.status.lastTs|fulldate}}</td>
+															<td ng-show="!instance.status.lastTs">N/A</td>
 															<td>
-																<span ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
+																<span ng-show="instance.status.state === 'Unreachable'" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="instance.status.error" class="red"><b>{{instance.status.state}}</b></span>
+																<span ng-show="instance.status.state !== 'Unreachable'" ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
 															</td>
 															<td ng-if="service.labels['soajs.service.name'] !== 'controller'">
-																<span ng-repeat="ctrl in controllers"><span class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrl.healthy, 'ctrlBoxUnhealthy': !ctrl.healthy}" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="ctrl.tooltip">{{ctrl.code}}</span>&nbsp;</span>
+																<span ng-repeat="ctrl in controllers">
+																	<span ng-repeat="ctrlInst in ctrl.tasks">
+																		<span class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrlInst.healthy, 'ctrlBoxUnhealthy': !ctrlInst.healthy}" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="ctrlInst.tooltip">{{ctrlInst.code}}</span>&nbsp;
+																	</span>
+																</span>
 															</td>
 														</tr>
 													</tbody>

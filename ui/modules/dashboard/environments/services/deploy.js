@@ -2,12 +2,6 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
-    /**
-     * Deploy new environment
-     * @param currentScope
-     * @param envCode
-     * @param haMode
-     */
     function deployEnvironment(currentScope, envCode, haMode) {
         var formConfig = angular.copy(environmentsConfig.form.deploy);
         var kubeConfig = environmentsConfig.deployer.kubernetes;
@@ -497,6 +491,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 function allowListing(env, service) {
+                    if(service.versions){
+                        Object.keys(service.versions).forEach(function(key,index) {
+                            console.log (service.name + " " + key)
+                        });
+                    }
+                    //console.log(service.name + " " +  JSON.stringify(Object.keys(service.versions),null,2))
+                    //console.log(JSON.stringify(service,null,2))
+                    //console.log(JSON.stringify(currentScope.hosts.soajs.groups,null,2))
+
                     var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
                     var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
                     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
@@ -619,7 +622,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         "imagePrefix": currentScope.imagePrefix,
                         "replication": {
                             "mode": currentScope.mode,
-                            "replicas": currentScope.number,
+                            "replicas": currentScope.number
                         }
                     };
 
@@ -628,7 +631,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         "routeName": "/dashboard/cloud/services/soajs/deploy",
                         "data": params
                     };
-
                     overlayLoading.show();
                     getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
                         overlayLoading.hide();
@@ -716,8 +718,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             }
         });
     }
+
     return {
         'deployEnvironment': deployEnvironment,
-        'deployNewService': deployNewService,
+        'deployNewService': deployNewService
     }
 }]);
