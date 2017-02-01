@@ -9,7 +9,16 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 
     $scope.nodes = {};
 	$scope.services = {};
-
+	
+	$scope.waitMessage = {
+		type: "",
+		message: "",
+		close: function () {
+			$scope.waitMessage.message = '';
+			$scope.waitMessage.type = '';
+		}
+	};
+	
 	$scope.listNodes = function () {
         hacloudSrv.listNodes($scope);
     };
@@ -21,7 +30,15 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
     $scope.removeNode = function (nodeId) {
         hacloudSrv.removeNode($scope, nodeId);
     };
-
+	
+	$scope.generateNewMsg = function (env, type, msg) {
+		$scope.waitMessage.type = type;
+		$scope.waitMessage.message = msg;
+		$timeout(function () {
+			$scope.waitMessage.close();
+		}, 7000);
+	};
+	
 	$scope.showHideContent = function (service) {
 		service.expanded = !service.expanded;
 	};
@@ -66,12 +83,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		hacloudSrv.loadServiceProvision($scope, service);
 	};
 
-	$scope.awarenessStat = function (service) {
-		hacloudSrv.awarenessStat($scope, service);
-	};
-
-	$scope.executeHeartbeatTest = function (service, task) {
-		hacloudSrv.executeHeartbeatTest($scope, service, task);
+	$scope.executeHeartbeatTest = function (service) {
+		hacloudSrv.executeHeartbeatTest($scope, service);
 	};
 
 	$scope.loadDaemonStat = function(service){

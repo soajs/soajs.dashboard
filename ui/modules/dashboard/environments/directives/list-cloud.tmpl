@@ -131,6 +131,18 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="infoService.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<div readonly="true" ui-ace="{useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: fillAceWithInfo}"></div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
 <script type="text/ng-template" id="logBox.html">
 	<div class="modal-header">
 		<table width="100%">
@@ -293,7 +305,9 @@
 								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
 							</legend>
 							<div class="entryBoxes" ng-show="group.expanded">
-
+								<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
+									<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+								</div>
 								<fieldset ng-repeat="service in group.list">
 									<div class="entryBox mb20">
 										<div class="header">
@@ -310,8 +324,6 @@
 													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonGroupConfig(service)"><span class="icon icon-equalizer"></span>&nbsp;{{translation.loadDaemonGroupConfig[LANG]}}</a></li>
 													<li><a href="" ng-if="service.labels['soajs.service.name'] !== 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
-													<li><a href="" ng-if="service.labels['soajs.service.name'] === 'controller'" ng-click="awarenessStat(service)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
-													
 													<li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												</ul>
