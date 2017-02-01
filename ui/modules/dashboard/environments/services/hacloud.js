@@ -817,8 +817,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 * Deploy New service/daemon
 	 * @param currentScope
 	 */
+
+
 	function deployNewService (currentScope) {
 		currentScope.deploymentModes = ['replicated', 'global'];
+        currentScope.mode='replicated';
         var env = currentScope.envCode;
         var runningHosts = currentScope.hosts;
         $modal.open({
@@ -832,8 +835,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 $scope.title = 'Deploy New Service';
                 $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                 $scope.currentScope = currentScope;
-
-                currentScope.mode;
                 currentScope.services = [];
                 currentScope.service = "";
                 currentScope.versions = [];
@@ -859,7 +860,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'get',
+                        method: 'post',
                         routeName: '/dashboard/services/list'
                     }, function (error, response) {
                         if (error) {
@@ -918,6 +919,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                     currentScope.groupConfigs = '';
                     currentScope.conflict = '';
                     currentScope.conflictCommits = {};
+
 
                     if (service.type === 'nginx') return;
 
@@ -1210,7 +1212,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 }
 
                 //Start here
-                if (currentScope.hosts && currentScope.hosts.controller) {
+                if (currentScope.hosts && currentScope.controllers) {
                     $scope.getServices(function () {
                         $scope.getDaemons();
                     });
