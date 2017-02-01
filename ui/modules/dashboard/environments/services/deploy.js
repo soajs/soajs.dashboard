@@ -293,7 +293,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         }
     }
 
+    function deployNewService(){
+    	
+    }
+    
     return {
-        'deployEnvironment': deployEnvironment
+        'deployEnvironment': deployEnvironment,
+        'deployNewService': deployNewService
     }
 }]);

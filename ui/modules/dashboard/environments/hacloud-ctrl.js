@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, hacloudSrv, deploySrv, injectFiles) {
+environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -19,18 +19,6 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 		}
 	};
 	
-	$scope.listNodes = function () {
-        hacloudSrv.listNodes($scope);
-    };
-
-    $scope.addNode = function () {
-        hacloudSrv.addNode($scope);
-    };
-
-    $scope.removeNode = function (nodeId) {
-        hacloudSrv.removeNode($scope, nodeId);
-    };
-	
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.waitMessage.type = type;
 		$scope.waitMessage.message = msg;
@@ -42,13 +30,29 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	$scope.showHideContent = function (service) {
 		service.expanded = !service.expanded;
 	};
-
+	
 	$scope.showHideGroupContent = function (groupName) {
 		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
 	};
+	
+	$scope.checkCerts = function(env) {
+		nodeSrv.checkCerts($scope, env);
+	};
+	
+	$scope.listNodes = function () {
+		nodeSrv.listNodes($scope);
+    };
+
+    $scope.addNode = function () {
+	    nodeSrv.addNode($scope);
+    };
+
+    $scope.removeNode = function (nodeId) {
+	    nodeSrv.removeNode($scope, nodeId);
+    };
 
     $scope.updateNode = function (node, type, newStatus) {
-        hacloudSrv.updateNode($scope, node, type, newStatus);
+	    nodeSrv.updateNode($scope, node, type, newStatus);
     };
 
 	$scope.deployNewEnv = function () {
@@ -56,7 +60,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	};
 
 	$scope.deployNewService = function () {
-		hacloudSrv.deployNewService($scope);
+		deploySrv.deployNewService($scope);
 	};
 
 	$scope.listServices = function () {
@@ -97,10 +101,6 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'ha
 	
 	$scope.hostLogs = function (task) {
 		hacloudSrv.hostLogs($scope, task);
-	};
-
-	$scope.checkCerts = function(env) {
-		hacloudSrv.checkCerts($scope, env);
 	};
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
