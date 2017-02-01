@@ -47,177 +47,6 @@ var methods = {
 	},
 
 	/**
-	 * DOCKER COLLECTION
-	 */
-	"getContainers": function (soajs, model, env, type, running, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				"env": env.toLowerCase(),
-				"recordType": "container"
-			}
-		};
-
-		if (type) {
-			opts.conditions["$or"] = [
-				{"type": type},
-				{"type": type + "_" + env.toLowerCase()}
-			];
-		}
-
-		if (running) {
-			opts.conditions.running = running;
-		}
-
-		model.findEntries(soajs, opts, cb);
-	},
-
-	"getServiceType": function (soajs, model, options, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				env: options.env.toLowerCase(),
-				serviceName: options.serviceName
-			},
-			fields: { type: 1 }
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"getOneContainer": function (soajs, model, env, hostname, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				"env": env.toLowerCase(),
-				"$or": [
-					{"hostname": hostname},
-					{"hostname": hostname + "_" + env.toLowerCase()},
-					{"cid": hostname}
-				]
-			}
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"getContainerByTask": function (soajs, model, env, taskName, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				env: env.toLowerCase(),
-				taskName: taskName
-			}
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"removeContainerByTask": function (soajs, model, env, taskName, cb) {
-		var opts = {
-			collection: dockerColl,
-			conditions: {
-				env: env.toLowerCase(),
-				taskName: taskName
-			}
-		};
-
-		model.removeEntry(soajs, opts, cb);
-	},
-
-	"insertContainer": function (soajs, model, record, cb) {
-		record.hostname = record.hostname.replace("/", "");
-
-		var opts = {
-			collection: dockerColl,
-			record: record
-		};
-
-		model.insertEntry(soajs, opts, cb);
-	},
-
-	"insertContainers": function (soajs, model, records, cb) {
-		var opts = {
-			collection: dockerColl,
-			record: records
-		};
-
-		model.insertEntry(soajs, opts, cb);
-	},
-
-	"listNodes": function (soajs, model, criteria, cb) {
-		criteria.recordType = 'node';
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria
-		};
-
-		model.findEntries(soajs, opts, cb);
-	},
-
-	"getOneNode": function (soajs, model, criteria, cb) {
-		criteria.recordType = 'node';
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"addNode": function (soajs, model, data, cb) {
-		data.recordType = 'node';
-		var opts = {
-			collection: dockerColl,
-			record: data
-		};
-
-		model.insertEntry(soajs, opts, cb);
-	},
-
-	"removeNode": function (soajs, model, criteria, cb) {
-		criteria.recordType = 'node';
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria
-		};
-
-		model.removeEntry(soajs, opts, cb);
-	},
-
-	"updateNode": function (soajs, model, criteria, update, cb) {
-		criteria.recordType = 'node';
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria,
-			fields: update
-		};
-
-		model.updateEntry(soajs, opts, cb);
-	},
-
-	"getServiceContainers": function (soajs, model, criteria, cb) {
-		criteria.recordType = 'container';
-		criteria.env = criteria.env.toLowerCase();
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria
-		};
-
-		model.findEntries(soajs, opts, cb);
-	},
-
-	"removeServiceContainers": function (soajs, model, criteria, cb) {
-		criteria.recordType = 'container';
-		var opts = {
-			collection: dockerColl,
-			conditions: criteria
-		};
-
-		model.removeEntry(soajs, opts, cb);
-	},
-
-	/**
 	 * HOSTS COLLECTION
 	 */
 	"getHosts": function (soajs, model, env, type, cb) {
@@ -243,14 +72,14 @@ var methods = {
 			},
 			fields: 'env'
 		};
-		
+
 		if(soajs.inputmaskData.version){
 			opts.conditions.version = soajs.inputmaskData.version;
 		}
 
 		model.distinctEntries(soajs, opts, cb);
 	},
-	
+
 	"getEnvInfo": function (soajs, model,options, cb) {
 		var opts = {
 			collection: envColl,
@@ -266,10 +95,10 @@ var methods = {
 				'domain': 1
 			}
 		};
-		
+
 		model.findEntries(soajs, opts, cb);
 	},
-	
+
 	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
 		var opts = {
 			collection: hostsColl,
@@ -288,37 +117,6 @@ var methods = {
 		}
 
 		model.findEntry(soajs, opts, cb);
-	},
-
-	"removeHost": function (soajs, model, env, type, ip, cb) {
-		var opts = {
-			collection: hostsColl,
-			conditions: {
-				"env": env.toLowerCase()
-			}
-		};
-
-		if (type && type !== '') {
-			opts.conditions.name = type;
-		}
-
-		if (ip && ip !== '') {
-			opts.conditions.ip = ip;
-		}
-
-		model.removeEntry(soajs, opts, cb);
-	},
-
-	"removeHostByTask": function (soajs, model, env, task, cb) {
-		var opts = {
-			collection: hostsColl,
-			conditions: {
-				env: env.toLowerCase(),
-				serviceHATask: task
-			}
-		};
-
-		model.removeEntry(soajs, opts, cb);
 	},
 
 	"getService": function (soajs, model, condition, cb) {
@@ -361,15 +159,6 @@ var methods = {
 		};
 
 		model.findEntry(soajs, opts, cb);
-	},
-
-	"removeServiceHosts": function (soajs, model, criteria, cb) {
-		var opts = {
-			collection: hostsColl,
-			conditions: criteria
-		};
-
-		model.removeEntry(soajs, opts, cb);
 	},
 
 	/**
