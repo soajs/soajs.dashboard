@@ -840,6 +840,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                 $scope.currentScope = currentScope;
 
+                currentScope.mode;
                 currentScope.services = [];
                 currentScope.service = "";
                 currentScope.versions = [];
@@ -865,7 +866,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
                 $scope.getServices = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'post',
+                        method: 'get',
                         routeName: '/dashboard/services/list'
                     }, function (error, response) {
                         if (error) {
@@ -910,6 +911,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 };
 
                 $scope.selectService = function (service) {
+                    console.log(service);
                     currentScope.versions = Object.keys(service.versions);
                     if (currentScope.version) {
                         currentScope.version = "";
