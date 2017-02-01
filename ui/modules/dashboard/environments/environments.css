@@ -179,3 +179,7 @@ ul {
     float: left !important;
     max-width:none;
 }
+
+.ace_editor{
+    height: 500px;
+}
