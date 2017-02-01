@@ -70,10 +70,11 @@
 						<br>
 					</div>
 					<div>
-						{{currentScope.deploymentModes}}
+						<br>
 						<label>Deployment Mode</label>
 						<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
-						<br>
+						<label class="fieldMsg">Global mode deploys one replica of the service on each node.</label>
+						<label class="fieldMsg">Replica mode deploys the specified number of replicas based on the availability of resources.</label>
 					</div>
 					<div ng-if="currentScope.mode == 'replicated'">
 						<label>Replica Count</label>
