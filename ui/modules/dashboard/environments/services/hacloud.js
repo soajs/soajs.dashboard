@@ -212,7 +212,59 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 		});
 	}
-	
+
+    function redeployService(currentScope, service) {
+        var params = {
+            env: currentScope.envCode,
+            serviceId: service.id
+        };
+
+        overlayLoading.show();
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'put',
+            routeName: '/dashboard/cloud/services/redeploy',
+            params: params
+        }, function (error, response) {
+            overlayLoading.hide();
+            if (error) {
+                currentScope.displayAlert('danger', error.message);
+            }
+            else {
+                currentScope.displayAlert('success', 'Service redeployed successfully');
+                currentScope.listServices();
+            }
+        });
+    }
+
+    function rebuildService(currentScope, service) {
+        var params = {
+            env: currentScope.envCode,
+            serviceId: service.id,
+			ui : {
+            	id: null,
+				branch: null,
+				commit: null
+			}
+        };
+
+        overlayLoading.show();
+        getSendDataFromServer(currentScope, ngDataApi, {
+            method: 'put',
+            routeName: '/dashboard/cloud/services/redeploy',
+            params: params
+        }, function (error, response) {
+            overlayLoading.hide();
+            if (error) {
+                currentScope.displayAlert('danger', error.message);
+            }
+            else {
+                currentScope.displayAlert('success', 'Service rebuilt successfully');
+                currentScope.listServices();
+            }
+        });
+    }
+
+
 	/**
 	 * Troubleshooting and Maintenance Operations
 	 * @param currentScope
@@ -593,6 +645,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         'listServices': listServices,
         'deleteService': deleteService,
         'scaleService': scaleService,
+		'redeployService': redeployService,
+		'rebuildService': rebuildService,
 
         'executeHeartbeatTest': executeHeartbeatTest,
         'hostLogs': hostLogs,
