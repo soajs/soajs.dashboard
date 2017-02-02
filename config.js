@@ -92,7 +92,7 @@ module.exports = {
 	},
 
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -1660,7 +1660,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
@@ -1703,7 +1703,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -1886,7 +1886,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
@@ -1910,9 +1910,9 @@ module.exports = {
 						}
 					}
 				}
-				
+
 			},
-			
+
 			"/swagger/generate": {
 				"_apiInfo": {
 					"l": "Generate Service via Swagger",
@@ -2531,6 +2531,15 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"ui": {
+					"required": false,
+					"type": "object",
+					"properties": {
+						"id": { "type": "string", "required": true },
+						"branch": { "type": "string", "required": true },
+						"commit": { "type": "string", "required": true }
 					}
 				}
 			},

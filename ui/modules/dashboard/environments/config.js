@@ -548,7 +548,7 @@ var environmentsConfig = {
 					'label': 'Nginx Configuration',
 					'type': 'group',
 					'entries': [
-                        {
+                        /*{
                             'name': 'nginxDeploymentMode',
                             'label': 'Nginx Deployment Mode',
                             'type': 'select',
@@ -558,7 +558,7 @@ var environmentsConfig = {
                             ],
                             'tooltip': 'Specify the deployment mode',
                             'required': true
-                        },
+                        },*/
 						{
 							'name': 'nginxCount',
 							'label': translation.numberOfNginxInstances[LANG],
@@ -605,7 +605,7 @@ var environmentsConfig = {
 					'label': 'Controller Configuration',
 					'type': 'group',
 					'entries': [
-                        {
+                        /*{
                             'name': 'controllerDeploymentMode',
                             'label': 'Controller Deployment Mode',
                             'type': 'select',
@@ -615,7 +615,7 @@ var environmentsConfig = {
                             ],
                             'tooltip': 'Specify the deployment mode',
                             'required': true
-                        },
+                        },*/
 						{
 							'name': 'controllers',
 							'label': translation.controller[LANG],
