@@ -266,7 +266,8 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				filepath: "/swagger.yml",
 				env: $scope.envSelected,
 				serviceName: $scope.serviceName,
-				version: $scope.version
+				version: $scope.version,
+				type: 'service'
 			}
 		}, function (error, response) {
 			if (error) {
