@@ -27,8 +27,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                     if (response && response.length > 0) {
                         currentScope.hosts = {
                             'soajs': {
-                            	"label": "SOAJS",
-	                            "groups": {}
+                            	"label": "SOAJS"
                             },
 	                        'nginx':{
                             	"label": "Nginx",
@@ -51,10 +50,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         for (var j = 0; j < response.length; j++) {
                         	response[j].expanded = true;
                         	if(response[j].labels['soajs.content'] === 'true'){
+                        		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
+			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
+		                        }
                         		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
 			                        currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
 		                        }
 		                        else{
+                        			if(!currentScope.hosts.soajs.groups){
+				                        currentScope.hosts.soajs.groups = {};
+			                        }
+			                        
 			                        response[j]['color'] = 'green';
 			                        response[j]['healthy'] = true;
 			                        var groupName = response[j].labels['soajs.service.group'];
@@ -118,7 +124,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	        		oneController.color = 'red';
 		        }
 	        });
-	        
 	        if(cb && typeof(cb) === 'function'){
 	        	return cb();
 	        }

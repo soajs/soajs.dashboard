@@ -207,7 +207,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         
         function waitForControllers(cb){
 	        currentScope.listServices(function(){
-		        console.log(currentScope);
 		        if(currentScope.controllers.length > 0){
 			        return cb();
 		        }
