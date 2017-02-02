@@ -360,7 +360,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     });
                 };
 
-                $scope.getDaemons = function () {
+                $scope.getDaemons = function (cb) {
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'post',
                         routeName: '/dashboard/daemons/list',
@@ -378,6 +378,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                                     currentScope.services.push(oneDaemon);
                                 }
                             });
+                            return cb();
                         }
                     });
                 };
@@ -491,26 +492,43 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 function allowListing(env, service) {
-                    if(service.versions){
-                        Object.keys(service.versions).forEach(function(key,index) {
-                            console.log (service.name + " " + key)
-                        });
-                    }
-                    //console.log(service.name + " " +  JSON.stringify(Object.keys(service.versions),null,2))
-                    //console.log(JSON.stringify(service,null,2))
-                    //console.log(JSON.stringify(currentScope.hosts.soajs.groups,null,2))
 
                     var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
                     var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
                     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
-                        return true;
+                        return filterServiceInfo(service);
                     } else if (env.toLowerCase() !== 'dashboard' &&
                         // service.name !== 'controller' && //controller is added later manually
                         ((dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) || //not a locked service for dashboard and non dashboard environments
                         (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
-                        return true;
+                        return filterServiceInfo(service);
                     }
                     return false;
+                }
+
+                //filter out service information that already exist
+                function filterServiceInfo(service) {
+                    if(!service.group)
+                        return false;
+                    else {
+                        var serviceVersions = Object.keys(service.versions);
+                        var deployedServices = currentScope.hosts.soajs.groups[service.group].list;
+                        //Loop over the deployed services, and remove from the service, the service versions that are already deployed
+                        serviceVersions.forEach(function (version) {
+                            for(var i = 0; i < deployedServices.length; i++){
+                                //if a version of that service is found to be deployed, delete it from the service information
+                                if(service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
+                                    delete service.versions[version];
+                                }
+                            }
+                        });
+                        //if all the versions of the service are found to be deployed, return false
+                        //else, return true, after having removed the deployed versions
+                        if(Object.keys(service.versions).length === 0)
+                            return false;
+                        else
+                            return true;
+                    }
                 }
 
                 function newController(currentScope) {
@@ -705,7 +723,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 //Start here
                 if (currentScope.hosts && currentScope.controllers) {
                     $scope.getServices(function () {
-                        $scope.getDaemons();
+                        $scope.getDaemons(function () {
+                            if(currentScope.services.length === 0) {
+                                currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
+                                $modalInstance.close();
+                            }
+                        });
                     });
                 }
                 else {
