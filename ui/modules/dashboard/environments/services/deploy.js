@@ -513,8 +513,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         return filterServiceInfo(service);
                     } else if (env.toLowerCase() !== 'dashboard' &&
                         // service.name !== 'controller' && //controller is added later manually
-                        ((dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) || //not a locked service for dashboard and non dashboard environments
-                        (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1))) { //a locked service that is common for dashboard and non dash envs (urac, oauth)
+                        (
+	                        //not a locked service for dashboard and non dashboard environments
+                        	(dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
+	                        //a locked service that is common for dashboard and non dash envs (urac, oauth)
+                            (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
+                        )
+                    ) {
                         return filterServiceInfo(service);
                     }
                     return false;
@@ -526,7 +531,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         return false;
                     else {
                         var serviceVersions = Object.keys(service.versions);
-                        var deployedServices = currentScope.hosts.soajs.groups[service.group].list;
+                        var deployedServices = [];
+                        if(currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[service.group]){
+	                        deployedServices = currentScope.hosts.soajs.groups[service.group].list;
+                        }
                         //Loop over the deployed services, and remove from the service, the service versions that are already deployed
                         serviceVersions.forEach(function (version) {
                             for(var i = 0; i < deployedServices.length; i++){
@@ -667,7 +675,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
                         overlayLoading.hide();
                         if (error) {
-                            console.log(JSON.stringify(error))
                             currentScope.displayAlert('danger', error.message);
                             $modalInstance.close();
                         }
