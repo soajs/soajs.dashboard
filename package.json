@@ -40,6 +40,7 @@
     "bitbucket-server-nodejs": "^2.10.0",
     "cron": "1.2.1",
     "dockerode": "aff04/dockerode.git",
+    "easy-zip": "0.0.4",
     "formidable": "1.0.17",
     "github": "^0.2.4",
     "gridfs-stream": "1.1.1",
@@ -54,7 +55,6 @@
     "soajs": "0.4.*",
     "soajs.core.drivers": "soajs/soajs.core.drivers.git#feature/DASHBOARD-50",
     "unzip2": "0.2.5",
-    "yamljs": "0.2.8",
-    "zip-folder": "1.0.0"
+    "yamljs": "0.2.8"
   }
 }

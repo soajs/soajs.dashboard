@@ -52,7 +52,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	                        
                         	var failures = 0;
 	                        response[j].tasks.forEach(function(oneTask){
-		                        if(['running',''].indexOf(oneTask.status.state) === -1){
+		                        if(['running','preparing', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1){
 			                        failures++;
 			                        oneTask.hideIt = true;
 		                        }
@@ -713,7 +713,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					keyboard: false,
 					windowClass: 'large-Modal',
 					controller: function ($scope, $modalInstance) {
-						$scope.title = "Host Logs of " + taskName;
+						$scope.title = "Host Logs of " + task.name;
 						$scope.data = remove_special(response.data);
 						fixBackDrop();
 						setTimeout(function () {
