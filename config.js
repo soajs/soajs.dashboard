@@ -1516,7 +1516,7 @@ module.exports = {
                                             "commit": { "type": "string", "required": true }
                                         }
                                     },
-                                        "supportSSL": { "required": false, "type": "boolean" }
+									"supportSSL": { "required": false, "type": "boolean" }
 								}
 							}
 						}
