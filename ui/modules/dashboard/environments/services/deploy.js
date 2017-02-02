@@ -2,11 +2,12 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
-    function deployEnvironment(currentScope, envCode, haMode) {
+    function deployEnvironment(currentScope) {
         var formConfig = angular.copy(environmentsConfig.form.deploy);
         var kubeConfig = environmentsConfig.deployer.kubernetes;
-
-        currentScope.isKubernetes = (currentScope.deployer.selected.split('.')[1] === "kubernetes");
+	    var envCode = currentScope.envCode;
+        
+        currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
         if(currentScope.isKubernetes){
             formConfig.entries[0].entries[1].min = kubeConfig.minPort;
             formConfig.entries[0].entries[1].max = kubeConfig.maxPort;
@@ -146,8 +147,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             };
             buildFormWithModal(currentScope, $modal, options);
         });
-
-
+	    
         function deployEnvironment(formData) {
             //temp values for now///////////////////
             formData.ctrlReplMode = 'replicated';
@@ -198,65 +198,26 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     currentScope.form.displayAlert('danger', error.message);
                 }
                 else {
-                    params.type = 'nginx';
-                    delete params.name;
-                    params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
-                    params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
-                    params.deployConfig.imagePrefix = formData.nginxImagePrefix;
-                    params.deployConfig.replication = {
-                        mode: formData.nginxReplMode
-                    };
-
-                    if (formData.nginxReplMode === 'replicated') {
-                        params.deployConfig.replication.replicas = formData.nginxCount;
-                    }
-
-                    params.deployConfig.ports = [
-                        {
-                            isPublished: true,
-                            published: formData.exposedPort
-                        }
-                    ];
-
-                    if (formData.useCustomUI) {
-                        formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
-                        formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
-
-                        params.contentConfig.nginx.ui = {
-                            id: formData.selectCustomUI._id,
-                            branch: formData.selectUIBranch.name,
-                            commit: formData.selectUIBranch.commit.sha
-                        };
-                    }
-
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "post",
-                        "routeName": "/dashboard/cloud/services/soajs/deploy",
-                        "data": params
-                    }, function(error, response) {
-                        if(error) {
-                            currentScope.form.displayAlert('danger', error.message);
-                            overlay.hide();
-                        }
-                        else {
-                            currentScope.modalInstance.dismiss("ok");
-                            overlay.hide(function(){
-                                if (!haMode) {
-                                    currentScope.listNginxHosts(envCode);
-                                    currentScope.listHosts(envCode);
-                                }
-                                else {
-                                    currentScope.isDeploying = true;
-                                    $timeout(function () {
-                                        currentScope.listNginxServices();
-                                        currentScope.listServices();
-                                    }, 15000);
-                                }
-                            });
-                        }
+                    waitForControllers(function(){
+	                    deployNginx(formData, params);
                     });
                 }
             });
+        }
+        
+        function waitForControllers(cb){
+	        currentScope.listServices(function(){
+		        console.log(currentScope);
+		        if(currentScope.controllers.length > 0){
+			        return cb();
+		        }
+		        else{
+		        	$timeout(function(){
+				        waitForControllers(cb);
+			        }, 1500);
+			        
+		        }
+	        });
         }
 
         function listStaticContent (currentScope, cb) {
@@ -290,6 +251,60 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     return cb (response);
                 }
             });
+        }
+        
+        function deployNginx(formData, params){
+	        params.type = 'nginx';
+	        delete params.name;
+	        params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
+	        params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
+	        params.deployConfig.imagePrefix = formData.nginxImagePrefix;
+	        params.deployConfig.replication = {
+		        mode: formData.nginxReplMode
+	        };
+	
+	        if (formData.nginxReplMode === 'replicated') {
+		        params.deployConfig.replication.replicas = formData.nginxCount;
+	        }
+	
+	        params.deployConfig.ports = [
+		        {
+			        isPublished: true,
+			        published: formData.exposedPort
+		        }
+	        ];
+	
+	        if (formData.useCustomUI) {
+		        formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
+		        formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
+		
+		        params.contentConfig.nginx.ui = {
+			        id: formData.selectCustomUI._id,
+			        branch: formData.selectUIBranch.name,
+			        commit: formData.selectUIBranch.commit.sha
+		        };
+	        }
+	
+	        getSendDataFromServer(currentScope, ngDataApi, {
+		        "method": "post",
+		        "routeName": "/dashboard/cloud/services/soajs/deploy",
+		        "data": params
+	        }, function(error, response) {
+		        if(error) {
+			        currentScope.form.displayAlert('danger', error.message);
+			        overlay.hide();
+		        }
+		        else {
+			        currentScope.modalInstance.dismiss("ok");
+			        overlay.hide(function(){
+				
+				        currentScope.isDeploying = true;
+				        $timeout(function () {
+					        currentScope.listServices();
+				        }, 15000);
+			        });
+		        }
+	        });
         }
     }
 

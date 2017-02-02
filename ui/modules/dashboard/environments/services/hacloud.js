@@ -8,7 +8,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 * @param env
 	 * @param noPopulate
 	 */
-	function listServices(currentScope) {
+	function listServices(currentScope, cb) {
 		var env = currentScope.envCode.toLowerCase();
 		currentScope.showCtrlHosts = true;
         currentScope.controllers =[];
@@ -118,6 +118,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	        		oneController.color = 'red';
 		        }
 	        });
+	        
+	        if(cb && typeof(cb) === 'function'){
+	        	return cb();
+	        }
         }
     }
 

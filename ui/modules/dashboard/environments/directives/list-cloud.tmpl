@@ -239,7 +239,12 @@
 		</tab>
 		<tab heading="Services" ng-if="access.listHosts">
 			<br/>
-			<tabset>
+			<div ng-if="!hosts || Object.keys(hosts).length === 0">
+				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
+				<br />
+				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+			</div>
+			<tabset ng-if="hosts && Object.keys(hosts).length > 0">
 				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}">
 					<br/>
                     <button class="btn btn-primary f-right" ng-click="deployNewService()">Deploy Service</button>
@@ -299,7 +304,12 @@
 						</fieldset>
 					</div>
 					<div ng-if="groupName === 'soajs'">
-						<fieldset class="groupFieldset" ng-repeat="(name, group) in list.groups">
+						<div ng-if="Object.keys(list.groups).length === 0">
+							<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
+							<br />
+							<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+						</div>
+						<fieldset ng-if="Object.keys(list.groups).length > 0" class="groupFieldset" ng-repeat="(name, group) in list.groups">
 							<legend>
 								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
 							</legend>
