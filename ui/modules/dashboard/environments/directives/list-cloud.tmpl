@@ -264,8 +264,8 @@
 											<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-enlarge"></span>&nbsp;Redeploy Service</a></li>
-												<li ng-if="['nginx'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-enlarge"></span>&nbsp;Rebuild Nginx</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Nginx</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 											</ul>
 										</div>
@@ -328,7 +328,7 @@
 													<li><a href="" ng-if="service.labels['soajs.service.name'] !== 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-enlarge"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												</ul>
 											</div>
