@@ -2534,14 +2534,14 @@ module.exports = {
 					}
 				},
 				"ui": {
-					"source": ['body.serviceId'],
+					"source": ['body.ui'],
 					"required": false,
 					"validation": {
 						"type": "object",
 						"properties": {
-							"id": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
+							"id": { "type": "string", "required": true },
+							"branch": { "type": "string", "required": true },
+							"commit": { "type": "string", "required": true }
 						}
 					}
 				}

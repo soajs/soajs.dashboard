@@ -790,6 +790,24 @@ var environmentsConfig = {
 					'required': true
 				}
 			]
+		},
+		nginxUI: {
+			entries: [
+				{
+					'name': 'content',
+					'label': 'Static Content',
+					'type': 'select',
+					'required': true,
+					'value': []
+				},
+				{
+					'name': 'branch',
+					'label': 'Branch',
+					'type': 'select',
+					'required': true,
+					'value': []
+				}
+			]
 		}
 	},
 	nginxRequiredCerts: {
@@ -855,6 +873,7 @@ var environmentsConfig = {
 				"add": ['dashboard', '/hacloud/hosts/deployService', 'post'],
 				"delete": ['dashboard', '/hacloud/services/delete', 'delete'],
 				"scale": ['dashboard', '/hacloud/services/scale', 'put'],
+				"redeploy": ['dashboard', '/hacloud/services/redeploy', 'put'],
 				"logs": ['dashboard', '/hacloud/services/instances/logs', 'get']
 			}
 		}

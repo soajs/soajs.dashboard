@@ -9,7 +9,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 
     $scope.nodes = {};
 	$scope.services = {};
-	
+
 	$scope.waitMessage = {
 		type: "",
 		message: "",
@@ -18,7 +18,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			$scope.waitMessage.type = '';
 		}
 	};
-	
+
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.waitMessage.type = type;
 		$scope.waitMessage.message = msg;
@@ -26,19 +26,19 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			$scope.waitMessage.close();
 		}, 7000);
 	};
-	
+
 	$scope.showHideContent = function (service) {
 		service.expanded = !service.expanded;
 	};
-	
+
 	$scope.showHideGroupContent = function (groupName) {
 		$scope.groups[groupName].showContent = !$scope.groups[groupName].showContent;
 	};
-	
+
 	$scope.checkCerts = function(env) {
 		nodeSrv.checkCerts($scope, env);
 	};
-	
+
 	$scope.listNodes = function () {
 		nodeSrv.listNodes($scope);
     };
@@ -74,7 +74,15 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.scaleService = function (service) {
 		hacloudSrv.scaleService($scope, service);
 	};
-	
+
+	$scope.redeployService = function (service) {
+		hacloudSrv.redeployService($scope, service);
+	};
+
+	$scope.rebuildService = function (service, type) {
+		hacloudSrv.rebuildService($scope, service, type);
+	};
+
 	$scope.inspectService = function (service) {
 		hacloudSrv.inspectService($scope, service);
 	};
@@ -94,11 +102,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.loadDaemonStat = function(service){
 		hacloudSrv.loadDaemonStat($scope, service);
 	};
-	
+
 	$scope.loadDaemonGroupConfig = function(service){
 		hacloudSrv.loadDaemonGroupConfig($scope, service);
 	};
-	
+
 	$scope.hostLogs = function (task) {
 		hacloudSrv.hostLogs($scope, task);
 	};

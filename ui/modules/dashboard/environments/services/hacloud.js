@@ -264,31 +264,116 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     }
 
     function rebuildService(currentScope, service, type) {
-        var params = {
-            env: currentScope.envCode,
-            serviceId: service.id,
-			ui : {
-            	id: null,
-				branch: null,
-				commit: null
-			}
-        };
-
         overlayLoading.show();
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'put',
-            routeName: '/dashboard/cloud/services/redeploy',
-            data: params
-        }, function (error, response) {
-            overlayLoading.hide();
-            if (error) {
-                currentScope.displayAlert('danger', error.message);
-            }
-            else {
-                currentScope.displayAlert('success', 'Service rebuilt successfully');
-                currentScope.listServices();
-            }
-        });
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/staticContent/list'
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				var formConfig = angular.copy(environmentsConfig.form.nginxUI);
+
+				response.forEach(function (oneUIContent) {
+					if (service.labels['soajs.env.code'].toLowerCase() === 'dashboard' && oneUIContent.dashUI) {
+						formConfig.entries[0].value.push({
+							l: oneUIContent.name,
+							v: oneUIContent
+						});
+					}
+					else if (service.labels['soajs.env.code'].toLowerCase() !== 'dashboard' && !oneUIContent.dashUI) {
+						formConfig.entries[0].value.push({
+							l: oneUIContent.name,
+							v: oneUIContent
+						});
+					}
+				});
+
+				formConfig.entries[0].onAction = function (id, data, form) {
+					overlayLoading.show();
+					data = JSON.parse(data);
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/gitAccounts/getBranches',
+						params: {
+							type: 'static',
+							name: data.name
+						}
+					}, function (error, response) {
+						overlayLoading.hide();
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							response.branches.forEach(function (oneBranch) {
+								form.entries[1].value.push({
+									l: oneBranch.name,
+									v: oneBranch
+								});
+							});
+						}
+					});
+				};
+
+				var options = {
+					timeout: $timeout,
+					form: formConfig,
+					name: 'rebuildService',
+					label: 'Rebuild Service',
+					actions: [
+						{
+							'type': 'submit',
+							'label': translation.submit[LANG],
+							'btn': 'primary',
+							'action': function (formData) {
+								formData.branch = JSON.parse(formData.branch);
+								formData.content = JSON.parse(formData.content);
+
+								var params = {
+						            env: currentScope.envCode,
+						            serviceId: service.id,
+									ui : {
+						            	id: formData.content._id,
+										branch: formData.branch.name,
+										commit: formData.branch.commit.sha
+									}
+						        };
+								overlayLoading.show();
+								getSendDataFromServer(currentScope, ngDataApi, {
+						            method: 'put',
+						            routeName: '/dashboard/cloud/services/redeploy',
+						            data: params
+						        }, function (error, response) {
+						            overlayLoading.hide();
+									currentScope.modalInstance.dismiss();
+									currentScope.form.formData = {};
+						            if (error) {
+						                currentScope.displayAlert('danger', error.message);
+						            }
+						            else {
+						                currentScope.displayAlert('success', 'Service rebuilt successfully');
+						                currentScope.listServices();
+						            }
+						        });
+							}
+						},
+						{
+							'type': 'reset',
+							'label': translation.cancel[LANG],
+							'btn': 'danger',
+							'action': function () {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
+
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
     }
 
 

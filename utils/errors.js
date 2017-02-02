@@ -173,7 +173,7 @@ var errors = {
 	"761": "Failed to activate repository, make sure config.js file is available in your repository and it has the right schema.",
 	"762": "A module with the same name and/or port already exists",
 	"763": "Unable to reach the GitHub API. Please try again.",
-	
+
 	"764": "Static Content already exists",
 	"765": "Failed to deactivate repository",
 	"766": "Repository has running hosts. Please stop them to be able to deactivate repository",
@@ -203,7 +203,7 @@ var errors = {
 	"788": "Invalid or no type provided in config.js",
 	"789": "Unable to get content from git provider",
 	"790": "Error while pushing code to remote repository",
-	
+
 	"795": "Invalid Operation, service/daemon record not found in Database.",
 
 	"800": "Unable to get manager nodes, make sure you have at least one manager node in the cluster",
@@ -232,18 +232,20 @@ var errors = {
  	"823": "Update operations are not permitted for clusters that that composed of a single node",
 	"824": "The port %PORTNUMBER% chosen for Nginx is outside the range of valid exposed ports (%MINNGINXPORT% , %MAXNGINXPORT%)",
 	"825": "Invalid or no environment deployer settings detected. Make sure you are running in container mode",
-	
+
 	"850": "The simulator returned an error",
 	"851": "Invalid YAML code provided",
 	"852": "Error Cleaning up generated Service Code",
 	"853": "Error Generating Folders for Service",
 	"854": "Error Generating Files for Service",
 	"855": "Error Returning Generated service Code",
-	
+
 	"901": "Error Logging out from environments",
 	"902": "Error Logging in to environments",
 	"903": "You do not have access to this environment %envCode%",
-	"904": "Check your internet connection"
+	"904": "Check your internet connection",
+
+	"905": "Static content not found"
 };
 
 
