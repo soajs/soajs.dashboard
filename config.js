@@ -2534,12 +2534,15 @@ module.exports = {
 					}
 				},
 				"ui": {
+					"source": ['body.serviceId'],
 					"required": false,
-					"type": "object",
-					"properties": {
-						"id": { "type": "string", "required": true },
-						"branch": { "type": "string", "required": true },
-						"commit": { "type": "string", "required": true }
+					"validation": {
+						"type": "object",
+						"properties": {
+							"id": {"type": "string", "required": true},
+							"branch": {"type": "string", "required": true},
+							"commit": {"type": "string", "required": true}
+						}
 					}
 				}
 			},
