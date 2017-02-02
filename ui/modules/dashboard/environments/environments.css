@@ -108,9 +108,7 @@ ul {
 
 .serviceOpsDropdown {
     float: right !important;
-
     height: 28px !important;
-    margin-top: -4px !important;
 }
 
 .serviceOpsDropdown .btn {

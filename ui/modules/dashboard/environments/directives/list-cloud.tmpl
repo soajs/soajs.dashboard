@@ -249,7 +249,7 @@
 			<tabset ng-if="hosts">
 				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}" ng-show="list.list.length > 0 || list.groups">
 					<br/>
-                    <button class="btn btn-primary f-right" ng-click="deployNewService()">Deploy Service</button>
+                    <button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
 					<button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
 					<br/><br/>
 					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
@@ -259,8 +259,10 @@
 							</legend>
 							<div class="entryBoxes" ng-show="service.expanded">
 								<div class="entryBox mb20">
-									<div class="header">
+									<div class="header table">
 										<span class="serviceLabelBox">{{service.labels['soajs.service.name']}}</span>
+										
+										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">
 											<button class="btn btn-default dropdown-toggle" type="button" id="nginxOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 												Service Operations
@@ -287,7 +289,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr ng-repeat="instance in service.tasks">
+													<tr ng-repeat="instance in service.tasks" ng-hide="instance.hideIt && !service.hideIt">
 														<td>
 															<a href="" ng-if="access.hacloud.services.logs">
 																<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
@@ -323,8 +325,9 @@
 								</div>
 								<fieldset ng-repeat="service in group.list">
 									<div class="entryBox mb20 {{service.color}}">
-										<div class="header">
+										<div class="header table">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
+											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 											<div class="dropdown serviceOpsDropdown">
 												<button class="btn btn-default dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 													Service Operations
@@ -358,7 +361,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<tr ng-repeat="instance in service.tasks">
+														<tr ng-repeat="instance in service.tasks" ng-hide="instance.hideIt && !service.hideIt">
 															<td>
 																<a href="" ng-if="access.hacloud.services.logs">
 																	<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>

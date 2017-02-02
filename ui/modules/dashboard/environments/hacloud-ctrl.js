@@ -102,6 +102,14 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.hostLogs = function (task) {
 		hacloudSrv.hostLogs($scope, task);
 	};
+	
+	$scope.showHideFailures = function(service){
+		service.tasks.forEach(function(oneTask){
+			if(Object.hasOwnProperty.call(oneTask, 'hideIt')){
+				oneTask.hideIt = !oneTask.hideIt;
+			}
+		});
+	};
 
 	injectFiles.injectCss('modules/dashboard/environments/environments.css');
 	$scope.envCode = $cookies.getObject("myEnv").code;

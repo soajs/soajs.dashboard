@@ -25,30 +25,45 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                 }
                 else {
                     if (response && response.length > 0) {
-                        currentScope.hosts = {
-                            'soajs': {
-                            	"label": "SOAJS"
-                            },
-	                        'nginx':{
-                            	"label": "Nginx",
-		                        "list": []
-	                        },
-	                        'elk': {
-                            	"label": "ELK",
-		                        "list": []
-	                        },
-	                        'db': {
-                            	"label": "Clusters",
-		                        "list": []
-	                        },
-	                        'miscellaneous': {
-                            	"label": "Miscellaneous",
-		                        "list": []
-	                        }
-                        };
-
+	                    currentScope.hosts = {
+		                    'soajs': {
+			                    "label": "SOAJS"
+		                    },
+		                    'nginx':{
+			                    "label": "Nginx",
+			                    "list": []
+		                    },
+		                    'elk': {
+			                    "label": "ELK",
+			                    "list": []
+		                    },
+		                    'db': {
+			                    "label": "Clusters",
+			                    "list": []
+		                    },
+		                    'miscellaneous': {
+			                    "label": "Miscellaneous",
+			                    "list": []
+		                    }
+	                    };
+	                    
                         for (var j = 0; j < response.length; j++) {
                         	response[j].expanded = true;
+	                        
+                        	var failures = 0;
+	                        response[j].tasks.forEach(function(oneTask){
+		                        if(['running',''].indexOf(oneTask.status.state) === -1){
+			                        failures++;
+			                        oneTask.hideIt = true;
+		                        }
+	                        });
+	
+	                        if(failures === response[j].tasks.length){
+		                        response[j].hideIt = true;
+	                        }
+	                        
+	                        response[j].failures = failures;
+	                        
                         	if(response[j].labels['soajs.content'] === 'true'){
                         		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
 			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
@@ -88,6 +103,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	                        }
                         }
 	                    step2();
+                    }
+                    else{
+                    	delete currentScope.hosts;
                     }
                 }
             });
