@@ -37,6 +37,8 @@ module.exports = {
 		"services": "soajs"
 	},
 
+	"network": 'soajsnet',
+
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"kubeNginx": {
@@ -90,7 +92,7 @@ module.exports = {
 	},
 
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -852,34 +854,6 @@ module.exports = {
 				}
 			},
 
-			"/hosts/nginx/list": {
-				_apiInfo: {
-					'l': 'List Nginx Hosts',
-					'group': 'Hosts'
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					'validation': {
-						'type': 'string'
-					}
-				}
-			},
-
-			"/hosts/container/zombie/list": {
-				"_apiInfo": {
-					"l": "List Zombie Containers",
-					"group": "Hosts"
-				},
-				"env": {
-					"source": ["query.env"],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -1483,7 +1457,18 @@ module.exports = {
 							"useLocalSOAJS": { "required": false, "type": "boolean" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
 							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
-							"exposedPort": { "required": false, "type": "number" }, //NOTE: only required in case of nginx deployment
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": false, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
 							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
@@ -1523,14 +1508,14 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"ui": {
-										"type": "object",
-										"required": false,
-										"properties": {
-											"id": { "type": "string", "required": true },
-											"branch": { "type": "string", "required": true },
-											"commit": { "type": "string", "required": true }
-										}
-									},
+                                        "type": "object",
+                                        "required": false,
+                                        "properties": {
+                                            "id": { "type": "string", "required": true },
+                                            "branch": { "type": "string", "required": true },
+                                            "commit": { "type": "string", "required": true }
+                                        }
+                                    },
 									"supportSSL": { "required": false, "type": "boolean" }
 								}
 							}
@@ -1603,9 +1588,9 @@ module.exports = {
 								"items": {
 									"type": "object",
 									"properties": {
-										"isPublished": { "required": false, "type": "boolean" },
-										"published": { "required": false, "type": "number" },
-										"target": { "required": false, "type": "number" }
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": true, "type": "number" },
+										"published": { "required": false, "type": "number" }
 									}
 								}
 							},
@@ -1672,6 +1657,49 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ['manager', 'worker']
+					}
+				}
+			},
+
+			"/cloud/services/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['body.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				}
 			},
@@ -1858,7 +1886,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
@@ -1882,9 +1910,9 @@ module.exports = {
 						}
 					}
 				}
-				
+
 			},
-			
+
 			"/swagger/generate": {
 				"_apiInfo": {
 					"l": "Generate Service via Swagger",
@@ -2464,14 +2492,14 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"env": {
-					"source": ['query.env'],
+					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
 				"serviceId": {
-					"source": ['query.serviceId'],
+					"source": ['body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -2492,17 +2520,29 @@ module.exports = {
 					"group": "HA Cloud"
 				},
 				"env": {
-					"source": ['query.env'],
+					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
 				"serviceId": {
-					"source": ['query.serviceId'],
+					"source": ['body.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"ui": {
+					"source": ['body.ui'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string", "required": true },
+							"branch": { "type": "string", "required": true },
+							"commit": { "type": "string", "required": true }
+						}
 					}
 				}
 			},
@@ -2739,45 +2779,6 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['id']
-			},
-
-			"/hosts/delete": {
-				_apiInfo: {
-					"l": "Delete Hosts",
-					"group": "Hosts"
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'name': {
-					'source': ['query.name'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'hostname': {
-					'source': ['query.hostname'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'ip': {
-					'source': ['query.ip'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				}
 			},
 
 			"/cloud/nodes/remove": {
