@@ -770,28 +770,6 @@ module.exports = {
 				}
 			},
 
-			"/daemons/list": {
-				_apiInfo: {
-					"l": "List Daemons",
-					"group": "Daemons"
-				},
-				'daemonNames': {
-					'source': ['body.daemonNames'],
-					'required': false,
-					'validation': {
-						'type': 'array',
-						'items': {'type': 'string'}
-					}
-				},
-				'getGroupConfigs': {
-					'source': ['query.getGroupConfigs'],
-					'required': false,
-					'validation': {
-						'type': 'boolean'
-					}
-				}
-			},
-
 			"/daemons/groupConfig/list": {
 				_apiInfo: {
 					"l": "List Daemon Group Configuration",
@@ -1394,7 +1372,29 @@ module.exports = {
 					}
 				}
 			},
-
+			
+			"/daemons/list": {
+				_apiInfo: {
+					"l": "List Daemons",
+					"group": "Daemons"
+				},
+				'daemonNames': {
+					'source': ['body.daemonNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				},
+				'getGroupConfigs': {
+					'source': ['query.getGroupConfigs'],
+					'required': false,
+					'validation': {
+						'type': 'boolean'
+					}
+				}
+			},
+			
 			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
