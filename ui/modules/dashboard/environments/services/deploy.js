@@ -13,10 +13,32 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
         if(currentScope.isKubernetes){
-            formConfig.entries[0].entries[1].min = kubeConfig.minPort;
-            formConfig.entries[0].entries[1].max = kubeConfig.maxPort;
-            formConfig.entries[0].entries[1].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
+            formConfig.entries[0].entries[2].min = kubeConfig.minPort;
+            formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
+            formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
+        
+        formConfig.entries[0].entries[0].onAction = function(id, data, form){
+        	if(data === 'global'){
+        		form.entries[0].entries[1].disabled = true;
+        		form.entries[0].entries[1].required = false;
+	        }
+	        else{
+		        delete form.entries[0].entries[1].disabled;
+		        form.entries[0].entries[1].required = true;
+	        }
+        };
+		
+		formConfig.entries[1].entries[0].onAction = function(id, data, form){
+			if(data === 'global'){
+				form.entries[1].entries[1].disabled = true;
+				form.entries[1].entries[1].required = false;
+			}
+			else{
+				delete form.entries[1].entries[1].disabled;
+				form.entries[1].entries[1].required = true;
+			}
+		};
 
         getControllerBranches(currentScope, function (branchInfo) {
             for (var i = 0; i < formConfig.entries.length; i++) {
@@ -171,13 +193,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     imagePrefix: formData.ctrlImagePrefix,
                     isKubernetes: (currentScope.isKubernetes ? true : false),
                     replication: {
-                        mode: formData.ctrlReplMode
+                        mode: formData.controllerDeploymentMode
                     }
                 },
                 contentConfig: {}
             };
 
-            if (formData.ctrlReplMode === 'replicated') {
+            if (formData.controllerDeploymentMode === 'replicated') {
                 params.deployConfig.replication.replicas = formData.controllers;
             }
 
@@ -259,10 +281,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	        params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
 	        params.deployConfig.imagePrefix = formData.nginxImagePrefix;
 	        params.deployConfig.replication = {
-		        mode: formData.nginxReplMode
+		        mode: formData.nginxDeploymentMode
 	        };
 
-	        if (formData.nginxReplMode === 'replicated') {
+	        if (formData.nginxDeploymentMode === 'replicated') {
 		        params.deployConfig.replication.replicas = formData.nginxCount;
 	        }
 
