@@ -250,9 +250,10 @@
 				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
 			</div>
 			<tabset ng-if="hosts">
-				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}" ng-show="list.list.length > 0 || list.groups">
+				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}">
 					<br/>
-                    <button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
+                    <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
+                    <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
 					<button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
 					<br/><br/>
 					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
@@ -314,9 +315,11 @@
 					</div>
 					<div ng-if="groupName === 'soajs'">
 						<div ng-if="!list.groups">
-							<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
-							<br />
-							<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+							<div ng-show="hosts['nginx'].list.length === 0">
+								<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
+								<br />
+								<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+							</div>
 						</div>
 						<fieldset class="groupFieldset" ng-repeat="(name, group) in list.groups">
 							<legend>
