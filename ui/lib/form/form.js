@@ -217,13 +217,15 @@ function buildForm(context, modal, configuration, cb) {
 					}, 5);
 				};
 				
-				oneEntry.editor.heightUpdate = heightUpdateFunction();
-				// Set initial size to match initial content
-				heightUpdateFunction();
-
-				// Whenever a change happens inside the ACE editor, update
-				// the size again
-				_editor.getSession().on('change', heightUpdateFunction);
+				context.form.timeout(function(){
+					oneEntry.editor.heightUpdate = heightUpdateFunction();
+					// Set initial size to match initial content
+					heightUpdateFunction();
+					
+					// Whenever a change happens inside the ACE editor, update
+					// the size again
+					_editor.getSession().on('change', heightUpdateFunction);
+				}, 500);
 			};
 		}
 	}

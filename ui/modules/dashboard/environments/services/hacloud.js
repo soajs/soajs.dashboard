@@ -666,29 +666,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 			}
 		});
-
-		// function updateServicesControllers(currentScope, env, currentCtrl) {
-		// 	for (var serviceName in currentScope.hosts) {
-		// 		if (serviceName === 'controller') {
-		// 			continue;
-		// 		}
-		// 		if (currentScope.hosts[serviceName].ips && currentScope.hosts[serviceName].ips && Object.keys(currentScope.hosts[serviceName].ips).length > 0) {
-		// 			for(var version in currentScope.hosts[serviceName].ips){
-		// 				currentScope.hosts[serviceName].ips[version].forEach(function (OneIp) {
-		//
-		// 					if (OneIp.controllers && Array.isArray(OneIp.controllers) && OneIp.controllers.length > 0) {
-		// 						OneIp.controllers.forEach(function (oneCtrl) {
-		//
-		// 							if (oneCtrl.ip === currentCtrl.ip) {
-		// 								oneCtrl.color = 'red';
-		// 							}
-		// 						});
-		// 					}
-		// 				});
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 
 	function hostLogs (currentScope, task) {
