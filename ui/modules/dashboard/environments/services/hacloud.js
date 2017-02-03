@@ -52,7 +52,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	                        
                         	var failures = 0;
 	                        response[j].tasks.forEach(function(oneTask){
-		                        if(['running','preparing', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1){
+		                        if(['running','preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1){
 			                        failures++;
 			                        oneTask.hideIt = true;
 		                        }
@@ -497,7 +497,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	    });
     }
 
-    function loadDaemonStat(currentScope, service){
+    function loadDaemonStats(currentScope, service){
 	    getSendDataFromServer(currentScope, ngDataApi, {
 		    "method": "post",
 		    "routeName": "/dashboard/cloud/services/maintenance",
@@ -650,6 +650,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									});
 								}
 							}
+							else{
+								oneServiceTask.status.state = 'running';
+							}
 							oneServiceTask.status.lastTs = oneHeartBeat.response.ts;
 						}
 					});
@@ -696,6 +699,27 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						setTimeout(function () {
 							highlightMyCode()
 						}, 500);
+						
+						$scope.refreshLogs = function(){
+							overlayLoading.show();
+							getSendDataFromServer(currentScope, ngDataApi, {
+								method: "get",
+								routeName: "/dashboard/cloud/services/instances/logs",
+								params: {
+									env: currentScope.envCode,
+									taskId: task.id
+								}
+							}, function (error, response) {
+								overlayLoading.hide();
+								if (error) {
+									currentScope.displayAlert('danger', error.message);
+								}
+								else {
+									$scope.data = remove_special(response.data);
+								}
+							});
+						};
+						
 						$scope.ok = function () {
 							$modalInstance.dismiss('ok');
 						};
@@ -742,6 +766,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         'reloadServiceRegistry': reloadServiceRegistry,
         'loadServiceProvision': loadServiceProvision,
         'inspectService': inspectService,
-        'loadDaemonStat': loadDaemonStat,
+        'loadDaemonStats': loadDaemonStats,
+	    "loadDaemonGroupConfig": loadDaemonGroupConfig
     };
 }]);
