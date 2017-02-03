@@ -225,7 +225,7 @@ function buildForm(context, modal, configuration, cb) {
 					// Whenever a change happens inside the ACE editor, update
 					// the size again
 					_editor.getSession().on('change', heightUpdateFunction);
-				}, 500);
+				}, 1000);
 			};
 		}
 	}
