@@ -8,7 +8,11 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 	formConfig.buttonLabels = opts.buttonLabels;
 	formConfig.data = opts.data;
 	formConfig.ngDataApi = opts.ngDataApi;
-	
+	formConfig.backdrop = true;
+	if (Object.hasOwnProperty.call(opts, 'backdrop')) {
+		formConfig.backdrop = opts.backdrop;
+	}
+
 	var m = ($modal && $modal !== null) ? true : false;
 	
 	buildForm($scope, m, formConfig, function () {
@@ -24,7 +28,7 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 				template: "<ngform></ngform>",
 				size: 'lg',
 				backdropClass: "backdrop-soajs",
-				backdrop: true,
+				backdrop: formConfig.backdrop,
 				keyboard: false,
 				controller: function ($scope, $modalInstance) {
 					$scope.form = formContext.form;
@@ -61,7 +65,7 @@ function buildForm(context, modal, configuration, cb) {
 		labels: {},
 		formData: {}
 	};
-
+	
 	context.form.closeNote = function () {
 		context.form.submitted = false;
 	};
