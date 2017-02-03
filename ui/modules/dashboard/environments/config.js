@@ -553,7 +553,7 @@ var environmentsConfig = {
 							'label': 'Nginx Deployment Mode',
 							'type': 'select',
 							'value': [
-								{l: 'Replicated', v: 'replicated'},
+								{l: 'Replicated', v: 'replicated', 'selected' : true},
 								{l: 'Global', v: 'global'}
 							],
 							'tooltip': 'Specify the deployment mode',
@@ -610,7 +610,7 @@ var environmentsConfig = {
                             'label': 'Controller Deployment Mode',
                             'type': 'select',
                             'value': [
-                                {l: 'Replicated', v: 'replicated'},
+                                {l: 'Replicated', v: 'replicated', 'selected' : true},
                                 {l: 'Global', v: 'global'}
                             ],
                             'tooltip': 'Specify the deployment mode',
