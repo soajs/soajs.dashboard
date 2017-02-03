@@ -10,7 +10,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         var formConfig = angular.copy(environmentsConfig.form.deploy);
         var kubeConfig = environmentsConfig.deployer.kubernetes;
 	    var envCode = currentScope.envCode;
-        
+
         currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
         if(currentScope.isKubernetes){
             formConfig.entries[0].entries[1].min = kubeConfig.minPort;
@@ -151,13 +151,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             };
             buildFormWithModal(currentScope, $modal, options);
         });
-	    
-        function deployEnvironment(formData) {
-            //temp values for now///////////////////
-            formData.ctrlReplMode = 'replicated';
-            formData.nginxReplMode = 'replicated';
-            ////////////////////////////////////////
 
+        function deployEnvironment(formData) {
             var branchObj = JSON.parse(formData.branch);
             var params = {
 	            proxy: false,
@@ -209,7 +204,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 }
             });
         }
-        
+
         function waitForControllers(cb){
 	        currentScope.listServices(function(){
 		        if(currentScope.controllers.length > 0){
@@ -219,7 +214,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        	$timeout(function(){
 				        waitForControllers(cb);
 			        }, 1500);
-			        
+
 		        }
 	        });
         }
@@ -256,7 +251,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 }
             });
         }
-        
+
         function deployNginx(formData, params){
 	        params.type = 'nginx';
 	        delete params.name;
@@ -266,29 +261,29 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	        params.deployConfig.replication = {
 		        mode: formData.nginxReplMode
 	        };
-	
+
 	        if (formData.nginxReplMode === 'replicated') {
 		        params.deployConfig.replication.replicas = formData.nginxCount;
 	        }
-	
+
 	        params.deployConfig.ports = [
 		        {
 			        isPublished: true,
 			        published: formData.exposedPort
 		        }
 	        ];
-	
+
 	        if (formData.useCustomUI) {
 		        formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
 		        formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
-		
+
 		        params.contentConfig.nginx.ui = {
 			        id: formData.selectCustomUI._id,
 			        branch: formData.selectUIBranch.name,
 			        commit: formData.selectUIBranch.commit.sha
 		        };
 	        }
-	
+
 	        getSendDataFromServer(currentScope, ngDataApi, {
 		        "method": "post",
 		        "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -302,7 +297,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        else {
 			        currentScope.modalInstance.dismiss("ok");
 			        overlay.hide(function(){
-				
+
 				        currentScope.isDeploying = true;
 				        $timeout(function () {
 					        currentScope.listServices();
