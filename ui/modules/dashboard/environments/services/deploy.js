@@ -652,7 +652,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     if (currentScope.groupConfig) {
                         params.type = 'daemon';
                         params.contentConfig = {
-                            "grpConfName" : currentScope.groupConfig.daemonConfigGroup
+                        	"daemon":{
+                                "grpConfName" : currentScope.groupConfig.daemonConfigGroup
+	                        }
                         }
                     }
 
