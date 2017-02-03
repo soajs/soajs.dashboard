@@ -263,7 +263,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         });
     }
 
-    function rebuildService(currentScope, service, type) {
+    function rebuildService(currentScope, service) {
         overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: 'post',

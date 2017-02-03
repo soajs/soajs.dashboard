@@ -1,7 +1,11 @@
 "use strict";
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
-
+	
+	/**
+	 * Deploy New Environment controller + Nginx
+	 * @param currentScope
+	 */
     function deployEnvironment(currentScope) {
         var formConfig = angular.copy(environmentsConfig.form.deploy);
         var kubeConfig = environmentsConfig.deployer.kubernetes;
@@ -151,6 +155,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         function deployEnvironment(formData) {
             var branchObj = JSON.parse(formData.branch);
             var params = {
+	            proxy: false,
                 env: envCode,
                 type: 'service',
                 name: 'controller',
@@ -286,6 +291,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	        }, function(error, response) {
 		        if(error) {
 			        currentScope.form.displayAlert('danger', error.message);
+			        rollbackController();
 			        overlay.hide();
 		        }
 		        else {
@@ -300,10 +306,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        }
 	        });
         }
+        
+        function rollbackController(){
+	        var params = {
+		        env: currentScope.envCode,
+		        serviceId: currentScope.envCode.toLowerCase() + "-controller"
+	        };
+	
+	        getSendDataFromServer(currentScope, ngDataApi, {
+		        method: 'delete',
+		        routeName: '/dashboard/cloud/services/delete',
+		        params: params
+	        }, function (error, response) {
+		        if (error) {
+			        currentScope.displayAlert('danger', error.message);
+		        }
+	        });
+        }
     }
 
     /**
-     * Deploy New service/daemon
+     * Deploy New controller/service/daemon
      * @param currentScope
      */
     function deployNewService (currentScope) {
@@ -393,7 +416,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 $scope.selectService = function (service) {
-                    currentScope.versions = Object.keys(service.versions);
+                	
+                	if(service.name === 'controller'){
+		                currentScope.versions = [1];
+	                }
+	                else{
+		                currentScope.versions = Object.keys(service.versions);
+	                }
+	                
                     if (currentScope.version) {
                         currentScope.version = "";
                     }
@@ -501,9 +531,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 function allowListing(env, service) {
-
-                    var dashboardServices = ['dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
-                    var nonDashboardServices = ['urac', 'oauth']; //locked services that non dashboard environments are allowed to have
+                    var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+                    var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
                     if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
                         return filterServiceInfo(service);
                     } else if (env.toLowerCase() !== 'dashboard' &&
@@ -522,14 +551,35 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                 //filter out service information that already exist
                 function filterServiceInfo(service) {
-                    if(!service.group)
+	                var deployedServices = [];
+	                if(currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[service.group]){
+		                deployedServices = currentScope.hosts.soajs.groups[service.group].list;
+	                }
+	                
+                    if(!service.group){
+                    	if(service.name === 'controller'){
+		                    if(currentScope.hosts.soajs.groups){
+		                    	var found = false;
+		                    	for(var groupName in currentScope.hosts.soajs.groups){
+				                    currentScope.hosts.soajs.groups[groupName].list.forEach(function(oneService){
+				                    	if(oneService.name === env.toLowerCase() + '-controller'){
+				                    		found = true;
+					                    }
+				                    });
+			                    }
+			                    if(!found){
+		                    		return true;
+			                    }
+			                    else{
+			                    	return false;
+			                    }
+		                    }
+                    		return true;
+	                    }
                         return false;
+                    }
                     else {
                         var serviceVersions = Object.keys(service.versions);
-                        var deployedServices = [];
-                        if(currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[service.group]){
-	                        deployedServices = currentScope.hosts.soajs.groups[service.group].list;
-                        }
                         //Loop over the deployed services, and remove from the service, the service versions that are already deployed
                         serviceVersions.forEach(function (version) {
                             for(var i = 0; i < deployedServices.length; i++){
@@ -591,7 +641,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                     getSendDataFromServer(currentScope, ngDataApi, {
                         "method": "post",
-                        "routeName": "dashboard/cloud/services/soajs/deploy",
+                        "routeName": "/dashboard/cloud/services/soajs/deploy",
                         "data": params
                     }, function (error, response) {
                         if (error) {
@@ -599,7 +649,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                             $modalInstance.close();
                         }
                         else {
-                            listHosts(currentScope, env);
+	                        $timeout(function(){
+		                        currentScope.listServices();
+	                        }, 1500);
+	
+	                        $modalInstance.close();
                         }
                     });
                 }
@@ -688,39 +742,38 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                 function newNginx(currentScope) {
                     var params = {
-                        "env": env,
-                        'type': 'nginx',
-                        "version": parseInt(currentScope.version)
+	                    "env": env,
+	                    'type': 'nginx',
+	                    "deployConfig": {
+		                    'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+		                    "imagePrefix": currentScope.imagePrefix,
+		                    "replication": {
+			                    "mode": currentScope.mode,
+			                    "replicas": currentScope.number,
+		                    },
+		                    "ports": [
+			                    {
+			                    	"isPublished": true,
+				                    "published": currentScope.exposedPort
+			                    }
+		                    ]
+	                    }
                     };
-
-                    params.deployConfig = {
-                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                        "imagePrefix": currentScope.imagePrefix,
-                        "replication": {
-                            "mode": currentScope.mode,
-                            "replicas": max,
-                        }
-                    };
-
-                    if (currentScope.exposedPort) {
-                        params.deployConfig.exposedPort = currentScope.exposedPort;
-                    }
-                    //todo: fill the value with the right ones
-                    if (currentScope.service.gcId) {
-                        params.contentConfig = {
-                            "nginx" : {
-                                "ui": {
-                                    "id": null,
-                                    "branch": null,
-                                    "commit": null
-                                }
-                            }
-                        }
-                    }
-
+	
+	                if (currentScope.useCustomUI) {
+		                currentScope.selectUIBranch = JSON.parse(currentScope.selectUIBranch);
+		                currentScope.selectCustomUI = JSON.parse(currentScope.selectCustomUI);
+		
+		                params.contentConfig.nginx.ui = {
+			                id: currentScope.selectCustomUI._id,
+			                branch: currentScope.selectUIBranch.name,
+			                commit: currentScope.selectUIBranch.commit.sha
+		                };
+	                }
+	                
                     getSendDataFromServer(currentScope, ngDataApi, {
                         method: 'post',
-                        routeName: 'dashboard/cloud/services/soajs/deploy',
+                        routeName: '/dashboard/cloud/services/soajs/deploy',
                         data: params
                     }, function (error, response) {
                         if (error) {
@@ -730,6 +783,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                         else {
                             $modalInstance.close();
                             currentScope.generateNewMsg(env, 'success', 'Nginx instance deployed successfully');
+	                        $timeout(function(){
+		                        currentScope.listServices();
+	                        }, 1500);
                         }
                     });
                 }
@@ -759,9 +815,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             }
         });
     }
+	
+	/**
+	 * Deploy New Nginx
+	 * @param currentScope
+	 */
+    function deployNewNginx(currentScope){
+    	
+    }
 
     return {
         'deployEnvironment': deployEnvironment,
-        'deployNewService': deployNewService
+        'deployNewService': deployNewService,
+        'deployNewNginx': deployNewNginx
     }
 }]);
