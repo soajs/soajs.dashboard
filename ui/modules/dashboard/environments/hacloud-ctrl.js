@@ -3,10 +3,12 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
+	var autoRefreshTimeoutInstance;
+	
     $scope.nodes = {};
 	$scope.services = {};
 
@@ -79,7 +81,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	
 	$scope.autoRefresh = function(){
 		var tValue = $scope.selectedInterval.v * 1000;
-		$timeout(function(){
+		autoRefreshTimeoutInstance = $timeout(function(){
 			$scope.listServices(function(){
 				$scope.autoRefresh();
 			});
@@ -206,6 +208,9 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		});
 	}
 
+	$scope.$on("$destroy", function(){
+		$timeout.cancel(autoRefreshTimeoutInstance);
+	});
 }]);
 
 environmentsApp.filter('bytesToGbytes', function () {

@@ -16,7 +16,7 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 	var m = ($modal && $modal !== null) ? true : false;
 	
 	buildForm($scope, m, formConfig, function () {
-		if (opts.postBuild && (typeof(opts.postBuild) == 'function')) {
+		if (opts.postBuild && (typeof(opts.postBuild) === 'function')) {
 			opts.postBuild();
 		}
 	});
@@ -24,7 +24,7 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 	if ($modal && $modal !== null) {
 		var formContext = $scope;
 		$scope.form.openForm = function () {
-			$modal.open({
+			var newModal = $modal.open({
 				template: "<ngform></ngform>",
 				size: 'lg',
 				backdropClass: "backdrop-soajs",
@@ -39,6 +39,15 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 						cb();
 					}
 				}
+			});
+
+			newModal.result.then(function () {
+				//Get triggers when modal is closed
+			}, function () {
+				if (opts.onDismiss && (typeof(opts.onDismiss) === 'function')) {
+					opts.onDismiss();
+				}
+				//gets triggers when modal is dismissed.
 			});
 		};
 		$scope.form.openForm();

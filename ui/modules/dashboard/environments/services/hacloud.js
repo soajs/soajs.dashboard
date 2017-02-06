@@ -702,7 +702,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
-				$modal.open({
+				var autoRefreshPromise;
+				
+				var mInstance = $modal.open({
 					templateUrl: "logBox.html",
 					size: 'lg',
 					backdrop: true,
@@ -712,12 +714,12 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						$scope.title = "Host Logs of " + task.name;
 						$scope.data = remove_special(response.data);
 						fixBackDrop();
-						setTimeout(function () {
+						$timeout(function () {
 							highlightMyCode()
 						}, 500);
 						
 						$scope.refreshLogs = function(){
-							overlayLoading.show();
+							console.log("again ....")
 							getSendDataFromServer(currentScope, ngDataApi, {
 								method: "get",
 								routeName: "/dashboard/cloud/services/instances/logs",
@@ -726,12 +728,19 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									taskId: task.id
 								}
 							}, function (error, response) {
-								overlayLoading.hide();
 								if (error) {
 									currentScope.displayAlert('danger', error.message);
 								}
 								else {
 									$scope.data = remove_special(response.data);
+									fixBackDrop();
+									$timeout(function () {
+										highlightMyCode()
+									}, 500);
+									
+									autoRefreshPromise = $timeout(function(){
+										$scope.refreshLogs();
+									}, 3000);
 								}
 							});
 						};
@@ -739,7 +748,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						$scope.ok = function () {
 							$modalInstance.dismiss('ok');
 						};
+						
+						$scope.refreshLogs();
 					}
+				});
+				
+				mInstance.result.then(function(){
+					//Get triggers when modal is closed
+					$timeout.cancel(autoRefreshPromise);
+				}, function(){
+					//gets triggers when modal is dismissed.
+					$timeout.cancel(autoRefreshPromise);
 				});
 			}
 		});
