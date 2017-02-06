@@ -22,6 +22,7 @@
     "grunt-contrib-jshint": "1.1.0",
     "grunt-jsdoc": "2.1.0",
     "grunt-contrib-clean": "1.0.0",
+    "grunt-contrib-copy": "*",
     "grunt-mocha-test": "0.13.2",
     "grunt-env": "0.4.4",
     "grunt-istanbul": "0.7.2",
@@ -39,6 +40,7 @@
     "bitbucket-server-nodejs": "^2.10.0",
     "cron": "1.2.1",
     "dockerode": "aff04/dockerode.git",
+    "easy-zip": "0.0.4",
     "formidable": "1.0.17",
     "github": "^0.2.4",
     "gridfs-stream": "1.1.1",
@@ -51,6 +53,8 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "0.4.*",
-    "unzip2": "0.2.5"
+    "soajs.core.drivers": "soajs/soajs.core.drivers.git#develop",
+    "unzip2": "0.2.5",
+    "yamljs": "0.2.8"
   }
 }

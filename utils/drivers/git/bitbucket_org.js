@@ -51,7 +51,7 @@ var bitbucket = {
 
         if (data.token) {
             options.headers = {
-                authorization: 'Bearer ' + data.token
+                'Auth': 'Bearer ' + data.token
             };
         }
 
@@ -215,7 +215,7 @@ var lib = {
     },
 
     checkUserRecord: function (options, cb) {
-        return bitbucket.getUserRecord(options, function (error, record) {
+        bitbucket.getUserRecord(options, function (error, record) {
             if (error) {
                 return cb(error);
             }
@@ -224,7 +224,7 @@ var lib = {
                 return cb({message: 'User does not exist'});
             }
 
-            return cb(null, true);
+            return cb(null, record);
         });
     },
 
@@ -357,8 +357,9 @@ module.exports = {
             checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, {code: 752, message: 'Account already added'}, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
-                        lib.checkUserRecord(options, function (error) {
+                        lib.checkUserRecord(options, function (error, record) {
                             checkIfError(error, {}, cb, function () {
+                                options.owner = record.user.username;
                                 return data.saveNewAccount(soajs, model, options, cb);
                             });
                         });
@@ -375,8 +376,9 @@ module.exports = {
                                 delete options.tokenInfo.access_token;
                                 delete options.password;
                                 delete options.action;
-                                lib.checkUserRecord(options, function (error) {
+                                lib.checkUserRecord(options, function (error, record) {
                                     checkIfError(error, {}, cb, function () {
+                                        options.owner = record.user.username;
                                         return data.saveNewAccount(soajs, model, options, cb);
                                     });
                                 });
@@ -458,7 +460,7 @@ module.exports = {
         });
     },
 
-    getContent: function (soajs, data, model, options, cb) {
+    getJSONContent: function (soajs, data, model, options, cb) {
         data.getAccount(soajs, model, options, function (error, accountRecord) {
             checkIfError(error, {}, cb, function () {
                 lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
@@ -497,6 +499,33 @@ module.exports = {
                                     });
                                 });
                             });
+                        });
+                    });
+                });
+            });
+        });
+    },
+
+    getAnyContent: function (soajs, data, model, options, cb) {
+        lib.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
+            checkIfError(error, {}, cb, function () {
+                if (updated) {
+                    options.token = newTokenInfo.token;
+                    options.tokenInfo = newTokenInfo.tokenInfo;
+                }
+
+                lib.getRepoContent(options, function (error, response) {
+                    checkIfError(error, {}, cb, function () {
+                        var downloadLink = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
+                            .replace('%USERNAME%', options.user)
+                            .replace('%REPO_NAME%', options.repo)
+                            .replace('%BRANCH%', options.ref || 'master')
+                            .replace('%FILE_PATH%', options.path);
+
+                        return cb(null, {
+                            token: options.token,
+                            downloadLink: downloadLink,
+                            content: response
                         });
                     });
                 });

@@ -82,8 +82,12 @@ ul {
     width: 10%;
 }
 
+.logsHeader{
+    width: 5% !important;
+}
+
 .maintenanceHeader {
-    width: 10% !important;
+    width: 15% !important;
 }
 
 .hostnameHeader {
@@ -94,15 +98,17 @@ ul {
     width: 15% !important;
 }
 
+.statusHeader2 {
+    width: 30% !important;
+}
+
 .ipHeader {
     width: 15% !important;
 }
 
 .serviceOpsDropdown {
     float: right !important;
-
     height: 28px !important;
-    margin-top: -4px !important;
 }
 
 .serviceOpsDropdown .btn {
@@ -165,4 +171,33 @@ ul {
     margin-left: 30%;
     width: 40%;
     text-align: center;
+}
+
+.ctrl-tooltip{
+    min-width:15% !important;
+    width:auto;
+    display:table !important;
+    white-space: nowrap !important;
+    padding:5px;
+}
+.ctrl-tooltip > * {
+    text-align: left !important;
+    float: left !important;
+    max-width:none;
+}
+
+.ace_editor{
+    height: 500px;
+}
+
+.red{
+    color:red;
+}
+
+.yellow{
+    color: gold;
+}
+
+.green{
+    color:green;
 }

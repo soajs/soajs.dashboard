@@ -37,6 +37,8 @@ module.exports = {
 		"services": "soajs"
 	},
 
+	"network": 'soajsnet',
+
 	"imagesDir": "/opt/soajs/FILES/deployer/",
 
 	"kubeNginx": {
@@ -69,13 +71,7 @@ module.exports = {
 			repoConfigsFolder: __dirname + '/repoConfigs',
 			// required for OAuth
 			apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
-			requestUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/request-token',
-			accessUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/access-token',
-			authorizeUrl: '%PROVIDER_DOMAIN%/plugins/servlet/oauth/authorize',
-			consumerKey: process.env.BITBUCKET_CONSUMER_KEY,
-			consumerSecret: process.env.BITBUCKET_CONSUMER_SECRET_BASE64,
-			signatureMethod: process.env.SIGNATURE_METHOD || 'RSA-SHA1',
-			callback: 'http://localhost:3000/api/auth/bitbucket/callback'
+			downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
 		},
 		"github": {
 			"protocol": "https",
@@ -96,6 +92,7 @@ module.exports = {
 	},
 
 	"errors": require("./utils/errors"),
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -747,6 +744,46 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
+			/*
+			 * This API will return the env where a service is deployed.
+			 * it takes the service name and renders an object having the following form :
+			 * "env name : apiPrefix.domain"
+			 */
+			"/services/env/list": {
+				_apiInfo: {
+					"l": "List The Environment Where A Service Is Deployed",
+					"group": "Services"
+				},
+				'service': {
+					'source': ['query.service'],
+					'required': true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				'version': {
+					'source': ['query.version'],
+					'required': false,
+					"validation": {
+						"type": "integer"
+					}
+				}
+			},
+
+			"/daemons/groupConfig/list": {
+				_apiInfo: {
+					"l": "List Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'grpConfNames': {
+					'source': ['body.grpConfNames'],
+					'required': false,
+					'validation': {
+						'type': 'array',
+						'items': {'type': 'string'}
+					}
+				}
+			},
 
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
@@ -795,45 +832,10 @@ module.exports = {
 				}
 			},
 
-			"/hosts/nginx/list": {
-				_apiInfo: {
-					'l': 'List Nginx Hosts',
-					'group': 'Hosts'
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					'validation': {
-						'type': 'string'
-					}
-				}
-			},
-
-			"/hosts/container/logs": {
+			"/cloud/services/list": {
 				"_apiInfo": {
-					"l": "Get Container Logs",
-					"group": "Hosts"
-				},
-				"env": {
-					"source": ['query.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"cid": {
-					"source": ['query.cid'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
-			},
-
-			"/hosts/container/zombie/list": {
-				"_apiInfo": {
-					"l": "List Zombie Containers",
-					"group": "Hosts"
+					"l": "List Cloud Services",
+					"group": "HA Cloud"
 				},
 				"env": {
 					"source": ["query.env"],
@@ -844,14 +846,14 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/nodes/list": {
+			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
 					"group": "HA Cloud"
 				}
 			},
 
-			"/hacloud/services/instances/logs": {
+			"/cloud/services/instances/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
 					"group": "HA Cloud"
@@ -863,8 +865,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"taskName": {
-					"source": ['query.taskName'],
+				"taskId": {
+					"source": ['query.taskId'],
 					"required": true,
 					"validation": {
 						"type": "string"
@@ -986,6 +988,66 @@ module.exports = {
 					"l": "List Content Schema Revisions",
 					"group": "Content Builder"
 				}
+			},
+			/*
+			 * this API will get the content and the url of any file located on a specific
+			 * github/bitbucket account for a certain repo.
+			 * In our case we need to get the yaml file and its content
+			 */
+			"/gitAccounts/getYaml": {
+				"_apiInfo": {
+					"l": "Get Yaml file",
+					"group": "Git Accounts"
+				},
+				"owner": {
+					"source": ['query.owner'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['query.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"filepath": {
+					"source": ['query.filepath'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['query.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"version": {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "integer"
+					}
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type":{
+					"source": ['query.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
 			}
 		},
 
@@ -1004,7 +1066,6 @@ module.exports = {
 					}
 				}
 			},
-
 			"/environment/add": {
 				_apiInfo: {
 					"l": "Add Environment",
@@ -1296,7 +1357,23 @@ module.exports = {
 				}
 			},
 
-			"/daemons/list": { //TODO: switch to GET method
+			"/daemons/groupConfig/add": {
+				_apiInfo: {
+					"l": "Add Daemon Group Configuration",
+					"group": "Daemons"
+				},
+				'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
+				'type':{
+					"required": true,
+					"source": ["body.type"],
+					"validation":{
+						"type": "string",
+						"enum": ["interval", "cron", "once"]
+					}
+				}
+			},
+			
+			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
 					"group": "Daemons"
@@ -1317,55 +1394,37 @@ module.exports = {
 					}
 				}
 			},
-
-			"/daemons/groupConfig/list": { //TODO: switch to GET method
-				_apiInfo: {
-					"l": "List Daemon Group Configuration",
-					"group": "Daemons"
+			
+			"/cloud/services/soajs/deploy": {
+				"_apiInfo": {
+					"l": "Deploy A New SOAJS Service",
+					"group": "HA Cloud"
 				},
-				'grpConfNames': {
-					'source': ['body.grpConfNames'],
-					'required': false,
-					'validation': {
-						'type': 'array',
-						'items': {'type': 'string'}
-					}
-				}
-			},
-
-			"/daemons/groupConfig/add": {
-				_apiInfo: {
-					"l": "Add Daemon Group Configuration",
-					"group": "Daemons"
-				},
-				'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type': {
+				"env": {
+					"source": ['body.env'],
 					"required": true,
-					"source": ["body.type"],
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"required": true,
+					"source": ['body.type'],
 					"validation": {
 						"type": "string",
-						"enum": ["interval", "cron", "once"]
+						"enum": ['service', 'daemon', 'nginx']
 					}
-				}
-			},
-
-			"/hosts/deployController": {
-				"_apiInfo": {
-					"l": "Deploy New Controller",
-					"group": "Hosts"
 				},
-				"commonFields": ['envCode'],
-				"number": {
-					"required": true,
-					"source": ["body.number"],
+				"name": {
+					"required": false,
+					"source": ['body.name'],
 					"validation": {
-						"type": "number",
-						"minimum": 1
+						"type": "string"
 					}
 				},
 				"version": {
-					"required": true,
-					"source": ["body.version"],
+					"source": ['body.version'],
+					"required": false,
 					"default": 1,
 					"validation": {
 						"type": "number",
@@ -1381,191 +1440,114 @@ module.exports = {
 						"items": {"type": "string"}
 					}
 				},
-				"owner": {
-					"source": ['body.owner'],
+				"gitSource": {
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"name": {
-					"source": ['body.name'],
-					"required": false,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"haService": {
-					"source": ['body.haService'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"exposedPort": {
-					"source": ['body.exposedPort'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"isKubernetes": {
-					"source": ['body.isKubernetes'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				}
-			},
-
-			"/hosts/deployNginx": {
-				"_apiInfo": {
-					"l": "Deploy New Nginx",
-					"group": "Hosts"
-				},
-				"commonFields": ['envCode'],
-				"nginxConfig": {
-					"source": ["body.nginxConfig"],
-					"required": false,
+					"source": ['body.gitSource'],
 					"validation": {
 						"type": "object",
+						"required": true,
 						"properties": {
-							"customUIId": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
+							"owner": { "required": true, "type": "string" },
+							"repo": { "required": true, "type": "string" },
+							"branch": { "required": true, "type": "string" },
+							"commit": { "required": true, "type": "string" }
 						}
 					}
 				},
-				"exposedPort": {
-					"source": ["body.exposedPort"],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"supportSSL": {
-					"source": ['body.supportSSL'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haService": {
-					"source": ['body.haService'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
+				"deployConfig": {
 					"required": true,
+					"source": ['body.deployConfig'],
 					"validation": {
-						"type": "string"
+						"type": "object",
+						"required": true,
+						"properties": {
+							"useLocalSOAJS": { "required": false, "type": "boolean" },
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": false, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+							"replication": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
+									"replicas": { "required": false, "type": "number" }
+								}
+							}
+						}
+					}
+				},
+				"contentConfig": {
+					"required": false,
+					"source": ['body.contentConfig'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"service": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"gc": { "required": true, "type": "boolean" },
+									"gcName": { "required": true, "type": "string" },
+									"gcVersion": { "required": true, "type": "string" }
+								}
+							},
+							"daemon": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"grpConfName": { "required": true, "type": "string" }
+								}
+							},
+							"nginx": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"ui": {
+                                        "type": "object",
+                                        "required": false,
+                                        "properties": {
+                                            "id": { "type": "string", "required": true },
+                                            "branch": { "type": "string", "required": true },
+                                            "commit": { "type": "string", "required": true }
+                                        }
+                                    },
+									"supportSSL": { "required": false, "type": "boolean" }
+								}
+							}
+						}
 					}
 				}
 			},
 
-			"/hosts/deployService": {
+			"/cloud/services/custom/deploy": {
 				"_apiInfo": {
-					"l": "Deploy New Service",
-					"group": "Hosts"
+					"l": "Add A New Custom Service",
+					"group": "HA Cloud"
 				},
-				"commonFields": ['envCode'],
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"name": {
-					"required": false,
+					"required": true,
 					"source": ['body.name'],
 					"validation": {
 						"type": "string"
-					}
-				},
-				"version": {
-					"required": true,
-					"source": ["body.version"],
-					"default": 1,
-					"validation": {
-						"type": "number",
-						"minimum": 1
-					}
-				},
-				"gcName": {
-					"required": false,
-					"source": ['body.gcName'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"gcVersion": {
-					"required": false,
-					"source": ['body.gcVersion'],
-					"validation": {
-						"type": "integer",
-						"minimum": 1
 					}
 				},
 				"variables": {
@@ -1577,176 +1559,80 @@ module.exports = {
 						"items": {"type": "string"}
 					}
 				},
-				"owner": {
-					"source": ['body.owner'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
+				"labels": {
 					"required": false,
+					"source": ['body.labels'],
+					"default": {},
 					"validation": {
-						"type": "boolean"
+						"type": "object"
 					}
 				},
-				"haService": {
-					"source": ['body.haService'],
+				"command": {
 					"required": false,
+					"source": ['body.command'],
 					"validation": {
-						"type": "boolean"
+						"type": "object",
+						"properties": {
+							"cmd": { "required": false, "type": "array" },
+							"args": { "required": false, "type": "array" }
+						}
 					}
 				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
+				"deployConfig": {
 					"required": true,
+					"source": ['body.deployConfig'],
 					"validation": {
-						"type": "string"
-					}
-				}
-			},
-			"/hosts/deployDaemon": {
-				"_apiInfo": {
-					"l": "Deploy New Daemon",
-					"group": "Hosts"
-				},
-				"commonFields": ['envCode'],
-				"name": {
-					"required": false,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"required": true,
-					"source": ["body.version"],
-					"default": 1,
-					"validation": {
-						"type": "number",
-						"minimum": 1
-					}
-				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
-					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
-					}
-				},
-				"grpConfName": {
-					"required": true,
-					"source": ['body.grpConfName'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"owner": {
-					"source": ['body.owner'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"repo": {
-					"source": ['body.repo'],
-					"required": true,
-					"validation": {
-						"type": "string"
+						"type": "object",
+						"required": true,
+						"properties": {
+							"image": { "required": true, "type": "string" },
+							"workDir": { "required": false, "type": "string" },
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"network": { "required": false, "type": "string" },
+							"ports": {
+								"required": false,
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"isPublished": { "required": false, "type": "boolean", "default": false },
+										"target": { "required": true, "type": "number" },
+										"published": { "required": false, "type": "number" }
+									}
+								}
+							},
+							"replication": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
+									"replicas": { "required": false, "type": "number" }
+								}
+							},
+							"restartPolicy": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"condition": { "required": true, "type": "string", "enum": ['none', 'on-failure', 'any']},
+									"maxAttempts": { "required": true, "type": "number" }
+								}
+							},
+							"volume": {
+								"required": false,
+								"type": "object",
+								"properties": {
+									"type": { "required": true, "type": "string", "enum": ['bind', 'volume'] },
+									"readOnly": { "required": false, "type": "boolean" },
+									"source": { "required": true, "type": "string" },
+									"target": { "required": true, "type": "string" }
+								}
+							}
+						}
 					}
 				},
-				"branch": {
-					"source": ['body.branch'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"commit": {
-					"source": ['body.commit'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"useLocalSOAJS": {
-					"source": ['body.useLocalSOAJS'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haService": {
-					"source": ['body.haService'],
-					"required": false,
-					"validation": {
-						"type": "boolean"
-					}
-				},
-				"haCount": {
-					"source": ['body.haCount'],
-					"required": false,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"memoryLimit": {
-					"source": ['body.memoryLimit'],
-					"required": false,
-					"default": 209715200,
-					"validation": {
-						"type": "number"
-					}
-				},
-				"imagePrefix": {
-					"source": ['body.imagePrefix'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				}
 			},
 
-			"/hacloud/nodes/add": {
+			"/cloud/nodes/add": {
 				"_apiInfo": {
 					"l": "Add HA Cloud Node",
 					"group": "HA Cloud"
@@ -1778,6 +1664,49 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ['manager', 'worker']
+					}
+				}
+			},
+
+			"/cloud/services/maintenance": {
+				"_apiInfo": {
+					"l": "Perform A Maintenance Operation on a Deployed Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['body.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceName": {
+					"source": ['body.serviceName'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"type": {
+					"source": ['body.type'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"operation": {
+					"source": ['body.operation'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				}
 			},
@@ -1924,7 +1853,7 @@ module.exports = {
 					"source": ['body.operation'],
 					"validation": {
 						"type": "string",
-						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'hostLogs', 'infoHost', 'daemonStats']
+						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats']
 					}
 				},
 				"serviceName": {
@@ -1961,6 +1890,121 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				}
+			},
+
+			"/swagger/simulate": {
+				"_apiInfo": {
+					"l": "Api simulation service",
+					"group": "Simulate",
+					"groupMain": true
+				},
+				"data": {
+					"required": true,
+					"source": ['body.data'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"input": {
+								"type": "object",
+								"properties": {}
+							},
+							"imfv": {
+								"type": "object",
+								"properties": {}
+							}
+						}
+					}
+				}
+
+			},
+
+			"/swagger/generate": {
+				"_apiInfo": {
+					"l": "Generate Service via Swagger",
+					"group": "swagger",
+					"groupMain": true
+				},
+				"language": {
+					"required": false,
+					"source": ["body.language"],
+					"default": "soajs",
+					"validation": {
+						"type": "string",
+						"enum": ["soajs", "nodejs", "php", "asp"]
+					}
+				},
+				"data": {
+					"required": true,
+					"source": ['body.data'],
+					"validation": {
+						"type": "object",
+						"properties": {
+							"service": {
+								"required": true,
+								"type": "object",
+								"properties": {
+									"serviceName": {
+										"type": "string",
+										"required": true
+									},
+									"serviceVersion": {
+										"type": "number",
+										"required": true,
+										"min": 1
+									},
+									"serviceGroup": {
+										"type": "string",
+										"required": true
+									},
+									"servicePort": {
+										"type": "number",
+										"required": true,
+										"min": 4100
+									},
+									"requestTimeout": {
+										"type": "number",
+										"required": true
+									},
+									"requestTimeoutRenewal": {
+										"type": "number",
+										"required": true
+									},
+									"extKeyRequired": {
+										"type": "boolean",
+										"required": true
+									},
+									"session": {
+										"type": "boolean",
+										"required": false
+									},
+									"oauth": {
+										"type": "boolean",
+										"required": false
+									},
+									"dbs": {
+										"type": "array",
+										"required": false,
+										"items": {
+											"type": "object",
+											"properties": {
+												"prefix": {"type": "string"},
+												"name": {"type": "string", "required": true},
+												"multitenant": {"type": "boolean"},
+												"model": {"type": "string", "required": true}
+											}
+										},
+										"minItems": 1,
+										"uniqueItems": true
+									}
+								}
+							},
+							"yaml": {
+								"type": "string",
+								"required": true
+							}
+						}
 					}
 				}
 			}
@@ -2359,10 +2403,10 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type': {
+				'type':{
 					"required": true,
 					"source": ["body.type"],
-					"validation": {
+					"validation":{
 						"type": "string",
 						"enum": ["interval", "cron", "once"]
 					}
@@ -2413,7 +2457,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/nodes/update": {
+			"/cloud/nodes/update": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node",
 					"group": "HA Cloud"
@@ -2449,28 +2493,21 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/services/scale": {
+			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
 					"group": "HA Cloud"
 				},
-				"envCode": {
-					"source": ['query.envCode'],
+				"env": {
+					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
 				},
-				"name": {
-					"source": ['query.name'],
+				"serviceId": {
+					"source": ['body.serviceId'],
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"source": ['query.version'],
-					"required": false,
 					"validation": {
 						"type": "string"
 					}
@@ -2480,6 +2517,39 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "number"
+					}
+				}
+			},
+
+			"/cloud/services/redeploy": {
+				"_apiInfo": {
+					"l": "Redeploy HA Service",
+					"group": "HA Cloud"
+				},
+				"env": {
+					"source": ['body.env'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"serviceId": {
+					"source": ['body.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"ui": {
+					"source": ['body.ui'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"id": { "type": "string", "required": true },
+							"branch": { "type": "string", "required": true },
+							"commit": { "type": "string", "required": true }
+						}
 					}
 				}
 			},
@@ -2565,7 +2635,7 @@ module.exports = {
 						"type": "string"
 					}
 				}
-			},
+			}
 		},
 
 		"delete": {
@@ -2718,46 +2788,7 @@ module.exports = {
 				'commonFields': ['id']
 			},
 
-			"/hosts/delete": {
-				_apiInfo: {
-					"l": "Delete Hosts",
-					"group": "Hosts"
-				},
-				'env': {
-					'source': ['query.env'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'name': {
-					'source': ['query.name'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'hostname': {
-					'source': ['query.hostname'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				},
-				'ip': {
-					'source': ['query.ip'],
-					'required': true,
-					"validation": {
-						"type": "string",
-						"required": true
-					}
-				}
-			},
-
-			"/hacloud/nodes/remove": {
+			"/cloud/nodes/remove": {
 				"_apiInfo": {
 					"l": "Remove HA Cloud Node",
 					"group": "HA Cloud"
@@ -2778,7 +2809,7 @@ module.exports = {
 				}
 			},
 
-			"/hacloud/services/delete": {
+			"/cloud/services/delete": {
 				"_apiInfo": {
 					"l": "Delete HA Service",
 					"group": "HA Cloud"
@@ -2790,16 +2821,9 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"name": {
-					"source": ['query.name'],
+				"serviceId": {
+					"source": ['query.serviceId'],
 					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"source": ['query.version'],
-					"required": false,
 					"validation": {
 						"type": "string"
 					}

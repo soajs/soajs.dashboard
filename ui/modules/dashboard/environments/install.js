@@ -1393,6 +1393,10 @@ var envTranslation ={
 	"availableFilesOfType": {
 		"ENG": "Available files of type",
 		"FRA": "Available files of type"
+	},
+	"loadDaemonGroupConfig":{
+		"ENG": "Load Daemon Group Config",
+		"FRA": "Load Daemon Group Config"
 	}
 };
 
@@ -1535,7 +1539,7 @@ var environmentsNav = [
 			'method': 'get'
 		},
 		'icon': 'sphere',
-		'tplPath': 'modules/dashboard/environments/directives/list-hacloud.tmpl',
+		'tplPath': 'modules/dashboard/environments/directives/list-cloud.tmpl',
 		'pillar':{
 			'name': 'deployment',
 			'label': translation.deploy[LANG],
@@ -1543,7 +1547,7 @@ var environmentsNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
+		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/nodes.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 	// {

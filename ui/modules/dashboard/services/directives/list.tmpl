@@ -11,13 +11,13 @@
 			<button class="btn btn-danger" ng-click="ok()">{{translation.close[LANG]}}</button>
 		</div>
 	</script>
-
+	
 	<div class="entryBoxes" ng-show="grid.rows">
 		<div ng-if="access.listServices">
 			<a href="" ng-click="listServices()" class="btn btn-primary f-right">
 				<span class="icon icon-undo" tooltip="Refresh List"></span>{{translation.refresh[LANG]}}
 			</a>
-			<br /><br />
+			<br/><br/>
 		</div>
 		<div id="s_{{service._id}}" ng-repeat="service in grid.rows" class="entryBox" ng-init="service.hide = true;">
 			<div class="header closed">
@@ -40,6 +40,15 @@
 						<td>
 							<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
 						</td>
+						<!--Add swagger icon if a service were created using swagger editor-->
+						<td>
+							<div style="height: 25px; width: 25px; margin-left: 0px">
+							<a href="" ng-click="swaggerTest(service.name)" title="click to run swagger simulation" ng-if="service['swagger']">
+								<span><img style="height: 25px; width:25px;" src="modules/dashboard/services/directives/images/swagger-icon.png">
+								</span>
+							</a>
+							</div>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -51,7 +60,7 @@
 						<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='_ver'">
 							<legend>{{grp}}</legend>
 							<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
-
+							
 							<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
 								<tbody>
 									<tr>
