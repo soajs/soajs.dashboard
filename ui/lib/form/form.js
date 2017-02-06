@@ -198,22 +198,38 @@ function buildForm(context, modal, configuration, cb) {
 		}
 		
 		if (oneEntry.type === 'jsoneditor') {
-			oneEntry.onLoad = function (instance) {
-				if (instance.mode === 'code') {
-					instance.setMode('code');
-				}
-				else {
-					instance.set();
-				}
-				instance.editor.getSession().on('change', function () {
-					try {
-						instance.get();
-						oneEntry.jsonIsValid = true;
-					}
-					catch (e) {
-						oneEntry.jsonIsValid = false;
-					}
-				});
+			oneEntry.onLoad = function (_editor) {
+				oneEntry.editor = _editor;
+				oneEntry.ngModel = JSON.stringify(oneEntry.value, null, 2);
+				_editor.setValue(JSON.stringify(oneEntry.value, null, 2));
+				_editor.scrollToLine(0, true, true);
+				_editor.scrollPageUp();
+				_editor.clearSelection();
+				_editor.setShowPrintMargin(false);
+				
+				var heightUpdateFunction = function() {
+					var newHeight =
+						_editor.getSession().getScreenLength()
+						* _editor.renderer.lineHeight
+						+ _editor.renderer.scrollBar.getWidth() + 10;
+
+					_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
+					_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
+					configuration.timeout(function(){
+						jQuery('#' + oneEntry.name).height(newHeight.toString());
+						_editor.resize(true);
+					}, 5);
+				};
+				
+				context.form.timeout(function(){
+					oneEntry.editor.heightUpdate = heightUpdateFunction();
+					// Set initial size to match initial content
+					heightUpdateFunction();
+					
+					// Whenever a change happens inside the ACE editor, update
+					// the size again
+					_editor.getSession().on('change', heightUpdateFunction);
+				}, 1000);
 			};
 		}
 	}
@@ -286,6 +302,11 @@ function buildForm(context, modal, configuration, cb) {
 		var fileTypes = ['document', 'image', 'audio', 'video'];
 		var customData = [];
 		for (var i = 0; i < context.form.entries.length; i++) {
+			if (context.form.entries[i].type === 'jsoneditor') {
+				context.form.formData[context.form.entries[i].name] = JSON.parse(context.form.entries[i].ngModel);
+			}
+		}
+		for (var i = 0; i < context.form.entries.length; i++) {
 			for (var j = 0; j < formDataKeys.length; j++) {
 				var pattern = new RegExp(context.form.entries[i].name + "_[0-9]+");
 				if (pattern.test(formDataKeys[j]) && fileTypes.indexOf(context.form.entries[i].type) !== -1) {
@@ -354,12 +375,7 @@ function buildForm(context, modal, configuration, cb) {
 					data[oneEntry.name] = data[oneEntry.name][0];
 				}
 			}
-			else if (oneEntry.type === 'jsoneditor') {
-				if (!oneEntry.jsonIsValid) {
-					context.form.displayAlert('danger', oneEntry.label + ': Invalid JSON Object');
-					return false;
-				}
-			}
+			
 			if (data[oneEntry.name] === 'false') {
 				data[oneEntry.name] = false;
 			}

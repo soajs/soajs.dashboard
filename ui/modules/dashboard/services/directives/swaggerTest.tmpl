@@ -1,0 +1,39 @@
+<section ng-controller="swaggerTestCtrl">
+	<form>
+		<div class="header">
+			<h3>Testing {{serviceName}}</h3>
+		</div>
+	</form>
+	
+	<div ng-show="environments.values.length > 1">
+		<label style="margin-top: 7px;" class="f-left">Select which environment you want to test the service in:&nbsp;&nbsp;</label>
+		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" class="form-control f-left c45" ng-disabled="tempDisable"></select>
+		<div class="fieldMsg hint">Only the environments where the service is deployed are available.</div>
+	</div>
+	<div ng-show="environments.values.length === 1">
+		<alert type="warning">Please deploy this service in an environment then refresh this page to run the
+			simulator.
+		</alert>
+	</div>
+	<hr/>
+	<br/>
+	
+	<div class="c-both w100 table" ng-show="envSelected">
+		<h4 class="f-left">Swagger Service Tester</h4>
+		<a class="btn btn-primary f-right" ng-click="collapseExpand()">
+			<span class="icon icon-circle-left" ng-show="!collapsed"></span>
+			{{(collapsed) ? "Expand" : "Collapse"}} Editor
+			<span class="icon icon-circle-right" ng-show="collapsed"></span>
+		</a>
+	</div>
+	<hr/>
+	
+	<div class="f-left w49" ng-show="envSelected" ng-class="{'block': !collapsed, 'hidden': collapsed}">
+		<div id="editorTab" readonly="true" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded}"></div>
+	</div>
+	<div class="f-left w2" ng-class="{'block': !collapsed, 'hidden': collapsed}">&nbsp;</div>
+	<div class="f-left" ng-show="envSelected" ng-class="{'w100': collapsed, 'w49': !collapsed}">
+		<div ng-show="content">loading ...</div>
+		<div swagger-ui parser="yaml" url="swaggerUrl" loading="content" trusted-sources="true" loading="isLoading" api-explorer="true"></div>
+	</div>
+</section>

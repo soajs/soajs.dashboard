@@ -1,0 +1,405 @@
+<script type="text/ng-template" id="deployNewService.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body">
+		<div class="form">
+			<alert type="danger" ng-if="currentScope.message.danger">{{currentScope.message.danger}}</alert>
+			<form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
+				<div class="form-group">
+					<div>
+						<label>{{translation.serviceName[LANG]}}</label>
+						<select class="form-control" ng-required="true" ng-options="service as service.name group by service.UIGroup for service in currentScope.services" ng-model="currentScope.service" ng-change="selectService(currentScope.service)"></select>
+						<br>
+					</div>
+					<div>
+						<label>{{translation.serviceVersion[LANG]}}</label>
+						<select class="form-control" ng-required="true" ng-options="version as version for version in currentScope.versions" ng-model="currentScope.version"></select>
+						<br>
+					</div>
+					<div ng-if="currentScope.groupConfigs">
+						<label>{{translation.daemonGroupConfig[LANG]}}</label>
+						<select class="form-control" ng-required="true" ng-options="group as group.daemonConfigGroup for group in currentScope.groupConfigs" ng-model="currentScope.groupConfig"></select>
+						<br>
+					</div>
+					<div ng-if="(currentScope.loadingBranches || currentScope.branches) && currentScope.service.type !== 'nginx'">
+						<label>{{translation.branch[LANG]}}</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingBranches">
+						<select class="form-control" ng-required="true" ng-options="branch as branch.name for branch in currentScope.branches" ng-model="currentScope.branch" ng-change="selectBranch(currentScope.branch)"></select>
+						<br>
+					</div>
+					<div>
+						<label>Image Prefix</label>
+						<input type="text" class="form-control" ng-required="true" ng-model="currentScope.imagePrefix"/>
+						<label class="fieldMsg">The default image that will be used is soajsorg/soajs. Specify a
+							different prefix if you intend to use a custom image</label>
+						<br/>
+					</div>
+					<div ng-if="currentScope.service.type === 'nginx'">
+						<label>Exposed Port</label>
+						<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort"/>
+						<br/>
+					</div>
+					<div ng-if="currentScope.conflict">
+						<label ng-style="{'color': 'red'}">{{translation.warning[LANG]}}</label><br>
+						<label>{{translation.serviceHasRunningInstancesDifferentCommits[LANG]}}</label><br>
+						<label>{{translation.recommendedToMaintainHomogeneity[LANG]}}</label><br>
+
+						<div class="grid externalKeysGrid">
+							<table cellspacing="0" cellpadding="0" border="0" width="100%" class="">
+								<tbody>
+									<tr>
+										<th colspan="1"></th>
+										<th>{{translation.commit[LANG]}}</th>
+										<th>{{translation.branch[LANG]}}</th>
+										<th>{{translation.hostnames[LANG]}}</th>
+									</tr>
+									<tr ng-repeat="(commit, data) in currentScope.conflictCommits" ng-class-even="'even'" ng-class-odd="'odd'" ng-class="{'first': $first, 'last': $last}">
+										<td>
+											<input type="radio" ng-if="!currentScope.confirmBranch" value="{{commit}}" ng-model="currentScope.commit">
+										</td>
+										<td>{{commit}}</td>
+										<td>{{data.branch}}</td>
+										<td>
+											<span ng-repeat="instance in data.instances">{{instance.ip}} v.{{instance.version}}<br></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;{{translation.understandTheRiskToDeploy[LANG]}}</label><br>
+						<br>
+					</div>
+					<div>
+						<br>
+						<label>Deployment Mode</label>
+						<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
+						<label class="fieldMsg">Global mode deploys one replica of the service on each node.</label>
+						<label class="fieldMsg">Replica mode deploys the specified number of replicas based on the availability of resources.</label>
+					</div>
+					<div ng-if="currentScope.mode == 'replicated'">
+						<label>Replica Count</label>
+						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" />
+						<br>
+					</div>
+					<div>
+						<label>Memory Limit Per Instance (in MBytes)</label>
+						<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
+						<br>
+					</div>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false"/>&nbsp;Enable
+							SOAJS accelerated deployment</label>
+						<br><br>
+					</div>
+					<div ng-if="currentScope.service.type !== 'nginx'">
+						<label>{{translation.envVariables[LANG]}}</label>
+						<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
+						<br>
+						<label>{{translation.defaultEnvVariables[LANG]}}</label>
+
+						<div ng-bind-html="currentScope.defaultEnvVariables"></div>
+						<br>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">Deploy</button>
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="scaleService.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<div class="form">
+			<label>This service is currently running as a replica of {{currentScale}} instance(s)</label>
+			<br/>
+			<label>How many instances should this service be scaled to?</label>
+			<input type="number" class="form-control centeredInput" required="true" ng-model="newScale"/>
+			<br/>
+			<alert type="info" class="text-align-center">
+				Scaling a service is a process that might take some time to complete.
+			</alert>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">Scale</button>
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="infoService.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<div readonly="true" ui-ace="{useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: fillAceWithInfo}"></div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
+
+<script type="text/ng-template" id="logBox.html">
+	<div class="modal-header">
+		<table width="100%">
+			<tr>
+				<td width="80%">
+					<h3 class="modal-title">{{title}}</h3>
+				</td>
+				<td width="20%" align="center">
+					<span><text-size-slider min="10" max="36" unit="px" value="12" idt="code"></text-size-slider></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="modal-body">
+		<div class="table w100 c-both">
+			<button class="btn btn-sm btn-primary f-right" ng-click="refreshLogs()"><span class="icon icon-loop2"></span>&nbsp;Refresh Logs</button>
+		</div>
+		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh">{{data}}</code></pre>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
+</script>
+
+<section ng-controller="hacloudCtrl">
+	<tabset>
+		<tab heading="Nodes" ng-if="access.hacloud.nodes.list">
+			<br/>
+			<div ng-if="localDeployment">
+				<alert type="info">
+					Node management is not supported in local deployment mode
+				</alert>
+				<br/>
+			</div>
+			<div ng-if="!localDeployment">
+				<div ng-if="envCode === 'DASHBOARD'">
+					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add" ng-click="addNode()">Add New Node
+					</button>
+					<br/><br/>
+				</div>
+				<div ng-if="envCode !== 'DASHBOARD'">
+					<alert type="info">
+						Node management is only allowed in the DASHBOARD environment
+					</alert>
+					<br/>
+				</div>
+			</div>
+			<div class="entryBoxes">
+				<div ng-repeat="node in nodes.list" class="entryBox mb20">
+					<div class="header">
+						{{node.hostname}}
+						<span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
+                            <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
+                                <span class="icon icon-cross" tooltip="Remove Node"></span>
+                            </a>
+							<div ng-if="envPlatform === 'docker'">
+								<a ng-if="node.role === 'manager' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'worker')">
+	                                <span class="icon icon-arrow-down2" tooltip="Demote To Worker"></span>
+	                            </a>
+	                            <a ng-if="node.role === 'worker' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'role', 'manager')">
+	                                <span class="icon icon-arrow-up2" tooltip="Promote To Manager"></span>
+	                            </a>
+							</div>
+                            <a ng-if="node.availability === 'drain' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'active')">
+                                <span class="icon icon-switch" tooltip="Activate"></span>
+                            </a>
+                            <a ng-if="node.availability === 'active' && access.hacloud.nodes.update" href="" ng-click="updateNode(node, 'availability', 'drain')">
+                                <span class="icon icon-power-cord" tooltip="Drain"></span>
+                            </a>
+                        </span>
+					</div>
+					<div class="body">
+						<div class="grid">
+							<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+								<thead>
+									<tr class="header">
+										<td>IP Address</td>
+										<td>Role</td>
+										<td>Availability</td>
+										<td>Memory Resources</td>
+										<td>CPU Count</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{node.ip}}</td>
+										<td>{{node.spec.role}}</td>
+										<td>{{node.spec.availability}}</td>
+										<td>{{node.resources.memory | bytesToGbytes}} GB</td>
+										<td>{{node.resources.cpus}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</tab>
+		<tab heading="Services" ng-if="access.listHosts">
+			<br/>
+			<div ng-if="!hosts">
+				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
+				<br />
+				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+			</div>
+			<tabset ng-if="hosts">
+				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}">
+					<br/>
+                    <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
+                    <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
+					<button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
+					<br/><br/>
+					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
+						<fieldset class="groupFieldset" ng-repeat="service in list.list">
+							<legend>
+								<a href="" class="icon" ng-class="{'icon-minus': service.expanded, 'icon-plus': !service.expanded}" ng-click="showHideContent(service)"></a> {{service.name}}
+							</legend>
+							<div class="entryBoxes" ng-show="service.expanded">
+								<div class="entryBox mb20">
+									<div class="header table">
+										<span class="serviceLabelBox">{{service.labels['soajs.service.name']}}</span>
+										
+										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
+										<div class="dropdown serviceOpsDropdown">
+											<button class="btn btn-default dropdown-toggle" type="button" id="nginxOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+												Service Operations
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Nginx</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="body">
+										<div class="grid">
+											<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+												<thead>
+													<tr class="header">
+														<td class="maintenanceHeader">Container Operation</td>
+														<td class="hostnameHeader">Container Name</td>
+														<td class="Started">Started On</td>
+														<td class="statusHeader">Status</td>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="instance in service.tasks" ng-hide="instance.hideIt && !service.hideIt">
+														<td>
+															<a href="" ng-if="access.hacloud.services.logs">
+																<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
+															</a>
+														</td>
+														<td>{{instance.name}}</td>
+														<td>{{instance.status.ts}}</td>
+														<td>
+															<span ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div ng-if="groupName === 'soajs'">
+						<div ng-if="!list.groups">
+							<div ng-show="hosts['nginx'].list.length === 0">
+								<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
+								<br />
+								<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+							</div>
+						</div>
+						<fieldset class="groupFieldset" ng-repeat="(name, group) in list.groups">
+							<legend>
+								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
+							</legend>
+							<div class="entryBoxes" ng-show="group.expanded">
+								<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
+									<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+								</div>
+								<fieldset ng-repeat="service in group.list">
+									<div class="entryBox mb20 {{service.color}}">
+										<div class="header table">
+											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
+											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
+											<div class="dropdown serviceOpsDropdown">
+												<button class="btn btn-default dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+													Service Operations
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+													<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect</a></li>
+													<li><a href="" ng-click="executeHeartbeatTest(service)"><span class="icon icon-heart"></span> Heart Beat</a></li>
+													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonStats(service)"><span class="icon icon-stats-dots"></span>&nbsp;{{translation.loadDaemonStatisticsOperation[LANG]}}</a></li>
+													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonGroupConfig(service)"><span class="icon icon-equalizer"></span>&nbsp;{{translation.loadDaemonGroupConfig[LANG]}}</a></li>
+													<li><a href="" ng-if="service.labels['soajs.service.name'] !== 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
+													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
+													<li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+												</ul>
+											</div>
+										</div>
+										<div class="body">
+											<div class="grid">
+												<table cellspacing="0" cellpadding="0" border="1" width="100%" class="customTable">
+													<thead>
+														<tr class="header">
+															<td class="logsHeader">Logs</td>
+															<td class="maintenanceHeader">Container Name</td>
+															<td class="maintenanceHeader">Started On</td>
+															<td class="maintenanceHeader">Last Check On</td>
+															<td class="statusHeader2" ng-if="service.labels['soajs.service.name'] === 'controller'">Status</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Status</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Controllers</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr ng-repeat="instance in service.tasks" ng-hide="instance.hideIt && !service.hideIt">
+															<td>
+																<a href="" ng-if="access.hacloud.services.logs">
+																	<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
+																</a>
+															</td>
+															<td>{{instance.name}}</td>
+															<td>{{instance.status.ts}}</td>
+															<td ng-show="instance.status.lastTs">{{instance.status.lastTs|fulldate}}</td>
+															<td ng-show="!instance.status.lastTs">N/A</td>
+															<td>
+																<span ng-show="instance.status.state === 'Unreachable'" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="instance.status.error" class="red"><b>{{instance.status.state}}</b></span>
+																<span ng-show="instance.status.state !== 'Unreachable'" ng-class="{'green': instance.status.state ==='running', 'red': instance.status.state !=='running'}"><b>{{instance.status.state}}</b></span>
+															</td>
+															<td ng-if="service.labels['soajs.service.name'] !== 'controller'">
+																<span ng-repeat="ctrl in controllers">
+																	<span ng-repeat="ctrlInst in ctrl.tasks">
+																		<span class="ctrlBox" ng-class="{'ctrlBoxHealthy': ctrlInst.healthy, 'ctrlBoxUnhealthy': !ctrlInst.healthy}" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="ctrlInst.tooltip">{{ctrlInst.code}}</span>&nbsp;
+																	</span>
+																</span>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</fieldset>
+					</div>
+				</tab>
+			</tabset>
+		</tab>
+	</tabset>
+</section>

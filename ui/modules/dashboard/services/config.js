@@ -50,13 +50,16 @@ var servicesConfig = {
 				    'height': '200px',
 				    "value": {},
 				    'required': true,
-					"tooltip": translation.serviceConfiguration[LANG],
+					"tooltip": translation.serviceConfiguration[LANG]
 				}
 			]
 		}
 	},
 	permissions: {
 		'listServices': ['dashboard', '/services/list', 'post'],
+
+		'getEnv': ['dashboard', '/services/env/list', 'get'],
+
 		'daemons': {
 			'list': ['dashboard', '/daemons/list', 'post']
 		},

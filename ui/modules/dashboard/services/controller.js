@@ -1,12 +1,11 @@
 "use strict";
-
 var servicesApp = soajsApp.components;
-servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload) {
+servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compile', 'ngDataApi', 'injectFiles', '$cookies', 'Upload', '$routeParams', function ($scope, $timeout, $modal, $compile, ngDataApi, injectFiles, $cookies, Upload, $routeParams) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
-
+	
 	$scope.showHide = function (service) {
 		if (!service.hide) {
 			jQuery('#s_' + service._id + " .body").slideUp();
@@ -21,7 +20,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			service.hide = false;
 		}
 	};
-
+	
 	$scope.listServices = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "post",
@@ -56,11 +55,12 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			}
 		});
 	};
-
+	
 	$scope.sortByDescending = function (versions) {
 		function compareNumbers(a, b) {
 			return b - a;
 		}
+		
 		var keys = Object.keys(versions);
 		var keysInt = [];
 		keys.forEach(function (key) {
@@ -70,7 +70,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		keysInt = keysInt.sort(compareNumbers);
 		return keysInt
 	};
-
+	
 	$scope.arrGroupByField = function (arr, f, version) {
 		var result = {};
 		var l = arr.length;
@@ -88,7 +88,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 			}
 			result[g].apis.push(arr[i]);
 		}
-
+		
 		var label;
 		for (label in result) {
 			if (result.hasOwnProperty(label)) {
@@ -103,24 +103,209 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		result._ver = version;
 		return result;
 	};
-
+	//open new tab having the swagger ui to test our APIs
+	$scope.swaggerTest = function (serviceName) {
+		window.open("#/services/swaggerui/" + serviceName, "_blank");
+	};
+	
 	if ($scope.access.listServices) {
 		injectFiles.injectCss("modules/dashboard/services/services.css");
 		$scope.listServices();
 	}
+	
+}]);
 
+servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi', 'injectFiles', 'swaggerParser', '$timeout', 'swaggerClient', function ($scope, $routeParams, ngDataApi, injectFiles, swaggerParser, $timeout, swaggerClient) {
+	$scope.$parent.isUserLoggedIn();
+	$scope.yamlContent = "";
+	$scope.access = {};
+	$scope.tempDisable = true;
+	$scope.collapsed = false;
+	
+	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
+	
+	//read service name from route params
+	$scope.serviceName = $routeParams.serviceName;
+	
+	//set the default option value of the environments drop-down menu
+	$scope.environments = {
+		value: "---Please choose---",
+		values: ["---Please choose---"]
+	};
+	
+	$scope.collapseExpand = function(){
+		$scope.collapsed = !$scope.collapsed;
+	};
+	
+	/*
+	 * This function will get the owner, repo and the id if the service to use in other functions
+	 */
+	$scope.getServiceInfo = function (cb) {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/services/list",
+			"data": {serviceNames: [$scope.serviceName]}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+				$scope.id = response[0]._id;
+				$scope.owner = response[0].src.owner;
+				$scope.repo = response[0].src.repo;
+				
+				var versions = Object.keys(response[0].versions);
+				versions.sort();
+				//loop in versions and get the latest one
+				$scope.version = versions[versions.length -1];
+				return cb();
+			}
+		});
+	};
+	
+	/*
+	 * This function will fill the select DDL with the environments where a service is deployed
+	 */
+	$scope.getEnv = function (cb) {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/services/env/list",
+			"params": {
+				service: $scope.serviceName,
+				version: $scope.version
+			}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			} else {
+				delete response.soajsauth;
+				$scope.serviceEnvironments = response;
+				Object.keys($scope.serviceEnvironments).forEach(function (oneEnv) {
+					$scope.environments.values.push(oneEnv);
+				});
+				return cb();
+			}
+		});
+	};
+	
+	/*
+	 * This scope will save the environment selected
+	 */
+	$scope.selectedEnv = function () {
+		if ($scope.environments.value === '---Please choose---') {
+			$scope.envDomain = null;
+			$scope.yamlContent = "";
+			$scope.envSelected = null;
+		}
+		else {
+			$scope.envSelected = $scope.environments.value;
+			$scope.envDomain = $scope.serviceEnvironments[$scope.envSelected];
+		}
+		
+		//call fill ace editor
+		fillmyEditor($scope.editor);
+	};
+	
+	//event listener that hooks ace editor to the scope and hide the print margin in the editor
+	$scope.aceLoaded = function (_editor) {
+		$scope.editor = _editor;
+		_editor.setShowPrintMargin(false);
+	};
+	
+	/*
+	 * This function uses the editor instance to fill the new data values
+	 * Then it calls the simulator of swagger
+	 */
+	function fillmyEditor(_editor) {
+		$scope.getYaml(function (done) {
+			if (done) {
+				_editor.setValue($scope.yamlContent);
+			}
+			else {
+				_editor.setValue("");
+			}
+			
+			_editor.scrollToLine(0, true, true);
+			_editor.scrollPageUp();
+			_editor.clearSelection();
+			watchSwaggerSimulator();
+		});
+	}
+	
+	/*
+	 * This function updates the host value of the swagger simulator
+	 */
+	function watchSwaggerSimulator() {
+		//grab the swagger info
+		var x = swaggerParser.fetch();
+		if (!x || x.length === 0) {
+			$timeout(function () {
+				watchSwaggerSimulator();
+			}, 100);
+		}
+		else {
+			//modify the host value with the new domain
+			x[3].host = $scope.envDomain;
+			x[3].info.host = $scope.envDomain;
+			console.log("switching to new domain:", x[3].host);
+			//apply the changes
+			swaggerParser.execute.apply(null, x);
+		}
+	}
+	
+	/*
+	 * This function will call the getYaml API that will return the yaml content and the url
+	 * that will be inserted in $scope.url so the swagger UI will render the documentation
+	 */
+	$scope.getYaml = function (cb) {
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/gitAccounts/getYaml",
+			"params": {
+				owner: $scope.owner,
+				repo: $scope.repo,
+				filepath: "/swagger.yml",
+				env: $scope.envSelected,
+				serviceName: $scope.serviceName,
+				version: $scope.version,
+				type: 'service'
+			}
+		}, function (error, response) {
+			if (error) {
+				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+				return cb(false);
+			} else {
+				$scope.yamlContent = response.content;
+				
+				$scope.link = response.downloadLink;
+				//init form for swagger UI
+				$scope.isLoading = false;
+				// Todo change this to $scope.downloadLink instead of the given url
+				$scope.swaggerUrl = $scope.link;
+				return cb(true);
+			}
+		});
+	};
+	
+	if ($scope.access.getEnv) {
+		$scope.getEnv(function(){
+			$scope.getServiceInfo(function(){
+				$scope.tempDisable = false;
+			});
+		});
+	}
+	injectFiles.injectCss("modules/dashboard/services/services.css");
 }]);
 
 servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$modal', 'injectFiles', function ($scope, ngDataApi, $timeout, $modal, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-
+	
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, servicesConfig.permissions);
-
+	
 	$scope.showHide = function (entry) {
 		entry.hide = entry.hide ? false : true;
 	};
-
+	
 	$scope.getTenants = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -153,7 +338,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.getEnvironments = function (cb) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -166,12 +351,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 				response.forEach(function (oneEnv) {
 					$scope.environmentsList.push(oneEnv.code);
 				});
-
+				
 				if (cb) cb();
 			}
 		});
 	};
-
+	
 	$scope.reloadServiceConfig = function (groupId, jobName) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -193,17 +378,17 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.updateConfiguration = function (env, jobName, jobData, groupId) {
 		var formConfig = angular.copy(servicesConfig.form.jobServiceConfig);
 		formConfig.entries.forEach(function (oneEntry) {
 			if (oneEntry.name === "env") {
 				oneEntry.value = env;
 			} else if (oneEntry.name === "config") {
-				oneEntry.value = angular.copy (jobData.serviceConfig[env]);
+				oneEntry.value = angular.copy(jobData.serviceConfig[env]);
 			}
 		});
-
+		
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -248,7 +433,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.clearConfiguration = function (env, jobName, jobData, groupId) {
 		var postData = {
 			env: env,
@@ -268,7 +453,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.selectTenantExternalKeys = function (grpConf, jobName) { //groupId, jobName
 		var outerScope = $scope;
 		$modal.open({
@@ -278,7 +463,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.title = translation.selectTenantExternalKeys[LANG];
 				$scope.message = {}; //used to display errors inside modal
@@ -288,14 +473,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					tenantExtKeys: [],
 					tenantsInfo: []
 				};
-
+				
 				$scope.markSelectedTenants = function () {
 					grpConf.jobs[jobName].tenantsInfo.forEach(function (oneTenant) {
 						$scope.selectedTenants[oneTenant.extKeyEnv + '.' + oneTenant.extKey] = oneTenant;
 					});
 				};
 				$scope.markSelectedTenants();
-
+				
 				$scope.filterData = function (query) {
 					if (query && query !== "") {
 						query = query.toLowerCase();
@@ -313,7 +498,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					for (var i in $scope.selectedTenants) {
 						if ($scope.selectedTenants[i]) {
@@ -339,14 +524,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					})
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.listTenantExtKeys = function (grpConf, jobName) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -364,7 +549,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.listDaemons = function (cb) {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -394,7 +579,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.listDaemonGroupConfig = function (cb) {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -413,7 +598,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
+	
 	$scope.addDaemonGroupConfig = function () {
 		var outerScope = $scope;
 		$modal.open({
@@ -423,28 +608,28 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
 				$scope.title = translation.addDaemonGroupConfiguration[LANG];
-
+				
 				//Default values
 				$scope.postData.status = "1";
 				$scope.postData.solo = "true";
-
+				
 				$scope.checkIfOnlyJob = function (jobName) {
 					if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
 						$scope.selectedJobs[jobName]['order'] = 1;
 					}
 				};
-
+				
 				$scope.selectDaemon = function (daemon) {
 					$scope.postData.daemon = daemon.name;
 					$scope.daemonJobsList = daemon.jobs;
 					$scope.selectedJobs = {};
 				};
-
+				
 				$scope.generateOrderArray = function () {
 					if ($scope.postData.processing === "sequential" && Object.keys($scope.selectedJobs).length > 0) {
 						var order = [];
@@ -464,13 +649,13 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						for (var i = 0; i < order.length; i++) {
 							order[i] = order[i].name;
 						}
-
+						
 						$scope.postData.order = order;
 					} else if ($scope.postData.processing === "parallel") {
 						$scope.postData.order = [];
 					}
 				};
-
+				
 				$scope.getSelectedJobs = function () {
 					$scope.postData.jobs = {};
 					for (var oneJob in $scope.selectedJobs) {
@@ -484,15 +669,15 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					$scope.generateOrderArray();
 					$scope.getSelectedJobs();
 					$scope.postData.status = parseInt($scope.postData.status);
-
+					
 					if ($scope.postData.solo === "true") $scope.postData.solo = true;
 					else $scope.postData.solo = false;
-
+					
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "post",
 						"routeName": "/dashboard/daemons/groupConfig/add",
@@ -510,14 +695,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					});
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.updateDaemonGroupConfig = function (grpConf) {
 		var outerScope = $scope;
 		$modal.open({
@@ -527,39 +712,39 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
-
+				
 				$scope.outerScope = outerScope;
 				$scope.postData = {};
 				$scope.message = {}; //used to display errors inside modal
 				$scope.originalDaemon = grpConf.daemon; //used to detect if user changed daemon
 				$scope.title = translation.editDaemonGroupConfiguration[LANG];
-
+				
 				$scope.postData.groupName = grpConf.daemonConfigGroup;
 				$scope.postData.interval = grpConf.interval;
 				$scope.postData.type = grpConf.type;
-
-				if(grpConf.cronConfig){
-					if(grpConf.cronConfig.cronTimeDate){
+				
+				if (grpConf.cronConfig) {
+					if (grpConf.cronConfig.cronTimeDate) {
 						$scope.postData.cronTimeDate = grpConf.cronConfig.cronTimeDate;
 					}
-					else{
+					else {
 						$scope.postData.cronTime = grpConf.cronConfig.cronTime;
 					}
 					$scope.postData.timeZone = grpConf.cronConfig.timeZone;
 				}
 				$scope.postData.status = grpConf.status.toString();
 				$scope.postData.processing = grpConf.processing;
-
+				
 				//conversion from boolean to string is done for display purposes only
 				if (grpConf.solo) $scope.postData.solo = "true";
 				else $scope.postData.solo = "false";
-
+				
 				$scope.checkIfOnlyJob = function (jobName) {
 					if ($scope.daemonJobsList && Object.keys($scope.daemonJobsList).length === 1) {
 						$scope.selectedJobs[jobName]['order'] = 1;
 					}
 				};
-
+				
 				$scope.fetchSelectedDaemon = function () {
 					for (var i = 0; i < outerScope.grid.rows.length; i++) {
 						if (outerScope.grid.rows[i].name === grpConf.daemon) {
@@ -571,7 +756,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					}
 				};
 				$scope.fetchSelectedDaemon();
-
+				
 				$scope.markSelectedJobs = function () {
 					$scope.selectedJobs = {};
 					if ($scope.postData.processing === "sequential") {
@@ -594,16 +779,16 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 							}
 						}
 					}
-
+					
 				};
 				$scope.markSelectedJobs();
-
+				
 				$scope.selectDaemon = function (daemon) {
 					$scope.postData.daemon = daemon.name;
 					$scope.daemonJobsList = daemon.jobs;
 					$scope.selectedJobs = {};
 				};
-
+				
 				$scope.generateOrderArray = function () {
 					if ($scope.postData.processing === "sequential" && Object.keys($scope.selectedJobs).length > 0) {
 						var order = [];
@@ -623,13 +808,13 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						for (var i = 0; i < order.length; i++) {
 							order[i] = order[i].name;
 						}
-
+						
 						$scope.postData.order = order;
 					} else if ($scope.postData.processing === "parallel") {
 						$scope.postData.order = [];
 					}
 				};
-
+				
 				$scope.getSelectedJobs = function () {
 					$scope.postData.jobs = {};
 					for (var oneJob in $scope.selectedJobs) {
@@ -654,7 +839,7 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					}
 				};
-
+				
 				$scope.onSubmit = function () {
 					$scope.generateOrderArray();
 					$scope.getSelectedJobs();
@@ -679,14 +864,14 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 						}
 					});
 				};
-
+				
 				$scope.closeModal = function () {
 					$modalInstance.close();
 				};
 			}
 		});
 	};
-
+	
 	$scope.deleteDaemonGroupConfig = function (grpConf) {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "delete",
@@ -704,15 +889,15 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 			}
 		});
 	};
-
-	$scope.refreshListing = function (){
+	
+	$scope.refreshListing = function () {
 		if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 			$scope.listDaemons(function () {
 				$scope.listDaemonGroupConfig();
 			});
 		}
 	};
-
+	
 	if ($scope.access.daemons.list && $scope.access.daemonGroupConfig.list) {
 		$scope.listDaemons(function () {
 			$scope.listDaemonGroupConfig();
@@ -757,7 +942,7 @@ servicesApp.filter('statusDisplay', function () {
 		} else if (status === 0) {
 			return "Inactive";
 		}
-
+		
 		return "Unknown";
 	};
 });

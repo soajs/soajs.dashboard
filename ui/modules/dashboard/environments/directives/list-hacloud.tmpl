@@ -68,9 +68,14 @@
 						<label><input type="checkbox" value="true" ng-model="currentScope.confirmBranch" ng-click="confirmBranchSelection()">&nbsp;&nbsp;{{translation.understandTheRiskToDeploy[LANG]}}</label><br>
 						<br>
 					</div>
-					<div ng-if="currentScope.service.type !== 'nginx'">
+					<div>
+						<label>Deployment Mode</label>
+						<select class="form-control" ng-required="true" ng-options="mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
+						<br>
+					</div>
+					<div ng-if="currentScope.mode == 'replicated'">
 						<label>Replica Count</label>
-						<input type="number" class="form-control" ng-model="currentScope.replicaCount" ng-required="true" />
+						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" />
 						<br>
 					</div>
 					<div>
@@ -169,7 +174,7 @@
             <div class="entryBoxes">
                 <div ng-repeat="node in nodes.list" class="entryBox mb20">
                     <div class="header">
-                        {{node.name}}
+                        {{node.hostname}}
                         <span class="rightActions" ng-if="envCode === 'DASHBOARD' && !localDeployment">
                             <a href="" ng-if="access.hacloud.nodes.remove" ng-confirm-click="Are you sure you want to remove this node?" ng-click="removeNode(node.id)">
                                 <span class="icon icon-cross" tooltip="Remove Node"></span>
@@ -196,7 +201,6 @@
                                 <thead>
                                     <tr class="header">
                                         <td>IP Address</td>
-                                        <td>{{envPlatform|capitalizeFirst}} Port</td>
                                         <td>Role</td>
                                         <td>Availability</td>
                                         <td>Memory Resources</td>
@@ -206,12 +210,10 @@
                                 <tbody>
                                     <tr>
                                         <td>{{node.ip}}</td>
-                                        <td ng-if="envPlatform === 'docker'">{{node.dockerPort}}</td>
-										<td ng-if="envPlatform === 'kubernetes'">{{node.kubePort}}</td>
-                                        <td>{{node.role}}</td>
-                                        <td>{{node.availability}}</td>
+                                        <td>{{node.spec.role}}</td>
+                                        <td>{{node.spec.availability}}</td>
                                         <td>{{node.resources.memory | bytesToGbytes}} GB</td>
-                                        <td>{{node.resources.cpuCount}}</td>
+                                        <td>{{node.resources.cpus}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -265,7 +267,7 @@
 									<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 										<li>&nbsp;Deployment</li>
 										<li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(nginxHosts)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-										<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(nginxHosts[0].serviceName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+										<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(nginxHosts[0].id)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 									</ul>
 								</div>
 							</div>
@@ -320,7 +322,7 @@
                                             <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
                                                 <li>&nbsp;Deployment</li>
                                                 <li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(serviceInfo.ips)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-                                                <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(serviceInfo.ips[0].serviceName)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+                                                <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(serviceInfo.ips[0].id)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
                                                 <li>&nbsp;Maintenance</li>
                                                 <li><a href="" ng-click="reloadServiceRegistry('controller', serviceInfo.ips)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
                                                 <li><a href="" ng-click="awarenessStat('controller', serviceInfo.ips)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
@@ -385,7 +387,7 @@
 	                                        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 	                                            <li>&nbsp;Deployment</li>
 	                                            <li><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(versionInfo, version)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-	                                            <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(versionInfo[0].serviceName, version)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+	                                            <li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(versionInfo[0].id)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 	                                            <li>&nbsp;Maintenance</li>
 	                                            <li><a href="" ng-click="reloadServiceRegistry('service', versionInfo)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 	                                            <li><a href="" ng-click="loadServiceProvision('service', versionInfo)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>

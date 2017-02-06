@@ -7,6 +7,7 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 
 var hostBL = require("./lib/host.js");
+var cloudBL = require("./lib/cloud.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -15,9 +16,9 @@ var staticContentBL = require('./lib/staticContent.js');
 var gitAccountsBL = require("./lib/git.js");
 var environmentBL = require('./lib/environment.js');
 var cbBL = require("./lib/contentbuilder.js");
-
+var swaggerBL = require("./lib/swagger.js");
 var gitAccounts = require("./lib/git.js");
-var services = require("./lib/services.js");
+var services = require("./lib/services.js");// ja : unnecessary replication
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
@@ -409,83 +410,75 @@ service.init(function () {
 			BL.list(config, req.soajs, res);
 		});
 	});
-	service.get("/hosts/nginx/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.listNginx(config, req.soajs, res);
-		});
-	});
 
-	service.delete("/hosts/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.delete(config, req.soajs, res);
-		});
-	});
 	service.post("/hosts/maintenanceOperation", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
 			BL.maintenanceOperation(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployController", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			req.soajs.customData = {
-				type: 'controller'
-			};
-			BL.deployService(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployNginx", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.nginx(config, req.soajs, true, res);
-		});
-	});
-	service.post("/hosts/deployService", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, res);
-		});
-	});
-	service.post("/hosts/deployDaemon", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deployDaemon(config, req.soajs, res);
 		});
 	});
 
 	/**
 	 * High Availability Cloud features
 	 */
-	service.get("/hacloud/nodes/list", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.get("/cloud/nodes/list", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.listNodes(config, req.soajs, res);
 		});
 	});
-	service.post("/hacloud/nodes/add", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.post("/cloud/nodes/add", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.addNode(config, req.soajs, res);
 		});
 	});
-	service.delete("/hacloud/nodes/remove", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.delete("/cloud/nodes/remove", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.removeNode(config, req.soajs, res);
 		});
 	});
-	service.put("/hacloud/nodes/update", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.put("/cloud/nodes/update", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.updateNode(config, req.soajs, res);
 		});
 	});
 
-	service.put("/hacloud/services/scale", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.scaleHAService(config, req.soajs, res);
+	service.get("/cloud/services/list", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.listServices(config, req.soajs, res);
 		});
 	});
-	service.delete("/hacloud/services/delete", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.deleteHAService(config, req.soajs, res);
+	service.post("/cloud/services/soajs/deploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deployService(config, req.soajs, service.registry, res);
+		});
+	});
+	service.post("/cloud/services/custom/deploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deployCustomService(config, req.soajs, res);
+		});
+	});
+	service.put("/cloud/services/redeploy", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.redeployService(config, req.soajs, res);
+		});
+	});
+	service.put("/cloud/services/scale", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.scaleService(config, req.soajs, res);
+		});
+	});
+	service.delete("/cloud/services/delete", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.deleteService(config, req.soajs, res);
+		});
+	});
+	service.post("/cloud/services/maintenance", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
+			BL.maintenance(config, req.soajs, res);
 		});
 	});
 
-	service.get("/hacloud/services/instances/logs", function (req, res) {
-		initBLModel(req, res, hostBL, dbModel, function (BL) {
+	service.get("/cloud/services/instances/logs", function (req, res) {
+		initBLModel(req, res, cloudBL, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res);
 		});
 	});
@@ -511,6 +504,12 @@ service.init(function () {
 	service.get("/gitAccounts/getRepos", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
 			BL.getRepos(config, req, res);
+		});
+	});
+	// get any file content in a repo, in our case the yaml file
+	service.get("/gitAccounts/getYaml", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.getFile(config, req, res);
 		});
 	});
 	service.get("/gitAccounts/getBranches", function (req, res) {
@@ -540,6 +539,12 @@ service.init(function () {
 	service.post("/services/list", function (req, res) {
 		initBLModel(req, res, servicesBL, dbModel, function (BL) {
 			BL.list(config, req, res);
+		});
+	});
+	// get the env where a service is deployed
+	service.get("/services/env/list", function (req, res) {
+		initBLModel(req, res, hostBL, dbModel, function (BL) {
+			BL.listHostEnv(config, req.soajs, res);
 		});
 	});
 	/**
@@ -783,7 +788,26 @@ service.init(function () {
 			BL.update(config, req, res);
 		});
 	});
-
+	
+	// simulation api that mimics a service api behavior used by swagger feature.
+	// Api takes a yaml input and simulate the imfv validation of a requested service API
+	service.post("/swagger/simulate", function (req, res) {
+		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
+		 	BL.test(config, req, res);
+		});
+	});
+	
+	// swagger generate service API
+	// Api takes service information and yaml code as service api schema
+	// attempts to communicate remote git repo
+	// if no errors are found in neither code nor git communication
+	// it generates a folder schema for the service and pushes it to the remote api repo
+	service.post("/swagger/generate", function (req, res) {
+		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
+			BL.generate(config, req, res);
+		});
+	});
+	
 	/**
 	 * Service Start
 	 */
