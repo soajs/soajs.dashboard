@@ -46,10 +46,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			                    "list": []
 		                    }
 	                    };
-	                    
+
                         for (var j = 0; j < response.length; j++) {
                         	response[j].expanded = true;
-	                        
+
                         	var failures = 0;
 	                        response[j].tasks.forEach(function(oneTask){
 		                        if(['running','preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1){
@@ -57,13 +57,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			                        oneTask.hideIt = true;
 		                        }
 	                        });
-	
+
 	                        if(failures === response[j].tasks.length){
 		                        response[j].hideIt = true;
 	                        }
-	                        
+
 	                        response[j].failures = failures;
-	                        
+
                         	if(response[j].labels['soajs.content'] === 'true'){
                         		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
 			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
@@ -75,7 +75,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         			if(!currentScope.hosts.soajs.groups){
 				                        currentScope.hosts.soajs.groups = {};
 			                        }
-			                        
+
 			                        response[j]['color'] = 'green';
 			                        response[j]['healthy'] = true;
 			                        var groupName = response[j].labels['soajs.service.group'];
@@ -151,7 +151,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     function deleteService(currentScope, service) {
         var params = {
             env: currentScope.envCode,
-            serviceId: service.id
+            serviceId: service.id,
+			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : '')
         };
 
         overlayLoading.show();
@@ -703,7 +704,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 			else {
 				var autoRefreshPromise;
-				
+
 				var mInstance = $modal.open({
 					templateUrl: "logBox.html",
 					size: 'lg',
@@ -717,7 +718,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						$timeout(function () {
 							highlightMyCode()
 						}, 500);
-						
+
 						$scope.refreshLogs = function(){
 							console.log("again ....")
 							getSendDataFromServer(currentScope, ngDataApi, {
@@ -737,22 +738,22 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									$timeout(function () {
 										highlightMyCode()
 									}, 500);
-									
+
 									autoRefreshPromise = $timeout(function(){
 										$scope.refreshLogs();
 									}, 3000);
 								}
 							});
 						};
-						
+
 						$scope.ok = function () {
 							$modalInstance.dismiss('ok');
 						};
-						
+
 						$scope.refreshLogs();
 					}
 				});
-				
+
 				mInstance.result.then(function(){
 					//Get triggers when modal is closed
 					$timeout.cancel(autoRefreshPromise);

@@ -1,7 +1,7 @@
 "use strict";
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
-	
+
 	/**
 	 * Deploy New Environment controller + Nginx
 	 * @param currentScope
@@ -17,7 +17,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
-        
+
         formConfig.entries[0].entries[0].onAction = function(id, data, form){
         	if(data === 'global'){
         		form.entries[0].entries[1].disabled = true;
@@ -28,7 +28,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        form.entries[0].entries[1].required = true;
 	        }
         };
-		
+
 		formConfig.entries[1].entries[0].onAction = function(id, data, form){
 			if(data === 'global'){
 				form.entries[1].entries[1].disabled = true;
@@ -328,13 +328,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        }
 	        });
         }
-        
+
         function rollbackController(){
 	        var params = {
 		        env: currentScope.envCode,
 		        serviceId: currentScope.envCode.toLowerCase() + "-controller"
 	        };
-	
+
 	        getSendDataFromServer(currentScope, ngDataApi, {
 		        method: 'delete',
 		        routeName: '/dashboard/cloud/services/delete',
@@ -352,8 +352,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
      * @param currentScope
      */
     function deployNewService (currentScope) {
-        currentScope.deploymentModes = ['replicated', 'global'];
-        currentScope.mode='replicated';
+		if (currentScope.envPlatform.toLowerCase() === 'kubernetes') {
+			currentScope.deploymentModes = ['deployment', 'daemonset'];
+	        currentScope.mode='deployment';
+		}
+		else {
+			currentScope.deploymentModes = ['replicated', 'global'];
+	        currentScope.mode='replicated';
+		}
+
         var env = currentScope.envCode;
         var runningHosts = currentScope.hosts;
         $modal.open({
@@ -438,14 +445,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 };
 
                 $scope.selectService = function (service) {
-                	
+
                 	if(service.name === 'controller'){
 		                currentScope.versions = [1];
 	                }
 	                else{
 		                currentScope.versions = Object.keys(service.versions);
 	                }
-	                
+
                     if (currentScope.version) {
                         currentScope.version = "";
                     }
@@ -577,7 +584,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	                if(currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[service.group]){
 		                deployedServices = currentScope.hosts.soajs.groups[service.group].list;
 	                }
-	                
+
                     if(!service.group){
                     	if(service.name === 'controller'){
 		                    if(currentScope.hosts.soajs.groups){
@@ -675,7 +682,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	                        $timeout(function(){
 		                        currentScope.listServices();
 	                        }, 1500);
-	
+
 	                        $modalInstance.close();
                         }
                     });
@@ -788,25 +795,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             }
         });
     }
-	
+
 	/**
 	 * Deploy New Nginx
 	 * @param currentScope
 	 */
     function deployNewNginx(currentScope){
     	//todo: implement deploy new nginx functionality
-		
+
 		var formConfig = angular.copy(environmentsConfig.form.deploy);
 		var kubeConfig = environmentsConfig.deployer.kubernetes;
 		var envCode = currentScope.envCode;
-		
+
 		currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
 		if(currentScope.isKubernetes){
 			formConfig.entries[0].entries[2].min = kubeConfig.minPort;
 			formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
 			formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
 		}
-		
+
 		formConfig.entries[0].entries[0].onAction = function(id, data, form){
 			if(data === 'global'){
 				form.entries[0].entries[1].disabled = true;
@@ -817,7 +824,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				form.entries[0].entries[1].required = true;
 			}
 		};
-			
+
 		var customUIEntry = {
 			'name': 'useCustomUI',
 			'label': 'Do you want to bundle static content?',
@@ -859,7 +866,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 										response.branches.forEach(function (oneBranch) {
 											selectUIBranch.value.push({'v': oneBranch, 'l': oneBranch.name});
 										});
-										
+
 										formConfig.entries[0].entries.splice(6, 0, selectUIBranch);
 									}
 								});
@@ -881,7 +888,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			}
 		};
 		formConfig.entries[0].entries.splice(4, 0, customUIEntry);
-		
+
 		for (var i = 0; i < formConfig.entries[1].entries.length; i++) {
 			if (formConfig.entries[1].entries[i].name === 'defaultENVVAR') {
 				formConfig.entries[1].entries[i].value = formConfig.entries[1].entries[i].value.replace("%envName%", envCode);
@@ -889,7 +896,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			}
 		}
 		formConfig.entries.pop();
-		
+
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
@@ -908,7 +915,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
 						jQuery("#overlay .content").css("width", "40%").css("left", "30%");
 						overlay.show();
-						
+
 						var params = {
 							"env": envCode.toLowerCase(),
 							gitSource: {
@@ -935,7 +942,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			]
 		};
 		buildFormWithModal(currentScope, $modal, options);
-		
+
 		function listStaticContent (currentScope, cb) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				'method': 'post',
@@ -948,7 +955,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 			});
 		}
-		
+
 		function deployNginx(formData, params){
 			params.type = 'nginx';
 			delete params.name;
@@ -958,29 +965,29 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			params.deployConfig.replication = {
 				mode: formData.nginxDeploymentMode
 			};
-			
+
 			if (formData.nginxDeploymentMode === 'replicated') {
 				params.deployConfig.replication.replicas = formData.nginxCount;
 			}
-			
+
 			params.deployConfig.ports = [
 				{
 					isPublished: true,
 					published: formData.exposedPort
 				}
 			];
-			
+
 			if (formData.useCustomUI) {
 				formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
 				formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
-				
+
 				params.contentConfig.nginx.ui = {
 					id: formData.selectCustomUI._id,
 					branch: formData.selectUIBranch.name,
 					commit: formData.selectUIBranch.commit.sha
 				};
 			}
-			
+
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "post",
 				"routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -993,7 +1000,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				else {
 					currentScope.modalInstance.dismiss("ok");
 					overlay.hide(function(){
-						
+
 						currentScope.isDeploying = true;
 						$timeout(function () {
 							currentScope.listServices();
@@ -1002,7 +1009,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				}
 			});
 		}
-		
+
     }
 
     return {

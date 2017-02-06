@@ -1372,7 +1372,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -1394,7 +1394,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
@@ -1481,7 +1481,7 @@ module.exports = {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
 									"replicas": { "required": false, "type": "number" }
 								}
 							}
@@ -2823,6 +2823,13 @@ module.exports = {
 				},
 				"serviceId": {
 					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"mode": {
+					"source": ['query.mode'],
 					"required": true,
 					"validation": {
 						"type": "string"
