@@ -199,7 +199,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                 contentConfig: {}
             };
 
-            if (formData.controllerDeploymentMode === 'replicated') {
+            if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.controllers;
             }
 
@@ -284,7 +284,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        mode: formData.nginxDeploymentMode
 	        };
 
-	        if (formData.nginxDeploymentMode === 'replicated') {
+	        if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 		        params.deployConfig.replication.replicas = formData.nginxCount;
 	        }
 
@@ -354,11 +354,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
     function deployNewService (currentScope) {
 		if (currentScope.envPlatform.toLowerCase() === 'kubernetes') {
 			currentScope.deploymentModes = ['deployment', 'daemonset'];
-	        currentScope.mode='deployment';
+	        currentScope.mode= 'deployment';
 		}
 		else {
 			currentScope.deploymentModes = ['replicated', 'global'];
-	        currentScope.mode='replicated';
+	        currentScope.mode= 'replicated';
 		}
 
         var env = currentScope.envCode;
@@ -528,7 +528,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                 $scope.onSubmit = function () {
 
-                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || (currentScope.mode === "replicated" && !currentScope.number)))) {
+                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || (currentScope.mode === "replicated" || currentScope.mode === "replicated" && !currentScope.number)))) {
                         currentScope.message.danger = "Please select a service, branch, and number of instances";
                         $timeout(function () {
                             currentScope.message.danger = "";
@@ -966,7 +966,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				mode: formData.nginxDeploymentMode
 			};
 
-			if (formData.nginxDeploymentMode === 'replicated') {
+			if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 				params.deployConfig.replication.replicas = formData.nginxCount;
 			}
 
