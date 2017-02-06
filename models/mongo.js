@@ -72,11 +72,13 @@ function checkForMongo(soajs) {
 		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1, env: 1}, errorLogger);
 
 		//hosts
-		mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
-		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
-		mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
-		mongo.ensureIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
-
+	    if (!process.env.SOAJS_DEPLOY_HA) {
+		    mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
+		    mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, hostname: 1}, errorLogger);
+		    mongo.ensureIndex(hostsCollectionName, {env: 1, name: 1, ip: 1, hostname: 1}, errorLogger);
+		    mongo.ensureIndex(hostsCollectionName, {env: 1, type: 1, running: 1}, errorLogger);
+	    }
+	    
 		//oauth_urac
 		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, _id: 1}, errorLogger);
 		mongo.ensureIndex(oauthUracCollectionName, {tId: 1, userId: 1, _id: 1}, errorLogger);
