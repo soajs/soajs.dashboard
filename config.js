@@ -2540,6 +2540,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"mode": {
+					"source": ['body.mode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"ui": {
 					"source": ['body.ui'],
 					"required": false,

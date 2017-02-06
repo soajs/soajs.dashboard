@@ -85,7 +85,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					                        list: []
 				                        };
 			                        }
-			                        
+
 			                        if(response[j].labels['soajs.service.name'] === 'controller'){
 				                        currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
 				                        currentScope.controllers.push(response[j]);
@@ -105,7 +105,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		                        break;
 	                        }
                         }
-                        
+
 	                    step2();
                     }
                     else{
@@ -248,7 +248,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     function redeployService(currentScope, service) {
         var params = {
             env: currentScope.envCode,
-            serviceId: service.id
+            serviceId: service.id,
+			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : '')
         };
 
         overlayLoading.show();
