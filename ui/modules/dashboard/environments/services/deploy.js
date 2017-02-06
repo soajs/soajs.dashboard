@@ -528,7 +528,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
                 $scope.onSubmit = function () {
 
-                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || (currentScope.mode === "replicated" || currentScope.mode === "replicated" && !currentScope.number)))) {
+                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
                         currentScope.message.danger = "Please select a service, branch, and number of instances";
                         $timeout(function () {
                             currentScope.message.danger = "";
