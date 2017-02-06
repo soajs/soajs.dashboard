@@ -76,7 +76,7 @@
 						<label class="fieldMsg">Global mode deploys one replica of the service on each node.</label>
 						<label class="fieldMsg">Replica mode deploys the specified number of replicas based on the availability of resources.</label>
 					</div>
-					<div ng-if="currentScope.mode == 'replicated'">
+					<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
 						<label>Replica Count</label>
 						<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" />
 						<br>
@@ -270,7 +270,7 @@
 								<div class="entryBox mb20">
 									<div class="header table">
 										<span class="serviceLabelBox">{{service.labels['soajs.service.name']}}</span>
-										
+
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">
 											<button class="btn btn-default dropdown-toggle" type="button" id="nginxOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
