@@ -254,7 +254,15 @@
 					<br/>
                     <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
                     <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
-					<button class="btn btn-primary f-right" ng-click="listServices()"><span class="icon icon-loop2"></span>&nbsp;Refresh</button>
+					<div class="dropdown refreshDropDown f-right">
+						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="refreshDropdown">
+							<li ng-repeat="oneInterval in refreshIntervals"><a href="" ng-click="changeInterval(oneInterval)">{{oneInterval.l}}</a></li>
+						</ul>
+					</div>
 					<br/><br/>
 					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
 						<fieldset class="groupFieldset" ng-repeat="service in list.list">
