@@ -133,6 +133,7 @@ ul {
     padding-right: 2px;
     color: white;
     border-radius: 5px;
+    white-space: nowrap;
 }
 
 .ctrlBoxHealthy {

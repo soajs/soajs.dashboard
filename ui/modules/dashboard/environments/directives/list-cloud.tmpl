@@ -247,7 +247,7 @@
 				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
 			</div>
 			<tabset ng-if="hosts">
-				<tab ng-repeat="(groupName, list) in hosts" heading="{{list.label}}">
+				<tab ng-repeat="(groupName, list) in hosts track by $index" heading="{{list.label}}">
 					<br/>
                     <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
                     <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
