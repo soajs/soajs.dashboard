@@ -403,16 +403,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			else {
 				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
 				response.forEach(function(oneRegistry){
-					formConfig.entries[0].tabs.push({
-						'label': oneRegistry.id,
-						'entries': [
-							{
-								'name': service.name,
-								'type': 'jsoneditor',
-								'height': '500px',
-								"value": oneRegistry.response
-							}
-						]
+					service.tasks.forEach(function(oneTask){
+						if(oneTask.id === oneRegistry.id && oneTask.status.state === 'running'){
+							formConfig.entries[0].tabs.push({
+								'label': oneRegistry.id,
+								'entries': [
+									{
+										'name': service.name,
+										'type': 'jsoneditor',
+										'height': '500px',
+										"value": oneRegistry.response
+									}
+								]
+							});
+						}
 					});
 				});
 
@@ -460,16 +464,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
 			    response.forEach(function(oneRegistry){
-				    formConfig.entries[0].tabs.push({
-					    'label': oneRegistry.id,
-					    'entries': [
-						    {
-							    'name': service.name,
-							    'type': 'jsoneditor',
-							    'height': '500px',
-							    "value": oneRegistry.response
-						    }
-					    ]
+				    service.tasks.forEach(function(oneTask) {
+					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+						    formConfig.entries[0].tabs.push({
+							    'label': oneRegistry.id,
+							    'entries': [
+								    {
+									    'name': service.name,
+									    'type': 'jsoneditor',
+									    'height': '500px',
+									    "value": oneRegistry.response
+								    }
+							    ]
+						    });
+					    }
 				    });
 			    });
 
@@ -516,16 +524,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
 			    response.forEach(function(oneRegistry){
-				    formConfig.entries[0].tabs.push({
-					    'label': oneRegistry.id,
-					    'entries': [
-						    {
-							    'name': service.name,
-							    'type': 'jsoneditor',
-							    'height': '500px',
-							    "value": oneRegistry.response
-						    }
-					    ]
+				    service.tasks.forEach(function(oneTask) {
+					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+						    formConfig.entries[0].tabs.push({
+							    'label': oneRegistry.id,
+							    'entries': [
+								    {
+									    'name': service.name,
+									    'type': 'jsoneditor',
+									    'height': '500px',
+									    "value": oneRegistry.response
+								    }
+							    ]
+						    });
+					    }
 				    });
 			    });
 
@@ -572,16 +584,20 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
 			    response.forEach(function(oneRegistry){
-				    formConfig.entries[0].tabs.push({
-					    'label': oneRegistry.id,
-					    'entries': [
-						    {
-							    'name': service.name,
-							    'type': 'jsoneditor',
-							    'height': '500px',
-							    "value": oneRegistry.response
-						    }
-					    ]
+				    service.tasks.forEach(function(oneTask) {
+					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+						    formConfig.entries[0].tabs.push({
+							    'label': oneRegistry.id,
+							    'entries': [
+								    {
+									    'name': service.name,
+									    'type': 'jsoneditor',
+									    'height': '500px',
+									    "value": oneRegistry.response
+								    }
+							    ]
+						    });
+					    }
 				    });
 			    });
 
