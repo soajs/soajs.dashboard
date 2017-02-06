@@ -106,7 +106,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	                        }
                         }
                         
-                        console.log(currentScope.hosts.soajs);
 	                    step2();
                     }
                     else{
