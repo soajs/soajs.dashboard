@@ -3,6 +3,7 @@ var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
 var fs = require('fs');
+var shell = require('shelljs');
 
 var soajs = require('soajs');
 var Mongo = soajs.mongo;
@@ -56,6 +57,31 @@ function executeMyRequest(params, apiPath, method, cb) {
             return cb(null, body);
         });
     }
+}
+
+function getService(soajsauth, options, cb) {
+    var params = {
+        headers: {
+            soajsauth: soajsauth
+        },
+        qs: {
+            env: options.env
+        }
+    };
+    executeMyRequest(params, "cloud/services/list", "get", function (body) {
+        assert.ifError(body.errors);
+        if (!options.serviceName) return cb(body);
+
+        var services = body.data, service = {};
+        for (var i = 0; i < services.length; i++) {
+            if (services[i].labels['soajs.service.name'] === options.serviceName) {
+                service = services[i];
+                break;
+            }
+        }
+
+        return cb(service);
+    });
 }
 
 function deleteService(soajsauth, options, cb) {
@@ -300,6 +326,12 @@ describe("testing hosts deployment", function () {
         });
     });
 
+    before("Perform cleanup of any previous services deployed", function (done) {
+        console.log ('Deleting previous deployments ...');
+        shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
+        done();
+    });
+
     after(function (done) {
         mongo.closeDb();
 	    done();
@@ -536,23 +568,8 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
-                //list services to get id of the new one
-                params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    qs: {
-                        env: 'dev'
-                    }
-                };
-                executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    //only one service exist
-                    var serviceId = body.data[0].id;
-                    var serviceMode = body.data[0].labels['soajs.service.mode'];
-
-                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                getService(soajsauth, {env: 'dev', serviceName: 'controller'}, function (service) {
+                    deleteService(soajsauth, {env: 'DEV', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -680,27 +697,8 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
-                params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    qs: {
-                        env: 'dev'
-                    }
-                };
-                executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    //only one service exist
-                    var serviceId, serviceMode;
-                    for (var i = 0; i < body.data.length; i++) {
-                        if (body.data[i].labels['soajs.service.name'] === 'urac') {
-                            serviceId = body.data[i].id;
-                            serviceMode = body.data[i].labels['soajs.service.mode'];
-                        }
-                    }
-
-                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                getService(soajsauth, {env: 'dev', serviceName: 'urac'}, function (service) {
+                    deleteService(soajsauth, {env: 'DEV', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -835,29 +833,8 @@ describe("testing hosts deployment", function () {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
-
-
-                params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    qs: {
-                        env: 'dev'
-                    }
-                };
-                executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    //only one service exist
-                    var serviceId, serviceMode;
-                    for (var i = 0; i < body.data.length; i++) {
-                        if (body.data[i].labels['soajs.service.name'] === 'helloDaemon') {
-                            serviceId = body.data[i].id;
-                            serviceMode = body.data[i].labels['soajs.service.mode'];
-                        }
-                    }
-
-                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                getService(soajsauth, {env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+                    deleteService(soajsauth, {env: 'DEV', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -909,29 +886,8 @@ describe("testing hosts deployment", function () {
                     assert.ok(body.result);
                     assert.ok(body.data);
 
-
-
-                    params = {
-                        headers: {
-                            soajsauth: soajsauth
-                        },
-                        qs: {
-                            env: 'dev'
-                        }
-                    };
-                    executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                        assert.ok(body.result);
-                        assert.ok(body.data);
-                        //only one service exist
-                        var serviceId, serviceMode;
-                        for (var i = 0; i < body.data.length; i++) {
-                            if (body.data[i].labels['soajs.service.name'] === 'helloDaemon') {
-                                serviceId = body.data[i].id;
-                                serviceMode = body.data[i].labels['soajs.service.mode'];
-                            }
-                        }
-
-                        deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                    getService(soajsauth, {env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+                        deleteService(soajsauth, {env: 'DEV', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 
@@ -1220,27 +1176,8 @@ describe("testing hosts deployment", function () {
         });
 
         it("success - will delete deployed service", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                qs: {
-                    env: 'dev'
-                }
-            };
-            executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                assert.ok(body.result);
-                assert.ok(body.data);
-                //only one service exist
-                var serviceId, serviceMode;
-                for (var i = 0; i < body.data.length; i++) {
-                    if (body.data[i].labels['soajs.service.name'] === 'gc_myservice') {
-                        serviceId = body.data[i].id;
-                        serviceMode = body.data[i].labels['soajs.service.mode'];
-                    }
-                }
-
-                deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+            getService(soajsauth, {env: 'dev', serviceName: 'gc_myservice'}, function (service) {
+                deleteService(soajsauth, {env: 'dev', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
 
@@ -1297,28 +1234,8 @@ describe("testing hosts deployment", function () {
         });
 
         after("delete nginx service", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                qs: {
-                    env: 'dev'
-                }
-            };
-            executeMyRequest(params, "cloud/services/list", "get", function (body) {
-                assert.ok(body.result);
-                assert.ok(body.data);
-                //only one service exist
-                var serviceId, serviceMode;
-                for (var i = 0; i < body.data.length; i++) {
-                    if (body.data[i].labels['soajs.service.name'] === 'nginx') {
-                        serviceId = body.data[i].id;
-                        serviceMode = body.data[i].labels['soajs.service.mode'];
-                        break;
-                    }
-                }
-
-                deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+            getService(soajsauth, {env: 'dev', serviceName: 'nginx'}, function (service) {
+                deleteService(soajsauth, {env: 'DEV', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
 
