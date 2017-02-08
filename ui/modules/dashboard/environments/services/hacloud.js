@@ -64,7 +64,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 	                        response[j].failures = failures;
 
-                        	if(response[j].labels['soajs.content'] === 'true'){
+                        	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
                         		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
 			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
 		                        }
