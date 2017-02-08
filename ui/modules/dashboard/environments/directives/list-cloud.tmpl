@@ -269,7 +269,7 @@
 							<div class="entryBoxes" ng-show="service.expanded">
 								<div class="entryBox mb20">
 									<div class="header table">
-										<span class="serviceLabelBox">{{service.labels['soajs.service.name']}}</span>
+										<span class="serviceLabelBox">{{service.labels['soajs.service.name'] || service.name}}</span>
 
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">

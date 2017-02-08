@@ -770,7 +770,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 		function remove_special(str) {
 			if (!str) {
-				return ''; //in case container has no logs, return empty string
+				return 'No logs found for this instance'; //in case container has no logs, return message to display
 			}
 			var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
 				/[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
