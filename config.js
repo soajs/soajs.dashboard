@@ -1416,7 +1416,7 @@ module.exports = {
 					}
 				},
 				"name": {
-					"required": false,
+					"required": true,
 					"source": ['body.name'],
 					"validation": {
 						"type": "string"
@@ -1441,7 +1441,7 @@ module.exports = {
 					}
 				},
 				"gitSource": {
-					"required": true,
+					"required": false,
 					"source": ['body.gitSource'],
 					"validation": {
 						"type": "object",
@@ -1500,7 +1500,7 @@ module.exports = {
 								"properties": {
 									"gc": { "required": true, "type": "boolean" },
 									"gcName": { "required": true, "type": "string" },
-									"gcVersion": { "required": true, "type": "string" }
+									"gcVersion": { "required": true, "type": "number" }
 								}
 							},
 							"daemon": {

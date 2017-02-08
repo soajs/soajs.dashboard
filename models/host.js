@@ -19,33 +19,6 @@ var methods = {
 		model.findEntry(soajs, opts, cb);
 	},
 
-	"getDashboardEnvironment": function (soajs, model, cb) {
-		var opts = {
-			collection: envColl,
-			conditions: {code: "DASHBOARD"}
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"updateDockerDeployerNodes": function (soajs, model, action, node, cb) {
-		var opts = {
-			collection: envColl,
-			conditions: {},
-			fields: {},
-			options: {multi: true}
-		};
-
-		if (action === 'add') {
-			opts.fields.$push = { 'deployer.container.docker.remote.nodes': node };
-		}
-		else if (action === 'remove') {
-			opts.fields.$pull = { 'deployer.container.docker.remote.nodes': node };
-		}
-
-		model.updateEntry(soajs, opts, cb);
-	},
-
 	/**
 	 * HOSTS COLLECTION
 	 */
@@ -135,63 +108,8 @@ var methods = {
 		};
 
 		model.findEntry(soajs, opts, cb);
-	},
-
-	"getGitAccounts": function (soajs, model, repoName, cb) {
-		var opts = {
-			collection: gitColl,
-			conditions: { "repos.name": repoName },
-			fields: {
-				provider: 1,
-				domain: 1,
-				token: 1,
-				'repos.$': 1
-			}
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	"getStaticContent": function (soajs, model, id, cb) {
-		var opts = {
-			collection: staticColl,
-			conditions: { '_id': id }
-		};
-
-		model.findEntry(soajs, opts, cb);
-	},
-
-	/**
-	 * ANALYTICS COLLECTION
-	 */
-
-	 "getEnvAnalyticsRecord": function (soajs, model, env, cb) {
-		 var opts = {
-			 collection: analyticsColl,
-			 conditions: { 'json.env': env.toLowerCase() }
-		 };
-
-		 model.findEntry(soajs, opts, cb);
-	 },
-
-	 "updateAnalyticsRecord": function (soajs, model, env, update, cb) {
-		 var opts = {
-			 collection: analyticsColl,
-			 conditions: { 'json.env': env.toLowerCase() },
-			 fields: update
-		 };
-
-		model.updateEntry(soajs, opts, cb);
-	},
-
-	"getAnalyticsRecords": function (soajs, model, type, cb) {
-		var opts = {
-			collection: analyticsColl,
-			conditions: { type: type }
-		};
-
-		model.findEntries(soajs, opts, cb);
 	}
+
 };
 
 module.exports = methods;

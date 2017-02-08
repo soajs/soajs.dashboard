@@ -231,7 +231,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-	
+
 		describe("add environment tests", function () {
 			it("success - will add environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
@@ -2183,7 +2183,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-			
+
 			it("success - will get the env list in case the service has one env", function (done) {
 			executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
 				assert.ok(body.result);
@@ -2191,7 +2191,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				done();
 			});
 		});
-			
+
 			it("fail - service doesn't exist", function (done) {
 				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
@@ -2374,114 +2374,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("fail - getting service logs - type is not manual", function (done) {
-				var params = {
-					"form": {
-						"serviceName": "dashboard",
-						"servicePort": 4003,
-						"hostname": "dashboard",
-						"operation": "hostLogs",
-						"env": "dev"
-					}
-				};
-				executeMyRequest(params, "hosts/maintenanceOperation", "post", function (body) {
-					assert.ok(!body.result);
-					assert.deepEqual(body.errors.details[0], {"code": 603, "message": errorCodes[603]});
-					done();
-				});
-			});
-
-			it("Need to change deploy type back to manual", function (done) {
-				var params = {
-					qs: {
-						env: 'DEV'
-					},
-					form: {
-						deployerType: 'manual'
-					}
-				};
-
-				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
-
-			it("fail - getting service logs", function (done) {
-				var params = {
-					"form": {
-						"serviceName": "dashboard",
-						"servicePort": 4003,
-						"hostname": "dashboard",
-						"operation": "hostLogs",
-						"env": "dev"
-					}
-				};
-				executeMyRequest(params, "hosts/maintenanceOperation", "post", function (body) {
-					assert.ok(!body.result);
-					assert.deepEqual(body.errors.details[0], {"code": 619, "message": errorCodes[619]});
-					done();
-				});
-			});
-
-		});
-
-		describe("deployment manual tests", function () {
-			it("deploy controller", function (done) {
-				executeMyRequest({
-					'qs': {},
-					form: {
-						'envCode': 'DEV',
-						'owner': 'soajs',
-						'repo': 'soajs.controller',
-						'imagePrefix': 'soajsorg',
-						'branch': 'develop',
-						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
-						'number': 1
-					}
-				}, 'hosts/deployController', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {
-						"code": 618,
-						"message": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."
-					});
-					done();
-				});
-			});
-
-			it("deploy service", function (done) {
-				executeMyRequest({
-					'form': {
-						'envCode': 'DEV',
-						'owner': 'soajs',
-						'repo': 'soajs.urac',
-						'imagePrefix': 'soajsorg',
-						'branch': 'develop',
-						'commit': '2f69289334e76f896d08bc7a71ac757aa55cb20f',
-					}
-				}, 'hosts/deployService', 'post', function (body) {
-					assert.deepEqual(body.errors.details[0], {
-						"code": 618,
-						"message": "The Deployer of this environment is configured to be manual. Deploy and Start the services then refresh this section."
-					});
-					done();
-				});
-			});
-		});
-
-		describe("remove Hosts", function () {
-			it('success - will remove host', function (done) {
-				executeMyRequest({
-					qs: {
-						'env': 'dev',
-						'hostname': hosts[0].hostname,
-						'name': hosts[0].name,
-						'ip': hosts[0].ip
-					}
-				}, 'hosts/delete', 'delete', function (body) {
-					assert.ok(body.data);
-					done();
-				});
-			});
 		});
 	});
 

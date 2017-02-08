@@ -65,86 +65,57 @@ function deleteService(soajsauth, options, cb) {
         },
         "qs": {
             env: options.env,
-            name: options.name
+            serviceId: options.id,
+            mode: options.mode
         }
     };
-    return executeMyRequest(params, "hacloud/services/delete", 'delete', cb);
+    return executeMyRequest(params, "cloud/services/delete", 'delete', cb);
 }
 
 describe("testing hosts deployment", function () {
-    var soajsauth, containerInfo, dockerNodeId;
+    var soajsauth, containerInfo;
     before(function (done) {
 	    process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
 	    console.log("***************************************************************");
 	    console.log("* Setting SOAJS_ENV_WORKDIR for test mode as: ", process.env.APP_DIR_FOR_CODE_COVERAGE);
 	    console.log("***************************************************************");
-        mongo.remove('docker', {}, function (error) {
+
+        var options = {
+            uri: 'http://localhost:4001/login',
+            headers: {
+                'Content-Type': 'application/json',
+                key: extKey
+            },
+            body: {
+                "username": "user1",
+                "password": "123456"
+            },
+            json: true
+        };
+        request.post(options, function (error, response, body) {
             assert.ifError(error);
+            assert.ok(body);
+            soajsauth = body.soajsauth;
 
-            var options = {
-                uri: 'http://localhost:4001/login',
-                headers: {
-                    'Content-Type': 'application/json',
-                    key: extKey
-                },
-                body: {
-                    "username": "user1",
-                    "password": "123456"
-                },
-                json: true
-            };
-            request.post(options, function (error, response, body) {
-                assert.ifError(error);
-                assert.ok(body);
-                soajsauth = body.soajsauth;
-
-                var nodeRecord = {
-                    "recordType" : "node",
-                    "id" : "",
-                    "name" : "docker-test",
-                    "ip" : "127.0.0.1",
-                    "dockerPort" : 2376,
-                    "swarmPort" : 2377,
-                    "availability" : "active",
-                    "role" : "manager",
-                    "resources" : {
-                        "cpuCount" : 1,
-                        "memory" : 2094673920
-                    },
-                    "tokens" : {
-                        "worker" : "SWMTKN-1-79fle0f1tsxbyuoyurl4apt3s",
-                        "manager" : "SWMTKN-1-8z861ondptw0ajl19qqpnbry2"
+            var validDeployerRecord = {
+                "type" : "container",
+                "selected" : "container.docker.local",
+                "container" : {
+                    "docker" : {
+                        "local" : {},
+                        "remote" : {}
                     }
-                };
+                }
+            };
 
-                mongo.insert("docker", nodeRecord, function (error) {
-                    assert.ifError(error);
-
-                    var validDeployerRecord = {
-                		"type" : "container",
-                		"selected" : "container.docker.local",
-                		"container" : {
-                			"docker" : {
-                				"local" : {
-                					"socketPath" : "/var/run/docker.sock"
-                				},
-                				"remote" : {
-                					"nodes" : ["docker-mock"]
-                				}
-                			}
-                		}
-                	};
-
-                    mongo.update("environment", {}, {
-                        "$set": {
-                            "deployer": validDeployerRecord,
-                            "profile": __dirname + "/../profiles/profile.js"
-                        }
-                    }, {multi: true}, function (error) {
-                        assert.ifError(error);
-                        done();
-                    });
-                });
+            mongo.update("environment", {}, {
+                "$set": {
+                    "deployer": validDeployerRecord,
+                    "profile": __dirname + "/../profiles/profile.js"
+                }
+            }, {multi: true}, function (error) {
+                assert.ifError(error);
+                done();
             });
         });
     });
@@ -161,12 +132,8 @@ describe("testing hosts deployment", function () {
                 "selected" : "container.docker.local",
                 "container" : {
                     "docker" : {
-                        "local" : {
-                            "socketPath" : "/var/run/docker.sock"
-                        },
-                        "remote" : {
-                            "nodes" : ["docker-mock"]
-                        }
+                        "local" : {},
+                        "remote" : {}
                     }
                 }
             },
@@ -176,7 +143,7 @@ describe("testing hosts deployment", function () {
                     "dash_cluster": {
                         "servers": [
                             {
-                                "host": "192.168.99.107",
+                                "host": "127.0.0.1",
                                 "port": 27017
                             }
                         ],
@@ -289,7 +256,7 @@ describe("testing hosts deployment", function () {
         });
     });
 
-    before('Activate swarm mode for local docker engine', function (done) {
+    before('Activate swarm mode for local docker engine and create overlay network', function (done) {
         var params = {
             method: 'POST',
             uri: 'http://unix:/var/run/docker.sock:/swarm/init',
@@ -306,35 +273,29 @@ describe("testing hosts deployment", function () {
 
         request(params, function (error, response, nodeId) {
             assert.ifError(error);
-            mongo.update('docker', {recordType: 'node', name: 'docker-test'}, {$set: {id: nodeId}}, function (error) {
-                assert.ifError(error);
-                dockerNodeId = nodeId;
 
-                params = {
-                    method: 'POST',
-                    uri: 'http://unix:/var/run/docker.sock:/networks/create',
-                    json: true,
-                    headers: {
-                        Host: '127.0.0.1'
-                    },
-                    body: {
-                        "Name": 'soajsnet',
-                        "Driver": 'overlay',
-                        "Internal": false,
-                        "CheckDuplicate": false,
-                        "EnableIPv6": false,
-                        "IPAM": {
-                            "Driver": 'default'
-                        }
+            params = {
+                method: 'POST',
+                uri: 'http://unix:/var/run/docker.sock:/networks/create',
+                json: true,
+                headers: {
+                    Host: '127.0.0.1'
+                },
+                body: {
+                    "Name": 'soajsnet',
+                    "Driver": 'overlay',
+                    "Internal": false,
+                    "CheckDuplicate": false,
+                    "EnableIPv6": false,
+                    "IPAM": {
+                        "Driver": 'default'
                     }
-                };
+                }
+            };
 
-                request(params, function (error, response, body) {
-                    assert.ifError(error);
-
-                    process.env.SOAJS_TEST = true;
-                    done();
-                });
+            request(params, function (error, response, body) {
+                assert.ifError(error);
+                done();
             });
         });
     });
@@ -355,7 +316,7 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/list", "get", function (body) {
+                executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
                     assert.equal(body.data.length, 1);
@@ -373,16 +334,16 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     form: {
-                        env: 'DASHBOARD',
+                        env: 'dashboard',
                         host: '192.168.99.100',
                         port: 2376,
                         role: 'manager'
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/add", "post", function (body) {
+                executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 801, 'message': errorCodes[801]});
+                    assert.deepEqual(body.errors.details[0], {'code': 540, 'message': 'Unable to retrieve the docker swarm deployer'});
                     done();
                 });
             });
@@ -393,13 +354,13 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     form: {
-                        env: 'DASHBOARD',
+                        env: 'dashboard',
                         port: 2376,
                         role: 'manager'
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/add", "post", function (body) {
+                executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: host"});
                     done();
@@ -409,6 +370,22 @@ describe("testing hosts deployment", function () {
         });
 
         describe("testing update cluster node", function () {
+            var currentNode = {};
+            before("get node information", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    }
+                };
+
+                executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    currentNode = body.data[0];
+                    done();
+                });
+            });
 
             it("fail - invalid update option provided", function (done) {
                 var params = {
@@ -416,8 +393,8 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     qs: {
-                        env: 'DASHBOARD',
-                        nodeId: dockerNodeId
+                        env: 'dashboard',
+                        nodeId: currentNode.id
                     },
                     form: {
                         type: 'hostname',
@@ -425,21 +402,21 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/update", "put", function (body) {
+                executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 173, 'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"});
                     done();
                 });
             });
 
-            it("fail - invalid operation, updating node in local deployment mode", function (done) {
+            it("fail - invalid operation, trying to demote last manager node in cluster", function (done) {
                 var params = {
                     headers: {
                         soajsauth: soajsauth
                     },
                     qs: {
-                        env: 'DASHBOARD',
-                        nodeId: dockerNodeId
+                        env: 'dashboard',
+                        nodeId: currentNode.id
                     },
                     form: {
                         type: 'role',
@@ -447,15 +424,31 @@ describe("testing hosts deployment", function () {
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/update", "put", function (body) {
+                executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 823, 'message': errorCodes[823]});
+                    assert.deepEqual(body.errors.details[0], {'code': 546, 'message': 'Unable to update the node in the docker swarm'});
                     done();
                 });
             });
         });
 
         describe ("testing delete cluster node", function () {
+            var currentNode = {};
+            before("get node information", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    }
+                };
+
+                executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    currentNode = body.data[0];
+                    done();
+                });
+            });
 
             it("fail - invalid node id provided", function (done) {
                 var params = {
@@ -463,32 +456,32 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     qs: {
-                        env: 'DASHBOARD',
+                        env: 'dashboard',
                         nodeId: 'aacrh437t'
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/remove", "delete", function (body) {
+                executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 803, 'message': errorCodes[803]});
+                    assert.deepEqual(body.errors.details[0], {'code': 545, 'message': 'Unable to delete the node from the docker swarm'});
                     done();
                 });
             });
 
-            it("fail - invalid operating - trying to delete a manager node", function (done) {
+            it("fail - invalid operating, trying to delete a manager node in cluster", function (done) {
                 var params = {
                     headers: {
                         soajsauth: soajsauth
                     },
                     qs: {
-                        env: 'DASHBOARD',
-                        nodeId: dockerNodeId
+                        env: 'dashboard',
+                        nodeId: currentNode.id
                     }
                 };
 
-                executeMyRequest(params, "hacloud/nodes/remove", "delete", function (body) {
+                executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
                     assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 821, 'message': errorCodes[821]});
+                    assert.deepEqual(body.errors.details[0], {'code': 545, 'message': 'Unable to delete the node from the docker swarm'});
                     done();
                 });
             });
@@ -518,31 +511,53 @@ describe("testing hosts deployment", function () {
                 headers: {
                     soajsauth: soajsauth
                 },
-                "form": {
-                    "number": 1,
-                    "envCode": "DEV",
-                    "owner": "soajs",
-                    "repo": "soajs.controller",
-                    "imagePrefix": "soajsorg",
-                    "branch": "develop",
-                    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                    "variables": [
-                        "TEST_VAR=mocha"
-                    ],
-                    "name": "controller",
-                    "haService": true,
-                    "haCount": 1
+                form: {
+                    env: 'dev',
+                    type: 'service',
+                    name: 'controller',
+                    gitSource: {
+                        owner: 'soajs',
+                        repo: 'soajs.controller',
+                        branch: 'develop',
+                        commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                    },
+                    deployConfig: {
+                        useLocalSOAJS: true,
+                        memoryLimit: 209715200,
+                        imagePrefix: 'soajsorg',
+                        replication: {
+                            mode: 'replicated',
+                            replicas: 1
+                        }
+                    }
                 }
             };
-            executeMyRequest(params, "hosts/deployController", "post", function (body) {
+            executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
 
-                deleteService(soajsauth, {env: 'DEV', name: 'dev-controller-v1'}, function (body) {
+                //list services to get id of the new one
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'dev'
+                    }
+                };
+                executeMyRequest(params, "cloud/services/list", "get", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
+                    //only one service exist
+                    var serviceId = body.data[0].id;
+                    var serviceMode = body.data[0].labels['soajs.service.mode'];
 
-                    done();
+                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+
+                        done();
+                    });
                 });
             });
         });
@@ -555,23 +570,28 @@ describe("testing hosts deployment", function () {
 				    headers: {
 					    soajsauth: soajsauth
 				    },
-				    "form": {
-					    "number": 1,
-					    "envCode": "DEV",
-					    "owner": "soajs",
-					    "repo": "soajs.controller",
-                        "imagePrefix": "soajsorg",
-					    "branch": "develop",
-					    "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-					    "variables": [
-						    "TEST_VAR=mocha"
-					    ],
-                        "name": "controller",
-                        "haService": true,
-                        "haCount": 1
-				    }
+                    form: {
+                        env: 'dev',
+                        type: 'service',
+                        name: 'controller',
+                        gitSource: {
+                            owner: 'soajs',
+                            repo: 'soajs.controller',
+                            branch: 'develop',
+                            commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                        },
+                        deployConfig: {
+                            useLocalSOAJS: true,
+                            memoryLimit: 209715200,
+                            imagePrefix: 'soajsorg',
+                            replication: {
+                                mode: 'replicated',
+                                replicas: 1
+                            }
+                        }
+                    }
 			    };
-			    executeMyRequest(params, "hosts/deployController", "post", function (body) {
+			    executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				    assert.ok(body.result);
 				    assert.ok(body.data);
 
@@ -588,21 +608,38 @@ describe("testing hosts deployment", function () {
                     headers: {
                         soajsauth: soajsauth
                     },
-                    "form":{
-                        "envCode": "DEV",
-                        "imagePrefix": "soajsorg",
-                        "nginxConfig": {
-                            "customUIId": record._id.toString(),
-                            "branch": "develop",
-                            "commit": "ac23581e16511e32e6569af56a878c943e2725bc"
+                    "form": {
+                        env: 'dev',
+                        type: 'nginx',
+                        name: 'nginx',
+                        deployConfig: {
+                            memoryLimit: 209715200,
+                            imagePrefix: 'soajsorg',
+                            replication: {
+                                mode: 'replicated',
+                                replicas: 1
+                            },
+                            ports: [
+                                {
+                                    isPublished: true,
+                                    target: 80,
+                                    published: 80
+                                }
+                            ]
                         },
-                        "exposedPort": 8880,
-                        "haService": true,
-                        "haCount": 1
+                        contentConfig: {
+                            nginx: {
+                                ui: {
+                                    id: record._id.toString(),
+                                    branch: 'develop',
+                                    commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
+                                }
+                            }
+                        }
                     }
                 };
 
-                executeMyRequest(params, "hosts/deployNginx", "post", function(body) {
+                executeMyRequest(params, "cloud/services/soajs/deploy", "post", function(body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
                     done();
@@ -614,36 +651,56 @@ describe("testing hosts deployment", function () {
     });
 
     describe("testing service deployment", function () {
-        it("success - deploy 1 core service", function (done) {
+        it("success - deploy 1 core service, global mode", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
                 },
                 "form": {
-                    "name": "urac",
-                    "envCode": "DEV",
-                    "owner": "soajs",
-                    "repo": "soajs.urac",
-                    "imagePrefix": "soajsorg",
-                    "version": 2,
-                    "branch": "develop",
-                    "commit": "9947fa88c7cea09a8cf744baa0ffeb3893cdd03d",
-                    "variables": [
-                        "TEST_VAR=mocha"
-                    ],
-                    "haService": true,
-                    "haCount": 1
+                    env: 'dev',
+                    type: 'service',
+                    name: 'urac',
+                    gitSource: {
+                        owner: 'soajs',
+                        repo: 'soajs.urac',
+                        branch: 'develop',
+                        commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                    },
+                    deployConfig: {
+                        useLocalSOAJS: true,
+                        memoryLimit: 209715200,
+                        imagePrefix: 'soajsorg',
+                        replication: {
+                            mode: 'global'
+                        }
+                    }
                 }
             };
-            executeMyRequest(params, "hosts/deployService", "post", function (body) {
+            executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                mongo.findOne("docker", {"serviceName": "dev-urac-v2"}, function (error, oneContainerRecord) {
-                    assert.ifError(error);
-                    assert.ok(oneContainerRecord);
-                    containerInfo = oneContainerRecord;
 
-                    deleteService(soajsauth, {env: 'DEV', name: 'dev-urac-v2'}, function (body) {
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'dev'
+                    }
+                };
+                executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    //only one service exist
+                    var serviceId, serviceMode;
+                    for (var i = 0; i < body.data.length; i++) {
+                        if (body.data[i].labels['soajs.service.name'] === 'urac') {
+                            serviceId = body.data[i].id;
+                            serviceMode = body.data[i].labels['soajs.service.mode'];
+                        }
+                    }
+
+                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
@@ -663,23 +720,37 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     "form": {
-                        "name": "gc_articles",
-                        "gcName": gcRecord.name,
-                        "gcVersion": gcRecord.v,
-                        "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.gcs",
-                        "imagePrefix": "soajsorg",
-                        "branch": "develop",
-                        "commit": "2f69289334e76f896d08bc7a71ac757aa55cb20f",
-                        "variables": [
-                            "TEST_VAR=mocha"
+                        env: 'dev',
+                        type: 'service',
+                        name: 'gc_articles',
+                        variables: [
+                            'TEST=true'
                         ],
-                        "haService": true,
-                        "haCount": 1
+                        gitSource: {
+                            owner: 'soajs',
+                            repo: 'soajs.gcs',
+                            branch: 'develop',
+                            commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                        },
+                        deployConfig: {
+                            useLocalSOAJS: true,
+                            memoryLimit: 209715200,
+                            imagePrefix: 'soajsorg',
+                            replication: {
+                                mode: 'replicated',
+                                replicas: 1
+                            }
+                        },
+                        contentConfig: {
+                            service: {
+                                gc: true,
+                                gcName: gcRecord.name,
+                                gcVersion: gcRecord.v
+                            }
+                        }
                     }
                 };
-                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
                     done();
@@ -696,55 +767,29 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     "form": {
-                        "name": "urac",
-                        "envCode": "PROD",
-                        "owner": "soajs",
-                        "repo": "soajs.urac",
-                        "imagePrefix": "soajsorg",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "haService": true,
-                        "haCount": 1
+                        env: 'prod',
+                        type: 'service',
+                        name: 'controller',
+                        gitSource: {
+                            owner: 'soajs',
+                            repo: 'soajs.controller',
+                            branch: 'develop',
+                            commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                        },
+                        deployConfig: {
+                            useLocalSOAJS: true,
+                            memoryLimit: 209715200,
+                            imagePrefix: 'soajsorg',
+                            replication: {
+                                mode: 'replicated',
+                                replicas: 1
+                            }
+                        }
                     }
                 };
-                executeMyRequest(params, "hosts/deployService", "post", function (body) {
+                executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                     assert.ok(body.errors);
                     assert.deepEqual(body.errors.details[0], {'code': 618, 'message': errorCodes[618]});
-                    done();
-                });
-            });
-        });
-
-        it("fail - trying to deploy without certificates", function (done) {
-            mongo.update('environment', {code: 'STG'}, {$set: {'deployer.selected': 'container.docker.remote'}}, function (error) {
-                assert.ifError(error);
-
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "form": {
-                        "name": "urac",
-                        "envCode": "STG",
-                        "owner": "soajs",
-                        "repo": "soajs.urac",
-                        "imagePrefix": "soajsorg",
-                        "branch": "develop",
-                        "commit": "67a61db0955803cddf94672b0192be28f47cf280",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "haService": true,
-                        "haCount": 1
-                    }
-                };
-
-                executeMyRequest(params, "hosts/deployService", "post", function (body) {
-                    assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 741, 'message': errorCodes[741]});
                     done();
                 });
             });
@@ -752,82 +797,71 @@ describe("testing hosts deployment", function () {
     });
 
     describe("testing daemon deployment", function () {
-        var gcRecord;
         it("success - deploy 1 daemon", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
                 },
                 "form": {
-                    "name": "helloDaemon",
-                    "grpConfName": "group1",
-                    "envCode": "DEV",
-                    "owner": "soajs",
-                    "repo": "soajs.dashboard", //dummy value, does not need to be accurate
-                    "imagePrefix": "soajsorg",
-                    "branch": "develop",
-                    "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-                    "variables": [
-                        "TEST_VAR=mocha"
+                    env: 'dev',
+                    type: 'daemon',
+                    name: 'helloDaemon',
+                    variables: [
+                        'TEST=true'
                     ],
-                    "haService": true,
-                    "haCount": 1
+                    gitSource: {
+                        owner: 'soajs',
+                        repo: 'soajs.prx', //dummy value, does not need to be accurate
+                        branch: 'develop',
+                        commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                    },
+                    deployConfig: {
+                        useLocalSOAJS: true,
+                        memoryLimit: 209715200,
+                        imagePrefix: 'soajsorg',
+                        replication: {
+                            mode: 'replicated',
+                            replicas: 1
+                        }
+                    },
+                    contentConfig: {
+                        daemon: {
+                            grpConfName: 'group1'
+                        }
+                    }
                 }
             };
-            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+            executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                mongo.findOne("docker", {"serviceName": "dev-helloDaemon-v1"}, function (error, oneContainerRecord) {
-                    assert.ifError(error);
-                    assert.ok(oneContainerRecord);
 
-                    deleteService(soajsauth, {env: 'DEV', name: 'dev-helloDaemon-v1'}, function (body) {
+
+
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'dev'
+                    }
+                };
+                executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    //only one service exist
+                    var serviceId, serviceMode;
+                    for (var i = 0; i < body.data.length; i++) {
+                        if (body.data[i].labels['soajs.service.name'] === 'helloDaemon') {
+                            serviceId = body.data[i].id;
+                            serviceMode = body.data[i].labels['soajs.service.mode'];
+                        }
+                    }
+
+                    deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
                         assert.ok(body.result);
                         assert.ok(body.data);
 
                         done();
-                    });
-                });
-            });
-        });
-
-        it("success - deploy 1 daemon and use main file specified in src", function (done) {
-            mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.main': '/index.js'}}, function (error) {
-                assert.ifError(error);
-
-                var params = {
-                    headers: {
-                        soajsauth: soajsauth
-                    },
-                    "form": {
-                        "name": "helloDaemon",
-                        "grpConfName": "group1",
-                        "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.dashboard", //dummy value, does not need to be accurate
-                        "imagePrefix": "soajsorg",
-                        "branch": "develop",
-                        "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-                        "variables": [
-                            "TEST_VAR=mocha"
-                        ],
-                        "haService": true,
-                        "haCount": 1
-                    }
-                };
-                executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    mongo.findOne("docker", {"serviceName": "dev-helloDaemon-v1"}, function (error, oneContainerRecord) {
-                        assert.ifError(error);
-                        assert.ok(oneContainerRecord);
-
-                        deleteService(soajsauth, {env: 'DEV', name: 'dev-helloDaemon-v1'}, function (body) {
-                            assert.ok(body.result);
-                            assert.ok(body.data);
-
-                            done();
-                        });
                     });
                 });
             });
@@ -843,29 +877,61 @@ describe("testing hosts deployment", function () {
                         soajsauth: soajsauth
                     },
                     "form": {
-                        "name": "helloDaemon",
-                        "grpConfName": "group1",
-                        "envCode": "DEV",
-                        "owner": "soajs",
-                        "repo": "soajs.dashboard", //dummy value, does not need to be accurate
-                        "imagePrefix": "soajsorg",
-                        "branch": "develop",
-                        "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-                        "variables": [
-                            "TEST_VAR=mocha"
+                        env: 'dev',
+                        type: 'daemon',
+                        name: 'helloDaemon',
+                        variables: [
+                            'TEST=true'
                         ],
-                        "haService": true,
-                        "haCount": 1
+                        gitSource: {
+                            owner: 'soajs',
+                            repo: 'soajs.prx', //dummy value, does not need to be accurate
+                            branch: 'develop',
+                            commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                        },
+                        deployConfig: {
+                            useLocalSOAJS: true,
+                            memoryLimit: 209715200,
+                            imagePrefix: 'soajsorg',
+                            replication: {
+                                mode: 'replicated',
+                                replicas: 1
+                            }
+                        },
+                        contentConfig: {
+                            daemon: {
+                                grpConfName: 'group1'
+                            }
+                        }
                     }
                 };
-                executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+                executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);
-                    mongo.findOne("docker", {"serviceName": "dev-helloDaemon-v1"}, function (error, oneContainerRecord) {
-                        assert.ifError(error);
-                        assert.ok(oneContainerRecord);
 
-                        deleteService(soajsauth, {env: 'DEV', name: 'dev-helloDaemon-v1'}, function (body) {
+
+
+                    params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        },
+                        qs: {
+                            env: 'dev'
+                        }
+                    };
+                    executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                        assert.ok(body.result);
+                        assert.ok(body.data);
+                        //only one service exist
+                        var serviceId, serviceMode;
+                        for (var i = 0; i < body.data.length; i++) {
+                            if (body.data[i].labels['soajs.service.name'] === 'helloDaemon') {
+                                serviceId = body.data[i].id;
+                                serviceMode = body.data[i].labels['soajs.service.mode'];
+                            }
+                        }
+
+                        deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
                             assert.ok(body.result);
                             assert.ok(body.data);
 
@@ -882,22 +948,262 @@ describe("testing hosts deployment", function () {
                     soajsauth: soajsauth
                 },
                 "form": {
-                    "envCode": "DEV",
-                    "owner": "soajs",
-                    "repo": "soajs.daemons",
-                    "imagePrefix": "soajsorg",
-                    "branch": "develop",
-                    "commit": "b59545bb699205306fbc3f83464a1c38d8373470",
-                    "variables": [
-                        "TEST_VAR=mocha"
+                    env: 'dev',
+                    type: 'daemon',
+                    name: 'helloDaemon',
+                    variables: [
+                        'TEST=true'
                     ],
-                    "haService": true,
-                    "haCount": 1
+                    gitSource: {
+                        owner: 'soajs',
+                        repo: 'soajs.prx', //dummy value, does not need to be accurate
+                        branch: 'develop',
+                        commit: '67a61db0955803cddf94672b0192be28f47cf280'
+                    },
+                    contentConfig: {
+                        daemon: {
+                            grpConfName: 'group1'
+                        }
+                    }
                 }
             };
-            executeMyRequest(params, "hosts/deployDaemon", "post", function (body) {
+            executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
                 assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: grpConfName"});
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: deployConfig"});
+                done();
+            });
+        });
+
+    });
+
+    describe("testing redeploy service", function () {
+        var nginxDeployment, ctrlDeployment, uiRecord;
+        before("list services and get static content record", function (done) {
+            mongo.find('staticContent', {}, function (error, records) {
+                assert.ifError(error);
+
+                uiRecord = records[0];
+
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        env: 'dev'
+                    }
+                };
+                executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    for (var i = 0; i < body.data.length; i++) {
+                        if (body.data[i].labels['soajs.service.name'] === 'controller') {
+                            ctrlDeployment = body.data[i];
+                        }
+                        else if (body.data[i].labels['soajs.service.name'] === 'nginx') {
+                            nginxDeployment = body.data[i];
+                        }
+                    }
+
+                    done();
+                });
+            });
+        });
+
+        it ("success - will redeploy controller service", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    serviceId: ctrlDeployment.id,
+                    mode: ctrlDeployment.labels['soajs.service.mode']
+                }
+            };
+
+            executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
+
+        it ("success - will redeploy nginx and add custom ui to it", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    serviceId: nginxDeployment.id,
+                    mode: nginxDeployment.labels['soajs.service.mode'],
+                    ui: {
+                        id: uiRecord._id.toString(),
+                        branch: 'develop',
+                        commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
+                    }
+                }
+            };
+
+            executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
+
+    });
+
+    describe("deploy custom services", function () {
+
+        it("fail - missing params", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    name: 'custom-service',
+                    variables: [
+                        'CUSTOM_ENV_VAR_1=test1',
+                        'CUSTOM_ENV_VAR_2=test2'
+                    ],
+                    labels: {
+                        'service.type': 'custom',
+                        'service.origin': 'test-cases'
+                    },
+                    command: {
+                        cmd: ['sh'],
+                        args: ['-c', 'sleep', '36000']
+                    }
+                }
+            };
+
+            executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: deployConfig'});
+                done();
+            });
+        });
+
+        it("success - will deploy custom service", function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    name: 'custom-service',
+                    variables: [
+                        'CUSTOM_ENV_VAR_1=test1',
+                        'CUSTOM_ENV_VAR_2=test2'
+                    ],
+                    labels: {
+                        'service.type': 'custom',
+                        'service.origin': 'test-cases'
+                    },
+                    command: {
+                        cmd: ['sh'],
+                        args: ['-c', 'sleep', '36000']
+                    },
+                    deployConfig: {
+                        image: 'alpine',
+                        workDir: '/',
+                        memoryLimit: 209715200,
+                        network: 'soajsnet',
+                        replication: {
+                            mode: 'replicated',
+                            replicas: 2
+                        },
+                        restartPolicy: {
+                            condition: 'on-failure',
+                            maxAttempts: 2
+                        },
+                        volume: {
+                            type: 'bind',
+                            readOnly: true,
+                            source: '/var/run/docker.sock',
+                            target: '/var/run/docker.sock'
+                        }
+                    }
+                }
+            };
+
+            executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+
+                done();
+            });
+        });
+
+    });
+
+    describe("maintenance operations", function () {
+        var ctrlDeployment = {};
+        before('get deployed controller service info', function (done) {
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                qs: {
+                    env: 'dev'
+                }
+            };
+            executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+
+                for (var i = 0; i < body.data.length; i++) {
+                    if (body.data[i].labels['soajs.service.name'] === 'controller') {
+                        ctrlDeployment = body.data[i];
+                        break;
+                    }
+                }
+
+                done();
+            });
+        });
+
+        it("success - will perform maintenace operation on deployed service", function (done) {
+            console.log ('This test might take some time because the maintenance calls will timeout ...');
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    serviceId: ctrlDeployment.id,
+                    serviceName: ctrlDeployment.labels['soajs.service.name'],
+                    type: ctrlDeployment.labels['soajs.service.type'],
+                    operation: 'heartbeat'
+                }
+            };
+            executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                done();
+            });
+        });
+
+        it("fail - service not found", function (done) {
+            console.log ('This test might take some time because the maintenance calls will timeout ...');
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                form: {
+                    env: 'dev',
+                    serviceId: ctrlDeployment.id,
+                    serviceName: ctrlDeployment.labels['soajs.service.name'],
+                    type: 'daemon', //controller won't be found in daemons collection, error will be returned
+                    operation: 'heartbeat'
+                }
+            };
+            executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 795, "message": errorCodes[795]});
                 done();
             });
         });
@@ -905,67 +1211,119 @@ describe("testing hosts deployment", function () {
     });
 
     describe("delete deployed services", function () {
-
-        //TODO: add test case for wrong service name
-
         it("fail - missing required params", function (done) {
-            deleteService(soajsauth, {name: 'dev-controller-v1'}, function (body) {
+            deleteService(soajsauth, {env: 'DEV'}, function (body) {
                 assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: env"});
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceId, mode"});
                 done();
             });
         });
 
         it("success - will delete deployed service", function (done) {
-            deleteService(soajsauth, {env: 'DEV', name: 'dev-gc_myservice-v1'}, function (body) {
-                assert.ok(body);
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                qs: {
+                    env: 'dev'
+                }
+            };
+            executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                assert.ok(body.result);
                 assert.ok(body.data);
+                //only one service exist
+                var serviceId, serviceMode;
+                for (var i = 0; i < body.data.length; i++) {
+                    if (body.data[i].labels['soajs.service.name'] === 'gc_myservice') {
+                        serviceId = body.data[i].id;
+                        serviceMode = body.data[i].labels['soajs.service.mode'];
+                    }
+                }
 
+                deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    done();
+                });
+            });
+        });
+
+        it("fail - service not found", function (done) {
+            deleteService(soajsauth, {env: 'DEV', id: '123123123', mode: 'replicated'}, function (body) {
+                assert.ok(body.errors);
+                assert.deepEqual(body.errors.details[0], {"code": 553, "message": "Unable to delete the docker swarm service"});
                 done();
             });
         });
     });
 
     describe("testing get service logs", function () {
-        it("success - list services", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                "qs": {
-                    "env": "DEV"
-                }
-            };
-            executeMyRequest(params, "hosts/list", "get", function (body) {
-                assert.ok(body.result);
-                assert.ok(body.data);
-                done();
-            });
-        });
-
         it("success - getting service logs", function (done) {
             var params = {
                 headers: {
                     soajsauth: soajsauth
                 },
-                "qs": {
-                    "env": "DEV",
-                    "taskName": "dev-nginxapi.1"
+                qs: {
+                    env: 'dev'
                 }
             };
-            executeMyRequest(params, "hacloud/services/instances/logs", "get", function (body) {
+            executeMyRequest(params, "cloud/services/list", "get", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                done();
+                //only one service exist
+                var taskId;
+                for (var i = 0; i < body.data.length; i++) {
+                    if (body.data[i].labels['soajs.service.name'] === 'nginx') {
+                        taskId = ((body.data[i].tasks[0]) ? body.data[i].tasks[0].id : '');
+                    }
+                }
+
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    "qs": {
+                        "env": "dev",
+                        "taskId": taskId
+                    }
+                };
+                executeMyRequest(params, "cloud/services/instances/logs", "get", function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+                    done();
+                });
             });
         });
 
         after("delete nginx service", function (done) {
-            deleteService(soajsauth, {env: 'DEV', name: 'dev-nginxapi'}, function (body) {
-                assert.ok(body);
-                assert.ok(body.data)
+            var params = {
+                headers: {
+                    soajsauth: soajsauth
+                },
+                qs: {
+                    env: 'dev'
+                }
+            };
+            executeMyRequest(params, "cloud/services/list", "get", function (body) {
+                assert.ok(body.result);
+                assert.ok(body.data);
+                //only one service exist
+                var serviceId, serviceMode;
+                for (var i = 0; i < body.data.length; i++) {
+                    if (body.data[i].labels['soajs.service.name'] === 'nginx') {
+                        serviceId = body.data[i].id;
+                        serviceMode = body.data[i].labels['soajs.service.mode'];
+                        break;
+                    }
+                }
 
-                done()
+                deleteService(soajsauth, {env: 'DEV', id: serviceId, mode: serviceMode}, function (body) {
+                    assert.ok(body.result);
+                    assert.ok(body.data);
+
+                    done();
+                });
             });
         });
     });
@@ -977,70 +1335,35 @@ describe("testing hosts deployment", function () {
                     soajsauth: soajsauth
                 },
                 qs: {
-                    envCode: 'DEV',
-                    name: 'dev-controller-v1',
-                    version: 1
-                },
-                form: {
-                    scale: 2
+                    env: 'dev'
                 }
             };
-
-            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
+            executeMyRequest(params, "cloud/services/list", "get", function (body) {
                 assert.ok(body.result);
                 assert.ok(body.data);
-                done();
-            });
-        });
-
-        it("success - will scale service back to 1 instance", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                qs: {
-                    envCode: 'DEV',
-                    name: 'dev-controller-v1',
-                    version: 1
-                },
-                form: {
-                    scale: 1
+                //only one service exist
+                var serviceId;
+                for (var i = 0; i < body.data.length; i++) {
+                    if (body.data[i].labels['soajs.service.name'] === 'controller') {
+                        serviceId = body.data[i].id;
+                        break;
+                    }
                 }
-            };
 
-            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
-                assert.ok(body.result);
-                assert.ok(body.data);
-                done();
-            });
-        });
+                params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    form: {
+                        env: 'dev',
+                        serviceId: serviceId,
+                        scale: 2
+                    }
+                };
 
-        it("fail - invalid scale value", function (done) {
-            var params = {
-                headers: {
-                    soajsauth: soajsauth
-                },
-                qs: {
-                    envCode: 'dev',
-                    name: 'dev-controller-v1',
-                    version: 1
-                },
-                form: {
-                    scale: 1
-                }
-            };
-
-            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
-                assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {"code": 809, "message": errorCodes[809]});
-                done();
-            });
-
-            after("delete service", function (done) {
-                deleteService(soajsauth, {env: 'DEV', name: 'dev-controller-v1'}, function (body) {
-                    assert.ok(body);
+                executeMyRequest(params, "cloud/services/scale", "put", function (body) {
+                    assert.ok(body.result);
                     assert.ok(body.data);
-
                     done();
                 });
             });
@@ -1051,55 +1374,16 @@ describe("testing hosts deployment", function () {
                 headers: {
                     soajsauth: soajsauth
                 },
-                qs: {
-                    name: 'dev-controller-v1',
-                    version: 1
-                },
                 form: {
+                    env: 'dev',
                     scale: 2
                 }
             };
 
-            executeMyRequest(params, "hacloud/services/scale", "put", function (body) {
+            executeMyRequest(params, "cloud/services/scale", "put", function (body) {
                 assert.ok(body.errors);
-                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: envCode"});
+                assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceId"});
                 done();
-            });
-        });
-    });
-
-    describe("testing nginx containers", function () {
-
-        describe("list nginx hosts", function () {
-
-            it("success - will list nginx hosts", function (done) {
-                var params = {
-                    qs: {
-                        env: 'dev'
-                    }
-                };
-                executeMyRequest(params, 'hosts/nginx/list', 'get', function (body) {
-                    assert.ok(body.result);
-                    assert.ok(body.data);
-                    assert.equal(body.data.length, 0);
-                    done();
-                });
-            });
-
-            it("fail - missing required params", function (done) {
-                executeMyRequest({}, 'hosts/nginx/list', 'get', function (body) {
-                    assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
-                    done();
-                });
-            });
-
-            it("mongo check", function (done) {
-                mongo.count("docker", {type: 'nginx'}, function (error, count) {
-                    assert.ifError(error);
-                    assert.equal(count, 0);
-                    done();
-                });
             });
         });
     });
