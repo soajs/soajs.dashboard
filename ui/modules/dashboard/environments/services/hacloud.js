@@ -725,7 +725,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						}, 500);
 
 						$scope.refreshLogs = function(){
-							console.log("again ....")
 							getSendDataFromServer(currentScope, ngDataApi, {
 								method: "get",
 								routeName: "/dashboard/cloud/services/instances/logs",
@@ -770,6 +769,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 
 		function remove_special(str) {
+			if (!str) {
+				return ''; //in case container has no logs, return empty string
+			}
 			var rExps = [/[\xC0-\xC2]/g, /[\xE0-\xE2]/g,
 				/[\xC8-\xCA]/g, /[\xE8-\xEB]/g,
 				/[\xCC-\xCE]/g, /[\xEC-\xEE]/g,
