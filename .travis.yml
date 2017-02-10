@@ -16,10 +16,10 @@ branches:
 addons:
   hosts:
     - localhost
+    - dev-controller
 
 before_script:
   - npm install -g grunt-cli
-  - docker pull alpine:latest
 
 script:
   - grunt coverage
