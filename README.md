@@ -15,8 +15,19 @@ The User Interface connects to the service and provides a GUI that facilitates t
 ```sh
 $ npm install soajs.dashboard
 $ cd soajs.dashboard/services/
-$ node.
+$ node .
 ```
+
+---
+
+##Testing
+
+```sh
+$ cd soajs.dashboard/
+$ grunt test
+```
+* **Note**: Make sure docker (v: 1.12.6+) is installed and up before running the test cases
+* **Warning**: Running the test cases will delete all previous docker services and containers
 
 ---
 
