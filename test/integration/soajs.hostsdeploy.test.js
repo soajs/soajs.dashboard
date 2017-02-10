@@ -336,6 +336,12 @@ describe("testing hosts deployment", function () {
         mongo.closeDb();
 	    done();
     });
+    
+    beforeEach(function(done){
+    	setTimeout(function(){
+    		done();
+	    }, 700);
+    });
 
     describe("testing cluster nodes", function () {
 
