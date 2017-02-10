@@ -1128,7 +1128,7 @@ describe("testing hosts deployment", function () {
             });
         });
 
-        it("success - will perform maintenace operation on deployed service", function (done) {
+        it.skip("success - will perform maintenace operation on deployed service", function (done) {
             console.log ('This test might take some time because the maintenance calls will timeout ...');
             var params = {
                 headers: {
