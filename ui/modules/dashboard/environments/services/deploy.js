@@ -276,7 +276,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         function deployNginx(formData, params){
 	        params.type = 'nginx';
-	        delete params.name;
+	        params.name = 'nginx';
+	        //delete params.name;
 	        params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
 	        params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
 	        params.deployConfig.imagePrefix = formData.nginxImagePrefix;
@@ -352,448 +353,455 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
      * @param currentScope
      */
     function deployNewService (currentScope) {
-		if (currentScope.envPlatform.toLowerCase() === 'kubernetes') {
-			currentScope.deploymentModes = ['deployment', 'daemonset'];
-	        currentScope.mode= 'deployment';
-		}
-		else {
-			currentScope.deploymentModes = ['replicated', 'global'];
-	        currentScope.mode= 'replicated';
-		}
-
-        var env = currentScope.envCode;
-        var runningHosts = currentScope.hosts;
-        $modal.open({
-            templateUrl: "deployNewService.tmpl",
-            size: 'lg',
-            backdrop: true,
-            keyboard: true,
-            controller: function ($scope, $modalInstance) {
-                fixBackDrop();
-
-                $scope.title = 'Deploy New Service';
-                $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
-                $scope.currentScope = currentScope;
-                currentScope.services = [];
-                currentScope.service = "";
-                currentScope.versions = [];
-                currentScope.version = "";
-                currentScope.groupConfigs = "";
-                currentScope.groupConfig = "";
-                currentScope.branches = [];
-                currentScope.branch = "";
-                currentScope.serviceOwner = '';
-                currentScope.serviceRepo = '';
-                currentScope.envVariables = '';
-                currentScope.conflict = false;
-                currentScope.loadingBranches = false;
-                delete currentScope.conflictCommits;
-                currentScope.confirmBranch = '';
-                delete currentScope.replicaCount;
-                delete currentScope.exposedPort;
-                currentScope.memoryLimit = 200;
-                currentScope.useLocalSOAJS = true;
-                currentScope.message = {};
-                currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
-                currentScope.imagePrefix = 'soajsorg';
-
-                $scope.getServices = function (cb) {
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'post',
-                        routeName: '/dashboard/services/list'
-                    }, function (error, response) {
-                        if (error) {
-                            currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
-                        } else {
-                            response.forEach(function (oneService) {
-                                oneService.type = 'service';
-                                if (oneService.name === 'controller') {
-                                    oneService.UIGroup = 'Controllers';
-                                } else {
-                                    oneService.UIGroup = 'Services';
-                                }
-                                if (allowListing(env, oneService)) {
-                                    currentScope.services.push(oneService);
-                                }
-                            });
-                            return cb();
-                        }
-                    });
-                };
-
-                $scope.getDaemons = function (cb) {
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'post',
-                        routeName: '/dashboard/daemons/list',
-                        params: {
-                            'getGroupConfigs': true
-                        }
-                    }, function (error, response) {
-                        if (error) {
-                            currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
-                        } else {
-                            response.forEach(function (oneDaemon) {
-                                if (allowListing(env, oneDaemon)) {
-                                    oneDaemon.type = 'daemon';
-                                    oneDaemon.UIGroup = 'Daemons';
-                                    currentScope.services.push(oneDaemon);
-                                }
-                            });
-                            return cb();
-                        }
-                    });
-                };
-
-                $scope.selectService = function (service) {
-
-                	if(service.name === 'controller'){
-		                currentScope.versions = [1];
-	                }
-	                else{
-		                currentScope.versions = Object.keys(service.versions);
-	                }
-
-                    if (currentScope.version) {
-                        currentScope.version = "";
-                    }
-                    if (currentScope.versions.length === 1) {
-                        currentScope.version = currentScope.versions[0];
-                    }
-
-                    currentScope.branches = [];
-                    currentScope.branch = '';
-                    currentScope.groupConfigs = '';
-                    currentScope.conflict = '';
-                    currentScope.conflictCommits = {};
-
-
-                    if (service.type === 'nginx') return;
-
-                    if (service.type === 'daemon' && service.grpConf) {
-                        currentScope.groupConfigs = service.grpConf;
-                    }
-
-                    currentScope.loadingBranches = true;
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'get',
-                        routeName: '/dashboard/gitAccounts/getBranches',
-                        params: {
-                            'name': service.name,
-                            'type':  service.type
-                        }
-                    }, function (error, response) {
-                        if (error) {
-                            currentScope.message.danger = error.message;
-                            $timeout(function () {
-                                currentScope.message.danger = '';
-                            }, 5000);
-                        } else {
-                            currentScope.branches = response.branches;
-                            currentScope.serviceOwner = response.owner;
-                            currentScope.serviceRepo = response.repo;
-                            currentScope.loadingBranches = false;
-                        }
-                    });
-                };
-
-                $scope.selectBranch = function (branch) {
-                    currentScope.conflict = false;
-                    currentScope.conflictCommits = {};
-                    if (runningHosts && runningHosts[currentScope.service.name]) {
-                        var versions = Object.keys(runningHosts[currentScope.service.name].ips);
-                        for (var i = 0; i < versions.length; i++) {
-                            var instances = runningHosts[currentScope.service.name].ips[versions[i]];
-                            for (var j = 0; j < instances.length; j++) {
-                                if (instances[j].commit !== branch.commit.sha) {
-                                    currentScope.conflict = true;
-                                    instances[j].version = versions[i];
-                                    if (currentScope.conflictCommits[instances[j].commit]) {
-                                        currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
-                                    } else {
-                                        currentScope.conflictCommits[instances[j].commit] = {};
-                                        currentScope.conflictCommits[instances[j].commit].branch = instances[j].branch;
-                                        currentScope.conflictCommits[instances[j].commit].instances = [];
-                                        currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
-                $scope.confirmBranchSelection = function () {
-                    //clear previously selected commit if any
-                    currentScope.commit = '';
-                };
-
-                $scope.onSubmit = function () {
-
-                    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
-                        currentScope.message.danger = "Please select a service, branch, and number of instances";
-                        $timeout(function () {
-                            currentScope.message.danger = "";
-                        }, 5000);
-                    }
-                    else if (currentScope.conflictCommits && Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
-                        currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
-                        $timeout(function () {
-                            currentScope.message.danger = "";
-                        }, 5000);
-                    } else {
-                        if (currentScope.service.type === 'nginx') {
-                            newNginx(currentScope);
-                        }
-                        else {
-                            var max = currentScope.number;
-                            if (currentScope.service.name === 'controller') {
-                                newController(currentScope);
-                            }
-                            else {
-                                newService(currentScope);
-                            }
-                        }
-                    }
-                };
-
-                $scope.closeModal = function () {
-                    $modalInstance.close();
-                };
-
-                function allowListing(env, service) {
-                    var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
-                    var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
-                    if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
-                        return filterServiceInfo(service);
-                    } else if (env.toLowerCase() !== 'dashboard' &&
-                        // service.name !== 'controller' && //controller is added later manually
-                        (
-	                        //not a locked service for dashboard and non dashboard environments
-                        	(dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
-	                        //a locked service that is common for dashboard and non dash envs (urac, oauth)
-                            (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
-                        )
-                    ) {
-                        return filterServiceInfo(service);
-                    }
-                    return false;
-                }
-
-                //filter out service information that already exist
-                function filterServiceInfo(service) {
-	                var deployedServices = [];
-	                if(currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[service.group]){
-		                deployedServices = currentScope.hosts.soajs.groups[service.group].list;
-	                }
-
-                    if(!service.group){
-                    	if(service.name === 'controller'){
-		                    if(currentScope.hosts.soajs.groups){
-		                    	var found = false;
-		                    	for(var groupName in currentScope.hosts.soajs.groups){
-				                    currentScope.hosts.soajs.groups[groupName].list.forEach(function(oneService){
-				                    	if(oneService.name === env.toLowerCase() + '-controller'){
-				                    		found = true;
-					                    }
-				                    });
-			                    }
-			                    if(!found){
-		                    		return true;
-			                    }
-			                    else{
-			                    	return false;
-			                    }
-		                    }
-                    		return true;
-	                    }
-                        return false;
-                    }
-                    else {
-                        var serviceVersions = Object.keys(service.versions);
-                        //Loop over the deployed services, and remove from the service, the service versions that are already deployed
-                        serviceVersions.forEach(function (version) {
-                            for(var i = 0; i < deployedServices.length; i++){
-                                //if a version of that service is found to be deployed, delete it from the service information
-                                if(service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
-                                    delete service.versions[version];
-                                }
-                            }
-                        });
-                        //if all the versions of the service are found to be deployed, return false
-                        //else, return true, after having removed the deployed versions
-                        if(Object.keys(service.versions).length === 0)
-                            return false;
-                        else
-                            return true;
-                    }
-                }
-
-                function newController(currentScope) {
-                    var params = {
-                        'env': env,
-                        'name': 'controller',
-                        'type': 'service',
-                    };
-
-                    params.gitSource = {
-                        "owner": currentScope.serviceOwner,
-                        "repo": currentScope.serviceRepo,
-                    };
-
-                    if (currentScope.commit && !currentScope.confirmBranch) {
-                        params.gitSource.branch = getBranchFromCommit(currentScope.commit);
-                        params.gitSource.commit = currentScope.commit;
-                    } else {
-                        params.gitSource.branch = currentScope.branch.name;
-                        params.gitSource.commit = currentScope.branch.commit.sha;
-                    }
-
-                    if (currentScope.service.latest) {
-                        params.version = currentScope.service.latest;
-                    }
-
-                    if (currentScope.envVariables && currentScope.envVariables !== '') {
-                        params.variables = currentScope.envVariables.split(",");
-                        for (var i = 0; i < params.variables.length; i++) {
-                            params.variables[i] = params.variables[i].trim();
-                        }
-                    }
-
-                    //Fill deployConfig information
-                    params.deployConfig = {
-                        "useLocalSOAJS": currentScope.useLocalSOAJS,
-                        "imagePrefix": currentScope.imagePrefix,
-                        "replication": {
-                            "mode": currentScope.mode,
-                            "replicas": currentScope.number,
-                        }
-                    };
-	                overlayLoading.show();
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        "method": "post",
-                        "routeName": "/dashboard/cloud/services/soajs/deploy",
-                        "data": params
-                    }, function (error, response) {
-	                    overlayLoading.hide();
-                        if (error) {
-                            currentScope.generateNewMsg(env, 'danger', error.message);
-                            $modalInstance.close();
-                        }
-                        else {
-	                        $timeout(function(){
-		                        currentScope.listServices();
-	                        }, 1500);
-
-	                        $modalInstance.close();
-                        }
-                    });
-                }
-
-                function newService(currentScope) {
-                    var params = {
-                        'env': env,
-                        'type': 'service',
-                        "version": parseInt(currentScope.version)
-                    };
-
-                    params.gitSource = {
-                        "owner": currentScope.serviceOwner,
-                        "repo": currentScope.serviceRepo,
-                    };
-
-                    if (currentScope.commit && !currentScope.confirmBranch) {
-                        params.gitSource.branch = getBranchFromCommit(currentScope.commit);
-                        params.gitSource.commit = currentScope.commit;
-                    } else {
-                        params.gitSource.branch = currentScope.branch.name;
-                        params.gitSource.commit = currentScope.branch.commit.sha;
-                    }
-
-                    if (currentScope.service.gcId) {
-                        params.contentConfig = {
-                            "service" : {
-                                "gc" : true,
-                                "gcName" : currentScope.service.name,
-                                "gcVersion" : currentScope.service.version
-                            }
-                        }
-
-                    } else {
-                        params.name = currentScope.service.name;
-                    }
-
-                    if (currentScope.envVariables && currentScope.envVariables !== '') {
-                        params.variables = currentScope.envVariables.split(",");
-                        for (var i = 0; i < params.variables.length; i++) {
-                            params.variables[i] = params.variables[i].trim();
-                        }
-                    }
-
-                    if (currentScope.groupConfig) {
-                        params.type = 'daemon';
-                        params.contentConfig = {
-                        	"daemon":{
-                                "grpConfName" : currentScope.groupConfig.daemonConfigGroup
-	                        }
-                        }
-                    }
-
-                    params.deployConfig = {
-                        'useLocalSOAJS': currentScope.useLocalSOAJS,
-                        'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                        "imagePrefix": currentScope.imagePrefix,
-                        "replication": {
-                            "mode": currentScope.mode,
-                            "replicas": currentScope.number
-                        }
-                    };
-
-                    var config = {
-                        "method": "post",
-                        "routeName": "/dashboard/cloud/services/soajs/deploy",
-                        "data": params
-                    };
-                    overlayLoading.show();
-                    getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
-                        overlayLoading.hide();
-                        if (error) {
-                            currentScope.displayAlert('danger', error.message);
-                            $modalInstance.close();
-                        }
-                        else {
-                            currentScope.displayAlert('success', 'New service deployed successfully and will be available in a few minutes');
-                            $timeout(function(){
-                                currentScope.listServices();
-                            }, 1500);
-
-                            $modalInstance.close();
-                        }
-                    });
-                }
-
-                function getBranchFromCommit (commit) {
-                    return currentScope.conflictCommits[commit].branch;
-                }
-
-                //Start here
-                if (currentScope.hosts && currentScope.controllers) {
-                    $scope.getServices(function () {
-                        $scope.getDaemons(function () {
-                            if(currentScope.services.length === 0) {
-                                currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
-                                $modalInstance.close();
-                            }
-                        });
-                    });
-                }
-                else {
-                    currentScope.services.push({
-                        name: 'controller',
-                        UIGroup: 'Controllers',
-                        type: 'service'
-                    });
-                }
-            }
-        });
+	    if (currentScope.envPlatform.toLowerCase() === 'kubernetes') {
+		    currentScope.deploymentModes = ['deployment', 'daemonset'];
+		    currentScope.mode = 'deployment';
+	    }
+	    else {
+		    currentScope.deploymentModes = ['replicated', 'global'];
+		    currentScope.mode = 'replicated';
+	    }
+	
+	    var env = currentScope.envCode;
+	    var runningHosts = currentScope.hosts;
+	
+	    currentScope.services = [];
+	    currentScope.service = "";
+	    currentScope.versions = [];
+	    currentScope.version = "";
+	    currentScope.groupConfigs = "";
+	    currentScope.groupConfig = "";
+	    currentScope.branches = [];
+	    currentScope.branch = "";
+	    currentScope.serviceOwner = '';
+	    currentScope.serviceRepo = '';
+	    currentScope.envVariables = '';
+	    currentScope.conflict = false;
+	    currentScope.loadingBranches = false;
+	    delete currentScope.conflictCommits;
+	    currentScope.confirmBranch = '';
+	    delete currentScope.replicaCount;
+	    delete currentScope.exposedPort;
+	    currentScope.memoryLimit = 200;
+	    currentScope.useLocalSOAJS = true;
+	    currentScope.message = {};
+	    currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
+	    currentScope.imagePrefix = 'soajsorg';
+	    
+	    function openModalForm() {
+		    $modal.open({
+			    templateUrl: "deployNewService.tmpl",
+			    size: 'lg',
+			    backdrop: true,
+			    keyboard: true,
+			    controller: function ($scope, $modalInstance) {
+				    fixBackDrop();
+				
+				    $scope.title = 'Deploy New Service';
+				    $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
+				    $scope.currentScope = currentScope;
+				
+				    $scope.selectService = function (service) {
+					
+					    if (service.name === 'controller') {
+						    currentScope.versions = [1];
+					    }
+					    else {
+						    currentScope.versions = Object.keys(service.versions);
+					    }
+					
+					    if (currentScope.version) {
+						    currentScope.version = "";
+					    }
+					    if (currentScope.versions.length === 1) {
+						    currentScope.version = currentScope.versions[0];
+					    }
+					
+					    currentScope.branches = [];
+					    currentScope.branch = '';
+					    currentScope.groupConfigs = '';
+					    currentScope.conflict = '';
+					    currentScope.conflictCommits = {};
+					
+					
+					    if (service.type === 'nginx') return;
+					
+					    if (service.type === 'daemon' && service.grpConf) {
+						    currentScope.groupConfigs = service.grpConf;
+					    }
+					
+					    currentScope.loadingBranches = true;
+					    getSendDataFromServer(currentScope, ngDataApi, {
+						    method: 'get',
+						    routeName: '/dashboard/gitAccounts/getBranches',
+						    params: {
+							    'name': service.name,
+							    'type': service.type
+						    }
+					    }, function (error, response) {
+						    if (error) {
+							    currentScope.message.danger = error.message;
+							    $timeout(function () {
+								    currentScope.message.danger = '';
+							    }, 5000);
+						    } else {
+							    currentScope.branches = response.branches;
+							    currentScope.serviceOwner = response.owner;
+							    currentScope.serviceRepo = response.repo;
+							    currentScope.loadingBranches = false;
+						    }
+					    });
+				    };
+				
+				    $scope.selectBranch = function (branch) {
+					    currentScope.conflict = false;
+					    currentScope.conflictCommits = {};
+					    if (runningHosts && runningHosts[currentScope.service.name]) {
+						    var versions = Object.keys(runningHosts[currentScope.service.name].ips);
+						    for (var i = 0; i < versions.length; i++) {
+							    var instances = runningHosts[currentScope.service.name].ips[versions[i]];
+							    for (var j = 0; j < instances.length; j++) {
+								    if (instances[j].commit !== branch.commit.sha) {
+									    currentScope.conflict = true;
+									    instances[j].version = versions[i];
+									    if (currentScope.conflictCommits[instances[j].commit]) {
+										    currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
+									    } else {
+										    currentScope.conflictCommits[instances[j].commit] = {};
+										    currentScope.conflictCommits[instances[j].commit].branch = instances[j].branch;
+										    currentScope.conflictCommits[instances[j].commit].instances = [];
+										    currentScope.conflictCommits[instances[j].commit].instances.push(instances[j]);
+									    }
+								    }
+							    }
+						    }
+					    }
+				    };
+				
+				    $scope.confirmBranchSelection = function () {
+					    //clear previously selected commit if any
+					    currentScope.commit = '';
+				    };
+				
+				    $scope.onSubmit = function () {
+					
+					    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
+						    currentScope.message.danger = "Please select a service, branch, and number of instances";
+						    $timeout(function () {
+							    currentScope.message.danger = "";
+						    }, 5000);
+					    }
+					    else if (currentScope.conflictCommits && Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
+						    currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
+						    $timeout(function () {
+							    currentScope.message.danger = "";
+						    }, 5000);
+					    } else {
+						    if (currentScope.service.type === 'nginx') {
+							    newNginx(currentScope);
+						    }
+						    else {
+							    var max = currentScope.number;
+							    if (currentScope.service.name === 'controller') {
+								    newController(currentScope);
+							    }
+							    else {
+								    newService(currentScope);
+							    }
+						    }
+					    }
+				    };
+				
+				    $scope.closeModal = function () {
+					    $modalInstance.close();
+				    };
+				
+				    function newController(currentScope) {
+					    var params = {
+						    'env': env,
+						    'name': 'controller',
+						    'type': 'service',
+					    };
+					
+					    params.gitSource = {
+						    "owner": currentScope.serviceOwner,
+						    "repo": currentScope.serviceRepo,
+					    };
+					
+					    if (currentScope.commit && !currentScope.confirmBranch) {
+						    params.gitSource.branch = getBranchFromCommit(currentScope.commit);
+						    params.gitSource.commit = currentScope.commit;
+					    } else {
+						    params.gitSource.branch = currentScope.branch.name;
+						    params.gitSource.commit = currentScope.branch.commit.sha;
+					    }
+					
+					    if (currentScope.service.latest) {
+						    params.version = currentScope.service.latest;
+					    }
+					
+					    if (currentScope.envVariables && currentScope.envVariables !== '') {
+						    params.variables = currentScope.envVariables.split(",");
+						    for (var i = 0; i < params.variables.length; i++) {
+							    params.variables[i] = params.variables[i].trim();
+						    }
+					    }
+					
+					    //Fill deployConfig information
+					    params.deployConfig = {
+						    "useLocalSOAJS": currentScope.useLocalSOAJS,
+						    "imagePrefix": currentScope.imagePrefix,
+						    "replication": {
+							    "mode": currentScope.mode,
+							    "replicas": currentScope.number,
+						    }
+					    };
+					    overlayLoading.show();
+					    getSendDataFromServer(currentScope, ngDataApi, {
+						    "method": "post",
+						    "routeName": "/dashboard/cloud/services/soajs/deploy",
+						    "data": params
+					    }, function (error, response) {
+						    overlayLoading.hide();
+						    if (error) {
+							    currentScope.generateNewMsg(env, 'danger', error.message);
+							    $modalInstance.close();
+						    }
+						    else {
+							    $timeout(function () {
+								    currentScope.listServices();
+							    }, 1500);
+							
+							    $modalInstance.close();
+						    }
+					    });
+				    }
+				
+				    function newService(currentScope) {
+					    var params = {
+						    'env': env,
+						    'type': 'service',
+						    "version": parseInt(currentScope.version)
+					    };
+					
+					    params.gitSource = {
+						    "owner": currentScope.serviceOwner,
+						    "repo": currentScope.serviceRepo,
+					    };
+					
+					    if (currentScope.commit && !currentScope.confirmBranch) {
+						    params.gitSource.branch = getBranchFromCommit(currentScope.commit);
+						    params.gitSource.commit = currentScope.commit;
+					    } else {
+						    params.gitSource.branch = currentScope.branch.name;
+						    params.gitSource.commit = currentScope.branch.commit.sha;
+					    }
+					
+					    if (currentScope.service.gcId) {
+						    params.contentConfig = {
+							    "service": {
+								    "gc": true,
+								    "gcName": currentScope.service.name,
+								    "gcVersion": currentScope.service.version
+							    }
+						    }
+						
+					    } else {
+						    params.name = currentScope.service.name;
+					    }
+					
+					    if (currentScope.envVariables && currentScope.envVariables !== '') {
+						    params.variables = currentScope.envVariables.split(",");
+						    for (var i = 0; i < params.variables.length; i++) {
+							    params.variables[i] = params.variables[i].trim();
+						    }
+					    }
+					
+					    if (currentScope.groupConfig) {
+						    params.type = 'daemon';
+						    params.contentConfig = {
+							    "daemon": {
+								    "grpConfName": currentScope.groupConfig.daemonConfigGroup
+							    }
+						    }
+					    }
+					
+					    params.deployConfig = {
+						    'useLocalSOAJS': currentScope.useLocalSOAJS,
+						    'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+						    "imagePrefix": currentScope.imagePrefix,
+						    "replication": {
+							    "mode": currentScope.mode,
+							    "replicas": currentScope.number
+						    }
+					    };
+					
+					    var config = {
+						    "method": "post",
+						    "routeName": "/dashboard/cloud/services/soajs/deploy",
+						    "data": params
+					    };
+					    overlayLoading.show();
+					    getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
+						    overlayLoading.hide();
+						    if (error) {
+							    currentScope.displayAlert('danger', error.message);
+							    $modalInstance.close();
+						    }
+						    else {
+							    currentScope.displayAlert('success', 'New service deployed successfully and will be available in a few minutes');
+							    $timeout(function () {
+								    currentScope.listServices();
+							    }, 1500);
+							
+							    $modalInstance.close();
+						    }
+					    });
+				    }
+				
+				    function getBranchFromCommit(commit) {
+					    return currentScope.conflictCommits[commit].branch;
+				    }
+			    }
+		    });
+	    }
+	    
+	    function getServices (cb) {
+		    getSendDataFromServer(currentScope, ngDataApi, {
+			    method: 'post',
+			    routeName: '/dashboard/services/list'
+		    }, function (error, response) {
+			    if (error) {
+				    currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
+			    } else {
+				    response.forEach(function (oneService) {
+					    oneService.type = 'service';
+					    if (oneService.name === 'controller') {
+						    oneService.UIGroup = 'Controllers';
+					    } else {
+						    oneService.UIGroup = 'Services';
+					    }
+					    if (allowListing(env, oneService)) {
+						    currentScope.services.push(oneService);
+					    }
+				    });
+				    return cb();
+			    }
+		    });
+	    }
+	
+	    function getDaemons(cb) {
+		    getSendDataFromServer(currentScope, ngDataApi, {
+			    method: 'post',
+			    routeName: '/dashboard/daemons/list',
+			    params: {
+				    'getGroupConfigs': true
+			    }
+		    }, function (error, response) {
+			    if (error) {
+				    currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveDaemonsHostsInformation[LANG]);
+			    } else {
+				    response.forEach(function (oneDaemon) {
+					    if (allowListing(env, oneDaemon)) {
+						    oneDaemon.type = 'daemon';
+						    oneDaemon.UIGroup = 'Daemons';
+						    currentScope.services.push(oneDaemon);
+					    }
+				    });
+				    return cb();
+			    }
+		    });
+	    }
+	
+	    function allowListing(env, service) {
+		    var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
+		    var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
+		    if (env.toLowerCase() === 'dashboard' && dashboardServices.indexOf(service.name) !== -1) {
+			    return filterServiceInfo(service);
+		    } else if (env.toLowerCase() !== 'dashboard' &&
+			    // service.name !== 'controller' && //controller is added later manually
+			    (
+				    //not a locked service for dashboard and non dashboard environments
+				    (dashboardServices.indexOf(service.name) !== -1 && nonDashboardServices.indexOf(service.name) !== -1) ||
+				    //a locked service that is common for dashboard and non dash envs (urac, oauth)
+				    (dashboardServices.indexOf(service.name) === -1 && nonDashboardServices.indexOf(service.name) === -1)
+			    )
+		    ) {
+			    return filterServiceInfo(service);
+		    }
+		    return false;
+	    }
+	
+	    //filter out service information that already exist
+	    function filterServiceInfo(service) {
+		    var deployedServices = [];
+		    var group = service.group;
+		    if(group && group !==''){
+		        group = group.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-')
+		    }
+		    if (currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[group]) {
+			    deployedServices = currentScope.hosts.soajs.groups[group].list;
+		    }
+		
+		    if (!service.group && service.name === 'controller') {
+			    if (currentScope.hosts.soajs.groups) {
+				    var found = false;
+				    for (var groupName in currentScope.hosts.soajs.groups) {
+					    currentScope.hosts.soajs.groups[groupName].list.forEach(function (oneService) {
+						    if (oneService.name === env.toLowerCase() + '-controller') {
+							    found = true;
+						    }
+					    });
+				    }
+				    if (!found) {
+					    return true;
+				    }
+				    else {
+					    return false;
+				    }
+			    }
+			    return true;
+		    }
+		    else {
+			    var serviceVersions = Object.keys(service.versions);
+			    serviceVersions.forEach(function (version) {
+				    for (var i = 0; i < deployedServices.length; i++) {
+					    //if a version of that service is found to be deployed, delete it from the service information
+					    if (service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
+						    delete service.versions[version];
+					    }
+				    }
+			    });
+			
+			    //if all the versions of the service are found to be deployed, return false
+			    //else, return true, after having removed the deployed versions
+			    if (Object.keys(service.versions).length === 0)
+				    return false;
+			    else
+				    return true;
+		    }
+	    }
+	    
+	    //Start here
+	    if (currentScope.hosts && currentScope.controllers) {
+		    getServices(function () {
+			    getDaemons(function () {
+				    if(Object.keys(currentScope.services).length === 0) {
+					    currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
+				    }
+				    else{
+					    openModalForm();
+				    }
+			    });
+		    });
+	    }
+	    else {
+		    currentScope.services.push({
+			    name: 'controller',
+			    UIGroup: 'Controllers',
+			    type: 'service'
+		    });
+	    }
     }
 
 	/**
@@ -958,7 +966,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 		function deployNginx(formData, params){
 			params.type = 'nginx';
-			delete params.name;
+			params.name = 'nginx';
+			//delete params.name;
 			params.contentConfig.nginx = { supportSSL: (formData.supportSSL ? true : false) };
 			params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
 			params.deployConfig.imagePrefix = formData.nginxImagePrefix;
