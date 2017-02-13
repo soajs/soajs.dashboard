@@ -274,19 +274,19 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function saveContentSchema(currentScope, cb) {
-		currentScope.config.genericService.config.serviceName = "gc_" + currentScope.config.name.toLowerCase();
+		currentScope.config.genericService.config.serviceName = "gc-" + currentScope.config.name.toLowerCase();
 
 		for(var env in currentScope.config.soajsService.db.config){
 			var dbName = Object.keys(currentScope.config.soajsService.db.config[env])[0];
-			dbName = dbName.replace(/(gc_)+/g,"");
-			currentScope.config.soajsService.db.config[env]['gc_' + dbName] = angular.copy(currentScope.config.soajsService.db.config[env][dbName]);
+			dbName = dbName.replace(/(gc\-)+/g,"");
+			currentScope.config.soajsService.db.config[env]['gc-' + dbName] = angular.copy(currentScope.config.soajsService.db.config[env][dbName]);
 			delete currentScope.config.soajsService.db.config[env][dbName];
 		}
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "send",
 			"routeName": "/dashboard/cb/add",
 			"data": {
-				"name": "gc_" + currentScope.config.name,
+				"name": "gc-" + currentScope.config.name,
 				"config": {
 					"genericService": currentScope.config.genericService,
 					"soajsService": currentScope.config.soajsService,
@@ -295,7 +295,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			}
 		}, function(error, response) {
 			if(error) {
-				currentScope.config.soajsService.db.config[env][dbName] = angular.copy(currentScope.config.soajsService.db.config[env]['gc_' + dbName]);
+				currentScope.config.soajsService.db.config[env][dbName] = angular.copy(currentScope.config.soajsService.db.config[env]['gc-' + dbName]);
 				currentScope.$parent.displayAlert("danger", error.message);
 			}
 			else {
