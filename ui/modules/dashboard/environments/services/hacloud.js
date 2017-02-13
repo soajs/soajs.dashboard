@@ -67,6 +67,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
                         		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
 			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
+			                        response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
 		                        }
                         		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
 			                        currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
