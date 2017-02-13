@@ -1947,7 +1947,8 @@ module.exports = {
 								"properties": {
 									"serviceName": {
 										"type": "string",
-										"required": true
+										"required": true,
+										"pattern": /^[a-z0-9\-]+$/
 									},
 									"serviceVersion": {
 										"type": "number",
