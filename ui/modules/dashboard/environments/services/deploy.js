@@ -176,6 +176,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         function deployEnvironment(formData) {
             var branchObj = JSON.parse(formData.branch);
+
             var params = {
 	            proxy: false,
                 env: envCode,
@@ -209,7 +210,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     params.variables[i] = params.variables[i].trim();
                 }
             }
-
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",
                 "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -361,10 +361,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		    currentScope.deploymentModes = ['replicated', 'global'];
 		    currentScope.mode = 'replicated';
 	    }
-	
+
 	    var env = currentScope.envCode;
 	    var runningHosts = currentScope.hosts;
-	
+
 	    currentScope.services = [];
 	    currentScope.service = "";
 	    currentScope.versions = [];
@@ -387,7 +387,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	    currentScope.message = {};
 	    currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 	    currentScope.imagePrefix = 'soajsorg';
-	    
+
 	    function openModalForm() {
 		    $modal.open({
 			    templateUrl: "deployNewService.tmpl",
@@ -396,40 +396,40 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			    keyboard: true,
 			    controller: function ($scope, $modalInstance) {
 				    fixBackDrop();
-				
+
 				    $scope.title = 'Deploy New Service';
 				    $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
 				    $scope.currentScope = currentScope;
-				
+
 				    $scope.selectService = function (service) {
-					
+
 					    if (service.name === 'controller') {
 						    currentScope.versions = [1];
 					    }
 					    else {
 						    currentScope.versions = Object.keys(service.versions);
 					    }
-					
+
 					    if (currentScope.version) {
 						    currentScope.version = "";
 					    }
 					    if (currentScope.versions.length === 1) {
 						    currentScope.version = currentScope.versions[0];
 					    }
-					
+
 					    currentScope.branches = [];
 					    currentScope.branch = '';
 					    currentScope.groupConfigs = '';
 					    currentScope.conflict = '';
 					    currentScope.conflictCommits = {};
-					
-					
+
+
 					    if (service.type === 'nginx') return;
-					
+
 					    if (service.type === 'daemon' && service.grpConf) {
 						    currentScope.groupConfigs = service.grpConf;
 					    }
-					
+
 					    currentScope.loadingBranches = true;
 					    getSendDataFromServer(currentScope, ngDataApi, {
 						    method: 'get',
@@ -452,7 +452,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    }
 					    });
 				    };
-				
+
 				    $scope.selectBranch = function (branch) {
 					    currentScope.conflict = false;
 					    currentScope.conflictCommits = {};
@@ -477,14 +477,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    }
 					    }
 				    };
-				
+
 				    $scope.confirmBranchSelection = function () {
 					    //clear previously selected commit if any
 					    currentScope.commit = '';
 				    };
-				
+
 				    $scope.onSubmit = function () {
-					
+
 					    if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
 						    currentScope.message.danger = "Please select a service, branch, and number of instances";
 						    $timeout(function () {
@@ -511,23 +511,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    }
 					    }
 				    };
-				
+
 				    $scope.closeModal = function () {
 					    $modalInstance.close();
 				    };
-				
+
 				    function newController(currentScope) {
 					    var params = {
 						    'env': env,
 						    'name': 'controller',
 						    'type': 'service',
 					    };
-					
+
 					    params.gitSource = {
 						    "owner": currentScope.serviceOwner,
 						    "repo": currentScope.serviceRepo,
 					    };
-					
+
 					    if (currentScope.commit && !currentScope.confirmBranch) {
 						    params.gitSource.branch = getBranchFromCommit(currentScope.commit);
 						    params.gitSource.commit = currentScope.commit;
@@ -535,18 +535,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    params.gitSource.branch = currentScope.branch.name;
 						    params.gitSource.commit = currentScope.branch.commit.sha;
 					    }
-					
+
 					    if (currentScope.service.latest) {
 						    params.version = currentScope.service.latest;
 					    }
-					
+
 					    if (currentScope.envVariables && currentScope.envVariables !== '') {
 						    params.variables = currentScope.envVariables.split(",");
 						    for (var i = 0; i < params.variables.length; i++) {
 							    params.variables[i] = params.variables[i].trim();
 						    }
 					    }
-					
+
 					    //Fill deployConfig information
 					    params.deployConfig = {
 						    "useLocalSOAJS": currentScope.useLocalSOAJS,
@@ -571,24 +571,24 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    $timeout(function () {
 								    currentScope.listServices();
 							    }, 1500);
-							
+
 							    $modalInstance.close();
 						    }
 					    });
 				    }
-				
+
 				    function newService(currentScope) {
 					    var params = {
 						    'env': env,
 						    'type': 'service',
 						    "version": parseInt(currentScope.version)
 					    };
-					
+
 					    params.gitSource = {
 						    "owner": currentScope.serviceOwner,
 						    "repo": currentScope.serviceRepo,
 					    };
-					
+
 					    if (currentScope.commit && !currentScope.confirmBranch) {
 						    params.gitSource.branch = getBranchFromCommit(currentScope.commit);
 						    params.gitSource.commit = currentScope.commit;
@@ -596,7 +596,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    params.gitSource.branch = currentScope.branch.name;
 						    params.gitSource.commit = currentScope.branch.commit.sha;
 					    }
-					
+
 					    if (currentScope.service.gcId) {
 						    params.contentConfig = {
 							    "service": {
@@ -605,18 +605,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 								    "gcVersion": currentScope.service.version
 							    }
 						    }
-						
+
 					    } else {
 						    params.name = currentScope.service.name;
 					    }
-					
+
 					    if (currentScope.envVariables && currentScope.envVariables !== '') {
 						    params.variables = currentScope.envVariables.split(",");
 						    for (var i = 0; i < params.variables.length; i++) {
 							    params.variables[i] = params.variables[i].trim();
 						    }
 					    }
-					
+
 					    if (currentScope.groupConfig) {
 						    params.type = 'daemon';
 						    params.contentConfig = {
@@ -625,7 +625,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    }
 						    }
 					    }
-					
+
 					    params.deployConfig = {
 						    'useLocalSOAJS': currentScope.useLocalSOAJS,
 						    'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
@@ -635,7 +635,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    "replicas": currentScope.number
 						    }
 					    };
-					
+
 					    var config = {
 						    "method": "post",
 						    "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -653,19 +653,19 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    $timeout(function () {
 								    currentScope.listServices();
 							    }, 1500);
-							
+
 							    $modalInstance.close();
 						    }
 					    });
 				    }
-				
+
 				    function getBranchFromCommit(commit) {
 					    return currentScope.conflictCommits[commit].branch;
 				    }
 			    }
 		    });
 	    }
-	    
+
 	    function getServices (cb) {
 		    getSendDataFromServer(currentScope, ngDataApi, {
 			    method: 'post',
@@ -689,7 +689,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			    }
 		    });
 	    }
-	
+
 	    function getDaemons(cb) {
 		    getSendDataFromServer(currentScope, ngDataApi, {
 			    method: 'post',
@@ -712,7 +712,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			    }
 		    });
 	    }
-	
+
 	    function allowListing(env, service) {
 		    var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
 		    var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
@@ -731,7 +731,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		    }
 		    return false;
 	    }
-	
+
 	    //filter out service information that already exist
 	    function filterServiceInfo(service) {
 		    var deployedServices = [];
@@ -742,7 +742,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		    if (currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[group]) {
 			    deployedServices = currentScope.hosts.soajs.groups[group].list;
 		    }
-		
+
 		    if (!service.group && service.name === 'controller') {
 			    if (currentScope.hosts.soajs.groups) {
 				    var found = false;
@@ -772,7 +772,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					    }
 				    }
 			    });
-			
+
 			    //if all the versions of the service are found to be deployed, return false
 			    //else, return true, after having removed the deployed versions
 			    if (Object.keys(service.versions).length === 0)
@@ -781,7 +781,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				    return true;
 		    }
 	    }
-	    
+
 	    //Start here
 	    if (currentScope.hosts && currentScope.controllers) {
 		    getServices(function () {
