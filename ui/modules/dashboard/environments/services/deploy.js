@@ -13,13 +13,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
         currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
         if(currentScope.isKubernetes){
+            formConfig.entries[0].entries[0].value = [
+	            {l: 'Deployment', v: 'deployment', 'selected' : true},
+	            {l: 'Daemonset', v: 'daemonset'}
+            ];
+	
+	        formConfig.entries[1].entries[0].value = [
+		        {l: 'Deployment', v: 'deployment', 'selected' : true},
+		        {l: 'Daemonset', v: 'daemonset'}
+	        ];
+            
             formConfig.entries[0].entries[2].min = kubeConfig.minPort;
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
 
         formConfig.entries[0].entries[0].onAction = function(id, data, form){
-        	if(data === 'global'){
+        	if(data === 'global' || data === 'daemonset'){
         		form.entries[0].entries[1].disabled = true;
         		form.entries[0].entries[1].required = false;
 	        }
@@ -30,7 +40,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
         };
 
 		formConfig.entries[1].entries[0].onAction = function(id, data, form){
-			if(data === 'global'){
+			if(data === 'global' || data === 'daemonset'){
 				form.entries[1].entries[1].disabled = true;
 				form.entries[1].entries[1].required = false;
 			}
@@ -855,6 +865,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 		currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
 		if(currentScope.isKubernetes){
+			formConfig.entries[0].entries[0].value = [
+				{l: 'Deployment', v: 'deployment', 'selected' : true},
+				{l: 'Daemonset', v: 'daemonset'}
+			];
+			
 			formConfig.entries[0].entries[2].min = kubeConfig.minPort;
 			formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
 			formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;

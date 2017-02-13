@@ -557,7 +557,8 @@ var environmentsConfig = {
 								{l: 'Global', v: 'global'}
 							],
 							'tooltip': 'Specify the deployment mode',
-							'required': true
+							'required': true,
+							'fieldMsg': "Global/Daemonset mode deploys one replica of the service on each node.<br />Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources."
 						},
 						{
 							'name': 'nginxCount',
@@ -614,7 +615,8 @@ var environmentsConfig = {
                                 {l: 'Global', v: 'global'}
                             ],
                             'tooltip': 'Specify the deployment mode',
-                            'required': true
+                            'required': true,
+	                        'fieldMsg': "Global/Daemonset mode deploys one replica of the service on each node.<br />Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources."
                         },
 						{
 							'name': 'controllers',
