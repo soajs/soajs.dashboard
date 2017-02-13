@@ -281,7 +281,7 @@ describe("Swagger", function () {
 			"form": {
 				"data": {
 					"service": {
-						"serviceName": "myTestService",
+						"serviceName": "mytestservice",
 						"serviceGroup": "Swagger",
 						"servicePort": 4100,
 						"serviceVersion": 1,
@@ -355,7 +355,7 @@ describe("Swagger", function () {
 
 			it("fail - service port taken", function (done) {
 				var params = util.cloneObj(oParams);
-				params.form.data.service.serviceName = "somethingElse";
+				params.form.data.service.serviceName = "somethingelse";
 				executeMyRequest(params, "swagger/generate", 'post', function (result) {
 					assert.ok(result.errors);
 					done();

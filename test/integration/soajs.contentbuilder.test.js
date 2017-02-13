@@ -144,7 +144,7 @@ describe("Content Builder Tests", function () {
                         ]
                     }
                 },
-                "serviceName": "gc_myservice",
+                "serviceName": "gc-myservice",
                 "servicePort": 4500,
                 "requestTimeout": 30,
                 "requestTimeoutRenewal": 5,
@@ -163,7 +163,7 @@ describe("Content Builder Tests", function () {
             "db": {
                 "config": {
                     "DEV": {
-                        "gc_myservice": {
+                        "gc-myservice": {
                             "tenantSpecific": true,
                             "cluster": "cluster1"
                         }
@@ -311,7 +311,7 @@ describe("Content Builder Tests", function () {
                     'soajsauth': soajsauth
                 },
                 form: {
-                    'name': 'gc_myservice',
+                    'name': 'gc-myservice',
                     'config': cbConfig
                 }
             };
@@ -345,7 +345,7 @@ describe("Content Builder Tests", function () {
                     'soajsauth': soajsauth
                 },
                 form: {
-                    'name': 'gc_myservice',
+                    'name': 'gc-myservice',
                     'config': cbConfig
                 }
             };
@@ -376,14 +376,14 @@ describe("Content Builder Tests", function () {
         });
 
         it("success - mongo", function (done) {
-            mongo.count('gc', {'name': 'gc_myservice'}, function (error, count) {
+            mongo.count('gc', {'name': 'gc-myservice'}, function (error, count) {
                 assert.ifError(error);
                 assert.ok(count);
                 assert.equal(count, 1);
-                mongo.count('gc_versioning', {'name': 'gc_myservice'}, function (error, count) {
+                mongo.count('gc_versioning', {'name': 'gc-myservice'}, function (error, count) {
                     assert.ifError(error);
                     assert.equal(count, 0);
-                    mongo.count('services', {'name': 'gc_myservice'}, function (error, count) {
+                    mongo.count('services', {'name': 'gc-myservice'}, function (error, count) {
                         assert.ifError(error);
                         assert.equal(count, 1);
                         done();
