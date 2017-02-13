@@ -87,12 +87,16 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 
 	function buildIMFV(currentScope, formData, machineName) {
 		if(formData.imfv) {
-			var imfv = {
+			var imfv = formData.imfv;
+			if(typeof(imfv) === 'string'){
+				imfv = JSON.parse(imfv);
+			}
+			var imfv2 = {
 				"req": ((formData.required === 'true') || formData.required[0] === true),
 				"source": ["body." + machineName],
-				"validation": formData.imfv
+				"validation": imfv
 			};
-			currentScope.config.genericService.config.schema.commonFields[machineName] = imfv;
+			currentScope.config.genericService.config.schema.commonFields[machineName] = imfv2;
 		}
 	}
 
@@ -373,6 +377,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					"imfv": angular.copy (fieldInfo.validation),
 					"defaultValue": ""
 				};
+				data.imfv = JSON.stringify(data.imfv, null, 2);
 				if(formInfo && Object.keys(formInfo).length > 0) {
 					data['label'] = formInfo.label;
 					data['type'] = formInfo.type || formInfo._type;
