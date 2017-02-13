@@ -738,15 +738,19 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									currentScope.displayAlert('danger', error.message);
 								}
 								else {
-									$scope.data = remove_special(response.data);
+									$scope.data = remove_special(response.data).replace("undefined", "").toString();
+									if (!$scope.$$phase) {
+										$scope.$apply();
+									}
+									
 									fixBackDrop();
 									$timeout(function () {
 										highlightMyCode()
 									}, 500);
-
+									
 									autoRefreshPromise = $timeout(function(){
 										$scope.refreshLogs();
-									}, 3000);
+									}, 5000);
 								}
 							});
 						};

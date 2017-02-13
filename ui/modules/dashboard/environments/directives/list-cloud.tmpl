@@ -158,7 +158,7 @@
 		</table>
 	</div>
 	<div class="modal-body">
-		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh">{{data}}</code></pre>
+		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh" ng-bind-html="data"></code></pre>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
