@@ -1991,8 +1991,7 @@ module.exports = {
 											"properties": {
 												"prefix": {"type": "string"},
 												"name": {"type": "string", "required": true},
-												"multitenant": {"type": "boolean"},
-												"model": {"type": "string", "required": true}
+												"multitenant": {"type": "boolean"}
 											}
 										},
 										"minItems": 1,
