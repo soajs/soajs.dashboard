@@ -203,6 +203,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.controllers;
             }
+	
+	        if(params.deployConfig.isKubernetes){
+		        if(params.deployConfig.replication.mode === 'replicated'){
+			        params.deployConfig.replication.mode = "deployment";
+		        }
+		        if(params.deployConfig.replication.mode === 'global'){
+			        params.deployConfig.replication.mode = "daemonset";
+			        delete params.deployConfig.replication.replicas;
+		        }
+	        }
 
             if(formData.variables && formData.variables !== ''){
                 params.variables = formData.variables.split(",");
@@ -288,6 +298,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	        if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 		        params.deployConfig.replication.replicas = formData.nginxCount;
 	        }
+	
+	        if(params.deployConfig.isKubernetes){
+		        if(params.deployConfig.replication.mode === 'replicated'){
+			        params.deployConfig.replication.mode = "deployment";
+		        }
+		        if(params.deployConfig.replication.mode === 'global'){
+			        params.deployConfig.replication.mode = "daemonset";
+			        delete params.deployConfig.replication.replicas;
+		        }
+	        }
 
 	        params.deployConfig.ports = [
 		        {
@@ -364,7 +384,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 	    var env = currentScope.envCode;
 	    var runningHosts = currentScope.hosts;
-
+	
+	    currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
 	    currentScope.services = [];
 	    currentScope.service = "";
 	    currentScope.versions = [];
@@ -497,17 +518,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    currentScope.message.danger = "";
 						    }, 5000);
 					    } else {
-						    if (currentScope.service.type === 'nginx') {
-							    newNginx(currentScope);
+						    if (currentScope.service.name === 'controller') {
+							    newController(currentScope);
 						    }
 						    else {
-							    var max = currentScope.number;
-							    if (currentScope.service.name === 'controller') {
-								    newController(currentScope);
-							    }
-							    else {
-								    newService(currentScope);
-							    }
+							    newService(currentScope);
 						    }
 					    }
 				    };
@@ -549,6 +564,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 					    //Fill deployConfig information
 					    params.deployConfig = {
+						    'isKubernetes': currentScope.isKubernetes,
 						    "useLocalSOAJS": currentScope.useLocalSOAJS,
 						    "imagePrefix": currentScope.imagePrefix,
 						    "replication": {
@@ -556,6 +572,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    "replicas": currentScope.number,
 						    }
 					    };
+					
+					    if(params.deployConfig.isKubernetes){
+						    if(params.deployConfig.replication.mode === 'replicated'){
+							    params.deployConfig.replication.mode = "deployment";
+						    }
+						    if(params.deployConfig.replication.mode === 'global'){
+							    params.deployConfig.replication.mode = "daemonset";
+							    delete params.deployConfig.replication.replicas;
+						    }
+					    }
+					    
 					    overlayLoading.show();
 					    getSendDataFromServer(currentScope, ngDataApi, {
 						    "method": "post",
@@ -627,6 +654,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					    }
 
 					    params.deployConfig = {
+					    	'isKubernetes': currentScope.isKubernetes,
 						    'useLocalSOAJS': currentScope.useLocalSOAJS,
 						    'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
 						    "imagePrefix": currentScope.imagePrefix,
@@ -635,7 +663,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    "replicas": currentScope.number
 						    }
 					    };
-
+					
+					    if(params.deployConfig.isKubernetes){
+						    if(params.deployConfig.replication.mode === 'replicated'){
+							    params.deployConfig.replication.mode = "deployment";
+						    }
+						    if(params.deployConfig.replication.mode === 'global'){
+							    params.deployConfig.replication.mode = "daemonset";
+							    delete params.deployConfig.replication.replicas;
+						    }
+					    }
+					    
 					    var config = {
 						    "method": "post",
 						    "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -933,7 +971,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 								commit: ""
 							},
 							contentConfig: {},
-							deployConfig :{}
+							deployConfig :{
+								isKubernetes: currentScope.isKubernetes
+							}
 						};
 						deployNginx(formData, params);
 					}
@@ -978,7 +1018,17 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 				params.deployConfig.replication.replicas = formData.nginxCount;
 			}
-
+			
+			if(params.deployConfig.isKubernetes){
+				if(params.deployConfig.replication.mode === 'replicated'){
+					params.deployConfig.replication.mode = "deployment";
+				}
+				if(params.deployConfig.replication.mode === 'global'){
+					params.deployConfig.replication.mode = "daemonset";
+					delete params.deployConfig.replication.replicas;
+				}
+			}
+			
 			params.deployConfig.ports = [
 				{
 					isPublished: true,
