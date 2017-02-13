@@ -34,7 +34,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		var dbs = [];
 		for(var i =0; i < currentScope.form.formData.dbCount; i++){
 			var dbObj = {
-				prefix: currentScope.form.formData['prefix' + i],
+				prefix: currentScope.form.formData['prefix' + i] || "",
 				name: currentScope.form.formData['name' + i]
 			};
 			
