@@ -209,6 +209,7 @@ function buildForm(context, modal, configuration, cb) {
 		if (oneEntry.type === 'jsoneditor') {
 			oneEntry.onLoad = function (_editor) {
 				oneEntry.editor = _editor;
+				_editor.$blockScrolling = Infinity;
 				oneEntry.ngModel = JSON.stringify(oneEntry.value, null, 2);
 				_editor.setValue(JSON.stringify(oneEntry.value, null, 2));
 				_editor.scrollToLine(0, true, true);
