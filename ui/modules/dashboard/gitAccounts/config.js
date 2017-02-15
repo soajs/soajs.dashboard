@@ -201,6 +201,9 @@ var gitAccountsAppConfig = {
 		"soajs/soajs.installer",
 		"soajs/soajs.sdk",
 		"soajs/soajs.dashboard.ui",
-		"soajs/soajs.website.ui"
+		"soajs/soajs.website.ui",
+		"soajs/grunt-soajs",
+		"soajs/soajs.urac.driver",
+		"soajs/soajs.core.drivers"
 	]
 };

@@ -1,7 +1,7 @@
 "use strict";
 
 var environmentsApp = soajsApp.components;
-environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envHosts', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, envHosts, deploySrv, injectFiles) {
+environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envHosts', 'injectFiles', function ($scope, $cookies, $timeout, envHosts, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -47,19 +47,11 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		context.waitMessage.type = '';
 	};
 
-	$scope.deployEnvironment = function (envCode) {
-		deploySrv.deployEnvironment($scope, envCode);
-	};
-
 	$scope.listHosts = function (env, noPopulate) {
 		$scope.waitMessage.close();
 		envHosts.listHosts($scope, env, noPopulate);
 	};
-
-	$scope.listNginxHosts = function (env) {
-		envHosts.listNginxHosts($scope, env);
-	};
-
+	
 	$scope.executeHeartbeatTest = function (env, oneHost) {
 		envHosts.executeHeartbeatTest($scope, env, oneHost);
 	};
@@ -80,43 +72,9 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		envHosts.loadDaemonStats($scope, env, oneHost);
 	};
 
-	$scope.removeHost = function (env, serviceName, oneHost) {
-		envHosts.removeHost($scope, env, serviceName, oneHost);
-	};
-
-	$scope.stopHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.stopHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.startHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.startHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.hostLogs = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.hostLogs($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.infoHost = function (env, serviceName, oneHost, serviceInfo) {
-		envHosts.infoHost($scope, env, serviceName, oneHost, serviceInfo);
-	};
-
-	$scope.createHost = function (env, services) {
-		envHosts.createHost($scope, env, services);
-	};
-
-	$scope.containerLogs = function (env, container) {
-		envHosts.containerLogs($scope, env, container);
-	};
-
-	$scope.deleteContainer = function (env, container) {
-		envHosts.deleteContainer($scope, env, container);
-	};
-
 	if ($scope.access.listHosts) {
 		injectFiles.injectCss('modules/dashboard/environments/environments.css');
 		$scope.envCode = $cookies.getObject("myEnv").code;
-		//list nginx container, hosts, and zombie containers in parallel
-		$scope.listNginxHosts($scope.envCode);
 		$scope.listHosts($scope.envCode);
 	}
 }]);

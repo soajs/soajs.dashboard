@@ -5,7 +5,7 @@ var genericService = {
 		"config": {
 			"type": "object",
 			"properties": {
-				"serviceName": {"type": "string", "minLength": "3"},
+				"serviceName": {"type": "string", "minLength": "3", "pattern": /^[a-z0-9\-]+$/},
 				"servicePort": {"type": "integer", "min": 4100},
 				"requestTimeout": {"type": "integer", "min": 10},
 				"requestTimeoutRenewal": {"type": "integer", "max": 10},

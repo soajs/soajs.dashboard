@@ -34,18 +34,18 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		var dbs = [];
 		for(var i =0; i < currentScope.form.formData.dbCount; i++){
 			var dbObj = {
-				prefix: currentScope.form.formData['prefix' + i],
+				prefix: currentScope.form.formData['prefix' + i] || "",
 				name: currentScope.form.formData['name' + i]
 			};
 			
 			if(Array.isArray(currentScope.form.formData['model' + i])){
-				dbObj.model = currentScope.form.formData['model' + i][0];
+				dbObj[currentScope.form.formData['model' + i][0]] = true;
 			}
 			else{
-				dbObj.model= currentScope.form.formData['model' + i];
+				dbObj[currentScope.form.formData['model' + i]] = true;
 			}
 			
-			if(dbObj.model === 'mongo'){
+			if(currentScope.form.formData['model' + i] === 'mongo'){
 				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
 			}
 			if(Object.keys(dbObj).length > 0){

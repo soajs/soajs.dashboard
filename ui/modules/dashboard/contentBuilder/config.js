@@ -172,7 +172,7 @@ var cbConfig = {
 						{
 						    'name': 'imfv',
 						    'label': translation.imfvConfiguration[LANG],
-						    'type': 'jsoneditor',
+						    'type': 'textarea',
 						    'options': {
 						        'mode': 'text',
 						        'availableModes': []
@@ -377,7 +377,7 @@ var cbConfig = {
 				{
 				    'name': 'errors',
 				    'label': translation.errorCodesMessage[LANG],
-				    'type': 'jsoneditor',
+				    'type': 'textarea',
 				    'options': {
 				        'mode': 'code',
 				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]

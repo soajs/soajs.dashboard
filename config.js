@@ -1947,7 +1947,8 @@ module.exports = {
 								"properties": {
 									"serviceName": {
 										"type": "string",
-										"required": true
+										"required": true,
+										"pattern": /^[a-z0-9\-]+$/
 									},
 									"serviceVersion": {
 										"type": "number",
@@ -1991,8 +1992,7 @@ module.exports = {
 											"properties": {
 												"prefix": {"type": "string"},
 												"name": {"type": "string", "required": true},
-												"multitenant": {"type": "boolean"},
-												"model": {"type": "string", "required": true}
+												"multitenant": {"type": "boolean"}
 											}
 										},
 										"minItems": 1,

@@ -82,9 +82,9 @@ var swaggerEditorConfig = {
 				'name': 'serviceName',
 				'label': "Service Name",
 				'type': 'text',
-				'placeholder': "myService",
+				'placeholder': "myservice",
 				'value': '',
-				'tooltip': "Enter the service name",
+				'tooltip': "Enter the service name, it shouldn't contain any upper case letters",
 				'required': true,
 				"fieldMsg": "Service Name should be alphanumeric and does not contain any space or dot or hyphen characters"
 			},

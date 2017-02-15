@@ -73,8 +73,8 @@
 						<br>
 						<label>Deployment Mode</label>
 						<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
-						<label class="fieldMsg">Global mode deploys one replica of the service on each node.</label>
-						<label class="fieldMsg">Replica mode deploys the specified number of replicas based on the availability of resources.</label>
+						<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
+						<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
 					</div>
 					<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
 						<label>Replica Count</label>
@@ -158,7 +158,7 @@
 		</table>
 	</div>
 	<div class="modal-body">
-		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh">{{data}}</code></pre>
+		<pre id="code" class="preBox" scroll-glue><code style="white-space: pre !important;" class="sh" ng-bind-html="data"></code></pre>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>

@@ -702,8 +702,8 @@ var cbTranslation = {
 		"FRA": "Enter the name of the service you are about to create."
 	},
 	"myService": {
-		"ENG": "My Service...",
-		"FRA": "My Service..."
+		"ENG": "myservice...",
+		"FRA": "myservice..."
 	},
 	"createNewDatabase": {
 		"ENG": "Create New Database ?",

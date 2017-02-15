@@ -1182,7 +1182,7 @@ describe("testing hosts deployment", function () {
         });
 
         it("success - will delete deployed service", function (done) {
-            getService(soajsauth, {env: 'dev', serviceName: 'gc_myservice'}, function (service) {
+            getService(soajsauth, {env: 'dev', serviceName: 'gc-myservice'}, function (service) {
                 deleteService(soajsauth, {env: 'dev', id: service.id, mode: service.labels['soajs.service.mode']}, function (body) {
                     assert.ok(body.result);
                     assert.ok(body.data);

@@ -200,6 +200,10 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 							formData[i] = formData[i][0].toString();
 						}
 					}
+					
+					if(typeof(formData['errors']) === 'string'){
+						formData['errors'] = JSON.parse(formData['errors']);
+					}
 					$scope.config.genericService.config.errors = formData['errors'];
 
 					$scope.config.soajsService.db.collection = formData['collection'];
