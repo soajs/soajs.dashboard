@@ -57,7 +57,7 @@ myAccountApp.controller('changeSecurityCtrl', ['$scope', '$timeout', '$modal', '
 		};
 		buildFormWithModal($scope, $modal, options);
 	};
-
+	
 	$scope.changePassword = function () {
 		var config = changePwConfig.formConf;
 		var options = {
@@ -121,7 +121,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 	function ($scope, $timeout, $modal, ngDataApi, $cookies, $localStorage) {
 		$scope.$parent.isUserLoggedIn();
 		var userCookie = $localStorage.soajs_user;
-
+		
 		var formConfig = {
 			'timeout': $timeout,
 			'name': 'editProfile',
@@ -188,7 +188,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					'btn': 'primary',
 					'action': function (formData) {
 						var profileObj = (formData.profile) ? formData.profile : {};
-
+						
 						var postData = {
 							'username': formData.username,
 							'firstName': formData.firstName,
@@ -213,7 +213,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 								userCookie.username = formData.username;
 								userCookie.lastName = formData.lastName;
 								userCookie.profile = profileObj;
-
+								
 								$localStorage.soajs_user = userCookie;
 								$scope.$parent.$emit('refreshWelcome', {});
 							}
@@ -223,7 +223,7 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			],
 			form: profileConfig.formConf
 		};
-
+		
 		$scope.getProfile = function (username) {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
@@ -242,12 +242,12 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 					formConfig.data = response;
 					formConfig.data.profile = p;
 					buildForm($scope, null, formConfig);
-
+					
 					$scope.$parent.$emit('xferData', {'memberData': response});
 				}
 			});
 		};
-
+		
 		if ((typeof(userCookie) !== "undefined") && (typeof(userCookie) === "object")) {
 			var uname = userCookie.username;
 			$scope.getProfile(uname);
@@ -256,11 +256,11 @@ myAccountApp.controller('myAccountCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 			$scope.$parent.displayAlert("danger", translation.youNeedToLoginFirst[LANG]);
 			$scope.$parent.go("/");
 		}
-
+		
 	}]);
 
 myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUserLoggedIn', function ($scope, ngDataApi, $route, isUserLoggedIn) {
-
+	
 	$scope.validateChangeEmail = function () {
 		getSendDataFromServer($scope, ngDataApi, {
 			"method": "get",
@@ -278,7 +278,7 @@ myAccountApp.controller('validateCtrl', ['$scope', 'ngDataApi', '$route', 'isUse
 			}
 		});
 	};
-
+	
 	$scope.validateChangeEmail();
 }]);
 
@@ -290,27 +290,77 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 		'btn': 'primary',
 		'action': function (formData) {
 			var postData = {
-				'username': formData.username, 'password': formData.password
+				'username': formData.username,
+				'password': formData.password,
+				'grant_type': "password"
 			};
 			overlayLoading.show();
-			getSendDataFromServer($scope, ngDataApi, {
-				"method": "send",
-				"routeName": "/urac/login",
-				"data": postData
-			}, function (error, response) {
-				if (error) {
-					overlayLoading.hide();
-					$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
-				}
-				else {
-					$localStorage.soajs_user = response;
-					if (response.soajsauth) {
-						$cookies.put("soajs_auth", response.soajsauth);
+			var authValue;
+			
+			function loginOauth() {
+				var options1 = {
+					"method": "get",
+					"routeName": "/oauth/authorization"
+				};
+				getSendDataFromServer($scope, ngDataApi, options1, function (error, response) {
+					if (error) {
+						overlayLoading.hide();
+						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 					}
-					//get dashboard keys
-					getKeys();
-				}
-			});
+					else {
+						authValue = response.data;
+
+						var options2 = {
+							"method": "post",
+							"routeName": "/oauth/token",
+							"data": postData,
+							"headers": {
+								'accept': '*/*',
+								// 'content-type': 'application/json',
+								// 'content-type': 'application/x-www-form-urlencoded',
+								"Authorization": authValue
+							}
+						};
+						getSendDataFromServer($scope, ngDataApi, options2, function (error, response) {
+							if (error) {
+								overlayLoading.hide();
+								$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
+							}
+							else {
+								if (Object.hasOwnProperty.call(response, "access_token")) {
+									$cookies.put('access_token', response.access_token);
+								}
+								getKeys();
+							}
+						});
+
+					}
+				});
+			}
+			
+			loginOauth();
+
+			function uracLogin() {
+				var options = {
+					"method": "send",
+					"routeName": "/urac/login",
+					"data": postData
+				};
+				getSendDataFromServer($scope, ngDataApi, options, function (error, response) {
+					if (error) {
+						overlayLoading.hide();
+						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
+					}
+					else {
+						$localStorage.soajs_user = response;
+						if (response.soajsauth) {
+							$cookies.put("soajs_auth", response.soajsauth);
+						}
+						//get dashboard keys
+						getKeys();
+					}
+				});
+			}
 
 			function getKeys() {
 				getSendDataFromServer($scope, ngDataApi, {
@@ -330,7 +380,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					}
 				});
 			}
-
+			
 			function getPermissions() {
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "get",
@@ -365,7 +415,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 						if (response.envauth) {
 							$cookies.putObject("soajs_envauth", response.envauth);
 						}
-
+						
 						response.environments.forEach(function (oneEnv) {
 							if (oneEnv.code.toLowerCase() === 'dashboard') {
 								$cookies.putObject("myEnv", oneEnv);
@@ -379,7 +429,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 			}
 		}
 	}];
-
+	
 	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
@@ -388,7 +438,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 		var gotoUrl = $scope.$parent.mainMenu.links[0].entries[0].url.replace("#", "");
 		$scope.$parent.go(gotoUrl);
 	}
-
+	
 }]);
 
 myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn', function ($scope, ngDataApi, isUserLoggedIn) {
@@ -418,7 +468,7 @@ myAccountApp.controller('forgotPwCtrl', ['$scope', 'ngDataApi', 'isUserLoggedIn'
 			});
 		}
 	}];
-
+	
 	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
@@ -461,7 +511,7 @@ myAccountApp.controller('setPasswordCtrl', ['$scope', 'ngDataApi', '$routeParams
 			});
 		}
 	}];
-
+	
 	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}
@@ -502,7 +552,7 @@ myAccountApp.controller('resetPwCtrl', ['$scope', 'ngDataApi', '$routeParams', '
 			});
 		}
 	}];
-
+	
 	if (!isUserLoggedIn()) {
 		buildForm($scope, null, formConfig);
 	}

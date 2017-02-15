@@ -10,9 +10,9 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			try{
+			try {
 				var res = String.fromCharCode.apply(null, new Uint8Array(response));
-				if(typeof res !== 'object'){
+				if (typeof res !== 'object') {
 					res = JSON.parse(res);
 				}
 				if (res.result === false) {
@@ -34,10 +34,13 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 					return cb(null, response);
 				}
 			}
-			catch(e){
+			catch (e) {
 				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream and too large.");
 				return cb(null, response);
 			}
+		}
+		else if (response && !Object.hasOwnProperty.call(response, "result")) {
+			return cb(null, response);
 		}
 		else if (response && response.result === true) {
 			if (response.soajsauth && $cookies.get('soajs_auth')) {
@@ -49,7 +52,15 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			}
 			
 			if (typeof(resp.data) !== 'object') {
-				resp.data = {};
+				if (typeof(resp.data) === 'string') {
+					// todo check: does not support when data is string
+					resp.data = {
+						data: resp.data
+					};
+				}
+				else {
+					resp.data = {};
+				}
 			}
 			resp.data.soajsauth = resp.soajsauth;
 			return cb(null, resp.data);
@@ -110,6 +121,13 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		}
 		else {
 			config.headers.key = apiConfiguration.key;
+		}
+		
+		var access_token = $cookies.get('access_token');
+		if (access_token) {
+			if (config.params) {
+				config.params.access_token = access_token;
+			}
 		}
 		
 		if (opts.proxy) {

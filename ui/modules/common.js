@@ -40,7 +40,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var apiOptions = {
 		url: (options.url) ? options.url + options.routeName : apiConfiguration.domain + options.routeName,
 		headers: {
-			'Content-Type': 'application/json'
+			'content-type': 'application/json'
 		}
 	};
 	
@@ -174,7 +174,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			"url": options.url
 		};
 		
-		if(opts.proxy){
+		if (opts.proxy) {
 			sendOptions.proxy = opts.proxy;
 		}
 		
