@@ -30,10 +30,10 @@ var dbModel = "mongo";
 var service = new soajs.server.service(config);
 
 function checkMyAccess(req, res, cb) {
-	if (!req.soajs.session || !req.soajs.session.getUrac()) {
+	if (!req.soajs.session || !req.soajs.urac.getProfile()) {
 		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 	}
-	var myTenant = req.soajs.session.getUrac().tenant;
+	var myTenant = req.soajs.urac.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
 		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
 	}

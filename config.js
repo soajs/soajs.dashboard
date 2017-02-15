@@ -18,7 +18,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 	"awarenessEnv": true,
-	"oauth": false,
+	"oauth": true,
 	"session": true,
 	"roaming": true,
 
