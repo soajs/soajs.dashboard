@@ -53,7 +53,6 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			
 			if (typeof(resp.data) !== 'object') {
 				if (typeof(resp.data) === 'string') {
-					// todo check: does not support when data is string
 					resp.data = {
 						data: resp.data
 					};
@@ -66,14 +65,6 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			return cb(null, resp.data);
 		}
 		else {
-			// if (response.errors.codes[0] === 132) {
-			// 	$cookies.remove('soajs_auth');
-			// 	$localStorage.acl_access = null;
-			// 	scope.$parent.enableInterface = false;
-			// 	scope.$parent.isUserLoggedIn();
-			// 	scope.$parent.go("/login");
-			// }
-			
 			var str = '';
 			for (var i = 0; i < response.errors.details.length; i++) {
 				str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;

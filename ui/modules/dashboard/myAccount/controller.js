@@ -317,8 +317,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 							"data": postData,
 							"headers": {
 								'accept': '*/*',
-								// 'content-type': 'application/json',
-								// 'content-type': 'application/x-www-form-urlencoded',
 								"Authorization": authValue
 							}
 						};
