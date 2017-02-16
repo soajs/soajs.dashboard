@@ -341,11 +341,10 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 
 			function uracLogin() {
 				var options = {
-					"method": "send",
-					"routeName": "/urac/login",
-					"data": {
-						'username': formData.username,
-						'password': formData.password
+					"method": "get",
+					"routeName": "/urac/account/getUser",
+					"params": {
+						'username': formData.username
 					}
 				};
 				getSendDataFromServer($scope, ngDataApi, options, function (error, response) {
