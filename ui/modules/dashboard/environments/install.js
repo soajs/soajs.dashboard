@@ -1374,8 +1374,8 @@ var envTranslation ={
 		"FRA": "Host(s) Number"
 	},
 	"envVariables": {
-		"ENG": "Environment Variables",
-		"FRA": "Environment Variables"
+		"ENG": "Additional Environment Variables",
+		"FRA": "Additional Environment Variables"
 	},
 	"defaultEnvVariables": {
 		"ENG": "Default Environment Variables",

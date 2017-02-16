@@ -598,6 +598,46 @@ var environmentsConfig = {
 							'type': 'radio',
 							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 							'required': false
+						},
+						{
+							'name': 'nginxRPInitialDelay',
+							'label': 'Readiness Probe: Initial Delay (in seconds)',
+							'type': 'number',
+							'value': 15,
+							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
+							'required': true
+						},
+						{
+							'name': 'nginxRPTimeout',
+							'label': 'Readiness Probe: Timeout (in seconds)',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Number of seconds after which the probe times out',
+							'required': true
+						},
+						{
+							'name': 'nginxRPPeriod',
+							'label': 'Readiness Probe: Period (in seconds)',
+							'type': 'number',
+							'value': 10,
+							'fieldMsg': 'How often (in seconds) to perform the probe',
+							'required': true
+						},
+						{
+							'name': 'nginxRPSuccessThreshold',
+							'label': 'Readiness Probe: Success Threshold',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
+							'required': true
+						},
+						{
+							'name': 'nginxRPFailureThreshold',
+							'label': 'Readiness Probe: Failure Threshold',
+							'type': 'number',
+							'value': 3,
+							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'required': true
 						}
 					]
 				},
@@ -670,6 +710,46 @@ var environmentsConfig = {
 							"name": "defaultENVVAR",
 							"type": "html",
 							"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+						},
+						{
+							'name': 'ctrlRPInitialDelay',
+							'label': 'Readiness Probe: Initial Delay (in seconds)',
+							'type': 'number',
+							'value': 15,
+							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPTimeout',
+							'label': 'Readiness Probe: Timeout (in seconds)',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Number of seconds after which the probe times out',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPPeriod',
+							'label': 'Readiness Probe: Period (in seconds)',
+							'type': 'number',
+							'value': 10,
+							'fieldMsg': 'How often (in seconds) to perform the probe',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPSuccessThreshold',
+							'label': 'Readiness Probe: Success Threshold',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPFailureThreshold',
+							'label': 'Readiness Probe: Failure Threshold',
+							'type': 'number',
+							'value': 3,
+							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'required': true
 						}
 					]
 				}
