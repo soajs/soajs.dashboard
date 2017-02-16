@@ -299,6 +299,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 			
 			function loginOauth() {
 				var options1 = {
+					"token": false,
 					"method": "get",
 					"routeName": "/oauth/authorization"
 				};
@@ -330,7 +331,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 								if (Object.hasOwnProperty.call(response, "access_token")) {
 									$cookies.put('access_token', response.access_token);
 								}
-								getKeys();
+								uracLogin();
 							}
 						});
 
@@ -344,18 +345,18 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				var options = {
 					"method": "send",
 					"routeName": "/urac/login",
-					"data": postData
+					"data": {
+						'username': formData.username,
+						'password': formData.password
+					}
 				};
 				getSendDataFromServer($scope, ngDataApi, options, function (error, response) {
 					if (error) {
-						overlayLoading.hide();
+						$cookies.remove('access_token');
 						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 					}
 					else {
 						$localStorage.soajs_user = response;
-						if (response.soajsauth) {
-							$cookies.put("soajs_auth", response.soajsauth);
-						}
 						//get dashboard keys
 						getKeys();
 					}
@@ -370,8 +371,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				}, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
-						$cookies.remove('soajs_user');
-						$cookies.remove('soajs_auth');
+						$cookies.remove('access_token');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
@@ -389,7 +389,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					overlayLoading.hide();
 					if (error) {
 						$localStorage.soajs_user = null;
-						$cookies.remove('soajs_auth');
+						$cookies.remove('access_token');
 						$cookies.remove('soajs_dashboard_key');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
@@ -412,10 +412,6 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 							$localStorage.acl_access = response.acl;
 						}
 						$localStorage.environments = response.environments;
-						if (response.envauth) {
-							$cookies.putObject("soajs_envauth", response.envauth);
-						}
-						
 						response.environments.forEach(function (oneEnv) {
 							if (oneEnv.code.toLowerCase() === 'dashboard') {
 								$cookies.putObject("myEnv", oneEnv);

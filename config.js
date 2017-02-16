@@ -20,7 +20,6 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-	"roaming": true,
 
 	"hasher": {
 		"hashIterations": 1024,

@@ -526,8 +526,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		});
 		
 		$scope.isUserLoggedIn = function (stopRedirect) {
-			if (!$cookies.get('soajs_auth') || !$localStorage.soajs_user) {
-				$cookies.remove('soajs_auth');
+			if (!$cookies.get('access_token') || !$localStorage.soajs_user) {
+				$cookies.remove('access_token');
 				$localStorage.soajs_user = null;
 				$localStorage.acl_access = null;
 				$scope.enableInterface = false;
@@ -696,11 +696,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				});
 			}
 			
-			if ($cookies.get('soajs_auth') && $localStorage.soajs_user) {
+			if ($cookies.get('access_token') && $localStorage.soajs_user) {
 				var user = $localStorage.soajs_user;
 				getUser(user.username, function (result) {
 					if (!result) {
-						$cookies.remove('soajs_auth');
+						$cookies.remove('access_token');
 						$cookies.remove('myEnv');
 						$cookies.remove('soajs_dashboard_key');
 						$cookies.remove('soajsID');

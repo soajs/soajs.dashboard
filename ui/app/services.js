@@ -92,6 +92,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function executeRequest(scope, opts, cb) {
 		var config = {
+			token: opts.token,
 			url: opts.url,
 			method: opts.method,
 			params: opts.params || {},
@@ -104,19 +105,19 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			json: true
 		};
 		
-		if (opts.proxy) {
-			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
-		}
+		// if (opts.proxy) {
+		// 	config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
+		// }
 		
 		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
 			config.headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
 		}
 		
-		if (opts.headers.key) {
+		if (opts.headers.key && config.token) {
 			config.headers.key = opts.headers.key;
 		}
-		else if ($cookies.get("soajs_dashboard_key")) {
+		else if ($cookies.get("soajs_dashboard_key") && config.token) {
 			config.headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
 		}
 		else {
@@ -124,17 +125,18 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		}
 		
 		var access_token = $cookies.get('access_token');
-		if (access_token) {
+		if (access_token && config.token) {
 			if (config.params) {
 				config.params.access_token = access_token;
 			}
 		}
 		
 		if (opts.proxy) {
-			if (!config.params.__env || !config.params.__envauth) {
-				var envauth = $cookies.getObject('soajs_envauth');
+			// if (!config.params.__env || !config.params.__envauth) {
+			if (!config.params.__env) {
+				// var envauth = $cookies.getObject('soajs_envauth');
 				var env = $cookies.getObject('myEnv').code;
-				config.params.__envauth = envauth[env.toLowerCase()];
+				// config.params.__envauth = envauth[env.toLowerCase()];
 				config.params.__env = env.toUpperCase();
 			}
 		}
@@ -210,11 +212,11 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 
 soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cookies, $localStorage) {
 	return function () {
-		if ($localStorage.soajs_user && $cookies.get('soajs_auth')) {
+		if ($localStorage.soajs_user && $cookies.get('access_token')) {
 			return true;
 		}
 		else {
-			$cookies.remove('soajs_auth');
+			$cookies.remove('access_token');
 			$localStorage.soajs_user = null;
 			return false;
 		}
