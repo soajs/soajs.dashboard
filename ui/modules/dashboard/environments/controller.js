@@ -136,6 +136,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	};
 
 	function fixEditorHeigh(_editor){
+		_editor.$blockScrolling = Infinity;
 		_editor.scrollToLine(0, true, true);
 		_editor.scrollPageUp();
 		_editor.clearSelection();
