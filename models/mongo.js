@@ -66,11 +66,6 @@ function checkForMongo(soajs) {
 		//products
 		mongo.ensureIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
 
-		//dashboard_extKeys
-		mongo.ensureIndex(dashExtKeysCollectionName, {env: 1}, errorLogger);
-		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, env: 1}, errorLogger);
-		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1, env: 1}, errorLogger);
-
 		//hosts
 	    if (!process.env.SOAJS_DEPLOY_HA) {
 		    mongo.ensureIndex(hostsCollectionName, {_id: 1, locked: 1}, errorLogger);
