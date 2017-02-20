@@ -512,31 +512,37 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function fillApiAccess(apis) {
+	function fillApiAccess(apis, forcePrivate) {
 		for (var apiName in apis) {
 			if (apis.hasOwnProperty(apiName)) {
 				apis[apiName].include = true;
 				apis[apiName].accessType = 'clear';
-				if (apis[apiName].access == true) {
-					apis[apiName].accessType = 'private';
-				}
-				else if (apis[apiName].access === false) {
-					apis[apiName].accessType = 'public';
+				if (forcePrivate === true) {
+					// This variable is set to true only in the user ACL.
+					apis[apiName].accessType = 'clear';
 				}
 				else {
-					if (Array.isArray(apis[apiName].access)) {
-						apis[apiName].accessType = 'groups';
-						apis[apiName].grpCodes = {};
-						apis[apiName].access.forEach(function (c) {
-							apis[apiName].grpCodes[c] = true;
-						});
+					if (apis[apiName].access === true) {
+						apis[apiName].accessType = 'private';
+					}
+					else if (apis[apiName].access === false) {
+						apis[apiName].accessType = 'public';
+					}
+					else {
+						if (Array.isArray(apis[apiName].access)) {
+							apis[apiName].accessType = 'groups';
+							apis[apiName].grpCodes = {};
+							apis[apiName].access.forEach(function (c) {
+								apis[apiName].grpCodes[c] = true;
+							});
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	function fillServiceApiAccess(service, currentService) {
+	function fillServiceApiAccess(service, currentService, forcePrivate) {
 		function grpByMethod(service, fixList) {
 			var byMethod = false;
 			for (var grp in fixList) {
@@ -570,12 +576,12 @@ soajsApp.service("aclDrawHelpers", function () {
 		if (service.get || service.post || service.put || service.delete) {
 			for (var method in service) {
 				if (service[method].apis) {
-					fillApiAccess(service[method].apis);
+					fillApiAccess(service[method].apis, forcePrivate);
 				}
 			}
 		}
 		else if (service.apis) {
-			fillApiAccess(service.apis);
+			fillApiAccess(service.apis, forcePrivate);
 		}
 	}
 	
