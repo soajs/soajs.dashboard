@@ -8,15 +8,16 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 	
 	function prepareViewAclObj(aclFill, parentAcl, services) {
 		var serviceName;
-		
 		for (serviceName in parentAcl) {
 			if (aclFill.hasOwnProperty(serviceName)) {
+				aclFill[serviceName].access = true;
 				aclDrawHelpers.fillServiceAccess(aclFill[serviceName]);
 				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], services[serviceName]);
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {
 				if (parentAcl[serviceName]) {
+					parentAcl[serviceName].access = true;
 					if (parentAcl[serviceName].apisPermission === 'restricted') {
 						aclFill[serviceName] = {
 							include: false,
