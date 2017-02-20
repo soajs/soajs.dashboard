@@ -21,19 +21,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.jsonEditor = {
 		custom: {
-			options: {
-				mode: 'tree'
-			},
-			data: {},
-			jsonIsValid: true,
-			dataIsReady: false
+			data: ""
 		},
 		logger: {
-			options: {
-				mode: 'tree'
-			},
-			data: {},
-			jsonIsValid: true,
+			data: ""
 		}
 	};
 
@@ -81,6 +72,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							if (!$scope.formEnvironment.services.config.session.hasOwnProperty('proxy')) {
 								$scope.formEnvironment.services.config.session.proxy = undefined;
 							}
+							
 							if (response[x].services && response[x].services.config) {
 								if (response[x].services.config.logger) {
 									$scope.formEnvironment.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, 2);
@@ -106,26 +98,21 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						}
 					}
 					$scope.grid = {rows: response};
-					if ($scope.grid.rows) {
-						if ($scope.grid.rows.length == 1) {
-							$scope.grid.rows[0].showOptions = true;
-							$scope.jsonEditor.custom.dataIsReady = true;
-						}
-					}
+					$scope.jsonEditor.custom.data = JSON.stringify($scope.grid.rows[0].custom, null, 2);
 				}
 			}
 		});
 	};
 
-	$scope.customLoaded = function (instance) {
-		if (!$scope.grid.rows[0].custom) {
-			$scope.grid.rows[0].custom = {};
-		}
-		$scope.jsonEditor.custom.data = angular.copy ($scope.grid.rows[0].custom);
-
-		$scope.editorLoaded(instance, 'custom');
+	$scope.customLoaded = function (_editor) {
+		$scope.jsonEditor.custom.editor = _editor;
+		//bug in jsoneditor: setting default mode to 'code' does not display data
+		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
+		// _editor.$blockScrolling = Infinity;
+		_editor.setValue($scope.jsonEditor.custom.data);
+		fixEditorHeigh(_editor);
 	};
-
+	
 	$scope.editorLoaded = function (_editor) {
 		//bug in jsoneditor: setting default mode to 'code' does not display data
 		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
@@ -144,13 +131,16 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 	}
 	
 	$scope.saveCustomRegistry = function () {
-		if (!$scope.jsonEditor.custom.jsonIsValid) {
+		try{
+			$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
+			$scope.formEnvironment.custom = JSON.parse($scope.jsonEditor.custom.data);
+		}
+		catch(e){
+			console.log(e);
 			$scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
 			return;
 		}
-
-		$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
-		$scope.formEnvironment.custom = $scope.jsonEditor.custom.data;
+		
 		$scope.newEntry = false;
 		$scope.envId = $scope.formEnvironment._id;
 
