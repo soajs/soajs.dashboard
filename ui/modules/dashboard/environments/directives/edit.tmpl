@@ -111,15 +111,8 @@
                                         </tab>
                                         <tab heading="Logger">
                                             <div class="grouped clearfix" style="vertical-align: top">
-                                                <label><span class="icon icon-arrow-right2"></span> {{translation.configuration[LANG]}}</label>
-                                                <select class="form-control f-right" ng-style="{'min-width': '15%', 'width': '15%'}" ng-model="jsonEditor.logger.options.mode">
-                                                    <option value="code">{{translation.codeView[LANG]}}</option>
-                                                    <option value="tree">{{translation.treeView[LANG]}}</option>
-                                                    <option value="form">{{translation.formView[LANG]}}</option>
-                                                </select>
-                                                <br /><br />
-                                                <div ng-jsoneditor="loggerLoaded" ng-model="jsonEditor.logger.data" options="jsonEditor.logger.options" style="float: right; width: 82%; height: 200px;"></div>
-                                                <em>{{translation.specifyLoggerConfiguration[LANG]}} <a href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a></em>
+                                                <div id="loggerEditor" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: editorLoaded}" ng-model="jsonEditor.logger.data" style="height: 200px;"></div>
+                                                <em style="margin-left:10px;">{{translation.specifyLoggerConfiguration[LANG]}} <a href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a></em>
                                             </div>
                                         </tab>
                                         <tab heading="Cors">
