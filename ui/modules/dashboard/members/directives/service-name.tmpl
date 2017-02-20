@@ -1,13 +1,13 @@
 <div class="serviceName">
-	<input type="checkbox" ng-checked="application.aclFill[oneEnv.code][sName].include===true"
-	       ng-model="application.aclFill[oneEnv.code][sName].include" value="{{application.package + '_' + sName}}"
+	<input type="checkbox" ng-model="application.aclFill[oneEnv.code][sName].include" value="{{application.package + '_' + sName}}"
 	       ng-click="selectService(application, service, oneEnv.code)"/>
 	<b> <a href="">{{sName}}</a></b>
 </div>
 <div ng-show="application.aclFill[oneEnv.code][sName].include" style="float: left;">
 	<div style="float: left;">
         <span style="padding-left: 40px;">
-            <input ng-model="application.aclFill[oneEnv.code][sName].accessType" value="private" type="radio" ng-checked="application.aclFill[oneEnv.code][sName].accessType==='private'"/> {{translation.private[LANG]}}
+            <input ng-model="application.aclFill[oneEnv.code][sName].accessType" value="private" type="radio"/>
+	        {{translation.private[LANG]}}
         </span>
 	</div>
 

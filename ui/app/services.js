@@ -10,9 +10,9 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			try{
+			try {
 				var res = String.fromCharCode.apply(null, new Uint8Array(response));
-				if(typeof res !== 'object'){
+				if (typeof res !== 'object') {
 					res = JSON.parse(res);
 				}
 				if (res.result === false) {
@@ -34,7 +34,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 					return cb(null, response);
 				}
 			}
-			catch(e){
+			catch (e) {
 				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream and too large.");
 				return cb(null, response);
 			}
@@ -501,31 +501,37 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function fillApiAccess(apis) {
+	function fillApiAccess(apis, forcePrivate) {
 		for (var apiName in apis) {
 			if (apis.hasOwnProperty(apiName)) {
 				apis[apiName].include = true;
 				apis[apiName].accessType = 'clear';
-				if (apis[apiName].access == true) {
-					apis[apiName].accessType = 'private';
-				}
-				else if (apis[apiName].access === false) {
-					apis[apiName].accessType = 'public';
+				if (forcePrivate === true) {
+					// This variable is set to true only in the user ACL.
+					apis[apiName].accessType = 'clear';
 				}
 				else {
-					if (Array.isArray(apis[apiName].access)) {
-						apis[apiName].accessType = 'groups';
-						apis[apiName].grpCodes = {};
-						apis[apiName].access.forEach(function (c) {
-							apis[apiName].grpCodes[c] = true;
-						});
+					if (apis[apiName].access === true) {
+						apis[apiName].accessType = 'private';
+					}
+					else if (apis[apiName].access === false) {
+						apis[apiName].accessType = 'public';
+					}
+					else {
+						if (Array.isArray(apis[apiName].access)) {
+							apis[apiName].accessType = 'groups';
+							apis[apiName].grpCodes = {};
+							apis[apiName].access.forEach(function (c) {
+								apis[apiName].grpCodes[c] = true;
+							});
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	function fillServiceApiAccess(service, currentService) {
+	function fillServiceApiAccess(service, currentService, forcePrivate) {
 		function grpByMethod(service, fixList) {
 			var byMethod = false;
 			for (var grp in fixList) {
@@ -559,12 +565,12 @@ soajsApp.service("aclDrawHelpers", function () {
 		if (service.get || service.post || service.put || service.delete) {
 			for (var method in service) {
 				if (service[method].apis) {
-					fillApiAccess(service[method].apis);
+					fillApiAccess(service[method].apis, forcePrivate);
 				}
 			}
 		}
 		else if (service.apis) {
-			fillApiAccess(service.apis);
+			fillApiAccess(service.apis, forcePrivate);
 		}
 	}
 	

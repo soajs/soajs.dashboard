@@ -17,37 +17,20 @@
 							</div>
 							<div class="apiAccess" ng-hide="(aclFill[oneEnv.code][service.name].apisRestrictPermission && (aclFill[oneEnv.code][service.name][method].apis[my1Api.v].include!==true))">
 								<div class="f-left">
-						<span style="padding-left: 0px;">
-                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="clear" type="radio"/>
-                            <em style="">{{translation.InheritFromService[LANG]}}</em>
-                        </span>
-                        <span>
-                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="public" type="radio"/>
-	                        {{translation.public[LANG]}}
-                        </span>
-                        <span>
-                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="private" type="radio"/>
-	                        {{translation.private[LANG]}}
-                        </span>
-                        <span style="display: none">
-                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="groups" type="radio"/>
-	                        {{translation.groups[LANG]}}
-                        </span>
-
+									<span style="padding-left: 0px;">
+			                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="clear" type="radio"/>
+			                            <em style="">{{translation.InheritFromService[LANG]}}</em>
+			                        </span>
+			                        <span>
+			                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="public" type="radio"/>
+				                        {{translation.public[LANG]}}
+			                        </span>
+			                        <span>
+			                            <input ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType" value="private" type="radio"/>
+				                        {{translation.private[LANG]}}
+			                        </span>
 								</div>
 
-								<div style="display: none" class="grpsListingScroll smallGrpsListingScroll" ng-show="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].accessType==='groups'">
-									<ul class="grpsListing">
-										<li class="oddLi">
-											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.owner" value="owner">
-											Owner
-										</li>
-										<li>
-											<input type="checkbox" ng-model="aclFill[oneEnv.code][service.name][method].apis[my1Api.v].grpCodes.administrator" value="administrator">
-											Administrator
-										</li>
-									</ul>
-								</div>
 							</div>
 						</div>
 					</div>

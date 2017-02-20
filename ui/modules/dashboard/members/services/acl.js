@@ -12,7 +12,8 @@ membersAclService.service('membersAclHelper', ['aclDrawHelpers', function (aclDr
 			if (aclFill.hasOwnProperty(serviceName)) {
 				aclFill[serviceName].access = true;
 				aclDrawHelpers.fillServiceAccess(aclFill[serviceName]);
-				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], services[serviceName]);
+				// User API ACL is only defined as existing or not
+				aclDrawHelpers.fillServiceApiAccess(aclFill[serviceName], services[serviceName], true);
 				applyRestriction(aclFill, services[serviceName]);
 			}
 			else {
