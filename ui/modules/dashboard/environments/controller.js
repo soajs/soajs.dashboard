@@ -21,16 +21,9 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.jsonEditor = {
 		custom: {
-			options: {
-				mode: 'tree'
-			},
-			data: "",
-			dataIsReady: false
+			data: ""
 		},
 		logger: {
-			options: {
-				mode: 'tree'
-			},
 			data: ""
 		}
 	};
@@ -105,32 +98,18 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						}
 					}
 					$scope.grid = {rows: response};
-					if ($scope.grid.rows) {
-						if ($scope.grid.rows.length == 1) {
-							$scope.grid.rows[0].showOptions = true;
-							$scope.jsonEditor.custom.dataIsReady = true;
-						}
-					}
+					$scope.jsonEditor.custom.data = JSON.stringify($scope.grid.rows[0].custom, null, 2);
 				}
 			}
 		});
 	};
 
-	$scope.customLoaded = function (instance) {
-		if (!$scope.grid.rows[0].custom) {
-			$scope.grid.rows[0].custom = {};
-		}
-		$scope.jsonEditor.custom.data = angular.copy ($scope.grid.rows[0].custom);
-
-		$scope.editorLoaded(instance, 'custom');
-	};
-	
-	$scope.editorLoaded2 = function (_editor) {
+	$scope.customLoaded = function (_editor) {
+		$scope.jsonEditor.custom.editor = _editor;
 		//bug in jsoneditor: setting default mode to 'code' does not display data
 		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
-		$scope.jsonEditor.custom.editor = _editor;
 		// _editor.$blockScrolling = Infinity;
-		_editor.setValue("");
+		_editor.setValue($scope.jsonEditor.custom.data);
 		fixEditorHeigh(_editor);
 	};
 	
