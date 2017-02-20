@@ -24,6 +24,7 @@ var gitAccounts = require("./lib/git.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 var cb = require("./lib/contentbuilder.js");
+var analyticsBL = require("./lib/analytics.js");
 
 var dbModel = "mongo";
 
@@ -1493,6 +1494,30 @@ service.init(function () {
 	service.post("/swagger/generate", function (req, res) {
 		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
 			BL.generate(config, req, res);
+		});
+	});
+	
+	/**
+	 * Analytics:
+	 * Api that get settings of current Analytics in all environments
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/getSettings", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.getSettings(config, req, res);
+		});
+	});
+	
+	/**
+	 * Analytics:
+	 * Api that activate analytics in an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/activateAnalytics", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.activateAnalytics(config, req, res);
 		});
 	});
 

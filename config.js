@@ -1048,8 +1048,36 @@ module.exports = {
 						"type": "string"
 					}
 				}
+			},
+			
+			"/analytics/getSettings": {
+				_apiInfo: {
+					"l": "Get Analytics Settings",
+					"group": "elk"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string", "required": true
+					}
+				}
+			},
+
+			"/analytics/activateAnalytics": {
+				_apiInfo: {
+					"l": "Activate Analytics",
+					"group": "elk"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string", "required": true
+					}
+				}
 			}
-		},
+		 },
 
 		"post": {
 			"/services/list": {
