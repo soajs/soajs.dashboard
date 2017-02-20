@@ -106,8 +106,6 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.customLoaded = function (_editor) {
 		$scope.jsonEditor.custom.editor = _editor;
-		//bug in jsoneditor: setting default mode to 'code' does not display data
-		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
 		// _editor.$blockScrolling = Infinity;
 		_editor.setValue($scope.jsonEditor.custom.data);
 		fixEditorHeigh(_editor);
