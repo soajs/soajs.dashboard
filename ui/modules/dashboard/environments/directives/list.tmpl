@@ -29,8 +29,6 @@
         </tab>
         <tab heading="{{translation.customRegistry[LANG]}}">
             <br />
-            <label ng-if="!jsonEditor.custom.dataIsReady">{{translation.loadingCustomRegistry[LANG]}}</label>
-            <!--<div ng-if="jsonEditor.custom.dataIsReady" ng-jsoneditor="customLoaded" ng-model="jsonEditor.custom.data" options="jsonEditor.custom.options" style="width: 100%; height: 500px;"></div>-->
 	        <div id="customRegistry" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: customLoaded}" ng-model="jsonEditor.custom.data" style="height: 500px;"></div>
             <label class="fieldMsg">{{translation.customRegistryFieldMsg[LANG]}}</label>
             <br />
