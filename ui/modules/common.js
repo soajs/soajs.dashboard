@@ -59,10 +59,10 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.proxy = true;
 	}
 	
-	if(Object.hasOwnProperty.call(options, 'token')){
+	if (Object.hasOwnProperty.call(options, 'token')) {
 		apiOptions.token = options.token;
 	}
-	else{
+	else {
 		apiOptions.token = true;
 	}
 	
@@ -260,14 +260,17 @@ function fixBackDrop() {
 
 function getCodeMessage(code, service, orgMesg) {
 	var msg = '';
-	if (errorCodes[service] && errorCodes[service][code]) {
-		if (errorCodes[service][code][LANG]) {
-			msg = errorCodes[service][code][LANG];
-		}
-		else {
-			msg = errorCodes[service][code]['ENG'];
+	if (code) {
+		if (errorCodes[service] && errorCodes[service][code]) {
+			if (errorCodes[service][code][LANG]) {
+				msg = errorCodes[service][code][LANG];
+			}
+			else {
+				msg = errorCodes[service][code]['ENG'];
+			}
 		}
 	}
+
 	if (!msg) {
 		if (orgMesg) {
 			msg = orgMesg;

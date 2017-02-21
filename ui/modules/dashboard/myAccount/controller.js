@@ -349,6 +349,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 				};
 				getSendDataFromServer($scope, ngDataApi, options, function (error, response) {
 					if (error) {
+						overlayLoading.hide();
 						$cookies.remove('access_token');
 						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 					}
