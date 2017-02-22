@@ -633,13 +633,12 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	console.log(_self.config)
 	var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
 	//_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	//_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.settings));
 	//_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
 	//_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
-	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, esClient, _self.config.deployer, _self.config.utils, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, esClient, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana));
 	_self.operations.push(async.apply(lib.deployLogstash));
 	_self.operations.push(async.apply(lib.deployFilebeat));
