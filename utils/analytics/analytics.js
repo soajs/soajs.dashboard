@@ -5,7 +5,7 @@ var soajs = require('soajs');
 var colls = {
 	analytics: 'analytics'
 };
-
+var kibanaSettings = require('./elk/kibana');
 var lib = {
 	"insertMongoData": function (soajs, config, mongo, cb) {
 		var comboFind = {}
@@ -29,11 +29,10 @@ var lib = {
 							records = require(dataFolder + items[key]);
 						}
 						else {
-							var array = require(dataFolder + item);
-							if (Array.isArray(array) && array.length > 0) {
-								records = records.concat(array)
+							var arrayData = require(dataFolder + item);
+							if (Array.isArray(arrayData) && arrayData.length > 0) {
+								records = records.concat(arrayData)
 							}
-							
 						}
 						callback();
 					}, function () {
@@ -97,7 +96,7 @@ var lib = {
 					}
 					if (content === 'filebeat.js') {
 						serviceParams = JSON.stringify(serviceParams);
-						serviceParams = serviceParams.replace(/%env%/g, env.toLowerCase());
+						serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 						serviceParams = JSON.parse(serviceParams);
 					}
 				}
@@ -107,46 +106,48 @@ var lib = {
 		});
 	},
 	
-	"deployElastic": function (soajs, env, deployer, utils, model, settings, cb) {
-		if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
-			return cb(null, true)
-		}
-		else {
-			utils.getEnvironment(soajs, model, env.code, function (error, envRecord) {
-				var options = utils.buildDeployerOptions(envRecord, soajs, model);
-				deployer.listServices(options, function (error, services) {
-					services.forEach(function (oneService) {
-						if (oneService.name === 'elasticsearch') {
-							console.log(JSON.stringify(oneService, null, 2))
+	"deployElastic": function (soajs, env, deployer, utils, model, cb) {
+		var combo = {};
+		combo.collection = colls.analytics;
+		combo.conditions = {
+			"_type": "settings"
+		};
+		model.findEntry(soajs, combo, function (error, settings) {
+			if (error){
+				return cb(error);
+			}
+			if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
+				return cb(null, true)
+			}
+			else {
+				lib.getAnalyticsContent("elasticsearch", "js", env, function (err, content) {
+					var options = utils.buildDeployerOptions(env, soajs, model);
+					options.params = content;
+					async.parallel({
+						"deploy": function (call) {
+							deployer.deployService(options, call)
+						},
+						"update": function (call) {
+							combo.options = {
+								"$set": {
+									"elasticsearch": {
+										"cluster_config": {
+											"es_clusters" : env.dbs.clusters.es_clusters
+										},
+										"status": "deployed",
+										"db_name": "esClient"
+									}
+								}
+							};
+							model.updateEntry(combo, call);
 						}
-					});
-					return cb(null, true)
+					}, cb);
 				});
-			})
-		}
-		
-		
-		// lib.getAnalyticsContent("elasticsearch", "js", env, function (err, content) {
-		// 	if (err) {
-		// 		return cb(err)
-		// 	}
-		// 	utils.getEnvironment(soajs, model, env, function (err, envRecord) {
-		// 		if (err) {
-		// 			return cb(err)
-		// 		}
-		// 		var options = utils.buildDeployerOptions(envRecord, soajs, model);
-		// 		options.params = content;
-		// 		deployer.deployService(options, function (err) {
-		// 			if (err) {
-		// 				return cb(err)
-		// 			}
-		// 			//ping
-		// 			//info
-		// 			return cb(null, true);
-		// 		});
-		// 	});
-		// });
+			}
+			
+		});
 	},
+	
 	"pingElastic": function (esClient, cb) {
 		esClient.ping(function (error) {
 			if (error) {
@@ -176,6 +177,7 @@ var lib = {
 			}
 		});
 	},
+	
 	"checkElasticSearch": function (esClient, cb) {
 		lib.pingElastic(esClient, cb);
 	},
@@ -302,326 +304,437 @@ var lib = {
 	},
 	
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
-		var BL= {
+		var BL = {
 			model: model
 		};
 		var options = utils.buildDeployerOptions(env, soajs, BL);
 		deployer.listServices(options, function (err, servicesList) {
-			console.log(JSON.stringify(servicesList, null, 2))
-			lib.configureKibana(servicesList, cb);
+			lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
 			return cb(null, true)
 		});
 		
 	},
 	
-	// "configureKibana" : function (servicesList, serviceOptions, cb) {
-	// 	var dockerServiceName = serviceOptions.Name;
-	// 	var serviceGroup, serviceName, serviceEnv, serviceType;
-	//
-	// 	if (serviceOptions.Labels) {
-	// 		serviceGroup = serviceOptions.Labels['soajs.service.group'];
-	// 		serviceName = serviceOptions.Labels['soajs.service.repo.name'];
-	// 		serviceEnv = serviceOptions.Labels['soajs.env.code'];
-	// 	}
-	// 	if (serviceGroup === 'soajs-core-services') {
-	// 		serviceType = (serviceName === 'controller') ? 'controller' : 'service';
-	// 	}
-	// 	else if (serviceGroup === 'nginx') {
-	// 		serviceType = 'nginx';
-	// 		serviceName = 'nginx';
-	// 	}
-	// 	else {
-	// 		return cb(null, true);
-	// 	}
-	// 	var replicaCount = serviceOptions.Mode.Replicated.Replicas;
-	// 	utilLog.log('Fetching analytics for ' + serviceName);
-	// 	lib.getServiceNames(dockerServiceName, deployer, replicaCount, function (error, serviceIPs) {
-	// 		if (error) return cb(error);
-	// 		var options = {
-	// 			"$or": [
-	// 				{
-	// 					"$and": [
-	// 						{
-	// 							"_type": {
-	// 								"$in": ["dashboard", "visualization", "search"]
-	// 							}
-	// 						},
-	// 						{
-	// 							"_service": serviceType
-	// 						}
-	// 					]
-	//
-	// 				},
-	// 				{
-	// 					"_shipper": "topbeat"
-	// 				}
-	// 			]
-	// 		};
-	// 		var analyticsArray = [];
-	// 		serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
-	// 		//insert index-patterns to kibana
-	// 		serviceIPs.forEach(function (task_Name, key) {
-	// 			task_Name.name = task_Name.name.replace(/[\/*?"<>|,.-]/g, "_");
-	//
-	// 			//filebeat-service-environment-taskname-*
-	//
-	// 			analyticsArray = analyticsArray.concat(
-	// 				[
-	// 					{
-	// 						index: {
-	// 							_index: '.kibana',
-	// 							_type: 'index-pattern',
-	// 							_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
-	// 						}
-	// 					},
-	// 					{
-	// 						title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
-	// 						timeFieldName: '@timestamp'
-	// 					}
-	// 				]
-	// 			);
-	//
-	// 			analyticsArray = analyticsArray.concat(
-	// 				[
-	// 					{
-	// 						index: {
-	// 							_index: '.kibana',
-	// 							_type: 'index-pattern',
-	// 							_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
-	// 						}
-	// 					},
-	// 					{
-	// 						title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
-	// 						timeFieldName: '@timestamp'
-	// 					}
-	// 				]
-	// 			);
-	//
-	// 			analyticsArray = analyticsArray.concat(
-	// 				[
-	// 					{
-	// 						index: {
-	// 							_index: '.kibana',
-	// 							_type: 'index-pattern',
-	// 							_id: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
-	// 						}
-	// 					},
-	// 					{
-	// 						title: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
-	// 						timeFieldName: '@timestamp'
-	// 					}
-	// 				]
-	// 			);
-	//
-	// 			if (key == 0) {
-	// 				//filebeat-service-environment-*
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: '*-' + serviceName + "-" + serviceEnv + "-" + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: '*-' + serviceName + "-" + serviceEnv + "-" + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	//
-	// 				//filebeat-service-environment-*
-	//
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: 'filebeat-' + serviceName + '-' + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: 'filebeat-' + serviceName + '-' + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	//
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: 'topbeat-' + serviceName + "-" + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: 'topbeat-' + serviceName + "-" + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	//
-	//
-	// 				analyticsArray = analyticsArray.concat(
-	// 					[
-	// 						{
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: 'index-pattern',
-	// 								_id: '*-' + serviceName + "-" + "*"
-	// 							}
-	// 						},
-	// 						{
-	// 							title: '*-' + serviceName + "-" + "*",
-	// 							timeFieldName: '@timestamp'
-	// 						}
-	// 					]
-	// 				);
-	// 			}
-	// 		});
-	//
-	// 		//insert visualization, search and dashboard records per service to kibana
-	// 		mongo.find(analyticsCollection, options, function (error, records) {
-	// 			if (error) {
-	// 				return cb(error);
-	// 			}
-	// 			records.forEach(function (oneRecord) {
-	// 				if (Array.isArray(serviceIPs) && serviceIPs.length > 0) {
-	// 					serviceIPs.forEach(function (task_Name) {
-	// 						task_Name.name = task_Name.name.replace(/[\/*?"<>|,.-]/g, "_");
-	// 						var serviceIndex;
-	// 						if (oneRecord._type === "visualization" || oneRecord._type === "search") {
-	// 							serviceIndex = serviceName + "-";
-	// 							if (oneRecord._injector === "service") {
-	// 								serviceIndex = serviceIndex + "*";
-	// 							}
-	// 							else if (oneRecord._injector === "env") {
-	// 								serviceIndex = serviceIndex + serviceEnv + "-" + "*";
-	// 							}
-	// 							else if (oneRecord._injector === "taskname") {
-	// 								serviceIndex = serviceIndex + serviceEnv + "-" + task_Name.name + "-" + "*";
-	// 							}
-	// 						}
-	//
-	// 						var injector;
-	// 						if (oneRecord._injector === 'service'){
-	// 							injector = serviceName + "-" + serviceEnv;
-	// 						}
-	// 						else if (oneRecord._injector === 'taskname'){
-	// 							injector = task_Name.name;
-	// 						}
-	// 						else if (oneRecord._injector === 'env'){
-	// 							injector = serviceEnv;
-	// 						}
-	// 						oneRecord = JSON.stringify(oneRecord);
-	// 						if (serviceIndex) {
-	// 							oneRecord = oneRecord.replace(/%serviceIndex%/g, serviceIndex);
-	// 						}
-	// 						if (injector){
-	// 							oneRecord = oneRecord.replace(/%injector%/g, injector);
-	// 						}
-	// 						oneRecord = JSON.parse(oneRecord);
-	// 						var recordIndex = {
-	// 							index: {
-	// 								_index: '.kibana',
-	// 								_type: oneRecord._type,
-	// 								_id: oneRecord.id
-	// 							}
-	// 						};
-	//
-	// 						analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
-	// 					});
-	// 				}
-	// 			});
-	//
-	// 			function esBulk(array, cb) {
-	// 				esClient.bulk(array, function (error, response) {
-	// 					if (error) {
-	// 						return cb(error)
-	// 					}
-	// 					return cb(error, response);
-	// 				});
-	// 			}
-	//
-	// 			if (analyticsArray.length !== 0) {
-	// 				esClient.checkIndex('.kibana', function (error, response) {
-	// 					if (error) {
-	// 						return cb(error);
-	// 					}
-	// 					if (response) {
-	// 						esBulk(analyticsArray, cb);
-	// 					}
-	// 					else {
-	// 						esClient.createIndex('.kibana', function (error) {
-	// 							if (error) {
-	// 								return cb(error);
-	// 							}
-	// 							esBulk(analyticsArray, cb);
-	// 						})
-	// 					}
-	// 				});
-	// 			}
-	// 			else {
-	// 				return cb(null, true);
-	// 			}
-	// 		});
-	// 	});
-	// },
-	
-	"deployKibana": function (cb) {
-		return cb(null, true)
+	"esBulk": function (esClient, array, cb) {
+		esClient.bulk(array, function (error, response) {
+			if (error) {
+				return cb(error)
+			}
+			return cb(error, response);
+		});
 	},
 	
-	"deployLogstash": function (cb) {
-		return cb(null, true)
+	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
+		async.each(servicesList, function (oneService, callback) {
+			var serviceType;
+			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
+				serviceName, taskName;
+			serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
+			if (oneService) {
+				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.name"]) {
+					serviceName = oneService.labels["soajs.service.name"];
+					if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
+						serviceType = (oneService.labels["soajs.service.name"] === 'controller') ? 'controller' : 'service';
+					}
+					else if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
+						serviceType = 'nginx';
+					}
+					else {
+						return callback(null, true);
+					}
+					if (oneService.tasks.length > 0) {
+						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
+							if (oneTask.state && oneTask.state === "complete") {
+								taskName = oneTask.name + '_' + oneTask.id;
+								taskName.replace(/[\/*?"<>|,.-]/g, "_");
+								var analyticsArray = [];
+								
+								analyticsArray = analyticsArray.concat(
+									[
+										{
+											index: {
+												_index: '.kibana',
+												_type: 'index-pattern',
+												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+											}
+										},
+										{
+											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp'
+										}
+									]
+								);
+								
+								analyticsArray = analyticsArray.concat(
+									[
+										{
+											index: {
+												_index: '.kibana',
+												_type: 'index-pattern',
+												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+											}
+										},
+										{
+											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp'
+										}
+									]
+								);
+								
+								analyticsArray = analyticsArray.concat(
+									[
+										{
+											index: {
+												_index: '.kibana',
+												_type: 'index-pattern',
+												_id: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+											}
+										},
+										{
+											title: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp'
+										}
+									]
+								);
+								
+								if (key == 0) {
+									//filebeat-service-environment-*
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
+												}
+											},
+											{
+												title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*"
+												}
+											},
+											{
+												title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: '*-' + serviceName + "-" + serviceEnv + "-" + "*"
+												}
+											},
+											{
+												title: '*-' + serviceName + "-" + serviceEnv + "-" + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+									
+									//filebeat-service-environment-*
+									
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: 'filebeat-' + serviceName + '-' + "*"
+												}
+											},
+											{
+												title: 'filebeat-' + serviceName + '-' + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+									
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: 'topbeat-' + serviceName + "-" + "*"
+												}
+											},
+											{
+												title: 'topbeat-' + serviceName + "-" + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+									
+									
+									analyticsArray = analyticsArray.concat(
+										[
+											{
+												index: {
+													_index: '.kibana',
+													_type: 'index-pattern',
+													_id: '*-' + serviceName + "-" + "*"
+												}
+											},
+											{
+												title: '*-' + serviceName + "-" + "*",
+												timeFieldName: '@timestamp'
+											}
+										]
+									);
+								}
+								
+								var options = {
+									"$or": [
+										{
+											"$and": [
+												{
+													"_type": {
+														"$in": ["dashboard", "visualization", "search"]
+													}
+												},
+												{
+													"_service": serviceType
+												}
+											]
+											
+										},
+										{
+											"_shipper": "topbeat"
+										}
+									]
+								};
+								var combo = {
+									condition: options,
+									collection: colls.analytics
+								};
+								model.findEntries(combo, soajs, function (error, records) {
+									if (error) {
+										return call(error);
+									}
+									records.forEach(function (oneRecord) {
+										var serviceIndex;
+										if (oneRecord._type === "visualization" || oneRecord._type === "search") {
+											serviceIndex = serviceName + "-";
+											if (oneRecord._injector === "service") {
+												serviceIndex = serviceIndex + "*";
+											}
+											else if (oneRecord._injector === "env") {
+												serviceIndex = serviceIndex + serviceEnv + "-" + "*";
+											}
+											else if (oneRecord._injector === "taskname") {
+												serviceIndex = serviceIndex + serviceEnv + "-" + taskName + "-" + "*";
+											}
+										}
+										
+										var injector;
+										if (oneRecord._injector === 'service') {
+											injector = serviceName + "-" + serviceEnv;
+										}
+										else if (oneRecord._injector === 'taskname') {
+											injector = taskName;
+										}
+										else if (oneRecord._injector === 'env') {
+											injector = serviceEnv;
+										}
+										oneRecord = JSON.stringify(oneRecord);
+										if (serviceIndex) {
+											oneRecord = oneRecord.replace(/%serviceIndex%/g, serviceIndex);
+										}
+										if (injector) {
+											oneRecord = oneRecord.replace(/%injector%/g, injector);
+										}
+										oneRecord = JSON.parse(oneRecord);
+										var recordIndex = {
+											index: {
+												_index: '.kibana',
+												_type: oneRecord._type,
+												_id: oneRecord.id
+											}
+										};
+										
+										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+									});
+								});
+								
+								if (analyticsArray.length !== 0) {
+									esClient.checkIndex('.kibana', function (error, response) {
+										if (error) {
+											return call(error);
+										}
+										if (response) {
+											lib.esBulk(esClient, analyticsArray, call);
+										}
+										else {
+											esClient.createIndex('.kibana', function (error) {
+												if (error) {
+													return cb(error);
+												}
+												lib.esBulk(esClient, analyticsArray, call);
+											})
+										}
+									});
+								}
+								
+								else {
+									return call(null, true);
+								}
+							}
+							else {
+								call();
+							}
+						}, callback);
+					}
+					else {
+						return callback(null, true);
+					}
+				}
+				else {
+					return callback(null, true);
+				}
+			}
+			else {
+				return callback(null, true);
+			}
+		}, cb);
+		
 	},
 	
-	"deployFilebeat": function (cb) {
-		return cb(null, true)
+	"deployKibana": function (soajs, env, deployer, utils, model, cb) {
+		var combo = {};
+		combo.collection = colls.analytics;
+		combo.conditions = {
+			"_type": "settings"
+		};
+		model.findEntry(soajs, combo, function (error, settings) {
+			if (error){
+				return cb(error);
+			}
+			if (settings && settings.kibana && settings.kibana.status === "deployed") {
+				return cb(null, true)
+			}
+			else {
+				lib.getAnalyticsContent("kibana", "js", env, function (err, content) {
+					var options = utils.buildDeployerOptions(env, soajs, model);
+					options.params = content;
+					async.parallel({
+						"deploy": function (call) {
+							deployer.deployService(options, call)
+						},
+						"update": function (call) {
+							combo.options = {
+								"$set": {
+									"kibana": {
+										"status": "deployed",
+										"port": kibanaSettings.deployConfig.ports[0].published, //todo fill
+										"version": kibanaSettings.version //todo fill
+									}
+								}
+							};
+							model.updateEntry(combo, call);
+						}
+					}, cb);
+				});
+			}
+			
+		});
 	},
 	
-	"updateSettings": function (cb) {
-		return cb(null, true)
+	"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
+		
+		var combo = {};
+		combo.collection = colls.analytics;
+		combo.conditions = {
+			"_type": "settings"
+		};
+		model.findEntry(soajs, combo, function (error, settings) {
+			if (error){
+				return cb(error);
+			}
+			if (settings && settings.logstash && settings.logstash.status === "deployed") {
+				return cb(null, true)
+			}
+			else {
+				lib.getAnalyticsContent("logstash", "js", env, function (err, content) {
+					var options = utils.buildDeployerOptions(env, soajs, model);
+					options.params = content;
+					async.parallel({
+						"deploy": function (call) {
+							deployer.deployService(options, call)
+						},
+						"update": function (call) {
+							combo.options = {
+								"$set": {
+									"logstash": {
+										"status": "deployed"
+									}
+								}
+							};
+							model.updateEntry(combo, call);
+						}
+					}, cb);
+				});
+			}
+			
+		});
 	},
+	
+	"deployFilebeat": function (soajs, env, deployer, utils, model, cb) {
+		var combo = {};
+		combo.collection = colls.analytics;
+		combo.conditions = {
+			"_type": "settings"
+		};
+		model.findEntry(soajs, combo, function (error, settings) {
+			if (error){
+				return cb(error);
+			}
+			if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
+				return cb(null, true)
+			}
+			else {
+				lib.getAnalyticsContent("filebeat", "js", env, function (err, content) {
+					var options = utils.buildDeployerOptions(env, soajs, model);
+					options.params = content;
+					async.parallel({
+						"deploy": function (call) {
+							deployer.deployService(options, call)
+						},
+						"update": function (call) {
+							combo.options = {
+								"$set": {
+									"filebeat": {}
+								}
+							};
+							combo.options["$set"].filebeat[env.code.toLowerCase()] = {
+								"status": "deployed"
+							};
+							model.updateEntry(combo, call);
+						}
+					}, cb);
+				});
+			}
+			
+		});
+	}
 };
 
 
@@ -634,18 +747,15 @@ var analyticsDriver = function (opts) {
 analyticsDriver.prototype.run = function () {
 	var _self = this;
 	var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
-	//_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	//_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.settings));
-	//_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
-	//_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
+	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, esClient, _self.config.utils, _self.config.envRecord, _self.config.model));
-	_self.operations.push(async.apply(lib.deployKibana));
-	_self.operations.push(async.apply(lib.deployLogstash));
-	_self.operations.push(async.apply(lib.deployFilebeat));
-	_self.operations.push(async.apply(lib.updateSettings));
-	
+	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	analyticsDriver.deploy.call(_self);
-	
 };
 
 analyticsDriver.deploy = function () {

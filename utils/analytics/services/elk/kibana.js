@@ -13,6 +13,7 @@ module.exports = {
 		"cmd": ["kibana"]
 	},
 	"deployConfig": {
+		"version": "4.6.4",
 		"image": "kibana:4.6.4",
 		"workDir": "/",
 		"memoryLimit": 209715200,
