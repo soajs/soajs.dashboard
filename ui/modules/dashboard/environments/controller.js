@@ -21,19 +21,10 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.jsonEditor = {
 		custom: {
-			options: {
-				mode: 'tree'
-			},
-			data: {},
-			jsonIsValid: true,
-			dataIsReady: false
+			data: ""
 		},
 		logger: {
-			options: {
-				mode: 'tree'
-			},
-			data: {},
-			jsonIsValid: true,
+			data: ""
 		}
 	};
 
@@ -81,10 +72,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 							if (!$scope.formEnvironment.services.config.session.hasOwnProperty('proxy')) {
 								$scope.formEnvironment.services.config.session.proxy = undefined;
 							}
+							
 							if (response[x].services && response[x].services.config) {
 								if (response[x].services.config.logger) {
-									$scope.formEnvironment.config_loggerObj = response[x].services.config.logger;
+									$scope.formEnvironment.config_loggerObj = JSON.stringify(response[x].services.config.logger, null, 2);
 									$scope.jsonEditor.logger.data = $scope.formEnvironment.config_loggerObj;
+									$scope.jsonEditor.logger.editor.setValue($scope.jsonEditor.logger.data);
+									fixEditorHeigh($scope.jsonEditor.logger.editor)
 								}
 							}
 
@@ -104,58 +98,47 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 						}
 					}
 					$scope.grid = {rows: response};
-					if ($scope.grid.rows) {
-						if ($scope.grid.rows.length == 1) {
-							$scope.grid.rows[0].showOptions = true;
-							$scope.jsonEditor.custom.dataIsReady = true;
-						}
-					}
+					$scope.jsonEditor.custom.data = JSON.stringify($scope.grid.rows[0].custom, null, 2);
 				}
 			}
 		});
 	};
 
-	$scope.customLoaded = function (instance) {
-		if (!$scope.grid.rows[0].custom) {
-			$scope.grid.rows[0].custom = {};
-		}
-		$scope.jsonEditor.custom.data = angular.copy ($scope.grid.rows[0].custom);
-
-		$scope.editorLoaded(instance, 'custom');
+	$scope.customLoaded = function (_editor) {
+		$scope.jsonEditor.custom.editor = _editor;
+		// _editor.$blockScrolling = Infinity;
+		_editor.setValue($scope.jsonEditor.custom.data);
+		fixEditorHeigh(_editor);
 	};
-
-	$scope.loggerLoaded = function (instance) {
-		$scope.editorLoaded(instance, 'logger');
-	};
-
-	$scope.editorLoaded = function (instance, source) {
+	
+	$scope.editorLoaded = function (_editor) {
 		//bug in jsoneditor: setting default mode to 'code' does not display data
 		//to fix this, use another mode, load data, wait, switch mode, wait, start listener to validate json object
-		$timeout(function () {
-			$scope.jsonEditor[source].options.mode = 'code';
-
-			$timeout(function () {
-				instance.editor.getSession().on('change', function () {
-					try {
-						instance.get();
-						$scope.jsonEditor[source].jsonIsValid = true;
-					}
-					catch (e) {
-						$scope.jsonEditor[source].jsonIsValid = false;
-					}
-				});
-			}, 600);
-		}, 500);
+		$scope.jsonEditor.logger.editor = _editor;
+		// _editor.$blockScrolling = Infinity;
+		_editor.setValue("");
+		fixEditorHeigh(_editor);
 	};
 
+	function fixEditorHeigh(_editor){
+		_editor.$blockScrolling = Infinity;
+		_editor.scrollToLine(0, true, true);
+		_editor.scrollPageUp();
+		_editor.clearSelection();
+		_editor.setShowPrintMargin(false);
+	}
+	
 	$scope.saveCustomRegistry = function () {
-		if (!$scope.jsonEditor.custom.jsonIsValid) {
+		try{
+			$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
+			$scope.formEnvironment.custom = JSON.parse($scope.jsonEditor.custom.data);
+		}
+		catch(e){
+			console.log(e);
 			$scope.displayAlert('danger', 'Custom Registry: Invalid JSON Object');
 			return;
 		}
-
-		$scope.formEnvironment = angular.copy($scope.grid.rows[0]);
-		$scope.formEnvironment.custom = $scope.jsonEditor.custom.data;
+		
 		$scope.newEntry = false;
 		$scope.envId = $scope.formEnvironment._id;
 
@@ -293,7 +276,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 
 	$scope.save = function () {
 		var postData = angular.copy($scope.formEnvironment);
-
+		
 		if (typeof($scope.formEnvironment.services.config.session.proxy) == 'undefined') {
 			postData.services.config.session.proxy = 'undefined';
 		}
@@ -315,11 +298,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 		};
 
 		if ($scope.formEnvironment.config_loggerObj) {
-			if (!$scope.jsonEditor.logger.jsonIsValid) {
+			try{
+				postData.services.config.logger = JSON.parse($scope.jsonEditor.logger.data);
+			}
+			catch(e){
 				$scope.displayAlert('danger', 'Logger Config: Invalid JSON Object');
 				return;
 			}
-			postData.services.config.logger = $scope.jsonEditor.logger.data;
 		}
 
 		postData.services.config.session.unset = (postData.services.config.session.unset) ? "destroy" : "keep";
