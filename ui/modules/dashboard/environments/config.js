@@ -73,7 +73,7 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-
+	
 	form: {
 		template: {
 			'name': '',
@@ -165,7 +165,16 @@ var environmentsConfig = {
 					'name': 'tenantSpecific',
 					'label': translation.tenantSpecific[LANG],
 					'type': 'radio',
-					'value': [{'v': false, 'selected': true}, {'v': true}],
+					'value': [
+						{
+							'v': false,
+							'l': "False"
+						},
+						{
+							'v': true,
+							'l': "True"
+						}
+					],
 					'required': false
 				}
 			]
@@ -400,7 +409,7 @@ var environmentsConfig = {
 								'placeholder': 'true',
 								'required': false
 							}
-
+						
 						]
 					},
 					{
@@ -803,7 +812,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
-
+	
 	jsoneditorConfig: {
 		'height': '200px'
 	},

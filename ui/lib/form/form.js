@@ -12,7 +12,7 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 	if (Object.hasOwnProperty.call(opts, 'backdrop')) {
 		formConfig.backdrop = opts.backdrop;
 	}
-
+	
 	var m = ($modal && $modal !== null) ? true : false;
 	
 	buildForm($scope, m, formConfig, function () {
@@ -40,7 +40,7 @@ function buildFormWithModal($scope, $modal, opts, cb) {
 					}
 				}
 			});
-
+			
 			newModal.result.then(function () {
 				//Get triggers when modal is closed
 			}, function () {
@@ -120,7 +120,13 @@ function buildForm(context, modal, configuration, cb) {
 						}
 						else {
 							if (!configuration.data[inputName] || oneValue.v.toString() === configuration.data[inputName].toString()) {
-								oneValue.selected = true;
+								
+								if (configuration.data[inputName] === oneValue.v) {
+									oneValue.selected = true;
+								} else {
+									oneValue.selected = false;
+								}
+								
 							}
 						}
 					});
@@ -217,21 +223,21 @@ function buildForm(context, modal, configuration, cb) {
 				_editor.clearSelection();
 				_editor.setShowPrintMargin(false);
 				
-				var heightUpdateFunction = function() {
+				var heightUpdateFunction = function () {
 					var newHeight =
 						_editor.getSession().getScreenLength()
 						* _editor.renderer.lineHeight
 						+ _editor.renderer.scrollBar.getWidth() + 10;
-
+					
 					_editor.renderer.scrollBar.setHeight(newHeight.toString() + "px");
 					_editor.renderer.scrollBar.setInnerHeight(newHeight.toString() + "px");
-					configuration.timeout(function(){
+					configuration.timeout(function () {
 						jQuery('#' + oneEntry.name).height(newHeight.toString());
 						_editor.resize(true);
 					}, 5);
 				};
 				
-				context.form.timeout(function(){
+				context.form.timeout(function () {
 					oneEntry.editor.heightUpdate = heightUpdateFunction();
 					// Set initial size to match initial content
 					heightUpdateFunction();
