@@ -632,6 +632,7 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
+	console.log(_self.config)
 	var esClient = new _self.config.soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
 	//_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	//_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.settings));
