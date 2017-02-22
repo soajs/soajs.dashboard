@@ -119,14 +119,8 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (!configuration.data[inputName] || oneValue.v.toString() === configuration.data[inputName].toString()) {
-								
-								if (configuration.data[inputName] === oneValue.v) {
-									oneValue.selected = true;
-								} else {
-									oneValue.selected = false;
-								}
-								
+							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+								oneValue.selected = true;
 							}
 						}
 					});
