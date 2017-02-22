@@ -300,20 +300,20 @@ var lib = {
 		});
 	},
 	
-	"addVisualizations": function (soajs, deployer, utils, env, model, cb) {
+	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
 		var BL= {
 			model: model
 		};
-		var options = utils.buildDeployerOptions(env, soajs, BL)
+		var options = utils.buildDeployerOptions(env, soajs, BL);
 		deployer.listServices(options, function (err, servicesList) {
 			console.log(JSON.stringify(servicesList, null, 2))
-			//lib.configureKibana(servicesList, cb);
+			lib.configureKibana(servicesList, cb);
 			return cb(null, true)
 		});
 		
 	},
 	
-	// "configureKibana" : function (deployer, serviceOptions, cb) {
+	// "configureKibana" : function (servicesList, serviceOptions, cb) {
 	// 	var dockerServiceName = serviceOptions.Name;
 	// 	var serviceGroup, serviceName, serviceEnv, serviceType;
 	//
@@ -632,12 +632,12 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	//var esClient = new _self.config.soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
+	var esClient = new _self.config.soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
 	//_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	//_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model, _self.config.settings));
 	//_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
 	//_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
-	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.utils, _self.config.envRecord, _self.config.model));
+	//_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana));
 	_self.operations.push(async.apply(lib.deployLogstash));
 	_self.operations.push(async.apply(lib.deployFilebeat));
