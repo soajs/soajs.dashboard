@@ -5,7 +5,7 @@ var soajs = require('soajs');
 var colls = {
 	analytics: 'analytics'
 };
-var kibanaSettings = require('./elk/kibana');
+var kibanaSettings = require('./services/elk/kibana');
 var lib = {
 	"insertMongoData": function (soajs, config, mongo, cb) {
 		var comboFind = {}
