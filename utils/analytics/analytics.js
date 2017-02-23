@@ -736,7 +736,7 @@ var lib = {
 		});
 	},
 	
-	"checkAvailability": function (soajs, deployer, utils, env, model, cb) {
+	"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
 		var BL = {
 			model: model
 		};
