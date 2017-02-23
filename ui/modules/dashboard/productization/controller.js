@@ -343,7 +343,7 @@ productizationApp.controller('productCtrl', ['$scope', '$timeout', '$modal', '$r
 	injectFiles.injectCss("modules/dashboard/productization/productization.css");
 }]);
 
-productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', function ($scope, $routeParams, ngDataApi, aclHelpers) {
+productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 'aclHelpers', 'injectFiles', function ($scope, $routeParams, ngDataApi, aclHelpers, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.environments_codes = [];
@@ -480,6 +480,64 @@ productizationApp.controller('aclCtrl', ['$scope', '$routeParams', 'ngDataApi', 
 		aclHelpers.applyPermissionRestriction($scope, envCode, service);
 	};
 
+
+	$scope.selectAll = function (service, envCode, grp) {
+		if (service.fixList[grp].apisRest) {
+			for (var method in service.fixList[grp].apisRest) {
+				if (!$scope.aclFill[envCode][service.name][method]) {
+					$scope.aclFill[envCode][service.name][method] = {};
+				}
+				if (!$scope.aclFill[envCode][service.name][method].apis) {
+					$scope.aclFill[envCode][service.name][method].apis = {};
+				}
+				assignAll(service.fixList[grp].apisRest[method], $scope.aclFill[envCode][service.name][method].apis);
+			}
+		}
+		else {
+			if (!$scope.aclFill[envCode][service.name].apis) {
+				$scope.aclFill[envCode][service.name].apis = {};
+			}
+			assignAll(service.fixList[grp].apis, $scope.aclFill[envCode][service.name].apis);
+		}
+		service.fixList[grp].defaultIncluded = true;
+		function assignAll(arr, obj) {
+			arr.forEach(function (api) {
+				obj[api.v] = {
+					include: true
+				};
+			});
+		}
+	};
+
+	$scope.removeAll = function (service, envCode, grp) {
+		if (service.fixList[grp].apisRest) {
+			for (var method in service.fixList[grp].apisRest) {
+				if (!$scope.aclFill[envCode][service.name][method]) {
+					$scope.aclFill[envCode][service.name][method] = {};
+				}
+				if (!$scope.aclFill[envCode][service.name][method].apis) {
+					$scope.aclFill[envCode][service.name][method].apis = {};
+				}
+				assignAll(service.fixList[grp].apisRest[method], $scope.aclFill[envCode][service.name][method].apis);
+			}
+		}
+		else {
+			if (!$scope.aclFill[envCode][service.name].apis) {
+				$scope.aclFill[envCode][service.name].apis = {};
+			}
+			assignAll(service.fixList[grp].apis, $scope.aclFill[envCode][service.name].apis);
+		}
+		service.fixList[grp].defaultIncluded = false;
+		function assignAll(arr, obj) {
+			arr.forEach(function (api) {
+				obj[api.v] = {
+					include: false
+				};
+			});
+		}
+	};
+
+	injectFiles.injectCss("modules/dashboard/productization/productization.css");
 	// default operation
 	overlayLoading.show(function () {
 		$scope.getAllServicesList();
