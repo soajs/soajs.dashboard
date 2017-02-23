@@ -309,10 +309,10 @@ var lib = {
 		};
 		var options = utils.buildDeployerOptions(env, soajs, BL);
 		deployer.listServices(options, function (err, servicesList) {
-			lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
+			console.log(JSON.stringify(servicesList, null, 2))
+			//lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
 			return cb(null, true)
 		});
-		
 	},
 	
 	"esBulk": function (esClient, array, cb) {
@@ -734,6 +734,22 @@ var lib = {
 			}
 			
 		});
+	},
+	
+	"checkAvailability": function (soajs, deployer, utils, env, model, cb) {
+		var BL = {
+			model: model
+		};
+		var options = utils.buildDeployerOptions(env, soajs, BL);
+		deployer.listServices(options, function (err, servicesList) {
+			setTimeout(function () {
+				servicesList.forEach(function (oneService) {
+					
+				});
+				return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
+			}, 1000);
+			return cb(null, true)
+		});
 	}
 };
 
@@ -747,14 +763,14 @@ var analyticsDriver = function (opts) {
 analyticsDriver.prototype.run = function () {
 	var _self = this;
 	var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
-	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
+	//_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
+	//_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	///_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
+	//_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
 	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, esClient, _self.config.utils, _self.config.envRecord, _self.config.model));
-	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	//_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	//_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	//_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
