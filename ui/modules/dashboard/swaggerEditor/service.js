@@ -3,8 +3,8 @@ var swaggerEditorSrv = soajsApp.components;
 
 swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function ($timeout, ngDataApi) {
 	/*
-	 * This function generate the service by testing all the required fields in the service info tab and the YAML code
-	 * in the swagger documentation , catching their values and downloading the service files following the composer notation.
+	* This function generate the service by testing all the required fields in the service info tab and the YAML code
+	* in the swagger documentation , catching their values and downloading the service files following the composer notation.
 	 */
 	function generateService(currentScope){
 		var extKeyRequired = false;
@@ -47,7 +47,7 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 			if((Array.isArray(currentScope.form.formData['model' + i] && currentScope.form.formData['model' + i][0] === 'mongo')) || (currentScope.form.formData['model' + i] === 'mongo')){
 				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
 			}
-			if(Object.keys(dbObj).length >= 2){
+			if(Object.keys(dbObj).length >= 3){
 				dbs.push(dbObj);
 			}
 		}
@@ -156,58 +156,58 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		var infoForm = swaggerEditorConfig.form;
 		infoForm.timeout = $timeout;
 		infoForm.entries.forEach(function (entry) {
-			if (entry.name === 'dbs') {
-				entry.entries = [];
-				var oneClone = angular.copy(dbForm.db);
-				var mtRef;
-				for (var i = 0; i < oneClone.length; i++) {
-					oneClone[i].name = oneClone[i].name.replace("%count%", count);
-					if(oneClone[i].name === "multitenant" + count){
-						mtRef = oneClone[i];
-					}
-					if(oneClone[i].name === "model" + count){
-						oneClone[i].onAction = function (id, data, form) {
-							// to disable the multitenant feature if es is selected
-							mtRef.disabled = (data === "es");
-						}
-					}
-				}
-				entry.entries = entry.entries.concat(oneClone);
-				count++;
-			}
-			
-			if (entry.name === 'addDb') {
-				entry.onAction = function (id, data, form) {
+				if (entry.name === 'dbs') {
+					entry.entries = [];
 					var oneClone = angular.copy(dbForm.db);
 					var mtRef;
-					form.entries.forEach(function (entry) {
-						if (entry.name === 'dbs' && entry.type === 'group') {
-							for (var i = 0; i < oneClone.length; i++) {
-								oneClone[i].name = oneClone[i].name.replace("%count%", count);
-								
-								if(oneClone[i].name === "multitenant" + count){
-									mtRef = oneClone[i];
-								}
-								if(oneClone[i].name === "model" + count){
-									oneClone[i].onAction = function (id, data, form) {
-										// to disable the multitenant feature if es is selected
-										mtRef.disabled = (data === "es");
+					for (var i = 0; i < oneClone.length; i++) {
+						oneClone[i].name = oneClone[i].name.replace("%count%", count);
+						if(oneClone[i].name === "multitenant" + count){
+							mtRef = oneClone[i];
+						}
+						if(oneClone[i].name === "model" + count){
+							oneClone[i].onAction = function (id, data, form) {
+								// to disable the multitenant feature if es is selected
+								mtRef.disabled = (data === "es");
+							}
+						}
+					}
+					entry.entries = entry.entries.concat(oneClone);
+					count++;
+				}
+				
+				if (entry.name === 'addDb') {
+					entry.onAction = function (id, data, form) {
+						var oneClone = angular.copy(dbForm.db);
+						var mtRef;
+						form.entries.forEach(function (entry) {
+							if (entry.name === 'dbs' && entry.type === 'group') {
+								for (var i = 0; i < oneClone.length; i++) {
+									oneClone[i].name = oneClone[i].name.replace("%count%", count);
+									
+									if(oneClone[i].name === "multitenant" + count){
+										mtRef = oneClone[i];
+									}
+									if(oneClone[i].name === "model" + count){
+										oneClone[i].onAction = function (id, data, form) {
+											// to disable the multitenant feature if es is selected
+											mtRef.disabled = (data === "es");
+										}
 									}
 								}
+								entry.entries = entry.entries.concat(oneClone);
 							}
-							entry.entries = entry.entries.concat(oneClone);
-						}
-					});
-					count++;
-					form.formData.dbCount = count;
-				};
-			}
-		});
-		
-		buildForm(currentScope,null, infoForm, function(){
-			currentScope.form.formData.dbCount = count;
-		});
-	}
+						});
+						count++;
+						form.formData.dbCount = count;
+					};
+				}
+			});
+			
+			buildForm(currentScope,null, infoForm, function(){
+				currentScope.form.formData.dbCount = count;
+			});
+		}
 	return {
 		'generateService': generateService,
 		'buildSwaggerForm': buildSwaggerForm
