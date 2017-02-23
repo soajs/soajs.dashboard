@@ -815,7 +815,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			    serviceVersions.forEach(function (version) {
 				    for (var i = 0; i < deployedServices.length; i++) {
 					    //if a version of that service is found to be deployed, delete it from the service information
-					    if (service.name === deployedServices[i].labels['soajs.service.name'] && version == deployedServices[i].labels['soajs.service.version']) {
+					    if (service.name === deployedServices[i].labels['soajsCore.service.name'] && version == deployedServices[i].labels['soajsCore.service.version']) {
 						    delete service.versions[version];
 					    }
 				    }

@@ -2,14 +2,13 @@
 var assert = require('assert');
 var request = require("request");
 var shell = require('shelljs');
-var soajs = require('soajs');
 var helper = require("../helper.js");
 var dashboard;
 
 var config = helper.requireModule('./config');
 var errorCodes = config.errors;
 
-var Mongo = soajs.mongo;
+var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
 var dashboardConfig = dbConfig();

@@ -2,8 +2,7 @@
  * Created by nicolas on 10/19/16.
  */
 'use strict';
-var soajs = require("soajs");
-var Mongo = soajs.mongo;
+var Mongo = require("soajs.core.modules").mongo;
 var mongo = null;
 
 var servicesCollectionName = 'services';

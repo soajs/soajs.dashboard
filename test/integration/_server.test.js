@@ -5,8 +5,7 @@ var helper = require("../helper.js");
 var sampleData = require("soajs.mongodb.data/modules/dashboard");
 var dashboard, controller, urac;
 
-var soajs = require('soajs');
-var Mongo = soajs.mongo;
+var Mongo = require('soajs.core.modules').mongo;
 var dbConfig = require("./db.config.test.js");
 var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";

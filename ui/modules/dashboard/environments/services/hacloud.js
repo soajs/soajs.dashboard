@@ -64,13 +64,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 	                        response[j].failures = failures;
 
-                        	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
-                        		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
-			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
-			                        response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
+                        	if(response[j].labels && response[j].labels['soajsCore.content'] === 'true'){
+                        		if(response[j].labels['soajsCore.service.name'] === 'controller' && !response[j].labels['soajsCore.service.group']){
+			                        response[j].labels['soajsCore.service.group'] = "SOAJS Core Services";
+			                        response[j].labels['soajsCore.service.group'] = response[j].labels['soajsCore.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
 		                        }
-                        		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
-			                        currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
+                        		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajsCore.service.group']) !== -1){
+			                        currentScope.hosts[response[j].labels['soajsCore.service.group']].list.push(response[j]);
 		                        }
 		                        else{
                         			if(!currentScope.hosts.soajs.groups){
@@ -79,7 +79,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			                        response[j]['color'] = 'green';
 			                        response[j]['healthy'] = true;
-			                        var groupName = response[j].labels['soajs.service.group'];
+			                        var groupName = response[j].labels['soajsCore.service.group'];
 			                        if(!currentScope.hosts.soajs.groups[groupName]){
 				                        currentScope.hosts.soajs.groups[groupName] = {
 				                        	expanded : true,
@@ -87,7 +87,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				                        };
 			                        }
 
-			                        if(response[j].labels['soajs.service.name'] === 'controller'){
+			                        if(response[j].labels['soajsCore.service.name'] === 'controller'){
 				                        currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
 				                        currentScope.controllers.push(response[j]);
 			                        }
@@ -99,8 +99,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         	else{
 		                        //service is not SOAJS
 		                        var myGroup = 'miscellaneous';
-		                        if(response[j].labels && response[j].labels['soajs.service.group']){
-			                        myGroup = response[j].labels['soajs.service.group'];
+		                        if(response[j].labels && response[j].labels['soajsCore.service.group']){
+			                        myGroup = response[j].labels['soajsCore.service.group'];
 		                        }
 		                        currentScope.hosts[myGroup].list.push(response[j]);
 		                        break;
@@ -157,7 +157,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         var params = {
             env: currentScope.envCode,
             serviceId: service.id,
-			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : '')
+			mode: ((service.labels && service.labels['soajsCore.service.mode']) ? service.labels['soajsCore.service.mode'] : '')
         };
 
         overlayLoading.show();
@@ -250,7 +250,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         var params = {
             env: currentScope.envCode,
             serviceId: service.id,
-			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : '')
+			mode: ((service.labels && service.labels['soajsCore.service.mode']) ? service.labels['soajsCore.service.mode'] : '')
         };
 
         overlayLoading.show();
@@ -284,13 +284,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				var formConfig = angular.copy(environmentsConfig.form.nginxUI);
 
 				response.forEach(function (oneUIContent) {
-					if (service.labels['soajs.env.code'].toLowerCase() === 'dashboard' && oneUIContent.dashUI) {
+					if (service.labels['soajsCore.env.code'].toLowerCase() === 'dashboard' && oneUIContent.dashUI) {
 						formConfig.entries[0].value.push({
 							l: oneUIContent.name,
 							v: oneUIContent
 						});
 					}
-					else if (service.labels['soajs.env.code'].toLowerCase() !== 'dashboard' && !oneUIContent.dashUI) {
+					else if (service.labels['soajsCore.env.code'].toLowerCase() !== 'dashboard' && !oneUIContent.dashUI) {
 						formConfig.entries[0].value.push({
 							l: oneUIContent.name,
 							v: oneUIContent
@@ -398,10 +398,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			"routeName": "/dashboard/cloud/services/maintenance",
 			"data": {
 				"serviceId": service.id,
-				"serviceName": service.labels['soajs.service.name'],
+				"serviceName": service.labels['soajsCore.service.name'],
 				"operation": "reloadRegistry",
 				"env": currentScope.envCode,
-				"type": service.labels['soajs.service.type']
+				"type": service.labels['soajsCore.service.type']
 			}
 		}, function (error, response) {
 			if (error) {
@@ -458,10 +458,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		    "routeName": "/dashboard/cloud/services/maintenance",
 		    "data": {
 			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
+			    "serviceName": service.labels['soajsCore.service.name'],
 			    "operation": "loadProvision",
 			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
+			    "type": service.labels['soajsCore.service.type']
 		    }
 	    }, function (error, response) {
 		    if (error) {
@@ -518,10 +518,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		    "routeName": "/dashboard/cloud/services/maintenance",
 		    "data": {
 			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
+			    "serviceName": service.labels['soajsCore.service.name'],
 			    "operation": "daemonStats",
 			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
+			    "type": service.labels['soajsCore.service.type']
 		    }
 	    }, function (error, response) {
 		    if (error) {
@@ -578,10 +578,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		    "routeName": "/dashboard/cloud/services/maintenance",
 		    "data": {
 			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
+			    "serviceName": service.labels['soajsCore.service.name'],
 			    "operation": "reloadDaemonConf",
 			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
+			    "type": service.labels['soajsCore.service.type']
 		    }
 	    }, function (error, response) {
 		    if (error) {
@@ -638,10 +638,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			"routeName": "/dashboard/cloud/services/maintenance",
 			"data": {
 				"serviceId": service.id,
-				"serviceName": service.labels['soajs.service.name'],
+				"serviceName": service.labels['soajsCore.service.name'],
 				"operation": "heartbeat",
 				"env": currentScope.envCode,
-				"type": service.labels['soajs.service.type']
+				"type": service.labels['soajsCore.service.type']
 			}
 		}, function (error, heartbeatResponse) {
 			if (error) {
@@ -665,7 +665,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								oneServiceTask.status.error = tooltip;
 								failCount++;
 
-								if(service.labels['soajs.service.name'] === 'controller'){
+								if(service.labels['soajsCore.service.name'] === 'controller'){
 									currentScope.controllers.forEach(function(oneController){
 										if(oneController.id === oneServiceTask.id){
 											oneController.healthy = false;

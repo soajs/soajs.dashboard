@@ -56,6 +56,7 @@
     "soajs": "0.4.*",
     "soajs.core.drivers": "0.0.2",
     "soajs.core.libs": "0.0.*",
+    "soajs.core.modules": "0.0.*",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
