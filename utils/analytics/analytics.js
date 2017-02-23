@@ -741,14 +741,32 @@ var lib = {
 			model: model
 		};
 		var options = utils.buildDeployerOptions(env, soajs, BL);
+		var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat"]
 		deployer.listServices(options, function (err, servicesList) {
-			setTimeout(function () {
-				servicesList.forEach(function (oneService) {
-					
-				});
-				return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
-			}, 1000);
-			return cb(null, true)
+			var failed = [];
+			servicesList.forEach(function (oneService) {
+				if (flk.indexOf(oneService.name) ==! -1){
+					var status = false;
+					oneService.tasks.forEach(function(oneTask){
+						if(oneTask.status.state === "running"){
+							status = true;
+						}
+					});
+					if (!status){
+						failed.push("oneService.name")
+					}
+				}
+			});
+			console.log("failed: ", failed);
+			if (failed.length !== 0){
+				setTimeout(function () {
+					console.log("checking Availability... ")
+					return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
+				}, 1000);
+			}
+			else {
+				return cb(null, true)
+			}
 		});
 	}
 };
