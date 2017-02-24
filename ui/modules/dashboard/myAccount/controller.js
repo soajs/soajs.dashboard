@@ -328,6 +328,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 							else {
 								if (Object.hasOwnProperty.call(response, "access_token")) {
 									$cookies.put('access_token', response.access_token);
+									$cookies.put('refresh_token', response.refresh_token);
 								}
 								uracLogin();
 							}
@@ -351,6 +352,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					if (error) {
 						overlayLoading.hide();
 						$cookies.remove('access_token');
+						$cookies.remove('refresh_token');
 						$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 					}
 					else {
@@ -370,6 +372,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					if (error) {
 						overlayLoading.hide();
 						$cookies.remove('access_token');
+						$cookies.remove('refresh_token');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
@@ -388,6 +391,7 @@ myAccountApp.controller('loginCtrl', ['$scope', 'ngDataApi', '$cookies', 'isUser
 					if (error) {
 						$localStorage.soajs_user = null;
 						$cookies.remove('access_token');
+						$cookies.remove('refresh_token');
 						$cookies.remove('soajs_dashboard_key');
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}

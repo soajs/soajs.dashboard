@@ -2,10 +2,88 @@
 
 soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', function ($http, $cookies, $localStorage, Upload) {
 	
-	function returnAPIError(scope, opts, status, headers, config, cb) {
-		console.log("Error: ngDataApi->" + opts.api);
+	function logoutUser(scope){
+		$cookies.remove('access_token');
+		$cookies.remove('refresh_token');
+		$cookies.remove('soajs_dashboard_key');
+		$cookies.remove('myEnv');
+		$cookies.remove('soajsID');
+		$cookies.remove('soajs_auth');
+		$cookies.remove('soajs_current_route');
+		$cookies.remove('selectedInterval');
+		$localStorage.soajs_user = null;
+		$localStorage.acl_access = null;
+		$localStorage.environments = null;
+		scope.$parent.enableInterface = false;
+	}
+	
+	function revalidateTokens(scope, config, cb){
+		//create a copy of old config
+		var myDomain = config.url.replace(/http(s)?:\/\//, '');
+		myDomain = myDomain.split("/")[0];
+		myDomain = protocol + "//" + myDomain;
+		
+		//first authorize
+		var reAuthorizeConfig = angular.copy(config);
+		reAuthorizeConfig.method = 'GET';
+		reAuthorizeConfig.url = myDomain + "/oauth/authorization";
+		reAuthorizeConfig.headers.key = apiConfiguration.key;
+		reAuthorizeConfig.headers.accept = "*/*";
+		delete reAuthorizeConfig.headers.Authorization;
+		delete reAuthorizeConfig.params;
+		$http(reAuthorizeConfig).success(function (response) {
+			
+			//second get new tokens.
+			var authValue = response.data;
+			var getNewAccessToken = angular.copy(config);
+			getNewAccessToken.method = 'POST';
+			getNewAccessToken.url = myDomain + "/oauth/token";
+			getNewAccessToken.headers.Authorization = authValue;
+			delete getNewAccessToken.params;
+			getNewAccessToken.data = {
+				'refresh_token': $cookies.get('refresh_token'),
+				'grant_type': "refresh_token"
+			};
+			
+			$http(getNewAccessToken).success(function (response) {
+				$cookies.put('access_token', response.access_token);
+				$cookies.put('refresh_token', response.refresh_token);
+				
+				//repeat the main call
+				var MainAPIConfig = angular.copy(config);
+				MainAPIConfig.params.access_token = $cookies.get('access_token');
+				$http(MainAPIConfig).success(function(response, status, headers, config) {
+					returnAPIResponse(scope, response, config, cb)
+				}).error(function (errData, status, headers, config) {
+					//logout the user
+					logoutUser(scope);
+					returnErrorOutput(config, status, headers, config, cb)
+				});
+			}).error(function (errData, status, headers, config) {
+				//logout the user
+				logoutUser(scope);
+				returnErrorOutput(config, status, headers, config, cb)
+			});
+		}).error(function (errData, status, headers, config) {
+			//logout the user
+			logoutUser(scope);
+			returnErrorOutput(config, status, headers, config, cb)
+		});
+	}
+	
+	function returnErrorOutput(opts, status, headers, config, cb){
 		console.log(status, headers, config);
 		return cb(new Error("Unable Fetching data from " + config.url));
+	}
+	
+	function returnAPIError(scope, opts, status, headers, errData, config, cb) {
+		//try to get a new access token from the refresh
+		if(errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired."){
+			revalidateTokens(scope, config, cb);
+		}
+		else{
+			returnErrorOutput(opts, status, headers, config, cb)
+		}
 	}
 	
 	function returnAPIResponse(scope, response, config, cb) {
@@ -65,19 +143,25 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			return cb(null, resp.data);
 		}
 		else {
-			var str = '';
-			for (var i = 0; i < response.errors.details.length; i++) {
-				str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+			//try to refresh the access token before logging out the user
+			if(response.errors.details[0].code === 401 && response.errors.details[0].message === 'The access token provided has expired.'){
+				revalidateTokens(scope, config, cb);
 			}
-			var errorObj = {
-				message: str,
-				codes: response.errors.codes,
-				details: response.errors.details
-			};
-			if (response.errors.codes && response.errors.codes[0]) {
-				errorObj.code = response.errors.codes[0];
+			else{
+				var str = '';
+				for (var i = 0; i < response.errors.details.length; i++) {
+					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+				}
+				var errorObj = {
+					message: str,
+					codes: response.errors.codes,
+					details: response.errors.details
+				};
+				if (response.errors.codes && response.errors.codes[0]) {
+					errorObj.code = response.errors.codes[0];
+				}
+				return cb(errorObj);
 			}
-			return cb(errorObj);
 		}
 	}
 	
@@ -95,10 +179,6 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			data: opts.data || {},
 			json: true
 		};
-		
-		// if (opts.proxy) {
-		// 	config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
-		// }
 		
 		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
@@ -123,11 +203,8 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		}
 		
 		if (opts.proxy) {
-			// if (!config.params.__env || !config.params.__envauth) {
 			if (!config.params.__env) {
-				// var envauth = $cookies.getObject('soajs_envauth');
 				var env = $cookies.getObject('myEnv').code;
-				// config.params.__envauth = envauth[env.toLowerCase()];
 				config.params.__env = env.toUpperCase();
 			}
 		}
@@ -161,7 +238,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			$http(config).success(function (response, status, headers, config) {
 				returnAPIResponse(scope, response, config, cb);
 			}).error(function (errData, status, headers, config) {
-				returnAPIError(scope, opts, status, headers, config, cb);
+				returnAPIError(scope, opts, status, headers, errData, config, cb);
 			});
 		}
 		
@@ -208,6 +285,7 @@ soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cook
 		}
 		else {
 			$cookies.remove('access_token');
+			$cookies.remove('refresh_token');
 			$localStorage.soajs_user = null;
 			return false;
 		}
