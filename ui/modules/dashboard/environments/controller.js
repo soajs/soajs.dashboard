@@ -287,11 +287,7 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 			postData.services.config.session.proxy = 'true';
 		}
 		delete postData.dbs;
-		if (postData.services.config && postData.services.config.oauth && postData.services.config.oauth.grants) {
-			if (typeof(postData.services.config.oauth.grants) == 'string') {
-				postData.services.config.oauth.grants = postData.services.config.oauth.grants.replace(/ /g, '').split(",");
-			}
-		}
+		postData.services.config.oauth.grants = ['password', 'refresh_token'];
 
 		postData.services.config.agent = {
 			"topologyDir": "/opt/soajs/"
