@@ -7,14 +7,14 @@ var colls = {
 };
 var kibanaSettings = require('./services/elk/kibana');
 var lib = {
-	"insertMongoData": function (soajs, config, mongo, cb) {
+	"insertMongoData": function (soajs, config, model, cb) {
 		console.log("insertMongoData")
 		var comboFind = {}
 		comboFind.collection = colls.analytics;
 		comboFind.conditions = {
 			"_type": "settings"
 		};
-		mongo.findEntry(soajs, comboFind, function (error, response) {
+		model.findEntry(soajs, comboFind, function (error, response) {
 			if (error) {
 				return cb(error);
 			}
@@ -40,7 +40,7 @@ var lib = {
 						var comboInsert = {};
 						comboInsert.collection = colls.analytics;
 						comboInsert.record = records;
-						mongo.insertEntry(soajs, comboInsert, cb);
+						model.insertEntry(soajs, comboInsert, cb);
 					});
 				});
 			}
@@ -59,7 +59,6 @@ var lib = {
 				
 				var regex = new RegExp('[a-zA-Z0-9]*\.' + type, 'g');
 				var loadContent;
-				
 				if (content.match(regex)) {
 					try {
 						loadContent = require(path + content);
@@ -123,7 +122,7 @@ var lib = {
 				return cb(null, true)
 			}
 			else {
-				lib.getAnalyticsContent("elasticsearch", "js", env, function (err, content) {
+				lib.getAnalyticsContent("elastic", "js", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					async.parallel({
