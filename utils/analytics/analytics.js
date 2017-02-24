@@ -139,7 +139,7 @@ var lib = {
 									}
 								}
 							};
-							model.updateEntry(combo, call);
+							model.updateEntry(soajs, combo, call);
 						}
 					}, cb);
 				});
