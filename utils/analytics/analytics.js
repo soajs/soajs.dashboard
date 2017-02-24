@@ -8,6 +8,7 @@ var colls = {
 var kibanaSettings = require('./services/elk/kibana');
 var lib = {
 	"insertMongoData": function (soajs, config, mongo, cb) {
+		console.log("insertMongoData")
 		var comboFind = {}
 		comboFind.collection = colls.analytics;
 		comboFind.conditions = {
@@ -47,6 +48,7 @@ var lib = {
 	},
 	
 	"getAnalyticsContent": function (service, type, env, cb) {
+		console.log("getAnalyticsContent")
 		var path = __dirname + "./services/elk/" + service + '/';
 		fs.exists(path, function (exists) {
 			if (!exists) {
@@ -107,6 +109,7 @@ var lib = {
 	},
 	
 	"deployElastic": function (soajs, env, deployer, utils, model, cb) {
+		console.log("deployElastic")
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -149,6 +152,7 @@ var lib = {
 	},
 	
 	"pingElastic": function (esClient, cb) {
+		console.log("pingElastic")
 		esClient.ping(function (error) {
 			if (error) {
 				lib.printProgress('Waiting for elasticsearch container to become created...');
@@ -165,6 +169,7 @@ var lib = {
 	},
 	
 	"infoElastic": function (esClient, cb) {
+		console.log("infoElastic")
 		esClient.db.info(function (error) {
 			if (error) {
 				lib.printProgress('Checking elastic availability...');
@@ -179,10 +184,12 @@ var lib = {
 	},
 	
 	"checkElasticSearch": function (esClient, cb) {
+		console.log("checkElasticSearch")
 		lib.pingElastic(esClient, cb);
 	},
 	
 	"setMapping": function (env, model, esClient, cb) {
+		console.log("setMapping")
 		async.parallel({
 			"template": function (callback) {
 				lib.putTemplate(model, esClient, callback);
@@ -202,6 +209,7 @@ var lib = {
 	},
 	
 	"putTemplate": function (model, esClient, cb) {
+		console.log("putTemplate")
 		var combo = {
 			collection: colls.analytics,
 			conditions: {_type: 'mapping'}
@@ -221,6 +229,7 @@ var lib = {
 	},
 	
 	"putMapping": function (esClient, cb) {
+		console.log("putMapping")
 		var mapping = {
 			index: '.kibana',
 			type: 'dashboard',
@@ -272,6 +281,7 @@ var lib = {
 	},
 	
 	"putSettings": function (env, model, cb) {
+		console.log("putSettings")
 		//todo check this
 		var condition = {
 			"$and": [
@@ -304,6 +314,7 @@ var lib = {
 	},
 	
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
+		console.log("addVisualizations")
 		var BL = {
 			model: model
 		};
@@ -316,6 +327,7 @@ var lib = {
 	},
 	
 	"esBulk": function (esClient, array, cb) {
+		console.log("esBulk")
 		esClient.bulk(array, function (error, response) {
 			if (error) {
 				return cb(error)
@@ -325,6 +337,7 @@ var lib = {
 	},
 	
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
+		console.log("configureKibana")
 		async.each(servicesList, function (oneService, callback) {
 			var serviceType;
 			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
@@ -619,6 +632,7 @@ var lib = {
 	},
 	
 	"deployKibana": function (soajs, env, deployer, utils, model, cb) {
+		console.log("deployKibana")
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -659,7 +673,7 @@ var lib = {
 	},
 	
 	"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
-		
+		console.log("deployLogstash")
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -698,6 +712,7 @@ var lib = {
 	},
 	
 	"deployFilebeat": function (soajs, env, deployer, utils, model, cb) {
+		console.log("deployFilebeat")
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -737,6 +752,7 @@ var lib = {
 	},
 	
 	"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
+		console.log("checkAvailability")
 		var BL = {
 			model: model
 		};
