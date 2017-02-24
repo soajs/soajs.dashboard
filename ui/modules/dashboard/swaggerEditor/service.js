@@ -37,17 +37,19 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 				prefix: currentScope.form.formData['prefix' + i] || "",
 				name: currentScope.form.formData['name' + i]
 			};
-			
+			if(currentScope.form.formData['name' + i] === undefined){
+				delete dbObj.name;
+			}
 			if(Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i].length > 0){
 				dbObj[currentScope.form.formData['model' + i][0]] = true;
 			}
 			else if(currentScope.form.formData['model' + i]){
 				dbObj[currentScope.form.formData['model' + i]] = true;
 			}
-			if((Array.isArray(currentScope.form.formData['model' + i] && currentScope.form.formData['model' + i][0] === 'mongo')) || (currentScope.form.formData['model' + i] === 'mongo')){
+			if((Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i][0] === 'mongo') || (currentScope.form.formData['model' + i] === 'mongo')){
 				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
 			}
-			if(Object.keys(dbObj).length >= 3){
+			if(Object.keys(dbObj).length >= 2){
 				dbs.push(dbObj);
 			}
 		}
