@@ -10,9 +10,9 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIResponse(scope, response, config, cb) {
 		if (config.responseType === 'arraybuffer' && response) {
-			try{
+			try {
 				var res = String.fromCharCode.apply(null, new Uint8Array(response));
-				if(typeof res !== 'object'){
+				if (typeof res !== 'object') {
 					res = JSON.parse(res);
 				}
 				if (res.result === false) {
@@ -34,7 +34,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 					return cb(null, response);
 				}
 			}
-			catch(e){
+			catch (e) {
 				console.log("Unable to parse arraybuffer response. Possible reason: response is a stream and too large.");
 				return cb(null, response);
 			}
@@ -408,16 +408,18 @@ soajsApp.service("aclDrawHelpers", function () {
 						var found = false;
 						if (service.fixList[grpLabel].apisRest) {
 							for (var m in service.fixList[grpLabel].apisRest) {
-								if (aclService[m] && aclService[m].apis[defaultApi] && aclService[m].apis[defaultApi].include === true) {
-									found = true;
-									break;
+								if (aclService[m]) {
+									if (aclService[m].apis && aclService[m].apis[defaultApi] && aclService[m].apis[defaultApi].include === true) {
+										found = true;
+										break;
+									}
 								}
 							}
 							if (!found) {
 								for (var m in service.fixList[grpLabel].apisRest) {
 									if (aclService[m]) {
 										service.fixList[grpLabel].apisRest[m].forEach(function (oneApi) {
-											if (aclService[m].apis[oneApi.v]) {
+											if (aclService[m].apis && aclService[m].apis[oneApi.v]) {
 												aclService[m].apis[oneApi.v].include = false;
 											}
 										});
