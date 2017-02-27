@@ -526,11 +526,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 	});
 
 	describe("owner tests", function () {
-		var request = require("request");
 		var access_token;
 		var Authorization;
 		var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
-		var soajsauth, soajsauth2;
 
 		it("get Auhtorization token", function (done) {
 			var options = {
@@ -578,8 +576,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 		it("success - locked. cant delete package", function (done) {
 			var params = {
 				'headers': {
-					'key': newKey,
-					'soajsauth': soajsauth
+					'key': newKey
 				},
 				qs: {
 					'access_token': access_token,
@@ -641,7 +638,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("fail - will not get client acl", function (done) {
+		it("fail - will not get client acl. No user", function (done) {
 			var params = {
 				'qs': {},
 				'headers': {
@@ -656,7 +653,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("fail - get tenant client extKey", function (done) {
+		it("fail - get tenant client extKey. No user", function (done) {
 			executeMyRequest({
 				'qs': {},
 				'headers': {

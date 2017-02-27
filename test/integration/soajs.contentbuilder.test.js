@@ -64,7 +64,6 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("Content Builder Tests", function () {
-	var soajsauth;
 	var Authorization;
 	var cbConfig = {
 		"genericService": {

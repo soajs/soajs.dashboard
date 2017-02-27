@@ -59,7 +59,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-function getService(soajsauth, options, cb) {
+function getService(options, cb) {
 	var params = {
 		qs: {
 			access_token: access_token,
@@ -82,7 +82,7 @@ function getService(soajsauth, options, cb) {
 	});
 }
 
-function deleteService(soajsauth, options, cb) {
+function deleteService(options, cb) {
 	var params = {
 		"qs": {
 			access_token: access_token,
@@ -603,8 +603,8 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				
-				getService(soajsauth, {env: 'dev', serviceName: 'controller'}, function (service) {
-					deleteService(soajsauth, {
+				getService({env: 'dev', serviceName: 'controller'}, function (service) {
+					deleteService({
 						env: 'DEV',
 						id: service.id,
 						mode: service.labels['soajs.service.mode']
@@ -736,8 +736,8 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				
-				getService(soajsauth, {env: 'dev', serviceName: 'urac'}, function (service) {
-					deleteService(soajsauth, {
+				getService({env: 'dev', serviceName: 'urac'}, function (service) {
+					deleteService({
 						env: 'DEV',
 						id: service.id,
 						mode: service.labels['soajs.service.mode']
@@ -876,8 +876,8 @@ describe("testing hosts deployment", function () {
 				assert.ok(body.result);
 				assert.ok(body.data);
 				
-				getService(soajsauth, {env: 'dev', serviceName: 'helloDaemon'}, function (service) {
-					deleteService(soajsauth, {
+				getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+					deleteService({
 						env: 'DEV',
 						id: service.id,
 						mode: service.labels['soajs.service.mode']
@@ -933,8 +933,8 @@ describe("testing hosts deployment", function () {
 					assert.ok(body.result);
 					assert.ok(body.data);
 					
-					getService(soajsauth, {env: 'dev', serviceName: 'helloDaemon'}, function (service) {
-						deleteService(soajsauth, {
+					getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+						deleteService({
 							env: 'DEV',
 							id: service.id,
 							mode: service.labels['soajs.service.mode']
@@ -1221,7 +1221,7 @@ describe("testing hosts deployment", function () {
 	
 	describe("delete deployed services", function () {
 		it("fail - missing required params", function (done) {
-			deleteService(soajsauth, {env: 'DEV'}, function (body) {
+			deleteService({env: 'DEV'}, function (body) {
 				assert.ok(body.errors);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 172,
@@ -1232,8 +1232,8 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("success - will delete deployed service", function (done) {
-			getService(soajsauth, {env: 'dev', serviceName: 'gc-myservice'}, function (service) {
-				deleteService(soajsauth, {
+			getService({env: 'dev', serviceName: 'gc-myservice'}, function (service) {
+				deleteService({
 					env: 'dev',
 					id: service.id,
 					mode: service.labels['soajs.service.mode']
@@ -1247,7 +1247,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("fail - service not found", function (done) {
-			deleteService(soajsauth, {env: 'DEV', id: '123123123', mode: 'replicated'}, function (body) {
+			deleteService({env: 'DEV', id: '123123123', mode: 'replicated'}, function (body) {
 				assert.ok(body.errors);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 553,
@@ -1293,8 +1293,8 @@ describe("testing hosts deployment", function () {
 		});
 		
 		after("delete nginx service", function (done) {
-			getService(soajsauth, {env: 'dev', serviceName: 'nginx'}, function (service) {
-				deleteService(soajsauth, {
+			getService({env: 'dev', serviceName: 'nginx'}, function (service) {
+				deleteService({
 					env: 'DEV',
 					id: service.id,
 					mode: service.labels['soajs.service.mode']
