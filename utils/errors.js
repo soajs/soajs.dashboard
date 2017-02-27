@@ -245,7 +245,9 @@ var errors = {
 	"903": "You do not have access to this environment %envCode%",
 	"904": "Check your internet connection",
 
-	"905": "Static content not found"
+	"905": "Static content not found",
+
+	"906": "Running hosts exist for this environment, remove them before deleting this environment",
 };
 
 
