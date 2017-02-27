@@ -7,7 +7,7 @@ var dashboard;
 var config = helper.requireModule('./config');
 var errorCodes = config.errors;
 
-var Mongo = require ("soajs.core.modules").mongo;
+var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
 var dashboardConfig = dbConfig();
@@ -66,9 +66,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 	var expDateValue = new Date().toISOString();
 
 	after(function (done) {
-        mongo.closeDb();
-        done();
-    });
+		mongo.closeDb();
+		done();
+	});
 
 	describe("products tests", function () {
 		var productId;
@@ -1740,7 +1740,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-				it("fail - wrong key", function (done) {
+				it("fail - wrong key: fdsffsd", function (done) {
 					var params = {
 						qs: {'id': tenantId, 'appId': 'fdsffsd'},
 						form: {
@@ -2152,8 +2152,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		describe("application ext keys", function () {
 			var extKey;
-			describe("add application ext keys", function () {
-				it("success - will add ext key", function (done) {
+			describe("add application ext keys 1", function () {
+				it("success - will add ext key to STG", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
@@ -2163,12 +2163,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {
 							'expDate': expDateValue,
 							'device': {
-								'a': 'b'
+								'a': 'bbb'
 							},
 							'geo': {
-								'x': 'y'
+								'x': 'yyy'
 							},
-							'env': 'DEV'
+							'env': 'STG'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
@@ -2228,7 +2228,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it('mongo test', function (done) {
+				it('mongo test for key', function (done) {
 					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
@@ -2241,19 +2241,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.equal(records.applications[0].keys[0].extKeys.length, 1);
 						extKey = records.applications[0].keys[0].extKeys[0].extKey;
 						delete records.applications[0].keys[0].extKeys[0].extKey;
+						delete  records.applications[0].keys[0].extKeys[0].dashboardAccess;
 						assert.deepEqual(records.applications[0].keys[0].extKeys[0], {
 							'expDate': new Date(expDateValue).getTime() + config.expDateTTL,
 							'device': {
-								'a': 'b'
+								'a': 'bbb'
 							},
 							'geo': {
-								'x': 'y'
+								'x': 'yyy'
 							},
-							'env': 'DEV'
+							'env': 'STG'
 						});
 						done();
 					});
 				});
+
+			});
+
+			describe("add application ext keys 2", function () {
 
 				it("success - will add two external keys (using locked product) but only one with dashboard access", function (done) {
 					var params = {
@@ -2311,42 +2316,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 									};
 									executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (extKeyTwo_body) {
 										assert.ok(extKeyTwo_body.data.extKey);
-										mongo.count("dashboard_extKeys", {"code": "RATE"}, function (error, count) {
-											assert.ifError(error);
-											assert.ok(count);
-											assert.equal(count, 1);
-
-											done();
-										});
+										done();
 									});
 								});
 							});
 						});
-					});
-				});
-
-				it("success - will add an external key for all environments using their corresponding encryption key (tenant using old acl)", function (done) {
-					var params = {
-						qs: {
-							id: tenantId,
-							appId: applicationId,
-							key: key
-						},
-						form: {
-							'expDate': expDateValue,
-							'device': {
-								'a': 'b'
-							},
-							'geo': {
-								'x': 'y'
-							},
-							'env': 'DEV'
-						}
-					};
-
-					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
-						assert.ok(body.data);
-						done();
 					});
 				});
 
@@ -2391,6 +2365,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"device": {},
 								"geo": {},
 								"env": "DASHBOARD",
+								"dashboardAccess": true,
 								"expDate": 1456498678832
 							}
 						];
@@ -2412,7 +2387,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 									'geo': {
 										'x': 'y'
 									},
-									'env': 'DEV'
+									'env': 'STG'
 								}
 							};
 
@@ -2434,12 +2409,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {
 							'expDate': expDateValue,
 							'device': {
-								'a': 'b'
+								'a': 'cccb'
 							},
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'QAAAAA'
 						}
 					};
 
@@ -2449,6 +2424,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
+
 			});
 
 			describe("update application ext keys", function () {
@@ -2532,7 +2508,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it('mongo test', function (done) {
+				it('mongo test. 1', function (done) {
 					mongo.findOne('tenants', {"code": "TSTN"}, function (error, records) {
 						assert.ifError(error);
 						assert.ok(records);
@@ -2553,6 +2529,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
+							'dashboardAccess': true,
 							'env': 'DASHBOARD'
 						});
 						done();
@@ -2665,7 +2642,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("success - will add ext key", function (done) {
+				it("success - will add ext key to STG", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
@@ -2675,17 +2652,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 						form: {
 							'expDate': expDateValue,
 							'device': {
-								'a': 'b'
+								'aa': 'bb'
 							},
 							'geo': {
-								'x': 'y'
+								'xxx': 'yyy'
 							},
-							'env': 'DEV'
+							'env': 'STG'
 						}
 					};
 					executeMyRequest(params, 'tenant/application/key/ext/add/', 'post', function (body) {
 						assert.ok(body.data);
-
 						done();
 					});
 				});
@@ -2701,7 +2677,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					executeMyRequest(params, 'tenant/application/key/ext/list/', 'get', function (body) {
 						assert.ok(body.data);
 						assert.equal(body.data.length, 2);
-
 						done();
 					});
 				});
@@ -2774,7 +2749,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("fail - wrong key", function (done) {
+				it("fail - wrong key: gfdgdf", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
@@ -2893,12 +2868,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-				it("fail - wrong key", function (done) {
+				it("fail - wrong key: jjjjjjkkkkkk", function (done) {
 					var params = {
 						qs: {
 							id: tenantId,
 							appId: applicationId,
-							key: 'dfgdfg'
+							key: 'jjjjjjkkkkkk'
 						}
 					};
 					///// no error msg returned. just empty objct
@@ -2959,7 +2934,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"key": key
 								},
 								form: {
-									'env': 'all'
+									'env': 'DEV'
 								}
 							};
 							executeMyRequest(params, 'tenant/application/key/ext/add', 'post', function (body) {
@@ -3143,16 +3118,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"product": "TPROD",
 							"package": "TPROD_BASIC",
 							"description": "this is a dummy description",
-							//"acl": {
-							//	"urac": {
-							//		'access': false,
-							//		'apis': {
-							//			'/account/changeEmail': {
-							//				'access': true
-							//			}
-							//		}
-							//	}
-							//},
 							"_TTL": 12 * 3600 * 1000,
 							"acl": {
 								'dev': {
@@ -3181,15 +3146,17 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"extKeys": [
 										{
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
+											"dashboardAccess": false,
 											"device": {'a': 'b'},
 											"geo": {'x': 'y'},
-											"env": 'DEV'
+											"env": 'STG'
 										},
 										{
 											"expDate": new Date(expDateValue).getTime() + config.expDateTTL,
-											"device": {'a': 'b'},
-											"geo": {'x': 'y'},
-											"env": 'DEV'
+											"dashboardAccess": false,
+											"device": {'aa': 'bb'},
+											"geo": {'xxx': 'yyy'},
+											"env": 'STG'
 										}
 									],
 									"config": {
