@@ -1,14 +1,14 @@
 "use strict";
 var assert = require('assert');
 var request = require("request");
-var util = require ("soajs.core.libs").utils;
+var util = require("soajs.core.libs").utils;
 var helper = require("../helper.js");
 var dashboard;
 
 var config = helper.requireModule('./config');
 var errorCodes = config.errors;
 
-var Mongo = require ("soajs.core.modules").mongo;
+var Mongo = require("soajs.core.modules").mongo;
 var dbConfig = require("./db.config.test.js");
 
 var dashboardConfig = dbConfig();
@@ -19,6 +19,7 @@ var uracConfig = dbConfig();
 uracConfig.name = 'test_urac';
 var uracMongo = new Mongo(uracConfig);
 
+var AuthValue;
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 // /tenant/application/acl/get
 function executeMyRequest(params, apiPath, method, cb) {
@@ -67,9 +68,28 @@ describe("DASHBOARD UNIT Tests:", function () {
 	var envId;
 
 	after(function (done) {
-        mongo.closeDb();
-        done();
-    });
+		mongo.closeDb();
+		done();
+	});
+
+	it("get Main Auhtorization token", function (done) {
+		var options = {
+			uri: 'http://localhost:4000/oauth/authorization',
+			headers: {
+				'Content-Type': 'application/json',
+				'key': extKey
+			},
+			json: true
+		};
+
+		request.get(options, function (error, response, body) {
+			assert.ifError(error);
+			assert.ok(body);
+			assert.ok(body.data);
+			AuthValue = body.data;
+			done();
+		});
+	});
 
 	describe("environment tests", function () {
 		var validEnvRecord = {
@@ -161,6 +181,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"maxage": 1728000
 					},
 					"oauth": {
+						"accessTokenLifetime": 36000,
+						"refreshTokenLifetime": 36000,
 						"grants": [
 							"password",
 							"refresh_token"
@@ -1171,13 +1193,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ifError(error);
 						assert.ok(record);
 						assert.deepEqual(record.dbs.databases, {
-							"urac_2":{
-								"cluster":"cluster1",
-								"tenantSpecific":true
+							"urac_2": {
+								"cluster": "cluster1",
+								"tenantSpecific": true
 							},
-							"session_test":{
-								"cluster":"cluster1",
-								"tenantSpecific":false
+							"session_test": {
+								"cluster": "cluster1",
+								"tenantSpecific": false
 							}
 						});
 						done();
@@ -1187,7 +1209,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			describe("list environment dbs", function () {
 				before("clean env record", function (done) {
-					mongo.update('environment', {code: 'DEV'}, {'$set': {'dbs.databases': {}, 'dbs.config': {}}}, function (error) {
+					mongo.update('environment', {code: 'DEV'}, {
+						'$set': {
+							'dbs.databases': {},
+							'dbs.config': {}
+						}
+					}, function (error) {
 						assert.ifError(error);
 						done();
 					});
@@ -1369,6 +1396,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"maxage": 1728000
 								},
 								"oauth": {
+									"accessTokenLifetime": 36000,
+									"refreshTokenLifetime": 36000,
 									"grants": [
 										"password",
 										"refresh_token"
@@ -1386,7 +1415,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"session": {
 									"name": "soajsID",
 									"secret": "this is antoine hage app server",
-									"proxy" : "undefined",
+									"proxy": "undefined",
 									"rolling": false,
 									"unset": "keep",
 									"cookie": {
@@ -1478,30 +1507,34 @@ describe("DASHBOARD UNIT Tests:", function () {
 	});
 
 	describe("login tests", function () {
-		var auth;
+		var auth, access_token;
+
 		it("success - did not specify environment code, old acl", function (done) {
 			var options = {
-				uri: 'http://localhost:4001/login',
+				uri: 'http://localhost:4000/oauth/token',
 				headers: {
 					'Content-Type': 'application/json',
-					key: extKey
+					key: extKey,
+					Authorization: AuthValue
 				},
 				body: {
 					"username": "user1",
-					"password": "123456"
+					"password": "123456",
+					"grant_type": "password"
 				},
 				json: true
 			};
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
-				auth = body.soajsauth;
+				access_token = body.access_token;
 				var params = {
-					headers: {
-						soajsauth: auth
+					qs: {
+						access_token: access_token
 					}
 				};
 				executeMyRequest(params, 'permissions/get', 'get', function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -1516,10 +1549,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		it("success - specified environment code, old acl", function (done) {
 			var params = {
-				headers: {
-					soajsauth: auth
-				},
 				qs: {
+					access_token: access_token,
 					envCode: 'DEV'
 				}
 			};
@@ -1532,7 +1563,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 	});
 
 	describe("testing settings for logged in users", function () {
-		var soajsauth;
+		var access_token;
 
 		it("fail - should not work for non-logged in users", function (done) {
 			executeMyRequest({}, 'permissions/get', 'get', function (body) {
@@ -1544,21 +1575,23 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		it("success - should work for logged in users", function (done) {
 			var options = {
-				uri: 'http://localhost:4001/login',
+				uri: 'http://localhost:4000/oauth/token',
 				headers: {
 					'Content-Type': 'application/json',
-					key: extKey
+					key: extKey,
+					Authorization: AuthValue
 				},
 				body: {
 					"username": "user1",
-					"password": "123456"
+					"password": "123456",
+					"grant_type": "password"
 				},
 				json: true
 			};
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
-				soajsauth = body.soajsauth;
+				access_token = body.access_token;
 				done();
 			});
 		});
@@ -1566,7 +1599,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 		describe("settings tests", function () {
 			var tenantId, applicationId, key, extKey, oauthUserId;
 
-			before ("update environment records to include session database in order to be able to proceed", function (done) {
+			before("update environment records to include session database in order to be able to proceed", function (done) {
 				var update = {
 					'$set': {
 						"dbs": {
@@ -1622,15 +1655,20 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("fail - user not logged in", function (done) {
-				executeMyRequest({}, 'settings/tenant/get', 'get', function (body) {
-					assert.deepEqual(body.errors.details[0],
-						{"code": 601, "message": "No Logged in User found."});
-					done();
-				});
+				executeMyRequest({},
+					'settings/tenant/get', 'get', function (body) {
+						assert.deepEqual(body.errors.details[0], {"code": 601, "message": "No Logged in User found."});
+						done();
+					});
 			});
 
 			it("success - will get tenant", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/get', 'get', function (body) {
+				executeMyRequest({
+					'qs': {
+						'access_token': access_token
+					}
+				}, 'settings/tenant/get', 'get', function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					tenantId = body.data.tenant._id.toString();
@@ -1640,7 +1678,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will update tenant", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
+					'qs': {
+						'access_token': access_token
+					},
 					form: {
 						"description": 'this is a dummy updated description',
 						"name": "test tenant updated"
@@ -1656,7 +1696,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will add oauth", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
+					'qs': {
+						'access_token': access_token
+					},
 					form: {
 						"secret": "my secret key",
 						"redirectURI": "http://www.myredirecturi.com/"
@@ -1665,7 +1707,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function (body) {
 					assert.ok(body.data);
-
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
@@ -1682,7 +1723,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will update oauth", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
+					'qs': {
+						'access_token': access_token
+					},
 					form: {
 						"secret": "my secret key2",
 						"redirectURI": "http://www.myredirecturi.com/"
@@ -1703,7 +1746,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get oauth object", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/list/', 'get', function (body) {
+				executeMyRequest({
+					'qs': {
+						'access_token': access_token
+					}
+				}, 'settings/tenant/oauth/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.deepEqual(body.data, {
 						"secret": "my secret key2",
@@ -1715,7 +1762,27 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will delete oauth", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/delete/', 'delete', function (body) {
+				executeMyRequest({
+					'qs': {
+						'access_token': access_token
+					}
+				}, 'settings/tenant/oauth/delete/', 'delete', function (body) {
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+			it("success - will return oauth obj", function (done) {
+				var params = {
+					'qs': {
+						'access_token': access_token
+					},
+					form: {
+						"secret": "my secret key2",
+						"redirectURI": "http://www.myredirecturi.com/"
+					}
+				};
+				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
@@ -1723,7 +1790,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will add oauth user", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
+					'qs': {
+						'access_token': access_token
+					},
 					form: {
 						"userId": "oauth_user",
 						"password": "password1"
@@ -1744,8 +1813,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will update oauth users", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						uId: oauthUserId
 					},
 					form: {
@@ -1767,8 +1836,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will delete oauth user", function (done) {
 				executeMyRequest({
-					'headers': {'soajsauth': soajsauth},
-					qs: {'uId': oauthUserId}
+					qs: {
+						'access_token': access_token,
+						'uId': oauthUserId
+					}
 				}, 'settings/tenant/oauth/users/delete/', 'delete', function (body) {
 					assert.ok(body.data);
 					done();
@@ -1776,7 +1847,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get oauth users", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/oauth/users/list/', 'get', function (body) {
+				executeMyRequest({
+					qs: {
+						'access_token': access_token
+					}
+				}, 'settings/tenant/oauth/users/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 0);
 					done();
@@ -1806,7 +1881,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get empty object", function (done) {
-				executeMyRequest({'headers': {'soajsauth': soajsauth}}, 'settings/tenant/application/list/', 'get', function (body) {
+				executeMyRequest({
+					qs: {
+						'access_token': access_token
+					}
+				}, 'settings/tenant/application/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 4);
 					done();
@@ -1815,8 +1894,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will add key", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						'appId': applicationId
 					}
 				};
@@ -1834,8 +1913,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will list key", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId
 					}
 				};
@@ -1847,10 +1926,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("success - will add ext key", function (done) {
+			it("success - will add ext key for STG", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key
 					},
@@ -1862,10 +1941,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'geo': {
 							'x': 'y'
 						},
-						'env': 'DEV'
+						'env': 'STG'
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -1876,13 +1956,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("success - will update ext key", function (done) {
+			it("success - will update ext key STG", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key,
-						extKeyEnv: 'DEV'
+						extKeyEnv: 'STG'
 					},
 					form: {
 						'extKey': extKey,
@@ -1895,25 +1975,29 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					}
 				};
+				console.log(params);
 				executeMyRequest(params, 'settings/tenant/application/key/ext/update/', 'put', function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					done();
 				});
 			});
 
-			it("success - will delete ext key", function (done) {
+			it("success - will delete ext key STG", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key
 					},
 					form: {
 						'extKey': extKey,
-						'extKeyEnv': 'DEV'
+						'extKeyEnv': 'STG'
 					}
 				};
+				console.log(params);
 				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					done();
 				});
@@ -1921,8 +2005,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will list ext key", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key
 					}
@@ -1930,15 +2014,14 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'settings/tenant/application/key/ext/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 0);
-
 					done();
 				});
 			});
 
 			it("success - will update configuration", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key
 					},
@@ -1962,8 +2045,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will list configuration", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						appId: applicationId,
 						key: key
 					}
@@ -1983,8 +2066,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("success - will delete key", function (done) {
 				var params = {
-					'headers': {'soajsauth': soajsauth},
 					qs: {
+						'access_token': access_token,
 						'appId': applicationId,
 						'key': key.toString()
 					}
@@ -2094,7 +2177,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-
+	
 	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
@@ -2173,7 +2256,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ifError(error);
 						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'services/env/list', 'get', function (body) {
 							assert.ok(body.result);
-							assert.deepEqual(body.data,{
+							assert.deepEqual(body.data, {
 								"dev": "api.api.myDomain.com",
 								"prod": "api.api.myDomain.com"
 							});
@@ -2184,12 +2267,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 
 			it("success - will get the env list in case the service has one env", function (done) {
-			executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
-				assert.ok(body.result);
-				assert.deepEqual(body.data, {"dev": "api.api.myDomain.com"});
-				done();
+				executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
+					assert.ok(body.result);
+					assert.deepEqual(body.data, {"dev": "api.api.myDomain.com"});
+					done();
+				});
 			});
-		});
 
 			it("fail - service doesn't exist", function (done) {
 				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
@@ -2296,24 +2379,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-            it("fail - invalid ip address", function (done) {
-                var params = {
-                    form: {
-                        'env': 'dev',
-                        'serviceName': 'controller',
-                        'servicePort': 4000,
-                        'hostname': 'controller',
-                        'operation': 'heartbeat',
-                        'serviceHost': '71.255.67.89'
-                    }
-                };
-                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
-                	assert.equal(body.result, false);
-                	assert.ok(body.errors);
-                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
-                    done();
-                });
-            });
+			it("fail - invalid ip address", function (done) {
+				var params = {
+					form: {
+						'env': 'dev',
+						'serviceName': 'controller',
+						'servicePort': 4000,
+						'hostname': 'controller',
+						'operation': 'heartbeat',
+						'serviceHost': '71.255.67.89'
+					}
+				};
+				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
+					assert.equal(body.result, false);
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+					done();
+				});
+			});
 
 			it("success - heartbeat controller and service", function (done) {
 				var params = {
@@ -2375,86 +2458,153 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		});
 	});
-
+	
 	describe("change tenant security key", function () {
 
-		it("success - will change tenant security key", function (done) {
-			mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
-				assert.ifError(error);
-				assert.ok(envRecord);
+		describe("will change tenant security key", function () {
+			var Authorization, access_token;
+			var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
 
-				//Login
-				var auth;
+			it("get Auhtorization token", function (done) {
 				var options = {
-					uri: 'http://localhost:4001/login',
+					uri: 'http://localhost:4000/oauth/authorization',
 					headers: {
 						'Content-Type': 'application/json',
-						key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
-					},
-					body: {
-						"username": "owner",
-						"password": "123456"
+						'key': newKey
 					},
 					json: true
 				};
 
-				request.post(options, function (error, response, body) {
+				request.get(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
-					auth = body.soajsauth;
+					Authorization = body.data;
+					done();
+				});
+			});
 
-					var params = {
+			it("success - change security key", function (done) {
+				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+					assert.ifError(error);
+					assert.ok(envRecord);
+					//Login first
+					var options = {
+						uri: 'http://localhost:4000/oauth/token',
 						headers: {
-							soajsauth: auth,
-							key: '9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974'
+							'Content-Type': 'application/json',
+							key: newKey,
+							'Authorization': Authorization
 						},
-						qs: {
-							'id': envRecord._id.toString()
+						body: {
+							"username": "owner",
+							"password": "123456",
+							"grant_type": "password"
 						},
-						form: {
-							'algorithm': 'aes256',
-							'password': 'new test case password'
-						}
+						json: true
 					};
 
-					executeMyRequest(params, 'environment/key/update', 'put', function (body) {
-						assert.ok(body.result);
-						done();
+					request.post(options, function (error, response, body) {
+						assert.ifError(error);
+						assert.ok(body);
+						access_token = body.access_token;
+
+						var params = {
+							headers: {
+								key: newKey
+							},
+							qs: {
+								'access_token': access_token,
+								'id': envRecord._id.toString()
+							},
+							form: {
+								'algorithm': 'aes256',
+								'password': 'new test case password'
+							}
+						};
+
+						executeMyRequest(params, 'environment/key/update', 'put', function (body) {
+							assert.ok(body.result);
+							done();
+						});
 					});
 				});
 			});
 		});
 
-		it("fail - logged in user is not the owner of the app", function (done) {
-			mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
-				assert.ifError(error);
-				assert.ok(envRecord);
+		describe("fail - logged in user is not the owner of the app", function () {
+			var Authorization2, access_token;
 
-				//Login
-				var auth;
+			// before("update mongo. assure oauth", function (done) {
+			// 	mongo.update('tenants', {'code': 'test'}, {
+			// 		$set: {
+			// 			"oauth": {
+			// 				"secret": "my secret key2",
+			// 				"redirectURI": "http://www.myredirecturi.com/",
+			// 				"grants": ["password", "refresh_token"]
+			// 			}
+			// 		}
+			// 	}, {
+			// 		'upsert': false, 'safe': true, multi: false
+			// 	}, function (error, success) {
+			// 		setTimeout(function () {
+			// 			done();
+			// 		}, 900);
+			// 	});
+			// });
+
+			it("get Auhtorization token", function (done) {
 				var options = {
-					uri: 'http://localhost:4001/login',
+					uri: 'http://localhost:4000/oauth/authorization',
 					headers: {
 						'Content-Type': 'application/json',
-						key: extKey
-					},
-					body: {
-						"username": "user1",
-						"password": "123456"
+						'key': extKey
 					},
 					json: true
 				};
 
+				request.get(options, function (error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					console.log(JSON.stringify(body, null, 2));
+					assert.ok(body.data);
+					Authorization2 = body.data;
+					done();
+				});
+			});
+
+			it("Login first", function (done) {
+				var options = {
+					uri: 'http://localhost:4000/oauth/token',
+					headers: {
+						'Content-Type': 'application/json',
+						key: extKey,
+						Authorization: Authorization2
+					},
+					body: {
+						"username": "user1",
+						"password": "123456",
+						"grant_type": "password"
+					},
+					json: true
+				};
+				console.log(options);
 				request.post(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
-					auth = body.soajsauth;
+					console.log(JSON.stringify(body, null, 2));
+					access_token = body.access_token;
+					assert.ok(body.access_token);
+					done();
+				});
+			});
 
+			it("fail - logged in user is not the owner of the app", function (done) {
+				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
+					assert.ifError(error);
+					assert.ok(envRecord);
 					var params = {
-						headers: {
-							soajsauth: auth
-						},
 						qs: {
+							'access_token': access_token,
 							'id': envRecord._id.toString()
 						},
 						form: {
@@ -2469,9 +2619,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
+
 		});
 	});
-
+	
 	describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
 		var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
 
@@ -2602,7 +2753,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-
+	
 	describe("static content tests", function () {
 		it("success - will list static content", function (done) {
 			executeMyRequest({}, "staticContent/list", 'post', function (body) {

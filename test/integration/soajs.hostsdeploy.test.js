@@ -292,7 +292,13 @@ describe("testing hosts deployment", function () {
 				}
 			}
 		};
-		mongo.insert("environment", dashEnv, function (error) {
+		var updateField = {
+			"$set": dashEnv
+		};
+		mongo.update("environment", {"code": "DASHBOARD"}, updateField, {
+			"upsert": true,
+			"multi": false
+		}, function (error) {
 			assert.ifError(error);
 			done();
 		});
@@ -504,7 +510,6 @@ describe("testing hosts deployment", function () {
 				executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
 					currentNode = body.data[0];
 					done();
 				});

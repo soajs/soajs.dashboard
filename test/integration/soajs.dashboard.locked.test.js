@@ -62,7 +62,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("DASHBOARD UNIT TESTS for locked", function () {
 
 	afterEach(function (done) {
-		console.log("=======================================");
+		console.log("========================================================");
 		done();
 	});
 
@@ -518,7 +518,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			executeMyRequest({}, 'tenant/db/keys/list', 'get', function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
-				assert.equal(body.data.length, 2);
+				assert.equal(body.data.length, 1);
 				keys = body.data;
 				done();
 			});
@@ -527,18 +527,41 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 	describe("owner tests", function () {
 		var request = require("request");
+		var access_token;
+		var Authorization;
 		var newKey = "9b96ba56ce934ded56c3f21ac9bdaddc8ba4782b7753cf07576bfabcace8632eba1749ff1187239ef1f56dd74377aa1e5d0a1113de2ed18368af4b808ad245bc7da986e101caddb7b75992b14d6a866db884ea8aee5ab02786886ecf9f25e974";
 		var soajsauth, soajsauth2;
-		it("login owner user", function (done) {
+
+		it("get Auhtorization token", function (done) {
 			var options = {
-				uri: 'http://localhost:4001/login',
+				uri: 'http://localhost:4000/oauth/authorization',
 				headers: {
 					'Content-Type': 'application/json',
 					'key': newKey
 				},
+				json: true
+			};
+
+			request.get(options, function (error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				Authorization = body.data;
+				done();
+			});
+		});
+
+		it("get token owner user", function (done) {
+			var options = {
+				uri: 'http://localhost:4000/oauth/token',
+				headers: {
+					'Content-Type': 'application/json',
+					'key': newKey,
+					'Authorization': Authorization
+				},
 				body: {
 					"username": "owner",
-					"password": "123456"
+					"password": "123456",
+					"grant_type": "password"
 				},
 				json: true
 			};
@@ -546,8 +569,8 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			request.post(options, function (error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
-				assert.equal(body.result, true);
-				soajsauth = body.soajsauth;
+				assert.ok(body.access_token);
+				access_token = body.access_token;
 				done();
 			});
 		});
@@ -559,6 +582,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					'soajsauth': soajsauth
 				},
 				qs: {
+					'access_token': access_token,
 					'id': productId,
 					"code": "CLIENT"
 				}
@@ -573,10 +597,10 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 		it("will get owner key", function (done) {
 			executeMyRequest({
 				'headers': {
-					'key': newKey,
-					'soajsauth': soajsauth
+					'key': newKey
 				},
 				"qs": {
+					'access_token': access_token,
 					"main": true
 				}
 			}, 'key/get', 'get', function (body) {
@@ -588,9 +612,11 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 		it("will get owner permissions", function (done) {
 			executeMyRequest({
+				"qs": {
+					'access_token': access_token
+				},
 				'headers': {
-					'key': newKey,
-					'soajsauth': soajsauth
+					'key': newKey
 				}
 			}, 'permissions/get', 'get', function (body) {
 				assert.equal(body.result, true);
@@ -601,8 +627,13 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 
 		it("get tenant acl owner", function (done) {
 			executeMyRequest({
-				'headers': {'key': newKey, 'soajsauth': soajsauth},
-				'qs': {'id': '551286bce603d7e01ab1688e'}
+				'headers': {
+					'key': newKey
+				},
+				'qs': {
+					'access_token': access_token,
+					'id': '551286bce603d7e01ab1688e'
+				}
 			}, 'tenant/acl/get', 'post', function (body) {
 				assert.equal(body.result, true);
 				assert.ok(body.data);
@@ -610,87 +641,122 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			});
 		});
 
-		it("fail - will get client acl", function (done) {
-			executeMyRequest({'headers': {'key': newKey}}, 'permissions/get', 'get', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				done();
-			});
-		});
-
-		it("fail - get tenant client extKey", function (done) {
-			executeMyRequest({'headers': {'key': extKey}}, 'key/get', 'get', function (body) {
-				assert.equal(body.result, false);
-				assert.ok(body.errors);
-				done();
-			});
-		});
-
-		it("login test user", function (done) {
-			var options = {
-				uri: 'http://localhost:4001/login',
-				headers: {
-					'Content-Type': 'application/json',
-					'key': extKey
-				},
-				body: {
-					"username": "user1",
-					"password": "123456"
-				},
-				json: true
-			};
-
-			request.post(options, function (error, response, body) {
-				assert.ifError(error);
-				assert.ok(body);
-				assert.equal(body.result, true);
-				soajsauth2 = body.soajsauth;
-				done();
-			});
-		});
-
-		it("will get user permissions", function (done) {
-			executeMyRequest({
+		it("fail - will not get client acl", function (done) {
+			var params = {
+				'qs': {},
 				'headers': {
-					'key': extKey,
-					'soajsauth': soajsauth2
+					'key': newKey
 				}
-			}, 'permissions/get', 'get', function (body) {
-				assert.equal(body.result, true);
-				assert.ok(body.data);
-				done();
-			});
-		});
-
-		it("login test user2", function (done) {
-			var options = {
-				uri: 'http://localhost:4001/login',
-				headers: {
-					'Content-Type': 'application/json',
-					'key': extKey
-				},
-				body: {
-					"username": "user2",
-					"password": "123456"
-				},
-				json: true
 			};
-
-			request.post(options, function (error, response, body) {
-				assert.ifError(error);
-				assert.ok(body);
-				assert.equal(body.result, true);
-				soajsauth2 = body.soajsauth;
-				done();
-			});
-		});
-
-		it("fail - get tenant client extKey", function (done) {
-			executeMyRequest({'headers': {'key': extKey, 'soajsauth': soajsauth2}}, 'key/get', 'get', function (body) {
+			executeMyRequest(params, 'permissions/get', 'get', function (body) {
+				// console.log(JSON.stringify(body, null, 2));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
 			});
 		});
+
+		it("fail - get tenant client extKey", function (done) {
+			executeMyRequest({
+				'qs': {},
+				'headers': {
+					'key': extKey
+				}
+			}, 'key/get', 'get', function (body) {
+				// console.log(JSON.stringify(body, null, 2));
+				assert.equal(body.result, false);
+				assert.ok(body.errors);
+				done();
+			});
+		});
+
+		describe("test with user 1", function () {
+			var access_token2;
+
+			it("login test user", function (done) {
+				var options = {
+					uri: 'http://localhost:4000/oauth/token',
+					headers: {
+						'Content-Type': 'application/json',
+						'key': extKey,
+						'Authorization': Authorization
+					},
+					body: {
+						"username": "user1",
+						"password": "123456",
+						"grant_type": "password"
+					},
+					json: true
+				};
+
+				request.post(options, function (error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					access_token2 = body.access_token;
+					done();
+				});
+			});
+
+			it("will get user permissions", function (done) {
+				executeMyRequest({
+					'qs': {
+						'access_token': access_token2
+					},
+					'headers': {
+						'key': extKey
+					}
+				}, 'permissions/get', 'get', function (body) {
+					assert.equal(body.result, true);
+					assert.ok(body.data);
+					done();
+				});
+			});
+
+		});
+
+		describe("test with user 2", function () {
+			var access_token2;
+
+			it("login test user2", function (done) {
+				var options = {
+					uri: 'http://localhost:4000/oauth/token',
+					headers: {
+						'Content-Type': 'application/json',
+						'key': extKey,
+						'Authorization': Authorization
+					},
+					body: {
+						"username": "user2",
+						"password": "123456",
+						"grant_type": "password"
+					},
+					json: true
+				};
+
+				request.post(options, function (error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					access_token2 = body.access_token;
+					done();
+				});
+			});
+
+			it("fail - get tenant client extKey. Tenant does not exist", function (done) {
+				executeMyRequest({
+					'qs': {
+						'access_token': access_token2
+					},
+					'headers': {
+						'key': extKey
+					}
+				}, 'key/get', 'get', function (body) {
+					assert.equal(body.result, false);
+					assert.ok(body.errors);
+					done();
+				});
+			});
+
+		});
+
 	});
 });
