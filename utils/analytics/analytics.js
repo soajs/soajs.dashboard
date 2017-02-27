@@ -47,63 +47,58 @@ var lib = {
 		})
 	},
 	
-	"getAnalyticsContent": function (service, type, env, cb) {
+	"getAnalyticsContent": function (service, env, cb) {
 		console.log("getAnalyticsContent")
-		var path = __dirname + "./services/elk/" + service + '/';
+		var path = __dirname + "/services/elk/";
 		fs.exists(path, function (exists) {
 			if (!exists) {
 				return cb('Folder [' + path + '] does not exist');
 			}
-			fs.readdir(path, function (error, content) {
-				if (error) return cb(error);
-				
-				var regex = new RegExp('[a-zA-Z0-9]*\.' + type, 'g');
-				var loadContent;
-				if (content.match(regex)) {
-					try {
-						loadContent = require(path + content);
-					}
-					catch (e) {
-						return cb(e);
-					}
-					var serviceParams = {
-						"env": loadContent.env,
-						"name": loadContent.name,
-						"image": loadContent.deployConfig.image,
-						"variables": loadContent.variables || [],
-						"labels": loadContent.labels,
-						"cmd": loadContent.command.cmd.concat(loadContent.command.args),
-						"memoryLimit": loadContent.deployConfig.memoryLimit,
-						"replication": {
-							"mode": loadContent.deployConfig.replication.mode,
-							"replicas": ((loadContent.deployConfig.replication.mode === 'replicated') ? loadContent.deployConfig.replication.replicas : null)
-						},
-						"containerDir": loadContent.deployConfig.workDir,
-						"restartPolicy": {
-							"condition": loadContent.deployConfig.restartPolicy.condition,
-							"maxAttempts": loadContent.deployConfig.restartPolicy.maxAttempts
-						},
-						"network": loadContent.deployConfig.network,
-						"ports": loadContent.deployConfig.ports || []
-					};
-					
-					if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
-						serviceParams.volume = {
-							"type": loadContent.deployConfig.volume.type,
-							"readOnly": loadContent.deployConfig.volume.readOnly || false,
-							"source": loadContent.deployConfig.volume.source,
-							"target": loadContent.deployConfig.volume.target
-						};
-					}
-					if (content === 'filebeat.js') {
-						serviceParams = JSON.stringify(serviceParams);
-						serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
-						serviceParams = JSON.parse(serviceParams);
-					}
-				}
-				
-				return cb(null, serviceParams);
-			});
+			var loadContent;
+			try {
+				loadContent = require(path + service);
+			}
+			catch (e) {
+				return cb(e);
+			}
+			var serviceParams = {
+				"env": loadContent.env,
+				"name": loadContent.name,
+				"image": loadContent.deployConfig.image,
+				"variables": loadContent.variables || [],
+				"labels": loadContent.labels,
+				"cmd": loadContent.command.cmd.concat(loadContent.command.args),
+				"memoryLimit": loadContent.deployConfig.memoryLimit,
+				"replication": {
+					"mode": loadContent.deployConfig.replication.mode,
+					"replicas": ((loadContent.deployConfig.replication.mode === 'replicated') ? loadContent.deployConfig.replication.replicas : null)
+				},
+				"containerDir": loadContent.deployConfig.workDir,
+				"restartPolicy": {
+					"condition": loadContent.deployConfig.restartPolicy.condition,
+					"maxAttempts": loadContent.deployConfig.restartPolicy.maxAttempts
+				},
+				"network": loadContent.deployConfig.network,
+				"ports": loadContent.deployConfig.ports || []
+			};
+			
+			if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
+				serviceParams.volume = {
+					"type": loadContent.deployConfig.volume.type,
+					"readOnly": loadContent.deployConfig.volume.readOnly || false,
+					"source": loadContent.deployConfig.volume.source,
+					"target": loadContent.deployConfig.volume.target
+				};
+			}
+			if (service === 'filebeat') {
+				serviceParams = JSON.stringify(serviceParams);
+				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
+				serviceParams = JSON.parse(serviceParams);
+			}
+			
+			
+			return cb(null, serviceParams);
+			
 		});
 	},
 	
@@ -115,35 +110,48 @@ var lib = {
 			"_type": "settings"
 		};
 		model.findEntry(soajs, combo, function (error, settings) {
-			if (error){
+			if (error) {
 				return cb(error);
 			}
 			if (settings && settings.elasticsearch && settings.elasticsearch.status === "deployed") {
 				return cb(null, true)
 			}
 			else {
-				lib.getAnalyticsContent("elastic", "js", env, function (err, content) {
+				lib.getAnalyticsContent("elastic", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					async.parallel({
 						"deploy": function (call) {
-							deployer.deployService(options, call)
+							deployer.deployService(options, function (err){
+								console.log("done deploy");
+								call(err, true);
+							})
 						},
 						"update": function (call) {
 							combo.options = {
 								"$set": {
 									"elasticsearch": {
 										"cluster_config": {
-											"es_clusters" : env.dbs.clusters.es_clusters
+											"es_clusters": env.dbs.clusters.es_clusters
 										},
 										"status": "deployed",
 										"db_name": "esClient"
 									}
 								}
 							};
-							model.updateEntry(soajs, combo, call);
+							
+							console.log(JSON.stringify(env, null, 2))
+							console.log(JSON.stringify(combo, null, 2))
+							model.updateEntry(soajs, combo , function (err){
+								console.log("done updateEntry");
+								call(err, true);
+							});
 						}
-					}, cb);
+					} , function (err){
+						console.log(err)
+						console.log("done deployElastic");
+						cb(err, true);
+					});
 				});
 			}
 			
@@ -638,14 +646,14 @@ var lib = {
 			"_type": "settings"
 		};
 		model.findEntry(soajs, combo, function (error, settings) {
-			if (error){
+			if (error) {
 				return cb(error);
 			}
 			if (settings && settings.kibana && settings.kibana.status === "deployed") {
 				return cb(null, true)
 			}
 			else {
-				lib.getAnalyticsContent("kibana", "js", env, function (err, content) {
+				lib.getAnalyticsContent("kibana", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					async.parallel({
@@ -679,14 +687,14 @@ var lib = {
 			"_type": "settings"
 		};
 		model.findEntry(soajs, combo, function (error, settings) {
-			if (error){
+			if (error) {
 				return cb(error);
 			}
 			if (settings && settings.logstash && settings.logstash.status === "deployed") {
 				return cb(null, true)
 			}
 			else {
-				lib.getAnalyticsContent("logstash", "js", env, function (err, content) {
+				lib.getAnalyticsContent("logstash", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					async.parallel({
@@ -718,14 +726,14 @@ var lib = {
 			"_type": "settings"
 		};
 		model.findEntry(soajs, combo, function (error, settings) {
-			if (error){
+			if (error) {
 				return cb(error);
 			}
 			if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
 				return cb(null, true)
 			}
 			else {
-				lib.getAnalyticsContent("filebeat", "js", env, function (err, content) {
+				lib.getAnalyticsContent("filebeat", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
 					async.parallel({
@@ -760,20 +768,20 @@ var lib = {
 		deployer.listServices(options, function (err, servicesList) {
 			var failed = [];
 			servicesList.forEach(function (oneService) {
-				if (flk.indexOf(oneService.name) ==! -1){
+				if (flk.indexOf(oneService.name) == !-1) {
 					var status = false;
-					oneService.tasks.forEach(function(oneTask){
-						if(oneTask.status.state === "running"){
+					oneService.tasks.forEach(function (oneTask) {
+						if (oneTask.status.state === "running") {
 							status = true;
 						}
 					});
-					if (!status){
+					if (!status) {
 						failed.push("oneService.name")
 					}
 				}
 			});
 			console.log("failed: ", failed);
-			if (failed.length !== 0){
+			if (failed.length !== 0) {
 				setTimeout(function () {
 					console.log("checking Availability... ")
 					return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
@@ -795,7 +803,8 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
+	//move to api
+	//var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
