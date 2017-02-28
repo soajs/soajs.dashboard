@@ -1652,7 +1652,7 @@ module.exports = {
 							}
 						}
 					}
-				},
+				}
 			},
 
 			"/cloud/nodes/add": {
