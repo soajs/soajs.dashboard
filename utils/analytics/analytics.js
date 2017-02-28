@@ -122,13 +122,10 @@ var lib = {
 					options.params = content;
 					async.parallel({
 						"deploy": function (call) {
-							deployer.deployService(options, function (err){
-								console.log("done deploy");
-								call(err, true);
-							})
+							deployer.deployService(options, call)
 						},
 						"update": function (call) {
-							combo.options = {
+							combo.fields = {
 								"$set": {
 									"elasticsearch": {
 										"cluster_config": {
@@ -139,19 +136,16 @@ var lib = {
 									}
 								}
 							};
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							combo.options = options;
 							
-							console.log(JSON.stringify(env, null, 2))
-							console.log(JSON.stringify(combo, null, 2))
-							model.updateEntry(soajs, combo , function (err){
-								console.log("done updateEntry");
-								call(err, true);
-							});
+							model.updateEntry(soajs, combo, call);
 						}
-					} , function (err){
-						console.log(err)
-						console.log("done deployElastic");
-						cb(err, true);
-					});
+					}, cb);
 				});
 			}
 			
@@ -162,15 +156,12 @@ var lib = {
 		console.log("pingElastic")
 		esClient.ping(function (error) {
 			if (error) {
-				lib.printProgress('Waiting for elasticsearch container to become created...');
 				setTimeout(function () {
-					lib.pingElastic(cb);
+					lib.pingElastic(esClient, cb);
 				}, 2000);
 			}
 			else {
-				lib.infoElastic(function (err) {
-					return cb(err, true);
-				})
+				lib.infoElastic(esClient, cb)
 			}
 		});
 	},
@@ -179,9 +170,8 @@ var lib = {
 		console.log("infoElastic")
 		esClient.db.info(function (error) {
 			if (error) {
-				lib.printProgress('Checking elastic availability...');
 				setTimeout(function () {
-					lib.infoElastic(cb);
+					lib.infoElastic(esClient, cb);
 				}, 3000);
 			}
 			else {
@@ -195,17 +185,14 @@ var lib = {
 		lib.pingElastic(esClient, cb);
 	},
 	
-	"setMapping": function (env, model, esClient, cb) {
+	"setMapping": function (soajs, env, model, esClient, cb) {
 		console.log("setMapping")
 		async.parallel({
 			"template": function (callback) {
-				lib.putTemplate(model, esClient, callback);
-			},
-			"settings": function (callback) {
-				lib.putSettings(esClient, callback);
+				lib.putTemplate(soajs, model, esClient, callback);
 			},
 			"mapping": function (callback) {
-				lib.putMapping(env, model, callback);
+				lib.putMapping(esClient, callback);
 			}
 			
 		}, function (err) {
@@ -215,13 +202,13 @@ var lib = {
 		});
 	},
 	
-	"putTemplate": function (model, esClient, cb) {
+	"putTemplate": function (soajs, model, esClient, cb) {
 		console.log("putTemplate")
 		var combo = {
 			collection: colls.analytics,
 			conditions: {_type: 'mapping'}
 		};
-		model.findEntries(combo, function (error, mappings) {
+		model.findEntries(soajs, combo, function (error, mappings) {
 			if (error) return cb(error);
 			async.each(mappings, function (oneMapping, callback) {
 				var options = {
@@ -287,38 +274,6 @@ var lib = {
 		
 	},
 	
-	"putSettings": function (env, model, cb) {
-		console.log("putSettings")
-		//todo check this
-		var condition = {
-			"$and": [
-				{
-					"_type": "settings"
-				}
-			]
-		};
-		var criteria = {"$set": {"_env.dashboard": true}};
-		
-		criteria["$set"]._cluster = model.dbs.es_clusters;
-		
-		var options = {
-			"safe": true,
-			"multi": false,
-			"upsert": true
-		};
-		var combo = {
-			collection: colls.analytics,
-			conditions: condition,
-			options: options
-		};
-		
-		model.updateEntry(combo, function (error, body) {
-			if (error) {
-				return cb(error);
-			}
-			return cb(null, body)
-		});
-	},
 	
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
 		console.log("addVisualizations")
@@ -328,8 +283,9 @@ var lib = {
 		var options = utils.buildDeployerOptions(env, soajs, BL);
 		deployer.listServices(options, function (err, servicesList) {
 			console.log(JSON.stringify(servicesList, null, 2))
-			//lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
-			return cb(null, true)
+			console.log("addVisualizations")
+			lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
+			
 		});
 	},
 	
@@ -375,11 +331,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
@@ -391,11 +347,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
@@ -407,11 +363,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: '*-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
 											}
 										},
 										{
-											title: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: '*-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
@@ -546,7 +502,7 @@ var lib = {
 									condition: options,
 									collection: colls.analytics
 								};
-								model.findEntries(combo, soajs, function (error, records) {
+								model.findEntries(soajs, combo, function (error, records) {
 									if (error) {
 										return call(error);
 									}
@@ -661,7 +617,7 @@ var lib = {
 							deployer.deployService(options, call)
 						},
 						"update": function (call) {
-							combo.options = {
+							combo.fields = {
 								"$set": {
 									"kibana": {
 										"status": "deployed",
@@ -670,7 +626,13 @@ var lib = {
 									}
 								}
 							};
-							model.updateEntry(combo, call);
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							combo.options = options;
+							model.updateEntry(soajs, combo, call);
 						}
 					}, cb);
 				});
@@ -702,14 +664,20 @@ var lib = {
 							deployer.deployService(options, call)
 						},
 						"update": function (call) {
-							combo.options = {
+							combo.fields = {
 								"$set": {
 									"logstash": {
 										"status": "deployed"
 									}
 								}
 							};
-							model.updateEntry(combo, call);
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							combo.options = options;
+							model.updateEntry(soajs, combo, call);
 						}
 					}, cb);
 				});
@@ -741,15 +709,21 @@ var lib = {
 							deployer.deployService(options, call)
 						},
 						"update": function (call) {
-							combo.options = {
+							combo.fields = {
 								"$set": {
 									"filebeat": {}
 								}
 							};
-							combo.options["$set"].filebeat[env.code.toLowerCase()] = {
+							combo.fields["$set"].filebeat[env.code.toLowerCase()] = {
 								"status": "deployed"
 							};
-							model.updateEntry(combo, call);
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							combo.options = options;
+							model.updateEntry(soajs, combo, call);
 						}
 					}, cb);
 				});
@@ -791,7 +765,39 @@ var lib = {
 				return cb(null, true)
 			}
 		});
-	}
+	},
+	
+	"UpdateSettings": function (soajs, env, model, cb) {
+		console.log("putSettings")
+		//todo check this
+		var condition = {
+			"$and": [
+				{
+					"_type": "settings"
+				}
+			]
+		};
+		var criteria = {"$set": {"_env.dashboard": true}};
+		
+		var options = {
+			"safe": true,
+			"multi": false,
+			"upsert": true
+		};
+		var combo = {
+			collection: colls.analytics,
+			conditions: condition,
+			options: options,
+			fields: criteria
+		};
+		
+		model.updateEntry(soajs, combo, function (error, body) {
+			if (error) {
+				return cb(error);
+			}
+			return cb(null, body)
+		});
+	},
 };
 
 
@@ -807,20 +813,22 @@ analyticsDriver.prototype.run = function () {
 	//var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
 	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, esClient));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.envRecord, _self.config.model, esClient));
-	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, esClient, _self.config.utils, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
-		
+		console.log("5alasna ???");
+		process.exit(-1)
 	});
 };
 
