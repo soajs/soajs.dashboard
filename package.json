@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -57,6 +57,7 @@
     "soajs.core.drivers": "0.0.2",
     "soajs.core.libs": "0.0.*",
     "soajs.core.modules": "0.0.*",
+    "soajs.core.drivers": "soajs/soajs.core.drivers#feature/DASHBOARD-88",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }

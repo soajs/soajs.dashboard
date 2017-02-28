@@ -497,16 +497,18 @@ soajsApp.service("aclDrawHelpers", function () {
 						var found = false;
 						if (service.fixList[grpLabel].apisRest) {
 							for (var m in service.fixList[grpLabel].apisRest) {
-								if (aclService[m] && aclService[m].apis[defaultApi] && aclService[m].apis[defaultApi].include === true) {
-									found = true;
-									break;
+								if (aclService[m]) {
+									if (aclService[m].apis && aclService[m].apis[defaultApi] && aclService[m].apis[defaultApi].include === true) {
+										found = true;
+										break;
+									}
 								}
 							}
 							if (!found) {
 								for (var m in service.fixList[grpLabel].apisRest) {
 									if (aclService[m]) {
 										service.fixList[grpLabel].apisRest[m].forEach(function (oneApi) {
-											if (aclService[m].apis[oneApi.v]) {
+											if (aclService[m].apis && aclService[m].apis[oneApi.v]) {
 												aclService[m].apis[oneApi.v].include = false;
 											}
 										});
