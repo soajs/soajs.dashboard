@@ -836,16 +836,16 @@ var envTranslation ={
 		"FRA": "Access Token Lifetime"
 	},
 	"accessTokenLifetimeNote":{
-		"ENG": "Access Token Lifetime in milliseconds. Default is 1 hour.",
-		"FRA": "Access Token Lifetime in milliseconds. Default is 1 hour."
+		"ENG": "Access Token Lifetime in seconds. Default is 1 hour.",
+		"FRA": "Access Token Lifetime in seconds. Default is 1 hour."
 	},
 	"refreshTokenLifetime":{
 		"ENG": "Refresh Token Lifetime",
 		"FRA": "Refresh Token Lifetime"
 	},
 	"refreshTokenLifetimeNote":{
-		"ENG": "Refresh Token Lifetime in milliseconds. Default is 14 days.",
-		"FRA": "Refresh Token Lifetime in milliseconds. Default is 14 days."
+		"ENG": "Refresh Token Lifetime in seconds. Default is 14 days.",
+		"FRA": "Refresh Token Lifetime in seconds. Default is 14 days."
 	},
 	
 	"enterCommaSeparatedValues": {
