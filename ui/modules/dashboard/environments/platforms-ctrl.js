@@ -64,8 +64,8 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         envPlatforms.changeDeployerType ($scope);
     };
 
-    $scope.updateDeployerConfig = function (driver) {
-        envPlatforms.updateDeployerConfig($scope, driver);
+    $scope.updateNamespaceConfig = function (driver) {
+        envPlatforms.updateNamespaceConfig($scope, driver);
     }
 
     if ($scope.access.platforms.list) {

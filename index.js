@@ -11,6 +11,7 @@ var cloudServicesBL = require("./lib/cloud-services.js");
 var cloudDeployBL = require("./lib/cloud-deploy.js");
 var cloudNodesBL = require("./lib/cloud-nodes.js");
 var cloudMaintenanceBL = require("./lib/cloud-maintenance.js");
+var cloudNamespacesBL = require("./lib/cloud-namespaces.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -902,6 +903,28 @@ service.init(function () {
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
 			BL.streamLogs(config, req.soajs, res);
+		});
+	});
+
+	/**
+	* List available namespaces
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.get("/cloud/namespaces/list", function (req, res) {
+		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
+			BL.list(config, req.soajs, res);
+		});
+	});
+
+	/**
+	* Delete a namespace
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.delete("/cloud/namespaces/delete", function (req, res) {
+		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
+			BL.delete(config, req.soajs, res);
 		});
 	});
 

@@ -874,6 +874,13 @@ module.exports = {
 				}
 			},
 
+			"/cloud/namespaces/list": {
+				"_apiInfo": {
+					"l": "List Available Namespaces",
+					"group": "HA Cloud"
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -2891,6 +2898,20 @@ module.exports = {
 				},
 				"mode": {
 					"source": ['query.mode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/cloud/namespaces/delete": {
+				"_apiInfo": {
+					"l": "Delete a Namespace",
+					"group": "HA Cloud"
+				},
+				"namespaceId": {
+					"source": ['query.namespaceId'],
 					"required": true,
 					"validation": {
 						"type": "string"

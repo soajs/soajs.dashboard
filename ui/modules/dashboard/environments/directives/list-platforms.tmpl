@@ -33,8 +33,8 @@
                             <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(platform, driver)">
                                 <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
                             </a>
-                            <a href="" ng-if="platform === 'kubernetes'" ng-click="updateDeployerConfig(driver)">
-                                <span class="icon icon-cog" tooltip="Update Deployer Configuration"></span>
+                            <a href="" ng-if="platform === 'kubernetes'" ng-click="updateNamespaceConfig(driver)">
+                                <span class="icon icon-cog" tooltip="Update Namespace Configuration"></span>
                             </a>
                         </span>
                     </div>
@@ -92,4 +92,8 @@
 
 <script type="text/ng-template" id="uploadCerts.tmpl">
     <div ng-include="'modules/dashboard/environments/directives/uploadCerts.tmpl'"></div>
+</script>
+
+<script type="text/ng-template" id="updateNamespaceConfig.tmpl">
+    <div ng-include="'modules/dashboard/environments/directives/updateNamespaceConfig.tmpl'"></div>
 </script>

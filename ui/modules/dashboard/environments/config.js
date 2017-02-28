@@ -768,43 +768,6 @@ var environmentsConfig = {
 				}
 			]
 		},
-		editDriverConfig: {
-			'entries': [
-				{
-					'name': 'name',
-					'label': translation.driverName[LANG],
-					'type': 'text',
-					'tooltip': translation.driverName[LANG],
-					'required': true,
-					'value': ''
-				},
-				{
-					'name': 'host',
-					'label': translation.driverHost[LANG],
-					'type': 'text',
-					'tooltip': translation.driverHost[LANG],
-					'required': true,
-					'value': ''
-				},
-				{
-					'name': 'port',
-					'label': translation.driverPort[LANG],
-					'type': 'number',
-					'tooltip': translation.driverPort[LANG],
-					'required': true,
-					'value': ''
-				},
-				{
-					'name': 'config',
-					'label': translation.additionalConfiguration[LANG],
-					'type': "textarea",
-					'rows': 6,
-					'required': false,
-					'tooltip': translation.provideOptionalDriverConfiguration[LANG],
-					'value': ''
-				}
-			]
-		},
 		restartHost: {
 			'entries': [
 				{
