@@ -64,6 +64,10 @@ environmentsApp.controller('platformsCtrl', ['$scope', '$cookies', 'envPlatforms
         envPlatforms.changeDeployerType ($scope);
     };
 
+    $scope.updateDeployerConfig = function (driver) {
+        envPlatforms.updateDeployerConfig($scope, driver);
+    }
+
     if ($scope.access.platforms.list) {
         $scope.envCode = $cookies.getObject("myEnv").code;
         injectFiles.injectCss("modules/dashboard/environments/environments.css");

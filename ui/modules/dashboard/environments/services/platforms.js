@@ -57,7 +57,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 				}
 			}
 		}
-
+		alert (JSON.stringify (currentScope.platforms, null, 2));
 		if (cb) {
 			return cb();
 		}
@@ -229,18 +229,6 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					};
 
-					if (platform === 'nginx') {
-						options.url = apiConfiguration.domain + "/dashboard/environment/nginx/cert/upload";
-
-						delete options.params.driver;
-						if ($scope.formData.certificates[$scope.index[counter]].type === 'application/x-x509-ca-cert') {
-							options.params.label = "certificate";
-						}
-						else {
-							options.params.label = "privateKey";
-						}
-					}
-
 					Upload.upload(options).progress(function (evt) {
 						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
 						progress.value = progressPercentage;
@@ -328,11 +316,17 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
+	function updateDeployerConfig(currentScope, driver) {
+		
+	}
+
 	return {
 		'listPlatforms': listPlatforms,
 		'uploadCerts': uploadCerts,
 		'removeCert': removeCert,
 		'selectDriver': selectDriver,
-		'changeDeployerType': changeDeployerType
+		'changeDeployerType': changeDeployerType,
+		'updateDeployerConfig': updateDeployerConfig
 	}
+
 }]);

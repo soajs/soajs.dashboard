@@ -248,6 +248,8 @@ var errors = {
 	"905": "Static content not found",
 
 	"906": "Running hosts exist for this environment, remove them before deleting this environment",
+	"907": "Running hosts exist for this environment, remove them before updating its namespace configuration",
+	"908": "Updating deployer configuration is only supported for kubernetes deployments"
 };
 
 

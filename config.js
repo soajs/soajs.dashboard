@@ -2234,6 +2234,36 @@ module.exports = {
 				}
 			},
 
+			"/environment/platforms/deployer/update": {
+				_apiInfo: {
+					"l": "Change Deployer Type",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"driver": {
+					"source": ['body.driver'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ['local', 'remote']
+					}
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+
 			"/product/update": {
 				_apiInfo: {
 					"l": "Update Product",

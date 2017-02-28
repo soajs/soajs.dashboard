@@ -281,6 +281,17 @@ service.init(function () {
 	});
 
 	/**
+	* Update deployer configuration
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.put("/environment/platforms/deployer/update", function (req, res) {
+		initBLModel(req, res, environmentBL, dbModel, function (BL) {
+			BL.updateDeployerConfig(config, req, res);
+		});
+	});
+
+	/**
 	 * Products features
 	 */
 
