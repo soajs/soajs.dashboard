@@ -1484,6 +1484,17 @@ module.exports = {
 									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
 									"replicas": { "required": false, "type": "number" }
 								}
+							},
+							"readinessProbe": { //NOTE: only applicable in kubernetes mode
+								"required": false,
+								"type": "object",
+								"properties": {
+									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
+				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
+								}
 							}
 						}
 					}
@@ -1607,6 +1618,19 @@ module.exports = {
 								"properties": {
 									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
 									"replicas": { "required": false, "type": "number" }
+								}
+							},
+							"readinessProbe": { //NOTE: only applicable in kubernetes mode, httpGet readiness probe only supported
+								"required": false,
+								"type": "object",
+								"properties": {
+									"path": { "required": true, "type": "string" },
+									"port": { "required": true, "type": "string" },
+									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
+				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
 								}
 							},
 							"restartPolicy": {

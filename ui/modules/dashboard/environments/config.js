@@ -65,15 +65,15 @@ var modelObj = {
 };
 var environmentsConfig = {
 	deployer: {
-    	kubernetes: {
-        	"minPort": 0,
-        	"maxPort": 2767
-    	},
+		kubernetes: {
+			"minPort": 0,
+			"maxPort": 2767
+		},
 		certificates: {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-
+	
 	form: {
 		template: {
 			'name': '',
@@ -165,7 +165,16 @@ var environmentsConfig = {
 					'name': 'tenantSpecific',
 					'label': translation.tenantSpecific[LANG],
 					'type': 'radio',
-					'value': [{'v': false, 'selected': true}, {'v': true}],
+					'value': [
+						{
+							'v': false,
+							'l': "False"
+						},
+						{
+							'v': true,
+							'l': "True"
+						}
+					],
 					'required': false
 				}
 			]
@@ -219,16 +228,12 @@ var environmentsConfig = {
 					'required': true
 				},
 				{
-				    'name': 'store',
-				    'label': translation.store[LANG],
-				    'type': 'jsoneditor',
-				    'options': {
-				        'mode': 'code',
-				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-				    },
-				    'height': '200px',
-				    'value': {},
-				    'required': true,
+					'name': 'store',
+					'label': translation.store[LANG],
+					'type': 'jsoneditor',
+					'height': '200px',
+					'value': {},
+					'required': true,
 					'tooltip': translation.provideTheSessionDatabaseStore[LANG]
 				}
 			]
@@ -294,42 +299,30 @@ var environmentsConfig = {
 						"entries": modelObj.cluster.credentials
 					},
 					{
-					    'name': 'urlParam',
-					    'label': translation.URLParameters[LANG],
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    "value": {},
-					    'required': true,
-					    'tooltip': translation.enterURLParametersCluster[LANG],
+						'name': 'urlParam',
+						'label': translation.URLParameters[LANG],
+						'type': 'jsoneditor',
+						'height': '200px',
+						"value": {},
+						'required': true,
+						'tooltip': translation.enterURLParametersCluster[LANG]
 					},
 					{
-					    'name': 'extraParam',
-					    'label': 'Extra Parameters',
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    "value": {},
-					    'required': true,
-					    'tooltip': translation.enterExtraParametersCluster[LANG],
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'jsoneditor',
+						'height': '200px',
+						"value": {},
+						'required': true,
+						'tooltip': translation.enterExtraParametersCluster[LANG]
 					},
 					{
-					    'name': 'streaming',
-					    'label': 'Streaming Options',
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    "value": {},
-					    'required': true
+						'name': 'streaming',
+						'label': 'Streaming Options',
+						'type': 'jsoneditor',
+						'height': '200px',
+						"value": {},
+						'required': true
 					}
 				]
 			},
@@ -416,21 +409,17 @@ var environmentsConfig = {
 								'placeholder': 'true',
 								'required': false
 							}
-
+						
 						]
 					},
 					{
-					    'name': 'extraParam',
-					    'label': 'Extra Parameters',
-					    'type': 'jsoneditor',
-					    'options': {
-					        'mode': 'code',
-					        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-					    },
-					    'height': '200px',
-					    "value": {},
-					    'required': true,
-					    'tooltip': translation.enterExtraParametersCluster[LANG],
+						'name': 'extraParam',
+						'label': 'Extra Parameters',
+						'type': 'jsoneditor',
+						'height': '200px',
+						"value": {},
+						'required': true,
+						'tooltip': translation.enterExtraParametersCluster[LANG]
 					}
 				]
 			},
@@ -553,7 +542,7 @@ var environmentsConfig = {
 							'label': 'Nginx Deployment Mode',
 							'type': 'select',
 							'value': [
-								{l: 'Replicated', v: 'replicated', 'selected' : true},
+								{l: 'Replicated', v: 'replicated', 'selected': true},
 								{l: 'Global', v: 'global'}
 							],
 							'tooltip': 'Specify the deployment mode',
@@ -598,6 +587,46 @@ var environmentsConfig = {
 							'type': 'radio',
 							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 							'required': false
+						},
+						{
+							'name': 'nginxRPInitialDelay',
+							'label': 'Readiness Probe: Initial Delay (in seconds)',
+							'type': 'number',
+							'value': 15,
+							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
+							'required': true
+						},
+						{
+							'name': 'nginxRPTimeout',
+							'label': 'Readiness Probe: Timeout (in seconds)',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Number of seconds after which the probe times out',
+							'required': true
+						},
+						{
+							'name': 'nginxRPPeriod',
+							'label': 'Readiness Probe: Period (in seconds)',
+							'type': 'number',
+							'value': 10,
+							'fieldMsg': 'How often (in seconds) to perform the probe',
+							'required': true
+						},
+						{
+							'name': 'nginxRPSuccessThreshold',
+							'label': 'Readiness Probe: Success Threshold',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
+							'required': true
+						},
+						{
+							'name': 'nginxRPFailureThreshold',
+							'label': 'Readiness Probe: Failure Threshold',
+							'type': 'number',
+							'value': 3,
+							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'required': true
 						}
 					]
 				},
@@ -606,18 +635,18 @@ var environmentsConfig = {
 					'label': 'Controller Configuration',
 					'type': 'group',
 					'entries': [
-                        {
-                            'name': 'controllerDeploymentMode',
-                            'label': 'Controller Deployment Mode',
-                            'type': 'select',
-                            'value': [
-                                {l: 'Replicated', v: 'replicated', 'selected' : true},
-                                {l: 'Global', v: 'global'}
-                            ],
-                            'tooltip': 'Specify the deployment mode',
-                            'required': true,
-	                        'fieldMsg': "Global/Daemonset mode deploys one replica of the service on each node.<br />Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources."
-                        },
+						{
+							'name': 'controllerDeploymentMode',
+							'label': 'Controller Deployment Mode',
+							'type': 'select',
+							'value': [
+								{l: 'Replicated', v: 'replicated', 'selected': true},
+								{l: 'Global', v: 'global'}
+							],
+							'tooltip': 'Specify the deployment mode',
+							'required': true,
+							'fieldMsg': "Global/Daemonset mode deploys one replica of the service on each node.<br />Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources."
+						},
 						{
 							'name': 'controllers',
 							'label': translation.controller[LANG],
@@ -670,6 +699,46 @@ var environmentsConfig = {
 							"name": "defaultENVVAR",
 							"type": "html",
 							"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
+						},
+						{
+							'name': 'ctrlRPInitialDelay',
+							'label': 'Readiness Probe: Initial Delay (in seconds)',
+							'type': 'number',
+							'value': 15,
+							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPTimeout',
+							'label': 'Readiness Probe: Timeout (in seconds)',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Number of seconds after which the probe times out',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPPeriod',
+							'label': 'Readiness Probe: Period (in seconds)',
+							'type': 'number',
+							'value': 10,
+							'fieldMsg': 'How often (in seconds) to perform the probe',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPSuccessThreshold',
+							'label': 'Readiness Probe: Success Threshold',
+							'type': 'number',
+							'value': 1,
+							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
+							'required': true
+						},
+						{
+							'name': 'ctrlRPFailureThreshold',
+							'label': 'Readiness Probe: Failure Threshold',
+							'type': 'number',
+							'value': 3,
+							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'required': true
 						}
 					]
 				}
@@ -740,15 +809,15 @@ var environmentsConfig = {
 		serviceInfo: {
 			'entries': [
 				{
-				    'name': 'jsonData',
-				    'label': '',
-				    'type': 'jsoneditor',
-				    'options': {
-				        'mode': 'view',
-				        'availableModes': []
-				    },
-				    'height': '500px',
-				    "value": {}
+					'name': 'jsonData',
+					'label': '',
+					'type': 'jsoneditor',
+					'options': {
+						'mode': 'view',
+						'availableModes': []
+					},
+					'height': '500px',
+					"value": {}
 				}
 			]
 		},
@@ -823,12 +892,8 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
-
+	
 	jsoneditorConfig: {
-		'options': {
-			'mode': 'code',
-			'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-		},
 		'height': '200px'
 	},
 	permissions: {

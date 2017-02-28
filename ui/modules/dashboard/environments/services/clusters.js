@@ -1,7 +1,7 @@
 "use strict";
 var clustersServices = soajsApp.components;
 clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
-
+	
 	function listClusters(currentScope, env) {
 		if (currentScope.access.clusters.list) {
 			getSendDataFromServer(currentScope, ngDataApi, {
@@ -24,10 +24,10 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			});
 		}
 	}
-
+	
 	function addCluster(currentScope, env) {
 		var count = 0;
-
+		
 		function addType(type) {
 			count = 0;
 			var formConf;
@@ -47,7 +47,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 					entry.entries = entry.entries.concat(oneClone);
 					count++;
 				}
-
+				
 				if (entry.name === 'addServer') {
 					entry.onAction = function (id, data, form) {
 						var oneClone = angular.copy(modelObj.cluster.server);
@@ -84,7 +84,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 									servers.push(tmpObj);
 								}
 							}
-
+							
 							var credentials = {};
 							if (formData.username) {
 								credentials.username = formData.username;
@@ -92,7 +92,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 							if (formData.password) {
 								credentials.password = formData.password;
 							}
-
+							
 							var urlParam = {};
 							switch (type) {
 								case 'mongo':
@@ -118,13 +118,13 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 									}
 									break;
 								case 'default':
-									urlParam = (formData.urlParam) ? formData.urlParam: {};
+									urlParam = (formData.urlParam) ? formData.urlParam : {};
 									break;
 							}
-
+							
 							var extraParam = (formData.extraParam) ? formData.extraParam : {};
 							var streamingOptions = (formData.streaming) ? formData.streaming : {};
-
+							
 							var postData = {
 								'cluster': {
 									'servers': servers,
@@ -134,8 +134,8 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 									'streaming': streamingOptions
 								}
 							};
-							postData.cluster.clusterType = type;
-
+							//postData.cluster.clusterType = type;
+							
 							getSendDataFromServer(currentScope, ngDataApi, {
 								"method": "post",
 								"routeName": "/dashboard/environment/clusters/add",
@@ -165,10 +165,10 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 					}
 				]
 			};
-
+			
 			buildFormWithModal(currentScope, $modal, options);
 		}
-
+		
 		function getClusterType(currentScope, env) {
 			var options1 = {
 				timeout: $timeout,
@@ -196,19 +196,19 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 					}
 				]
 			};
-
+			
 			buildFormWithModal(currentScope, $modal, options1);
 		}
-
+		
 		//getClusterType(currentScope, env);
-
+		
 		addType('default');
 	}
-
+	
 	function editCluster(currentScope, env, name, data) {
 		var count = 0;
 		var formConfig = angular.copy(environmentsConfig.form.clusters.default);
-
+		
 		// TODO: edit by type
 		// if (data.clusterType) {
 		// 	if (environmentsConfig.form.clusters['data.clusterType']) {
@@ -226,14 +226,14 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 						var clone = angular.copy(modelObj.cluster.server);
 						clone.forEach(function (oneField) {
 							oneField.name = oneField.name.replace("%count%", count);
-
+							
 							if (oneField.name === 'port' + count) {
 								oneField.value = data.servers[i].port;
 							}
 							if (oneField.name === 'host' + count) {
 								oneField.value = data.servers[i].host;
 							}
-
+							
 							if (oneField.type === 'html') {
 								oneField.value = oneField.value.replace("%count%", count);
 							}
@@ -258,18 +258,18 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 				};
 			}
 			if (entry.name === 'credentials') {
-
+				
 			}
 		});
 		var clusterType = data.clusterType;
-
+		
 		var dataForm = {
 			'name': name,
-			'urlParam': angular.copy (data.URLParam),
-			'extraParam': angular.copy (data.extraParam),
-			'streaming': angular.copy (data.streaming)
+			'urlParam': angular.copy(data.URLParam),
+			'extraParam': angular.copy(data.extraParam),
+			'streaming': angular.copy(data.streaming)
 		};
-
+		
 		if (data.credentials && typeof(data.credentials) === 'object') {
 			dataForm.username = data.credentials.username;
 			dataForm.password = data.credentials.password;
@@ -296,11 +296,11 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 								servers.push(tmpObj);
 							}
 						}
-
+						
 						var extraParam = (formData.extraParam) ? formData.extraParam : {};
 						var urlParam = (formData.urlParam) ? formData.urlParam : {};
 						var streamingOptions = (formData.streaming) ? formData.streaming : {};
-
+						
 						var credentials = {};
 						if (formData.username) {
 							credentials.username = formData.username;
@@ -317,11 +317,11 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 								'streaming': streamingOptions
 							}
 						};
-
+						
 						if (clusterType) {
 							postData.cluster.clusterType = clusterType;
 						}
-
+						
 						getSendDataFromServer(currentScope, ngDataApi, {
 							"method": "put",
 							"routeName": "/dashboard/environment/clusters/update",
@@ -353,7 +353,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 		};
 		buildFormWithModal(currentScope, $modal, options);
 	}
-
+	
 	function removeCluster(currentScope, env, name) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "delete",
@@ -374,7 +374,7 @@ clustersServices.service('envClusters', ['ngDataApi', '$timeout', '$modal', func
 			}
 		});
 	}
-
+	
 	return {
 		'listClusters': listClusters,
 		'addCluster': addCluster,
