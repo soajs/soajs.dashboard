@@ -168,7 +168,7 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 								var v = service.apisList[j].v;
 								if (service.apisList[j].m) {
 									if (parentEnvAcl[service.apisList[j].m]) {
-										if (parentEnvAcl[service.apisList[j].m].apis[v]) {
+										if (parentEnvAcl[service.apisList[j].m].apis && parentEnvAcl[service.apisList[j].m].apis[v]) {
 											newList.push(service.apisList[j]);
 										}
 									}

@@ -17,12 +17,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	            {l: 'Deployment', v: 'deployment', 'selected' : true},
 	            {l: 'Daemonset', v: 'daemonset'}
             ];
-	
+
 	        formConfig.entries[1].entries[0].value = [
 		        {l: 'Deployment', v: 'deployment', 'selected' : true},
 		        {l: 'Daemonset', v: 'daemonset'}
 	        ];
-            
+
             formConfig.entries[0].entries[2].min = kubeConfig.minPort;
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
@@ -205,7 +205,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
                     isKubernetes: (currentScope.isKubernetes ? true : false),
                     replication: {
                         mode: formData.controllerDeploymentMode
-                    }
+                    },
+					readinessProbe: {
+						initialDelaySeconds: formData.ctrlRPInitialDelay,
+						timeoutSeconds: formData.ctrlRPTimeout,
+						periodSeconds: formData.ctrlRPPeriod,
+						successThreshold: formData.ctrlRPSuccessThreshold,
+						failureThreshold: formData.ctrlRPFailureThreshold
+					}
                 },
                 contentConfig: {}
             };
@@ -213,7 +220,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
                 params.deployConfig.replication.replicas = formData.controllers;
             }
-	
+
 	        if(params.deployConfig.isKubernetes){
 		        if(params.deployConfig.replication.mode === 'replicated'){
 			        params.deployConfig.replication.mode = "deployment";
@@ -305,10 +312,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 		        mode: formData.nginxDeploymentMode
 	        };
 
+			params.deployConfig.readinessProbe = {
+				initialDelaySeconds: formData.nginxRPInitialDelay,
+				timeoutSeconds: formData.nginxRPTimeout,
+				periodSeconds: formData.nginxRPPeriod,
+				successThreshold: formData.nginxRPSuccessThreshold,
+				failureThreshold: formData.nginxRPFailureThreshold
+			}
+
 	        if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 		        params.deployConfig.replication.replicas = formData.nginxCount;
 	        }
-	
+
 	        if(params.deployConfig.isKubernetes){
 		        if(params.deployConfig.replication.mode === 'replicated'){
 			        params.deployConfig.replication.mode = "deployment";
@@ -394,7 +409,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 
 	    var env = currentScope.envCode;
 	    var runningHosts = currentScope.hosts;
-	
+
 	    currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
 	    currentScope.services = [];
 	    currentScope.service = "";
@@ -418,6 +433,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 	    currentScope.message = {};
 	    currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 	    currentScope.imagePrefix = 'soajsorg';
+
+		currentScope.readinessProbe = { //NOTE: default values are set here
+			initialDelaySeconds: 15,
+			timeoutSeconds: 1,
+			periodSeconds: 10,
+			successThreshold: 1,
+			failureThreshold: 3
+		};
 
 	    function openModalForm() {
 		    $modal.open({
@@ -580,9 +603,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    "replication": {
 							    "mode": currentScope.mode,
 							    "replicas": currentScope.number,
-						    }
+						    },
+							"readinessProbe": {
+								"initialDelaySeconds": currentScope.readinessProbe.initialDelaySeconds,
+								"timeoutSeconds": currentScope.readinessProbe.timeoutSeconds,
+								"periodSeconds": currentScope.readinessProbe.periodSeconds,
+								"successThreshold": currentScope.readinessProbe.successThreshold,
+								"failureThreshold": currentScope.readinessProbe.failureThreshold
+							}
 					    };
-					
+
 					    if(params.deployConfig.isKubernetes){
 						    if(params.deployConfig.replication.mode === 'replicated'){
 							    params.deployConfig.replication.mode = "deployment";
@@ -592,7 +622,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    delete params.deployConfig.replication.replicas;
 						    }
 					    }
-					    
+
 					    overlayLoading.show();
 					    getSendDataFromServer(currentScope, ngDataApi, {
 						    "method": "post",
@@ -671,9 +701,16 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 						    "replication": {
 							    "mode": currentScope.mode,
 							    "replicas": currentScope.number
-						    }
+						    },
+							"readinessProbe": {
+								"initialDelaySeconds": currentScope.readinessProbe.initialDelaySeconds,
+								"timeoutSeconds": currentScope.readinessProbe.timeoutSeconds,
+								"periodSeconds": currentScope.readinessProbe.periodSeconds,
+								"successThreshold": currentScope.readinessProbe.successThreshold,
+								"failureThreshold": currentScope.readinessProbe.failureThreshold
+							}
 					    };
-					
+
 					    if(params.deployConfig.isKubernetes){
 						    if(params.deployConfig.replication.mode === 'replicated'){
 							    params.deployConfig.replication.mode = "deployment";
@@ -683,7 +720,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 							    delete params.deployConfig.replication.replicas;
 						    }
 					    }
-					    
+
 					    var config = {
 						    "method": "post",
 						    "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -869,7 +906,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 				{l: 'Deployment', v: 'deployment', 'selected' : true},
 				{l: 'Daemonset', v: 'daemonset'}
 			];
-			
+
 			formConfig.entries[0].entries[2].min = kubeConfig.minPort;
 			formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
 			formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
@@ -1033,7 +1070,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 			if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
 				params.deployConfig.replication.replicas = formData.nginxCount;
 			}
-			
+
 			if(params.deployConfig.isKubernetes){
 				if(params.deployConfig.replication.mode === 'replicated'){
 					params.deployConfig.replication.mode = "deployment";
@@ -1043,7 +1080,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
 					delete params.deployConfig.replication.replicas;
 				}
 			}
-			
+
 			params.deployConfig.ports = [
 				{
 					isPublished: true,
