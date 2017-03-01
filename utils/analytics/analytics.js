@@ -312,7 +312,7 @@ var lib = {
 					if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
 						serviceType = (oneService.labels["soajs.service.name"] === 'controller') ? 'controller' : 'service';
 					}
-					else if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
+					else if (oneService.labels["soajs.service.group"] === "nginx") {
 						serviceType = 'nginx';
 					}
 					else {
