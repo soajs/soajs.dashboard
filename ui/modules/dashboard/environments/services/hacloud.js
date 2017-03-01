@@ -153,6 +153,40 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         }
     }
 
+	/**
+     * List all namespaces for kubernetes deployments and add values to scope
+     *
+     * @param {Scope Object} currentScope
+     * @param {Function} cb
+     */
+	function listNamespaces(currentScope, cb) {
+		if (currentScope.envPlatform !== 'kubernetes') {
+			//in case of swarm deployment, set namespace value to All Namespaces and set filter value to null in order to always display all fields
+			currentScope.namespaces = [ currentScope.namespaceConfig.defaultValue ];
+			currentScope.namespaceConfig.namespace = currentScope.namespaceConfig.defaultValue.id;
+			return cb();
+		}
+
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cloud/namespaces/list'
+		}, function (error, response) {
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.namespaces = [ currentScope.namespaceConfig.defaultValue ];
+				currentScope.namespaces = currentScope.namespaces.concat(response);
+
+				currentScope.namespaceConfig.namespace = currentScope.namespaceConfig.defaultValue.id; //setting current selected to 'All Namespaces'
+
+				if (cb && typeof(cb) === 'function') {
+					return cb();
+				}
+			}
+		});
+	}
+
     function deleteService(currentScope, service) {
         var params = {
             env: currentScope.envCode,
@@ -742,12 +776,12 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									if (!$scope.$$phase) {
 										$scope.$apply();
 									}
-									
+
 									fixBackDrop();
 									$timeout(function () {
 										highlightMyCode()
 									}, 500);
-									
+
 									autoRefreshPromise = $timeout(function(){
 										$scope.refreshLogs();
 									}, 5000);
@@ -804,6 +838,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
     return {
         'listServices': listServices,
+		'listNamespaces': listNamespaces,
         'deleteService': deleteService,
         'scaleService': scaleService,
 		'redeployService': redeployService,
