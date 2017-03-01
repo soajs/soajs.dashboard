@@ -2,6 +2,26 @@
 var hostsServices = soajsApp.components;
 hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile', function (ngDataApi, $timeout, $modal, $compile) {
 
+	function getEnvironment(currentScope, envCode, cb){
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list"
+		}, function (error, response) {
+			if (error) {
+				currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				for (var x = 0; x < response.length; x++) {
+					if (response[x].code === envCode.toUpperCase()) {
+						currentScope.myEnvironment = response[x];
+						break;
+					}
+				}
+				return cb();
+			}
+		});
+	}
+	
 	function listHosts(currentScope, env, noPopulate) {
 		var controllers = [];
 		currentScope.showCtrlHosts = true;
@@ -26,7 +46,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							'controller': {
 								'color': 'red',
 								'heartbeat': false,
-								'port': '4000',
+								'port': currentScope.myEnvironment.services.config.ports.controller,
 								'ips': []
 							}
 						};
@@ -40,7 +60,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 									'cid': response.hosts[j].cid,
 									'version': response.hosts[j].version,
 									'color': 'red',
-									'port': 4000,
+									'port': currentScope.myEnvironment.services.config.ports.controller,
 									'type': 'service'
 								};
 								if (response.hosts[j].src && response.hosts[j].src.branch) {
@@ -94,7 +114,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 					"operation": "heartbeat",
 					"serviceHost": defaultControllerHost.ip,
 					'hostname': defaultControllerHost.hostname,
-					"servicePort": 4000,
+					"servicePort": currentScope.myEnvironment.services.config.ports.controller,
 					"env": env
 				}
 			}, function (error, response) {
@@ -119,7 +139,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 							"serviceName": "controller",
 							"operation": "awarenessStat",
 							"hostname": defaultControllerHost.hostname,
-							"servicePort": 4000,
+							"servicePort": currentScope.myEnvironment.services.config.ports.controller,
 							"env": env
 						}
 					}, function (error, response) {
@@ -638,6 +658,7 @@ hostsServices.service('envHosts', ['ngDataApi', '$timeout', '$modal', '$compile'
 	}
 
 	return {
+		'getEnvironment': getEnvironment,
 		'listHosts': listHosts,
 		'executeHeartbeatTest': executeHeartbeatTest,
 		'executeAwarenessTest': executeAwarenessTest,

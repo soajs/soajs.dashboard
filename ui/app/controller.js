@@ -210,7 +210,7 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 		
 		$scope.checkAuthEnvCookie = function () {
-			return $cookies.get("soajs_envauth") || null;
+			return ($localStorage.environments.length > 1);
 		};
 		
 		$scope.reRenderMenu = function (pillarName) {
