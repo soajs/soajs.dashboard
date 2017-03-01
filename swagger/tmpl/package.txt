@@ -25,7 +25,7 @@
     "grunt-env": "0.4.4",
     "grunt-istanbul": "0.7.2",
     "grunt-coveralls": "1.0.1",
-    "grunt-soajs": "0.0.1",
+    "grunt-soajs": "*",
     "jshint": "2.9.4",
     "lodash": "4.17.4",
     "mocha": "3.2.0",
