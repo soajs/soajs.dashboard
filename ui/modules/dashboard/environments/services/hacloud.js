@@ -820,7 +820,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		}
 		if(task && type === 'task'){
 			name = task.name;
-			dashboardID = name + "-"+ task.id;
+			dashboardID = name;
 			dashboardID = dashboardID.replace(/[\/*?"<>|,.-]/g, "_");
 			dashboardID = shipper+"-"+dashboardID;
 		}
