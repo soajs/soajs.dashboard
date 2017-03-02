@@ -3,7 +3,7 @@
 //keep out for now
 var controller = [
 		{
-			"id": "controller-%injector%",
+			"id": "Filebeat-%injector%",
 			"_type": "dashboard",
 			"_shipper": "filebeat",
 			"_service": "controller",

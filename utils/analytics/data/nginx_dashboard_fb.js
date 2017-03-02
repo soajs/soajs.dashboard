@@ -2,11 +2,11 @@
 //done
 var nginx = [
 	{
-		"id": "Nginx-%injector%",
+		"id": "Filebeat-%injector%",
 		"_type": "dashboard",
 		"_shipper": "filebeat",
 		"_service": "nginx",
-		"_injector": "env",
+		"_injector": "service",
 		"_source": {
 			"title": "Nginx-%injector%",
 			"hits": 0,
