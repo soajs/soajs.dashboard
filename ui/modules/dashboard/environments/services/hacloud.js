@@ -801,7 +801,83 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			return str;
 		}
 	}
-
+	
+	/**
+	 * Analytics
+	 * @param currentScope
+	 * @param task
+	 * @param serviceName
+	 * @param type
+	 * @param shipper
+	 */
+	function metrics (currentScope, task, serviceName, type, shipper) {
+		var env = currentScope.envCode.toLowerCase();
+		var dashboardID = "";
+		var name = serviceName;
+		var logType = "Analytics";
+		if(shipper && shipper === "Topbeat"){
+			logType = "Metrics";
+		}
+		if(task && type === 'task'){
+			name = task.name;
+			dashboardID = name + "-"+ task.id;
+			dashboardID = dashboardID.replace(/[\/*?"<>|,.-]/g, "_");
+			dashboardID = shipper+"-"+dashboardID;
+		}
+		else if (type === 'service'){
+			dashboardID = shipper+"-"+serviceName+"-"+env;
+		}
+		else if (type === 'env'){
+			dashboardID = shipper+"-"+env;
+		}
+		else {
+			return currentScope.displayAlert('danger', "Invalid type provided!");
+		}
+		var url = "http://"+window.location.hostname+":"+currentScope.kibanaPort+"/app/kibana#/dashboard/"+dashboardID+"?embed=true&_g=(refreshInterval:(display:'5%20seconds',pause:!f,section:1,value:5000),time:(from:now-15m,mode:quick,to:now))";
+		$modal.open({
+			templateUrl: "metrics.html",
+			size: 'lg',
+			backdrop: true,
+			keyboard: true,
+			windowClass: 'large-Modal',
+			controller: function ($scope, $modalInstance) {
+				$scope.title = logType+" of " + name;
+				$scope.url = url;
+				fixBackDrop();
+				$scope.ok = function () {
+					$modalInstance.dismiss('ok');
+				};
+			}
+		});
+	}
+	
+	function getSettings(currentScope, cb) {
+		var env = currentScope.envCode.toLowerCase();
+		currentScope.showAnalytics = false;
+		if (currentScope.access.analytics.getSettings) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/analytics/getSettings",
+				"params": {
+					"env": env
+				}
+			}, function (error, response) {
+				if (error || !response) {
+					currentScope.displayAlert('danger', "unable to retrieve settings");
+				}
+				else {
+					if(response[env] && response.kibana && response.kibana.port){
+						currentScope.showAnalytics = true;
+						currentScope.kibanaPort = response.kibana.port;
+					}
+				}
+			});
+		}
+		if(cb && typeof(cb) === 'function'){
+			return cb();
+		}
+	}
+	
     return {
         'listServices': listServices,
         'deleteService': deleteService,
@@ -811,6 +887,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
         'executeHeartbeatTest': executeHeartbeatTest,
         'hostLogs': hostLogs,
+        'metrics': metrics,
+        'getSettings': getSettings,
         'reloadServiceRegistry': reloadServiceRegistry,
         'loadServiceProvision': loadServiceProvision,
         'inspectService': inspectService,

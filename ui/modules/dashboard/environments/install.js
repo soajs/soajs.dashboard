@@ -1201,6 +1201,22 @@ var envTranslation ={
 		"ENG": "Get Container Logs",
 		"FRA": "Get Container Logs"
 	},
+	"getContainerAnalytics": {
+		"ENG": "Get Container Analytics",
+		"FRA": "Get Container Logs"
+	},
+	"getContainerMetrics": {
+		"ENG": "Get Container Metrics",
+		"FRA": "Get Container Metrics"
+	},
+	"getServiceAnalytics": {
+		"ENG": "Get Service Analytics",
+		"FRA": "Get Service Analytics"
+	},
+	"getServiceMetrics": {
+		"ENG": "Get Service Metrics",
+		"FRA": "Get Service Metrics"
+	},
 	"actions": {
 		"ENG": "Actions",
 		"FRA": "Actions"

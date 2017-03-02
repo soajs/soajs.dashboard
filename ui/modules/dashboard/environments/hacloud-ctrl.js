@@ -82,6 +82,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.autoRefresh = function(){
 		var tValue = $scope.selectedInterval.v * 1000;
 		autoRefreshTimeoutInstance = $timeout(function(){
+			$scope.getSettings();
 			$scope.listServices(function(){
 				$scope.autoRefresh();
 			});
@@ -184,6 +185,14 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.hostLogs($scope, task);
 	};
 	
+	$scope.metrics = function (task, serviceName, type, shipper) {
+		hacloudSrv.metrics($scope, task, serviceName, type, shipper);
+	};
+	
+	$scope.getSettings = function () {
+		hacloudSrv.getSettings($scope);
+	};
+	
 	$scope.showHideFailures = function(service){
 		service.tasks.forEach(function(oneTask){
 			if(Object.hasOwnProperty.call(oneTask, 'hideIt')){
@@ -203,6 +212,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		$scope.checkCerts($scope.envCode);
 	}
 	if ($scope.access.listHosts) {
+		$scope.getSettings();
 		$scope.listServices(function(){
 			$scope.autoRefresh();
 		});

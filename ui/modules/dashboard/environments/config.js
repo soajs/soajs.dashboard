@@ -863,6 +863,10 @@ var environmentsConfig = {
 				"redeploy": ['dashboard', '/hacloud/services/redeploy', 'put'],
 				"logs": ['dashboard', '/hacloud/services/instances/logs', 'get']
 			}
+		},
+		"analytics":{
+			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
+			"activate": ["dashboard", "/analytics/activateAnalytics", "get"]
 		}
 	}
 };
