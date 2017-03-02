@@ -1320,4 +1320,107 @@ describe("testing hosts deployment", function () {
             });
         });
     });
+
+    describe("testing kubernetes namespaces", function () {
+
+        describe("testing list namespaces", function () {
+
+            it("fail - operation not supported in swarm mode", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    }
+                };
+
+                executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+                    done();
+                });
+            });
+
+            it("fail - operation not supported in manual deployment mode", function (done) {
+                mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+                    assert.ifError(error);
+
+                    var params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        }
+                    };
+
+                    executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+                        done();
+                    });
+                });
+            });
+
+            after("reset dashboard env deployer type to container", function (done) {
+                mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "container"}}, function (error) {
+                    assert.ifError(error);
+                    done();
+                });
+            });
+
+        });
+
+        describe("testing delete namespace", function () {
+
+            it("fail - missing required field", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    }
+                };
+
+                executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 172, "message": 'Missing required field: namespaceId'});
+                    done();
+                });
+            });
+
+            it("fail - operation not supported in swarm mode", function (done) {
+                var params = {
+                    headers: {
+                        soajsauth: soajsauth
+                    },
+                    qs: {
+                        namespaceId: 'myns'
+                    }
+                };
+
+                executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+                    assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+                    done();
+                });
+            });
+
+            it("fail - operation not supported in manual deployment mode", function (done) {
+                mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+                    assert.ifError(error);
+
+                    var params = {
+                        headers: {
+                            soajsauth: soajsauth
+                        },
+                        qs: {
+                            namespaceId: 'myns'
+                        }
+                    };
+
+                    executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+                        assert.ok(body.errors);
+                        assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+                        done();
+                    });
+                });
+            });
+
+        });
+
+    });
 });
