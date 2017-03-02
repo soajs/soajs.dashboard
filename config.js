@@ -865,8 +865,8 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"id": {
-					"source": ['query.id'],
+				"serviceId": {
+					"source": ['query.serviceId'],
 					"required": true,
 					"validation": {
 						"type": "string"

@@ -735,7 +735,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			routeName: "/dashboard/cloud/services/instances/logs",
 			params: {
 				env: currentScope.envCode,
-				id: task.ref.service.id,
+				serviceId: task.ref.service.id,
 				taskId: task.id
 			}
 		}, function (error, response) {
@@ -766,7 +766,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								routeName: "/dashboard/cloud/services/instances/logs",
 								params: {
 									env: currentScope.envCode,
-									id: task.ref.service.id,
+									serviceId: task.ref.service.id,
 									taskId: task.id
 								}
 							}, function (error, response) {
