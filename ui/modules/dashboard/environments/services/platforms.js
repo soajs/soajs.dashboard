@@ -360,7 +360,12 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						routeName: '/dashboard/cloud/namespaces/list'
 					}, function (error, namespaces) {
 						if (error) {
-							currentScope.displayAlert('danger', error.message);
+							$scope.message = {
+								danger: error.message
+							};
+							setTimeout(function () {
+								$scope.message.danger = '';
+							}, 5000);
 						}
 						else {
 							namespaces.forEach(function (oneNamespace) {
@@ -389,13 +394,17 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 						}
 					}, function (error, result) {
 						if (error) {
-							currentScope.displayAlert('danger', error.message);
+							$scope.message = {
+								danger: error.message
+							};
+							setTimeout(function () {
+								$scope.message.danger = '';
+							}, 5000);
 						}
 						else {
-							currentScope.displayAlert('success', 'Namespace configuration updated successfully');
-
 							$scope.namespaces.data = {};
 							modal.close();
+							currentScope.displayAlert('success', 'Namespace configuration updated successfully');
 							currentScope.listPlatforms(currentScope.envCode);
 						}
 					});

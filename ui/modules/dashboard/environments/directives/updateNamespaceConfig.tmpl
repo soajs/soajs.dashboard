@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
     <div class="form">
-        <alert type="danger" ng-if="currentScope.message.danger">{{currentScope.message.danger}}</alert>
+        <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
         <form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
             <div class="form-group">
                 <div>
