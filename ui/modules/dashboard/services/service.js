@@ -106,9 +106,14 @@ swaggerSimulator.service('swaggerClient', ["$q", "$http", "swaggerModules","$coo
 			headers.key = apiConfiguration.key;
 		}
 		
-		var soajsAuthCookie = $cookies.get('soajs_auth');
-		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
-			headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+		// var soajsAuthCookie = $cookies.get('soajs_auth');
+		// if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
+		// 	headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+		// }
+		
+		var soajsAccessToken = $cookies.get('access_token');
+		if(soajsAccessToken){
+			query.access_token = $cookies.get('access_token');
 		}
 		
 		// add headers
