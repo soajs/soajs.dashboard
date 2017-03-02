@@ -1357,7 +1357,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 		describe("mongo check db", function () {
 
-			it.skip('asserting environment record', function (done) {
+			it('asserting environment record', function (done) {
 				mongo.findOne('environment', {"code": "DEV"}, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
@@ -1370,7 +1370,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"apiPrefix": "api",
 						"sitePrefix": "site",
-						"description": "this is a dummy description",
+						"description": "this is a dummy updated description",
 						"services": {
 							"controller": {
 								"maxPoolSize": 100,
@@ -1424,7 +1424,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"session": {
 									"name": "soajsID",
 									"secret": "this is antoine hage app server",
-									"proxy" : "undefined",
 									"rolling": false,
 									"unset": "keep",
 									"cookie": {

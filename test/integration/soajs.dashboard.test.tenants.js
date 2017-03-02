@@ -3009,6 +3009,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			function checkIfKeyExists(code, cb) {
 				mongo.findOne("dashboard_extKeys", {'code': code}, function (error, result) {
+					console.log (result);
 					assert.ifError(error);
 					if (!result) {
 						cb(null, true);
@@ -3089,7 +3090,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it.skip("success - will automatically delete dashboard key when external key gets deleted", function (done) {
+			it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
 				var params = {
 					qs: {
 						"id": tenantId,
@@ -3098,15 +3099,15 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"extKey": tenantExtKey,
-						"extKeyEnv": "DEV"
+						"extKeyEnv": "DASHBOARD"
 					}
 				};
 				executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
 					assert.equal(body.result, true);
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
-						//assert.ok(deleted);
-						//assert.equal(deleted, true);
+						// assert.ok(deleted);
+						// assert.equal(deleted, true);
 						done();
 					});
 				});
