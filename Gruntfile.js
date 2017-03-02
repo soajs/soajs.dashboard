@@ -120,7 +120,7 @@ module.exports = function (grunt) {
 				src: ['test/coverage/']
 			}
 		},
-		
+
 		copy:{
 			main: {
 				files: [
@@ -134,6 +134,7 @@ module.exports = function (grunt) {
 				'config.js',
 				'index.js',
 				'lib/*.js',
+				'lib/*/*.js',
 				'models/*.js',
 				'schemas/*.js',
 				'utils/*.js',

@@ -2441,7 +2441,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'DASHBOARD'
+							'env': 'MYENV'
 						}
 					};
 
@@ -3089,7 +3089,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("success - will automatically delete dashboard key when external key gets deleted", function (done) {
+			it.skip("success - will automatically delete dashboard key when external key gets deleted", function (done) {
 				var params = {
 					qs: {
 						"id": tenantId,

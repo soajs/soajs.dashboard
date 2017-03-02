@@ -7,11 +7,11 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 
 var hostBL = require("./lib/host.js");
-var cloudServicesBL = require("./lib/cloud-services.js");
-var cloudDeployBL = require("./lib/cloud-deploy.js");
-var cloudNodesBL = require("./lib/cloud-nodes.js");
-var cloudMaintenanceBL = require("./lib/cloud-maintenance.js");
-var cloudNamespacesBL = require("./lib/cloud-namespaces.js");
+var cloudServicesBL = require("./lib/cloud/services.js");
+var cloudDeployBL = require("./lib/cloud/deploy.js");
+var cloudNodesBL = require("./lib/cloud/nodes.js");
+var cloudMaintenanceBL = require("./lib/cloud/maintenance.js");
+var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
