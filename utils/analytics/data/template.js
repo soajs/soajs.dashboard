@@ -2,7 +2,7 @@
 //done
 var mappings = [
     {
-        "_type": 'mapping',
+        "_type": 'template',
         "_name": 'topbeat',
         "_json": {
 	        "mappings": {
@@ -119,7 +119,7 @@ var mappings = [
         }
     },
 	{
-		"_type": 'mapping',
+		"_type": 'template',
 		"_name": 'filebeat',
 		"_json": {
 			"mappings": {
@@ -186,7 +186,7 @@ var mappings = [
 			},
 			"template": "filebeat-*"
 		}
-	}
+	},
 ];
 
 module.exports = mappings;

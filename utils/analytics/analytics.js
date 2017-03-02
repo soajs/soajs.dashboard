@@ -5,10 +5,10 @@ var soajs = require('soajs');
 var colls = {
 	analytics: 'analytics'
 };
+var uuid = require('uuid');
 var kibanaSettings = require('./services/elk/kibana');
 var lib = {
 	"insertMongoData": function (soajs, config, model, cb) {
-		console.log("insertMongoData")
 		var comboFind = {}
 		comboFind.collection = colls.analytics;
 		comboFind.conditions = {
@@ -23,7 +23,7 @@ var lib = {
 			}
 			else {
 				var records = [];
-				var dataFolder = "./data/";
+				var dataFolder = __dirname + "/data/";
 				fs.readdir(dataFolder, function (err, items) {
 					async.forEachOf(items, function (item, key, callback) {
 						if (key === 0) {
@@ -40,7 +40,12 @@ var lib = {
 						var comboInsert = {};
 						comboInsert.collection = colls.analytics;
 						comboInsert.record = records;
-						model.insertEntry(soajs, comboInsert, cb);
+						if (records){
+							model.insertEntry(soajs, comboInsert, cb);
+						}
+						else {
+							throw new Error("No Elastic db name found!"); //todo check this
+						}
 					});
 				});
 			}
@@ -273,7 +278,6 @@ var lib = {
 		
 		
 	},
-	
 	
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
 		console.log("addVisualizations")
@@ -809,18 +813,17 @@ var analyticsDriver = function (opts) {
 
 analyticsDriver.prototype.run = function () {
 	var _self = this;
-	//move to api
-	//var esClient = new soajs.es(_self.config.envRecord.dbs.clusters.es_clusters);
+	
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
-	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
-	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	// _self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	// _self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
