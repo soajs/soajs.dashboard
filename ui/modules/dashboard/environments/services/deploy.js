@@ -27,6 +27,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function(
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
         }
+        else {
+            formConfig.entries[0].entries.splice(6,5);
+            formConfig.entries[1].entries.splice(8,5);
+		}
 
         formConfig.entries[0].entries[0].onAction = function(id, data, form){
         	if(data === 'global' || data === 'daemonset'){
