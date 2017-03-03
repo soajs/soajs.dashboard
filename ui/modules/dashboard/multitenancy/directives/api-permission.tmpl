@@ -19,7 +19,7 @@
 								<div class="apiAccess" ng-hide="(currentApplication.aclFill[oneEnv.code][service.name].apisRestrictPermission && (currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].include!==true))">
 									<div class="f-left">
                                 <span style="padding-left: 0px">
-                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"/>
+                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="clear" type="radio" id="{{service.name}}_{{grp}}_{{method}}{{$index}}_accessType"/>
                                     <em>{{translation.InheritFromService[LANG]}}</em>
                                 </span>
                                 <span>
@@ -29,7 +29,7 @@
                                     <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
                                 </span>
                                 <span>
-                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType==='groups'"/> {{translation.groups[LANG]}}
+                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name][method].apis[myApi.v].accessType" value="groups" type="radio"/> {{translation.groups[LANG]}}
                                 </span>
 									</div>
 									<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}"
@@ -40,7 +40,6 @@
 												<span>{{code}}</span>
 											</li>
 										</ul>
-										<span ng-repeat="code in allGroups"></span>
 									</div>
 								</div>
 							</div>
@@ -59,7 +58,7 @@
 						<div class="apiAccess" ng-hide="(currentApplication.aclFill[oneEnv.code][service.name].apisRestrictPermission && (currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].include!==true))">
 							<div class="f-left">
                                 <span style="padding-left: 0px;">
-                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="clear" type="radio" name="{{service.name}}_{{grp}}_{{$index}}_accessType"/>
+                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="clear" type="radio" id="{{service.name}}_{{grp}}_{{$index}}_accessType"/>
                                     <em>{{translation.InheritFromService[LANG]}}</em>
                                 </span>
                                 <span>
@@ -69,7 +68,7 @@
                                     <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="private" type="radio"/> {{translation.private[LANG]}}
                                 </span>
                                 <span>
-                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio" ng-checked="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType==='groups'"/> {{translation.groups[LANG]}}
+                                    <input ng-model="currentApplication.aclFill[oneEnv.code][service.name].apis[myApi.v].accessType" value="groups" type="radio"/> {{translation.groups[LANG]}}
                                 </span>
 							</div>
 							<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}"
@@ -80,7 +79,6 @@
 										<span>{{code}}</span>
 									</li>
 								</ul>
-								<span ng-repeat="code in allGroups"></span>
 							</div>
 						</div>
 					</div>

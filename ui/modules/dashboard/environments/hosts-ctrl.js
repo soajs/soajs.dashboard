@@ -46,10 +46,16 @@ environmentsApp.controller('hostsCtrl', ['$scope', '$cookies', '$timeout', 'envH
 		context.waitMessage.message = '';
 		context.waitMessage.type = '';
 	};
-
+	
+	$scope.getEnvironment = function (envCode, cb) {
+		envHosts.getEnvironment($scope, envCode, cb);
+	};
+	
 	$scope.listHosts = function (env, noPopulate) {
 		$scope.waitMessage.close();
-		envHosts.listHosts($scope, env, noPopulate);
+		$scope.getEnvironment(env, function(){
+			envHosts.listHosts($scope, env, noPopulate);
+		});
 	};
 	
 	$scope.executeHeartbeatTest = function (env, oneHost) {
