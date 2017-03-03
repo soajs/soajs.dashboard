@@ -608,8 +608,7 @@ module.exports = {
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
-					"group": "Tenant",
-					"groupMain": true
+					"group": "Tenant"
 				},
 				"type": {
 					"source": ['query.type'],
