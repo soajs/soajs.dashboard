@@ -302,7 +302,7 @@
 										
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">
-												<a href="" ng-if="service.labels['soajs.service.name'] === 'nginx' && showAnalytics" ng-click="metrics('', service.labels['soajs.service.name'],'service','Filebeat')"><span class="icon icon-pie-chart" title="{{translation.getServiceAnalytics[LANG]}}"></span>
+												<a href="" ng-if="service.labels['soajs.service.name'] === 'nginx' && showAnalytics" ng-click="metrics('', service.labels['soajs.service.name'],'service','Filebeat')"><span class="icon icon-pie-chart" title="{{translation.getServiceAnalytics[LANG]}}"></span></a>
 											<button class="btn btn-default dropdown-toggle" type="button" id="nginxOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 												Service Operations
 												<span class="caret"></span>
