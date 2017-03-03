@@ -2441,7 +2441,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							'geo': {
 								'x': 'y'
 							},
-							'env': 'MYENV'
+							'env': 'DASHBOARD'
 						}
 					};
 
@@ -3099,7 +3099,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"extKey": tenantExtKey,
-						"extKeyEnv": "DASHBOARD"
+						"extKeyEnv": "DEV"
 					}
 				};
 				executeMyRequest(params, 'tenant/application/key/ext/delete', 'post', function (body) {
