@@ -18,9 +18,9 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "soajs.mongodb.data": "0.2.*",
-    "soajs.controller": "0.2.*",
-    "soajs.urac": "0.2.*",
+    "soajs.mongodb.data": "0.2.2",
+    "soajs.controller": "0.1.1",
+    "soajs.urac": "0.2.2",
     "grunt": "0.4.5",
     "grunt-contrib-jshint": "*",
     "grunt-jsdoc": "*",
@@ -48,7 +48,7 @@
     "request": "*",
     "rimraf": "*",
     "shortid": "^2.2.4",
-    "soajs": "0.3.*",
+    "soajs": "0.3.2",
     "unzip2": "*"
   }
 }
