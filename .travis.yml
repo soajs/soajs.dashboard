@@ -9,6 +9,7 @@ branches:
   only:
     - staging
     - master
+    - /^release\/.+$/
 
 addons:
   hosts:
