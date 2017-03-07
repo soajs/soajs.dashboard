@@ -257,7 +257,6 @@ var lib = {
 		};
 		var options = utils.buildDeployerOptions(env, soajs, BL);
 		deployer.listServices(options, function (err, servicesList) {
-			console.log(JSON.stringify(servicesList, null, 2))
 			console.log("addVisualizations")
 			lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
 			
@@ -549,6 +548,8 @@ var lib = {
 								
 								if (analyticsArray.length !== 0) {
 									esClient.checkIndex('.kibana', function (error, response) {
+										console.log(error, "error")
+										console.log(response, "response")
 										if (error) {
 											return call(error);
 										}
