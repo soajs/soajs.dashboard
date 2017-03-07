@@ -292,7 +292,7 @@ var lib = {
 					}
 					if (oneService.tasks.length > 0) {
 						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
-							if (oneTask.state && oneTask.state === "running") {
+							if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
 								taskName = oneTask.name;
 								taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
