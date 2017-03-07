@@ -239,7 +239,7 @@ var lib = {
 			};
 			esClient.db.indices.existsType(mapping, function (error, result) {
 				if (error || !result) {
-					esClient.db.indices.create(combo, cb);
+					esClient.db.indices.create(mapping, cb);
 				}
 				else {
 					return cb(null, true);
