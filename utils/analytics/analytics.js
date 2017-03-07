@@ -40,7 +40,7 @@ var lib = {
 						var comboInsert = {};
 						comboInsert.collection = colls.analytics;
 						comboInsert.record = records;
-						if (records){
+						if (records) {
 							model.insertEntry(soajs, comboInsert, cb);
 						}
 						else {
@@ -233,15 +233,18 @@ var lib = {
 		};
 		model.findEntries(soajs, combo, function (error, mappings) {
 			if (error) return cb(error);
-			
-				esClient.db.indices.existsType(combo, function (error, result) {
-					if (error || !result) {
-						esClient.db.indices.create(combo, cb);
-					}
-					else {
-						return cb(null, true);
-					}
-				});
+			var mapping = {
+				index: '.kibana',
+				body: mappings._json
+			};
+			esClient.db.indices.existsType(mapping, function (error, result) {
+				if (error || !result) {
+					esClient.db.indices.create(combo, cb);
+				}
+				else {
+					return cb(null, true);
+				}
+			});
 		});
 	},
 	
@@ -300,11 +303,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
+												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
+											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
@@ -316,11 +319,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
+												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
+											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
@@ -332,11 +335,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: '*-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*"
+												_id: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: '*-' + serviceName + "-" + serviceEnv + "-" +taskName + "-" + "*",
+											title: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp'
 										}
 									]
