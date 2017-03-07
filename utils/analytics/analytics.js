@@ -548,24 +548,6 @@ var lib = {
 								
 								if (analyticsArray.length !== 0) {
 									lib.esBulk(esClient, analyticsArray, call);
-									// esClient.checkIndex('.kibana', function (error, response) {
-									// 	console.log(error, "error")
-									// 	console.log(response, "response")
-									// 	if (error) {
-									// 		return call(error);
-									// 	}
-									// 	if (response) {
-									// 		lib.esBulk(esClient, analyticsArray, call);
-									// 	}
-									// 	else {
-									// 		esClient.createIndex('.kibana', function (error) {
-									// 			if (error) {
-									// 				return cb(error);
-									// 			}
-									// 			lib.esBulk(esClient, analyticsArray, call);
-									// 		})
-									// 	}
-									// });
 								}
 								
 								else {
@@ -765,37 +747,90 @@ var lib = {
 		});
 	},
 	
-	"UpdateSettings": function (soajs, env, model, cb) {
-		console.log("putSettings")
-		//todo check this
-		var condition = {
-			"$and": [
-				{
-					"_type": "settings"
-				}
-			]
-		};
-		var criteria = {"$set": {"_env.dashboard": true}};
+	"setDefaultIndex": function (soajs, env, esClient, model, cb) {
 		
-		var options = {
-			"safe": true,
-			"multi": false,
-			"upsert": true
+		var index = {
+			index: ".kibana",
+			type: 'config',
+			body: {
+				doc: {"defaultIndex": "topbeat-nginx-dashboard-*"}
+			}
+		};
+		var condition = {
+			index: ".kibana",
+			type: 'config'
 		};
 		var combo = {
 			collection: colls.analytics,
-			conditions: condition,
-			options: options,
-			fields: criteria
+			conditions: {"_type": "settings"}
 		};
-		
-		model.updateEntry(soajs, combo, function (error, body) {
-			if (error) {
-				return cb(error);
+		esClient.db.search(condition, function (err, res) {
+			if (err) {
+				return cb(err);
 			}
-			return cb(null, body)
+			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
+				model.findOne(combo, function (err, result) {
+					if (err) {
+						return cb(err);
+					}
+					if (result && result.env && result.env.dashboard) {
+						index.id = res.hits.hits[0]._id;
+						
+						async.parallel({
+							"updateES": function (call) {
+								esClient.db.update(index, call);
+							},
+							"updateSettings": function (call) {
+								var criteria = {
+									"$set": {
+										"kibana": {
+											"version": index.id,
+											"status": "deployed",
+											"port": "32601"
+										},
+										"logstash": {
+											"dashboard": {
+												"status": "deployed"
+											}
+										},
+										"filebeat":{
+											"dashboard": {
+												"status": "deployed"
+											}
+										}
+									}
+								};
+								criteria["$set"].logstash[env.code.toLowerCase()]= {
+									"status": "deployed"
+								};
+								criteria["$set"].filebeat[env.code.toLowerCase()]= {
+									"status": "deployed"
+								};
+								criteria["$set"].env = true;
+								var options = {
+									"safe": true,
+									"multi": false,
+									"upsert": true
+								};
+								combo.fields = criteria;
+								combo.options= options;
+								model.update(combo, call);
+							}
+							
+						}, cb)
+					}
+					else {
+						return cb(null, true);
+					}
+				});
+			}
+			else {
+				return cb(null, true);
+			}
 		});
+		
 	},
+	
 };
 
 
@@ -817,14 +852,13 @@ analyticsDriver.prototype.run = function () {
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord,  _self.config.esCluster, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
-		console.log(err)
 		console.log("5alasna ???");
 	});
 };

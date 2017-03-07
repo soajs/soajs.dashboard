@@ -5,11 +5,11 @@ module.exports = {
 	"variables": [],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.env.code": "%env%-",
+		"soajs.env.code": "%env%",
 		"soajs.service.type": "elk",
-		"soajs.service.name": "%env%--logstash",
+		"soajs.service.name": "%env%-logstash",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "%env%--logstash"
+		"soajs.service.label": "%env%-logstash"
 	},
 	"command": {
 		"cmd": ["bash"],

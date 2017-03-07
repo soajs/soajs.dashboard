@@ -4,7 +4,7 @@ module.exports = {
 	"name": "elasticsearch",
 	"variables": [],
 	"labels": {
-		"soajs.content": "true",
+		"soajs.service.type": "elk",
 		"soajs.service.name": "elasticsearch",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "elasticsearch"
