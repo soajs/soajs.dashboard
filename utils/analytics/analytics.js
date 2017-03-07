@@ -238,7 +238,7 @@ var lib = {
 			
 				esClient.db.indices.existsType(combo, function (error, result) {
 					if (error || !result) {
-						esClient.db.indices.create(mapping, cb);
+						esClient.db.indices.create(combo, cb);
 					}
 					else {
 						return cb(null, true);
