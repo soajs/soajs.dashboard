@@ -236,7 +236,7 @@ var lib = {
 		model.findEntries(soajs, combo, function (error, mappings) {
 			if (error) return cb(error);
 			
-				esClient.db.indices.existsType(options, function (error, result) {
+				esClient.db.indices.existsType(combo, function (error, result) {
 					if (error || !result) {
 						esClient.db.indices.create(mapping, cb);
 					}
