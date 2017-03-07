@@ -547,24 +547,25 @@ var lib = {
 								});
 								
 								if (analyticsArray.length !== 0) {
-									esClient.checkIndex('.kibana', function (error, response) {
-										console.log(error, "error")
-										console.log(response, "response")
-										if (error) {
-											return call(error);
-										}
-										if (response) {
-											lib.esBulk(esClient, analyticsArray, call);
-										}
-										else {
-											esClient.createIndex('.kibana', function (error) {
-												if (error) {
-													return cb(error);
-												}
-												lib.esBulk(esClient, analyticsArray, call);
-											})
-										}
-									});
+									lib.esBulk(esClient, analyticsArray, call);
+									// esClient.checkIndex('.kibana', function (error, response) {
+									// 	console.log(error, "error")
+									// 	console.log(response, "response")
+									// 	if (error) {
+									// 		return call(error);
+									// 	}
+									// 	if (response) {
+									// 		lib.esBulk(esClient, analyticsArray, call);
+									// 	}
+									// 	else {
+									// 		esClient.createIndex('.kibana', function (error) {
+									// 			if (error) {
+									// 				return cb(error);
+									// 			}
+									// 			lib.esBulk(esClient, analyticsArray, call);
+									// 		})
+									// 	}
+									// });
 								}
 								
 								else {
