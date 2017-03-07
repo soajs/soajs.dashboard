@@ -132,11 +132,7 @@ var lib = {
 							combo.fields = {
 								"$set": {
 									"elasticsearch": {
-										"cluster_config": {
-											"es_clusters": env.dbs.clusters.es_clusters
-										},
-										"status": "deployed",
-										"db_name": "esClient"
+										"status": "deployed"
 									}
 								}
 							};
@@ -200,8 +196,10 @@ var lib = {
 			}
 			
 		}, function (err) {
-			if (err) return cb(err);
-			
+			console.log(err, "errrrrrrr")
+			if (err) {
+				return cb(err);
+			}
 			return cb(null, true);
 		});
 	},
