@@ -7,6 +7,9 @@ var colls = {
 };
 var uuid = require('uuid');
 var kibanaSettings = require('./services/elk/kibana');
+var filebeatIndex = require("../indexes/filebeat-index");
+var topbeatIndex = require("../indexes/topbeat-index");
+var allIndex = require("../indexes/all-index");
 var lib = {
 	"insertMongoData": function (soajs, config, model, cb) {
 		var comboFind = {}
@@ -265,6 +268,7 @@ var lib = {
 	"esBulk": function (esClient, array, cb) {
 		console.log("esBulk")
 		esClient.bulk(array, function (error, response) {
+			console.log(error, "error")
 			if (error) {
 				return cb(error)
 			}
@@ -296,19 +300,20 @@ var lib = {
 								taskName = oneTask.name;
 								taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
-								
 								analyticsArray = analyticsArray.concat(
 									[
 										{
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
+												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
 											}
 										},
 										{
-											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
-											timeFieldName: '@timestamp'
+											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp',
+											fields: filebeatIndex.fields,
+											fieldFormatMap: filebeatIndex.fieldFormatMap
 										}
 									]
 								);
@@ -319,12 +324,14 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
+												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
 											}
 										},
 										{
-											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
-											timeFieldName: '@timestamp'
+											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp',
+											fields: topbeatIndex.fields,
+											fieldFormatMap: topbeatIndex.fieldFormatMap
 										}
 									]
 								);
@@ -335,12 +342,14 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
+												_id: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
 											}
 										},
 										{
-											title: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
-											timeFieldName: '@timestamp'
+											title: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											timeFieldName: '@timestamp',
+											fields: allIndex.fields,
+											fieldFormatMap: allIndex.fieldFormatMap
 										}
 									]
 								);
@@ -359,7 +368,9 @@ var lib = {
 											},
 											{
 												title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: filebeatIndex.fields,
+												fieldFormatMap: filebeatIndex.fieldFormatMap
 											}
 										]
 									);
@@ -375,7 +386,9 @@ var lib = {
 											},
 											{
 												title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: topbeatIndex.fields,
+												fieldFormatMap: topbeatIndex.fieldFormatMap
 											}
 										]
 									);
@@ -391,7 +404,9 @@ var lib = {
 											},
 											{
 												title: '*-' + serviceName + "-" + serviceEnv + "-" + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: allIndex.fields,
+												fieldFormatMap: allIndex.fieldFormatMap
 											}
 										]
 									);
@@ -410,7 +425,9 @@ var lib = {
 											},
 											{
 												title: 'filebeat-' + serviceName + '-' + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: filebeatIndex.fields,
+												fieldFormatMap: filebeatIndex.fieldFormatMap
 											}
 										]
 									);
@@ -427,7 +444,9 @@ var lib = {
 											},
 											{
 												title: 'topbeat-' + serviceName + "-" + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: topbeatIndex.fields,
+												fieldFormatMap: topbeatIndex.fieldFormatMap
 											}
 										]
 									);
@@ -444,7 +463,9 @@ var lib = {
 											},
 											{
 												title: '*-' + serviceName + "-" + "*",
-												timeFieldName: '@timestamp'
+												timeFieldName: '@timestamp',
+												fields: allIndex.fields,
+												fieldFormatMap: allIndex.fieldFormatMap
 											}
 										]
 									);
@@ -798,6 +819,7 @@ analyticsDriver.prototype.run = function () {
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
+		console.log(err)
 		console.log("5alasna ???");
 	});
 };
