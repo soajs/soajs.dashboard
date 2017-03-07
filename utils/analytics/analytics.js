@@ -268,10 +268,6 @@ var lib = {
 		console.log("esBulk")
 		esClient.bulk(array, function (error, response) {
 			if (error) {
-				console.log(JSON.stringify(array, null, 2))
-				console.log("---------------------------------------------------------------------")
-				console.log(JSON.stringify(error, null, 2))
-				console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 				return cb(error)
 			}
 			return cb(error, response);
@@ -541,8 +537,13 @@ var lib = {
 												_id: oneRecord.id
 											}
 										};
-										
-										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+										if (oneRecord._type !== "settings" || oneRecord._type !== "template" || oneRecord._type !== "mapping"){
+											analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+										}
+										else {
+											console.log(JSON.stringify(recordIndex, null, 2))
+											console.log(JSON.stringify(options, null, 2))
+										}
 									});
 								});
 								

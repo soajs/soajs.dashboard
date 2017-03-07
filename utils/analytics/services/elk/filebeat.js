@@ -27,8 +27,8 @@ module.exports = {
 		"ports": [
 			{
 				"isPublished": true,
-				"published": 12202,
-				"target": 12202
+				"published": 12201,
+				"target": 12201
 			}
 		],
 		"replication": {
