@@ -97,11 +97,10 @@ var lib = {
 					"target": loadContent.deployConfig.volume.target
 				};
 			}
-			if (service === 'filebeat') {
-				serviceParams = JSON.stringify(serviceParams);
-				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
-				serviceParams = JSON.parse(serviceParams);
-			}
+			
+			serviceParams = JSON.stringify(serviceParams);
+			serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
+			serviceParams = JSON.parse(serviceParams);
 			
 			
 			return cb(null, serviceParams);

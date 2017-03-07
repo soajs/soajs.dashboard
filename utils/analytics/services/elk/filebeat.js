@@ -4,14 +4,16 @@ module.exports = {
 	"name": "%env%-filebeat",
 	"variables": [
 		"SOAJS_ENV=%env%",
-		"SOAJS_LOGSTASH_HOST=logstash",
-		"SOAJS_LOGSTASH_PORT=12202"
+		'SOAJS_LOGSTASH_HOST=%env%-logstash',
+		'SOAJS_LOGSTASH_PORT=12201'
 	],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.service.name": "filebeat", //"%env%-filebeat"??
+		"soajs.service.name": "%env%-filebeat", //"%env%-filebeat"??
 		"soajs.service.group": "elk",
-		"soajs.service.label": "%env%-filebeat"
+		"soajs.service.label": "%env%-filebeat",
+		"soajs.env.code": "%env%",
+		"soajs.service.type": "elk"
 	},
 	"command": {
 		"cmd": ["bash"],

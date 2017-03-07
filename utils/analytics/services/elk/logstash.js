@@ -1,13 +1,15 @@
 'use strict';
 module.exports = {
-	"env": "dashboard", //it's only used to get the deployer cluster
-	"name": "logstash",
+	"env": "%env%",
+	"name": "%env%-logstash",
 	"variables": [],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.service.name": "logstash",
+		"soajs.env.code": "%env%-",
+		"soajs.service.type": "elk",
+		"soajs.service.name": "%env%--logstash",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "logstash"
+		"soajs.service.label": "%env%--logstash"
 	},
 	"command": {
 		"cmd": ["bash"],
@@ -16,7 +18,7 @@ module.exports = {
 	"deployConfig": {
 		"image": "soajstest/logstash",
 		"workDir": "/",
-		"memoryLimit": 209715200,
+		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"replication": {
 			"mode": "replicated",
