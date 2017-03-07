@@ -305,11 +305,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: filebeatIndex.fields,
 											fieldFormatMap: filebeatIndex.fieldFormatMap
@@ -323,11 +323,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: topbeatIndex.fields,
 											fieldFormatMap: topbeatIndex.fieldFormatMap
@@ -341,11 +341,11 @@ var lib = {
 											index: {
 												_index: '.kibana',
 												_type: 'index-pattern',
-												_id: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*"
+												_id: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
 											}
 										},
 										{
-											title: '*-' + serviceName + "-" + serviceEnv + "-" + task_Name.name + "-" + "*",
+											title: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: allIndex.fields,
 											fieldFormatMap: allIndex.fieldFormatMap
