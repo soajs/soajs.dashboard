@@ -769,7 +769,7 @@ var lib = {
 				return cb(err);
 			}
 			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-				model.findEntry(combo, function (err, result) {
+				model.findEntry(soajs, combo, function (err, result) {
 					if (err) {
 						return cb(err);
 					}
@@ -814,7 +814,7 @@ var lib = {
 								};
 								combo.fields = criteria;
 								combo.options= options;
-								model.updateEntry(combo, call);
+								model.updateEntry(soajs, combo, call);
 							}
 							
 						}, cb)
