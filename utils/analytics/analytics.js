@@ -53,7 +53,6 @@ var lib = {
 	},
 	
 	"getAnalyticsContent": function (service, env, cb) {
-		console.log("getAnalyticsContent")
 		var path = __dirname + "/services/elk/";
 		fs.exists(path, function (exists) {
 			if (!exists) {
@@ -197,7 +196,7 @@ var lib = {
 				lib.putTemplate(soajs, model, esClient, callback);
 			},
 			"mapping": function (callback) {
-				lib.putMapping(esClient, callback);
+				lib.putMapping(soajs, model, esClient, callback);
 			}
 			
 		}, function (err) {
@@ -211,7 +210,7 @@ var lib = {
 		console.log("putTemplate")
 		var combo = {
 			collection: colls.analytics,
-			conditions: {_type: 'mapping'}
+			conditions: {_type: 'template'}
 		};
 		model.findEntries(soajs, combo, function (error, mappings) {
 			if (error) return cb(error);
@@ -227,56 +226,25 @@ var lib = {
 		});
 	},
 	
-	"putMapping": function (esClient, cb) {
+	"putMapping": function (soajs, model, esClient, cb) {
+		//todo change this
 		console.log("putMapping")
-		var mapping = {
-			index: '.kibana',
-			type: 'dashboard',
-			body: {
-				"dashboard": {
-					"properties": {
-						"title": {"type": "string"},
-						"hits": {"type": "integer"},
-						"description": {"type": "string"},
-						"panelsJSON": {
-							"properties": {
-								"type": {"type": "string"},
-								"optionsJSON": {"type": "string"},
-								"uiStateJSON": {"type": "string"},
-								"version": {"type": "integer"},
-								"timeRestore": {"type": "boolean"},
-								"timeTo": {"type": "string"},
-								"timeFrom": {"type": "string"},
-								"kibanaSavedObjectMeta": {
-									"properties": {
-										"searchSourceJSON": {
-											"type": "string"
-										}
-									}
-								}
-							}
-						}
+		var combo = {
+			collection: colls.analytics,
+			conditions: {_type: 'mapping'}
+		};
+		model.findEntries(soajs, combo, function (error, mappings) {
+			if (error) return cb(error);
+			
+				esClient.db.indices.existsType(combo, function (error, result) {
+					if (error || !result) {
+						esClient.db.indices.create(mapping, cb);
 					}
-				}
-			}
-		};
-		var options = {
-			index: '.kibana',
-			type: 'dashboard'
-		};
-		
-		esClient.db.indices.existsType(options, function (error, result) {
-			if (error || !result) {
-				esClient.db.indices.create(mapping, function (error) {
-					return cb(error, true);
+					else {
+						return cb(null, true);
+					}
 				});
-			}
-			else {
-				return cb(null, true);
-			}
 		});
-		
-		
 	},
 	
 	"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
@@ -304,7 +272,6 @@ var lib = {
 	},
 	
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
-		console.log("configureKibana")
 		async.each(servicesList, function (oneService, callback) {
 			var serviceType;
 			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
@@ -325,7 +292,7 @@ var lib = {
 					if (oneService.tasks.length > 0) {
 						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
 							if (oneTask.state && oneTask.state === "complete") {
-								taskName = oneTask.name + '_' + oneTask.id;
+								taskName = oneTask.name;
 								taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
 								
@@ -815,15 +782,15 @@ analyticsDriver.prototype.run = function () {
 	var _self = this;
 	
 	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
-	// _self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
-	// _self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.UpdateSettings, _self.config.soajs, _self.config.envRecord, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
@@ -831,7 +798,6 @@ analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
 		console.log("5alasna ???");
-		process.exit(-1)
 	});
 };
 
