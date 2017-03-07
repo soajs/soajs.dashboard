@@ -196,7 +196,7 @@ var lib = {
 				lib.putTemplate(soajs, model, esClient, callback);
 			},
 			"mapping": function (callback) {
-				lib.putMapping(esClient, callback);
+				lib.putMapping(soajs, model, esClient, callback);
 			}
 			
 		}, function (err) {
