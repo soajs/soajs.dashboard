@@ -265,13 +265,13 @@ var lib = {
 	},
 	
 	"esBulk": function (esClient, array, cb) {
-		console.log("---------------------------------------------------------------------")
 		console.log("esBulk")
-		console.log(JSON.stringify(array, null, 2))
-		console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		esClient.bulk(array, function (error, response) {
-			console.log(JSON.stringify(array, null, 2), error)
 			if (error) {
+				console.log(JSON.stringify(array, null, 2))
+				console.log("---------------------------------------------------------------------")
+				console.log(JSON.stringify(error, null, 2))
+				console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 				return cb(error)
 			}
 			return cb(error, response);
