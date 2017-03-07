@@ -189,14 +189,13 @@ var lib = {
 	
 	"setMapping": function (soajs, env, model, esClient, cb) {
 		console.log("setMapping")
-		async.parallel({
-			"template": function (callback) {
-				lib.putTemplate(soajs, model, esClient, callback);
-			},
+		async.series({
 			"mapping": function (callback) {
 				lib.putMapping(soajs, model, esClient, callback);
+			},
+			"template": function (callback) {
+				lib.putTemplate(soajs, model, esClient, callback);
 			}
-			
 		}, function (err) {
 			console.log(err, "errrrrrrr")
 			if (err) {
@@ -773,7 +772,7 @@ var lib = {
 					if (err) {
 						return cb(err);
 					}
-					if (result && result.env && result.env.dashboard) {
+					if (result && result.env && result.env[env.code.toLowerCase()]) {
 						index.id = res.hits.hits[0]._id;
 						
 						async.parallel({
