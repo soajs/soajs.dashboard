@@ -7,9 +7,9 @@ var colls = {
 };
 var uuid = require('uuid');
 var kibanaSettings = require('./services/elk/kibana');
-var filebeatIndex = require("../indexes/filebeat-index");
-var topbeatIndex = require("../indexes/topbeat-index");
-var allIndex = require("../indexes/all-index");
+var filebeatIndex = require("./indexes/filebeat-index");
+var topbeatIndex = require("./indexes/topbeat-index");
+var allIndex = require("./indexes/all-index");
 var lib = {
 	"insertMongoData": function (soajs, config, model, cb) {
 		var comboFind = {}
