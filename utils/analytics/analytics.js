@@ -744,7 +744,7 @@ var lib = {
 				return cb(err);
 			}
 			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-				model.findEntry(combo, function (err, result) {
+				model.findEntry(soajs, combo, function (err, result) {
 					if (err) {
 						return cb(err);
 					}
