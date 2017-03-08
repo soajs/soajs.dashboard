@@ -274,8 +274,8 @@ var lib = {
 				serviceName, taskName;
 			serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
 			if (oneService) {
-				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.name"]) {
-					serviceName = oneService.labels["soajs.service.name"];
+				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.repo.name"]) {
+					serviceName = oneService.labels["soajs.service.repo.name"];
 					if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
 						serviceType = (oneService.labels["soajs.service.name"] === 'controller') ? 'controller' : 'service';
 					}
@@ -289,7 +289,6 @@ var lib = {
 						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
 							if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
 								taskName = oneTask.name;
-								console.log(taskName)
 								taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
 								analyticsArray = analyticsArray.concat(
