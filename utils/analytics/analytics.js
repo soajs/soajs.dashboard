@@ -261,6 +261,7 @@ var lib = {
 	
 	"esBulk": function (esClient, array, cb) {
 		console.log("esBulk")
+		console.log(array.length)
 		esClient.bulk(array, function (error, response) {
 			if (error) {
 				return cb(error)
@@ -293,6 +294,7 @@ var lib = {
 						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
 							if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
 								taskName = oneTask.name;
+								console.log(taskName)
 								taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
 								analyticsArray = analyticsArray.concat(
@@ -535,8 +537,6 @@ var lib = {
 											}
 										};
 										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
-										console.log([recordIndex, oneRecord._source])
-										console.log(analyticsArray.length)
 									});
 								});
 								
