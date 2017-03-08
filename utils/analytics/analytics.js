@@ -131,6 +131,7 @@ var lib = {
 							deployer.deployService(options, call)
 						},
 						"update": function (call) {
+							//Todo fix this
 							settings.elasticsearch.status = true;
 							combo.fields = {
 								"$set": settings.elasticsearch
@@ -194,7 +195,6 @@ var lib = {
 				lib.putTemplate(soajs, model, esClient, callback);
 			}
 		}, function (err) {
-			console.log(err, "errrrrrrr")
 			if (err) {
 				return cb(err);
 			}
@@ -532,15 +532,16 @@ var lib = {
 												_id: oneRecord.id
 											}
 										};
-										console.log(recordIndex)
 										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+										
+										console.log(analyticsArray.length)
 									});
 								});
 								
 								if (analyticsArray.length !== 0) {
+									console.log(JSON.stringify(analyticsArray, null, 2))
 									lib.esBulk(esClient, analyticsArray, call);
 								}
-								
 								else {
 									return call(null, true);
 								}
