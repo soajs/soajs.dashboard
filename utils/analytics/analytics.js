@@ -485,7 +485,7 @@ var lib = {
 									]
 								};
 								var combo = {
-									condition: options,
+									conditions: options,
 									collection: colls.analytics
 								};
 								model.findEntries(soajs, combo, function (error, records) {
