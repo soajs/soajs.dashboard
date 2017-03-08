@@ -865,7 +865,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 				else {
 					currentScope.showAnalytics = response[env] ? true : false;
-					currentScope.kibanaPort = response.kibana.port ? response.kibana.port : "32601";
+					currentScope.kibanaPort = (response.kibana && response.kibana.port) ? response.kibana.port : "32601";
 					currentScope.showActivateAnalytics = (response.tracker && response.tracker.info) ? false : true;
 				}
 			});
