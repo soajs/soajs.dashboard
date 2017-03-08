@@ -274,10 +274,12 @@ var lib = {
 				serviceName, taskName;
 			serviceEnv = serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
 			if (oneService) {
-				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.repo.name"]) {
+				
+				if (oneService.labels) {
 					serviceName = oneService.labels["soajs.service.repo.name"].replace(/[\/*?"<>|,.-]/g, "_");
+					console.log(serviceName)
 					if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
-						serviceType = (oneService.labels["soajs.service.name"] === 'controller') ? 'controller' : 'service';
+						serviceType = (oneService.labels["soajs.service.repo.name"] === 'controller') ? 'controller' : 'service';
 					}
 					else if (oneService.labels["soajs.service.group"] === "nginx") {
 						serviceType = 'nginx';
