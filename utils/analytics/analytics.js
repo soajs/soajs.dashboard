@@ -131,12 +131,9 @@ var lib = {
 							deployer.deployService(options, call)
 						},
 						"update": function (call) {
+							settings.elasticsearch.status = true;
 							combo.fields = {
-								"$set": {
-									"elasticsearch": {
-										"status": "deployed"
-									}
-								}
+								"$set": settings.elasticsearch
 							};
 							var options = {
 								"safe": true,
@@ -535,7 +532,7 @@ var lib = {
 												_id: oneRecord.id
 											}
 										};
-										if (oneRecord._type !== "settings" || oneRecord._type !== "template" || oneRecord._type !== "mapping"){
+										if (oneRecord._type !== "settings" || oneRecord._type !== "template" || oneRecord._type !== "mapping") {
 											analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
 										}
 										else {
@@ -591,29 +588,7 @@ var lib = {
 				lib.getAnalyticsContent("kibana", env, function (err, content) {
 					var options = utils.buildDeployerOptions(env, soajs, model);
 					options.params = content;
-					async.parallel({
-						"deploy": function (call) {
-							deployer.deployService(options, call)
-						},
-						"update": function (call) {
-							combo.fields = {
-								"$set": {
-									"kibana": {
-										"status": "deployed",
-										"port": kibanaSettings.deployConfig.ports[0].published, //todo fill
-										"version": kibanaSettings.version //todo fill
-									}
-								}
-							};
-							var options = {
-								"safe": true,
-								"multi": false,
-								"upsert": true
-							};
-							combo.options = options;
-							model.updateEntry(soajs, combo, call);
-						}
-					}, cb);
+					deployer.deployService(options, cb);
 				});
 			}
 			
@@ -645,10 +620,11 @@ var lib = {
 						"update": function (call) {
 							combo.fields = {
 								"$set": {
-									"logstash": {
-										"status": "deployed"
-									}
+									"logstash": {}
 								}
+							};
+							combo.fields["$set"].logstash[env.code.toLowerCase()] = {
+								"status": "deployed"
 							};
 							var options = {
 								"safe": true,
@@ -768,66 +744,45 @@ var lib = {
 				return cb(err);
 			}
 			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-				model.findEntry(soajs, combo, function (err, result) {
-					if (err) {
-						return cb(err);
-					}
-					if (result && result.env && result.env[env.code.toLowerCase()]) {
-						index.id = res.hits.hits[0]._id;
-						
-						async.parallel({
-							"updateES": function (call) {
-								esClient.db.update(index, call);
-							},
-							"updateSettings": function (call) {
-								var criteria = {
-									"$set": {
-										"kibana": {
-											"version": index.id,
-											"status": "deployed",
-											"port": "32601"
-										},
-										"logstash": {
-											"dashboard": {
-												"status": "deployed"
-											}
-										},
-										"filebeat":{
-											"dashboard": {
-												"status": "deployed"
-											}
-										}
-									}
-								};
-								criteria["$set"].logstash[env.code.toLowerCase()]= {
-									"status": "deployed"
-								};
-								criteria["$set"].filebeat[env.code.toLowerCase()]= {
-									"status": "deployed"
-								};
-								criteria["$set"].env = true;
-								var options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								combo.fields = criteria;
-								combo.options= options;
-								model.updateEntry(soajs, combo, call);
+				index.id = res.hits.hits[0]._id;
+				async.parallel({
+					"updateES": function (call) {
+						esClient.db.update(index, call);
+					},
+					"updateSettings": function (call) {
+						var criteria = {
+							"$set": {
+								"kibana": {
+									"version": index.id,
+									"status": "deployed",
+									"port": "32601"
+								}
 							}
-							
-						}, cb)
+						};
+						criteria["$set"].logstash[env.code.toLowerCase()] = {
+							"status": "deployed"
+						};
+						criteria["$set"].filebeat[env.code.toLowerCase()] = {
+							"status": "deployed"
+						};
+						criteria["$set"].env[env.code.toLowerCase()] = true;
+						var options = {
+							"safe": true,
+							"multi": false,
+							"upsert": true
+						};
+						console.log("????????")
+						combo.fields = criteria;
+						combo.options = options;
+						model.updateEntry(soajs, combo, call);
 					}
-					else {
-						return cb(null, true);
-					}
-				});
+					
+				}, cb)
 			}
 			else {
 				return cb(null, true);
 			}
 		});
-		
 	},
 	
 };
@@ -851,7 +806,7 @@ analyticsDriver.prototype.run = function () {
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord,  _self.config.esCluster, _self.config.model));
+	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
