@@ -10,7 +10,7 @@ module.exports = {
 		"soajs.service.label": "elasticsearch"
 	},
 	"command": {
-		"cmd": ["/usr/share/elasticsearch/bin/plugin install delete-by-query; relasticsearch -Des.insecure.allow.root=true;"]
+		"cmd": ["/usr/share/elasticsearch/bin/plugin install delete-by-query; elasticsearch -Des.insecure.allow.root=true;"]
 	},
 	"deployConfig": {
 		"image": "elasticsearch:2.4.1",
