@@ -281,6 +281,7 @@ var lib = {
 					}
 					else if (oneService.labels["soajs.service.group"] === "nginx") {
 						serviceType = 'nginx';
+						serviceName = 'nginx';
 					}
 					else {
 						return callback(null, true);
