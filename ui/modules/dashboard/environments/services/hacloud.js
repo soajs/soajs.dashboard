@@ -852,7 +852,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	
 	function getSettings(currentScope) {
 		var env = currentScope.envCode.toLowerCase();
-		currentScope.showAnalytics = false;
 		if (currentScope.access.analytics.getSettings) {
 			getSendDataFromServer(currentScope, ngDataApi, {
 				"method": "get",
@@ -865,10 +864,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('danger', "unable to retrieve settings");
 				}
 				else {
-					if (response[env] && response.kibana && response.kibana.port) {
-						currentScope.showAnalytics = true;
-						currentScope.kibanaPort = response.kibana.port;
-					}
+					currentScope.showAnalytics = response[env] ? true : false;
+					currentScope.kibanaPort = response.kibana.port ? response.kibana.port : "32601";
 					currentScope.showActivateAnalytics = (response.tracker && response.tracker.info) ? false : true;
 				}
 			});
