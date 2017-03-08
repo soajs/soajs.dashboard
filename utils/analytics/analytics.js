@@ -743,36 +743,41 @@ var lib = {
 			if (err) {
 				return cb(err);
 			}
-			console.log(JSON.stringify(res, null, 2))
 			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-				index.id = res.hits.hits[0]._id;
-				async.parallel({
-					"updateES": function (call) {
-						esClient.db.update(index, call);
-					},
-					"updateSettings": function (call) {
-						var criteria = {
-							"$set": {
-								"kibana": {
-									"version": index.id,
-									"status": "deployed",
-									"port": "32601"
-								}
-							}
-						};
-						criteria["$set"].env[env.code.toLowerCase()] = true;
-						var options = {
-							"safe": true,
-							"multi": false,
-							"upsert": true
-						};
-						console.log("????????")
-						combo.fields = criteria;
-						combo.options = options;
-						model.updateEntry(soajs, combo, call);
+				model.findEntry(combo, function (err, result) {
+					if (err) {
+						return cb(err);
 					}
-					
-				}, cb)
+					index.id = res.hits.hits[0]._id;
+					async.parallel({
+						"updateES": function (call) {
+							esClient.db.update(index, call);
+						},
+						"updateSettings": function (call) {
+							var criteria = {
+								"$set": {
+									"kibana": {
+										"version": index.id,
+										"status": "deployed",
+										"port": "32601"
+									}
+								}
+							};
+							result.env[env.code.toLowerCase()] = true;
+							criteria["$set"].env = result.env;
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							console.log("????????")
+							combo.fields = criteria;
+							combo.options = options;
+							model.updateEntry(soajs, combo, call);
+						}
+						
+					}, cb)
+				});
 			}
 			else {
 				return cb(null, true);
