@@ -275,7 +275,7 @@ var lib = {
 			serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
 			if (oneService) {
 				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.repo.name"]) {
-					serviceName = oneService.labels["soajs.service.repo.name"];
+					serviceName = oneService.labels["soajs.service.repo.name"].replace(/[\/*?"<>|,.-]/g, "_");
 					if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
 						serviceType = (oneService.labels["soajs.service.name"] === 'controller') ? 'controller' : 'service';
 					}
