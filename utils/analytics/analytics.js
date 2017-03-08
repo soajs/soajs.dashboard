@@ -259,8 +259,6 @@ var lib = {
 	},
 	
 	"esBulk": function (esClient, array, cb) {
-		console.log("esBulk")
-		console.log(array.length)
 		esClient.bulk(array, function (error, response) {
 			if (error) {
 				return cb(error)
@@ -534,13 +532,13 @@ var lib = {
 											}
 										};
 										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
-										if (analyticsArray.length !== 0) {
-											lib.esBulk(esClient, analyticsArray, call);
-										}
-										else {
-											return call(null, true);
-										}
 									});
+									if (analyticsArray.length !== 0) {
+										lib.esBulk(esClient, analyticsArray, call);
+									}
+									else {
+										return call(null, true);
+									}
 								});
 							}
 							else {
