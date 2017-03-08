@@ -10,8 +10,8 @@ module.exports = {
 		"soajs.service.label": "elasticsearch"
 	},
 	"command": {
-	//	"cmd": ["/usr/share/elasticsearch/bin/plugin install delete-by-query; elasticsearch -Des.insecure.allow.root=true;"]
-		"cmd": ["elasticsearch"],
+		"cmd": ["bash -c /usr/share/elasticsearch/bin/plugin install delete-by-query; elasticsearch -Des.insecure.allow.root=true;"],
+		//"cmd": ["elasticsearch"],
 		"args": ["-Des.insecure.allow.root=true"]
 	},
 	"deployConfig": {
