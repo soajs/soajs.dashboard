@@ -521,6 +521,7 @@ var lib = {
 											injector = serviceEnv;
 										}
 										oneRecord = JSON.stringify(oneRecord);
+										oneRecord = oneRecord.replace(/%env%/g, serviceEnv);
 										if (serviceIndex) {
 											oneRecord = oneRecord.replace(/%serviceIndex%/g, serviceIndex);
 										}
