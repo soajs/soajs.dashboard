@@ -497,10 +497,10 @@ var lib = {
 										if (oneRecord._type === "visualization" || oneRecord._type === "search") {
 											serviceIndex = serviceName + "-";
 											if (oneRecord._injector === "service") {
-												serviceIndex = serviceIndex + "*";
+												serviceIndex = serviceIndex + serviceEnv + "-" + "*";
 											}
 											else if (oneRecord._injector === "env") {
-												serviceIndex = serviceIndex + serviceEnv + "-" + "*";
+												serviceIndex = "*-" + serviceEnv + "-" + "*";
 											}
 											else if (oneRecord._injector === "taskname") {
 												serviceIndex = serviceIndex + serviceEnv + "-" + taskName + "-" + "*";
@@ -532,13 +532,8 @@ var lib = {
 												_id: oneRecord.id
 											}
 										};
-										if (oneRecord._type !== "settings" || oneRecord._type !== "template" || oneRecord._type !== "mapping") {
-											analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
-										}
-										else {
-											console.log(JSON.stringify(recordIndex, null, 2))
-											console.log(JSON.stringify(options, null, 2))
-										}
+										console.log(recordIndex)
+										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
 									});
 								});
 								
