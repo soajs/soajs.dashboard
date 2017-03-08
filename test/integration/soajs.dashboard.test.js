@@ -79,7 +79,26 @@ describe("DASHBOARD UNIT Tests:", function () {
 			"apiPrefix": "api",
 			"sitePrefix": "site",
 			"profile": "single",
-			"deployer": {},
+			"deployer": {
+				"type": "manual",
+				"selected": "container.docker.local",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": []
+						}
+					},
+					"kubernetes": {
+						"local": {},
+						"remote": {
+							"nodes": []
+						}
+					}
+				}
+			},
 			"description": 'this is a dummy description',
 			"dbs": {
 				"clusters": {
@@ -429,13 +448,29 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("success - will delete environment", function (done) {
+			it("fail - cannot delete environment that has running hosts", function (done) {
 				var params = {
 					qs: {'id': envId}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.ok(body.data);
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {"code": 906, "message": errorCodes[906]});
 					done();
+				});
+			});
+
+			it("success - will delete environment", function (done) {
+				mongo.findOne('environment', {code: 'STG'}, function (error, stgRecord) {
+					assert.ifError(error);
+					assert.ok(stgRecord);
+
+					var params = {
+						qs: {'id': stgRecord._id.toString()}
+					};
+					executeMyRequest(params, 'environment/delete', 'delete', function (body) {
+						assert.ok(body.data);
+						done();
+					});
 				});
 			});
 
@@ -458,6 +493,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 			it("success - will manually add environment", function (done) {
+				delete validEnvRecord._id;
+				validEnvRecord.code = 'STG';
 				mongo.insert('environment', validEnvRecord, function (error) {
 					assert.ifError(error);
 					done();
@@ -469,7 +506,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.equal(body.data.length, 3);
 
 					body.data.forEach(function (oneEnv) {
-						if (oneEnv.code === 'DEV') {
+						if (oneEnv.code === 'STG') {
 							delete oneEnv._id;
 							delete oneEnv.profile;
 							var tester = util.cloneObj(validEnvRecord);
@@ -1333,7 +1370,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"apiPrefix": "api",
 						"sitePrefix": "site",
-						"description": "this is a dummy description",
+						"description": "this is a dummy updated description",
 						"services": {
 							"controller": {
 								"maxPoolSize": 100,
@@ -1387,7 +1424,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"session": {
 									"name": "soajsID",
 									"secret": "this is antoine hage app server",
-									"proxy" : "undefined",
 									"rolling": false,
 									"unset": "keep",
 									"cookie": {

@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+    <div class="form">
+        <alert type="danger" ng-if="message.danger">{{message.danger}}</alert>
+        <form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
+            <div class="form-group">
+                <div>
+                    <label>Namespace Selection</label>
+                    <select class="form-control" ng-required="true" ng-options="selection.value as selection.label for selection in namespaces.ui.selection" ng-model="namespaces.data.selection" ng-change="reset()"></select>
+                    <br />
+                </div>
+                <div ng-if="namespaces.data.selection === 'existing'">
+                    <label>Choose Defaut Namespace</label>
+                    <select class="form-control" ng-required="true" ng-options="namespace.value as namespace.label for namespace in namespaces.ui.list" ng-model="namespaces.data.default"></select>
+                    <br />
+                </div>
+                <div ng-if="namespaces.data.selection === 'new'">
+                    <label>Create New Namespace</label>
+                    <input type="text" class="form-control" ng-required="true" ng-model="namespaces.data.default" />
+                    <br />
+                </div>
+                <div>
+                    <label>Namespace Type</label>
+                    <select class="form-control" ng-required="true" ng-options="type as type.label for type in namespaces.ui.type" ng-model="namespaces.data.type"></select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="onSubmit()">Update</button>
+    <button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+</div>

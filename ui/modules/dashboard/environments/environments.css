@@ -202,3 +202,8 @@ ul {
 .green{
     color:green;
 }
+
+.namespaceSelect {
+    width: 15% !important;
+    float: right;
+}

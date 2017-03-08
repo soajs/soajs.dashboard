@@ -261,6 +261,7 @@
 				<br />
 				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
 			</div>
+			<select ng-if="envPlatform === 'kubernetes' && namespaces.length > 0" class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
 			<tabset ng-if="hosts">
 				<tab ng-repeat="(groupName, list) in hosts track by $index" heading="{{list.label}}">
 					<br/>
@@ -277,7 +278,7 @@
 					</div>
 					<br/><br/>
 					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
-						<fieldset class="groupFieldset" ng-repeat="service in list.list">
+						<fieldset class="groupFieldset" ng-repeat="service in list.list | filter:namespaceConfig.namespace:true">
 							<legend>
 								<a href="" class="icon" ng-class="{'icon-minus': service.expanded, 'icon-plus': !service.expanded}" ng-click="showHideContent(service)"></a> {{service.name}}
 							</legend>
@@ -349,7 +350,7 @@
 								<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
 									<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
 								</div>
-								<fieldset ng-repeat="service in group.list">
+								<fieldset ng-repeat="service in group.list | filter:namespaceConfig.namespace:true">
 									<div class="entryBox mb20 {{service.color}}">
 										<div class="header table">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>

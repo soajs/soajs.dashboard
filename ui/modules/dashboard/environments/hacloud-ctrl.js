@@ -3,14 +3,21 @@
 var environmentsApp = soajsApp.components;
 environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'nodeSrv', 'hacloudSrv', 'deploySrv', 'injectFiles', function ($scope, $cookies, $timeout, nodeSrv, hacloudSrv, deploySrv, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-	
+
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, environmentsConfig.permissions);
 
 	var autoRefreshTimeoutInstance;
-	
+
     $scope.nodes = {};
 	$scope.services = {};
+
+	$scope.namespaceConfig = {
+		defaultValue: {
+			id: undefined, //setting id to undefined in order to force angular to display all fields, => All Namespaces
+			name: '--- All Namespaces ---'
+		}
+	};
 
 	$scope.waitMessage = {
 		type: "",
@@ -61,11 +68,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		l: '30 Minutes',
 		selected: true
 	};
-	
+
 	if($cookies.getObject('selectedInterval')){
 		$scope.selectedInterval = $cookies.getObject('selectedInterval');
 	}
-	
+
 	$scope.changeInterval = function(oneInt){
 		$scope.refreshIntervals.forEach(function(oneInterval){
 			if(oneInterval.v === oneInt.v){
@@ -78,7 +85,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			}
 		});
 	};
-	
+
 	$scope.autoRefresh = function(){
 		var tValue = $scope.selectedInterval.v * 1000;
 		autoRefreshTimeoutInstance = $timeout(function(){
@@ -87,7 +94,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 			});
 		}, tValue);
 	};
-	
+
 	$scope.generateNewMsg = function (env, type, msg) {
 		$scope.waitMessage.type = type;
 		$scope.waitMessage.message = msg;
@@ -131,13 +138,17 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.deployNewService = function () {
 		deploySrv.deployNewService($scope);
 	};
-	
+
 	$scope.deployNewNginx = function () {
 		deploySrv.deployNewNginx($scope);
 	};
 
 	$scope.listServices = function (cb) {
 		hacloudSrv.listServices($scope, cb);
+	};
+
+	$scope.listNamespaces = function (cb) {
+		hacloudSrv.listNamespaces($scope, cb);
 	};
 
 	$scope.deleteService = function (service) {
@@ -183,7 +194,7 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	$scope.hostLogs = function (task) {
 		hacloudSrv.hostLogs($scope, task);
 	};
-	
+
 	$scope.showHideFailures = function(service){
 		service.tasks.forEach(function(oneTask){
 			if(Object.hasOwnProperty.call(oneTask, 'hideIt')){
@@ -204,7 +215,9 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	}
 	if ($scope.access.listHosts) {
 		$scope.listServices(function(){
-			$scope.autoRefresh();
+			$scope.listNamespaces(function () {
+				$scope.autoRefresh();
+			});
 		});
 	}
 
@@ -217,11 +230,11 @@ environmentsApp.filter('bytesToGbytes', function () {
 	return function (number) {
 		number = number / 1024 / 1024 / 1024;
 		return number.toFixed(2);
-	}
+	};
 });
 
 environmentsApp.filter('capitalizeFirst', function () {
 	return function (string) {
 		return string.charAt(0).toUpperCase() + string.substring(1);
-	}
+	};
 });
