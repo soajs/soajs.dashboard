@@ -8,6 +8,7 @@ var nginx = [
 		"_service": "nginx",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"title": "Nginx-%injector%",
 			"hits": 0,
 			"description": "",

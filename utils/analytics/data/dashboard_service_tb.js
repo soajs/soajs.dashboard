@@ -8,6 +8,7 @@ var topbeat = [
 		"_service": "service",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"title": "Metrics-%injector%",
 			"hits": 0,
 			"description": "",

@@ -9,6 +9,7 @@ var controller = [
 			"_service": "controller",
 			"_injector": "taskname",
 			"_source": {
+				"env": "%env%",
 				"title": "controller",
 				"hits": 0,
 				"description": "",

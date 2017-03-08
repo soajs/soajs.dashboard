@@ -8,6 +8,7 @@ var searches = [
 		"_service": "service",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"sort": [
 				"@timestamp",
 				"desc"
@@ -31,6 +32,7 @@ var searches = [
 		"_injector": "service",
 		"_service": "service",
 		"_source": {
+			"env": "%env%",
 			"sort": [
 				"@timestamp",
 				"desc"
@@ -54,6 +56,7 @@ var searches = [
 		"_service": "service",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"sort": [
 				"@timestamp",
 				"desc"
@@ -82,6 +85,7 @@ var searches = [
 		"_service": "service",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"sort": [
 				"@timestamp",
 				"desc"
@@ -105,6 +109,7 @@ var searches = [
 		"_service": "service",
 		"_injector": "service",
 		"_source": {
+			"env": "%env%",
 			"sort": [
 				"@timestamp",
 				"desc"
