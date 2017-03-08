@@ -6,7 +6,6 @@ var colls = {
 	analytics: 'analytics'
 };
 var uuid = require('uuid');
-var kibanaSettings = require('./services/elk/kibana');
 var filebeatIndex = require("./indexes/filebeat-index");
 var topbeatIndex = require("./indexes/topbeat-index");
 var allIndex = require("./indexes/all-index");
@@ -539,7 +538,7 @@ var lib = {
 										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
 									});
 								});
-								
+								process.exit(-1)
 								if (analyticsArray.length !== 0) {
 									lib.esBulk(esClient, analyticsArray, call);
 								}

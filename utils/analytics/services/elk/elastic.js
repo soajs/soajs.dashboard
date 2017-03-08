@@ -16,7 +16,7 @@ module.exports = {
 	"deployConfig": {
 		"image": "elasticsearch:2.4.1",
 		"workDir": "/",
-		"memoryLimit": 1000000000,
+		"memoryLimit": 524288000,
 		"network": "soajsnet",
 		"ports": [
 			{
