@@ -272,7 +272,7 @@ var lib = {
 			var serviceType;
 			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
 				serviceName, taskName;
-			serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
+			serviceEnv = serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
 			if (oneService) {
 				if (oneService.labels && oneService.labels["soajs.service.group"] && oneService.labels["soajs.service.repo.name"]) {
 					serviceName = oneService.labels["soajs.service.repo.name"].replace(/[\/*?"<>|,.-]/g, "_");
@@ -289,7 +289,7 @@ var lib = {
 						async.forEachOf(oneService.tasks, function (oneTask, key, call) {
 							if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
 								taskName = oneTask.name;
-								taskName.replace(/[\/*?"<>|,.-]/g, "_");
+								taskName = taskName.replace(/[\/*?"<>|,.-]/g, "_");
 								var analyticsArray = [];
 								analyticsArray = analyticsArray.concat(
 									[
