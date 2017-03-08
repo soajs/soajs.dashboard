@@ -103,7 +103,6 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			                        myGroup = response[j].labels['soajs.service.group'];
 		                        }
 		                        currentScope.hosts[myGroup].list.push(response[j]);
-		                        break;
 	                        }
                         }
 
