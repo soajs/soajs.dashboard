@@ -652,7 +652,7 @@ var lib = {
 			if (error) {
 				return cb(error);
 			}
-			if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
+			if (settings && settings.filebeat && settings.filebeat[env.code.toLowerCase()] && settings.filebeat[env.code.toLowerCase()].status === "deployed") {
 				return cb(null, true)
 			}
 			else {
@@ -723,7 +723,7 @@ var lib = {
 	},
 	
 	"setDefaultIndex": function (soajs, env, esClient, model, cb) {
-		
+		console.log("setDefaultIndex")
 		var index = {
 			index: ".kibana",
 			type: 'config',
@@ -743,6 +743,7 @@ var lib = {
 			if (err) {
 				return cb(err);
 			}
+			console.log(JSON.stringify(res, null, 2))
 			if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
 				index.id = res.hits.hits[0]._id;
 				async.parallel({
@@ -758,12 +759,6 @@ var lib = {
 									"port": "32601"
 								}
 							}
-						};
-						criteria["$set"].logstash[env.code.toLowerCase()] = {
-							"status": "deployed"
-						};
-						criteria["$set"].filebeat[env.code.toLowerCase()] = {
-							"status": "deployed"
 						};
 						criteria["$set"].env[env.code.toLowerCase()] = true;
 						var options = {
