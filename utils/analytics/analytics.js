@@ -271,8 +271,6 @@ var lib = {
 	
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 		async.each(servicesList, function (oneService, callback) {
-			console.log(JSON.stringify(servicesList, null, 2))
-			console.log(JSON.stringify(env.code, null, 2))
 			var serviceType;
 			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
 				serviceName, taskName;
@@ -536,15 +534,14 @@ var lib = {
 											}
 										};
 										analyticsArray = analyticsArray.concat([recordIndex, oneRecord._source]);
+										if (analyticsArray.length !== 0) {
+											lib.esBulk(esClient, analyticsArray, call);
+										}
+										else {
+											return call(null, true);
+										}
 									});
 								});
-								process.exit(-1)
-								if (analyticsArray.length !== 0) {
-									lib.esBulk(esClient, analyticsArray, call);
-								}
-								else {
-									return call(null, true);
-								}
 							}
 							else {
 								call();
