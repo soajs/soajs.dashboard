@@ -375,6 +375,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								var params = {
 						            env: currentScope.envCode,
 						            serviceId: service.id,
+									mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
 									ui : {
 						            	id: formData.content._id,
 										branch: formData.branch.name,
