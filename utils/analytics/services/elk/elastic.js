@@ -11,8 +11,6 @@ module.exports = {
 	},
 	"command": {
 		"cmd": ["bash", "-c", "/usr/share/elasticsearch/bin/plugin install delete-by-query; elasticsearch -Des.insecure.allow.root=true;"],
-		//"cmd": ["elasticsearch"],
-		"args": ["-Des.insecure.allow.root=true"]
 	},
 	"deployConfig": {
 		"image": "elasticsearch:2.4.1",

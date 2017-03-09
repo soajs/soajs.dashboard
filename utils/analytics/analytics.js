@@ -234,7 +234,7 @@ var lib = {
 				index: '.kibana',
 				body: mappings._json
 			};
-			esClient.db.indices.existsType(mapping, function (error, result) {
+			esClient.db.indices.exists(mapping, function (error, result) {
 				if (error || !result) {
 					esClient.db.indices.create(mapping, cb);
 				}
@@ -309,7 +309,8 @@ var lib = {
 											title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: filebeatIndex.fields,
-											fieldFormatMap: filebeatIndex.fieldFormatMap
+											fieldFormatMap: filebeatIndex.fieldFormatMap,
+											env: serviceEnv
 										}
 									]
 								);
@@ -327,7 +328,8 @@ var lib = {
 											title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: topbeatIndex.fields,
-											fieldFormatMap: topbeatIndex.fieldFormatMap
+											fieldFormatMap: topbeatIndex.fieldFormatMap,
+											env: serviceEnv
 										}
 									]
 								);
@@ -345,7 +347,8 @@ var lib = {
 											title: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
 											timeFieldName: '@timestamp',
 											fields: allIndex.fields,
-											fieldFormatMap: allIndex.fieldFormatMap
+											fieldFormatMap: allIndex.fieldFormatMap,
+											env: serviceEnv
 										}
 									]
 								);
@@ -366,7 +369,8 @@ var lib = {
 												title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
 												timeFieldName: '@timestamp',
 												fields: filebeatIndex.fields,
-												fieldFormatMap: filebeatIndex.fieldFormatMap
+												fieldFormatMap: filebeatIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
@@ -384,7 +388,8 @@ var lib = {
 												title: 'topbeat-' + serviceName + "-" + serviceEnv + "-" + "*",
 												timeFieldName: '@timestamp',
 												fields: topbeatIndex.fields,
-												fieldFormatMap: topbeatIndex.fieldFormatMap
+												fieldFormatMap: topbeatIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
@@ -402,7 +407,8 @@ var lib = {
 												title: '*-' + serviceName + "-" + serviceEnv + "-" + "*",
 												timeFieldName: '@timestamp',
 												fields: allIndex.fields,
-												fieldFormatMap: allIndex.fieldFormatMap
+												fieldFormatMap: allIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
@@ -423,7 +429,8 @@ var lib = {
 												title: 'filebeat-' + serviceName + '-' + "*",
 												timeFieldName: '@timestamp',
 												fields: filebeatIndex.fields,
-												fieldFormatMap: filebeatIndex.fieldFormatMap
+												fieldFormatMap: filebeatIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
@@ -442,7 +449,8 @@ var lib = {
 												title: 'topbeat-' + serviceName + "-" + "*",
 												timeFieldName: '@timestamp',
 												fields: topbeatIndex.fields,
-												fieldFormatMap: topbeatIndex.fieldFormatMap
+												fieldFormatMap: topbeatIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
@@ -461,7 +469,8 @@ var lib = {
 												title: '*-' + serviceName + "-" + "*",
 												timeFieldName: '@timestamp',
 												fields: allIndex.fields,
-												fieldFormatMap: allIndex.fieldFormatMap
+												fieldFormatMap: allIndex.fieldFormatMap,
+												env: serviceEnv
 											}
 										]
 									);
