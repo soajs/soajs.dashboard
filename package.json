@@ -53,7 +53,7 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "0.4.*",
-    "soajs.core.drivers": "soajs/soajs.core.drivers.git#feature/DASHBOARD-107",
+    "soajs.core.drivers": "soajs/soajs.core.drivers.git#develop",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
