@@ -151,7 +151,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         'label': translation.submit[LANG],
                         'btn': 'primary',
                         'action': function (formData) {
-                            if (!formData.controllers || formData.controllers < 1) {
+                            if ((!formData.controllers || formData.controllers < 1) && (formData.controllerDeploymentMode === 'replicated' || formData.controllerDeploymentMode === 'deployment')) {
                                 $timeout(function () {
                                     alert(translation.youMustChooseLeastControllerDeployEnvironment[LANG]);
                                 }, 100);
