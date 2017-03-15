@@ -1,7 +1,9 @@
 "use strict";
 var platformsServices = soajsApp.components;
 platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookies', 'Upload', function (ngDataApi, $timeout, $modal, $cookies, Upload) {
-
+	
+	var access_token = $cookies.get('access_token');
+	
 	function listPlatforms(currentScope, env, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
@@ -220,7 +222,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							filename: $scope.formData.certificates[$scope.index[counter]].name,
 							certType: $scope.index[counter],
 							platform: platform,
-							driver: driverName
+							driver: driverName,
+							access_token: access_token
 						},
 						file: $scope.formData.certificates[$scope.index[counter]],
 						headers: {
@@ -228,18 +231,6 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							'key': dashKeyCookie
 						}
 					};
-
-					if (platform === 'nginx') {
-						options.url = apiConfiguration.domain + "/dashboard/environment/nginx/cert/upload";
-
-						delete options.params.driver;
-						if ($scope.formData.certificates[$scope.index[counter]].type === 'application/x-x509-ca-cert') {
-							options.params.label = "certificate";
-						}
-						else {
-							options.params.label = "privateKey";
-						}
-					}
 
 					Upload.upload(options).progress(function (evt) {
 						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);

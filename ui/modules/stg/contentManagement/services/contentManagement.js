@@ -2,7 +2,8 @@
 var cmService = soajsApp.components;
 
 cmService.service('cmModuleStgService', ['ngDataApi', '$cookies', '$http', 'Upload', '$compile', function (ngDataApi, $cookies, $http, Upload, $compile) {
-
+	var access_token = $cookies.get('access_token');
+	
     function loadServices(currentScope) {
         var services = [];
         getSendDataFromServer(currentScope, ngDataApi, {
@@ -37,7 +38,8 @@ cmService.service('cmModuleStgService', ['ngDataApi', '$cookies', '$http', 'Uplo
             responseType: 'arraybuffer',
             params: {
                 '__env': currentScope.selectedEnv.toUpperCase(),
-                'id': oneFile._id
+                'id': oneFile._id,
+	            'access_token' : access_token
             }
         };
         getSendDataFromServer(currentScope, ngDataApi, options, function (error, data) {
@@ -137,8 +139,12 @@ cmService.service('cmModuleStgService', ['ngDataApi', '$cookies', '$http', 'Uplo
 	                    if (exclude.indexOf(pathParams[3]) === -1) {
 		                    uploadParams.uploadUrl = "/proxy/redirect";
 		                    uploadParams.data['proxyRoute'] = encodeURIComponent(url);
-		                    uploadParams.data['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase()];
 	                    }
+	                    
+	                    if (access_token) {
+		                    uploadParams.data.access_token = access_token;
+	                    }
+	                    
                         currentScope.form.uploadFileToUrl(Upload, uploadParams,
                             function (error, response) {
                                 if (error) {

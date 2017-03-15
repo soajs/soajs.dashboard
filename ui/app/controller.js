@@ -210,7 +210,10 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 		
 		$scope.checkAuthEnvCookie = function () {
-			return $cookies.get("soajs_envauth") || null;
+			if($localStorage.environments){
+				return ($localStorage.environments.length > 1);
+			}
+			return false;
 		};
 		
 		$scope.reRenderMenu = function (pillarName) {
@@ -753,14 +756,20 @@ soajsApp.controller('welcomeCtrl', ['$scope', 'ngDataApi', '$cookies', '$localSt
 			
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "delete",
-				"routeName": "/oauth/refreshToken/" + $cookies.get("refresh_token")
+				"routeName": "/oauth/refreshToken/" + $cookies.get("refresh_token"),
+				"headers":{
+					"key": apiConfiguration.key
+				}
 			}, function (error, response) {
 				if (error) {
 					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 				}
 				getSendDataFromServer($scope, ngDataApi, {
 					"method": "delete",
-					"routeName": "/oauth/accessToken/" + $cookies.get("access_token")
+					"routeName": "/oauth/accessToken/" + $cookies.get("access_token"),
+					"headers":{
+						"key": apiConfiguration.key
+					}
 				}, function (error, response) {
 					
 					overlayLoading.hide();
