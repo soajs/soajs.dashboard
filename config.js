@@ -49,6 +49,10 @@ module.exports = {
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
+	
+	"HA":{
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
+	},
 
 	"gitAccounts": {
 		"bitbucket_org": {
