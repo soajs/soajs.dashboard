@@ -94,6 +94,7 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, membersConfig.permissions);
 
+	$scope.tenantsList;
 	$scope.users = {};
 	$scope.groups = {};
 
@@ -120,14 +121,13 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 			"method": "get",
 			"routeName": "/urac/admin/all"
 		}, function (error, response) {
+			overlayLoading.hide();
 			if (error) {
-				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'urac', error.message);
 			}
 			else {
 				$scope.users = arrGroupByTenant(response.users);
 				$scope.groups = arrGroupByTenant(response.groups);
-				overlayLoading.hide();
 			}
 		});
 	};
@@ -139,18 +139,19 @@ membersApp.controller('tenantsCtrl', ['$scope', '$timeout', '$routeParams', 'ngD
 			"routeName": "/dashboard/tenant/list"
 		}, function (error, response) {
 			if (error) {
-				overlayLoading.hide();
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
 				$scope.tenantsList = response;
-				$scope.getAllUsersGroups();
 			}
 		});
 	};
 
 	if ($scope.access.adminAll) {
-		$scope.listTenants();
+		$scope.getAllUsersGroups();
+		$timeout(function () {
+			$scope.listTenants();
+		}, 10);
 	}
 
 }]);
