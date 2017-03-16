@@ -95,7 +95,7 @@ module.exports = function (grunt) {
 		//     }
 		//   }
 		// },
-
+		
 		env: {
 			mochaTest: {
 				// NODE_ENV: 'test',
@@ -111,7 +111,7 @@ module.exports = function (grunt) {
 				SOAJS_ENV: 'dev'
 			}
 		},
-
+		
 		clean: {
 			doc: {
 				src: ['doc/']
@@ -120,15 +120,15 @@ module.exports = function (grunt) {
 				src: ['test/coverage/']
 			}
 		},
-
-		copy:{
+		
+		copy: {
 			main: {
 				files: [
 					{expand: true, src: ['swagger/*/*.txt'], dest: 'test/coverage/instrument/', filter: 'isFile'},
 				]
 			}
 		},
-
+		
 		instrument: {
 			files: [
 				'config.js',
@@ -147,13 +147,13 @@ module.exports = function (grunt) {
 				basePath: 'test/coverage/instrument/'
 			}
 		},
-
+		
 		storeCoverage: {
 			options: {
 				dir: 'test/coverage/reports'
 			}
 		},
-
+		
 		makeReport: {
 			src: 'test/coverage/reports/**/*.json',
 			options: {
@@ -162,7 +162,7 @@ module.exports = function (grunt) {
 				print: 'detail'
 			}
 		},
-
+		
 		mochaTest: {
 			unit: {
 				options: {
@@ -179,12 +179,12 @@ module.exports = function (grunt) {
 				src: ['test/integration/_server.test.js']
 			}
 		},
-
+		
 		coveralls: {
 			options: {
 				// LCOV coverage file relevant to every target
 				src: 'test/coverage/reports/lcov.info',
-
+				
 				// When true, grunt-coveralls will only print a warning rather than
 				// an error, to prevent CI builds from failing unnecessarily (e.g. if
 				// coveralls.io is down). Optional, defaults to false.
@@ -196,7 +196,7 @@ module.exports = function (grunt) {
 			}
 		}
 	});
-
+	
 	process.env.SHOW_LOGS = grunt.option('showLogs');
 	grunt.registerTask("default", ['jshint']);
 	grunt.registerTask("integration", ['env:mochaTest', 'mochaTest:integration']);
@@ -204,5 +204,5 @@ module.exports = function (grunt) {
 	grunt.registerTask("test", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration']);
 	grunt.registerTask("coverage", ['clean', 'copy', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport', 'coveralls']);
 	//grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
-
+	
 };
