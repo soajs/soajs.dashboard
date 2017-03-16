@@ -48,6 +48,10 @@ module.exports = {
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
+	
+	"HA":{
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
+	},
 
 	"gitAccounts": {
 		"bitbucket_org": {
@@ -607,8 +611,7 @@ module.exports = {
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
-					"group": "Tenant",
-					"groupMain": true
+					"group": "Tenant"
 				},
 				"type": {
 					"source": ['query.type'],
@@ -864,12 +867,26 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"taskId": {
 					"source": ['query.taskId'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
+				}
+			},
+
+			"/cloud/namespaces/list": {
+				"_apiInfo": {
+					"l": "List Available Namespaces",
+					"group": "HA Cloud"
 				}
 			},
 
@@ -2233,6 +2250,36 @@ module.exports = {
 				}
 			},
 
+			"/environment/platforms/deployer/update": {
+				_apiInfo: {
+					"l": "Change Deployer Type",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"driver": {
+					"source": ['body.driver'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ['local', 'remote']
+					}
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+
 			"/product/update": {
 				_apiInfo: {
 					"l": "Update Product",
@@ -2860,6 +2907,20 @@ module.exports = {
 				},
 				"mode": {
 					"source": ['query.mode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/cloud/namespaces/delete": {
+				"_apiInfo": {
+					"l": "Delete a Namespace",
+					"group": "HA Cloud"
+				},
+				"namespaceId": {
+					"source": ['query.namespaceId'],
 					"required": true,
 					"validation": {
 						"type": "string"

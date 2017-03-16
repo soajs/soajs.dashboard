@@ -2982,6 +2982,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			function checkIfKeyExists(code, cb) {
 				mongo.findOne("dashboard_extKeys", {'code': code}, function (error, result) {
+					console.log (result);
 					assert.ifError(error);
 					if (!result) {
 						cb(null, true);
@@ -3078,8 +3079,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.equal(body.result, true);
 					checkIfKeyExists(tenantCode, function (error, deleted) {
 						assert.ifError(error);
-						//assert.ok(deleted);
-						//assert.equal(deleted, true);
+						// assert.ok(deleted);
+						// assert.equal(deleted, true);
 						done();
 					});
 				});

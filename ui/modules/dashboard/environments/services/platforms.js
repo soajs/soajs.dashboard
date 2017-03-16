@@ -319,11 +319,117 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 		});
 	}
 
+	function updateNamespaceConfig(currentScope, driver) {
+		var currentConfig = currentScope.platforms.kubernetes[driver];
+		var modal = $modal.open({
+			templateUrl: "updateNamespaceConfig.tmpl",
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope) {
+				fixBackDrop();
+
+				$scope.title = 'Update Namespace Configuration';
+				$scope.namespaces = {
+					ui: {
+						selection: [
+							{ value: 'existing', label: 'Choose Existing Namespace' },
+							{ value: 'new', label: 'Create New Namespace' }
+						],
+						list: [],
+						type: [
+							{ value: 'global', label: 'Global' },
+							{ value: 'perService', label: 'Per Service' }
+						]
+					},
+					data: {
+						selection: 'existing',
+						default: currentConfig.namespace.default,
+						type: ((currentConfig.namespace.perService) ? 'perService' : 'global')
+					}
+				};
+
+				$scope.reset = function () {
+					if ($scope.namespaces.data.selection === 'new') {
+						$scope.namespaces.data.default = '';
+					}
+					else {
+						$scope.namespaces.data.default = currentConfig.namespace.default;
+					}
+				};
+
+				$scope.listNamespaces = function () {
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/cloud/namespaces/list'
+					}, function (error, namespaces) {
+						if (error) {
+							$scope.message = {
+								danger: error.message
+							};
+							setTimeout(function () {
+								$scope.message.danger = '';
+							}, 5000);
+						}
+						else {
+							namespaces.forEach(function (oneNamespace) {
+								$scope.namespaces.ui.list.push({ value: oneNamespace.id, label: oneNamespace.name });
+							});
+						}
+					});
+				};
+
+				$scope.onSubmit = function () {
+					var newConfig = {
+						namespace: {
+							default: $scope.namespaces.data.default,
+							perService: (($scope.namespaces.data.type === 'perService') ? true : false)
+						}
+					};
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'put',
+						routeName: '/dashboard/environment/platforms/deployer/update',
+						params: {
+							env: currentScope.envCode.toLowerCase()
+						},
+						data: {
+							driver: driver,
+							config: newConfig
+						}
+					}, function (error, result) {
+						if (error) {
+							$scope.message = {
+								danger: error.message
+							};
+							setTimeout(function () {
+								$scope.message.danger = '';
+							}, 5000);
+						}
+						else {
+							$scope.namespaces.data = {};
+							modal.close();
+							currentScope.displayAlert('success', 'Namespace configuration updated successfully');
+							currentScope.listPlatforms(currentScope.envCode);
+						}
+					});
+				};
+
+				$scope.closeModal = function () {
+					$scope.namespaces.data = {};
+					modal.close();
+				};
+
+				$scope.listNamespaces();
+			}
+		});
+	}
+
 	return {
 		'listPlatforms': listPlatforms,
 		'uploadCerts': uploadCerts,
 		'removeCert': removeCert,
 		'selectDriver': selectDriver,
-		'changeDeployerType': changeDeployerType
+		'changeDeployerType': changeDeployerType,
+		'updateNamespaceConfig': updateNamespaceConfig
 	}
+
 }]);

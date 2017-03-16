@@ -98,7 +98,26 @@ describe("DASHBOARD UNIT Tests:", function () {
 			"apiPrefix": "api",
 			"sitePrefix": "site",
 			"profile": "single",
-			"deployer": {},
+			"deployer": {
+				"type": "manual",
+				"selected": "container.docker.local",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": []
+						}
+					},
+					"kubernetes": {
+						"local": {},
+						"remote": {
+							"nodes": []
+						}
+					}
+				}
+			},
 			"description": 'this is a dummy description',
 			"dbs": {
 				"clusters": {
@@ -266,7 +285,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will add environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.code = 'PROD';
@@ -279,7 +298,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - missing params', function (done) {
 				var params = {
 					form: {
@@ -295,25 +314,25 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - environment exists', function (done) {
 				var params = {
 					form: validEnvRecord
 				};
 				executeMyRequest(params, 'environment/add', 'post', function (body) {
 					assert.deepEqual(body.errors.details[0], {"code": 403, "message": errorCodes[403]});
-
+					
 					done();
 				});
 			});
-
+			
 			it('mongo test', function (done) {
 				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
 					envId = envRecord._id.toString();
 					delete envRecord._id;
 					delete envRecord.profile;
-
+					
 					var tester = util.cloneObj(validEnvRecord);
 					delete tester.profile;
 					delete tester._id;
@@ -322,7 +341,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("update environment tests", function () {
 			it("success - will update environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
@@ -342,7 +361,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will update environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "false";
@@ -361,7 +380,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will update environment", function (done) {
 				var params = {
 					qs: {"id": envId},
@@ -378,7 +397,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 
 			});
-
+			
 			it('fail - missing params', function (done) {
 				var params = {
 					qs: {"id": envId},
@@ -394,7 +413,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
 					qs: {"id": "aaaabbbbccc"},
@@ -410,7 +429,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('mongo test', function (done) {
 				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
@@ -425,10 +444,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
-
+				
 			});
 		});
-
+		
 		describe("delete environment tests", function () {
 			it('fail - missing params', function (done) {
 				var params = {
@@ -439,7 +458,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
 					qs: {'id': 'aaaabbcdddd'}
@@ -449,14 +468,30 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
-			it("success - will delete environment", function (done) {
+			
+			it("fail - cannot delete environment that has running hosts", function (done) {
 				var params = {
 					qs: {'id': envId}
 				};
 				executeMyRequest(params, 'environment/delete', 'delete', function (body) {
-					assert.ok(body.data);
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {"code": 906, "message": errorCodes[906]});
 					done();
+				});
+			});
+			
+			it("success - will delete environment", function (done) {
+				mongo.findOne('environment', {code: 'STG'}, function (error, stgRecord) {
+					assert.ifError(error);
+					assert.ok(stgRecord);
+					
+					var params = {
+						qs: {'id': stgRecord._id.toString()}
+					};
+					executeMyRequest(params, 'environment/delete', 'delete', function (body) {
+						assert.ok(body.data);
+						done();
+					});
 				});
 			});
 
@@ -469,7 +504,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("list environment tests", function () {
 			it("success - will get empty list", function (done) {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
@@ -479,6 +514,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 			it("success - will manually add environment", function (done) {
+				delete validEnvRecord._id;
+				validEnvRecord.code = 'STG';
 				mongo.insert('environment', validEnvRecord, function (error) {
 					assert.ifError(error);
 					done();
@@ -488,9 +525,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 3);
-
+					
 					body.data.forEach(function (oneEnv) {
-						if (oneEnv.code === 'DEV') {
+						if (oneEnv.code === 'STG') {
 							delete oneEnv._id;
 							delete oneEnv.profile;
 							var tester = util.cloneObj(validEnvRecord);
@@ -1206,7 +1243,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list environment dbs", function () {
 				before("clean env record", function (done) {
 					mongo.update('environment', {code: 'DEV'}, {
@@ -1255,7 +1292,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - add urac db', function (done) {
 					var params = {
 						qs: {
@@ -1272,7 +1309,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - yes session and yes databases', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
@@ -1359,7 +1396,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"apiPrefix": "api",
 						"sitePrefix": "site",
-						"description": "this is a dummy description",
+						"description": "this is a dummy updated description",
 						"services": {
 							"controller": {
 								"maxPoolSize": 100,
@@ -1415,7 +1452,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 								"session": {
 									"name": "soajsID",
 									"secret": "this is antoine hage app server",
-									"proxy": "undefined",
+									"proxy" : "undefined", //todo remove
 									"rolling": false,
 									"unset": "keep",
 									"cookie": {
@@ -2002,7 +2039,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will list ext key", function (done) {
 				var params = {
 					qs: {
@@ -2379,24 +2416,24 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 
-			it("fail - invalid ip address", function (done) {
-				var params = {
-					form: {
-						'env': 'dev',
-						'serviceName': 'controller',
-						'servicePort': 4000,
-						'hostname': 'controller',
-						'operation': 'heartbeat',
-						'serviceHost': '71.255.67.89'
-					}
-				};
-				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
-					assert.equal(body.result, false);
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
-					done();
-				});
-			});
+            it("fail - invalid ip address", function (done) {
+                var params = {
+                    form: {
+                        'env': 'dev',
+                        'serviceName': 'controller',
+                        'servicePort': 4000,
+                        'hostname': 'controller',
+                        'operation': 'heartbeat',
+                        'serviceHost': '71.255.67.89'
+                    }
+                };
+                executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
+                	assert.equal(body.result, false);
+                	assert.ok(body.errors);
+                    assert.deepEqual(body.errors.details[0], {"code": 605, "message": "Service Host not found."});
+                    done();
+                });
+            });
 
 			it("success - heartbeat controller and service", function (done) {
 				var params = {
