@@ -317,79 +317,85 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				mode: formData.nginxDeploymentMode
 			};
 
-			params.deployConfig.readinessProbe = {
-				initialDelaySeconds: formData.nginxRPInitialDelay,
-				timeoutSeconds: formData.nginxRPTimeout,
-				periodSeconds: formData.nginxRPPeriod,
-				successThreshold: formData.nginxRPSuccessThreshold,
-				failureThreshold: formData.nginxRPFailureThreshold
+			if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
+				params.deployConfig.replication.replicas = formData.nginxCount;
 			}
 
-			if (params.deployConfig.replication.mode === 'replicated') {
-				params.deployConfig.replication.mode = "deployment";
+			if (params.deployConfig.isKubernetes) {
+				params.deployConfig.readinessProbe = {
+					initialDelaySeconds: formData.nginxRPInitialDelay,
+					timeoutSeconds: formData.nginxRPTimeout,
+					periodSeconds: formData.nginxRPPeriod,
+					successThreshold: formData.nginxRPSuccessThreshold,
+					failureThreshold: formData.nginxRPFailureThreshold
+				};
+
+				if (params.deployConfig.replication.mode === 'replicated') {
+					params.deployConfig.replication.mode = "deployment";
+				}
+				if (params.deployConfig.replication.mode === 'global') {
+					params.deployConfig.replication.mode = "daemonset";
+					delete params.deployConfig.replication.replicas;
+				}
 			}
-			if (params.deployConfig.replication.mode === 'global') {
-				params.deployConfig.replication.mode = "daemonset";
-				delete params.deployConfig.replication.replicas;
+
+			params.deployConfig.ports = [
+				{
+					isPublished: true,
+					published: formData.exposedPort
+				}
+			];
+
+			if (formData.useCustomUI) {
+				formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
+				formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
+
+				params.contentConfig.nginx.ui = {
+					id: formData.selectCustomUI._id,
+					branch: formData.selectUIBranch.name,
+					commit: formData.selectUIBranch.commit.sha
+				};
 			}
+
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "post",
+				"routeName": "/dashboard/cloud/services/soajs/deploy",
+				"data": params
+			}, function (error, response) {
+				if (error) {
+					currentScope.form.displayAlert('danger', error.message);
+					rollbackController();
+					overlay.hide();
+				}
+				else {
+					currentScope.modalInstance.dismiss("ok");
+					overlay.hide(function () {
+
+						currentScope.isDeploying = true;
+						$timeout(function () {
+							currentScope.listServices();
+						}, 1500);
+					});
+				}
+			});
 		}
 
-		params.deployConfig.ports = [
-			{
-				isPublished: true,
-				published: formData.exposedPort
-			}
-		];
-
-		if (formData.useCustomUI) {
-			formData.selectUIBranch = JSON.parse(formData.selectUIBranch);
-			formData.selectCustomUI = JSON.parse(formData.selectCustomUI);
-
-			params.contentConfig.nginx.ui = {
-				id: formData.selectCustomUI._id,
-				branch: formData.selectUIBranch.name,
-				commit: formData.selectUIBranch.commit.sha
+		function rollbackController() {
+			var params = {
+				env: currentScope.envCode,
+				serviceId: currentScope.envCode.toLowerCase() + "-controller"
 			};
+
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'delete',
+				routeName: '/dashboard/cloud/services/delete',
+				params: params
+			}, function (error, response) {
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				}
+			});
 		}
-
-		getSendDataFromServer(currentScope, ngDataApi, {
-			"method": "post",
-			"routeName": "/dashboard/cloud/services/soajs/deploy",
-			"data": params
-		}, function (error, response) {
-			if (error) {
-				currentScope.form.displayAlert('danger', error.message);
-				rollbackController();
-				overlay.hide();
-			}
-			else {
-				currentScope.modalInstance.dismiss("ok");
-				overlay.hide(function () {
-
-					currentScope.isDeploying = true;
-					$timeout(function () {
-						currentScope.listServices();
-					}, 1500);
-				});
-			}
-		});
-	}
-
-	function rollbackController() {
-		var params = {
-			env: currentScope.envCode,
-			serviceId: currentScope.envCode.toLowerCase() + "-controller"
-		};
-
-		getSendDataFromServer(currentScope, ngDataApi, {
-			method: 'delete',
-			routeName: '/dashboard/cloud/services/delete',
-			params: params
-		}, function (error, response) {
-			if (error) {
-				currentScope.displayAlert('danger', error.message);
-			}
-		});
 	}
 
 	/**
@@ -433,13 +439,15 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 		currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 		currentScope.imagePrefix = 'soajsorg';
 
-		currentScope.readinessProbe = { //NOTE: default values are set here
-			initialDelaySeconds: 15,
-			timeoutSeconds: 1,
-			periodSeconds: 10,
-			successThreshold: 1,
-			failureThreshold: 3
-		};
+		if (currentScope.isKubernetes) {
+			currentScope.readinessProbe = { //NOTE: default values are set here
+				initialDelaySeconds: 15,
+				timeoutSeconds: 1,
+				periodSeconds: 10,
+				successThreshold: 1,
+				failureThreshold: 3
+			};
+		}
 
 		function openModalForm() {
 			$modal.open({
@@ -1046,7 +1054,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				}
 			]
 		};
-
 		buildFormWithModal(currentScope, $modal, options);
 
 		function listStaticContent(currentScope, cb) {
@@ -1125,7 +1132,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				else {
 					currentScope.modalInstance.dismiss("ok");
 					overlay.hide(function () {
-
+						
 						currentScope.isDeploying = true;
 						$timeout(function () {
 							currentScope.listServices();
@@ -1142,5 +1149,4 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 		'deployNewService': deployNewService,
 		'deployNewNginx': deployNewNginx
 	}
-	
 }]);
