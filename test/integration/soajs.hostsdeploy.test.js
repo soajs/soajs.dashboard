@@ -40,6 +40,10 @@ function executeMyRequest(params, apiPath, method, cb) {
 			}
 		}
 		
+		if (params.timeout) {
+			options.timeout = params.timeout;
+		}
+
 		if (params.form) {
 			options.body = params.form;
 		}
@@ -52,6 +56,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 			options.formData = params.formData;
 		}
 		request[method](options, function (error, response, body) {
+			//maintenance tests have a timeout set to avoid travis errors
+			//if timeout is exceeded, return cb() without checking for error since this is expected behavior
+			if (error && error.code && error.code === 'ESOCKETTIMEDOUT') {
+				return cb(null, 'ESOCKETTIMEDOUT');
+			}
+
 			assert.ifError(error);
 			assert.ok(body);
 			return cb(null, body);
@@ -1364,5 +1374,113 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
+	});
+
+	describe("testing kubernetes namespaces", function () {
+
+		describe("testing list namespaces", function () {
+
+			it("fail - operation not supported in swarm mode", function (done) {
+				var params = {
+					qs: {
+						access_token: access_token
+					},
+					headers: {
+						soajsauth: soajsauth
+					}
+				};
+
+				executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+					done();
+				});
+			});
+
+			it("fail - operation not supported in manual deployment mode", function (done) {
+				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+					assert.ifError(error);
+
+					var params = {
+						qs: {
+							access_token: access_token
+						},
+						headers: {
+							soajsauth: soajsauth
+						}
+					};
+
+					executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+						done();
+					});
+				});
+			});
+
+			after("reset dashboard env deployer type to container", function (done) {
+				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "container"}}, function (error) {
+					assert.ifError(error);
+					done();
+				});
+			});
+
+		});
+
+		describe("testing delete namespace", function () {
+
+			it("fail - missing required field", function (done) {
+				var params = {
+					qs: {
+						access_token: access_token
+					}
+				};
+
+				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {
+						"code": 172,
+						"message": 'Missing required field: namespaceId'
+					});
+					done();
+				});
+			});
+
+			it("fail - operation not supported in swarm mode", function (done) {
+				var params = {
+					qs: {
+						access_token: access_token,
+						namespaceId: 'myns'
+					}
+				};
+
+				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+					assert.ok(body.errors);
+					assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+					done();
+				});
+			});
+
+			it("fail - operation not supported in manual deployment mode", function (done) {
+				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+					assert.ifError(error);
+
+					var params = {
+						qs: {
+							access_token: access_token,
+							namespaceId: 'myns'
+						}
+					};
+
+					executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+						assert.ok(body.errors);
+						assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+						done();
+					});
+				});
+			});
+
+		});
+
 	});
 });

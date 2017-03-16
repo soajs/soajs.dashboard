@@ -1132,7 +1132,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				else {
 					currentScope.modalInstance.dismiss("ok");
 					overlay.hide(function () {
-						
+
 						currentScope.isDeploying = true;
 						$timeout(function () {
 							currentScope.listServices();
