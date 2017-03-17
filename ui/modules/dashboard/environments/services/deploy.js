@@ -439,10 +439,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 		currentScope.defaultEnvVariables = "<ul><li>SOAJS_DEPLOY_HA=true</li><li>SOAJS_SRV_AUTOREGISTERHOST=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=" + currentScope.envCode + "</li><li>SOAJS_PROFILE=" + currentScope.profile + "</li></ul></p>";
 		currentScope.imagePrefix = 'soajsorg';
 
-		if (currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.memory) {
-			currentScope.memoryLimit = currentScope.service.prerequisites.memory;
-		}
-
 		if (currentScope.isKubernetes) {
 			currentScope.readinessProbe = { //NOTE: default values are set here
 				initialDelaySeconds: 15,
@@ -488,6 +484,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 						currentScope.conflict = '';
 						currentScope.conflictCommits = {};
 
+						if (service && service.prerequisites && service.prerequisites.memory) {
+							currentScope.memoryLimit = service.prerequisites.memory;
+						}
 
 						if (service.type === 'nginx') return;
 
