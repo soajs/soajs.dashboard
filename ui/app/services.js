@@ -79,7 +79,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 	
 	function returnAPIError(scope, opts, status, headers, errData, config, cb) {
 		//try to get a new access token from the refresh
-		if (errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired.") {
+		if (errData && errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired.") {
 			revalidateTokens(scope, config, cb);
 		}
 		else {
@@ -238,7 +238,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			}).success(function (response, status, headers, config) {
 				returnAPIResponse(scope, response, config, cb);
 			}).error(function (data, status, header, config) {
-				returnAPIError(scope, opts, status, headers, config, cb);
+				returnAPIError(scope, opts, status, headers, data, config, cb);
 			});
 		}
 		else {
