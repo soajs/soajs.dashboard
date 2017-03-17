@@ -709,6 +709,8 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 						$cookies.remove('soajs_dashboard_key');
 						$cookies.remove('soajsID');
 						$localStorage.soajs_user = null;
+						$localStorage.acl_access = null;
+						$localStorage.environments = null;
 						$cookies.remove('soajs_current_route');
 						$cookies.remove('soajs_envauth');
 						$scope.isUserLoggedIn();

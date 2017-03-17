@@ -2,7 +2,7 @@
 
 soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', function ($http, $cookies, $localStorage, Upload) {
 	
-	function logoutUser(scope){
+	function logoutUser(scope) {
 		$cookies.remove('access_token');
 		$cookies.remove('refresh_token');
 		$cookies.remove('soajs_dashboard_key');
@@ -17,7 +17,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		scope.$parent.enableInterface = false;
 	}
 	
-	function revalidateTokens(scope, config, cb){
+	function revalidateTokens(scope, config, cb) {
 		//create a copy of old config
 		var myDomain = config.url.replace(/http(s)?:\/\//, '');
 		myDomain = myDomain.split("/")[0];
@@ -31,6 +31,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		reAuthorizeConfig.headers.accept = "*/*";
 		delete reAuthorizeConfig.headers.Authorization;
 		delete reAuthorizeConfig.params;
+		
 		$http(reAuthorizeConfig).success(function (response) {
 			
 			//second get new tokens.
@@ -52,7 +53,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 				//repeat the main call
 				var MainAPIConfig = angular.copy(config);
 				MainAPIConfig.params.access_token = $cookies.get('access_token');
-				$http(MainAPIConfig).success(function(response, status, headers, config) {
+				$http(MainAPIConfig).success(function (response, status, headers, config) {
 					returnAPIResponse(scope, response, config, cb)
 				}).error(function (errData, status, headers, config) {
 					//logout the user
@@ -71,17 +72,17 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		});
 	}
 	
-	function returnErrorOutput(opts, status, headers, config, cb){
+	function returnErrorOutput(opts, status, headers, config, cb) {
 		console.log(status, headers, config);
 		return cb(new Error("Unable Fetching data from " + config.url));
 	}
 	
 	function returnAPIError(scope, opts, status, headers, errData, config, cb) {
 		//try to get a new access token from the refresh
-		if(errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired."){
+		if (errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired.") {
 			revalidateTokens(scope, config, cb);
 		}
-		else{
+		else {
 			returnErrorOutput(opts, status, headers, config, cb)
 		}
 	}
@@ -144,10 +145,10 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		}
 		else {
 			//try to refresh the access token before logging out the user
-			if(response.errors.details[0].code === 401 && response.errors.details[0].message === 'The access token provided has expired.'){
+			if (response.errors.details[0].code === 401 && response.errors.details[0].message === 'The access token provided has expired.') {
 				revalidateTokens(scope, config, cb);
 			}
-			else{
+			else {
 				var str = '';
 				for (var i = 0; i < response.errors.details.length; i++) {
 					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
@@ -204,8 +205,14 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 		
 		if (opts.proxy) {
 			if (!config.params.__env) {
-				var env = $cookies.getObject('myEnv').code;
-				config.params.__env = env.toUpperCase();
+				var env;
+				if ($cookies.getObject('myEnv')) {
+					env = $cookies.getObject('myEnv').code;
+					config.params.__env = env.toUpperCase();
+				}
+				else {
+					console.log("Missing Env object");
+				}
 			}
 		}
 		
