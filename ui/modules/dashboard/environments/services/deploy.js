@@ -484,6 +484,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 						currentScope.conflict = '';
 						currentScope.conflictCommits = {};
 
+						if (service && service.prerequisites && service.prerequisites.memory) {
+							currentScope.memoryLimit = service.prerequisites.memory;
+						}
 
 						if (service.type === 'nginx') return;
 
@@ -557,7 +560,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 							$timeout(function () {
 								currentScope.message.danger = "";
 							}, 5000);
-						} else {
+						}
+						else {
+
+							if (currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.memory) {
+								if (currentScope.memoryLimit < currentScope.service.prerequisites.memory) {
+									currentScope.message.danger = "Please specify a memory limit that is greater than or equal to the service's memory prerequisite (" + currentScope.service.prerequisites.memory + " MB)";
+									$timeout(function () {
+										currentScope.message.danger = "";
+									}, 5000);
+
+									return;
+								}
+							}
+
 							if (currentScope.service.name === 'controller') {
 								newController(currentScope);
 							}
