@@ -565,7 +565,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
 							if (currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.memory) {
 								if (currentScope.memoryLimit < currentScope.service.prerequisites.memory) {
-									currentScope.message.danger = "Please specify a memory limit that is greater than or equal to the service's memory prerequisite (" + currentScope.service.prerequisites.memory + ")";
+									currentScope.message.danger = "Please specify a memory limit that is greater than or equal to the service's memory prerequisite (" + currentScope.service.prerequisites.memory + " MB)";
 									$timeout(function () {
 										currentScope.message.danger = "";
 									}, 5000);
