@@ -45,7 +45,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	};
 	
 	var pathParams = options.routeName.split("/");
-	var exclude = ['urac', 'dashboard'];
+	var exclude = ['urac', 'dashboard', 'oauth'];
 	if (exclude.indexOf(pathParams[1]) !== -1) {
 		if (options.proxy && $scope.checkAuthEnvCookie()) {
 			apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
@@ -58,7 +58,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
 	}
-	
+	console.log(apiOptions);
 	if (Object.hasOwnProperty.call(options, 'token')) {
 		apiOptions.token = options.token;
 	}
