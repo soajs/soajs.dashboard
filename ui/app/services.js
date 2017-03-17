@@ -238,7 +238,7 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			}).success(function (response, status, headers, config) {
 				returnAPIResponse(scope, response, config, cb);
 			}).error(function (data, status, header, config) {
-				returnAPIError(scope, opts, status, headers, config, cb);
+				returnAPIError(scope, opts, status, headers, data, config, cb);
 			});
 		}
 		else {
