@@ -453,7 +453,7 @@ var tenantConfig = {
 			'externalKeys':{
 				'add' : ['dashboard', '/tenant/application/key/ext/add', 'post'],
 				'list' : ['dashboard', '/tenant/application/key/ext/list', 'get'],
-				'delete' : ['dashboard', '/tenant/application/key/ext/delete', 'delete'],
+				'delete' : ['dashboard', '/tenant/application/key/ext/delete', 'post'],
 				'update' : ['dashboard', '/tenant/application/key/ext/update', 'put']
 			}
 		},
