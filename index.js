@@ -112,7 +112,7 @@ service.init(function () {
 	*/
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.keyUpdate(config, req, res);
+			BL.keyUpdate(config, service.provision, req, res);
 		});
 	});
 
