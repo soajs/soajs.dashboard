@@ -13,7 +13,6 @@ var environmentCollectionName = 'environment';
 var gridfsCollectionName = 'fs.files';
 var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
-var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
