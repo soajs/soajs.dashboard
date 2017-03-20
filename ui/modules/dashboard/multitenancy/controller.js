@@ -515,7 +515,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 														'expDate': null,
 														'device': null,
 														'geo': null,
-														'env': 'all'
+														'env': 'DASHBOARD'
 													};
 													getSendDataFromServer($scope, ngDataApi, {
 														"method": "post",
