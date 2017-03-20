@@ -40,7 +40,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	var apiOptions = {
 		url: (options.url) ? options.url + options.routeName : apiConfiguration.domain + options.routeName,
 		headers: {
-			'content-type': 'application/json'
+			'Content-Type': 'application/json'
 		}
 	};
 	
@@ -58,7 +58,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
 	}
-	console.log(apiOptions);
+	
 	if (Object.hasOwnProperty.call(options, 'token')) {
 		apiOptions.token = options.token;
 	}
