@@ -2,7 +2,7 @@
  * Created by nicolas on 10/19/16.
  */
 'use strict';
-var Mongo = require("soajs.core.modules").mongo;
+var Mongo = require("soajs").mongo;
 var mongo = null;
 
 var servicesCollectionName = 'services';
@@ -13,7 +13,6 @@ var environmentCollectionName = 'environment';
 var gridfsCollectionName = 'fs.files';
 var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
-var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
