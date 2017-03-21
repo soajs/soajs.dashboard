@@ -342,11 +342,13 @@ environmentsApp.controller('environmentCtrl', ['$scope', '$timeout', '$modal', '
 					for (var app in response.newKeys) {
 						response.newKeys[app].newKeys.forEach(function (oneKey) {
 							oneKey.extKeys.forEach(function (oneExtKey) {
-								$scope.newKeys.push({
-									appPackage: response.newKeys[app].package,
-									key: oneKey.key,
-									extKey: oneExtKey.extKey
-								});
+								if(!oneExtKey.deprecated){
+									$scope.newKeys.push({
+										appPackage: response.newKeys[app].package,
+										key: oneKey.key,
+										extKey: oneExtKey.extKey
+									});
+								}
 							});
 						});
 					}
