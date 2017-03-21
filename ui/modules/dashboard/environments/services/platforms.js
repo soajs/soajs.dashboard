@@ -1,9 +1,9 @@
 "use strict";
 var platformsServices = soajsApp.components;
 platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookies', 'Upload', function (ngDataApi, $timeout, $modal, $cookies, Upload) {
-	
+
 	var access_token = $cookies.get('access_token');
-	
+
 	function listPlatforms(currentScope, env, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
@@ -382,7 +382,7 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 					var newConfig = {
 						namespace: {
 							default: $scope.namespaces.data.default,
-							perService: (($scope.namespaces.data.type === 'perService') ? true : false)
+							perService: (($scope.namespaces.data.type.value === 'perService') ? true : false)
 						}
 					};
 					getSendDataFromServer(currentScope, ngDataApi, {
