@@ -933,44 +933,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 
-				it("fail - tenant admin user and/or group already exist in urac", function (done) {
-					var record = {
-						"username": "admin_utab",
-						"password": "$2a$04$l3HbssI61jRMN/2C6yMBi.4oEgeLaRkTAFgbrvZ9fsHq.j29Tyic.",
-						"firstName": "Administrator",
-						"lastName": "urac test tenant",
-						"email": "admin@anotherTenant.com",
-						"status": "pendingNew",
-						"config": {},
-						"tenant": {
-							"id": "56937dc1682d44112229beea",
-							"code": "UTAB"
-						},
-						"ts": 1452506561932,
-						"groups": [
-							"administrator"
-						]
-					};
-					uracMongo.insert("users", record, function (error, result) {
-						assert.ifError(error);
-						assert.ok(result);
-
-						var params = {
-							form: {
-								"code": "UTAB",
-								"name": 'urac test tenant',
-								"email": 'admin@someTenant.com',
-								"description": 'this is a dummy description'
-							}
-						};
-						executeMyRequest(params, 'tenant/add', 'post', function (body) {
-							assert.ok(body.errors);
-							assert.deepEqual(body.errors.details[0], {code: 606, "message": errorCodes[606]});
-							done();
-						});
-					});
-				});
-
 				it('fail - missing params', function (done) {
 					var params = {
 						form: {

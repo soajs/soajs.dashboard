@@ -2633,29 +2633,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
-			it("fail - logged in user is not the owner of the app", function (done) {
-				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
-					assert.ifError(error);
-					assert.ok(envRecord);
-					var params = {
-						qs: {
-							'access_token': access_token,
-							'id': envRecord._id.toString()
-						},
-						form: {
-							'algorithm': 'aes256',
-							'password': 'new test case password'
-						}
-					};
-					executeMyRequest(params, 'environment/key/update', 'put', function (body) {
-						assert.ok(!body.result);
-						assert.deepEqual(body.errors.details[0], {"code": 781, "message": errorCodes[781]});
-						done();
-					});
-				});
-			});
-
 		});
 	});
 
