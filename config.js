@@ -49,7 +49,7 @@ module.exports = {
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
-	
+
 	"HA":{
 		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
 	},
@@ -2276,7 +2276,17 @@ module.exports = {
 					"source": ['body.config'],
 					"required": true,
 					"validation": {
-						"type": "object"
+						"type": "object",
+						"properties": {
+							"namespace": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"default": { "type": "string", "required": true },
+									"perService": { "type": "boolean", "required": true }
+								}
+							}
+						}
 					}
 				}
 			},
