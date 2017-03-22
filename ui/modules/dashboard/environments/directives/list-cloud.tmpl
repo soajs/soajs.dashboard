@@ -192,7 +192,7 @@
 			</div>
 			<div ng-if="!localDeployment">
 				<div ng-if="envCode === 'DASHBOARD'">
-					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add" ng-click="addNode()">Add New Node
+					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add && envPlatform !== 'kubernetes'" ng-click="addNode()">Add New Node
 					</button>
 					<br/><br/>
 				</div>
