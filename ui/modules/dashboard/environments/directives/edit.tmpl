@@ -77,6 +77,11 @@
                                         </tab>
                                         <tab heading="Awareness">
                                             <div class="grouped">
+                                                <label><span class="icon icon-arrow-right2"></span> Cache TTL </label>
+                                                <input type="number" ng-required="true"
+                                                       ng-model="formEnvironment.services.config.awareness.cacheTTL" class="form-control"/>
+                                                <em>Specify the amount of time in milliseconds between refreshing the cache containing service awareness information</em>
+                                                <br/>
                                                 <label><span class="icon icon-arrow-right2"></span> {{translation.healthCheckInterval[LANG]}} </label>
                                                 <input type="number" ng-required="true"
                                                        ng-model="formEnvironment.services.config.awareness.healthCheckInterval" class="form-control"/>
