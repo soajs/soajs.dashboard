@@ -6,6 +6,10 @@
 		<span><b>{{translation.restrictAccessSelectedApis[LANG]}}</b></span>
 		<fieldset ng-repeat="(grp, val) in service.fixList">
 			<legend>{{grp}}</legend>
+			<span ng-show="currentApplication.aclFill[oneEnv.code][service.name].apisRestrictPermission">
+				<a href="" ng-click="selectAll(service, oneEnv.code, grp)">Select all</a> |
+				<a href="" ng-click="removeAll(service, oneEnv.code, grp)">Remove all</a>
+			</span>
 			<div ng-if="val.apisRest">
 				<fieldset ng-repeat="(method, apisList) in val.apisRest">
 					<legend class="perMethod">{{method}}</legend>

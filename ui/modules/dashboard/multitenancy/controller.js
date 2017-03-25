@@ -1648,6 +1648,62 @@ multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$rout
 		}
 	};
 	
+	$scope.selectAll = function (service, envCode, grp) {
+		if (service.fixList[grp].apisRest) {
+			for (var method in service.fixList[grp].apisRest) {
+				if (!$scope.currentApplication.aclFill[envCode][service.name][method]) {
+					$scope.currentApplication.aclFill[envCode][service.name][method] = {};
+				}
+				if (!$scope.currentApplication.aclFill[envCode][service.name][method].apis) {
+					$scope.currentApplication.aclFill[envCode][service.name][method].apis = {};
+				}
+				assignAll(service.fixList[grp].apisRest[method], $scope.currentApplication.aclFill[envCode][service.name][method].apis);
+			}
+		}
+		else {
+			if (!$scope.currentApplication.aclFill[envCode][service.name].apis) {
+				$scope.currentApplication.aclFill[envCode][service.name].apis = {};
+			}
+			assignAll(service.fixList[grp].apis, $scope.currentApplication.aclFill[envCode][service.name].apis);
+		}
+		service.fixList[grp].defaultIncluded = true;
+		function assignAll(arr, obj) {
+			arr.forEach(function (api) {
+				obj[api.v] = {
+					include: true
+				};
+			});
+		}
+	};
+	
+	$scope.removeAll = function (service, envCode, grp) {
+		if (service.fixList[grp].apisRest) {
+			for (var method in service.fixList[grp].apisRest) {
+				if (!$scope.currentApplication.aclFill[envCode][service.name][method]) {
+					$scope.currentApplication.aclFill[envCode][service.name][method] = {};
+				}
+				if (!$scope.currentApplication.aclFill[envCode][service.name][method].apis) {
+					$scope.currentApplication.aclFill[envCode][service.name][method].apis = {};
+				}
+				assignAll(service.fixList[grp].apisRest[method], $scope.currentApplication.aclFill[envCode][service.name][method].apis);
+			}
+		}
+		else {
+			if (!$scope.currentApplication.aclFill[envCode][service.name].apis) {
+				$scope.currentApplication.aclFill[envCode][service.name].apis = {};
+			}
+			assignAll(service.fixList[grp].apis, $scope.currentApplication.aclFill[envCode][service.name].apis);
+		}
+		service.fixList[grp].defaultIncluded = false;
+		function assignAll(arr, obj) {
+			arr.forEach(function (api) {
+				obj[api.v] = {
+					include: false
+				};
+			});
+		}
+	};
+	
 	//default operation
 	overlayLoading.show(function () {
 		$scope.getEnvironments();
