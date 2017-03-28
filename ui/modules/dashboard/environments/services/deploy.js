@@ -26,6 +26,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			formConfig.entries[0].entries[2].min = kubeConfig.minPort;
 			formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
 			formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
+
+			//Handling the possibilities of support SSL button
+            formConfig.entries[0].entries[5].onAction = function (id, data, form) {
+                if (data === true) {
+                    form.entries[1].entries[1].disabled = true;
+                    form.entries[1].entries[1].required = false;
+                }
+                else {
+                    delete form.entries[1].entries[1].disabled;
+                    form.entries[1].entries[1].required = true;
+                }
+            };
 		}
 		else {
 			formConfig.entries[0].entries.splice(6, 5);

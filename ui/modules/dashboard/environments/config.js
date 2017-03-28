@@ -588,6 +588,21 @@ var environmentsConfig = {
 							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 							'required': false
 						},
+                        {
+                            'name': 'certType',
+                            'label': 'Do you want the system to generate self signed certificates?',
+                            'type': 'radio',
+                            'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+                            'required': false
+                        },
+                        {
+                            'name': 'certsPath',
+                            'label': 'Certificates path',
+                            'type': 'text',
+                            'value': null,
+                            'fieldMsg': 'Provide the path to the certificates',
+                            'required': false
+                        },
 						{
 							'name': 'nginxRPInitialDelay',
 							'label': 'Readiness Probe: Initial Delay (in seconds)',
