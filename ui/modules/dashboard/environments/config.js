@@ -857,7 +857,31 @@ var environmentsConfig = {
 					'type': 'select',
 					'required': true,
 					'value': []
-				}
+				},
+                {
+                    'name': 'supportSSL',
+                    'label': 'Do you want to enable SSL for Nginx?',
+                    'type': 'radio',
+                    'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+                    'required': false
+                },
+                {
+                    'name': 'certType',
+                    'label': 'Do you want the system to generate self signed certificates?',
+                    'type': 'radio',
+                    'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+                    'required': false,
+                    'hidden': true
+                },
+                {
+                    'name': 'kubeSecret',
+                    'label': 'Kubernetes secret',
+                    'type': 'text',
+                    'value': null,
+                    'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
+                    'required': false,
+                    'hidden': true
+                },
 			]
 		}
 	},
