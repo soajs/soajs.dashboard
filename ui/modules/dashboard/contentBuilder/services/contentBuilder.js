@@ -274,7 +274,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 	}
 
 	function saveContentSchema(currentScope, cb) {
-		currentScope.config.genericService.config.serviceName = "gc-" + currentScope.config.name.toLowerCase();
+		currentScope.config.genericService.config.serviceName = "gc-" + currentScope.config.name.toLowerCase().trim().replace(/\s\s*/g, "-");
 
 		for(var env in currentScope.config.soajsService.db.config){
 			var dbName = Object.keys(currentScope.config.soajsService.db.config[env])[0];
@@ -286,7 +286,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$
 			"method": "send",
 			"routeName": "/dashboard/cb/add",
 			"data": {
-				"name": "gc-" + currentScope.config.name,
+				"name": currentScope.config.genericService.config.serviceName,
 				"config": {
 					"genericService": currentScope.config.genericService,
 					"soajsService": currentScope.config.soajsService,

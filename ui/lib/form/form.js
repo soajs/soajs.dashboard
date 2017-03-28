@@ -119,8 +119,10 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
-								oneValue.selected = true;
+							if (configuration.data[inputName] !== undefined) {
+								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+									oneValue.selected = true;
+								}
 							}
 						}
 					});
