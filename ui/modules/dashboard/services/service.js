@@ -99,17 +99,15 @@ swaggerSimulator.service('swaggerClient', ["$q", "$http", "swaggerModules","$coo
 		/**
 		 * hook the headers
 		 */
-		if ($cookies.get("soajs_dashboard_key")) {
+		if(swagger.tenantKey){
+			headers.key = swagger.tenantKey;
+		}
+		else if ($cookies.get("soajs_dashboard_key")) {
 			headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
 		}
 		else {
 			headers.key = apiConfiguration.key;
 		}
-		
-		// var soajsAuthCookie = $cookies.get('soajs_auth');
-		// if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
-		// 	headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
-		// }
 		
 		var soajsAccessToken = $cookies.get('access_token');
 		if(soajsAccessToken){

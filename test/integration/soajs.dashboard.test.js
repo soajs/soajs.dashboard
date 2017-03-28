@@ -2292,10 +2292,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ifError(error);
 						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'services/env/list', 'get', function (body) {
 							assert.ok(body.result);
-							assert.deepEqual(body.data, {
-								"dev": "api.api.myDomain.com",
-								"prod": "api.api.myDomain.com"
-							});
+							assert.ok(body.data.dev.domain);
+							assert.ok(body.data.dev.tenants);
+							assert.ok(body.data.prod.domain);
 							done();
 						});
 					});
@@ -2305,7 +2304,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 			it("success - will get the env list in case the service has one env", function (done) {
 				executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
 					assert.ok(body.result);
-					assert.deepEqual(body.data, {"dev": "api.api.myDomain.com"});
+					assert.ok(body.data.dev.domain);
+					assert.ok(body.data.dev.tenants);
 					done();
 				});
 			});
