@@ -357,6 +357,39 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					});
 				};
 
+                formConfig.entries[2].onAction = function (id, data, form) {
+                    if (data === "true") {
+                        form.entries[3].required = true;
+                        form.entries[3].hidden = false;
+                    }
+                    else {
+                        form.entries[3].required = false;
+                        form.entries[3].hidden = true;
+                        form.entries[3].value[0].selected = true;
+                        delete form.entries[3].value[1].selected;
+                        form.formData.certType = "true";
+
+                        form.entries[4].required = false;
+                        form.entries[4].hidden = true;
+                        form.entries[4].value = null;
+                        form.formData.kubeSecret = null;
+                    }
+
+                };
+
+                //Handling the possibilities of certificate type
+                formConfig.entries[3].onAction = function (id, data, form) {
+                    if (data === "true") {
+                        form.entries[4].required = false;
+                        form.entries[4].hidden = true;
+                        form.formData.kubeSecret = null;
+                    }
+                    else {
+                        form.entries[4].required = true;
+                        form.entries[4].hidden = false;
+                    }
+                };
+
 				var options = {
 					timeout: $timeout,
 					form: formConfig,
@@ -368,6 +401,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							'label': translation.submit[LANG],
 							'btn': 'primary',
 							'action': function (formData) {
+
 								formData.branch = JSON.parse(formData.branch);
 								formData.content = JSON.parse(formData.content);
 
@@ -381,6 +415,16 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										commit: formData.branch.commit.sha
 									}
 						        };
+
+								if(formData.supportSSL){
+									params.ssl = {
+										"enabled": true
+									};
+									if(!formData.certType && formData.kubeSecret){
+										params.ssl.kubeSecret = formData.kubeSecret;
+									}
+								}
+
 								overlayLoading.show();
 								getSendDataFromServer(currentScope, ngDataApi, {
 						            method: 'put',

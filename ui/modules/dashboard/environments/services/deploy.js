@@ -53,6 +53,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             	if (data === "true") {
                     form.entries[0].entries[8].required = false;
                     form.entries[0].entries[8].hidden = true;
+                    form.formData.kubeSecret = null;
                 }
                 else {
                     form.entries[0].entries[8].required = true;
