@@ -173,10 +173,6 @@ var cbConfig = {
 						    'name': 'imfv',
 						    'label': translation.imfvConfiguration[LANG],
 						    'type': 'textarea',
-						    'options': {
-						        'mode': 'text',
-						        'availableModes': []
-						    },
 						    'height': '80px',
 						    "value": '{ }',
 							'tooltip': translation.cbFormStep2FieldImfvTooltip[LANG],
@@ -380,7 +376,7 @@ var cbConfig = {
 				    'type': 'textarea',
 				    'height': '200px',
 				    "value": '{ }',
-				    'required': false,
+				    'required': true,
 				    "tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					'fieldMsg': translation.cbFormStep3errorsFieldMsg[LANG]
 				},

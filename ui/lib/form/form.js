@@ -119,7 +119,7 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (configuration.data[inputName] !== undefined) {
+							if (configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
 								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
 									oneValue.selected = true;
 								}

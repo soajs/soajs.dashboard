@@ -1,6 +1,6 @@
 "use strict";
 var contentBuilderApp = soajsApp.components;
-contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$routeParams', '$location', '$localStorage', 'cbHelper', 'cbAPIHelper', 'cbInputHelper', function($window, $scope, $routeParams, $location, $localStorage, cbHelper, cbAPIHelper, cbInputHelper) {
+contentBuilderApp.controller("contentBuilderCtrl", ['$scope', '$routeParams', '$location', '$localStorage', 'cbHelper', 'cbAPIHelper', 'cbInputHelper', function($scope, $routeParams, $location, $localStorage, cbHelper, cbAPIHelper, cbInputHelper) {
 	$scope.$parent.isUserLoggedIn();
 
 	$scope.access = {};
@@ -99,11 +99,11 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	$scope.validateStep1 = function(force) {
 		if(!$scope.config.name) {
 			//show error, no service name given
-			$window.alert(translation.enterNameForYourService[LANG]);
+			$scope.$parent.displayAlert('danger', translation.enterNameForYourService[LANG]);
 		}
 
 		if(Object.keys($scope.config.dbtoUse).length === 0 && Object.keys($scope.config.clustertoUse).length === 0) {
-			$window.alert(translation.pleaseChooseEitherNewExistingDatabaseEnvironment[LANG]);
+			$scope.$parent.displayAlert('danger', translation.pleaseChooseEitherNewExistingDatabaseEnvironment[LANG])
 		}
 		else {
 			$scope.config.genericService.config.serviceName = $scope.config.name.toLowerCase().replace(/\s/g, "_");
@@ -193,7 +193,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 	$scope.validateStep3 = function(force) {
 		if(force === false) {
 			var formData = $scope.form.formData;
-			if(formData.errors && formData.collection) {
+			if(formData.errors && formData.collection && formData.servicePort) {
 				try {
 					for(var i in formData){
 						if(Array.isArray(formData[i])){
@@ -203,6 +203,11 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 					
 					if(typeof(formData['errors']) === 'string'){
 						formData['errors'] = JSON.parse(formData['errors']);
+						if(Object.keys(formData.errors).length === 0){
+							$scope.$parent.displayAlert('danger', translation.pleaseinsertErrorCode[LANG]);
+							formData.errors = '{ }';
+							return false;
+						}
 					}
 					$scope.config.genericService.config.errors = formData['errors'];
 
@@ -238,11 +243,13 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$window', '$scope', '$route
 
 				}
 				catch(e) {
-					$window.alert(translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
+					$scope.$parent.displayAlert('danger', translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
+					return false;
 				}
 			}
 			else {
-				$window.alert(translation.pleaseFillOutMandatoryFields[LANG]);
+				$scope.$parent.displayAlert('danger', translation.pleaseFillOutMandatoryFields[LANG]);
+				return false;
 			}
 		}
 

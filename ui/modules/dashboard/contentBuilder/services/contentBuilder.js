@@ -1,6 +1,6 @@
 "use strict";
 var contentBuilderService = soajsApp.components;
-contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', '$window', function(ngDataApi, $timeout, $modal, $window) {
+contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
 	function listEntries(currentScope, moduleConfig, callback) {
 		getSendDataFromServer(currentScope, ngDataApi, {
