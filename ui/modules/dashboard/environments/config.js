@@ -848,14 +848,14 @@ var environmentsConfig = {
 					'name': 'content',
 					'label': 'Static Content',
 					'type': 'select',
-					'required': true,
+					'required': false,
 					'value': []
 				},
 				{
 					'name': 'branch',
 					'label': 'Branch',
 					'type': 'select',
-					'required': true,
+					'required': false,
 					'value': []
 				},
                 {

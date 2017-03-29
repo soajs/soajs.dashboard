@@ -974,9 +974,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             formConfig.entries[0].entries[2].min = kubeConfig.minPort;
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
+
+            //Handling the possibilities of certificate type
+            formConfig.entries[0].entries[6].onAction = function (id, data, form) {
+                if (data === "true") {
+                    form.entries[0].entries[8].required = false;
+                    form.entries[0].entries[8].hidden = true;
+                    form.formData.kubeSecret = null;
+                }
+                else {
+                    form.entries[0].entries[8].required = true;
+                    form.entries[0].entries[8].hidden = false;
+                }
+            };
         }
         else {
             formConfig.entries[0].entries.splice(6, 5);
+            formConfig.entries[1].entries.splice(8, 5);
         }
 
 
@@ -1140,6 +1154,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
 
             if (params.deployConfig.isKubernetes) {
+                //nginx ssl information
+                if(formData.supportSSL && !formData.certType && formData.kubeSecret){
+                    params.contentConfig.nginx.kubeSecret = formData.kubeSecret;
+                }
+
                 params.deployConfig.readinessProbe = {
                     initialDelaySeconds: formData.nginxRPInitialDelay,
                     timeoutSeconds: formData.nginxRPTimeout,
