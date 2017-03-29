@@ -646,19 +646,21 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 				}
 			}
 		}
-		
+
 		function findAndcestorProperties(tracker, ancestorName, params) {
 			for (var i = 0; i < $scope.appNavigation.length; i++) {
 				if ($scope.appNavigation[i].tracker && $scope.appNavigation[i].label === ancestorName) {
-					var link = $scope.appNavigation[i].url;
-					for (var i in params) {
-						link = link.replace(":" + i, params[i]);
+					if (($scope.appNavigation[i].env === "dashboard") ||
+						($scope.appNavigation[i].env !== "dashboard" && $scope.appNavigation[i].env === $scope.currentSelectedEnvironment)) {
+						var link = $scope.appNavigation[i].url;
+						for (var i in params) {
+							link = link.replace(":" + i, params[i]);
+						}
+						tracker.unshift({
+							label: ancestorName,
+							link: link
+						});
 					}
-					tracker.unshift({
-						label: ancestorName,
-						link: link
-					});
-					
 				}
 			}
 		}
