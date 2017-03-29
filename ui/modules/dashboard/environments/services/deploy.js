@@ -203,9 +203,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 formData.owner = branchInfo.owner;
                                 formData.repo = branchInfo.repo;
 
-                                console.log(JSON.stringify(formData,null,2))
-
-                                //deployEnvironment(formData);
+                                deployEnvironment(formData);
                             }
 
                         }
