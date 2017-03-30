@@ -2647,7 +2647,7 @@ module.exports = {
                     "validation": {
                         "type": "object",
                         "properties": {
-                            "supportSSL": { "type": "string", "required": false },
+                            "supportSSL": { "type": "boolean", "required": false },
                             "kubeSecret": { "type": "string", "required": false }
                         }
                     }
