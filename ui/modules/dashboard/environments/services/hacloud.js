@@ -368,13 +368,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
                         formConfig.entries[2].value[0].selected = true;
                         delete formConfig.entries[2].value[1].selected;
 
-                        formConfig.entries[3].value[1].selected = true;
-                        delete formConfig.entries[3].value[0].selected;
                         formConfig.entries[3].hidden = false;
+						formConfig.entries[3].value[0].selected = true;
+						delete formConfig.entries[3].value[1].selected;
 						//Check if the certificates are self signed or custom
                         if(service.env.indexOf("SOAJS_NX_CUSTOM_SSL=1" !== -1)){
-                            formConfig.entries[3].value[0].selected = true;
-                            delete formConfig.entries[3].value[1].selected;
+                            formConfig.entries[3].value[1].selected = true;
+                            delete formConfig.entries[3].value[0].selected;
                             //Display the name of the kubernetes secret containing the certificates
 							for(var i=0; i<service.env.length; i++){
 								if(service.env[i].indexOf("SOAJS_NX_SSL_SECRET") !== -1){
