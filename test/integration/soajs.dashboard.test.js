@@ -97,6 +97,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			"domain": "api.myDomain.com",
 			"apiPrefix": "api",
 			"sitePrefix": "site",
+			"sensitive": true,
 			"profile": "single",
 			"deployer": {
 				"type": "manual",
@@ -353,7 +354,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"profile": data2.profile,
 						"port": data2.port,
 						"description": 'this is a dummy updated description',
-						"services": data2.services
+						"services": data2.services,
+						"sensitive": true
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -372,7 +374,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"profile": data2.profile,
 						"port": data2.port,
 						"description": 'this is a dummy updated description',
-						"services": data2.services
+						"services": data2.services,
+						"sensitive": true
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -388,7 +391,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"profile": validEnvRecord.profile,
 						"description": 'this is a dummy updated description',
-						"services": validEnvRecord.services
+						"services": validEnvRecord.services,
+						"sensitive": true
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -421,7 +425,8 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": validEnvRecord.profile,
 						"profile": validEnvRecord.profile,
 						"description": 'this is a dummy description',
-						"services": validEnvRecord.services
+						"services": validEnvRecord.services,
+						"sensitive": true
 					}
 				};
 				executeMyRequest(params, 'environment/update', 'put', function (body) {
@@ -1396,6 +1401,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"domain": "api.myDomain.com",
 						"apiPrefix": "api",
 						"sitePrefix": "site",
+						"sensitive": true,
 						"description": "this is a dummy updated description",
 						"services": {
 							"controller": {
@@ -2273,29 +2279,31 @@ describe("DASHBOARD UNIT Tests:", function () {
 		describe("return environments where a service is deployed", function () {
 			var swaggerDev = {
 				"env": "dev",
-				"name": "swaggerSample",
+				"name": "swaggersample",
 				"ip": "127.0.0.1",
 				"hostname": "dashboard",
 				"version": 1
 			};
 			var swaggerDash = {
 				"env": "prod",
-				"name": "swaggerSample",
+				"name": "swaggersample",
 				"ip": "127.0.0.1",
 				"hostname": "production",
 				"version": 1
 			};
 			it("success - will get the env list in case the service has more than 1 env", function (done) {
-				mongo.insert('hosts', swaggerDash, function (error) {
+				mongo.update("environment", {code : {$in: ["DEV","PROD"]} }, {"$unset": {"sensitive": ""}}, function(error){
 					assert.ifError(error);
-					mongo.insert('hosts', swaggerDev, function (error) {
+					mongo.insert('hosts', swaggerDash, function (error) {
 						assert.ifError(error);
-						executeMyRequest({qs: {'service': 'swaggerSample'}}, 'services/env/list', 'get', function (body) {
-							assert.ok(body.result);
-							assert.ok(body.data.dev.domain);
-							assert.ok(body.data.dev.tenants);
-							assert.ok(body.data.prod.domain);
-							done();
+						mongo.insert('hosts', swaggerDev, function (error) {
+							assert.ifError(error);
+							executeMyRequest({qs: {'service': 'swaggersample'}}, 'services/env/list', 'get', function (body) {
+								assert.ok(body.result);
+								assert.ok(body.data.dev.domain);
+								assert.ok(body.data.dev.tenants);
+								done();
+							});
 						});
 					});
 				});
