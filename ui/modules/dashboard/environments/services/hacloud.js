@@ -440,7 +440,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 								if(formData.supportSSL){
 									params.ssl = {
-										"enabled": true
+										"supportSSL": true
 									};
 									if(currentScope.envPlatform === "kubernetes" && !formData.certType && formData.kubeSecret){
 										params.ssl.kubeSecret = formData.kubeSecret;
