@@ -44,6 +44,14 @@
 								</textarea>
                             </td>
                         </tr>
+	                    <tr>
+		                    <td class="">
+			                    <label>Sensitive</label>
+			                    <input name="sensitive" style="margin-left: 50px" type="radio" ng-checked="formEnvironment.sensitive==true" ng-model="formEnvironment.sensitive" data-ng-value="true"/>
+			                    {{translation.true[LANG]}}
+			                    <input name="sensitive" style="margin-left: 5px" type="radio" ng-model="formEnvironment.sensitive" data-ng-value="false"/> {{translation.false[LANG]}}
+		                    </td>
+	                    </tr>
                         <tr class="form-group">
                             <td class="">
                                 <hr/>

@@ -135,6 +135,23 @@ var environmentsConfig = {
 					'value': '',
 					'placeholder': translation.myTenantKeyAES256Password[LANG],
 					'required': true
+				},
+				{
+					'name': 'sensitive',
+					'label': "Sensitive",
+					'type': 'radio',
+					'value': [
+						{
+							'v': false,
+							'l': "False",
+							'selected': true
+						},
+						{
+							'v': true,
+							'l': "True"
+						}
+					],
+					'required': false
 				}
 			]
 		},

@@ -4,6 +4,7 @@ var env_template = {
 	"domain": "",
 	"profile": "",
 	"description": "",
+	"sensitive": false,
 	//deployer object is added on the api level
 	"services": {
 		"controller": {

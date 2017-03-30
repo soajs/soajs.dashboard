@@ -1120,6 +1120,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
@@ -2079,6 +2086,13 @@ module.exports = {
 					"default": "site",
 					"validation": {
 						"type": "string"
+					}
+				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
 					}
 				},
 				"custom": {
