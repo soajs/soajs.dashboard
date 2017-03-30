@@ -367,14 +367,19 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					&& service.env.indexOf("SOAJS_NX_SITE_HTTPS=1") !== -1 && service.env.indexOf("SOAJS_NX_SITE_HTTP_REDIRECT=1") !== -1){
                         formConfig.entries[2].value[0].selected = true;
                         delete formConfig.entries[2].value[1].selected;
+
+                        formConfig.entries[3].value[1].selected = true;
+                        delete formConfig.entries[3].value[0].selected;
+                        formConfig.entries[3].hidden = false;
 						//Check if the certificates are self signed or custom
                         if(service.env.indexOf("SOAJS_NX_CUSTOM_SSL=1" !== -1)){
-                            formConfig.entries[3].value[1].selected = true;
-                            delete formConfig.entries[3].value[0].selected;
+                            formConfig.entries[3].value[0].selected = true;
+                            delete formConfig.entries[3].value[1].selected;
                             //Display the name of the kubernetes secret containing the certificates
 							for(var i=0; i<service.env.length; i++){
 								if(service.env[i].indexOf("SOAJS_NX_SSL_SECRET") !== -1){
                                     formConfig.entries[4].value = service.env[i].split("=")[1];
+                                    formConfig.entries[4].hidden = false;
                                     break;
 								}
 							}
@@ -426,18 +431,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							'btn': 'primary',
 							'action': function (formData) {
 
-								formData.branch = JSON.parse(formData.branch);
-								formData.content = JSON.parse(formData.content);
-
 								var params = {
 						            env: currentScope.envCode,
 						            serviceId: service.id,
 									mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
-									ui : {
-						            	id: formData.content._id,
-										branch: formData.branch.name,
-										commit: formData.branch.commit.sha
-									}
+
 						        };
 
 								if(formData.supportSSL){
@@ -448,6 +446,17 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										params.ssl.kubeSecret = formData.kubeSecret;
 									}
 								}
+
+                                if(formData.branch && formData.content){
+                                    formData.branch = JSON.parse(formData.branch);
+                                    formData.content = JSON.parse(formData.content);
+
+                                    params.ui = {
+                                        id: formData.content._id,
+                                        branch: formData.branch.name,
+                                        commit: formData.branch.commit.sha
+                                    }
+                                }
 
 								overlayLoading.show();
 								getSendDataFromServer(currentScope, ngDataApi, {
