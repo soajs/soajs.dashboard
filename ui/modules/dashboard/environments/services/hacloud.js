@@ -361,6 +361,26 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					formConfig.entries.splice(1,3)
 				}
 				else {
+					//Display the SSL information of the nginx container
+					//check if SSL is enabled
+					if(service.env.indexOf("SOAJS_NX_API_HTTPS=1") !== -1 && service.env.indexOf("SOAJS_NX_API_HTTP_REDIRECT=1") !== -1
+					&& service.env.indexOf("SOAJS_NX_SITE_HTTPS=1") !== -1 && service.env.indexOf("SOAJS_NX_SITE_HTTP_REDIRECT=1") !== -1){
+                        formConfig.entries[2].value[0].selected = true;
+                        delete formConfig.entries[2].value[1].selected;
+						//Check if the certificates are self signed or custom
+                        if(service.env.indexOf("SOAJS_NX_CUSTOM_SSL=1" !== -1)){
+                            formConfig.entries[3].value[1].selected = true;
+                            delete formConfig.entries[3].value[0].selected;
+                            //Display the name of the kubernetes secret containing the certificates
+							for(var i=0; i<service.env.length; i++){
+								if(service.env[i].indexOf("SOAJS_NX_SSL_SECRET") !== -1){
+                                    formConfig.entries[4].value = service.env[i].split("=")[1];
+                                    break;
+								}
+							}
+						}
+					}
+
                     formConfig.entries[2].onAction = function (id, data, form) {
                         if (data === "true") {
                             form.entries[3].required = true;
@@ -776,6 +796,27 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 	}
 
+	function executeAwarenessTest(currentScope, service){
+        getSendDataFromServer(currentScope, ngDataApi, {
+            "method": "post",
+            "routeName": "/dashboard/cloud/services/maintenance",
+            "data": {
+                "serviceId": service.id,
+                "serviceName": "controller",
+                "operation": "awarenessStat",
+                "env": currentScope.envCode,
+                "type": "service"
+            }
+        }, function (error, heartbeatResponse) {
+            if (error) {
+                currentScope.displayAlert('danger', translation.errorExecutingHeartbeatTest[LANG] + " " + service.name + " " + translation.onHostName[LANG] + " @ " + new Date().toISOString());
+            }
+            else {
+                currentScope.displayAlert('success', "Controller awareness has been reloaded @ " + new Date().toISOString());
+            }
+        });
+	}
+
 	function hostLogs (currentScope, task) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -900,6 +941,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
         'loadServiceProvision': loadServiceProvision,
         'inspectService': inspectService,
         'loadDaemonStats': loadDaemonStats,
-	    "loadDaemonGroupConfig": loadDaemonGroupConfig
+	    "loadDaemonGroupConfig": loadDaemonGroupConfig,
+		"executeAwarenessTest": executeAwarenessTest
     };
 }]);
