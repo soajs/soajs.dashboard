@@ -62,7 +62,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             };
         }
         else {
-            formConfig.entries[0].entries.splice(6, 5);
+            formConfig.entries[0].entries.splice(6, 7);
             formConfig.entries[1].entries.splice(8, 5);
         }
 
@@ -989,7 +989,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             };
         }
         else {
-            formConfig.entries[0].entries.splice(6, 5);
+            formConfig.entries[0].entries.splice(6, 7);
             formConfig.entries[1].entries.splice(8, 5);
         }
 
