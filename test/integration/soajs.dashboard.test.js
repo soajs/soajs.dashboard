@@ -2593,7 +2593,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			// 		}, 900);
 			// 	});
 			// });
-
+			
 			it("get Auhtorization token", function (done) {
 				var options = {
 					uri: 'http://localhost:4000/oauth/authorization',
@@ -2603,7 +2603,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					json: true
 				};
-
+				
 				request.get(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
@@ -2613,21 +2613,23 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("Login first", function (done) {
 				var options = {
-					uri: 'http://localhost:4001/login',
+					uri: 'http://localhost:4000/oauth/token',
 					headers: {
 						'Content-Type': 'application/json',
-						key: extKey
+						key: extKey,
+						Authorization: Authorization2
 					},
 					body: {
 						"username": "user1",
-						"password": "123456"
+						"password": "123456",
+						"grant_type": "password"
 					},
 					json: true
 				};
-				
+				console.log(options);
 				request.post(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
