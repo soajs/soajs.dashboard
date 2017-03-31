@@ -174,6 +174,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				},
 				"config": {
 					"awareness": {
+						"cacheTTL": 36000,
 						"healthCheckInterval": 5000,
 						"autoRelaodRegistry": 300000,
 						"maxLogCount": 5,
@@ -363,7 +364,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will update environment", function (done) {
 				var data2 = util.cloneObj(validEnvRecord);
 				data2.services.config.session.proxy = "false";
@@ -383,7 +384,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will update environment", function (done) {
 				var params = {
 					qs: {"id": envId},
@@ -399,9 +400,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ok(body.data);
 					done();
 				});
-
+				
 			});
-
+			
 			it('fail - missing params', function (done) {
 				var params = {
 					qs: {"id": envId},
@@ -417,7 +418,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
 					qs: {"id": "aaaabbbbccc"},
@@ -434,7 +435,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('mongo test', function (done) {
 				mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 					assert.ifError(error);
@@ -449,10 +450,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.deepEqual(envRecord.services, tester.services);
 					done();
 				});
-
+				
 			});
 		});
-
+		
 		describe("delete environment tests", function () {
 			it('fail - missing params', function (done) {
 				var params = {
@@ -463,7 +464,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it('fail - invalid environment id provided', function (done) {
 				var params = {
 					qs: {'id': 'aaaabbcdddd'}
@@ -473,7 +474,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - cannot delete environment that has running hosts", function (done) {
 				var params = {
 					qs: {'id': envId}
@@ -484,12 +485,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will delete environment", function (done) {
 				mongo.findOne('environment', {code: 'STG'}, function (error, stgRecord) {
 					assert.ifError(error);
 					assert.ok(stgRecord);
-
+					
 					var params = {
 						qs: {'id': stgRecord._id.toString()}
 					};
@@ -499,7 +500,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it('mongo test', function (done) {
 				mongo.find('environment', {}, {}, function (error, records) {
 					assert.ifError(error);
@@ -509,7 +510,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("list environment tests", function () {
 			it("success - will get empty list", function (done) {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
@@ -530,7 +531,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest({}, 'environment/list', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 3);
-
+					
 					body.data.forEach(function (oneEnv) {
 						if (oneEnv.code === 'STG') {
 							delete oneEnv._id;
@@ -547,7 +548,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("environment clusters", function () {
 			describe("add environment clusters", function () {
 				it("success - will add new cluster", function (done) {
@@ -565,7 +566,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing parameters', function (done) {
 					var params = {
 						qs: {
@@ -581,11 +582,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: cluster"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - cluster exists', function (done) {
 					var params = {
 						qs: {
@@ -604,7 +605,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('mongo - testing db', function (done) {
 					mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 						assert.ifError(error);
@@ -613,7 +614,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update environment clusters", function () {
 				it("success - will update cluster", function (done) {
 					var params = {
@@ -630,7 +631,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing parameters', function (done) {
 					var params = {
 						qs: {
@@ -646,11 +647,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"code": 172,
 							"message": "Missing required field: cluster"
 						});
-
+						
 						done();
 					});
 				});
-
+				
 				it('fail - cluster does not exists', function (done) {
 					var params = {
 						qs: {
@@ -669,7 +670,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('mongo - testing db', function (done) {
 					mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 						assert.ifError(error);
@@ -678,7 +679,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("delete environment clusters", function () {
 				it('fail - missing params', function (done) {
 					var params = {
@@ -694,7 +695,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid environment id provided', function (done) {
 					var params = {
 						qs: {
@@ -707,7 +708,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will delete environment", function (done) {
 					var params = {
 						qs: {
@@ -721,7 +722,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list environment clusters", function () {
 				it('success - returns one cluster', function (done) {
 					var params = {
@@ -733,7 +734,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - adds new cluster', function (done) {
 					var params = {
 						qs: {
@@ -749,7 +750,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - returns two entries in the list', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
@@ -762,9 +763,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("environment db", function () {
-
+			
 			describe("add environment db", function () {
 				it("success - will add a db", function (done) {
 					var params = {
@@ -782,7 +783,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - will add session db', function (done) {
 					var params = {
 						qs: {
@@ -806,7 +807,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - wil add a db and set tenantSpecific to false by default", function (done) {
 					var params = {
 						qs: {
@@ -819,13 +820,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'environment/dbs/add', 'post', function (body) {
 						assert.ok(body.data);
-
+						
 						mongo.findOne("environment", {'code': 'DEV'}, function (error, envRecord) {
 							assert.ifError(error);
 							assert.ok(envRecord);
 							assert.ok(envRecord.dbs.databases['testDb']);
 							assert.equal(envRecord.dbs.databases['testDb'].tenantSpecific, false);
-
+							
 							//clean db record, remove testDb
 							delete envRecord.dbs.databases['testDb'];
 							mongo.save("environment", envRecord, function (error, result) {
@@ -836,7 +837,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -854,7 +855,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid cluster provided', function (done) {
 					var params = {
 						qs: {
@@ -874,7 +875,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid session params', function (done) {
 					var params = {
 						qs: {
@@ -893,7 +894,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - database already exist', function (done) {
 					var params = {
 						qs: {
@@ -913,7 +914,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - session already exist', function (done) {
 					var params = {
 						qs: {
@@ -940,7 +941,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('mongo - testing database content', function (done) {
 					mongo.find('environment', {'code': 'DEV'}, {}, function (error, records) {
 						assert.ifError(error);
@@ -951,7 +952,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update environment db", function () {
 				it("success - will update a db and set tenantSpecific to false by default", function (done) {
 					var params = {
@@ -968,7 +969,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it("success - will update a db", function (done) {
 					var params = {
 						qs: {
@@ -985,7 +986,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - will update session db', function (done) {
 					var params = {
 						qs: {
@@ -1009,7 +1010,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - missing params', function (done) {
 					var params = {
 						qs: {
@@ -1027,7 +1028,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid cluster provided', function (done) {
 					var params = {
 						qs: {
@@ -1047,7 +1048,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid session params', function (done) {
 					var params = {
 						qs: {
@@ -1066,7 +1067,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - database does not exist', function (done) {
 					var params = {
 						qs: {
@@ -1086,7 +1087,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - session does not exist', function (done) {
 					var params = {
 						qs: {
@@ -1110,7 +1111,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ifError(error);
 						tmp = util.cloneObj(record.dbs.config.session);
 						delete record.dbs.config.session;
-
+						
 						mongo.save('environment', record, function (error) {
 							assert.ifError(error);
 							executeMyRequest(params, 'environment/dbs/update', 'put', function (body) {
@@ -1118,7 +1119,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 									"code": 511,
 									"message": "environment session database does not exist"
 								});
-
+								
 								record.dbs.config.session = tmp;
 								mongo.save('environment', record, function (error) {
 									assert.ifError(error);
@@ -1128,7 +1129,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it('mongo - testing database content', function (done) {
 					mongo.find('environment', {'code': 'DEV'}, {}, function (error, records) {
 						assert.ifError(error);
@@ -1139,7 +1140,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("delete environment db", function () {
 				it('fail - missing params', function (done) {
 					var params = {
@@ -1155,7 +1156,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - invalid database name', function (done) {
 					var params = {
 						qs: {
@@ -1171,7 +1172,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('fail - session does not exist', function (done) {
 					var params = {
 						qs: {
@@ -1184,16 +1185,16 @@ describe("DASHBOARD UNIT Tests:", function () {
 						assert.ifError(error);
 						tmp = util.cloneObj(record.dbs.config.session);
 						delete record.dbs.config.session;
-
+						
 						mongo.save('environment', record, function (error) {
 							assert.ifError(error);
-
+							
 							executeMyRequest(params, 'environment/dbs/delete', 'delete', function (body) {
 								assert.deepEqual(body.errors.details[0], {
 									"code": 511,
 									"message": "environment session database does not exist"
 								});
-
+								
 								record.dbs.config.session = tmp;
 								mongo.save('environment', record, function (error) {
 									assert.ifError(error);
@@ -1203,7 +1204,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it('success - delete database', function (done) {
 					var params = {
 						qs: {
@@ -1216,7 +1217,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - delete session', function (done) {
 					var params = {
 						qs: {
@@ -1229,7 +1230,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('mongo - testing database', function (done) {
 					mongo.findOne('environment', {'code': "DEV"}, function (error, record) {
 						assert.ifError(error);
@@ -1248,7 +1249,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("list environment dbs", function () {
 				before("clean env record", function (done) {
 					mongo.update('environment', {code: 'DEV'}, {
@@ -1261,7 +1262,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - no session and no databases', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
@@ -1273,7 +1274,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - add session db', function (done) {
 					var params = {
 						qs: {
@@ -1297,7 +1298,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - add urac db', function (done) {
 					var params = {
 						qs: {
@@ -1314,7 +1315,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 				});
-
+				
 				it('success - yes session and yes databases', function (done) {
 					var params = {
 						qs: {'env': 'dev'}
@@ -1341,7 +1342,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			describe("update environment db prefix", function () {
 				it("success - add db prefix", function (done) {
 					var params = {
@@ -1354,7 +1355,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'environment/dbs/updatePrefix', 'put', function (body) {
 						assert.ok(body.data);
-
+						
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 							assert.ifError(error);
 							assert.equal(envRecord.dbs.config.prefix, 'soajs_');
@@ -1362,7 +1363,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						});
 					});
 				});
-
+				
 				it("success - empty db prefix", function (done) {
 					var params = {
 						qs: {
@@ -1374,7 +1375,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					};
 					executeMyRequest(params, 'environment/dbs/updatePrefix', 'put', function (body) {
 						assert.ok(body.data);
-
+						
 						mongo.findOne('environment', {'code': 'DEV'}, function (error, envRecord) {
 							assert.ifError(error);
 							assert.equal(envRecord.dbs.config.prefix, '');
@@ -1383,11 +1384,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 		});
-
+		
 		describe("mongo check db", function () {
-
+			
 			it('asserting environment record', function (done) {
 				mongo.findOne('environment', {"code": "DEV"}, function (error, record) {
 					assert.ifError(error);
@@ -1412,6 +1413,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 							},
 							"config": {
 								"awareness": {
+									"cacheTTL": 36000,
 									"healthCheckInterval": 5000,
 									"autoRelaodRegistry": 300000,
 									"maxLogCount": 5,
@@ -1543,11 +1545,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 		});
-
+		
 	});
-
+	
 	describe("login tests", function () {
 		var auth, access_token;
 
@@ -1576,19 +1578,18 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'permissions/get', 'get', function (body) {
-					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
 				});
 			});
 		});
-
+		
 		it("success - did not specify environment code, new acl", function (done) {
 			//todo: implement this test case
 			done();
 		});
-
+		
 		it("success - specified environment code, old acl", function (done) {
 			var params = {
 				qs: {
@@ -1603,7 +1604,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-
+	
 	describe("testing settings for logged in users", function () {
 		var access_token;
 
@@ -1614,7 +1615,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				done();
 			});
 		});
-
+		
 		it("success - should work for logged in users", function (done) {
 			var options = {
 				uri: 'http://localhost:4000/oauth/token',
@@ -1637,10 +1638,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 				done();
 			});
 		});
-
+		
 		describe("settings tests", function () {
 			var tenantId, applicationId, key, extKey, oauthUserId;
-
+			
 			before("update environment records to include session database in order to be able to proceed", function (done) {
 				var update = {
 					'$set': {
@@ -1695,7 +1696,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - user not logged in", function (done) {
 				executeMyRequest({},
 					'settings/tenant/get', 'get', function (body) {
@@ -1703,7 +1704,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						done();
 					});
 			});
-
+			
 			it("success - will get tenant", function (done) {
 				executeMyRequest({
 					'qs': {
@@ -1717,7 +1718,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will update tenant", function (done) {
 				var params = {
 					'qs': {
@@ -1733,9 +1734,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ok(body.data);
 					done();
 				});
-
+				
 			});
-
+			
 			it("success - will add oauth", function (done) {
 				var params = {
 					'qs': {
@@ -1746,9 +1747,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"redirectURI": "http://www.myredirecturi.com/"
 					}
 				};
-
+				
 				executeMyRequest(params, 'settings/tenant/oauth/add/', 'post', function (body) {
 					assert.ok(body.data);
+					
 					mongo.findOne('tenants', {'code': 'test'}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.deepEqual(tenantRecord.oauth, {
@@ -1757,12 +1759,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 							"grants": ["password", "refresh_token"]
 						});
 						done();
-
+						
 					});
-
+					
 				});
 			});
-
+			
 			it("success - will update oauth", function (done) {
 				var params = {
 					'qs': {
@@ -1786,7 +1788,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will get oauth object", function (done) {
 				executeMyRequest({
 					'qs': {
@@ -1802,7 +1804,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will delete oauth", function (done) {
 				executeMyRequest({
 					'qs': {
@@ -1840,7 +1842,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						"password": "password1"
 					}
 				};
-
+				
 				executeMyRequest(params, 'settings/tenant/oauth/users/add/', 'post', function (body) {
 					mongo.findOne('oauth_urac', {'userId': 'oauth_user'}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -1852,7 +1854,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will update oauth users", function (done) {
 				var params = {
 					qs: {
@@ -1875,7 +1877,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will delete oauth user", function (done) {
 				executeMyRequest({
 					qs: {
@@ -1887,7 +1889,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will get oauth users", function (done) {
 				executeMyRequest({
 					qs: {
@@ -1899,7 +1901,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will list applications", function (done) {
 				applicationId = "5550b473373137a130ebbb68";
 				var newApplication = {
@@ -1921,7 +1923,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will get empty object", function (done) {
 				executeMyRequest({
 					qs: {
@@ -1933,7 +1935,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will add key", function (done) {
 				var params = {
 					qs: {
@@ -1943,7 +1945,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/add', 'post', function (body) {
 					assert.ok(body.data);
-
+					
 					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
 						assert.ok(tenantRecord);
@@ -1952,7 +1954,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will list key", function (done) {
 				var params = {
 					qs: {
@@ -1987,7 +1989,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/application/key/ext/add/', 'post', function (body) {
-					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					mongo.findOne('tenants', {'_id': mongo.ObjectId(tenantId)}, function (error, tenantRecord) {
 						assert.ifError(error);
@@ -2017,9 +2018,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						}
 					}
 				};
-				console.log(params);
 				executeMyRequest(params, 'settings/tenant/application/key/ext/update/', 'put', function (body) {
-					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					done();
 				});
@@ -2037,14 +2036,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'extKeyEnv': 'STG'
 					}
 				};
-				console.log(params);
 				executeMyRequest(params, 'settings/tenant/application/key/ext/delete/', 'post', function (body) {
-					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					done();
 				});
 			});
-
+			
 			it("success - will list ext key", function (done) {
 				var params = {
 					qs: {
@@ -2056,10 +2053,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 				executeMyRequest(params, 'settings/tenant/application/key/ext/list/', 'get', function (body) {
 					assert.ok(body.data);
 					assert.equal(body.data.length, 0);
+					
 					done();
 				});
 			});
-
+			
 			it("success - will update configuration", function (done) {
 				var params = {
 					qs: {
@@ -2084,7 +2082,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - will list configuration", function (done) {
 				var params = {
 					qs: {
@@ -2101,11 +2099,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 							urac: {'x': 'y'}
 						}
 					});
-
+					
 					done();
 				});
 			});
-
+			
 			it("success - will delete key", function (done) {
 				var params = {
 					qs: {
@@ -2119,28 +2117,28 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 		});
 	});
-
+	
 	describe("platforms tests", function () {
-
+		
 		describe("list platforms", function () {
-
+			
 			it("success - will list platforms and available certificates", function (done) {
 				var params = {
 					qs: {
 						env: 'DEV'
 					}
 				};
-
+				
 				executeMyRequest(params, "environment/platforms/list", 'get', function (body) {
 					assert.ok(body.data);
 					assert.ok(Object.keys(body.data).length > 0);
 					done();
 				});
 			});
-
+			
 			it("fail - missing required params", function (done) {
 				executeMyRequest({}, "environment/platforms/list", 'get', function (body) {
 					assert.ok(body.errors);
@@ -2149,9 +2147,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("change selected driver", function () {
-
+			
 			it("success - will change selected driver", function (done) {
 				var params = {
 					qs: {
@@ -2161,20 +2159,20 @@ describe("DASHBOARD UNIT Tests:", function () {
 						selected: 'container.dockermachine.cloud.joyent'
 					}
 				};
-
+				
 				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
 			});
-
+			
 			it("fail - missing required params", function (done) {
 				var params = {
 					form: {
 						selected: 'container.dockermachine.cloud.joyent'
 					}
 				};
-
+				
 				executeMyRequest(params, 'environment/platforms/driver/changeSelected', 'put', function (body) {
 					assert.ok(body.errors);
 					assert.deepEqual(body.errors.details[0], {'code': 172, 'message': 'Missing required field: env'});
@@ -2182,9 +2180,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("change deployer type", function () {
-
+			
 			it("success - will change deployer type", function (done) {
 				var params = {
 					qs: {
@@ -2194,20 +2192,20 @@ describe("DASHBOARD UNIT Tests:", function () {
 						deployerType: 'container'
 					}
 				};
-
+				
 				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
 					assert.ok(body.data);
 					done();
 				});
 			});
-
+			
 			it("fail - missing required params", function (done) {
 				var params = {
 					qs: {
 						env: 'DEV'
 					}
 				};
-
+				
 				executeMyRequest(params, 'environment/platforms/deployer/type/change', 'put', function (body) {
 					assert.ok(body.errors);
 					assert.deepEqual(body.errors.details[0], {
@@ -2219,12 +2217,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-
+	
 	describe("hosts tests", function () {
 		// TODO: fill deployer object for all ENV records
 		var hosts = [], hostsCount = 0;
 		describe("list Hosts", function () {
-
+			
 			it("success - will get hosts list", function (done) {
 				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
@@ -2232,7 +2230,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("mongo - empty the hosts", function (done) {
 				mongo.find('hosts', {}, function (error, dbHosts) {
 					assert.ifError(error);
@@ -2247,7 +2245,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will get an empty list", function (done) {
 				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
@@ -2255,7 +2253,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("mongo - fill the hosts", function (done) {
 				mongo.remove('hosts', {}, function (error) {
 					assert.ifError(error);
@@ -2265,7 +2263,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will get hosts list", function (done) {
 				executeMyRequest({qs: {'env': 'dev'}}, 'hosts/list', 'get', function (body) {
 					assert.ok(body.data);
@@ -2308,7 +2306,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - will get the env list in case the service has one env", function (done) {
 				executeMyRequest({qs: {'service': 'dashboard'}}, 'services/env/list', 'get', function (body) {
 					assert.ok(body.result);
@@ -2317,7 +2315,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - service doesn't exist", function (done) {
 				executeMyRequest({qs: {'service': 'noService'}}, 'services/env/list', 'get', function (body) {
 					assert.equal(body.result, false);
@@ -2325,12 +2323,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				});
 			});
 		});
-
+		
 		describe("maintenance operation Hosts", function () {
 			//afterEach(function(done){
 			//	setTimeout(function(){ done(); }, 1000);
 			//});
-
+			
 			it("fail - missing params", function (done) {
 				var params = {
 					form: {
@@ -2348,7 +2346,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - error calling awareness on service", function (done) {
 				var params = {
 					form: {
@@ -2368,7 +2366,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - error calling load provision on controller", function (done) {
 				var params = {
 					form: {
@@ -2388,7 +2386,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - host not found", function (done) {
 				var params = {
 					form: {
@@ -2405,7 +2403,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("fail - service not found", function (done) {
 				var params = {
 					form: {
@@ -2455,7 +2453,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				};
 				executeMyRequest(params, 'hosts/maintenanceOperation', 'post', function (body) {
 					assert.ok(body.data);
-
+					
 					params.form.serviceName = 'dashboard';
 					params.form.hostname = 'dashboard';
 					params.form.servicePort = 4003;
@@ -2465,7 +2463,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					});
 				});
 			});
-
+			
 			it("success - awareness on controller", function (done) {
 				var params = {
 					form: {
@@ -2482,7 +2480,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 			it("success - load provision service", function (done) {
 				var params = {
 					form: {
@@ -2499,10 +2497,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 					done();
 				});
 			});
-
+			
 		});
 	});
-
+	
 	describe("change tenant security key", function () {
 
 		describe("will change tenant security key", function () {
@@ -2618,20 +2616,18 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			it("Login first", function (done) {
 				var options = {
-					uri: 'http://localhost:4000/oauth/token',
+					uri: 'http://localhost:4001/login',
 					headers: {
 						'Content-Type': 'application/json',
-						key: extKey,
-						Authorization: Authorization2
+						key: extKey
 					},
 					body: {
 						"username": "user1",
-						"password": "123456",
-						"grant_type": "password"
+						"password": "123456"
 					},
 					json: true
 				};
-				console.log(options);
+				
 				request.post(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
@@ -2643,10 +2639,10 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-
+	
 	describe("prevent operator from removing tenant/application/key/extKey/product/package he is currently logged in with", function () {
 		var tenantId, appId, key, tenantExtKey, productCode, productId, packageCode, params;
-
+		
 		before(function (done) {
 			//get tenant/product info from db
 			mongo.findOne('tenants', {'code': "test"}, function (error, record) {
@@ -2658,34 +2654,34 @@ describe("DASHBOARD UNIT Tests:", function () {
 				tenantExtKey = record.applications[0].keys[0].extKeys[0].extKey;
 				productCode = record.applications[0].product;
 				packageCode = record.applications[0].package;
-
+				
 				mongo.findOne('products', {'code': productCode}, function (error, record) {
 					assert.ifError(error);
 					assert.ok(record);
 					productId = record._id.toString();
-
+					
 					done();
 				});
 			});
 		});
-
+		
 		it("success - prevent from deleting tenant", function (done) {
 			params = {
 				qs: {
 					"id": tenantId
 				}
 			};
-
+			
 			executeMyRequest(params, 'tenant/delete', 'delete', function (body) {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
-
+				
 				assert.deepEqual(body.errors.details[0], {"code": 462, "message": errorCodes[462]});
 				done();
 			});
 		});
-
+		
 		it("success - prevent from deleting application", function (done) {
 			params = {
 				qs: {
@@ -2697,12 +2693,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
-
+				
 				assert.deepEqual(body.errors.details[0], {"code": 463, "message": errorCodes[463]});
 				done();
 			});
 		});
-
+		
 		it("success - prevent from deleting key", function (done) {
 			params = {
 				qs: {
@@ -2715,12 +2711,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
-
+				
 				assert.deepEqual(body.errors.details[0], {"code": 464, "message": errorCodes[464]});
 				done();
 			});
 		});
-
+		
 		it("success - prevent from deleting extKey", function (done) {
 			params = {
 				qs: {
@@ -2740,7 +2736,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 				done();
 			});
 		});
-
+		
 		it("success - prevent from deleting product", function (done) {
 			params = {
 				qs: {
@@ -2751,12 +2747,12 @@ describe("DASHBOARD UNIT Tests:", function () {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
-
+				
 				assert.deepEqual(body.errors.details[0], {"code": 466, "message": errorCodes[466]});
 				done();
 			});
 		});
-
+		
 		it("success - prevent from deleting package", function (done) {
 			params = {
 				qs: {
@@ -2768,13 +2764,13 @@ describe("DASHBOARD UNIT Tests:", function () {
 				assert.ok(body);
 				if (body.result === false)
 					assert.ifError(body.result);
-
+				
 				assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
 				done();
 			});
 		});
 	});
-
+	
 	describe("static content tests", function () {
 		it("success - will list static content", function (done) {
 			executeMyRequest({}, "staticContent/list", 'post', function (body) {

@@ -1,7 +1,7 @@
 {
   "name": "soajs.dashboard",
   "description": "soajs dashboard service",
-  "version": "0.5.8",
+  "version": "0.5.10",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -32,7 +32,6 @@
     "mocha": "3.2.0",
     "shelljs": "0.7.5",
     "soajs.controller": "0.2.*",
-    "soajs.core.modules": "0.0.*",
     "soajs.mongodb.data": "0.2.*",
     "soajs.urac": "0.3.*"
   },

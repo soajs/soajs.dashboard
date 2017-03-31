@@ -1557,7 +1557,8 @@ module.exports = {
                                             "commit": { "type": "string", "required": true }
                                         }
                                     },
-									"supportSSL": { "required": false, "type": "boolean" }
+									"supportSSL": { "required": false, "type": "boolean" },
+                                    "kubeSecret": { "required": false, "type": "string" }
 								}
 							}
 						}
@@ -2652,6 +2653,17 @@ module.exports = {
 							"commit": { "type": "string", "required": true }
 						}
 					}
+				},
+				"ssl": {
+                    "source": ['body.ssl'],
+                    "required": false,
+                    "validation": {
+                        "type": "object",
+                        "properties": {
+                            "supportSSL": { "type": "boolean", "required": false },
+                            "kubeSecret": { "type": "string", "required": false }
+                        }
+                    }
 				}
 			},
 

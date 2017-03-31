@@ -605,6 +605,23 @@ var environmentsConfig = {
 							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
 							'required': false
 						},
+                        {
+                            'name': 'certType',
+                            'label': 'Do you want the system to generate self signed certificates?',
+                            'type': 'radio',
+                            'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+                            'required': false,
+                            'hidden': true
+                        },
+                        {
+                            'name': 'kubeSecret',
+                            'label': 'Kubernetes secret',
+                            'type': 'text',
+                            'value': null,
+                            'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
+                            'required': false,
+                            'hidden': true
+                        },
 						{
 							'name': 'nginxRPInitialDelay',
 							'label': 'Readiness Probe: Initial Delay (in seconds)',
@@ -848,16 +865,40 @@ var environmentsConfig = {
 					'name': 'content',
 					'label': 'Static Content',
 					'type': 'select',
-					'required': true,
+					'required': false,
 					'value': []
 				},
 				{
 					'name': 'branch',
 					'label': 'Branch',
 					'type': 'select',
-					'required': true,
+					'required': false,
 					'value': []
-				}
+				},
+                {
+                    'name': 'supportSSL',
+                    'label': 'Do you want to enable SSL for Nginx?',
+                    'type': 'radio',
+                    'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
+                    'required': false
+                },
+                {
+                    'name': 'certType',
+                    'label': 'Do you want the system to generate self signed certificates?',
+                    'type': 'radio',
+                    'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
+                    'required': false,
+                    'hidden': true
+                },
+                {
+                    'name': 'kubeSecret',
+                    'label': 'Kubernetes secret',
+                    'type': 'text',
+                    'value': null,
+                    'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
+                    'required': false,
+                    'hidden': true
+                },
 			]
 		}
 	},

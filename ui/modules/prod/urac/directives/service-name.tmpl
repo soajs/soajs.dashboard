@@ -1,0 +1,35 @@
+<div class="serviceName">
+	<input type="checkbox" ng-checked="application.aclFill[oneEnv.code][sName].include===true"
+	       ng-model="application.aclFill[oneEnv.code][sName].include" value="{{application.package + '_' + sName}}"
+	       ng-click="selectService(application, service, oneEnv.code)"/>
+	<b> <a href="">{{sName}}</a></b>
+</div>
+<div ng-show="application.aclFill[oneEnv.code][sName].include" style="float: left;">
+	<div style="float: left">
+        <span style="padding-left: 15px;">
+            <input ng-model="application.aclFill[oneEnv.code][sName].accessType" value="public" type="radio" ng-checked="application.aclFill[oneEnv.code][sName].accessType==='public'"/> {{translation.public[LANG]}}
+        </span>
+        <span style="padding-left: 40px;">
+            <input ng-model="application.aclFill[oneEnv.code][sName].accessType" value="private" type="radio" ng-checked="application.aclFill[oneEnv.code][sName].accessType==='private'"/> {{translation.private[LANG]}}
+        </span>
+        <span style="padding-left: 40px;">
+            <input type="radio" ng-checked="application.aclFill[oneEnv.code][sName].accessType==='groups'" ng-model="application.aclFill[oneEnv.code][sName].accessType" value="groups"/> {{translation.groups[LANG]}}
+        </span>
+	</div>
+	<div class="grpsListingScroll" ng-class="{smallGrpsListingScroll: allGroups.length<3}" ng-show="application.aclFill[oneEnv.code][sName].accessType=='groups' ">
+		<ul class="grpsListing">
+			<li ng-repeat="code in allGroups" ng-class-even="'evenLi'" ng-class-odd="'oddLi'">
+				<input type="checkbox" value="{{code}}" ng-model="application.aclFill[oneEnv.code][sName].grpCodes[code]" ng-checked="application.aclFill[oneEnv.code][sName]['access'].indexOf(code)!== -1"/>
+				{{code}}
+			</li>
+		</ul>
+	</div>
+</div>
+<div style="float:right;" ng-show="application.aclFill[oneEnv.code][sName].include">
+	<a href="" ng-click="minimize(application, service, oneEnv.code)" ng-show="application.aclFill[oneEnv.code][sName].collapse===false">
+		<span class="icon icon-minus" tooltip="{{translation.minimize[LANG]}}"></span>
+	</a>
+	<a href="" ng-click="expand(application, service, oneEnv.code)" ng-show="application.aclFill[oneEnv.code][sName].collapse===true">
+		<span class="icon icon-plus" tooltip="{{translation.expand[LANG]}}"></span>
+	</a>
+</div>
