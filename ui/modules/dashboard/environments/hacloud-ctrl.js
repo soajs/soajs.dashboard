@@ -183,6 +183,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.executeHeartbeatTest($scope, service);
 	};
 
+	$scope.executeAwarenessTest = function (service) {
+		hacloudSrv.executeAwarenessTest($scope, service);
+	};
+
 	$scope.loadDaemonStats = function(service){
 		hacloudSrv.loadDaemonStats($scope, service);
 	};

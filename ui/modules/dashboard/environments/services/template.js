@@ -14,6 +14,7 @@ var env_template = {
 		},
 		"config": {
 			"awareness": {
+				"cacheTTL": 60 * 60* 1000, //1 hr
 				"healthCheckInterval": 1000 * 5, // 5 seconds
 				"autoRelaodRegistry": 1000 * 60 * 60, // 1 hr
 				"maxLogCount": 5,
