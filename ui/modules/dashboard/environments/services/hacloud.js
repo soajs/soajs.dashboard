@@ -358,7 +358,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				};
 
 				if(currentScope.envPlatform !== "kubernetes"){
-					formConfig.entries.splice(1,3)
+					formConfig.entries.splice(3,2);
 				}
 				else {
 					//Display the SSL information of the nginx container
