@@ -31,10 +31,10 @@ var dbModel = "mongo";
 var service = new soajs.server.service(config);
 
 function checkMyAccess(req, res, cb) {
-	if (!req.soajs.session || !req.soajs.session.getUrac()) {
+	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
 		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 	}
-	var myTenant = req.soajs.session.getUrac().tenant;
+	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
 		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
 	}
@@ -112,7 +112,7 @@ service.init(function () {
 	*/
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.keyUpdate(config, req, res);
+			BL.keyUpdate(config, service.provision, req, res);
 		});
 	});
 

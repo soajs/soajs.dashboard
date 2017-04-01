@@ -45,7 +45,7 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 	};
 	
 	var pathParams = options.routeName.split("/");
-	var exclude = ['urac', 'dashboard'];
+	var exclude = ['urac', 'dashboard', 'oauth'];
 	if (exclude.indexOf(pathParams[1]) !== -1) {
 		if (options.proxy && $scope.checkAuthEnvCookie()) {
 			apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
@@ -57,6 +57,13 @@ function getSendDataFromServer($scope, ngDataApi, options, callback) {
 		apiOptions.url = (options.url) ? options.url + "/proxy/redirect" : apiConfiguration.domain + "/proxy/redirect";
 		apiOptions.url += "?proxyRoute=" + encodeURIComponent(options.routeName);
 		apiOptions.proxy = true;
+	}
+	
+	if (Object.hasOwnProperty.call(options, 'token')) {
+		apiOptions.token = options.token;
+	}
+	else {
+		apiOptions.token = true;
 	}
 	
 	if (options.jsonp) {
@@ -174,7 +181,7 @@ function multiRecordUpdate(ngDataApi, $scope, opts, callback) {
 			"url": options.url
 		};
 		
-		if(opts.proxy){
+		if (opts.proxy) {
 			sendOptions.proxy = opts.proxy;
 		}
 		
@@ -253,14 +260,17 @@ function fixBackDrop() {
 
 function getCodeMessage(code, service, orgMesg) {
 	var msg = '';
-	if (errorCodes[service] && errorCodes[service][code]) {
-		if (errorCodes[service][code][LANG]) {
-			msg = errorCodes[service][code][LANG];
-		}
-		else {
-			msg = errorCodes[service][code]['ENG'];
+	if (code) {
+		if (errorCodes[service] && errorCodes[service][code]) {
+			if (errorCodes[service][code][LANG]) {
+				msg = errorCodes[service][code][LANG];
+			}
+			else {
+				msg = errorCodes[service][code]['ENG'];
+			}
 		}
 	}
+
 	if (!msg) {
 		if (orgMesg) {
 			msg = orgMesg;

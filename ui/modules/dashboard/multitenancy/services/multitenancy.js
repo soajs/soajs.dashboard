@@ -20,7 +20,10 @@ multiTenantService.service('aclHelper', ['aclDrawHelpers', function (aclDrawHelp
 		for (var env in aclFill) {
 			for (serviceName in aclFill[env]) {
 				if (aclFill[env].hasOwnProperty(serviceName)) {
-					var currentService = services[env.toUpperCase()][serviceName];
+					var currentService = {};
+					if (services[env.toUpperCase()][serviceName]) {
+						currentService = services[env.toUpperCase()][serviceName];
+					}
 					service = aclFill[env][serviceName];
 					aclDrawHelpers.fillServiceAccess(service, currentService);
 					aclDrawHelpers.fillServiceApiAccess(service, currentService);

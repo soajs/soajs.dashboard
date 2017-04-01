@@ -1,9 +1,9 @@
 <div ng-show="!entry.hidden">
 	<label>{{entry.label}}</label>
-<input class=" form-control" id="{{entry.name}}" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
-tooltip="{{entry.tooltip}}" ng-required="entry.required" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form)" maxlength="{{entry.maxlength}}" ng-if="entry.disabled" disabled/>
-<input class="form-control" id="{{entry.name}}" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
-       tooltip="{{entry.tooltip}}" ng-required="entry.required" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form)" maxlength="{{entry.maxlength}}" ng-if="!entry.disabled"/>
+	<input class=" form-control" id="{{entry.name}}" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
+	       tooltip="{{entry.tooltip}}" ng-required="entry.required" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form)" maxlength="{{entry.maxlength}}" ng-if="entry.disabled" disabled/>
+	<input class="form-control" id="{{entry.name}}" name="{{entry.name}}" ng-model="form.formData[entry.name]" type="{{entry.type}}" value="{{entry.value}}" placeholder="{{entry.placeholder}}"
+	       tooltip="{{entry.tooltip}}" ng-required="entry.required" ng-click="form.call(entry.onAction, entry.name , form.formData[entry.name], form)" maxlength="{{entry.maxlength}}" ng-if="!entry.disabled"/>
 
-<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
+	<div ng-show="entry.fieldMsg" class="fieldMsg hint" ng-bind-html="entry.fieldMsg|toTrustedHtml"></div>
 </div>

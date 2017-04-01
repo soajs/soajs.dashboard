@@ -4,6 +4,7 @@ var env_template = {
 	"domain": "",
 	"profile": "",
 	"description": "",
+	"sensitive": false,
 	//deployer object is added on the api level
 	"services": {
 		"controller": {
@@ -41,6 +42,8 @@ var env_template = {
 			},
 			"oauth": {
 				"grants": ['password', 'refresh_token'],
+				"accessTokenLifetime": 3600,
+				"refreshTokenLifetime": 1209600,
 				"debug": false
 			},
 			"ports": {

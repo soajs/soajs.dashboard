@@ -831,6 +831,23 @@ var envTranslation ={
 		"ENG": "Grants",
 		"FRA": "Grants"
 	},
+	"accessTokenLifetime":{
+		"ENG": "Access Token Lifetime",
+		"FRA": "Access Token Lifetime"
+	},
+	"accessTokenLifetimeNote":{
+		"ENG": "Access Token Lifetime in seconds. Default is 1 hour.",
+		"FRA": "Access Token Lifetime in seconds. Default is 1 hour."
+	},
+	"refreshTokenLifetime":{
+		"ENG": "Refresh Token Lifetime",
+		"FRA": "Refresh Token Lifetime"
+	},
+	"refreshTokenLifetimeNote":{
+		"ENG": "Refresh Token Lifetime in seconds. Default is 14 days.",
+		"FRA": "Refresh Token Lifetime in seconds. Default is 14 days."
+	},
+	
 	"enterCommaSeparatedValues": {
 		"ENG": "Enter comma separated values",
 		"FRA": "Enter comma separated values"

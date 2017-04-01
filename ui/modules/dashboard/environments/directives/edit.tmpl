@@ -44,6 +44,14 @@
 								</textarea>
                             </td>
                         </tr>
+	                    <tr>
+		                    <td class="">
+			                    <label>Sensitive</label>
+			                    <input name="sensitive" style="margin-left: 50px" type="radio" ng-checked="formEnvironment.sensitive==true" ng-model="formEnvironment.sensitive" data-ng-value="true"/>
+			                    {{translation.true[LANG]}}
+			                    <input name="sensitive" style="margin-left: 5px" type="radio" ng-model="formEnvironment.sensitive" data-ng-value="false"/> {{translation.false[LANG]}}
+		                    </td>
+	                    </tr>
                         <tr class="form-group">
                             <td class="">
                                 <hr/>
@@ -157,15 +165,23 @@
                                         </tab>
                                         <tab heading="oAuth">
                                             <div class="grouped">
-                                                <label><span class="icon icon-arrow-right2"></span> {{translation.grants[LANG]}} </label>
-                                                <input type="text" ng-required="true" tooltip="{{translation.enterCommaSeparatedValues[LANG]}}" placeholder="{{translation.passwordRefreshGrants[LANG]}}"
-                                                       ng-model="formEnvironment.services.config.oauth.grants"
-                                                       class="form-control"/><br/>
+                                                <!--<label><span class="icon icon-arrow-right2"></span> {{translation.grants[LANG]}} </label>-->
+                                                <!--<input type="text" ng-required="true" tooltip="{{translation.enterCommaSeparatedValues[LANG]}}" placeholder="{{translation.passwordRefreshGrants[LANG]}}"-->
+                                                       <!--ng-model="formEnvironment.services.config.oauth.grants"-->
+                                                       <!--class="form-control"/><br/>-->
                                                 <label><span class="icon icon-arrow-right2"></span> {{translation.debug[LANG]}} </label>
 
                                                 <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="true"/> {{translation.true[LANG]}}
                                                 <input ng-required="true" name="oauth.debug" type="radio" ng-model="formEnvironment.services.config.oauth.debug" data-ng-value="false"/> {{translation.false[LANG]}}
-                                                <br/><em>{{translation.enterSupportedGrantTypesoAuthSpecifyIfoAuthDebugMode[LANG]}}</em>
+                                                <br/><em>{{translation.enterSupportedGrantTypesoAuthSpecifyIfoAuthDebugMode[LANG]}}</em><br />
+	
+	                                            <label><span class="icon icon-arrow-right2"></span> {{translation.accessTokenLifetime[LANG]}} </label>
+	                                            <input type="number" ng-required="true" tooltip="" placeholder="3600" ng-model="formEnvironment.services.config.oauth.accessTokenLifetime" class="form-control"/><br/>
+	                                            <em>{{translation.accessTokenLifetimeNote[LANG]}}</em><br />
+	                                            
+	                                            <label><span class="icon icon-arrow-right2"></span> {{translation.refreshTokenLifetime[LANG]}} </label>
+	                                            <input type="number" ng-required="true" tooltip="" placeholder="1209600" ng-model="formEnvironment.services.config.oauth.refreshTokenLifetime" class="form-control"/><br/>
+	                                            <em>{{translation.refreshTokenLifetimeNote[LANG]}}</em>
                                             </div>
                                         </tab>
                                         <tab heading="Ports">

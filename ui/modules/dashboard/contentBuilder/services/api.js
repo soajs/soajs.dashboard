@@ -1,6 +1,6 @@
 "use strict";
 var cbAPIService = soajsApp.components;
-cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window', function(ngDataApi, $timeout, $modal, $window) {
+cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
 	/*
 	 Step 4
@@ -68,7 +68,6 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 		if(formData.response && formData.response !== '') {
 			wfAPI.workflow.response = formData.response;
 		}
-
 		currentScope.config.genericService.config.schema[formData.route] = gcAPI;
 		currentScope.config.soajsService.apis[formData.route] = wfAPI;
 	}
@@ -95,14 +94,34 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 				$scope.done = function() {
 					var formData = $scope.form.formData;
 					if(!formData.route) {
-						$window.alert(translation.enterRouteValueApiProceed[LANG]);
-					}
-					else{
-
+						$scope.form.displayAlert('danger', translation.enterRouteValueApiProceed[LANG]);
+						return false;
+					} else if(formData.method.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPImethodProceed[LANG]);
+						return false;
+					} else if(formData.type.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPItypeProceed[LANG]);
+						return false;
+					} else if(!formData.code) {
+						$scope.form.displayAlert('danger', translation.enterErrorCodeProceed[LANG]);
+						return false;
+					} else if(!formData.label) {
+						$scope.form.displayAlert('danger', translation.enterAPIlabelProceed[LANG]);
+						return false;
+					} else if(!formData.group) {
+						$scope.form.displayAlert('danger', translation.enterAPIgroupProceed[LANG]);
+						return false;
+					} else if(formData.groupMain.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPIgroupMainProceed[LANG]);
+						return false;
+					} else if(formData.inputs.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPIinputsProceed[LANG]);
+						return false;
+					} else {
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
 						allowedErrorCodes = Object.keys(allowedErrorCodes);
 						if(allowedErrorCodes.indexOf(formData.code.toString()) === -1){
-							$window.alert(translation.errorCodeYouEnteredAPIInvalid[LANG]);
+							$scope.form.displayAlert('danger', translation.errorCodeYouEnteredAPIInvalid[LANG]);
 						}
 						else {
 							buildAPIData(currentScope, formData);
@@ -166,15 +185,36 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 
 				$scope.done = function() {
 					var formData = $scope.form.formData;
-
+					
 					if(!formData.route) {
-						$window.alert(translation.enterRouteValueApiProceed[LANG]);
-					}
-					else{
+						$scope.form.displayAlert('danger', translation.enterRouteValueApiProceed[LANG]);
+						return false;
+					} else if(formData.method.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPImethodProceed[LANG]);
+						return false;
+					} else if(formData.type.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPItypeProceed[LANG]);
+						return false;
+					} else if(!formData.code) {
+						$scope.form.displayAlert('danger', translation.enterErrorCodeProceed[LANG]);
+						return false;
+					} else if(!formData.label) {
+						$scope.form.displayAlert('danger', translation.enterAPIlabelProceed[LANG]);
+						return false;
+					} else if(!formData.group) {
+						$scope.form.displayAlert('danger', translation.enterAPIgroupProceed[LANG]);
+						return false;
+					} else if(formData.groupMain.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPIgroupMainProceed[LANG]);
+						return false;
+					} else if(formData.inputs.length === 0) {
+						$scope.form.displayAlert('danger', translation.enterAPIinputsProceed[LANG]);
+						return false;
+					} else{
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
 						allowedErrorCodes = Object.keys(allowedErrorCodes);
 						if(allowedErrorCodes.indexOf(formData.code.toString()) === -1){
-							$window.alert(translation.errorCodeYouEnteredAPIInvalid[LANG]);
+							$scope.form.displayAlert('danger', translation.errorCodeYouEnteredAPIInvalid[LANG]);
 						}
 						else {
 							buildAPIData(currentScope, formData);
@@ -198,7 +238,7 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', '$window
 				"route": APIName,
 				"label": gcInfo._apiInfo.l,
 				"group": gcInfo._apiInfo.group,
-				"groupMain": gcInfo._apiInfo.groupMain || null,
+				"groupMain": gcInfo._apiInfo.groupMain || false,
 
 				"inputs": gcInfo.commonFields || null,
 

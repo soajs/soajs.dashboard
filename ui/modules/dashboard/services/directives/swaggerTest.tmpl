@@ -15,6 +15,14 @@
 			simulator.
 		</alert>
 	</div>
+	
+	<div ng-show="envTenants && envTenants.length > 0">
+		<label style="margin-top: 7px;" class="f-left">Select which tenant you want to test the service with:&nbsp;&nbsp;</label>
+		<select ng-model="selectedEnvTenant" ng-change="selectNewTenant()" class="form-control f-left c85" ng-disabled="tempDisable">
+			<option ng-repeat="tenant in serviceEnvironments[envSelected].tenants" value="{{tenant}}">Tenant: {{tenant.code}} --> Package: {{tenant.package}}</option>
+		</select>
+		<div class="fieldMsg hint">Only the tenants that have keys in this environment are available.</div>
+	</div>
 	<hr/>
 	<br/>
 	
