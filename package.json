@@ -31,9 +31,10 @@
     "lodash": "4.17.4",
     "mocha": "3.2.0",
     "shelljs": "0.7.5",
-    "soajs.controller": "0.2.*",
-    "soajs.mongodb.data": "0.2.*",
-    "soajs.urac": "0.3.*"
+    "soajs.controller": "1.*",
+    "soajs.mongodb.data": "1.*",
+    "soajs.oauth": "1.*",
+    "soajs.urac": "1.*"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -52,10 +53,10 @@
     "request": "2.79.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
-    "soajs": "git+https://github.com/soajs/soajs.git#feature/sessionLess",
-    "soajs.core.drivers": "soajs/soajs.core.drivers#develop",
-    "soajs.core.libs": "git+https://github.com/soajs/soajs.core.libs.git#develop",
-    "soajs.core.modules": "git+https://github.com/soajs/soajs.core.modules.git#develop",
+    "soajs": "1.*",
+    "soajs.core.drivers": "0.0.*",
+    "soajs.core.libs": "1.*",
+    "soajs.core.modules": "1.*",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
