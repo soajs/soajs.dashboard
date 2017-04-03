@@ -31,10 +31,10 @@
     "lodash": "4.17.4",
     "mocha": "3.2.0",
     "shelljs": "0.7.5",
-    "soajs.controller": "1.*",
-    "soajs.mongodb.data": "1.*",
-    "soajs.oauth": "1.*",
-    "soajs.urac": "1.*"
+    "soajs.controller": "soajs/soajs.controller.git#develop",
+    "soajs.mongodb.data": "soajs/soajs.mongodb.data.git#develop",
+    "soajs.oauth": "soajs/soajs.oauth.git#develop",
+    "soajs.urac": "soajs/soajs.urac.git#develop"
   },
   "dependencies": {
     "async": "2.1.4",
