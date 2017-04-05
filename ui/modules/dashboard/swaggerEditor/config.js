@@ -13,7 +13,6 @@ var dbForm = {
 			'label': 'Name',
 			'type': 'text',
 			'placeholder': 'myDB',
-			'required': true,
 			'value': '',
 			'tooltip': 'Enter your database name'
 		},
@@ -35,7 +34,6 @@ var dbForm = {
 				{l: 'mongo', v: 'mongo', selected: true},
 				{l: 'es', v: 'es'}
 			],
-			'required': true,
 			'tooltip': 'Choose your database model'
 		},
 		{

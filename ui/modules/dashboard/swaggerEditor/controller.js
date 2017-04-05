@@ -88,5 +88,4 @@ swaggerEditorApp.controller('swaggerEditorCtrl', ['$scope', '$timeout', 'injectF
 	}
 	
 	injectFiles.injectCss("modules/dashboard/swaggerEditor/swaggerEditor.css");
-}])
-;
+}]);
