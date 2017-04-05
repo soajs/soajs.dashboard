@@ -33,25 +33,29 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 		
 		var dbs = [];
 		for(var i =0; i < currentScope.form.formData.dbCount; i++){
-			var dbObj = {
-				prefix: currentScope.form.formData['prefix' + i] || ""
-			};
+			
 			if(currentScope.form.formData['name' + i]){
+				var dbObj = {
+					prefix: currentScope.form.formData['prefix' + i] || ""
+				};
+				
 				dbObj.name = currentScope.form.formData['name' + i];
-			}
-			if(Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i].length > 0){
-				dbObj[currentScope.form.formData['model' + i][0]] = true;
-			}
-			else if(currentScope.form.formData['model' + i]){
-				dbObj[currentScope.form.formData['model' + i]] = true;
-			}
-			if((Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i][0] === 'mongo') || (currentScope.form.formData['model' + i] === 'mongo')){
-				dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
-			}
-			if(Object.keys(dbObj).length >= 2 && dbObj[currentScope.form.formData['model' + i]]){
-				dbs.push(dbObj);
+				
+				if(Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i].length > 0){
+					dbObj[currentScope.form.formData['model' + i][0]] = true;
+				}
+				else if(currentScope.form.formData['model' + i]){
+					dbObj[currentScope.form.formData['model' + i]] = true;
+				}
+				if((Array.isArray(currentScope.form.formData['model' + i]) && currentScope.form.formData['model' + i][0] === 'mongo') || (currentScope.form.formData['model' + i] === 'mongo')){
+					dbObj['multitenant'] = (currentScope.form.formData['multitenant' + i] === 'true');
+				}
+				if(Object.keys(dbObj).length >= 2 && dbObj[currentScope.form.formData['model' + i]]){
+					dbs.push(dbObj);
+				}
 			}
 		}
+		
 		var yaml = currentScope.schemaCode.trim();
 		
 		if(yaml === ''){
@@ -131,13 +135,15 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 						"requestTimeoutRenewal": requestTimeoutRenewal,
 						"extKeyRequired": extKeyRequired,
 						"oauth": oauth,
-						"session": session,
-						"dbs": dbs
+						"session": session
 					},
 					"yaml": yaml
 				}
 			}
 		};
+		if(dbs && Array.isArray(dbs) && dbs.length > 0){
+			options["data"]['data']['service']["dbs"]= dbs;
+		}
 		
 		getSendDataFromServer(currentScope, ngDataApi, options, function (error, response) {
 			if (error) {
@@ -414,9 +420,14 @@ swaggerEditorSrv.service('swaggerClient', ["$q", "$http", "swaggerModules", "$co
 			headers.key = apiConfiguration.key;
 		}
 		
-		var soajsAuthCookie = $cookies.get('soajs_auth');
-		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
-			headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+		// var soajsAuthCookie = $cookies.get('soajs_auth');
+		// if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
+			// headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
+		// }
+		
+		var soajsAccessToken = $cookies.get('access_token');
+		if(soajsAccessToken){
+			query.access_token = $cookies.get('access_token');
 		}
 		
 		// build request

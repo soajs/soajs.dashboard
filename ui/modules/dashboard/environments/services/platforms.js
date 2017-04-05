@@ -2,6 +2,8 @@
 var platformsServices = soajsApp.components;
 platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$cookies', 'Upload', function (ngDataApi, $timeout, $modal, $cookies, Upload) {
 
+	var access_token = $cookies.get('access_token');
+
 	function listPlatforms(currentScope, env, cb) {
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "get",
@@ -220,7 +222,8 @@ platformsServices.service('envPlatforms', ['ngDataApi', '$timeout', '$modal', '$
 							filename: $scope.formData.certificates[$scope.index[counter]].name,
 							certType: $scope.index[counter],
 							platform: platform,
-							driver: driverName
+							driver: driverName,
+							access_token: access_token
 						},
 						file: $scope.formData.certificates[$scope.index[counter]],
 						headers: {

@@ -3,10 +3,9 @@ var assert = require('assert');
 var shell = require('shelljs');
 var helper = require("../helper.js");
 var sampleData = require("soajs.mongodb.data/modules/dashboard");
-var dashboard, controller, urac;
+var dashboard, controller, urac, oauth;
 
-var soajs = require('soajs');
-var Mongo = soajs.mongo;
+var Mongo = require('soajs.core.modules').mongo;
 var dbConfig = require("./db.config.test.js");
 var dashboardConfig = dbConfig();
 dashboardConfig.name = "core_provision";
@@ -67,10 +66,11 @@ describe("importing sample data", function () {
 		controller = require("soajs.controller");
 		setTimeout(function () {
 			urac = require("soajs.urac");
+			oauth = require("soajs.oauth");
 			dashboard = helper.requireModule('./index');
 			setTimeout(function () {
 				done();
-			}, 1000);
+			}, 2000);
 		}, 2000);
 	});
 
@@ -94,11 +94,11 @@ describe("importing sample data", function () {
 	after(function (done) {
 		setTimeout(function () {
 			require("./soajs.dashboard.test.swagger.js");
+			require("./soajs.contentbuilder.test.js");
 			require("./soajs.dashboard.locked.test.js");
 			require("./soajs.dashboard.test.tenants.js");
 			require("./soajs.dashboard.test.js");
 			require("./soajs.dashboard.test.services.js");
-			require("./soajs.contentbuilder.test.js");
 			require("./soajs.uploadCertificate.test.js");
 			require("./soajs.hostsdeploy.test.js");
 			require("./soajs.dashboard.test.gitAccounts.js");

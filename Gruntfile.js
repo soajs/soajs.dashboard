@@ -108,6 +108,7 @@ module.exports = function (grunt) {
 				// APP_DIR: process.cwd(),
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1',
+				SOAJS_PROFILE: '',
 				SOAJS_ENV: 'dev'
 			}
 		},

@@ -601,7 +601,9 @@ pre {
 }
 
 .entryServiceBoxes .service-container label {
-    text-decoration: underline;
+    /*text-decoration: underline;*/
+    margin-bottom: 0;
+    font-weight: normal;
 }
 
 .entryServiceBoxes .service-container div.blueBox {
@@ -1541,7 +1543,7 @@ td.apiNavigationWide .pagination a {
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
-    width:100%;
-    border-radius:10px;
-    border:solid 1px #ccc;
+    width: 100%;
+    border-radius: 10px;
+    border: solid 1px #ccc;
 }

@@ -6,7 +6,7 @@
 
             <div class="entryBoxes">
                 <div ng-repeat="row in grid.rows" class="entryBox">
-                    <div class="header">{{translation.code[LANG]}}: {{row['code']}} / {{translation.siteDomain[LANG]}}: {{row['sitePrefix']}}.{{row.domain}} / {{translation.apiDomain[LANG]}} : {{row['apiPrefix']}}.{{row.domain}}</div>
+	                <div class="header"><span>{{translation.code[LANG]}}: {{row['code']}} / {{translation.siteDomain[LANG]}}: {{row['sitePrefix']}}.{{row.domain}} / {{translation.apiDomain[LANG]}} : {{row['apiPrefix']}}.{{row.domain}} /</span><span ng-if="row.sensitive" style="margin-left: 3px">[Sensitive]</span></div>
                     <div class="body">
                         <div class="description">
                             {{row['description']}}

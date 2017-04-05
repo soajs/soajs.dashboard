@@ -44,7 +44,9 @@ var serviceConfig = {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"grants": {"type": "array", "items": {"type": "string", "required": true}, "required": true},
+				// "grants": {"type": "array", "items": {"type": "string", "required": true}, "required": true},
+				"accessTokenLifetime" :{"type": "number", "required": true},
+				"refreshTokenLifetime" :{"type": "number", "required": true},
 				"debug": {"type": "boolean", "required": true}
 			}
 		},

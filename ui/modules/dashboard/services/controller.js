@@ -195,14 +195,29 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 			$scope.envDomain = null;
 			$scope.yamlContent = "";
 			$scope.envSelected = null;
+			$scope.envTenants = null;
 		}
 		else {
 			$scope.envSelected = $scope.environments.value;
-			$scope.envDomain = $scope.serviceEnvironments[$scope.envSelected];
+			$scope.envDomain = $scope.serviceEnvironments[$scope.envSelected].domain;
+			$scope.envTenants = $scope.serviceEnvironments[$scope.envSelected].tenants;
 		}
 		
 		//call fill ace editor
 		fillmyEditor($scope.editor);
+	};
+	
+	$scope.selectNewTenant = function(){
+		var selectedTenant = $scope.selectedEnvTenant || null;
+		if($scope.selectedEnvTenant){
+			if(typeof($scope.selectedEnvTenant) === 'string'){
+				selectedTenant = JSON.parse($scope.selectedEnvTenant);
+			}
+		}
+		
+		if(selectedTenant){
+			watchSwaggerSimulator();
+		}
 	};
 	
 	//event listener that hooks ace editor to the scope and hide the print margin in the editor
@@ -247,6 +262,15 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 			//modify the host value with the new domain
 			x[3].host = $scope.envDomain;
 			x[3].info.host = $scope.envDomain;
+			
+			if($scope.selectedEnvTenant){
+				var selectedTenant = $scope.selectedEnvTenant;
+				if(typeof($scope.selectedEnvTenant) === 'string'){
+					selectedTenant = JSON.parse($scope.selectedEnvTenant);
+				}
+				x[3].tenantKey = selectedTenant.extKey;
+				x[3].info.tenantKey = selectedTenant.extKey;
+			}
 			console.log("switching to new domain:", x[3].host);
 			//apply the changes
 			swaggerParser.execute.apply(null, x);
@@ -258,33 +282,35 @@ servicesApp.controller('swaggerTestCtrl', ['$scope', '$routeParams', 'ngDataApi'
 	 * that will be inserted in $scope.url so the swagger UI will render the documentation
 	 */
 	$scope.getYaml = function (cb) {
-		getSendDataFromServer($scope, ngDataApi, {
-			"method": "get",
-			"routeName": "/dashboard/gitAccounts/getYaml",
-			"params": {
-				owner: $scope.owner,
-				repo: $scope.repo,
-				filepath: "/swagger.yml",
-				env: $scope.envSelected,
-				serviceName: $scope.serviceName,
-				version: $scope.version,
-				type: 'service'
-			}
-		}, function (error, response) {
-			if (error) {
-				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-				return cb(false);
-			} else {
-				$scope.yamlContent = response.content;
-				
-				$scope.link = response.downloadLink;
-				//init form for swagger UI
-				$scope.isLoading = false;
-				// Todo change this to $scope.downloadLink instead of the given url
-				$scope.swaggerUrl = $scope.link;
-				return cb(true);
-			}
-		});
+		if($scope.envSelected){
+			getSendDataFromServer($scope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/gitAccounts/getYaml",
+				"params": {
+					owner: $scope.owner,
+					repo: $scope.repo,
+					filepath: "/swagger.yml",
+					env: $scope.envSelected,
+					serviceName: $scope.serviceName,
+					version: $scope.version,
+					type: 'service'
+				}
+			}, function (error, response) {
+				if (error) {
+					$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+					return cb(false);
+				} else {
+					$scope.yamlContent = response.content;
+					
+					$scope.link = response.downloadLink;
+					//init form for swagger UI
+					$scope.isLoading = false;
+					// Todo change this to $scope.downloadLink instead of the given url
+					$scope.swaggerUrl = $scope.link;
+					return cb(true);
+				}
+			});
+		}
 	};
 	
 	if ($scope.access.getEnv) {

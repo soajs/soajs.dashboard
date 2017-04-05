@@ -18,9 +18,8 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 	"awarenessEnv": true,
-	"oauth": false,
+	"oauth": true,
 	"session": true,
-	"roaming": true,
 
 	"hasher": {
 		"hashIterations": 1024,
@@ -1121,6 +1120,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
@@ -1671,7 +1677,7 @@ module.exports = {
 							}
 						}
 					}
-				},
+				}
 			},
 
 			"/cloud/nodes/add": {
@@ -2081,6 +2087,13 @@ module.exports = {
 					"default": "site",
 					"validation": {
 						"type": "string"
+					}
+				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
 					}
 				},
 				"custom": {

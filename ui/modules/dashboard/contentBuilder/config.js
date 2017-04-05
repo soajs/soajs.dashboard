@@ -173,12 +173,8 @@ var cbConfig = {
 						    'name': 'imfv',
 						    'label': translation.imfvConfiguration[LANG],
 						    'type': 'textarea',
-						    'options': {
-						        'mode': 'text',
-						        'availableModes': []
-						    },
-						    'height': '300px',
-						    "value": {},
+						    'height': '80px',
+						    "value": '{ }',
 							'tooltip': translation.cbFormStep2FieldImfvTooltip[LANG],
 							'fieldMsg': translation.cbFormStep2FieldImfvFieldMsg[LANG]
 						}
@@ -378,13 +374,9 @@ var cbConfig = {
 				    'name': 'errors',
 				    'label': translation.errorCodesMessage[LANG],
 				    'type': 'textarea',
-				    'options': {
-				        'mode': 'code',
-				        'availableModes': [{'v': 'code', 'l': 'Code View'}, {'v': 'tree', 'l': 'Tree View'}, {'v': 'form', 'l': 'Form View'}]
-				    },
 				    'height': '200px',
-				    "value": {},
-				    'required': false,
+				    "value": '{ }',
+				    'required': true,
 				    "tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					'fieldMsg': translation.cbFormStep3errorsFieldMsg[LANG]
 				},

@@ -1,6 +1,6 @@
 "use strict";
 var cbInputService = soajsApp.components;
-cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$window', function(ngDataApi, $timeout, $modal, $window) {
+cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', function(ngDataApi, $timeout, $modal) {
 
 	/*
 	 Step 2
@@ -190,12 +190,12 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 					var formData = $scope.input[inputType].form.formData;
 
 					if(!formData.label) {
-						$window.alert(translation.enterLabelForInputProceed[LANG]);
-					}
-					else {
+						$scope.form.displayAlert('danger', translation.enterLabelForInputProceed[LANG]);
+						return false;
+					}   else {
 						var machineName = formData.label.toLowerCase().trim().replace(/\s/g, "_");
 						if(currentScope.config.genericService.config.schema.commonFields[machineName]) {
-							$window.alert(translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
+							$scope.form.displayAlert('danger', translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
 						}
 						else {
 							if(inputType === 'computedUI') {
@@ -203,6 +203,25 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 							}
 
 							if(inputType === 'user') {
+								try {
+									if(typeof(formData['imfv']) === 'string'){
+									formData['imfv'] = JSON.parse(formData['imfv']);
+									}
+								}
+								catch (e){
+									$scope.form.displayAlert('danger', translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
+									return false;
+								}
+								if(formData.required.length === 0) {
+									$scope.form.displayAlert('danger', translation.checkInputrequiredProceed[LANG]);
+									return false;
+								} else if(formData.listing.length === 0){
+									$scope.form.displayAlert('danger', translation.enterInputlistingPropertiesProceed[LANG]);
+									return false;
+								}else if(formData.type.length === 0){
+									$scope.form.displayAlert('danger', translation.entertypeForUIProceed[LANG]);
+									return false;
+								}
 								buildIMFV(currentScope, formData, machineName);
 								buildFormUI(currentScope, formData, machineName);
 								buildListinUI(currentScope, formData, machineName);
@@ -316,17 +335,38 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', '$wi
 				$scope.done = function() {
 					var formData = $scope.input[inputType].form.formData;
 					if(!formData.label) {
-						$window.alert(translation.enterLabelForInputProceed[LANG]);
-					}
-					else {
+						$scope.form.displayAlert('danger', translation.enterLabelForInputProceed[LANG]);
+						return false;
+					} else {
 						var machineName = formData.label.toLowerCase().trim().replace(/\s/g, "_");
 						if(machineName !== fieldName && currentScope.config.genericService.config.schema.commonFields[machineName]) {
-							$window.alert(translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
+							$scope.form.displayAlert('danger', translation.youAlreadyHaveInputNamed[LANG] + " " + formData.label);
 						}
 						else {
 							if(inputType === 'computedUI') {
 								buildListinUI(currentScope, formData, machineName, true);
+							} else if(inputType === 'fileUI'){
+								buildFormUI(currentScope, formData, machineName);
 							} else {
+								try {
+									if(typeof(formData['imfv']) === 'string'){
+										formData['imfv'] = JSON.parse(formData['imfv']);
+									}
+								}
+								catch (e){
+									$scope.form.displayAlert('danger', translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
+									return false;
+								}
+								if(formData.required.length === 0) {
+									$scope.form.displayAlert('danger', translation.checkInputrequiredProceed[LANG]);
+									return false;
+								} else if(formData.listing.length === 0){
+									$scope.form.displayAlert('danger', translation.enterInputlistingPropertiesProceed[LANG]);
+									return false;
+								} else if(formData.type.length === 0){
+									$scope.form.displayAlert('danger', translation.entertypeForUIProceed[LANG]);
+									return false;
+								}
 								buildIMFV(currentScope, formData, machineName);
 								buildFormUI(currentScope, formData, machineName);
 								buildListinUI(currentScope, formData, machineName, false);
