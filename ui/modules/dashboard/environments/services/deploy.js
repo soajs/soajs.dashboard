@@ -60,6 +60,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     form.entries[0].entries[8].hidden = false;
                 }
             };
+
+            // Check if nginx is deployed with LoadBalancer service type and hide Exposed Port field
+            var driver = currentScope.envDeployer.selected.split('.')[2];
+            if (currentScope.envDeployer.container.kubernetes[driver].nginxDeployType === 'LoadBalancer') {
+                formConfig.entries[0].entries[2].required = false;
+                formConfig.entries[0].entries[2].hidden = true;
+            }
         }
         else {
             formConfig.entries[0].entries.splice(6, 7);
@@ -975,6 +982,27 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             formConfig.entries[0].entries[2].max = kubeConfig.maxPort;
             formConfig.entries[0].entries[2].fieldMsg += ". Kubernetes port range: " + kubeConfig.minPort + " - " + kubeConfig.maxPort;
 
+            //Handling the outcome of enabling SSL for nginx
+            formConfig.entries[0].entries[5].onAction = function (id, data, form) {
+                if (data === "true") {
+                    form.entries[0].entries[7].required = true;
+                    form.entries[0].entries[7].hidden = false;
+                }
+                else {
+                    form.entries[0].entries[7].required = false;
+                    form.entries[0].entries[7].hidden = true;
+                    form.entries[0].entries[7].value[0].selected = true;
+                    delete form.entries[0].entries[7].value[1].selected;
+					form.formData.certType = "true";
+
+                    form.entries[0].entries[8].required = false;
+                    form.entries[0].entries[8].hidden = true;
+                    form.entries[0].entries[8].value = null;
+                    form.formData.kubeSecret = null;
+                }
+
+            };
+
             //Handling the possibilities of certificate type
             formConfig.entries[0].entries[6].onAction = function (id, data, form) {
                 if (data === "true") {
@@ -987,6 +1015,13 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     form.entries[0].entries[8].hidden = false;
                 }
             };
+
+            // Check if nginx is deployed with LoadBalancer service type and hide Exposed Port field
+            var driver = currentScope.envDeployer.selected.split('.')[2];
+            if (currentScope.envDeployer.container.kubernetes[driver].nginxDeployType === 'LoadBalancer') {
+                formConfig.entries[0].entries[2].required = false;
+                formConfig.entries[0].entries[2].hidden = true;
+            }
         }
         else {
             formConfig.entries[0].entries.splice(6, 7);
