@@ -8,7 +8,6 @@ module.exports = {
             "name": { "type": "string", "required": true },
             "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "mongo", "es" ] },
             "description": { "type": "string", "required": true },
-            "locked": { "type": "boolean", "required": false },
             "recipe": {
                 "type": "object",
                 "required": true,
