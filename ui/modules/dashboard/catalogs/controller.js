@@ -82,6 +82,11 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                     label: 'Submit',
                     btn: 'primary',
                     action: function (formData) {
+                        if (formData.recipe.locked) {
+                            //do not allow user to lock a recipe
+                            delete formData.recipe.locked;
+                        }
+
                         overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
                             method: 'post',
@@ -134,6 +139,11 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                     label: 'Submit',
                     btn: 'primary',
                     action: function (formData) {
+                        if (formData.recipe.locked) {
+                            //do not allow user to lock a recipe
+                            delete formData.recipe.locked;
+                        }
+
                         overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
                             method: 'put',
