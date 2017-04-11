@@ -88,12 +88,36 @@ module.exports = {
                                 "type": "object",
                                 "required": false,
                                 "properties": {
-                                    "pre_install": { "type": "string", "required": false },
-                                    "install": { "type": "string", "required": false },
-                                    "post_install": { "type": "string", "required": false },
-                                    "pre_deploy": { "type": "string", "required": false },
-                                    "deploy": { "type": "string", "required": false },
-                                    "post_deploy": { "type": "string", "required": false }
+                                    "pre_install": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    },
+                                    "install": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    },
+                                    "post_install": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    },
+                                    "pre_deploy": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    },
+                                    "deploy": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    },
+                                    "post_deploy": {
+                                        "type": "array",
+                                        "required": false,
+                                        "items": { "type": "string", "required": true }
+                                    }
                                 }
                             }
                         }
