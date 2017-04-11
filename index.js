@@ -12,6 +12,7 @@ var cloudDeployBL = require("./lib/cloud/deploy.js");
 var cloudNodesBL = require("./lib/cloud/nodes.js");
 var cloudMaintenanceBL = require("./lib/cloud/maintenance.js");
 var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
+var catalogBL = require("./lib/catalog/index.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -968,6 +969,54 @@ service.init(function () {
 		});
 	});
 	
+	/**
+	 * Catalog Recipes features
+	 */
+
+	/**
+  	* List catalogs
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.get("/catalog/recipes/list", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.list(config, req, res);
+		});
+	});
+
+	/**
+  	* Add new catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.post("/catalog/recipes/add", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.add(config, req, res);
+		});
+	});
+
+	/**
+  	* Update a catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.put("/catalog/recipes/update", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.edit(config, req, res);
+		});
+	});
+
+	/**
+  	* Delete a catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.delete("/catalog/recipes/delete", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.delete(config, req, res);
+		});
+	});
+
 	/**
 	 * Git App features gitAccountsBL
 	 */

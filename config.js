@@ -2,6 +2,7 @@
 var serviceConfig = require("./schemas/serviceConfig");
 var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
+var catalogSchema = require("./schemas/catalog");
 
 module.exports = {
 	type: 'service',
@@ -890,6 +891,13 @@ module.exports = {
 				}
 			},
 
+			"/catalog/recipes/list": {
+				"_apiInfo": {
+					"l": "List Catalog Recipes",
+					"group": "Catalog"
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1757,6 +1765,14 @@ module.exports = {
 						"enum": ["heartbeat", "reloadRegistry", "loadProvision", "awarenessStat", 'infoHost', 'daemonStats', 'reloadDaemonConf']
 					}
 				}
+			},
+
+			"/catalog/recipes/add": {
+				"_apiInfo": {
+					"l": "Add New Catalog",
+					"group": "Catalog"
+				},
+				"catalog": catalogSchema
 			},
 
 			"/gitAccounts/login": {
@@ -2667,6 +2683,21 @@ module.exports = {
 				}
 			},
 
+			"/catalog/recipes/update": {
+				"_apiInfo": {
+					"l": "Update Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"catalog": catalogSchema
+			},
+
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -2957,6 +2988,20 @@ module.exports = {
 				},
 				"namespaceId": {
 					"source": ['query.namespaceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/catalog/recipes/delete": {
+				"_apiInfo": {
+					"l": "Delete a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
 					"required": true,
 					"validation": {
 						"type": "string"
