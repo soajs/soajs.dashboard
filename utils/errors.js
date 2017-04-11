@@ -252,7 +252,12 @@ var errors = {
 	"908": "Updating deployer configuration is only supported for kubernetes deployments",
 	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
 
-	"910": "Specified memory limit is less than minimum memory prerequisite for this service"
+	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
+
+	"1000": "Catalog recipe not found",
+	"1001": "You are not allowed to edit or delete a locked recipe",
+	"1002": "Unable to update catalog recipe",
+	"1003": "Unable to delete catalog recipe"
 };
 
 
