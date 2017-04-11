@@ -940,7 +940,9 @@ service.init(function () {
   	*/
 	service.get("/catalog/recipes/list", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
-			BL.list(config, req, res);
+			BL.list(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 
@@ -951,7 +953,9 @@ service.init(function () {
   	*/
 	service.post("/catalog/recipes/add", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
-			BL.add(config, req, res);
+			BL.add(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 
@@ -962,7 +966,9 @@ service.init(function () {
   	*/
 	service.put("/catalog/recipes/update", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
-			BL.edit(config, req, res);
+			BL.edit(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 
@@ -973,7 +979,9 @@ service.init(function () {
   	*/
 	service.delete("/catalog/recipes/delete", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
-			BL.delete(config, req, res);
+			BL.delete(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 
