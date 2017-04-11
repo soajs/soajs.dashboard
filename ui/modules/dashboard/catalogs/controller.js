@@ -56,6 +56,9 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
         if (type === 'blank') {
             formConfig.entries[0].required = false;
             formConfig.entries[0].hidden = true;
+
+            var recipeTemplate = angular.copy(catalogAppConfig.templates.recipe);
+            formConfig.entries[1].value = recipeTemplate;
         }
         else {
             $scope.recipes.forEach(function (oneRecipe) {

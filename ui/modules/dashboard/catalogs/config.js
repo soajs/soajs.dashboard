@@ -8,7 +8,8 @@ var catalogAppConfig = {
 					'name': 'recipe',
 					'label': 'Recipe',
 					'type': 'jsoneditor',
-					'height': '200px',
+					'height': '450px',
+                    'fixedHeight': true,
 					'value': {},
 					'required': true
 				}
@@ -27,11 +28,54 @@ var catalogAppConfig = {
 					'name': 'recipe',
 					'label': 'Recipe',
 					'type': 'jsoneditor',
-					'height': '200px',
+					'height': '450px',
+                    'fixedHeight': true,
 					'value': {},
 					'required': true
 				}
             ]
+        }
+    },
+    templates: {
+        recipe: {
+            "name": "",
+            "type": "",
+            "description": "",
+            "recipe": {
+                "deployOptions": {
+                    "image": {
+                        "prefix": "",
+                        "name": "",
+                        "tag": "",
+                        "pullPolicy": ""
+                    },
+                    "readinessProbe": {
+                        "httpGet": {
+                            "path": "",
+                            "port": ""
+                        },
+                        "initialDelaySeconds": "",
+                        "timeoutSeconds": "",
+                        "periodSeconds": "",
+                        "successThreshold": "",
+                        "failureThreshold": ""
+                    },
+                    "volumes": []
+                },
+                "buildOptions": {
+                    "env": {
+                        "NODE_ENV": "production",
+                    },
+                    "cmd": {
+                        "pre_install": [],
+                        "install": [],
+                        "post_install": [],
+                        "pre_deploy": [],
+                        "deploy": [],
+                        "post_deploy": []
+                    }
+                }
+            }
         }
     },
     permissions: {
