@@ -108,7 +108,9 @@ service.init(function () {
 	 */
 	service.get("/environment/list", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.list(config, req, res);
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -344,7 +346,9 @@ service.init(function () {
 	 */
 	service.post("/product/add", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.add(config, req, res);
+			BL.add(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -355,7 +359,9 @@ service.init(function () {
 	 */
 	service.delete("/product/delete", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.delete(config, req, res);
+			BL.delete(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -366,7 +372,9 @@ service.init(function () {
 	 */
 	service.put("/product/update", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.update(config, req, res);
+			BL.update(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -377,7 +385,9 @@ service.init(function () {
 	 */
 	service.get("/product/list", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.list(config, req, res);
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -388,7 +398,9 @@ service.init(function () {
 	 */
 	service.get("/product/get", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.get(config, req, res);
+			BL.get(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -399,7 +411,9 @@ service.init(function () {
 	 */
 	service.get("/product/packages/get", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.getPackage(config, req, res);
+			BL.getPackage(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -410,7 +424,9 @@ service.init(function () {
 	 */
 	service.get("/product/packages/list", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.listPackage(config, req, res);
+			BL.listPackage(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -421,7 +437,9 @@ service.init(function () {
 	 */
 	service.post("/product/packages/add", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.addPackage(config, req, res);
+			BL.addPackage(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -432,7 +450,9 @@ service.init(function () {
 	 */
 	service.put("/product/packages/update", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.updatePackage(config, req, res);
+			BL.updatePackage(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -443,7 +463,9 @@ service.init(function () {
 	 */
 	service.delete("/product/packages/delete", function (req, res) {
 		initBLModel(req, res, productBL, dbModel, function (BL) {
-			BL.deletePackage(config, req, res);
+			BL.deletePackage(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -491,7 +513,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.update(config, req, res);
+			BL.update(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -502,7 +526,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/get", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.get(config, req, res);
+			BL.get(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -513,7 +539,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/oauth/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.getOAuth(config, req, res);
+			BL.getOAuth(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -524,7 +552,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/oauth/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res);
+			BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -535,7 +565,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/oauth/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
+			BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -546,7 +578,9 @@ service.init(function () {
 	 */
 	service.delete("/tenant/oauth/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.deleteOAuth(config, req, res);
+			BL.deleteOAuth(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -557,7 +591,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/oauth/users/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.getOAuthUsers(config, req, res);
+			BL.getOAuthUsers(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -568,7 +604,9 @@ service.init(function () {
 	 */
 	service.delete("/tenant/oauth/users/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.deleteOAuthUsers(config, req, res);
+			BL.deleteOAuthUsers(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -579,7 +617,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/oauth/users/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.addOAuthUsers(config, req, res);
+			BL.addOAuthUsers(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -590,7 +630,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/oauth/users/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.updateOAuthUsers(config, req, res);
+			BL.updateOAuthUsers(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -601,7 +643,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/application/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.listApplication(config, req, res);
+			BL.listApplication(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -612,7 +656,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/application/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.addApplication(config, req, res);
+			BL.addApplication(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -623,7 +669,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/application/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.updateApplication(config, req, res);
+			BL.updateApplication(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -634,7 +682,9 @@ service.init(function () {
 	 */
 	service.delete("/tenant/application/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.deleteApplication(config, req, res);
+			BL.deleteApplication(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -645,7 +695,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/acl/get", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.getTenantAcl(config, req, res);
+			BL.getTenantAcl(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -656,7 +708,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/application/key/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.createApplicationKey(config, service.provision, req, res);
+			BL.createApplicationKey(config, service.provision, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -667,7 +721,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/application/key/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.getApplicationKeys(config, req, res);
+			BL.getApplicationKeys(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -678,7 +734,9 @@ service.init(function () {
 	 */
 	service.delete("/tenant/application/key/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.deleteApplicationKey(config, req, res);
+			BL.deleteApplicationKey(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -689,7 +747,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/application/key/ext/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.listApplicationExtKeys(config, req, res);
+			BL.listApplicationExtKeys(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -700,7 +760,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+			BL.addApplicationExtKeys(config, service.provision, service.registry, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -711,7 +773,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/application/key/ext/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.updateApplicationExtKeys(config, req, res);
+			BL.updateApplicationExtKeys(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -722,7 +786,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/application/key/ext/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.deleteApplicationExtKeys(config, req, res);
+			BL.deleteApplicationExtKeys(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -733,7 +799,9 @@ service.init(function () {
 	 */
 	service.put("/tenant/application/key/config/update", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.updateApplicationConfig(config, req, res);
+			BL.updateApplicationConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -744,7 +812,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/application/key/config/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.listApplicationConfig(config, req, res);
+			BL.listApplicationConfig(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -972,51 +1042,51 @@ service.init(function () {
 	/**
 	 * Catalog Recipes features
 	 */
-
+	
 	/**
-  	* List catalogs
-  	* @param {String} API route
-  	* @param {Function} API middleware
-  	*/
+	 * List catalogs
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/catalog/recipes/list", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
 			BL.list(config, req, res);
 		});
 	});
-
+	
 	/**
-  	* Add new catalog
-  	* @param {String} API route
-  	* @param {Function} API middleware
-  	*/
+	 * Add new catalog
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.post("/catalog/recipes/add", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
 			BL.add(config, req, res);
 		});
 	});
-
+	
 	/**
-  	* Update a catalog
-  	* @param {String} API route
-  	* @param {Function} API middleware
-  	*/
+	 * Update a catalog
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.put("/catalog/recipes/update", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
 			BL.edit(config, req, res);
 		});
 	});
-
+	
 	/**
-  	* Delete a catalog
-  	* @param {String} API route
-  	* @param {Function} API middleware
-  	*/
+	 * Delete a catalog
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/catalog/recipes/delete", function (req, res) {
 		initBLModel(req, res, catalogBL, dbModel, function (BL) {
 			BL.delete(config, req, res);
 		});
 	});
-
+	
 	/**
 	 * Git App features gitAccountsBL
 	 */
@@ -1297,7 +1367,9 @@ service.init(function () {
 	service.put("/settings/tenant/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.update(config, req, res);
+				BL.update(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1310,9 +1382,11 @@ service.init(function () {
 	service.get("/settings/tenant/get", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, environmentBL, dbModel, function (BL) {
-				BL.list(config, req, res, function (environments) {
+				BL.list(config, req, res, function (error, environments) {
+					// todo: check for error?
 					initBLModel(req, res, tenantBL, dbModel, function (BL1) {
-						BL1.get(config, req, res, function (tenant) {
+						BL1.get(config, req, res, function (error, tenant) {
+							// todo: check for error?
 							return res.jsonp(req.soajs.buildResponse(null, {
 								'tenant': tenant,
 								'environments': environments
@@ -1332,7 +1406,9 @@ service.init(function () {
 	service.get("/settings/tenant/oauth/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.getOAuth(config, req, res);
+				BL.getOAuth(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1345,7 +1421,9 @@ service.init(function () {
 	service.post("/settings/tenant/oauth/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res);
+				BL.saveOAuth(config, 425, 'tenant OAuth add successful', req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1358,7 +1436,9 @@ service.init(function () {
 	service.put("/settings/tenant/oauth/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res);
+				BL.saveOAuth(config, 426, 'tenant OAuth update successful', req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1371,7 +1451,9 @@ service.init(function () {
 	service.delete("/settings/tenant/oauth/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.deleteOAuth(config, req, res);
+				BL.deleteOAuth(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1384,7 +1466,9 @@ service.init(function () {
 	service.get("/settings/tenant/oauth/users/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.getOAuthUsers(config, req, res);
+				BL.getOAuthUsers(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1397,7 +1481,9 @@ service.init(function () {
 	service.delete("/settings/tenant/oauth/users/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.deleteOAuthUsers(config, req, res);
+				BL.deleteOAuthUsers(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1410,7 +1496,9 @@ service.init(function () {
 	service.post("/settings/tenant/oauth/users/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.addOAuthUsers(config, req, res);
+				BL.addOAuthUsers(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1423,7 +1511,9 @@ service.init(function () {
 	service.put("/settings/tenant/oauth/users/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.updateOAuthUsers(config, req, res);
+				BL.updateOAuthUsers(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1436,7 +1526,9 @@ service.init(function () {
 	service.get("/settings/tenant/application/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.listApplication(config, req, res);
+				BL.listApplication(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1449,7 +1541,9 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.createApplicationKey(config, service.provision, req, res);
+				BL.createApplicationKey(config, service.provision, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1462,7 +1556,9 @@ service.init(function () {
 	service.get("/settings/tenant/application/key/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.getApplicationKeys(config, req, res);
+				BL.getApplicationKeys(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1475,7 +1571,9 @@ service.init(function () {
 	service.delete("/settings/tenant/application/key/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.deleteApplicationKey(config, req, res);
+				BL.deleteApplicationKey(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1488,7 +1586,9 @@ service.init(function () {
 	service.get("/settings/tenant/application/key/ext/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.listApplicationExtKeys(config, req, res);
+				BL.listApplicationExtKeys(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1501,7 +1601,9 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+				BL.addApplicationExtKeys(config, service.provision, service.registry, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1514,7 +1616,9 @@ service.init(function () {
 	service.put("/settings/tenant/application/key/ext/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.updateApplicationExtKeys(config, req, res);
+				BL.updateApplicationExtKeys(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1527,7 +1631,9 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/delete", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.deleteApplicationExtKeys(config, req, res);
+				BL.deleteApplicationExtKeys(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1540,7 +1646,9 @@ service.init(function () {
 	service.put("/settings/tenant/application/key/config/update", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.updateApplicationConfig(config, req, res);
+				BL.updateApplicationConfig(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
@@ -1553,7 +1661,9 @@ service.init(function () {
 	service.get("/settings/tenant/application/key/config/list", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.listApplicationConfig(config, req, res);
+				BL.listApplicationConfig(config, req, res, function (error, data) {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
 			});
 		});
 	});
