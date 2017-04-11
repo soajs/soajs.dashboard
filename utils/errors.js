@@ -254,10 +254,10 @@ var errors = {
 
 	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
 
-	"1000": "Catalog recipe not found",
-	"1001": "You are not allowed to edit or delete a locked recipe",
-	"1002": "Unable to update catalog recipe",
-	"1003": "Unable to delete catalog recipe"
+	"950": "Catalog recipe not found",
+	"951": "You are not allowed to edit or delete a locked recipe",
+	"952": "Unable to update catalog recipe",
+	"953": "Unable to delete catalog recipe"
 };
 
 
