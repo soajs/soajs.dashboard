@@ -6,7 +6,7 @@ module.exports = {
         "required": true,
         "properties": {
             "name": { "type": "string", "required": true },
-            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "mongo", "es" ] },
+            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "nginx", "mongo", "es" ] },
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",

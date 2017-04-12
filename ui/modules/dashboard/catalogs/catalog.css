@@ -1,0 +1,10 @@
+.recipe-box {
+    width: 24% !important;
+    float: left !important;
+    margin-right: 1% !important;
+    height: 200px !important;
+}
+
+.catalogIcon {
+    margin-top: 5% !important;
+}

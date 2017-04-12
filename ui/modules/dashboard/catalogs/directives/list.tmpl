@@ -1,0 +1,41 @@
+<section ng-controller="catalogAppCtrl">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Add New Recipe&nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
+            <li><a ng-if="access.list" href="" ng-click="addRecipe('template')"><span class="icon icon-copy"></span>&nbsp;Use Existing Template</a></li>
+            <li><a ng-if="access.list" href="" ng-click="addRecipe('blank')"><span class="icon icon-file-empty"></span>&nbsp;Start From Blank Template</a></li>
+        </ul>
+    </div>
+    <div ng-if="recipes && recipes.length === 0">
+        <alert type="warning">No catalog recipes found</alert>
+    </div>
+    <div ng-if="access.list">
+        <div ng-if="recipes && recipes.length > 0" class="entryBoxes">
+            <br />
+            <div ng-repeat="recipe in recipes" class="entryBox recipe-box">
+                <div class="header">
+                    {{recipe.name}}<span ng-if="recipe.locked" class="icon icon-lock"></span>
+                    <div class="rightActions" style="display:inline;">
+                        <a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
+                            <span class="icon icon-cross" tooltip="Delete Recipe"></span>
+                        </a>
+                        <a href="" ng-if="access.update && !recipe.locked" ng-click="updateRecipe(recipe)">
+                            <span class="icon icon-pencil" tooltip="Update Recipe"></span>
+                        </a>
+                        <a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
+                            <span class="icon icon-zoom-in" tooltip="View Recipe"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="body" ng-style="{'text-align': 'center'}">
+                    <img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px" >
+                    <br /><br />
+                    <label>{{recipe.type|capitalizeFirst}} Recipe</label>
+                    <p>{{recipe.description}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
