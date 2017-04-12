@@ -470,6 +470,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         currentScope.groupConfig = "";
         currentScope.branches = [];
         currentScope.branch = "";
+        currentScope.recipes = [];
+        currentScope.recipe = "";
         currentScope.serviceOwner = '';
         currentScope.serviceRepo = '';
         currentScope.envVariables = '';
@@ -638,6 +640,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                             'env': env,
                             'name': 'controller',
                             'type': 'service',
+                            'recipe': currentScope.recipe
                         };
 
                         params.gitSource = {
@@ -657,41 +660,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                             params.version = currentScope.service.latest;
                         }
 
-                        if (currentScope.envVariables && currentScope.envVariables !== '') {
-                            params.variables = currentScope.envVariables.split(",");
-                            for (var i = 0; i < params.variables.length; i++) {
-                                params.variables[i] = params.variables[i].trim();
-                            }
-                        }
-
                         //Fill deployConfig information
                         params.deployConfig = {
                             'isKubernetes': currentScope.isKubernetes,
-                            "useLocalSOAJS": currentScope.useLocalSOAJS,
-                            "imagePrefix": currentScope.imagePrefix,
                             "replication": {
                                 "mode": currentScope.mode,
                                 "replicas": currentScope.number,
                             }
                         };
-
-                        if (params.deployConfig.isKubernetes) {
-                            params.deployConfig.readinessProbe = {
-                                "initialDelaySeconds": currentScope.readinessProbe.initialDelaySeconds,
-                                "timeoutSeconds": currentScope.readinessProbe.timeoutSeconds,
-                                "periodSeconds": currentScope.readinessProbe.periodSeconds,
-                                "successThreshold": currentScope.readinessProbe.successThreshold,
-                                "failureThreshold": currentScope.readinessProbe.failureThreshold
-                            };
-
-                            if (params.deployConfig.replication.mode === 'replicated') {
-                                params.deployConfig.replication.mode = "deployment";
-                            }
-                            if (params.deployConfig.replication.mode === 'global') {
-                                params.deployConfig.replication.mode = "daemonset";
-                                delete params.deployConfig.replication.replicas;
-                            }
-                        }
 
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
@@ -718,7 +694,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         var params = {
                             'env': env,
                             'type': 'service',
-                            "version": parseInt(currentScope.version)
+                            "version": parseInt(currentScope.version),
+                            'recipe': currentScope.recipe
                         };
 
                         params.gitSource = {
@@ -747,13 +724,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                             params.name = currentScope.service.name;
                         }
 
-                        if (currentScope.envVariables && currentScope.envVariables !== '') {
-                            params.variables = currentScope.envVariables.split(",");
-                            for (var i = 0; i < params.variables.length; i++) {
-                                params.variables[i] = params.variables[i].trim();
-                            }
-                        }
-
                         if (currentScope.groupConfig) {
                             params.type = 'daemon';
                             params.contentConfig = {
@@ -765,9 +735,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
                         params.deployConfig = {
                             'isKubernetes': currentScope.isKubernetes,
-                            'useLocalSOAJS': currentScope.useLocalSOAJS,
                             'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                            "imagePrefix": currentScope.imagePrefix,
                             "replication": {
                                 "mode": currentScope.mode,
                                 "replicas": currentScope.number
@@ -775,14 +743,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         };
 
                         if (params.deployConfig.isKubernetes) {
-                            params.deployConfig.readinessProbe = {
-                                "initialDelaySeconds": currentScope.readinessProbe.initialDelaySeconds,
-                                "timeoutSeconds": currentScope.readinessProbe.timeoutSeconds,
-                                "periodSeconds": currentScope.readinessProbe.periodSeconds,
-                                "successThreshold": currentScope.readinessProbe.successThreshold,
-                                "failureThreshold": currentScope.readinessProbe.failureThreshold
-                            };
-
                             if (params.deployConfig.replication.mode === 'replicated') {
                                 params.deployConfig.replication.mode = "deployment";
                             }
@@ -869,6 +829,29 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             });
         }
 
+        function getCatalogRecipes(cb) {
+            currentScope.loadingRecipes = true;
+            getSendDataFromServer(currentScope, ngDataApi, {
+                method: 'get',
+                routeName: '/dashboard/catalog/recipes/list'
+            }, function (error, response) {
+                currentScope.loadingRecipes = false;
+                if (error) {
+                    currentScope.generateNewMsg(env, 'danger', 'Unable to retrieve catalog recipes');
+                }
+                else {
+                    currentScope.recipes = {};
+                    response.forEach(function (oneRecipe) {
+                        if (!currentScope.recipes[oneRecipe.type]) {
+                            currentScope.recipes[oneRecipe.type] = [];
+                        }
+                        currentScope.recipes[oneRecipe.type].push(oneRecipe);
+                    });
+                    return cb();
+                }
+            });
+        }
+
         function allowListing(env, service) {
             var dashboardServices = ['controller', 'dashboard', 'proxy', 'urac', 'oauth']; //locked services that the dashboard environment is allowed to have
             var nonDashboardServices = ['controller', 'urac', 'oauth']; //locked services that non dashboard environments are allowed to have
@@ -946,7 +929,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
                     }
                     else {
-                        openModalForm();
+                        getCatalogRecipes(function () {
+                            openModalForm();
+                        });
                     }
                 });
             });
