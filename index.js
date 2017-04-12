@@ -904,7 +904,9 @@ service.init(function () {
 	 */
 	service.get("/cloud/nodes/list", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.listNodes(config, req.soajs, res);
+			BL.listNodes(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -915,7 +917,9 @@ service.init(function () {
 	 */
 	service.post("/cloud/nodes/add", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.addNode(config, req.soajs, res);
+			BL.addNode(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -926,7 +930,9 @@ service.init(function () {
 	 */
 	service.delete("/cloud/nodes/remove", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.removeNode(config, req.soajs, res);
+			BL.removeNode(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -937,7 +943,9 @@ service.init(function () {
 	 */
 	service.put("/cloud/nodes/update", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.updateNode(config, req.soajs, res);
+			BL.updateNode(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -948,7 +956,9 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/list", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.listServices(config, req.soajs, res);
+			BL.listServices(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -959,7 +969,9 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, service.registry, res);
+			BL.deployService(config, req.soajs, service.registry, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -970,7 +982,9 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/custom/deploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployCustomService(config, req.soajs, res);
+			BL.deployCustomService(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -981,7 +995,9 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, res);
+			BL.redeployService(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -992,7 +1008,9 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/scale", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.scaleService(config, req.soajs, res);
+			BL.scaleService(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1003,7 +1021,9 @@ service.init(function () {
 	 */
 	service.delete("/cloud/services/delete", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.deleteService(config, req.soajs, res);
+			BL.deleteService(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1014,7 +1034,9 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/maintenance", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
-			BL.maintenance(config, req.soajs, res);
+			BL.maintenance(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1025,7 +1047,9 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, res);
+			BL.streamLogs(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1036,7 +1060,9 @@ service.init(function () {
 	 */
 	service.get("/cloud/namespaces/list", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.list(config, req.soajs, res);
+			BL.list(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1047,7 +1073,9 @@ service.init(function () {
 	 */
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.delete(config, req.soajs, res);
+			BL.delete(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
