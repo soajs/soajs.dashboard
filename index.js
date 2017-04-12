@@ -1687,7 +1687,9 @@ service.init(function () {
 	 */
 	service.get("/cb/list", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
-			BL.list(config, req, res);
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1698,7 +1700,9 @@ service.init(function () {
 	 */
 	service.get("/cb/get", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
-			BL.get(config, req, res);
+			BL.get(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1709,7 +1713,9 @@ service.init(function () {
 	 */
 	service.get("/cb/listRevisions", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
-			BL.revisions(config, req, res);
+			BL.revisions(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1720,7 +1726,9 @@ service.init(function () {
 	 */
 	service.post("/cb/add", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
-			BL.add(config, req, res);
+			BL.add(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1731,7 +1739,9 @@ service.init(function () {
 	 */
 	service.put("/cb/update", function (req, res) {
 		initBLModel(req, res, cbBL, dbModel, function (BL) {
-			BL.update(config, req, res);
+			BL.update(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
