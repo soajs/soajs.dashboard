@@ -25,7 +25,7 @@ var swaggerBL = require("./lib/swagger.js");
 var gitAccounts = require("./lib/git.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
-var cb = require("./lib/contentbuilder.js");
+// var cb = require("./lib/contentbuilder.js"); // redundant
 
 var dbModel = "mongo";
 
@@ -1118,7 +1118,9 @@ service.init(function () {
 	 */
 	service.post("/gitAccounts/login", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.login(config, req, res);
+			BL.login(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1129,7 +1131,9 @@ service.init(function () {
 	 */
 	service.delete("/gitAccounts/logout", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.logout(config, req, res);
+			BL.logout(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1140,7 +1144,9 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/accounts/list", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.listAccounts(config, req, res);
+			BL.listAccounts(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1151,7 +1157,9 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getRepos", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getRepos(config, req, res);
+			BL.getRepos(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1162,7 +1170,9 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getFile(config, req, res);
+			BL.getFile(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1173,7 +1183,9 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getBranches(config, req, res);
+			BL.getBranches(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1184,7 +1196,9 @@ service.init(function () {
 	 */
 	service.post("/gitAccounts/repo/activate", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.activateRepo(config, req, res);
+			BL.activateRepo(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1195,7 +1209,9 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.deactivateRepo(config, req, res);
+			BL.deactivateRepo(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1206,7 +1222,9 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.syncRepo(config, req, res);
+			BL.syncRepo(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1765,7 +1783,9 @@ service.init(function () {
 	 */
 	service.post("/swagger/simulate", function (req, res) {
 		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
-			BL.test(config, req, res);
+			BL.test(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1780,7 +1800,9 @@ service.init(function () {
 	 */
 	service.post("/swagger/generate", function (req, res) {
 		initBLModel(req, res, swaggerBL, dbModel, function (BL) {
-			BL.generate(config, req, res);
+			BL.generate(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
