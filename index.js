@@ -480,7 +480,9 @@ service.init(function () {
 	 */
 	service.post("/tenant/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.add(config, req, res);
+			BL.add(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -491,7 +493,9 @@ service.init(function () {
 	 */
 	service.delete("/tenant/delete", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.delete(config, req, res);
+			BL.delete(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -502,7 +506,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.list(config, req, res);
+			BL.list(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -825,7 +831,9 @@ service.init(function () {
 	 */
 	service.get("/key/get", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.extKeyGet(config, req, res);
+			BL.extKeyGet(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -836,7 +844,9 @@ service.init(function () {
 	 */
 	service.get("/permissions/get", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.permissionsGet(config, req, res);
+			BL.permissionsGet(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -851,7 +861,9 @@ service.init(function () {
 	 */
 	service.get("/tenant/db/keys/list", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.listDashboardKeys(config, req, res);
+			BL.listDashboardKeys(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
