@@ -1462,13 +1462,11 @@ module.exports = {
 						"minimum": 1
 					}
 				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
+				"recipe": {
+					"source": ['body.recipe'],
+					"required": true,
 					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
+						"type": "string"
 					}
 				},
 				"gitSource": {
@@ -1492,21 +1490,7 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"useLocalSOAJS": { "required": false, "type": "boolean" },
 							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-							"imagePrefix": { "required": true, "type": "string", "default": "soajsorg" },
-							"ports": {
-								"required": false,
-								"type": "array",
-								"items": {
-									"type": "object",
-									"properties": {
-										"isPublished": { "required": false, "type": "boolean", "default": false },
-										"target": { "required": false, "type": "number" },
-										"published": { "required": false, "type": "number" }
-									}
-								}
-							},
 							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
@@ -1514,17 +1498,6 @@ module.exports = {
 								"properties": {
 									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
 									"replicas": { "required": false, "type": "number" }
-								}
-							},
-							"readinessProbe": { //NOTE: only applicable in kubernetes mode
-								"required": false,
-								"type": "object",
-								"properties": {
-									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
-				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
 								}
 							}
 						}
@@ -1550,23 +1523,6 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"grpConfName": { "required": true, "type": "string" }
-								}
-							},
-							"nginx": {
-								"required": false,
-								"type": "object",
-								"properties": {
-									"ui": {
-                                        "type": "object",
-                                        "required": false,
-                                        "properties": {
-                                            "id": { "type": "string", "required": true },
-                                            "branch": { "type": "string", "required": true },
-                                            "commit": { "type": "string", "required": true }
-                                        }
-                                    },
-									"supportSSL": { "required": false, "type": "boolean" },
-                                    "kubeSecret": { "required": false, "type": "string" }
 								}
 							}
 						}
