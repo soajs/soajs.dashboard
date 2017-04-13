@@ -870,7 +870,7 @@ service.init(function () {
 	/**
 	 * Hosts features
 	 */
-	
+	// todo
 	/**
 	 * List existing hosts in manual deployment mode
 	 * @param {String} API route
@@ -1272,7 +1272,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+	// todo
 	/**
 	 * Get all environments where a specific service is deployed
 	 * @param {String} API route
