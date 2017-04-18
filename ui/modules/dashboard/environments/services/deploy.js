@@ -511,6 +511,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         //Fill deployConfig information
                         params.deployConfig = {
                             'isKubernetes': currentScope.isKubernetes,
+                            'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
                             "replication": {
                                 "mode": currentScope.mode,
                                 "replicas": currentScope.number,
