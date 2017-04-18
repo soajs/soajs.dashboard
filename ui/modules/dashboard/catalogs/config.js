@@ -54,24 +54,24 @@ var catalogAppConfig = {
                             "path": "",
                             "port": ""
                         },
-                        "initialDelaySeconds": "",
-                        "timeoutSeconds": "",
-                        "periodSeconds": "",
-                        "successThreshold": "",
-                        "failureThreshold": ""
+                        "initialDelaySeconds": 0,
+                        "timeoutSeconds": 0,
+                        "periodSeconds": 0,
+                        "successThreshold": 0,
+                        "failureThreshold": 0
                     },
-                    "volumes": []
+                    "ports": [],
+                    "voluming": {
+                        "volumes": [],
+                        "volumeMounts": []
+                    }
                 },
                 "buildOptions": {
                     "env": {
                         "NODE_ENV": "production",
                     },
                     "cmd": {
-                        "pre_install": [],
-                        "install": [],
-                        "post_install": [],
                         "pre_deploy": [],
-                        "deploy": [],
                         "post_deploy": []
                     }
                 }
