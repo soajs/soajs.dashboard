@@ -58,11 +58,24 @@ module.exports = {
                                     }
                                 }
                             },
-                            "volumes": {
-                                "type": "array",
+                            "voluming": {
+                                "type": "object",
                                 "required": false,
                                 "properties": {
-                                    //TODO: finalize schema for volumes
+                                    "volumes": {
+                                        "type": "array",
+                                        "required": true,
+                                        "validation": {
+                                            "type": "array"
+                                        }
+                                    },
+                                    "volumeMounts": {
+                                        "type": "array",
+                                        "required": false,
+                                        "validation": {
+                                            "type": "array"
+                                        }
+                                    }
                                 }
                             }
                         }
