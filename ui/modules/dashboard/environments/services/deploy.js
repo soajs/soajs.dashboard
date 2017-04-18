@@ -225,6 +225,9 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         }
 
         function deployNginx(formData, params) {
+            //save controller deployment mode in case needed later for rollback
+            currentScope.controller = { mode: params.deployConfig.replication.mode };
+
             params.type = 'nginx';
             params.name = 'nginx';
             params.recipe = formData.nginxRecipe;
@@ -273,7 +276,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         function rollbackController() {
             var params = {
                 env: currentScope.envCode,
-                serviceId: currentScope.envCode.toLowerCase() + "-controller"
+                serviceId: currentScope.envCode.toLowerCase() + "-controller",
+                mode: currentScope.controller.mode
             };
 
             getSendDataFromServer(currentScope, ngDataApi, {
