@@ -45,33 +45,37 @@ module.exports = {
                                     "failureThreshold": { "type": "number", "required": true }
                                 }
                             },
-                            "ports": { //NOTE: only applicable for nginx
-                                "type": "object",
+                            "ports": {
+                                "type": "array",
                                 "required": false,
-                                "properties": {
-                                    "http": {
-                                        "type": "object",
-                                        "required": true,
-                                        "properties": {
-                                            "exposed": { "type": "string", "required": false },
-                                            "target": { "type": "string", "required": false }
-                                        }
-                                    },
-                                    "https": {
-                                        "type": "object",
-                                        "required": true,
-                                        "properties": {
-                                            "exposed": { "type": "string", "required": false },
-                                            "target": { "type": "string", "required": false }
-                                        }
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": { "type": "string", "required": true },
+                                        "isPublished": { "type": "boolean", "required": false },
+                                        "target": { "type": "number", "required": true },
+                                        "published": { "type": "number", "required": false }
                                     }
                                 }
                             },
-                            "volumes": {
-                                "type": "array",
+                            "voluming": {
+                                "type": "object",
                                 "required": false,
                                 "properties": {
-                                    //TODO: finalize schema for volumes
+                                    "volumes": {
+                                        "type": "array",
+                                        "required": true,
+                                        "validation": {
+                                            "type": "array"
+                                        }
+                                    },
+                                    "volumeMounts": {
+                                        "type": "array",
+                                        "required": false,
+                                        "validation": {
+                                            "type": "array"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -88,35 +92,15 @@ module.exports = {
                                 "type": "object",
                                 "required": false,
                                 "properties": {
-                                    "pre_install": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": true }
-                                    },
-                                    "install": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": true }
-                                    },
-                                    "post_install": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": true }
-                                    },
                                     "pre_deploy": {
                                         "type": "array",
                                         "required": false,
-                                        "items": { "type": "string", "required": true }
-                                    },
-                                    "deploy": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": true }
+                                        "items": { "type": "string", "required": false }
                                     },
                                     "post_deploy": {
                                         "type": "array",
                                         "required": false,
-                                        "items": { "type": "string", "required": true }
+                                        "items": { "type": "string", "required": false }
                                     }
                                 }
                             }

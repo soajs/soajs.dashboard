@@ -54,7 +54,7 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "1.*",
-    "soajs.core.drivers": "0.0.*",
+    "soajs.core.drivers": "soajs/soajs.core.drivers.git#feature/DASHBOARD-139",
     "soajs.core.libs": "1.*",
     "soajs.core.modules": "1.*",
     "unzip2": "0.2.5",
