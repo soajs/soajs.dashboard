@@ -1,4 +1,5 @@
 "use strict";
+
 var multiTenantApp = soajsApp.components;
 multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$modal', '$routeParams', 'ngDataApi', '$cookies', 'injectFiles', function ($scope, $compile, $timeout, $modal, $routeParams, ngDataApi, $cookies, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
@@ -191,6 +192,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										$scope.edit_Tenant(row);
 									}
 								},
+								'updateOAuth': {
+									'label': translation.updateOAuth[LANG],
+									'command': function (row) {
+										$scope.update_oAuth(row);
+									}
+								},
 								'delete': {
 									'label': 'Remove',
 									'commandMsg': translation.areYouSureWantRemoveTenant[LANG],
@@ -206,6 +213,29 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 	};
 	
+	
+	$scope.getTenantLoginMode = function (tenant) {
+		// set loginMode to urac or mini urac from the first env available
+		var loginMode;
+		var found = false;
+		for (var i = 0; !found && tenant.applications && i < tenant.applications.length; i++) {
+			var keys = tenant.applications[i].keys;
+			for (var j = 0; !found && keys && j < keys.length; j++) {
+				var envs = Object.keys(keys[j].config);
+				for (var k = 0; !found && envs && k < envs.length; k++) {
+					var oauth = keys[j].config[envs[k]].oauth;
+					if (oauth && oauth.loginMode === 'urac') {
+						loginMode = 'urac';
+					} else {
+						loginMode = 'miniurac';
+					}
+					found = true;
+				}
+			}
+		}
+		return loginMode;
+	}
+	
 	$scope.splitTenantsByType = function (tenants, callback) {
 		//Clearing previously filled tenants arrays
 		for (var i = 0; i < $scope.tenantTabs.length; i++) {
@@ -217,6 +247,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 			for (var i = 0; i < $scope.tenantTabs.length; i++) {
 				if (oneTenant.type === $scope.tenantTabs[i].type) {
+					
+					oneTenant.loginMode = $scope.getTenantLoginMode(oneTenant);
 					$scope.tenantTabs[i].tenants.push(oneTenant);
 				}
 			}
@@ -281,10 +313,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		//formConfig.label = 'Edit Basic Tenant Information';
 		formConfig.timeout = $timeout;
 		
-		var oAuth = data.oauth;
-		if (oAuth.secret) {
-			data.secret = oAuth.secret;
-		}
 		/*
 		 if(oAuth.redirectURI) {
 		 data.redirectURI = oAuth.redirectURI;
@@ -384,23 +412,107 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			]
 		};
 		
-		if ($scope.access.tenant.oauth.delete) {
-			options.actions.push(
+		/*if ($scope.access.tenant.oauth.delete) {
+		 options.actions.push(
+		 {
+		 'type': 'submit',
+		 'label': translation.deleteoAuthInfo[LANG],
+		 'btn': 'danger',
+		 'action': function () {
+		 getSendDataFromServer($scope, ngDataApi, {
+		 "method": "delete",
+		 "routeName": "/dashboard/tenant/oauth/delete",
+		 "params": {"id": data['_id']}
+		 }, function (error) {
+		 if (error) {
+		 $scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
+		 }
+		 else {
+		 $scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]);
+		 $scope.modalInstance.close();
+		 $scope.form.formData = {};
+		 $scope.listTenants();
+		 }
+		 });
+		 }
+		 }
+		 );
+		 }*/
+		
+		buildFormWithModal($scope, $modal, options);
+	};
+	
+	$scope.update_oAuth = function (data) {
+		
+		var formConfig = angular.copy(tenantConfig.form.updateOauth);
+		formConfig.timeout = $timeout;
+		
+		// on edit start
+		var oAuth = data.oauth;
+		if (oAuth.secret) {
+			data.secret = oAuth.secret;
+		}
+		data.oauthType = data.loginMode;
+		delete data.loginMode;
+		
+		var keys = Object.keys(data);
+		
+		for (var i = 0; i < formConfig.entries.length; i++) {
+			keys.forEach(function (inputName) {
+				if (formConfig.entries[i].name === inputName) {
+					if (inputName === 'oauthType') {
+						for (var j = 0; j < formConfig.entries[i].value.length; j++) {
+							if (formConfig.entries[i].value[j].v === data[inputName]) {
+								formConfig.entries[i].value[j].selected = true;
+							}
+						}
+					} else {
+						formConfig.entries[i].value = data[inputName];
+					}
+				}
+			});
+		}
+		// on edit end
+		
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'updateOAuth',
+			label: translation.editTenantOauth[LANG],
+			data: {},
+			actions: [
 				{
-					'type': 'submit',
-					'label': translation.deleteoAuthInfo[LANG],
+					'type': 'reset',
+					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				},
+				{
+					'type': 'submit',
+					'label': translation.updateOAuth[LANG],
+					'btn': 'primary',
+					'action': function (formData) {
+						
+						var postData = {
+							'secret': formData.secret,
+							'type': formData.oauthType
+						};
+						
 						getSendDataFromServer($scope, ngDataApi, {
-							"method": "delete",
-							"routeName": "/dashboard/tenant/oauth/delete",
+							"method": "put",
+							"routeName": "/dashboard/tenant/oauth/update",
+							"data": postData,
 							"params": {"id": data['_id']}
 						}, function (error) {
+							
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
 							else {
-								$scope.$parent.displayAlert('success', translation.TenantOAuthDeletedSuccessfully[LANG]);
+								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								$scope.form.formData = {};
 								$scope.listTenants();
@@ -408,9 +520,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						});
 					}
 				}
-			);
-		}
+			]
+		};
+		
 		buildFormWithModal($scope, $modal, options);
+		
 	};
 	
 	$scope.removeTenant = function (row) {
@@ -1418,8 +1532,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 		}
 	};
-	
-	//default operation
+
+//default operation
 	if ($scope.access.tenant.list && $scope.access.product.list && $scope.access.environment.list) {
 		$scope.getProds(function () {
 			$scope.getEnvironments(function () {
@@ -1429,7 +1543,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	}
 	
 	injectFiles.injectCss("modules/dashboard/multitenancy/multitenancy.css");
-}]);
+}])
+;
 
 multiTenantApp.controller('tenantApplicationAcl', ['$scope', 'ngDataApi', '$routeParams', 'aclHelper', function ($scope, ngDataApi, $routeParams, aclHelper) {
 	$scope.$parent.isUserLoggedIn();
