@@ -199,7 +199,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						
 						var postData = {
 							'secret': formData.secret,
-							'type': formData.oauthType
+							'useUrac': formData.oauthType==='urac'
 						};
 						
 						getSendDataFromServer($scope, ngDataApi, {
@@ -216,7 +216,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								
-								location.reload();
+								$scope.getTenant();
 							}
 						});
 					}

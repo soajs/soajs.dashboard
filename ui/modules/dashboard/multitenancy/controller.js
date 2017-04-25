@@ -497,7 +497,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 						
 						var postData = {
 							'secret': formData.secret,
-							'type': formData.oauthType
+							'useUrac': formData.oauthType === 'urac'
 						};
 						
 						getSendDataFromServer($scope, ngDataApi, {

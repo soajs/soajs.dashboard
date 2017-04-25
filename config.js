@@ -489,6 +489,14 @@ module.exports = {
 				'validation': {
 					'type': 'string'
 				}
+			},
+			"useUrac": {
+				"source": ['body.useUrac'],
+				"required": false,
+				"default" : false,
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
 		
@@ -2366,15 +2374,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI'],
-				"type": {
-					"source": ['body.type'],
-					"required": true,
-					"validation": {
-						"type": "string",
-						"enum": ["miniurac", "urac"]
-					}
-				}
+				"commonFields": ['id', 'secret', 'redirectURI','useUrac']
 			},
 			
 			"/tenant/oauth/users/update": {
@@ -2460,7 +2460,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI']
+				"commonFields": ['secret', 'redirectURI','useUrac']
 			},
 			
 			"/settings/tenant/oauth/users/update": {
