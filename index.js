@@ -870,7 +870,7 @@ service.init(function () {
 	/**
 	 * Hosts features
 	 */
-	// todo
+	
 	/**
 	 * List existing hosts in manual deployment mode
 	 * @param {String} API route
@@ -878,7 +878,9 @@ service.init(function () {
 	 */
 	service.get("/hosts/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.list(config, req.soajs, res);
+			BL.list(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -889,7 +891,9 @@ service.init(function () {
 	 */
 	service.post("/hosts/maintenanceOperation", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.maintenanceOperation(config, req.soajs, res);
+			BL.maintenanceOperation(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1272,7 +1276,7 @@ service.init(function () {
 			});
 		});
 	});
-	// todo
+	
 	/**
 	 * Get all environments where a specific service is deployed
 	 * @param {String} API route
@@ -1280,7 +1284,9 @@ service.init(function () {
 	 */
 	service.get("/services/env/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.listHostEnv(config, req.soajs, res);
+			BL.listHostEnv(config, req.soajs, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	/**
