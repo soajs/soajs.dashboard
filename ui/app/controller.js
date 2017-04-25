@@ -78,6 +78,7 @@ soajsApp.run(function ($rootScope) {
 
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', 'ngDataApi', 'checkApiHasAccess', '$localStorage', 'aclDrawHelpers',
 	function ($scope, $location, $timeout, $route, $cookies, ngDataApi, checkApiHasAccess, $localStorage, aclDrawHelpers) {
+		document.title = titlePrefix;
 		$scope.appNavigation = navigation;
 		$scope.navigation = [];
 		$scope.pillar = null;
