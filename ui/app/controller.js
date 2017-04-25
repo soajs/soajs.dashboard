@@ -218,9 +218,23 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 		
 		$scope.reRenderMenu = function (pillarName) {
+			
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments = [];
 			$scope.currentSelectedEnvironment = null;
+			
+			for (var j = 0; j < $scope.mainMenu.links.length; j++) {
+				if ($scope.mainMenu.links[j].pillar.name === pillarName) {
+					var entries = $scope.mainMenu.links[j].entries;
+					for (var i = 0; i < entries.length; i++) {
+						var link = entries[i];
+						if (link.url === $scope.leftMenu.selectedMenu) {
+							document.title = link.label;
+							break;
+						}
+					}
+				}
+			}
 			
 			for (var j = 0; j < $scope.mainMenu.links.length; j++) {
 				if ($scope.mainMenu.links[j].pillar.name === pillarName) {

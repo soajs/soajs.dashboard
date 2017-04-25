@@ -493,7 +493,7 @@ module.exports = {
 			"useUrac": {
 				"source": ['body.useUrac'],
 				"required": false,
-				"default" : false,
+				"default" : true, // kept true for test cases
 				"validation": {
 					"type": "boolean"
 				}
