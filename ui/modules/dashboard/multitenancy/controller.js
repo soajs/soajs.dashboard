@@ -213,7 +213,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		});
 	};
 	
-	
 	$scope.getTenantLoginMode = function (tenant) {
 		// set loginMode to urac or mini urac from the first env available
 		var loginMode;
