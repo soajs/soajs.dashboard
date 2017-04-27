@@ -39,7 +39,7 @@ module.exports = {
 
 	"network": 'soajsnet',
 
-	"imagesDir": "/opt/soajs/FILES/deployer/",
+	"imagesDir": "/opt/soajs/deployer/",
 
 	"kubeNginx": {
 		"minPort": 0,
