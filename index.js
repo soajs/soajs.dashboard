@@ -1,9 +1,6 @@
 'use strict';
 var soajs = require('soajs');
 
-var coreModules = require("soajs.core.modules");
-var provision = coreModules.provision;
-
 var config = require('./config.js');
 var environment = require('./lib/environment.js');
 var product = require('./lib/product.js');
@@ -115,7 +112,7 @@ service.init(function () {
 	*/
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.keyUpdate(config, provision, req, res);
+			BL.keyUpdate(config, service.provision, req, res);
 		});
 	});
 
@@ -618,7 +615,7 @@ service.init(function () {
 	*/
 	service.post("/tenant/application/key/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.createApplicationKey(config, provision, req, res);
+			BL.createApplicationKey(config, service.provision, req, res);
 		});
 	});
 
@@ -662,7 +659,7 @@ service.init(function () {
 	*/
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.addApplicationExtKeys(config, provision, service.registry, req, res);
+			BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
 		});
 	});
 
@@ -1338,7 +1335,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.createApplicationKey(config, provision, req, res);
+				BL.createApplicationKey(config, service.provision, req, res);
 			});
 		});
 	});
@@ -1390,7 +1387,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.addApplicationExtKeys(config, provision, service.registry, req, res);
+				BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
 			});
 		});
 	});

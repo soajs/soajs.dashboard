@@ -20,7 +20,7 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-
+	"uracDriver" : true,
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
