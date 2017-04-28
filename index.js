@@ -68,7 +68,7 @@ service.init(function () {
 	 */
 	service.post("/environment/add", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.add(config, service, dbModel, req, res);
+			BL.add(config, service, soajs.provision, dbModel, req, res);
 		});
 	});
 
@@ -112,7 +112,7 @@ service.init(function () {
 	*/
 	service.put("/environment/key/update", function (req, res) {
 		initBLModel(req, res, environmentBL, dbModel, function (BL) {
-			BL.keyUpdate(config, service.provision, req, res);
+			BL.keyUpdate(config, soajs.provision, req, res);
 		});
 	});
 
@@ -615,7 +615,7 @@ service.init(function () {
 	*/
 	service.post("/tenant/application/key/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.createApplicationKey(config, service.provision, req, res);
+			BL.createApplicationKey(config, soajs.provision, req, res);
 		});
 	});
 
@@ -659,7 +659,7 @@ service.init(function () {
 	*/
 	service.post("/tenant/application/key/ext/add", function (req, res) {
 		initBLModel(req, res, tenantBL, dbModel, function (BL) {
-			BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+			BL.addApplicationExtKeys(config, soajs.provision, service.registry, req, res);
 		});
 	});
 
@@ -1335,7 +1335,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.createApplicationKey(config, service.provision, req, res);
+				BL.createApplicationKey(config, soajs.provision, req, res);
 			});
 		});
 	});
@@ -1387,7 +1387,7 @@ service.init(function () {
 	service.post("/settings/tenant/application/key/ext/add", function (req, res) {
 		checkMyAccess(req, res, function () {
 			initBLModel(req, res, tenantBL, dbModel, function (BL) {
-				BL.addApplicationExtKeys(config, service.provision, service.registry, req, res);
+				BL.addApplicationExtKeys(config, soajs.provision, service.registry, req, res);
 			});
 		});
 	});
