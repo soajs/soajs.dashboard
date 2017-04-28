@@ -109,8 +109,8 @@ var mtTranslation = {
 		"FRA": "Client"
 	},
 	"updateOAuth": {
-		"ENG": "Update oAuth",
-		"FRA": "Update oAuth"
+		"ENG": "Turn on oAuth",
+		"FRA": "Turn on oAuth"
 	},
 	"oAuthType": {
 		"ENG": "oAuth type",

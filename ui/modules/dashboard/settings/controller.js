@@ -30,9 +30,20 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 					} else {
 						$scope.markTenantDashboardAccess(response.tenant, tenantDbKeys, function (tenant) {
 							$scope.tenant = tenant;
+							
+							// set oauth data
+							var data = $scope.tenant;
+							var oAuth = data.oauth;
+							if (oAuth.secret) {
+								data.secret = oAuth.secret;
+							}
+							data.oauthType = $scope.getTenantLoginMode(data);
+							
+							$scope.availableEnv = []; // reset available env
 							response.environments.forEach(function (oneEnv) {
 								$scope.availableEnv.push(oneEnv.code.toLowerCase());
 							});
+							
 							if (first && first == true) {
 								$scope.listOauthUsers();
 							}
@@ -149,13 +160,6 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		
 		var data = $scope.tenant;
 		
-		// on edit start
-		var oAuth = data.oauth;
-		if (oAuth.secret) {
-			data.secret = oAuth.secret;
-		}
-		data.oauthType = $scope.getTenantLoginMode(data);
-		
 		var keys = Object.keys(data);
 		
 		for (var i = 0; i < formConfig.entries.length; i++) {
@@ -216,7 +220,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
 								$scope.modalInstance.close();
 								
-								$scope.getTenant();
+								$scope.getTenant(true);
 							}
 						});
 					}

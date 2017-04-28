@@ -9,7 +9,7 @@
 				<hr/>
 				<br/>
 
-				<div ng-include="'modules/dashboard/settings/directives/list-oauth-users.tmpl'"></div>
+				<div ng-if="tenant.oauthType==='miniurac'" ng-include="'modules/dashboard/settings/directives/list-oauth-users.tmpl'"></div>
 
 				<div ng-if="access.tenant.application.list"><br/><br/>
 					<label>{{translation.tenantApplications[LANG]}}</label>
