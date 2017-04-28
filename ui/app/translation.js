@@ -826,6 +826,50 @@ var translation = {
 	"missingRequiredFields": {
 		"ENG": "Missing Required Fields",
 		"FRA": "Missing Required Fields"
+	},
+	"enterAPImethodProceed": {
+		"ENG": "Enter the API method to proceed",
+		"FRA": "Entrer la méthode de l'API pour continuer"
+	},
+	"enterAPItypeProceed": {
+		"ENG": "Enter the API type to proceed",
+		"FRA": "Entrer le type de l'API pour continuer"
+	},
+	"enterErrorCodeProceed": {
+		"ENG": "Enter the error code(s) to proceed",
+		"FRA": "Entrer les codes des erreurs pour continuer"
+	},
+	"checkInputrequiredProceed": {
+		"ENG": "Check if the input is required or not",
+		"FRA": "Vérifier si ce paramètre est requise ou non"
+	},
+	"enterInputlistingPropertiesProceed": {
+		"ENG": "Enter the input listing properties to proceed",
+		"FRA": "Entrer les propriétés de la liste de donnée pour continuer"
+	},
+	"entertypeForUIProceed": {
+		"ENG": "Enter the UI type to proceed",
+		"FRA": "Entrer le type du UI pour continuer"
+	},
+	"enterAPIlabelProceed": {
+		"ENG": "Enter the API label to proceed",
+		"FRA": "Entrer l'étiquette de l'API pour continuer"
+	},
+	"enterAPIgroupProceed": {
+		"ENG": "Enter the API group to proceed",
+		"FRA": "Entrer le groupe de l'API pour continuer"
+	},
+	"enterAPIgroupMainProceed": {
+		"ENG": "Enter the API groupMain to proceed",
+		"FRA": "Entrer le group principal de l'API pour continuer"
+	},
+	"enterAPIinputsProceed": {
+		"ENG": "Enter the API inputs to proceed",
+		"FRA": "Entrer les paramètres de l'API pour continuer"
+	},
+	"pleaseinsertErrorCode": {
+		"ENG": "Please insert your error code(s)",
+		"FRA": "Prière d'insérer votre code"
 	}
 };
 

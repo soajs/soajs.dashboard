@@ -2,8 +2,7 @@
  * Created by nicolas on 10/19/16.
  */
 'use strict';
-var soajs = require("soajs");
-var Mongo = soajs.mongo;
+var Mongo = require("soajs").mongo;
 var mongo = null;
 
 var servicesCollectionName = 'services';
@@ -14,7 +13,6 @@ var environmentCollectionName = 'environment';
 var gridfsCollectionName = 'fs.files';
 var tenantCollectionName = 'tenants';
 var productsCollectionName = 'products';
-var dashExtKeysCollectionName = 'dashboard_extKeys';
 var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
@@ -66,11 +64,6 @@ function checkForMongo(soajs) {
 
 		//products
 		mongo.ensureIndex(productsCollectionName, {code: 1, "packages.code": 1}, errorLogger);
-
-		//dashboard_extKeys
-		mongo.ensureIndex(dashExtKeysCollectionName, {env: 1}, errorLogger);
-		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, env: 1}, errorLogger);
-		mongo.ensureIndex(dashExtKeysCollectionName, {code: 1, key: 1, env: 1}, errorLogger);
 
 		//hosts
 	    if (!process.env.SOAJS_DEPLOY_HA) {

@@ -27,37 +27,52 @@
                         {{driver|uppercase}}
                         <span ng-if="deployer.selected === platform + '.' + driver && allowSelect" ng-style="{'color': 'green'}"><span class="icon icon-checkmark"></span>Active</span>
                         <span class="rightActions">
-                            <a href="" ng-if="access.platforms.certs.upload && !config.socketPath && deployer.selected === platform + '.' + driver && allowSelect" ng-click="uploadCerts(platform, driver)">
+                            <a href="" ng-if="access.platforms.certs.upload && platform !== 'kubernetes' && !config.socketPath && deployer.selected === platform + '.' + driver && allowSelect" ng-click="uploadCerts(platform, driver)">
                                 <span class="icon icon-attachment" tooltip="{{translation.uploadCertificates[LANG]}}"></span>
                             </a>
                             <a href="" ng-if="access.platforms.drivers.changeSelected && allowSelect" ng-click="selectDriver(platform, driver)">
                                 <span class="icon icon-checkbox-checked" tooltip="{{translation.selectDriver[LANG]}}"></span>
                             </a>
+                            <a href="" ng-if="platform === 'kubernetes'" ng-click="updateNamespaceConfig(driver)">
+                                <span class="icon icon-cog" tooltip="Update Namespace Configuration"></span>
+                            </a>
                         </span>
                     </div>
                     <div class="body">
-                        <div ng-if="config.socketPath">
-                            <label class="customLabel">Socket Path:&nbsp;</label>{{config.socketPath}}<br />
-                            <label class="customLabel">Certificates:</label><br />
-                            <alert type="success">This driver does not require certificates</alert>
-                        </div>
-                        <div ng-if="!config.socketPath">
-                            <label class="customLabel">Manager Nodes:&nbsp;</label>
-                            <span ng-if="config.nodes && config.nodes.length > 0"><span ng-repeat="node in config.nodes">{{node}}<span ng-if="!$last">, </span></span></span>
-                            <span ng-if="!config.nodes || config.nodes.length === 0">No nodes available</span>
-                            <br />
-                            <label class="customLabel">Certificates:</label><br />
-                            <div class="staticDiv">
-                                <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
-                                    <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in config.certs">
-                                        <b>{{cert.filename}} [{{cert.certType}}]</b>
-                                        <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, platform, driver)">
-                                            <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                                <alert type="warning" ng-if="!config.certs || config.certs.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
+                        <div ng-if="platform === 'docker'">
+                            <div ng-if="config.socketPath">
+                                <label class="customLabel">Socket Path:&nbsp;</label>{{config.socketPath}}<br />
+                                <label class="customLabel">Certificates:</label><br />
+                                <alert type="success">This driver does not require certificates</alert>
                             </div>
+                            <div ng-if="!config.socketPath">
+                                <br />
+                                <label class="customLabel">Certificates:</label><br />
+                                <div class="staticDiv">
+                                    <div ng-style="{'padding-top': '10px'}" ng-if="config.certs.length > 0">
+                                        <div class="entryBox blueBox greyBoxCustom" ng-repeat="cert in config.certs">
+                                            <b>{{cert.filename}} [{{cert.certType}}]</b>
+                                            <a href="" ng-if="access.platforms.certs.delete" ng-click="removeCert(cert._id, platform, driver)">
+                                                <span class="icon icon-bin pull-right" tooltip="{{translation.removeCertificate[LANG]}}"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <alert type="warning" ng-if="!config.certs || config.certs.length === 0">{{translation.noCertificatesUploadedYet[LANG]}}</alert>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="platform === 'kubernetes'">
+                            <table ng-style="{'width': '100%'}">
+                                <tr>
+                                    <td valign="top">
+                                        <b>Namespace Configuration</b>
+                                    </td>
+                                    <td>
+                                        <b>Default:</b> {{config.namespace.default}}<br />
+                                        <b>Type:</b> {{(config.namespace.perService ? 'Per Service' : 'Global')}}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -77,4 +92,8 @@
 
 <script type="text/ng-template" id="uploadCerts.tmpl">
     <div ng-include="'modules/dashboard/environments/directives/uploadCerts.tmpl'"></div>
+</script>
+
+<script type="text/ng-template" id="updateNamespaceConfig.tmpl">
+    <div ng-include="'modules/dashboard/environments/directives/updateNamespaceConfig.tmpl'"></div>
 </script>

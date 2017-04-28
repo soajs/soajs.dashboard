@@ -119,8 +119,10 @@ function buildForm(context, modal, configuration, cb) {
 							}
 						}
 						else {
-							if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
-								oneValue.selected = true;
+							if (configuration.data[inputName] !== undefined && configuration.data[inputName] !== null) {
+								if (!Object.hasOwnProperty.call(configuration.data, inputName) || (oneValue.v.toString() === configuration.data[inputName].toString())) {
+									oneValue.selected = true;
+								}
 							}
 						}
 					});
@@ -210,8 +212,13 @@ function buildForm(context, modal, configuration, cb) {
 			oneEntry.onLoad = function (_editor) {
 				oneEntry.editor = _editor;
 				_editor.$blockScrolling = Infinity;
+				
+				if(!oneEntry.value){
+					oneEntry.value = {};
+				}
 				oneEntry.ngModel = JSON.stringify(oneEntry.value, null, 2);
 				_editor.setValue(JSON.stringify(oneEntry.value, null, 2));
+				
 				_editor.scrollToLine(0, true, true);
 				_editor.scrollPageUp();
 				_editor.clearSelection();

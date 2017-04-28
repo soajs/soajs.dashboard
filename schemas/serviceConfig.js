@@ -8,6 +8,7 @@ var serviceConfig = {
 			"type": "object",
 			"required": true,
 			"properties": {
+                "cacheTTL": {"type": "integer", "required": true, "min": 3600},
 				"healthCheckInterval": {"type": "integer", "required": true, "min": 5000},
 				"autoRelaodRegistry": {"type": "integer", "required": true, "min": 60000},
 				"maxLogCount": {"type": "integer", "required": true, "min": 5},
@@ -43,7 +44,9 @@ var serviceConfig = {
 			"type": "object",
 			"required": true,
 			"properties": {
-				"grants": {"type": "array", "items": {"type": "string", "required": true}, "required": true},
+				// "grants": {"type": "array", "items": {"type": "string", "required": true}, "required": true},
+				"accessTokenLifetime" :{"type": "number", "required": true},
+				"refreshTokenLifetime" :{"type": "number", "required": true},
 				"debug": {"type": "boolean", "required": true}
 			}
 		},

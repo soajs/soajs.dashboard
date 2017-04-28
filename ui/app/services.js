@@ -2,10 +2,89 @@
 
 soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', function ($http, $cookies, $localStorage, Upload) {
 	
-	function returnAPIError(scope, opts, status, headers, config, cb) {
-		console.log("Error: ngDataApi->" + opts.api);
+	function logoutUser(scope) {
+		$cookies.remove('access_token');
+		$cookies.remove('refresh_token');
+		$cookies.remove('soajs_dashboard_key');
+		$cookies.remove('myEnv');
+		$cookies.remove('soajsID');
+		$cookies.remove('soajs_auth');
+		$cookies.remove('soajs_current_route');
+		$cookies.remove('selectedInterval');
+		$localStorage.soajs_user = null;
+		$localStorage.acl_access = null;
+		$localStorage.environments = null;
+		scope.$parent.enableInterface = false;
+	}
+	
+	function revalidateTokens(scope, config, cb) {
+		//create a copy of old config
+		var myDomain = config.url.replace(/http(s)?:\/\//, '');
+		myDomain = myDomain.split("/")[0];
+		myDomain = protocol + "//" + myDomain;
+		
+		//first authorize
+		var reAuthorizeConfig = angular.copy(config);
+		reAuthorizeConfig.method = 'GET';
+		reAuthorizeConfig.url = myDomain + "/oauth/authorization";
+		reAuthorizeConfig.headers.key = apiConfiguration.key;
+		reAuthorizeConfig.headers.accept = "*/*";
+		delete reAuthorizeConfig.headers.Authorization;
+		delete reAuthorizeConfig.params;
+		
+		$http(reAuthorizeConfig).success(function (response) {
+			
+			//second get new tokens.
+			var authValue = response.data;
+			var getNewAccessToken = angular.copy(config);
+			getNewAccessToken.method = 'POST';
+			getNewAccessToken.url = myDomain + "/oauth/token";
+			getNewAccessToken.headers.Authorization = authValue;
+			delete getNewAccessToken.params;
+			getNewAccessToken.data = {
+				'refresh_token': $cookies.get('refresh_token'),
+				'grant_type': "refresh_token"
+			};
+			
+			$http(getNewAccessToken).success(function (response) {
+				$cookies.put('access_token', response.access_token);
+				$cookies.put('refresh_token', response.refresh_token);
+				
+				//repeat the main call
+				var MainAPIConfig = angular.copy(config);
+				MainAPIConfig.params.access_token = $cookies.get('access_token');
+				$http(MainAPIConfig).success(function (response, status, headers, config) {
+					returnAPIResponse(scope, response, config, cb)
+				}).error(function (errData, status, headers, config) {
+					//logout the user
+					logoutUser(scope);
+					returnErrorOutput(config, status, headers, config, cb)
+				});
+			}).error(function (errData, status, headers, config) {
+				//logout the user
+				logoutUser(scope);
+				returnErrorOutput(config, status, headers, config, cb)
+			});
+		}).error(function (errData, status, headers, config) {
+			//logout the user
+			logoutUser(scope);
+			returnErrorOutput(config, status, headers, config, cb)
+		});
+	}
+	
+	function returnErrorOutput(opts, status, headers, config, cb) {
 		console.log(status, headers, config);
 		return cb(new Error("Unable Fetching data from " + config.url));
+	}
+	
+	function returnAPIError(scope, opts, status, headers, errData, config, cb) {
+		//try to get a new access token from the refresh
+		if (errData && errData.errors.details[0].code === 401 && errData.errors.details[0].message === "The access token provided has expired.") {
+			revalidateTokens(scope, config, cb);
+		}
+		else {
+			returnErrorOutput(opts, status, headers, config, cb)
+		}
 	}
 	
 	function returnAPIResponse(scope, response, config, cb) {
@@ -39,6 +118,9 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 				return cb(null, response);
 			}
 		}
+		else if (response && !Object.hasOwnProperty.call(response, "result")) {
+			return cb(null, response);
+		}
 		else if (response && response.result === true) {
 			if (response.soajsauth && $cookies.get('soajs_auth')) {
 				$cookies.put("soajs_auth", response.soajsauth);
@@ -49,38 +131,44 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			}
 			
 			if (typeof(resp.data) !== 'object') {
-				resp.data = {};
+				if (typeof(resp.data) === 'string') {
+					resp.data = {
+						data: resp.data
+					};
+				}
+				else {
+					resp.data = {};
+				}
 			}
 			resp.data.soajsauth = resp.soajsauth;
 			return cb(null, resp.data);
 		}
 		else {
-			// if (response.errors.codes[0] === 132) {
-			// 	$cookies.remove('soajs_auth');
-			// 	$localStorage.acl_access = null;
-			// 	scope.$parent.enableInterface = false;
-			// 	scope.$parent.isUserLoggedIn();
-			// 	scope.$parent.go("/login");
-			// }
-			
-			var str = '';
-			for (var i = 0; i < response.errors.details.length; i++) {
-				str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+			//try to refresh the access token before logging out the user
+			if (response.errors.details[0].code === 401 && response.errors.details[0].message === 'The access token provided has expired.') {
+				revalidateTokens(scope, config, cb);
 			}
-			var errorObj = {
-				message: str,
-				codes: response.errors.codes,
-				details: response.errors.details
-			};
-			if (response.errors.codes && response.errors.codes[0]) {
-				errorObj.code = response.errors.codes[0];
+			else {
+				var str = '';
+				for (var i = 0; i < response.errors.details.length; i++) {
+					str += "Error[" + response.errors.details[i].code + "]: " + response.errors.details[i].message;
+				}
+				var errorObj = {
+					message: str,
+					codes: response.errors.codes,
+					details: response.errors.details
+				};
+				if (response.errors.codes && response.errors.codes[0]) {
+					errorObj.code = response.errors.codes[0];
+				}
+				return cb(errorObj);
 			}
-			return cb(errorObj);
 		}
 	}
 	
 	function executeRequest(scope, opts, cb) {
 		var config = {
+			token: opts.token,
 			url: opts.url,
 			method: opts.method,
 			params: opts.params || {},
@@ -93,31 +181,38 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			json: true
 		};
 		
-		if (opts.proxy) {
-			config.params['__envauth'] = $cookies.getObject('soajs_envauth')[$cookies.getObject('myEnv').code.toLowerCase().replace(/\"/g, '')];
-		}
-		
 		var soajsAuthCookie = $cookies.get('soajs_auth');
 		if (soajsAuthCookie && soajsAuthCookie.indexOf("Basic ") !== -1) {
 			config.headers.soajsauth = soajsAuthCookie.replace(/\"/g, '');
 		}
 		
-		if (opts.headers.key) {
+		if (opts.headers.key && config.token) {
 			config.headers.key = opts.headers.key;
 		}
-		else if ($cookies.get("soajs_dashboard_key")) {
+		else if ($cookies.get("soajs_dashboard_key") && config.token) {
 			config.headers.key = $cookies.get("soajs_dashboard_key").replace(/\"/g, '');
 		}
 		else {
 			config.headers.key = apiConfiguration.key;
 		}
 		
+		var access_token = $cookies.get('access_token');
+		if (access_token && config.token) {
+			if (config.params) {
+				config.params.access_token = access_token;
+			}
+		}
+		
 		if (opts.proxy) {
-			if (!config.params.__env || !config.params.__envauth) {
-				var envauth = $cookies.getObject('soajs_envauth');
-				var env = $cookies.getObject('myEnv').code;
-				config.params.__envauth = envauth[env.toLowerCase()];
-				config.params.__env = env.toUpperCase();
+			if (!config.params.__env) {
+				var env;
+				if ($cookies.getObject('myEnv')) {
+					env = $cookies.getObject('myEnv').code;
+					config.params.__env = env.toUpperCase();
+				}
+				else {
+					console.log("Missing Env object");
+				}
 			}
 		}
 		
@@ -143,14 +238,14 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 			}).success(function (response, status, headers, config) {
 				returnAPIResponse(scope, response, config, cb);
 			}).error(function (data, status, header, config) {
-				returnAPIError(scope, opts, status, headers, config, cb);
+				returnAPIError(scope, opts, status, headers, data, config, cb);
 			});
 		}
 		else {
 			$http(config).success(function (response, status, headers, config) {
 				returnAPIResponse(scope, response, config, cb);
 			}).error(function (errData, status, headers, config) {
-				returnAPIError(scope, opts, status, headers, config, cb);
+				returnAPIError(scope, opts, status, headers, errData, config, cb);
 			});
 		}
 		
@@ -192,11 +287,12 @@ soajsApp.service('ngDataApi', ['$http', '$cookies', '$localStorage', 'Upload', f
 
 soajsApp.service('isUserLoggedIn', ['$cookies', '$localStorage', function ($cookies, $localStorage) {
 	return function () {
-		if ($localStorage.soajs_user && $cookies.get('soajs_auth')) {
+		if ($localStorage.soajs_user && $cookies.get('access_token')) {
 			return true;
 		}
 		else {
-			$cookies.remove('soajs_auth');
+			$cookies.remove('access_token');
+			$cookies.remove('refresh_token');
 			$localStorage.soajs_user = null;
 			return false;
 		}
@@ -503,31 +599,37 @@ soajsApp.service("aclDrawHelpers", function () {
 		}
 	}
 	
-	function fillApiAccess(apis) {
+	function fillApiAccess(apis, forcePrivate) {
 		for (var apiName in apis) {
 			if (apis.hasOwnProperty(apiName)) {
 				apis[apiName].include = true;
 				apis[apiName].accessType = 'clear';
-				if (apis[apiName].access == true) {
-					apis[apiName].accessType = 'private';
-				}
-				else if (apis[apiName].access === false) {
-					apis[apiName].accessType = 'public';
+				if (forcePrivate === true) {
+					// This variable is set to true only in the user ACL.
+					apis[apiName].accessType = 'clear';
 				}
 				else {
-					if (Array.isArray(apis[apiName].access)) {
-						apis[apiName].accessType = 'groups';
-						apis[apiName].grpCodes = {};
-						apis[apiName].access.forEach(function (c) {
-							apis[apiName].grpCodes[c] = true;
-						});
+					if (apis[apiName].access === true) {
+						apis[apiName].accessType = 'private';
+					}
+					else if (apis[apiName].access === false) {
+						apis[apiName].accessType = 'public';
+					}
+					else {
+						if (Array.isArray(apis[apiName].access)) {
+							apis[apiName].accessType = 'groups';
+							apis[apiName].grpCodes = {};
+							apis[apiName].access.forEach(function (c) {
+								apis[apiName].grpCodes[c] = true;
+							});
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	function fillServiceApiAccess(service, currentService) {
+	function fillServiceApiAccess(service, currentService, forcePrivate) {
 		function grpByMethod(service, fixList) {
 			var byMethod = false;
 			for (var grp in fixList) {
@@ -561,12 +663,12 @@ soajsApp.service("aclDrawHelpers", function () {
 		if (service.get || service.post || service.put || service.delete) {
 			for (var method in service) {
 				if (service[method].apis) {
-					fillApiAccess(service[method].apis);
+					fillApiAccess(service[method].apis, forcePrivate);
 				}
 			}
 		}
 		else if (service.apis) {
-			fillApiAccess(service.apis);
+			fillApiAccess(service.apis, forcePrivate);
 		}
 	}
 	

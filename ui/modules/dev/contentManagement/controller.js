@@ -13,9 +13,9 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 		constructModulePermissions($scope, $scope.access, {
 			'listEntries': [oneService.name, '/list', 'get'],
 			'addEntry': [oneService.name, '/add', 'post'],
-			'updateEntry': [oneService.name, '/update', 'put'],
+			'updateEntry': [oneService.name, '/update', 'post'],
 			'getEntry': [oneService.name, '/get', 'get'],
-			'deleteEntry': [oneService.name, '/delete', 'delete']
+			'deleteEntry': [oneService.name, '/delete', 'get']
 		});
 
 		//get schema from remote service.
@@ -343,7 +343,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 							}
 							else {
 								getSendDataFromServer($scope, ngDataApi, {
-									"method": "put",
+									"method": "post",
 									"routeName": "/" + $scope.selectedService.name + $scope.ui.links['update'],
 									"params": {
 										"id": data._id,
@@ -488,7 +488,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	$scope.deleteCMDataEntry = function (data) {
 		getSendDataFromServer($scope, ngDataApi, {
 			//"url": $scope.selectedDomainAddress,
-			"method": "delete",
+			"method": "get",
 			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
 			"params": {
 				"id": data._id,
@@ -508,7 +508,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	$scope.deleteCMDataEntries = function () {
 		var config = {
 			//"url": $scope.selectedDomainAddress,
-			"method": "delete",
+			"method": "get",
 			"routeName": "/" + $scope.selectedService.name + $scope.ui.links['delete'],
 			"params": {
 				'id': '%id%',

@@ -18,9 +18,8 @@ module.exports = {
 	"extKeyRequired": true,
 	"awareness": true,
 	"awarenessEnv": true,
-	"oauth": false,
+	"oauth": true,
 	"session": true,
-	"roaming": true,
 
 	"hasher": {
 		"hashIterations": 1024,
@@ -48,6 +47,10 @@ module.exports = {
 
 	"certificates": {
 		types: ['ca', 'cert', 'key']
+	},
+
+	"HA":{
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
 	},
 
 	"gitAccounts": {
@@ -608,8 +611,7 @@ module.exports = {
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
-					"group": "Tenant",
-					"groupMain": true
+					"group": "Tenant"
 				},
 				"type": {
 					"source": ['query.type'],
@@ -865,12 +867,26 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"serviceId": {
+					"source": ['query.serviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
 				"taskId": {
 					"source": ['query.taskId'],
 					"required": true,
 					"validation": {
 						"type": "string"
 					}
+				}
+			},
+
+			"/cloud/namespaces/list": {
+				"_apiInfo": {
+					"l": "List Available Namespaces",
+					"group": "HA Cloud"
 				}
 			},
 
@@ -1131,6 +1147,13 @@ module.exports = {
 					"default": "site",
 					"validation": {
 						"type": "string"
+					}
+				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
 					}
 				}
 			},
@@ -1512,6 +1535,17 @@ module.exports = {
 									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
 									"replicas": { "required": false, "type": "number" }
 								}
+							},
+							"readinessProbe": { //NOTE: only applicable in kubernetes mode
+								"required": false,
+								"type": "object",
+								"properties": {
+									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
+				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
+								}
 							}
 						}
 					}
@@ -1551,7 +1585,8 @@ module.exports = {
                                             "commit": { "type": "string", "required": true }
                                         }
                                     },
-									"supportSSL": { "required": false, "type": "boolean" }
+									"supportSSL": { "required": false, "type": "boolean" },
+                                    "kubeSecret": { "required": false, "type": "string" }
 								}
 							}
 						}
@@ -1637,6 +1672,19 @@ module.exports = {
 									"replicas": { "required": false, "type": "number" }
 								}
 							},
+							"readinessProbe": { //NOTE: only applicable in kubernetes mode, httpGet readiness probe only supported
+								"required": false,
+								"type": "object",
+								"properties": {
+									"path": { "required": true, "type": "string" },
+									"port": { "required": true, "type": "string" },
+									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
+				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
+				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
+								}
+							},
 							"restartPolicy": {
 								"required": true,
 								"type": "object",
@@ -1657,7 +1705,7 @@ module.exports = {
 							}
 						}
 					}
-				},
+				}
 			},
 
 			"/cloud/nodes/add": {
@@ -2069,6 +2117,13 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"sensitive": {
+					"source": ['body.sensitive'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
+				},
 				"custom": {
 					"source": ['body.custom'],
 					"required": false,
@@ -2234,6 +2289,46 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["manual", "container"]
+					}
+				}
+			},
+
+			"/environment/platforms/deployer/update": {
+				_apiInfo: {
+					"l": "Change Deployer Type",
+					"group": "Environment Platforms"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"required": true
+					}
+				},
+				"driver": {
+					"source": ['body.driver'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": ['local', 'remote']
+					}
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"properties": {
+							"namespace": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"default": { "type": "string", "required": true },
+									"perService": { "type": "boolean", "required": true }
+								}
+							}
+						}
 					}
 				}
 			},
@@ -2586,6 +2681,17 @@ module.exports = {
 							"commit": { "type": "string", "required": true }
 						}
 					}
+				},
+				"ssl": {
+                    "source": ['body.ssl'],
+                    "required": false,
+                    "validation": {
+                        "type": "object",
+                        "properties": {
+                            "supportSSL": { "type": "boolean", "required": false },
+                            "kubeSecret": { "type": "string", "required": false }
+                        }
+                    }
 				}
 			},
 
@@ -2865,6 +2971,20 @@ module.exports = {
 				},
 				"mode": {
 					"source": ['query.mode'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
+			"/cloud/namespaces/delete": {
+				"_apiInfo": {
+					"l": "Delete a Namespace",
+					"group": "HA Cloud"
+				},
+				"namespaceId": {
+					"source": ['query.namespaceId'],
 					"required": true,
 					"validation": {
 						"type": "string"

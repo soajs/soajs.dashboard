@@ -245,7 +245,14 @@ var errors = {
 	"903": "You do not have access to this environment %envCode%",
 	"904": "Check your internet connection",
 
-	"905": "Static content not found"
+	"905": "Static content not found",
+
+	"906": "Running hosts exist for this environment, remove them before deleting this environment",
+	"907": "Running hosts exist for this environment, remove them before updating its namespace configuration",
+	"908": "Updating deployer configuration is only supported for kubernetes deployments",
+	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
+
+	"910": "Specified memory limit is less than minimum memory prerequisite for this service"
 };
 
 

@@ -1,5 +1,5 @@
 <div class="serviceName">
-	<input type="checkbox" ng-checked="currentApplication.aclFill[oneEnv.code][service.name].include===true" ng-model="currentApplication.aclFill[oneEnv.code][service.name].include" value="{{service.name}}" ng-click="selectService(service, oneEnv.code)"/>
+	<input type="checkbox" ng-model="currentApplication.aclFill[oneEnv.code][service.name].include" value="{{service.name}}" ng-click="selectService(service, oneEnv.code)"/>
 	<b><a href="">{{service.name}}</a></b>
 </div>
 <div ng-show="currentApplication.aclFill[oneEnv.code][service.name].include" style="float: left;">

@@ -653,7 +653,7 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 
 	$scope.removeExtKey = function (appId, data, key) {
 		getSendDataFromServer($scope, ngDataApi, {
-			"method": "delete",
+			"method": "post",
 			"routeName": "/dashboard/settings/tenant/application/key/ext/delete",
 			"data": {'extKey': data.extKey, 'extKeyEnv': data.env},
 			"params": {"appId": appId, "key": key}

@@ -224,7 +224,7 @@ var settingsConfig = {
 			'externalKeys': {
 				'add': ['dashboard', '/settings/tenant/application/key/ext/add', 'post'],
 				'list': ['dashboard', '/settings/tenant/application/key/ext/list', 'get'],
-				'delete': ['dashboard', '/settings/tenant/application/key/ext/delete', 'delete'],
+				'delete': ['dashboard', '/settings/tenant/application/key/ext/delete', 'post'],
 				'update': ['dashboard', '/settings/tenant/application/key/ext/update', 'put']
 			}
 		}
