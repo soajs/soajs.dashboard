@@ -22,8 +22,8 @@ module.exports = {
 		"soajs.service.label": "elasticsearch"
 	},
 	"deployConfig": {
-		//"image": "elasticsearch:alpine",
-		"image": "elasticsearch",
+		"image": "elasticsearch:alpine",
+		//"image": "elasticsearch",
 		//"workDir": "/",
 		"memoryLimit": 524288000,
 		"network": "soajsnet",
