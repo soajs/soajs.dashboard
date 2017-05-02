@@ -19,7 +19,7 @@ module.exports = {
 	},
 	"deployConfig": {
 		"image": "metricbeat-docker",
-		"workDir": "/",
+		//"workDir": "/",
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"replication": {
@@ -27,7 +27,7 @@ module.exports = {
 			"replicas":1
 		},
 		"volume": {
-			"type": "volume",
+			"type": "bind",
 			"readOnly": true,
 			"source": "/var/run/docker.sock",
 			"target": "/var/run/docker.sock"
