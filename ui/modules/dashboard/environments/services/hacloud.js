@@ -982,7 +982,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		else {
 			return currentScope.displayAlert('danger', "Invalid type provided!");
 		}
-		var url = "http://" + window.location.hostname + ":" + currentScope.kibanaPort + "/app/kibana#/dashboard/" + dashboardID + "?embed=true&_g=(refreshInterval%3A('%24%24hashKey'%3A'object%3A242'%2Cdisplay%3A'5%20seconds'%2Cpause%3A!f%2Csection%3A1%2Cvalue%3A5000)%2Ctime%3A(from%3Anow%2Fd%2Cmode%3Aquick%2Cto%3Anow%2Fd))"+filter;
+		var url = "http://" + window.location.hostname + ":" + currentScope.kibanaPort + "/app/kibana#/dashboard/" + dashboardID + "?embed=true&_g=(refreshInterval%3A('%24%24hashKey'%3A'object%3A4602'%2Cdisplay%3A'5%20seconds'%2Cpause%3A!f%2Csection%3A1%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-15m%2Cmode%3Aquick%2Cto%3Anow))"+filter;
 		$modal.open({
 			templateUrl: "metrics.html",
 			size: 'lg',

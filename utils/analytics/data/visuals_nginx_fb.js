@@ -46,7 +46,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Top 10 Nginx Errors",
-			"visState": "{\"title\":\"New Visualization\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"errormessage\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Error Message\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Top 10 Nginx Errors\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"errormessage\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Error Message\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
@@ -64,7 +64,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Top 5 Methods",
-			"visState": "{\"title\":\"To 5 Methods\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"verb\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Top 5 Methods\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Top 5 Methods\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"verb\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Top 5 Methods\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
@@ -82,8 +82,8 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Top 10 Requests",
-			"visState": "{\"title\":\"Top 10 Requests\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"request\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
-			"uiStateJSON": "{}",
+			"visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{},\"schema\":\"metric\",\"type\":\"count\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"field\":\"verb\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":10},\"schema\":\"bucket\",\"type\":\"terms\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"field\":\"request\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":10},\"schema\":\"bucket\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"perPage\":10,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"title\":\"Top 10 Requests\",\"type\":\"table\"}",
+			"uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
 			"description": "",
 			"version": 1,
 			"kibanaSavedObjectMeta": {
@@ -118,7 +118,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Top 10 Countries",
-			"visState": "{\"title\":\"Top 20 Countries\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":true},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"geoip.country_name\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Top 10 Countries\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":true},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"geoip.country_name\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
@@ -128,7 +128,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "To-5-Methods-%injector%",
+		"id": "Top-5-Methods-%injector%",
 		"_type": "visualization",
 		"_service": "nginx",
 		"_shipper": "filebeat",
@@ -136,7 +136,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "To 5 Methods",
-			"visState": "{\"title\":\"New Visualization\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"verb\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Top 5 Methods\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Top 5 Methods\",\"type\":\"pie\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"verb\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Top 5 Methods\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
@@ -208,7 +208,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Sum of bytes",
-			"visState": "{\"title\":\"Sum of bytes\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"33\"},\"aggs\":[{\"id\":\"1\",\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"bytes\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Sum of bytes\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"30\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"bytes\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
