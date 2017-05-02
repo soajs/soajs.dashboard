@@ -1554,6 +1554,18 @@ service.init(function () {
 			BL.activateAnalytics(config, req, res);
 		});
 	});
+	
+	/**
+	 * Analytics:
+	 * Api that deactivate analytics in an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/deactivateAnalytics", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.deactivateAnalytics(config, req, res);
+		});
+	});
 
 	/**
 	 * Service Start
