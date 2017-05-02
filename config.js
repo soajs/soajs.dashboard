@@ -2614,6 +2614,14 @@ module.exports = {
 						"type": "string"
 					}
 				},
+				"action": {
+					"source": ['body.action'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ 'redeploy', 'rebuild' ]
+					}
+				},
 				"ui": {
 					"source": ['body.ui'],
 					"required": false,
