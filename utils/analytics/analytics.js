@@ -563,12 +563,10 @@ var lib = {
 								"_shipper": "metricbeat"
 							}
 						};
-						model.findEntry(soajs, combo, function (error, records) {
+						model.findEntries(soajs, combo, function (error, records) {
 							if (error) {
 								return pCallback(error);
 							}
-							console.log(records.length)
-							console.log(JSON.stringify(records, null, 2))
 							if (records && records.length > 0) {
 								records.forEach(function(onRecord){
 									onRecord = JSON.stringify(onRecord);

@@ -32,7 +32,8 @@ module.exports = {
 			}
 		],
 		"replication": {
-			"mode": "global"
+			"mode": "replicated",
+			"replicas":1
 		},
 		"restartPolicy": {
 			"condition": "on-failure",
