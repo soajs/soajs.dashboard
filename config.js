@@ -1092,6 +1092,20 @@ module.exports = {
 						"type": "string", "required": true
 					}
 				}
+			},
+			
+			"/analytics/deactivateAnalytics": {
+				_apiInfo: {
+					"l": "Deactivate Analytics",
+					"group": "elk"
+				},
+				"env": {
+					"source": ['query.env'],
+					"required": true,
+					"validation": {
+						"type": "string", "required": true
+					}
+				}
 			}
 		 },
 
