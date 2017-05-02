@@ -86,7 +86,7 @@ var lib = {
 					"network": loadContent.deployConfig.network,
 					"ports": loadContent.deployConfig.ports || []
 				};
-				if (loadContent.command.cmd){
+				if (loadContent.command && loadContent.command.cmd){
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
 				if (service === "elastic" && env.deployer.selected(".")[1] === "kubernetes") {
