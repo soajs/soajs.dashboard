@@ -729,7 +729,7 @@ var lib = {
 				if (error) {
 					return cb(error);
 				}
-				if (settings && settings.filebeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
+				if (settings && settings.metricbeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
 					return cb(null, true)
 				}
 				else {
