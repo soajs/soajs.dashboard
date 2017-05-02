@@ -73,7 +73,6 @@ var lib = {
 					"image": loadContent.deployConfig.image,
 					"variables": loadContent.variables || [],
 					"labels": loadContent.labels,
-					"cmd": loadContent.command.cmd.concat(loadContent.command.args),
 					"memoryLimit": loadContent.deployConfig.memoryLimit,
 					"replication": {
 						"mode": loadContent.deployConfig.replication.mode,
@@ -87,7 +86,9 @@ var lib = {
 					"network": loadContent.deployConfig.network,
 					"ports": loadContent.deployConfig.ports || []
 				};
-				
+				if (loadContent.command.cmd){
+					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
+				}
 				if (service === "elastic" && env.deployer.selected(".")[1] === "kubernetes") {
 					serviceParams.ports[0].published = "32900";
 				}
