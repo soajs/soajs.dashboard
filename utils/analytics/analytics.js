@@ -565,7 +565,7 @@ var lib = {
 						};
 						model.findEntry(soajs, combo, function (error, records) {
 							if (error) {
-								return callback(error);
+								return pCallback(error);
 							}
 							if (records && records.length > 0) {
 								records.forEach(function(onRecord){
