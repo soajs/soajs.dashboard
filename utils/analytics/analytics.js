@@ -227,9 +227,7 @@ var lib = {
 						'name': oneTemplate._name,
 						'body': oneTemplate._json
 					};
-					console.log(JSON.stringify(options, null, 2), "options")
 					esClient.db.indices.putTemplate(options, function (error) {
-						console.log(error, "putTemplate")
 						return callback(error, true);
 					});
 				}, cb);
@@ -252,9 +250,7 @@ var lib = {
 				
 				esClient.db.indices.exists(mapping, function (error, result) {
 					if (error || !result) {
-						console.log(JSON.stringify(mapping, null, 2), "mapping")
 						esClient.db.indices.create(mapping, function(err){
-							console.log(err, "putMapping")
 							return cb(err, true);
 						});
 					}
@@ -288,6 +284,7 @@ var lib = {
 		},
 		
 		"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
+			console.log("configureKibana")
 			var analyticsArray = [];
 			var serviceEnv = env.code.toLowerCase(); //todo check this Lowecase or Uppercase
 			async.parallel({
@@ -592,6 +589,7 @@ var lib = {
 				},
 				function (err) {
 					if (err) {
+						c
 						return cb(err);
 					}
 					if (analyticsArray.length !== 0) {
