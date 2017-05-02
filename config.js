@@ -51,7 +51,7 @@ module.exports = {
 	},
 
 	"HA":{
-		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token']
 	},
 
 	"gitAccounts": {
