@@ -224,8 +224,8 @@ var lib = {
 					delete oneTemplate._json.settings["index-refresh_interval"];
 					delete oneTemplate._json.settings["index-mapping-total_fields-limit"];
 					var options = {
-						'name': templates._name,
-						'body': templates._json
+						'name': oneTemplate._name,
+						'body': oneTemplate._json
 					};
 					console.log(JSON.stringify(options, null, 2), "options")
 					esClient.db.indices.putTemplate(options, function (error) {
