@@ -89,7 +89,6 @@ var lib = {
 				if (loadContent.command && loadContent.command.cmd){
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
-				console.log(JSON.stringify(env.deployer, null, 2))
 				if (service === "elastic" && env.deployer.selected.split(".")[1] === "kubernetes") {
 					serviceParams.ports[0].published = "32900";
 				}
@@ -108,7 +107,6 @@ var lib = {
 				serviceParams = JSON.stringify(serviceParams);
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
-				console.log(JSON.stringify(serviceParams, null, 2))
 				
 				return cb(null, serviceParams);
 				
@@ -200,6 +198,7 @@ var lib = {
 					lib.putTemplate(soajs, model, esClient, callback);
 				}
 			}, function (err) {
+				console.log(err, "err")
 				if (err) {
 					return cb(err);
 				}
@@ -213,12 +212,20 @@ var lib = {
 				collection: colls.analytics,
 				conditions: {_type: 'template'}
 			};
-			model.findEntries(soajs, combo, function (error, mappings) {
+			model.findEntries(soajs, combo, function (error, templates) {
 				if (error) return cb(error);
-				async.each(mappings, function (oneMapping, callback) {
+				async.each(templates, function (oneTemplate, callback) {
+					if (oneTemplate._json.dynamic_templates && oneTemplate._json.dynamic_templates["system-process-cgroup-cpuacct-percpu"]) {
+						oneTemplate._json.dynamic_templates["system.process.cgroup.cpuacct.percpu"] = oneTemplate._json.dynamic_templates["system-process-cgroup-cpuacct-percpu"];
+						delete oneTemplate._json.dynamic_templates["system-process-cgroup-cpuacct-percpu"];
+					}
+					oneTemplate._json.settings["index.mapping.total_fields.limit"] = oneTemplate._json.settings["index-mapping-total_fields-limit"];
+					oneTemplate._json.settings["index.refresh_interval"] = oneTemplate._json.settings["index-refresh_interval"];
+					delete oneTemplate._json.settings["index-refresh_interval"];
+					delete oneTemplate._json.settings["index-mapping-total_fields-limit"];
 					var options = {
-						'name': oneMapping._name,
-						'body': oneMapping._json
+						'name': templates._name,
+						'body': templates._json
 					};
 					esClient.db.indices.putTemplate(options, function (error) {
 						return callback(error, true);
@@ -275,12 +282,12 @@ var lib = {
 		
 		"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 			var analyticsArray = [];
+			var serviceEnv = env.code.toLowerCase(); //todo check this Lowecase or Uppercase
 			async.parallel({
 					"filebeat": function (pCallback) {
 						async.each(servicesList, function (oneService, callback) {
 							var serviceType;
-							var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
-								serviceName, taskName;
+							var serviceName, taskName;
 							serviceEnv = serviceEnv.replace(/[\/*?"<>|,.-]/g, "_");
 							if (oneService) {
 								if (oneService.labels) {
@@ -512,7 +519,69 @@ var lib = {
 						}, pCallback);
 					},
 					"metricbeat": function (pCallback) {
-					
+						var metricbeatIndex = require("../analytics/indexes/metricbeat-index");
+						analyticsArray = analyticsArray.concat(
+							[
+								{
+									index: {
+										_index: '.kibana',
+										_type: 'index-pattern',
+										_id: 'metricbeat-*'
+									}
+								},
+								{
+									title: 'metricbeat-*',
+									timeFieldName: '@timestamp',
+									fields: metricbeatIndex.fields,
+									fieldFormatMap: metricbeatIndex.fieldFormatMap
+								}
+							]
+						);
+						analyticsArray = analyticsArray.concat(
+							[
+								{
+									index: {
+										_index: '.kibana',
+										_type: 'index-pattern',
+										_id: 'metricbeat-' + serviceEnv + "-*"
+									}
+								},
+								{
+									title: 'metricbeat-' + serviceEnv + "-*",
+									timeFieldName: '@timestamp',
+									fields: metricbeatIndex.fields,
+									fieldFormatMap: metricbeatIndex.fieldFormatMap
+								}
+							]
+						);
+						var combo = {
+							"collection": colls.analytics,
+							"conditions": {
+								"_shipper": "metricbeat"
+							}
+						};
+						model.findEntry(soajs, combo, function (error, records) {
+							if (error) {
+								return callback(error);
+							}
+							if (records && records.length > 0) {
+								records.forEach(function(onRecord){
+									onRecord = JSON.stringify(onRecord);
+									onRecord = onRecord.replace(/%env%/g, serviceEnv);
+									onRecord = JSON.parse(onRecord);
+									var recordIndex = {
+										index: {
+											_index: '.kibana',
+											_type: onRecord._type,
+											_id: onRecord.id
+										}
+									};
+									analyticsArray = analyticsArray.concat([recordIndex, onRecord._source]);
+								});
+								
+							}
+							return pCallback(null, true);
+						});
 					}
 				},
 				function (err) {
@@ -788,7 +857,7 @@ var lib = {
 				}
 			});
 		},
-		
+	
 	}
 ;
 
