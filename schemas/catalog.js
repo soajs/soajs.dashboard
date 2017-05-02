@@ -92,6 +92,13 @@ module.exports = {
                         "required": false,
                         "additionalProperties": false,
                         "properties": {
+                            "settings": {
+                                "type": "object",
+                                "required": false,
+                                "properties": {
+                                    "accelerateDeployment": { "type": "boolean", "required": false }
+                                }
+                            },
                             "env": {
                                 "type": "object",
                                 "required": false
