@@ -285,7 +285,7 @@
 					<br/>
                     <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
                     <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
-					<button ng-show="showActivateAnalytics && groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-success col-md-offset-4" ng-click="activateAnalytics()">Activate Analytics</button>
+					<span class="col-sm-2"><button ng-show="showActivateAnalytics && groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
 					<div class="dropdown refreshDropDown f-right">
 						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 							<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}

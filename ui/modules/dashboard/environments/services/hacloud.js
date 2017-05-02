@@ -950,14 +950,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		var name = serviceName;
 		var logType = "Analytics";
 		var filter = "";
-		console.log(JSON.stringify(task,null,2));
 		if (shipper && shipper === "metricbeat") {
 			logType = "Metrics";
 			filter = "&_a=(query:(query_string:(analyze_wildcard:!t,query:'";
 			if (task && type === 'task') {
-				name = task.name;
+				name = task.name + "." + task.id;
 				dashboardID = "Metricbeat-Docker-container";
-				filter +="docker.container.name:"+ name+".*";
+				filter +="docker.container.name:"+ name;
 			}
 			else if (type = 'service') {
 				dashboardID = "Metricbeat-Docker-service";
