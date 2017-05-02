@@ -589,11 +589,10 @@ var lib = {
 				},
 				function (err) {
 					if (err) {
-						c
 						return cb(err);
 					}
 					if (analyticsArray.length !== 0) {
-						lib.esBulk(esClient, analyticsArray, call);
+						lib.esBulk(esClient, analyticsArray, cb);
 					}
 					else {
 						return cb(null, true);
