@@ -227,7 +227,9 @@ var lib = {
 						'name': templates._name,
 						'body': templates._json
 					};
+					console.log(JSON.stringify(options, null, 2), "options")
 					esClient.db.indices.putTemplate(options, function (error) {
+						console.log(error, "putTemplate")
 						return callback(error, true);
 					});
 				}, cb);
@@ -247,9 +249,14 @@ var lib = {
 					index: '.kibana',
 					body: mappings._json
 				};
+				
 				esClient.db.indices.exists(mapping, function (error, result) {
 					if (error || !result) {
-						esClient.db.indices.create(mapping, cb);
+						console.log(JSON.stringify(mapping, null, 2), "mapping")
+						esClient.db.indices.create(mapping, function(err){
+							console.log(err, "putMapping")
+							return cb(err, true);
+						});
 					}
 					else {
 						return cb(null, true);
@@ -351,24 +358,23 @@ var lib = {
 												if (key == 0) {
 													//filebeat-service-environment-*
 													
-													// analyticsArray = analyticsArray.concat(
-													// 	[
-													// 		{
-													// 			index: {
-													// 				_index: '.kibana',
-													// 				_type: 'index-pattern',
-													// 				_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
-													// 			}
-													// 		},
-													// 		{
-													// 			title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
-													// 			timeFieldName: '@timestamp',
-													// 			fields: filebeatIndex.fields,
-													// 			fieldFormatMap: filebeatIndex.fieldFormatMap,
-													// 			env: serviceEnv
-													// 		}
-													// 	]
-													// );
+													analyticsArray = analyticsArray.concat(
+														[
+															{
+																index: {
+																	_index: '.kibana',
+																	_type: 'index-pattern',
+																	_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*"
+																}
+															},
+															{
+																title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + "*",
+																timeFieldName: '@timestamp',
+																fields: filebeatIndex.fields,
+																fieldFormatMap: filebeatIndex.fieldFormatMap
+															}
+														]
+													);
 													
 													
 													// analyticsArray = analyticsArray.concat(
