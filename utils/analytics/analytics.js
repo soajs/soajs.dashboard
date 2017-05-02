@@ -104,8 +104,7 @@ var lib = {
 				}
 				if (loadContent.deployConfig.annotations) {
 					serviceParams.annotations = loadContent.deployConfig.annotations;
-				}
-				;
+				};
 				serviceParams = JSON.stringify(serviceParams);
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
