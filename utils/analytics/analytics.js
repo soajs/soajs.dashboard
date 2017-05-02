@@ -7,7 +7,7 @@ var colls = {
 };
 var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
-var topbeatIndex = require("./indexes/topbeat-index");
+var metricbeat = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
 var lib = {
 	"insertMongoData": function (soajs, config, model, cb) {
@@ -88,6 +88,10 @@ var lib = {
 				"ports": loadContent.deployConfig.ports || []
 			};
 			
+			if (service === "elastic" && env.deployer.selected(".")[1] === "kubernetes"){
+				serviceParams.ports[0].published = "32900";
+			}
+			
 			if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
 				serviceParams.volume = {
 					"type": loadContent.deployConfig.volume.type,
@@ -96,7 +100,9 @@ var lib = {
 					"target": loadContent.deployConfig.volume.target
 				};
 			}
-			
+			if (loadContent.deployConfig.annotations){
+				serviceParams.annotations = loadContent.deployConfig.annotations;
+			};
 			serviceParams = JSON.stringify(serviceParams);
 			serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 			serviceParams = JSON.parse(serviceParams);
@@ -108,7 +114,6 @@ var lib = {
 	},
 	
 	"deployElastic": function (soajs, env, deployer, utils, model, cb) {
-		console.log("deployElastic")
 		var combo = {};
 		combo.collection = colls.analytics;
 		combo.conditions = {
@@ -135,12 +140,11 @@ var lib = {
 							combo.fields = {
 								"$set": settings.elasticsearch
 							};
-							var options = {
+							combo.options = {
 								"safe": true,
 								"multi": false,
 								"upsert": true
 							};
-							combo.options = options;
 							
 							model.updateEntry(soajs, combo, call);
 						}
@@ -268,6 +272,7 @@ var lib = {
 	},
 	
 	"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
+		
 		async.each(servicesList, function (oneService, callback) {
 			var serviceType;
 			var serviceEnv = env.code.toLowerCase(), //todo check this Lowecase or Uppercase
@@ -692,13 +697,59 @@ var lib = {
 		});
 	},
 	
+	"deployMetricbeat": function (soajs, env, deployer, utils, model, cb) {
+		console.log("deplotMetricbeat")
+		var combo = {};
+		combo.collection = colls.analytics;
+		combo.conditions = {
+			"_type": "settings"
+		};
+		model.findEntry(soajs, combo, function (error, settings) {
+			if (error) {
+				return cb(error);
+			}
+			if (settings && settings.filebeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
+				return cb(null, true)
+			}
+			else {
+				lib.getAnalyticsContent("metricbeat", env, function (err, content) {
+					var options = utils.buildDeployerOptions(env, soajs, model);
+					options.params = content;
+					async.parallel({
+						"deploy": function (call) {
+							deployer.deployService(options, call)
+						},
+						"update": function (call) {
+							combo.fields = {
+								"$set": {
+									"metricbeat": {}
+								}
+							};
+							combo.fields["$set"].metricbeat[env.code.toLowerCase()] = {
+								"status": "deployed"
+							};
+							var options = {
+								"safe": true,
+								"multi": false,
+								"upsert": true
+							};
+							combo.options = options;
+							model.updateEntry(soajs, combo, call);
+						}
+					}, cb);
+				});
+			}
+			
+		});
+	},
+	
 	"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
 		console.log("checkAvailability")
 		var BL = {
 			model: model
 		};
 		var options = utils.buildDeployerOptions(env, soajs, BL);
-		var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat"]
+		var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", env.code.toLowerCase() + '-' + "metricbeat"]
 		deployer.listServices(options, function (err, servicesList) {
 			var failed = [];
 			servicesList.forEach(function (oneService) {
@@ -733,7 +784,7 @@ var lib = {
 			index: ".kibana",
 			type: 'config',
 			body: {
-				doc: {"defaultIndex": "topbeat-nginx-dashboard-*"}
+				doc: {"defaultIndex": "metricbeat-*"}
 			}
 		};
 		var condition = {
@@ -810,6 +861,7 @@ analyticsDriver.prototype.run = function () {
 	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
 	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
 	analyticsDriver.deploy.call(_self);

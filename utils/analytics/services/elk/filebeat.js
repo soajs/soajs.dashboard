@@ -17,7 +17,7 @@ module.exports = {
 	},
 	"command": {
 		"cmd": ["bash"],
-		"args": ["-c", "filebeat -e -d '*' -c /etc/filebeat/filebeat.yml"]
+		"args": ["-c", "/usr/share/filebeat/bin/filebeat -e -c /etc/filebeat/filebeat.yml"]
 	},
 	"deployConfig": {
 		"image": "soajstest/filebeat",

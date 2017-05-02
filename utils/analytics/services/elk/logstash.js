@@ -13,7 +13,7 @@ module.exports = {
 	},
 	"command": {
 		"cmd": ["bash"],
-		"args": ["-c", "chown logstash:logstash /conf/logstash.conf; logstash -f /conf/logstash.conf"]
+		"args": ["-c", "logstash -f /usr/share/logstash/config/logstash.conf"]
 	},
 	"deployConfig": {
 		"image": "soajstest/logstash",

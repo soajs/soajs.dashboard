@@ -1,4 +1,16 @@
 'use strict';
+
+var annotation = [
+	{
+		"name": "sysctl",
+		"image": "busybox",
+		"imagePullPolicy": "IfNotPresent",
+		"command": ["sysctl", "-w", "vm.max_map_count=262144"],
+		"securityContext": {
+			"privileged": true
+		}
+	}
+];
 module.exports = {
 	"env": "dashboard", //it's only used to get the deployer cluster
 	"name": "elasticsearch",
@@ -9,11 +21,8 @@ module.exports = {
 		"soajs.service.group": "elk",
 		"soajs.service.label": "elasticsearch"
 	},
-	"command": {
-		"cmd": ["bash", "-c", "/usr/share/elasticsearch/bin/plugin install delete-by-query; elasticsearch -Des.insecure.allow.root=true;"],
-	},
 	"deployConfig": {
-		"image": "elasticsearch:2.4.1",
+		"image": "elasticsearch:alpine",
 		"workDir": "/",
 		"memoryLimit": 524288000,
 		"network": "soajsnet",
@@ -24,6 +33,9 @@ module.exports = {
 				"target": 9200
 			}
 		],
+		"annotations": {
+			"pod.beta.kubernetes.io/init-containers": JSON.stringify(annotation)
+		},
 		"volume": {
 			"type": "volume",
 			"readOnly": false,
