@@ -112,6 +112,14 @@ var mtTranslation = {
 		"ENG": "Turn on oAuth",
 		"FRA": "Turn on oAuth"
 	},
+	"turnOnOAuth": {
+		"ENG": "Turn on oAuth",
+		"FRA": "Turn on oAuth"
+	},
+	"turnOffOAuth": {
+		"ENG": "Turn off oAuth",
+		"FRA": "Turn off oAuth"
+	},
 	"oAuthType": {
 		"ENG": "oAuth type",
 		"FRA": "oAuth type"

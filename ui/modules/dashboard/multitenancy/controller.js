@@ -215,6 +215,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 	
 	$scope.getTenantLoginMode = function (tenant) {
 		// set loginMode to urac or mini urac from the first env available
+		// if the tenant have at least one application and one key and one environment,
+		// it will have a login mode either set to urac or defaulted to miniurac
 		var loginMode;
 		var found = false;
 		for (var i = 0; !found && tenant.applications && i < tenant.applications.length; i++) {
@@ -452,7 +454,6 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			data.secret = oAuth.secret;
 		}
 		data.oauthType = data.loginMode;
-		delete data.loginMode;
 		
 		var keys = Object.keys(data);
 		
@@ -491,22 +492,45 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				},
 				{
 					'type': 'submit',
-					'label': translation.updateOAuth[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						
+					'label': translation.turnOffOAuth[LANG],
+					'btn': 'danger',
+					'action': function () {
 						var postData = {
-							'secret': formData.secret,
-							'useUrac': formData.oauthType === 'urac'
+							'secret': ''
 						};
-						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "put",
 							"routeName": "/dashboard/tenant/oauth/update",
 							"data": postData,
 							"params": {"id": data['_id']}
 						}, function (error) {
-							
+							if (error) {
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listTenants();
+							}
+						});
+					}
+				},
+				{
+					'type': 'submit',
+					'label': translation.turnOnOAuth[LANG],
+					'btn': 'primary',
+					'action': function (formData) {
+						var postData = {
+							'secret': formData.secret,
+							'useUrac': formData.oauthType === 'urac'
+						};
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "put",
+							"routeName": "/dashboard/tenant/oauth/update",
+							"data": postData,
+							"params": {"id": data['_id']}
+						}, function (error) {
 							if (error) {
 								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
 							}
