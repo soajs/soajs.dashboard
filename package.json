@@ -54,6 +54,7 @@
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
     "soajs": "1.0.*",
+    "soajs.core.drivers": "soajs/soajs.core.drivers.git#feature/analytics",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
