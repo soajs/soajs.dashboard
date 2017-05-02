@@ -89,7 +89,8 @@ var lib = {
 				if (loadContent.command && loadContent.command.cmd){
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
-				if (service === "elastic" && env.deployer.selected(".")[1] === "kubernetes") {
+				console.log(JSON.stringify(env.deployer, null, 2))
+				if (service === "elastic" && env.deployer.selected.split(".")[1] === "kubernetes") {
 					serviceParams.ports[0].published = "32900";
 				}
 				
