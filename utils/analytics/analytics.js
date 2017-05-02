@@ -108,7 +108,7 @@ var lib = {
 				serviceParams = JSON.stringify(serviceParams);
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
-				
+				console.log(JSON.stringify(serviceParams, null, 2))
 				
 				return cb(null, serviceParams);
 				
