@@ -1036,7 +1036,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('danger', error);
 				}
 				else {
-					currentScope.displayAlert('info', "Analytics is being Deployed, it may take some time to be ready.");
+					currentScope.displayAlert('info', "Analytics is being Deployed, it may take a few minutes.");
 					currentScope.showActivateAnalytics = false;
 				}
 			});

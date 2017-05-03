@@ -1,13 +1,29 @@
 'use strict';
 var visuals = [
 	{
+		"id": "Time-Picker",
+		"_type": "visualization",
+		"_shipper": "metricbeat",
+		"_source": {
+			"env": "%env%",
+			"title": "Date/Time Picker",
+			"visState": "{\"title\":\"time picker\",\"type\":\"time\",\"params\":{\"enable_quick\":true,\"enable_relative\":true,\"enable_absolut\":true,\"enable_animation\":true},\"aggs\":[],\"listeners\":{}}",
+			"uiStateJSON": "{}",
+			"description": "",
+			"version": 1,
+			"kibanaSavedObjectMeta": {
+				"searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+			}
+		}
+	},
+	{
 		"id": "Docker-Container",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {
 			"env": "%env%",
 			"title": "Container Stats",
-			"visState": "{\"title\":\"one docker container\",\"type\":\"table\",\"params\":{\"perPage\":1,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":1,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"9\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.max\",\"customLabel\":\"Mem max used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"5\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.pct\",\"customLabel\":\"Mem (%)\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Container Stats\",\"type\":\"table\",\"params\":{\"perPage\":1,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":1,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"11\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.total\",\"customLabel\":\"Mem used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"asc\"}}}}",
 			"description": "",
 			"savedSearchId": "Metricbeat-Docker",
@@ -24,7 +40,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Containers Stats",
-			"visState": "{\"title\":\"one docker Service\",\"type\":\"table\",\"params\":{\"perPage\":5,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"9\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.max\",\"customLabel\":\"Mem max used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"5\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.pct\",\"customLabel\":\"Mem (%)\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Containers Stats\",\"type\":\"table\",\"params\":{\"perPage\":5,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"11\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.total\",\"customLabel\":\"Mem Used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"asc\"}}}}",
 			"description": "",
 			"savedSearchId": "Metricbeat-Docker",

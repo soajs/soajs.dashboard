@@ -208,7 +208,7 @@ var visuals = [
 		"_source": {
 			"env": "%env%",
 			"title": "Sum of bytes",
-			"visState": "{\"title\":\"Sum of bytes\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"30\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"bytes\"}}],\"listeners\":{}}",
+			"visState": "{\"title\":\"Sum of bytes\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"28\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"bytes\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{}",
 			"description": "",
 			"version": 1,
