@@ -163,6 +163,7 @@ var lib = {
 		},
 		
 		"infoElastic": function (esClient, cb) {
+			
 			esClient.db.info(function (error) {
 				console.log("infoElastic")
 				if (error) {
@@ -186,6 +187,7 @@ var lib = {
 		},
 		
 		"checkElasticSearch": function (esClient, cb) {
+			console.log(esClient)
 			lib.pingElastic(esClient, function(err, res){
 				
 				if (err){
