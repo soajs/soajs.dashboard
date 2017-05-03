@@ -832,7 +832,10 @@ var lib = {
 					});
 				}
 				else {
-					return cb(null, true);
+					setTimeout(function () {
+						lib.printProgress('Waiting for kibana to become available');
+						lib.setDefaultIndex(cb);
+					}, 5000);
 				}
 			});
 		},
