@@ -90,6 +90,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			else {
 				$scope.mt.displayAlert('success', translation.applicationKeyRemovedSuccessfully[LANG], id);
 				$scope.listKeys(id, app.appId);
+				$scope.listTenants(); // -=-=-=-=-=-
 			}
 		});
 		if (event && event.stopPropagation) {
@@ -198,6 +199,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 										$scope.update_oAuth(row);
 									}
 								},
+								'turnOffOAuth': {
+									'label': translation.turnOffOAuth[LANG],
+									'command': function (row) {
+										$scope.turnOffOAuth(row);
+									}
+								},
 								'delete': {
 									'label': 'Remove',
 									'commandMsg': translation.areYouSureWantRemoveTenant[LANG],
@@ -219,9 +226,11 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		// it will have a login mode either set to urac or defaulted to miniurac
 		var loginMode;
 		var found = false;
+		var atLeastOneKey=false;
 		for (var i = 0; !found && tenant.applications && i < tenant.applications.length; i++) {
 			var keys = tenant.applications[i].keys;
 			for (var j = 0; !found && keys && j < keys.length; j++) {
+				atLeastOneKey = true;
 				var envs = Object.keys(keys[j].config);
 				for (var k = 0; !found && envs && k < envs.length; k++) {
 					var oauth = keys[j].config[envs[k]].oauth;
@@ -234,7 +243,12 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 				}
 			}
 		}
-		return loginMode;
+		
+		var output = {
+			atLeastOneKey,
+			loginMode
+		};
+		return output;
 	}
 	
 	$scope.splitTenantsByType = function (tenants, callback) {
@@ -249,7 +263,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			for (var i = 0; i < $scope.tenantTabs.length; i++) {
 				if (oneTenant.type === $scope.tenantTabs[i].type) {
 					
-					oneTenant.loginMode = $scope.getTenantLoginMode(oneTenant);
+					var tenantInfo = $scope.getTenantLoginMode(oneTenant);
+					oneTenant.loginMode = tenantInfo.loginMode;
+					oneTenant.atLeastOneKey = tenantInfo.atLeastOneKey;
 					$scope.tenantTabs[i].tenants.push(oneTenant);
 				}
 			}
@@ -379,7 +395,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 							else {
 								if (formData.secret && $scope.access.tenant.oauth.update) {
 									var oAuthData = {
-										'secret': formData.secret
+										'secret': formData.secret,
+										'availableEnv' : $scope.availableEnv
 										//'redirectURI': formData.redirectURI
 									};
 									
@@ -443,6 +460,29 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		buildFormWithModal($scope, $modal, options);
 	};
 	
+	$scope.turnOffOAuth = function (data) {
+		var postData = {
+			'secret': '',
+			'availableEnv' : $scope.availableEnv,
+			'oauthType' : 'off'
+		};
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "put",
+			"routeName": "/dashboard/tenant/oauth/update",
+			"data": postData,
+			"params": {"id": data['_id']}
+		}, function (error) {
+			if (error) {
+				$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
+				$scope.form.formData = {};
+				$scope.listTenants();
+			}
+		});
+	};
+	
 	$scope.update_oAuth = function (data) {
 		
 		var formConfig = angular.copy(tenantConfig.form.updateOauth);
@@ -453,7 +493,9 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 		if (oAuth.secret) {
 			data.secret = oAuth.secret;
 		}
-		data.oauthType = data.loginMode;
+		if(data.secret){
+			data.oauthType = data.loginMode;
+		}
 		
 		var keys = Object.keys(data);
 		
@@ -482,65 +524,40 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			data: {},
 			actions: [
 				{
+					'type': 'submit',
+					'label': data.secret?translation.updateOAuth[LANG]:translation.turnOnOAuth[LANG],
+					'btn': 'primary',
+					'action': function (formData) {
+						var postData = {
+							'secret': formData.secret,
+							'oauthType': formData.oauthType,
+							'availableEnv' : $scope.availableEnv
+						};
+						getSendDataFromServer($scope, ngDataApi, {
+							"method": "put",
+							"routeName": "/dashboard/tenant/oauth/update",
+							"data": postData,
+							"params": {"id": data['_id']}
+						}, function (error) {
+							if (error) {
+								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
+							}
+							else {
+								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
+								$scope.modalInstance.close();
+								$scope.form.formData = {};
+								$scope.listTenants();
+							}
+						});
+					}
+				},
+				{
 					'type': 'reset',
 					'label': translation.cancel[LANG],
 					'btn': 'danger',
 					'action': function () {
 						$scope.modalInstance.dismiss('cancel');
 						$scope.form.formData = {};
-					}
-				},
-				{
-					'type': 'submit',
-					'label': translation.turnOffOAuth[LANG],
-					'btn': 'danger',
-					'action': function () {
-						var postData = {
-							'secret': ''
-						};
-						getSendDataFromServer($scope, ngDataApi, {
-							"method": "put",
-							"routeName": "/dashboard/tenant/oauth/update",
-							"data": postData,
-							"params": {"id": data['_id']}
-						}, function (error) {
-							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listTenants();
-							}
-						});
-					}
-				},
-				{
-					'type': 'submit',
-					'label': translation.turnOnOAuth[LANG],
-					'btn': 'primary',
-					'action': function (formData) {
-						var postData = {
-							'secret': formData.secret,
-							'useUrac': formData.oauthType === 'urac'
-						};
-						getSendDataFromServer($scope, ngDataApi, {
-							"method": "put",
-							"routeName": "/dashboard/tenant/oauth/update",
-							"data": postData,
-							"params": {"id": data['_id']}
-						}, function (error) {
-							if (error) {
-								$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-							}
-							else {
-								$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
-								$scope.modalInstance.close();
-								$scope.form.formData = {};
-								$scope.listTenants();
-							}
-						});
 					}
 				}
 			]
@@ -1096,7 +1113,8 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.selectedAppRemoved[LANG], tId);
-				$scope.reloadApplications(tId);
+				// $scope.reloadApplications(tId);
+				$scope.listTenants(); // -=-=-=-=-=-
 			}
 		});
 	};
@@ -1112,6 +1130,7 @@ multiTenantApp.controller('tenantCtrl', ['$scope', '$compile', '$timeout', '$mod
 			}
 			else {
 				$scope.mt.displayAlert('success', translation.applicationKeyAddedSuccessfully[LANG], tId);
+				$scope.listTenants(); // -=-=-=-=-=-
 				$scope.listKeys(tId, appId);
 			}
 		});

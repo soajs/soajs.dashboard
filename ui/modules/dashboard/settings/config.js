@@ -20,11 +20,11 @@ var settingsConfig = {
 					'value': [
 						{
 							'v': 'urac',
-							'l': 'Urac'
+							'l': 'Client to server authentication (URAC)'
 						},
 						{
 							'v': 'miniurac',
-							'l': 'Mini Urac'
+							'l': 'Server to server authentication (miniURAC)'
 						}
 					],
 					'required': true,

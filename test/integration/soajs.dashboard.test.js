@@ -1744,7 +1744,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				
@@ -1772,7 +1774,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key2",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
@@ -1823,7 +1827,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key2",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {

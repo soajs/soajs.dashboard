@@ -88,7 +88,7 @@ var mtTranslation = {
 		"FRA": "Testing Application, used by developers and does not reach production server..."
 	},
 	"editTenantOauth": {
-		"ENG": "Edit Tenant's oAuth Information",
+		"ENG": "Configure oAuth security",
 		"FRA": "Modifie Tenant's oAuth Information"
 	},
 	"editBasicTenantApplication": {
@@ -109,8 +109,8 @@ var mtTranslation = {
 		"FRA": "Client"
 	},
 	"updateOAuth": {
-		"ENG": "Turn on oAuth",
-		"FRA": "Turn on oAuth"
+		"ENG": "Update oAuth",
+		"FRA": "Update oAuth"
 	},
 	"turnOnOAuth": {
 		"ENG": "Turn on oAuth",
