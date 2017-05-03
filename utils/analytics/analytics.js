@@ -137,16 +137,9 @@ var lib = {
 							"update": function (call) {
 								//Todo fix this
 								settings.elasticsearch.status = true;
-								combo.fields = {
-									"$set": settings.elasticsearch
-								};
-								combo.options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								
-								model.updateEntry(soajs, combo, call);
+								delete combo.conditions;
+								combo.records = settings;
+								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
 					});
@@ -183,6 +176,7 @@ var lib = {
 		
 		"checkElasticSearch": function (esClient, cb) {
 			lib.pingElastic(esClient, cb);
+			//add version to settings record
 		},
 		
 		"setMapping": function (soajs, env, model, esClient, cb) {
