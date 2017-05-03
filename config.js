@@ -21,12 +21,12 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-	
+
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-	
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
 
@@ -50,7 +50,7 @@ module.exports = {
 		types: ['ca', 'cert', 'key']
 	},
 
-	"HA":{
+	"HA": {
 		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token']
 	},
 
@@ -499,7 +499,7 @@ module.exports = {
 					"enum": ["urac", "miniurac", "off"]
 				}
 			},
-			'availableEnv':{
+			'availableEnv': {
 				'source': ['body.availableEnv'],
 				'required': true,
 				'validation': {
@@ -508,7 +508,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"get": {
 			"/environment/list": {
 				_apiInfo: {
@@ -899,7 +899,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/namespaces/list": {
 				"_apiInfo": {
 					"l": "List Available Namespaces",
@@ -920,7 +920,7 @@ module.exports = {
 					"group": "Git Accounts"
 				}
 			},
-
+			
 			"/gitAccounts/getRepos": {
 				"_apiInfo": {
 					"l": "Get Repositories",
@@ -1081,7 +1081,7 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"type":{
+				"type": {
 					"source": ['query.type'],
 					"required": true,
 					"validation": {
@@ -1090,7 +1090,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"post": {
 			"/services/list": {
 				_apiInfo: {
@@ -1204,7 +1204,7 @@ module.exports = {
 					"group": "Environment Platforms"
 				}
 			},
-
+			
 			"/product/add": {
 				_apiInfo: {
 					"l": "Add Product",
@@ -1221,7 +1221,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/packages/add": {
 				_apiInfo: {
 					"l": "Add Product Package",
@@ -1239,7 +1239,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/add": {
 				_apiInfo: {
 					"l": "Add Tenant",
@@ -1279,15 +1279,15 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
 			},
-
+			
 			"/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -1295,7 +1295,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'userId', 'password']
 			},
-
+			
 			"/tenant/application/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application",
@@ -1303,7 +1303,7 @@ module.exports = {
 				},
 				"commonFields": ['id', '_TTL', 'description', 'acl', 'productCode', 'packageCode']
 			},
-
+			
 			"/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -1341,7 +1341,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/acl/get": { //TODO: should be changed from post to get
 				_apiInfo: {
 					"l": "Get Current Tenant Access Level",
@@ -1349,15 +1349,15 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/settings/tenant/oauth/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI','oauthType','availableEnv']
+				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv']
 			},
-
+			
 			"/settings/tenant/oauth/users/add": {
 				_apiInfo: {
 					"l": "Add Tenant oAuth User",
@@ -1365,7 +1365,7 @@ module.exports = {
 				},
 				"commonFields": ['userId', 'password']
 			},
-
+			
 			"/settings/tenant/application/key/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application Key",
@@ -1410,10 +1410,10 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type':{
+				'type': {
 					"required": true,
 					"source": ["body.type"],
-					"validation":{
+					"validation": {
 						"type": "string",
 						"enum": ["interval", "cron", "once"]
 					}
@@ -1441,7 +1441,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/soajs/deploy": {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
@@ -1492,10 +1492,10 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"owner": { "required": true, "type": "string" },
-							"repo": { "required": true, "type": "string" },
-							"branch": { "required": true, "type": "string" },
-							"commit": { "required": true, "type": "string" }
+							"owner": {"required": true, "type": "string"},
+							"repo": {"required": true, "type": "string"},
+							"branch": {"required": true, "type": "string"},
+							"commit": {"required": true, "type": "string"}
 						}
 					}
 				},
@@ -1506,14 +1506,18 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
+							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
-									"replicas": { "required": false, "type": "number" }
+									"mode": {
+										"required": true,
+										"type": "string",
+										"enum": ['replicated', 'global', 'deployment', 'daemonset']
+									},
+									"replicas": {"required": false, "type": "number"}
 								}
 							}
 						}
@@ -1529,16 +1533,16 @@ module.exports = {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"gc": { "required": true, "type": "boolean" },
-									"gcName": { "required": true, "type": "string" },
-									"gcVersion": { "required": true, "type": "number" }
+									"gc": {"required": true, "type": "boolean"},
+									"gcName": {"required": true, "type": "string"},
+									"gcVersion": {"required": true, "type": "number"}
 								}
 							},
 							"daemon": {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"grpConfName": { "required": true, "type": "string" }
+									"grpConfName": {"required": true, "type": "string"}
 								}
 							}
 						}
@@ -1588,8 +1592,8 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"cmd": { "required": false, "type": "array" },
-							"args": { "required": false, "type": "array" }
+							"cmd": {"required": false, "type": "array"},
+							"args": {"required": false, "type": "array"}
 						}
 					}
 				},
@@ -1600,19 +1604,19 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"image": { "required": true, "type": "string" },
-							"workDir": { "required": false, "type": "string" },
-							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
-							"network": { "required": false, "type": "string" },
+							"image": {"required": true, "type": "string"},
+							"workDir": {"required": false, "type": "string"},
+							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
+							"network": {"required": false, "type": "string"},
 							"ports": {
 								"required": false,
 								"type": "array",
 								"items": {
 									"type": "object",
 									"properties": {
-										"isPublished": { "required": false, "type": "boolean", "default": false },
-										"target": { "required": true, "type": "number" },
-										"published": { "required": false, "type": "number" }
+										"isPublished": {"required": false, "type": "boolean", "default": false},
+										"target": {"required": true, "type": "number"},
+										"published": {"required": false, "type": "number"}
 									}
 								}
 							},
@@ -1620,39 +1624,43 @@ module.exports = {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global'] },
-									"replicas": { "required": false, "type": "number" }
+									"mode": {"required": true, "type": "string", "enum": ['replicated', 'global']},
+									"replicas": {"required": false, "type": "number"}
 								}
 							},
 							"readinessProbe": { //NOTE: only applicable in kubernetes mode, httpGet readiness probe only supported
 								"required": false,
 								"type": "object",
 								"properties": {
-									"path": { "required": true, "type": "string" },
-									"port": { "required": true, "type": "string" },
-									"initialDelaySeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "timeoutSeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "periodSeconds": { "required": true, "type": "number", "minimum": 1 },
-				                    "successThreshold": { "required": true, "type": "number", "minimum": 1 },
-				                    "failureThreshold": { "required": true, "type": "number", "minimum": 1 }
+									"path": {"required": true, "type": "string"},
+									"port": {"required": true, "type": "string"},
+									"initialDelaySeconds": {"required": true, "type": "number", "minimum": 1},
+									"timeoutSeconds": {"required": true, "type": "number", "minimum": 1},
+									"periodSeconds": {"required": true, "type": "number", "minimum": 1},
+									"successThreshold": {"required": true, "type": "number", "minimum": 1},
+									"failureThreshold": {"required": true, "type": "number", "minimum": 1}
 								}
 							},
 							"restartPolicy": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"condition": { "required": true, "type": "string", "enum": ['none', 'on-failure', 'any']},
-									"maxAttempts": { "required": true, "type": "number" }
+									"condition": {
+										"required": true,
+										"type": "string",
+										"enum": ['none', 'on-failure', 'any']
+									},
+									"maxAttempts": {"required": true, "type": "number"}
 								}
 							},
 							"volume": {
 								"required": false,
 								"type": "object",
 								"properties": {
-									"type": { "required": true, "type": "string", "enum": ['bind', 'volume'] },
-									"readOnly": { "required": false, "type": "boolean" },
-									"source": { "required": true, "type": "string" },
-									"target": { "required": true, "type": "string" }
+									"type": {"required": true, "type": "string", "enum": ['bind', 'volume']},
+									"readOnly": {"required": false, "type": "boolean"},
+									"source": {"required": true, "type": "string"},
+									"target": {"required": true, "type": "string"}
 								}
 							}
 						}
@@ -2284,8 +2292,8 @@ module.exports = {
 								"type": "object",
 								"required": true,
 								"properties": {
-									"default": { "type": "string", "required": true },
-									"perService": { "type": "boolean", "required": true }
+									"default": {"type": "string", "required": true},
+									"perService": {"type": "boolean", "required": true}
 								}
 							}
 						}
@@ -2340,15 +2348,15 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
 			},
-
+			
 			"/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -2370,7 +2378,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application",
@@ -2386,7 +2394,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'description', 'acl', 'productCode', 'packageCode', 'clearAcl']
 			},
-
+			
 			"/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -2635,7 +2643,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": [ 'redeploy', 'rebuild' ]
+						"enum": ['redeploy', 'rebuild']
 					}
 				},
 				"ui": {
@@ -2644,38 +2652,23 @@ module.exports = {
 					"validation": {
 						"type": "object",
 						"properties": {
-							"id": { "type": "string", "required": true },
-							"branch": { "type": "string", "required": true },
-							"commit": { "type": "string", "required": true }
+							"id": {"type": "string", "required": true},
+							"branch": {"type": "string", "required": true},
+							"commit": {"type": "string", "required": true}
 						}
 					}
 				},
 				"ssl": {
-                    "source": ['body.ssl'],
-                    "required": false,
-                    "validation": {
-                        "type": "object",
-                        "properties": {
-                            "supportSSL": { "type": "boolean", "required": false },
-                            "kubeSecret": { "type": "string", "required": false }
-                        }
-                    }
-				}
-			},
-
-			"/catalog/recipes/update": {
-				"_apiInfo": {
-					"l": "Update Catalog",
-					"group": "Catalog"
-				},
-				"id": {
-					"source": ['query.id'],
-					"required": true,
+					"source": ['body.ssl'],
+					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "object",
+						"properties": {
+							"supportSSL": {"type": "boolean", "required": false},
+							"kubeSecret": {"type": "string", "required": false}
+						}
 					}
-				},
-				"catalog": catalogSchema
+				}
 			},
 
 			"/gitAccounts/repo/sync": {
@@ -2960,7 +2953,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/namespaces/delete": {
 				"_apiInfo": {
 					"l": "Delete a Namespace",
