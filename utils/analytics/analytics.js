@@ -165,7 +165,16 @@ var lib = {
 			esClient.db.info(function (error) {
 				if (error) {
 					setTimeout(function () {
-						lib.infoElastic(esClient, cb);
+						lib.infoElastic(esClient, function(err, res){
+							if (err){
+								console.log(err)
+								return cb(err);
+							}
+							else {
+								console.log(res)
+								return cb(null, true);
+							}
+						});
 					}, 3000);
 				}
 				else {
@@ -175,7 +184,16 @@ var lib = {
 		},
 		
 		"checkElasticSearch": function (esClient, cb) {
-			lib.pingElastic(esClient, cb);
+			lib.pingElastic(esClient, function(err, res){
+				if (err){
+					console.log(err)
+					return cb(err);
+				}
+				else {
+					console.log(res)
+					return cb(null, true);
+				}
+			});
 			//add version to settings record
 		},
 		
