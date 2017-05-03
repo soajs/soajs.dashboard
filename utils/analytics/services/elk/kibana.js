@@ -14,7 +14,7 @@ module.exports = {
 	},
 	"deployConfig": {
 		"version": "5.3.0",
-		"image": "kibana:5.3.0",
+		"image": "kibana-time-plugin",
 		"workDir": "/",
 		"memoryLimit": 209715200,
 		"network": "soajsnet",
