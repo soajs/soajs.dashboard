@@ -255,7 +255,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					},
 					form: {
 						"secret": "my secret key",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
@@ -273,7 +275,9 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					qs: {id: tenantId},
 					form: {
 						"secret": "my secret key",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {

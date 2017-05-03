@@ -19,6 +19,8 @@
 	</div>
 	<div class="footer"><br/>
 		<input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="{{translation.updateTenant[LANG]}}"/>
-		<input ng-if="access.tenant.oauth.update" type="submit" class="btn btn-sm btn-danger" ng-click="updateOAuth()" value="{{translation.updateOAuth[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && tenant.oauth.secret" type="submit" class="btn btn-sm btn-primary" ng-click="updateOAuth()" value="{{translation.updateOAuth[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && !tenant.oauth.secret" type="submit" class="btn btn-sm btn-primary" ng-click="updateOAuth()" value="{{translation.turnOnOAuth[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && tenant.oauth.secret" type="submit" class="btn btn-sm btn-danger" ng-click="turnOffOAuth()" value="{{translation.turnOffOAuth[LANG]}}"/>
 	</div>
 </form>

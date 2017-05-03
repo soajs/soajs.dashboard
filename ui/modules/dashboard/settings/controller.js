@@ -154,6 +154,31 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 		return loginMode;
 	}
 	
+	$scope.turnOffOAuth = function(){
+		var data = $scope.tenant;
+		var postData = {
+			'secret': '',
+			'oauthType': 'off',
+			'availableEnv' : $scope.availableEnv
+		};
+		
+		getSendDataFromServer($scope, ngDataApi, {
+			"method": "put",
+			"routeName": "/dashboard/settings/tenant/oauth/update",
+			"data": postData,
+			"params": {"id": data['_id']}
+		}, function (error) {
+			
+			if (error) {
+				$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
+				$scope.getTenant(true);
+			}
+		});
+	}
+	
 	$scope.updateOAuth = function(){
 		var formConfig = angular.copy(settingsConfig.form.updateOauth);
 		formConfig.timeout = $timeout;
@@ -203,12 +228,13 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 						
 						var postData = {
 							'secret': formData.secret,
-							'useUrac': formData.oauthType==='urac'
+							'oauthType': formData.oauthType,
+							'availableEnv' : $scope.availableEnv
 						};
 						
 						getSendDataFromServer($scope, ngDataApi, {
 							"method": "put",
-							"routeName": "/dashboard/tenant/oauth/update",
+							"routeName": "/dashboard/settings/tenant/oauth/update",
 							"data": postData,
 							"params": {"id": data['_id']}
 						}, function (error) {
@@ -247,29 +273,8 @@ settingsApp.controller('settingsCtrl', ['$scope', '$timeout', '$modal', '$routeP
 				$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 			}
 			else {
-				if ($scope.tenant.oauth.secret && $scope.access.tenant.oauth.update) {
-					var oAuthData = {
-						'secret': $scope.tenant.oauth.secret
-					};
-					getSendDataFromServer($scope, ngDataApi, {
-						"method": "put",
-						"routeName": "/dashboard/settings/tenant/oauth/update",
-						"data": oAuthData,
-						"params": {}
-					}, function (error) {
-						if (error) {
-							$scope.form.displayAlert('danger', error.code, true, 'dashboard', error.message);
-						}
-						else {
-							$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
-							$scope.getTenant();
-						}
-					});
-				}
-				else {
-					$scope.$parent.displayAlert('success', translation.TenantUpdatedSuccessfully[LANG]);
-					//$scope.getTenant();
-				}
+				$scope.$parent.displayAlert('success', translation.TenantInfoUpdatedSuccessfully[LANG]);
+				$scope.getTenant();
 			}
 		});
 	};

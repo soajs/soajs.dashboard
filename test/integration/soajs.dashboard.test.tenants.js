@@ -1174,7 +1174,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						},
 						form: {
 							"secret": "my secret key",
-							"redirectURI": "http://www.myredirecturi.com/"
+							"redirectURI": "http://www.myredirecturi.com/",
+							"oauthType" : "urac",
+							"availableEnv" : ["dashboard","dev","stg"]
 						}
 					};
 
@@ -1200,7 +1202,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {},
 						form: {
 							"secret": "my secret key",
-							"redirectURI": "http://www.myredirecturi.com/"
+							"redirectURI": "http://www.myredirecturi.com/",
+							"oauthType" : "urac",
+							"availableEnv" : ["dashboard","dev","stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {
@@ -1234,7 +1238,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {id: tenantId},
 						form: {
 							"secret": "my secret key",
-							"redirectURI": "http://www.myredirecturi2.com/"
+							"redirectURI": "http://www.myredirecturi2.com/",
+							"oauthType" : "urac",
+							"availableEnv" : ["dashboard","dev","stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update/', 'put', function (body) {
@@ -1256,7 +1262,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {},
 						form: {
 							"secret": "my secret key",
-							"redirectURI": "http://www.myredirecturi.com/"
+							"redirectURI": "http://www.myredirecturi.com/",
+							"oauthType" : "urac",
+							"availableEnv" : ["dashboard","dev","stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/update', 'put', function (body) {
@@ -1303,7 +1311,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 						qs: {id: tenantId},
 						form: {
 							"secret": "my secret key",
-							"redirectURI": "http://www.myredirecturi.com/"
+							"redirectURI": "http://www.myredirecturi.com/",
+							"oauthType" : "urac",
+							"availableEnv" : ["dashboard","dev","stg"]
 						}
 					};
 					executeMyRequest(params, 'tenant/oauth/add/', 'post', function (body) {

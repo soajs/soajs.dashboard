@@ -1,6 +1,17 @@
 <br/>
-<a ng-if="access.tenant.application.add" class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">{{translation.addNewApplication[LANG]}}</a>
+
 <div>
+	<a ng-if="access.tenant.application.add" class="btn btn-sm btn-primary" href="" ng-click="addTenantApplication(row['_id'])">{{translation.addNewApplication[LANG]}}</a>
+	
+	<a ng-if="access.tenant.oauth.update && row.atLeastOneKey && row.oauth.secret" class="btn btn-sm btn-primary" ng-click="tenantsList.actions.updateOAuth.command(row)">{{translation.updateOAuth[LANG]}}</a>
+	
+	<a ng-if="access.tenant.oauth.update && row.atLeastOneKey && !row.oauth.secret" class="btn btn-sm btn-primary" ng-click="tenantsList.actions.updateOAuth.command(row)">{{translation.turnOnOAuth[LANG]}}</a>
+	
+	<a ng-if="access.tenant.oauth.update && row.atLeastOneKey && row.oauth.secret" class="btn btn-sm btn-danger" ng-click="tenantsList.actions.turnOffOAuth.command(row)">{{translation.turnOffOAuth[LANG]}}</a>
+
+</div>
+
+<div class="applicationsGrid">
     <label ng-show="row.applications.length > 0">{{translation.availableApplications[LANG]}}:</label>
     <ul class="blueListing">
         <li class="blueLi" ng-repeat="application in row.applications" class="row-list">
