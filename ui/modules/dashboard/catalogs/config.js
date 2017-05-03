@@ -64,9 +64,20 @@ var catalogAppConfig = {
                     "voluming": {
                         "volumes": [],
                         "volumeMounts": []
+                    },
+                    "restartPolicy": {
+                        "condition": "",
+                        "maxAttempts": 0
+                    },
+                    "container": {
+                        "network": "",
+                        "workingDir": ""
                     }
                 },
                 "buildOptions": {
+                    "settings": {
+                        "accelerateDeployment": true
+                    },
                     "env": {
                         "NODE_ENV": "production",
                     },
