@@ -149,7 +149,7 @@ var lib = {
 		},
 		
 		"pingElastic": function (esClient, cb) {
-			console.log("infoElastic")
+			console.log("pingElastic")
 			esClient.ping(function (error) {
 				if (error) {
 					setTimeout(function () {
