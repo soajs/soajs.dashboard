@@ -156,7 +156,6 @@ var lib = {
 		},
 		
 		"pingElastic": function (esClient, cb) {
-			console.log("pingElastic")
 			esClient.ping(function (error) {
 				if (error) {
 					setTimeout(function () {
@@ -170,7 +169,6 @@ var lib = {
 		},
 		
 		"infoElastic": function (esClient, cb) {
-			console.log("infoElastic")
 			esClient.db.info(function (error) {
 				if (error) {
 					setTimeout(function () {
@@ -184,12 +182,10 @@ var lib = {
 		},
 		
 		"checkElasticSearch": function (esClient, cb) {
-			console.log("checkElasticSearch")
 			lib.pingElastic(esClient, cb);
 		},
 		
 		"setMapping": function (soajs, env, model, esClient, cb) {
-			console.log("setMapping")
 			async.series({
 				"mapping": function (callback) {
 					lib.putMapping(soajs, model, esClient, callback);
@@ -197,17 +193,10 @@ var lib = {
 				"template": function (callback) {
 					lib.putTemplate(soajs, model, esClient, callback);
 				}
-			}, function (err) {
-				console.log(err, "err")
-				if (err) {
-					return cb(err);
-				}
-				return cb(null, true);
-			});
+			}, cb);
 		},
 		
 		"putTemplate": function (soajs, model, esClient, cb) {
-			console.log("putTemplate")
 			var combo = {
 				collection: colls.analytics,
 				conditions: {_type: 'template'}
@@ -236,7 +225,6 @@ var lib = {
 		
 		"putMapping": function (soajs, model, esClient, cb) {
 			//todo change this
-			console.log("putMapping")
 			var combo = {
 				collection: colls.analytics,
 				conditions: {_type: 'mapping'}
@@ -262,13 +250,11 @@ var lib = {
 		},
 		
 		"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
-			console.log("addVisualizations")
 			var BL = {
 				model: model
 			};
 			var options = utils.buildDeployerOptions(env, soajs, BL);
 			deployer.listServices(options, function (err, servicesList) {
-				console.log("addVisualizations")
 				lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
 				
 			});
@@ -284,7 +270,6 @@ var lib = {
 		},
 		
 		"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
-			console.log("configureKibana")
 			var analyticsArray = [];
 			var serviceEnv = env.code.toLowerCase(); //todo check this Lowecase or Uppercase
 			async.parallel({
@@ -298,7 +283,6 @@ var lib = {
 									if (oneService.labels["soajs.service.repo.name"]) {
 										serviceName = oneService.labels["soajs.service.repo.name"].replace(/[\/*?"<>|,.-]/g, "_");
 									}
-									console.log(serviceName)
 									if (oneService.labels["soajs.service.group"] === "soajs-core-services") {
 										serviceType = (oneService.labels["soajs.service.repo.name"] === 'controller') ? 'controller' : 'service';
 									}
@@ -602,7 +586,6 @@ var lib = {
 		},
 		
 		"deployKibana": function (soajs, env, deployer, utils, model, cb) {
-			console.log("deployKibana")
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -627,7 +610,6 @@ var lib = {
 		},
 		
 		"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
-			console.log("deployLogstash")
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -673,7 +655,6 @@ var lib = {
 		},
 		
 		"deployFilebeat": function (soajs, env, deployer, utils, model, cb) {
-			console.log("deployFilebeat")
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -719,7 +700,6 @@ var lib = {
 		},
 		
 		"deployMetricbeat": function (soajs, env, deployer, utils, model, cb) {
-			console.log("deplotMetricbeat")
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -765,7 +745,6 @@ var lib = {
 		},
 		
 		"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
-			console.log("checkAvailability")
 			var BL = {
 				model: model
 			};
@@ -786,10 +765,8 @@ var lib = {
 						}
 					}
 				});
-				console.log("failed: ", failed);
 				if (failed.length !== 0) {
 					setTimeout(function () {
-						console.log("checking Availability... ")
 						return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
 					}, 1000);
 				}
@@ -800,7 +777,6 @@ var lib = {
 		},
 		
 		"setDefaultIndex": function (soajs, env, esClient, model, cb) {
-			console.log("setDefaultIndex")
 			var index = {
 				index: ".kibana",
 				type: 'config',
@@ -891,7 +867,10 @@ analyticsDriver.prototype.run = function () {
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
-		console.log("5alasna ???");
+		if(err){
+			console.log(err);
+		}
+		console.log("Analytics Deployed successfully");
 	});
 };
 
