@@ -872,7 +872,9 @@ analyticsDriver.deploy = function () {
 		if(err){
 			console.log(err);
 		}
-		console.log("Analytics Deployed successfully");
+		else {
+			console.log("Analytics Deployed successfully");
+		}
 	});
 };
 
