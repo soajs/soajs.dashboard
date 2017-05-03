@@ -21,12 +21,12 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-
+	
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-
+	
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
 
@@ -490,9 +490,17 @@ module.exports = {
 				'validation': {
 					'type': 'string'
 				}
+			},
+			"useUrac": {
+				"source": ['body.useUrac'],
+				"required": false,
+				"default" : true, // kept true for test cases
+				"validation": {
+					"type": "boolean"
+				}
 			}
 		},
-
+		
 		"get": {
 			"/environment/list": {
 				_apiInfo: {
@@ -2416,7 +2424,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI']
+				"commonFields": ['secret', 'redirectURI','useUrac']
 			},
 
 			"/settings/tenant/oauth/users/update": {
@@ -2470,10 +2478,10 @@ module.exports = {
 					"group": "Daemons"
 				},
 				'commonFields': ['id', 'groupName', 'daemon', 'cronTime', 'cronTimeDate', 'timeZone', 'interval', 'status', 'processing', 'jobs', 'order', 'solo'],
-				'type':{
+				'type': {
 					"required": true,
 					"source": ["body.type"],
-					"validation":{
+					"validation": {
 						"type": "string",
 						"enum": ["interval", "cron", "once"]
 					}

@@ -1,5 +1,36 @@
 var settingsConfig = {
 	'form': {
+		'updateOauth': {
+			'name': 'updateOauth',
+			'label': '',
+			'actions': {},
+			'entries': [
+				{
+					'name': 'secret',
+					'label': translation.oAuthSecret[LANG],
+					'placeholder': translation.formSecretPlaceHolder[LANG],
+					'value': '',
+					'tooltip': translation.formSecretToolTip[LANG],
+					'required': true
+				},
+				{
+					'name': 'oauthType',
+					'label': translation.oAuthType[LANG],
+					'type': 'radio',
+					'value': [
+						{
+							'v': 'urac',
+							'l': 'Urac'
+						},
+						{
+							'v': 'miniurac',
+							'l': 'Mini Urac'
+						}
+					],
+					'required': true,
+				},
+			]
+		},
 		'oauthUserUpdate': {
 			'name': '',
 			'label': '',

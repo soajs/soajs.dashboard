@@ -78,6 +78,7 @@ soajsApp.run(function ($rootScope) {
 
 soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$route', '$cookies', 'ngDataApi', 'checkApiHasAccess', '$localStorage', 'aclDrawHelpers',
 	function ($scope, $location, $timeout, $route, $cookies, ngDataApi, checkApiHasAccess, $localStorage, aclDrawHelpers) {
+		document.title = titlePrefix;
 		$scope.appNavigation = navigation;
 		$scope.navigation = [];
 		$scope.pillar = null;
@@ -217,10 +218,11 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 		};
 		
 		$scope.reRenderMenu = function (pillarName) {
+			
 			$scope.leftMenu.links = [];
 			$scope.leftMenu.environments = [];
 			$scope.currentSelectedEnvironment = null;
-			
+
 			for (var j = 0; j < $scope.mainMenu.links.length; j++) {
 				if ($scope.mainMenu.links[j].pillar.name === pillarName) {
 					$scope.leftMenu.links = $scope.mainMenu.links[j].entries;
@@ -489,35 +491,43 @@ soajsApp.controller('soajsAppController', ['$scope', '$location', '$timeout', '$
 			doEnvPerNav();
 			$scope.rebuildMenus(function () {
 				for (var i = 0; i < $scope.navigation.length; i++) {
-					if ($scope.navigation[i].tracker && $scope.navigation[i].url === '#' + $route.current.originalPath) {
-						if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
-							
-							if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
-								if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'dashboard') {
-									if ($scope.navigation[i].env === $scope.currentSelectedEnvironment) {
-										$scope.displayAlert('danger', 'You do not have permissions to access this section');
-										$timeout(function () {
-											$scope.closeAlert();
-											$scope.go("/help");
-										}, 9000);
+					if ($scope.navigation[i].url === '#' + $route.current.originalPath) {
+						if ($scope.navigation[i].label) {
+							document.title = titlePrefix + ' | ' + $scope.navigation[i].label;
+						}
+						else {
+							document.title = titlePrefix;
+						}
+						if ($scope.navigation[i].tracker) {
+							if (!$scope.navigation[i].hasOwnProperty('private') && !$scope.navigation[i].hasOwnProperty('guestMenu') && !$scope.navigation[i].hasOwnProperty('footerMenu')) {
+
+								if ($scope.navigation[i].checkPermission && !$scope.navigation[i].checkPermission.access) {
+									if ($scope.currentSelectedEnvironment && $scope.currentSelectedEnvironment !== 'dashboard') {
+										if ($scope.navigation[i].env === $scope.currentSelectedEnvironment) {
+											$scope.displayAlert('danger', 'You do not have permissions to access this section');
+											$timeout(function () {
+												$scope.closeAlert();
+												$scope.go("/help");
+											}, 9000);
+										}
 									}
 								}
 							}
-						}
-						
-						if ($scope.navigation[i].tracker && $scope.navigation[i].ancestor && Array.isArray($scope.navigation[i].ancestor) && $scope.navigation[i].ancestor.length > 0) {
-							$scope.tracker = [];
-							for (var j = $scope.navigation[i].ancestor.length - 1; j >= 0; j--) {
-								findAndcestorProperties($scope.tracker, $scope.navigation[i].ancestor[j], $route.current.params);
-							}
-							$scope.tracker.push({
-								pillar: ($scope.navigation[i].pillar) ? $scope.navigation[i].pillar.label : null,
-								label: $scope.navigation[i].label,
-								link: $scope.navigation[i].url,
-								current: true
-							});
-							if ($scope.navigation[i].pillar) {
-								$scope.pillar = $scope.navigation[i].pillar.name;
+
+							if ($scope.navigation[i].tracker && $scope.navigation[i].ancestor && Array.isArray($scope.navigation[i].ancestor) && $scope.navigation[i].ancestor.length > 0) {
+								$scope.tracker = [];
+								for (var j = $scope.navigation[i].ancestor.length - 1; j >= 0; j--) {
+									findAndcestorProperties($scope.tracker, $scope.navigation[i].ancestor[j], $route.current.params);
+								}
+								$scope.tracker.push({
+									pillar: ($scope.navigation[i].pillar) ? $scope.navigation[i].pillar.label : null,
+									label: $scope.navigation[i].label,
+									link: $scope.navigation[i].url,
+									current: true
+								});
+								if ($scope.navigation[i].pillar) {
+									$scope.pillar = $scope.navigation[i].pillar.name;
+								}
 							}
 						}
 					}
