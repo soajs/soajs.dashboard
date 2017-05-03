@@ -87,7 +87,10 @@ var mtTranslation = {
 		"ENG": "Testing Application, used by developers and does not reach production server...",
 		"FRA": "Testing Application, used by developers and does not reach production server..."
 	},
-
+	"editTenantOauth": {
+		"ENG": "Configure oAuth security",
+		"FRA": "Modifie Tenant's oAuth Information"
+	},
 	"editBasicTenantApplication": {
 		"ENG": "Edit Basic Tenant Information",
 		"FRA": "Modifie Basic Tenant Information"
@@ -104,6 +107,22 @@ var mtTranslation = {
 	"client": {
 		"ENG": "Client",
 		"FRA": "Client"
+	},
+	"updateOAuth": {
+		"ENG": "Update oAuth",
+		"FRA": "Update oAuth"
+	},
+	"turnOnOAuth": {
+		"ENG": "Turn on oAuth",
+		"FRA": "Turn on oAuth"
+	},
+	"turnOffOAuth": {
+		"ENG": "Turn off oAuth",
+		"FRA": "Turn off oAuth"
+	},
+	"oAuthType": {
+		"ENG": "oAuth type",
+		"FRA": "oAuth type"
 	},
 	"updateTenant": {
 		"ENG": "Update Tenant",
