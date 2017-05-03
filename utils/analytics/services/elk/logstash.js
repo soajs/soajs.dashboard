@@ -21,8 +21,7 @@ module.exports = {
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"replication": {
-			"mode": "replicated",
-			"replicas":1
+			"mode": "global"
 		},
 		"restartPolicy": {
 			"condition": "any",
