@@ -2338,7 +2338,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI']
+				"commonFields": ['id', 'secret', 'redirectURI','useUrac']
 			},
 
 			"/tenant/oauth/users/update": {
