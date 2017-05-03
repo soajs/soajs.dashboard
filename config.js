@@ -2671,6 +2671,21 @@ module.exports = {
 				}
 			},
 
+			"/catalog/recipes/update": {
+				"_apiInfo": {
+					"l": "Update Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"catalog": catalogSchema
+			},
+
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
