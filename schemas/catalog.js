@@ -4,13 +4,16 @@ module.exports = {
     "validation": {
         "type": "object",
         "required": true,
+        "additionalProperties": false,
         "properties": {
             "name": { "type": "string", "required": true },
-            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "nginx", "mongo", "es" ] },
+            "locked": { "type": "boolean", "required": false },
+            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "nginx", "nodejs", "mongo", "es" ] },
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",
                 "required": true,
+                "additionalProperties": false,
                 "properties": {
                     "deployOptions": {
                         "type": "object",
@@ -29,6 +32,7 @@ module.exports = {
                             "readinessProbe": {
                                 "type": "object",
                                 "required": false,
+                                "additionalProperties": false,
                                 "properties": {
                                     "httpGet": {
                                         "type": "object",
@@ -50,6 +54,7 @@ module.exports = {
                                 "required": false,
                                 "items": {
                                     "type": "object",
+                                    "additionalProperties": false,
                                     "properties": {
                                         "name": { "type": "string", "required": true },
                                         "isPublished": { "type": "boolean", "required": false },
@@ -61,6 +66,7 @@ module.exports = {
                             "voluming": {
                                 "type": "object",
                                 "required": false,
+                                "additionalProperties": false,
                                 "properties": {
                                     "volumes": {
                                         "type": "array",
@@ -77,13 +83,22 @@ module.exports = {
                                         }
                                     }
                                 }
-                            }
+                            },
+
                         }
                     },
                     "buildOptions": {
                         "type": "object",
                         "required": false,
+                        "additionalProperties": false,
                         "properties": {
+                            "settings": {
+                                "type": "object",
+                                "required": false,
+                                "properties": {
+                                    "accelerateDeployment": { "type": "boolean", "required": false }
+                                }
+                            },
                             "env": {
                                 "type": "object",
                                 "required": false
@@ -91,6 +106,7 @@ module.exports = {
                             "cmd": {
                                 "type": "object",
                                 "required": false,
+                                "additionalProperties": false,
                                 "properties": {
                                     "pre_deploy": {
                                         "type": "array",
@@ -107,7 +123,7 @@ module.exports = {
                         }
                     }
                 }
-            }
+            },
         }
     }
 };

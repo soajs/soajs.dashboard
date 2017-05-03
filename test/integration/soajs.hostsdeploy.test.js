@@ -601,11 +601,9 @@ describe("testing hosts deployment", function () {
 						branch: 'develop',
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
-					recipe: '', // todo
+					recipe: '59034e43c69a1b962fc62213', // todo
 					deployConfig: {
-						useLocalSOAJS: true,
 						memoryLimit: 209715200,
-						imagePrefix: 'soajsorg',
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -645,7 +643,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'service',
 						name: 'controller',
-						recipe: '', // todo
+						recipe: '59034e43c69a1b962fc62213', // todo
 						gitSource: {
 							owner: 'soajs',
 							repo: 'soajs.controller',
@@ -653,9 +651,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -685,21 +681,13 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'nginx',
 						name: 'nginx',
-						recipe: '', // todo
+						recipe: '59034e43c69a1b962fc62212', // todo
 						deployConfig: {
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
 							},
-							ports: [
-								{
-									isPublished: true,
-									target: 80,
-									published: 80
-								}
-							]
 						},
 						contentConfig: {
 							nginx: {
@@ -735,6 +723,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'service',
 					name: 'urac',
+                    recipe: '59034e43c69a1b962fc62213',
 					gitSource: {
 						owner: 'soajs',
 						repo: 'soajs.urac',
@@ -752,6 +741,7 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+
 				assert.ok(body.result);
 				assert.ok(body.data);
 				
@@ -783,6 +773,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'service',
 						name: 'gc_articles',
+						recipe: '59034e43c69a1b962fc62213',
 						variables: [
 							'TEST=true'
 						],
@@ -793,9 +784,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -830,6 +819,7 @@ describe("testing hosts deployment", function () {
 						env: 'prod',
 						type: 'service',
 						name: 'controller',
+						recipe: '59034e43c69a1b962fc62213',
 						gitSource: {
 							owner: 'soajs',
 							repo: 'soajs.controller',
@@ -837,9 +827,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -866,6 +854,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'daemon',
 					name: 'helloDaemon',
+					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
 					],
@@ -876,9 +865,7 @@ describe("testing hosts deployment", function () {
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
 					deployConfig: {
-						useLocalSOAJS: true,
 						memoryLimit: 209715200,
-						imagePrefix: 'soajsorg',
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -923,6 +910,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'daemon',
 						name: 'helloDaemon',
+						recipe: '59034e43c69a1b962fc62210',
 						variables: [
 							'TEST=true'
 						],
@@ -933,9 +921,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -977,6 +963,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'daemon',
 					name: 'helloDaemon',
+					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
 					],

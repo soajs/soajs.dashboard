@@ -51,7 +51,7 @@ module.exports = {
 	},
 
 	"HA":{
-		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token']
 	},
 
 	"gitAccounts": {
@@ -2612,6 +2612,14 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"action": {
+					"source": ['body.action'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
 				"ui": {
