@@ -117,9 +117,13 @@ module.exports = {
                                 "additionalProperties": false,
                                 "properties": {
                                     "deploy": {
-                                        "type": "array",
+                                        "type": "object",
                                         "required": true,
-                                        "items": { "type": "string", "required": false }
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "command": { "type": "array", "required": true},
+                                            "args": { "type": "array", "required": true}
+                                        }
                                     }
                                 }
                             }
