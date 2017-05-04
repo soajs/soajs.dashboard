@@ -2,7 +2,9 @@
 module.exports = {
 	"env": "%env%",
 	"name": "%env%-logstash",
-	"variables": [],
+	"variables": [
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200'
+	],
 	"labels": {
 		"soajs.content": "true",
 		"soajs.env.code": "%env%",
@@ -21,8 +23,7 @@ module.exports = {
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"replication": {
-			"mode": "replicated",
-			"replicas":1
+			"mode": "global"
 		},
 		"restartPolicy": {
 			"condition": "any",

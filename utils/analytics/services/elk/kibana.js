@@ -2,21 +2,20 @@
 module.exports = {
 	"env": "dashboard", //it's only used to get the deployer cluster
 	"name": "kibana",
-	"variables": [],
+	"variables": [
+		'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch:9200' //add support for kubernetes (add namespace)
+	],
 	"labels": {
 		"soajs.content": "true",
 		"soajs.service.name": "kibana",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "kibana"
 	},
-	"command": {
-		"cmd": ["kibana"]
-	},
 	"deployConfig": {
 		"version": "5.3.0",
 		"image": "kibana-time-plugin",
 		"workDir": "/",
-		"memoryLimit": 209715200,
+		"memoryLimit": 1000000000,
 		"network": "soajsnet",
 		"ports": [
 			{
