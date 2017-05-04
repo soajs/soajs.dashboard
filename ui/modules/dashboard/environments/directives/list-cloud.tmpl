@@ -33,11 +33,6 @@
 					<fieldset>
 						<legend>Deployment Options</legend>
 						<div>
-							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
-							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name for recipe in currentScope.recipes[currentScope.service.type]" ng-model="currentScope.recipe"></select>
-							<br>
-						</div>
-						<div>
 							<label>Deployment Mode</label>
 							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
 							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
@@ -53,6 +48,12 @@
 							<label>Memory Limit Per Instance (in MBytes)</label>
 							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
 						</div>
+						<div>
+							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name for recipe in currentScope.recipes[currentScope.service.type]" ng-model="currentScope.recipe" ng-change="injectCatalogEntries()"></select>
+							<br>
+						</div>
+						<div ng-include="'modules/dashboard/environments/directives/list-cloud-catalogInputs.tmpl'"></div>
 					</fieldset>
 				</div>
 			</form>
