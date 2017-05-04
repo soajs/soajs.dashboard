@@ -48,6 +48,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 					//append inputs whose type is userInput
 					for(var envVariable in oneRecipe.recipe.buildOptions.env){
 						if(oneRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
+							
 							//push a new input for this variable
 							form.entries[mainLevel].entries.push({
 								'name': '_ci_' + type + "_" + envVariable,
@@ -57,6 +58,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 								'fieldMsg': oneRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
 								'required': true
 							});
+							form.formData['_ci_' + type + "_" + envVariable] = oneRecipe.recipe.buildOptions.env[envVariable].default || '';
 						}
 					}
 				}
