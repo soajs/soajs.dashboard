@@ -118,7 +118,7 @@ module.exports = {
                                 "properties": {
                                     "deploy": {
                                         "type": "array",
-                                        "required": false,
+                                        "required": true,
                                         "items": { "type": "string", "required": false }
                                     }
                                 }
