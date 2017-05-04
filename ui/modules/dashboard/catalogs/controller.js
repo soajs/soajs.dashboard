@@ -135,7 +135,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             timeout: $timeout,
             form: formConfig,
             name: 'viewRecipe',
-            label: 'View Recipe',
+            label: 'Edit Recipe',
             actions: [
                 {
                     type: 'submit',
