@@ -106,7 +106,6 @@ module.exports = {
                                 	"type": "object",
 	                                "properties":{
 		                                "type": { "type": "string", "required": true, "enum": [ "static", "userInput", "computed" ]},
-		                                "value": {"type": "string", "required": false},
 		                                "label": {"type": "string", "required": false},
 		                                "fieldMsg": {"type": "string", "required": false},
 		                                "default": {"type": "string", "required": false},
