@@ -2,7 +2,9 @@
 module.exports = {
 	"env": "%env%",
 	"name": "%env%-logstash",
-	"variables": [],
+	"variables": [
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200'
+	],
 	"labels": {
 		"soajs.content": "true",
 		"soajs.env.code": "%env%",
