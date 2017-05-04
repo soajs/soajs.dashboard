@@ -20,7 +20,7 @@ module.exports = {
 	"deployConfig": {
 		"image": "metricbeat-docker",
 		//"workDir": "/",
-		"memoryLimit": 1000000000,
+		"memoryLimit": 500000000,
 		"network": "soajsnet",
 		"replication": {
 			"mode": "replicated",
