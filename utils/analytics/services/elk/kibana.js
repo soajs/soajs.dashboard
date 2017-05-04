@@ -11,9 +11,6 @@ module.exports = {
 		"soajs.service.group": "elk",
 		"soajs.service.label": "kibana"
 	},
-	"command": {
-		"cmd": ["kibana"]
-	},
 	"deployConfig": {
 		"version": "5.3.0",
 		"image": "kibana-time-plugin",

@@ -637,7 +637,7 @@ var lib = {
 				if (error) {
 					return cb(error);
 				}
-				if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()].status === "deployed") {
+				if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
 					return cb(null, true);
 				}
 				else {
