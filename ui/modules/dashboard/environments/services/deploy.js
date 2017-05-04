@@ -583,10 +583,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 }
                             }
 
-                            //todo: mike remove the two lines below
-                            console.log(currentScope);
-                            return false;
-                            
                             if (currentScope.service.name === 'controller') {
                                 newController(currentScope);
                             }
@@ -608,7 +604,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 				                    currentScope._ci_serviceImageName = catalogRecipe.recipe.deployOptions.image.name;
 				                    currentScope._ci_serviceImageTag = catalogRecipe.recipe.deployOptions.image.tag;
 				                    
-				                    currentScope.catalogUserInputs = [];
+				                    currentScope.catalogUserInputs = {};
 				                    
 				                    //append inputs whose type is userInput
 				                    for(var envVariable in catalogRecipe.recipe.buildOptions.env){
@@ -619,7 +615,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 							                    value: catalogRecipe.recipe.buildOptions.env[envVariable].default || "",
 							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
 						                    };
-						                    currentScope.catalogUserInputs.push(newCatalogInput);
+						                    currentScope.catalogUserInputs["_ci_service_" + envVariable] = newCatalogInput;
+						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
 					                    }
 				                    }
 			                    }
@@ -661,6 +658,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 "replicas": currentScope.number,
                             }
                         };
+	
+	                    //inject user input catalog entry and image override
+	                    params.catalogUserInput = {
+		                    image: {
+			                    name: currentScope['_ci_serviceImageName'],
+			                    prefix: currentScope['_ci_serviceImagePrefix'],
+			                    tag: currentScope['_ci_serviceImageTag']
+		                    }
+	                    };
+	
+	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+	                    for( var input in currentScope){
+		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
+			                    if(!params.catalogUserInput.env){
+				                    params.catalogUserInput.env = {};
+			                    }
+			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+		                    }
+	                    }
 	                    
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
@@ -677,7 +693,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 $timeout(function () {
                                     currentScope.listServices();
                                 }, 1500);
-
+	
+	                            for( var input in currentScope){
+		                            if(input.indexOf('_ci_service') !== -1){
+			                            delete currentScope[input];
+		                            }
+	                            }
+	                            currentScope.catalogUserInputs = {};
+	                            
                                 $modalInstance.close();
                             }
                         });
@@ -744,6 +767,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 delete params.deployConfig.replication.replicas;
                             }
                         }
+	
+	                    //inject user input catalog entry and image override
+	                    params.catalogUserInput = {
+		                    image: {
+			                    name: currentScope['_ci_serviceImageName'],
+			                    prefix: currentScope['_ci_serviceImagePrefix'],
+			                    tag: currentScope['_ci_serviceImageTag']
+		                    }
+	                    };
+	
+	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+	                    for( var input in currentScope){
+		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
+			                    if(!params.catalogUserInput.env){
+				                    params.catalogUserInput.env = {};
+			                    }
+			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+		                    }
+	                    }
 
                         var config = {
                             "method": "post",
@@ -762,7 +804,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 $timeout(function () {
                                     currentScope.listServices();
                                 }, 1500);
-
+	
+	                            for( var input in currentScope){
+		                            if(input.indexOf('_ci_service') !== -1){
+			                            delete currentScope[input];
+		                            }
+	                            }
+	                            currentScope.catalogUserInputs = {};
+	                            
                                 $modalInstance.close();
                             }
                         });
