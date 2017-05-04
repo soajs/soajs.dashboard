@@ -102,13 +102,12 @@ module.exports = {
                             "env": {
                                 "type": "object",
                                 "required": false,
-                                "additionalProperties": false,
-                                "properties": {
+                                "additionalProperties": {
                                     "type": { "type": "string", "required": true, "enum": [ "static", "userInput", "computed" ]},
                                     "value": {"type": "string", "required": false},
                                     "label": {"type": "string", "required": false},
                                     "fieldMsg": {"type": "string", "required": false},
-                                    "default": {"type": "string", "required": true},
+                                    "default": {"type": "string", "required": false},
                                 }
                             },
                             "cmd": {

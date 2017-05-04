@@ -1431,6 +1431,30 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
+					"validation": {
+						"type": "object",
+						"required": false,
+						"properties": {
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
+						}
+					}
+				},
 				"env": {
 					"source": ['body.env'],
 					"required": true,
