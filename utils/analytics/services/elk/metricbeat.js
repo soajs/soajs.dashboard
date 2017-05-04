@@ -7,7 +7,7 @@ module.exports = {
 	"name": "%env%-metricbeat",
 	"variables": [
 		"SOAJS_ENV=%env%",
-		'ELASTICSEARCH_URL=elasticsearch:9200'
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200' //add support for kubernetes (add namespace)
 	],
 	"labels": {
 		"soajs.content": "true",

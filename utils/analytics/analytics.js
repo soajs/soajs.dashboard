@@ -103,7 +103,7 @@ var lib = {
 				}
 				if (loadContent.deployConfig.annotations) {
 					serviceParams.annotations = loadContent.deployConfig.annotations;
-				};
+				}
 				serviceParams = JSON.stringify(serviceParams);
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
@@ -187,18 +187,7 @@ var lib = {
 		},
 		
 		"checkElasticSearch": function (esClient, cb) {
-			console.log(esClient)
-			lib.pingElastic(esClient, function(err, res){
-				
-				if (err){
-					console.log(err)
-					return cb(err);
-				}
-				else {
-					console.log(res)
-					return cb(null, true);
-				}
-			});
+			lib.pingElastic(esClient, cb);
 			//add version to settings record
 		},
 		
@@ -613,13 +602,25 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.kibana && settings.kibana.status === "deployed") {
-					return cb(null, true)
+					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("kibana", env, function (err, content) {
 						var options = utils.buildDeployerOptions(env, soajs, model);
 						options.params = content;
-						deployer.deployService(options, cb);
+						async.parallel({
+							"deploy": function (call) {
+								deployer.deployService(options, call)
+							},
+							"update": function (call) {
+								settings.kibana = {
+									"status": "deployed"
+								};
+								combo.records = settings;
+								delete combo.conditions;
+								model.saveEntry(soajs, combo, call);
+							}
+						}, cb);
 					});
 				}
 				
@@ -636,8 +637,8 @@ var lib = {
 				if (error) {
 					return cb(error);
 				}
-				if (settings && settings.logstash && settings.logstash.status === "deployed") {
-					return cb(null, true)
+				if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()].status === "deployed") {
+					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("logstash", env, function (err, content) {
@@ -648,21 +649,15 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								combo.fields = {
-									"$set": {
-										"logstash": {}
-									}
-								};
-								combo.fields["$set"].logstash[env.code.toLowerCase()] = {
+								if (!settings.logstash){
+									settings.logstash = {};
+								}
+								settings.logstash[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								var options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								combo.options = options;
-								model.updateEntry(soajs, combo, call);
+								combo.records = settings;
+								delete combo.conditions;
+								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
 					});
@@ -682,7 +677,7 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.filebeat && settings.filebeat[env.code.toLowerCase()] && settings.filebeat[env.code.toLowerCase()].status === "deployed") {
-					return cb(null, true)
+					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("filebeat", env, function (err, content) {
@@ -693,21 +688,15 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								combo.fields = {
-									"$set": {
-										"filebeat": {}
-									}
-								};
-								combo.fields["$set"].filebeat[env.code.toLowerCase()] = {
+								if (!settings.filebeat){
+									settings.filebeat = {};
+								}
+								settings.filebeat[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								var options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								combo.options = options;
-								model.updateEntry(soajs, combo, call);
+								combo.records = settings;
+								delete combo.conditions;
+								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
 					});
@@ -727,7 +716,7 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.metricbeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
-					return cb(null, true)
+					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("metricbeat", env, function (err, content) {
@@ -738,21 +727,15 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								combo.fields = {
-									"$set": {
-										"metricbeat": {}
-									}
-								};
-								combo.fields["$set"].metricbeat[env.code.toLowerCase()] = {
+								if (!settings.metricbeat){
+									settings.metricbeat = {};
+								}
+								settings.metricbeat[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								var options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								combo.options = options;
-								model.updateEntry(soajs, combo, call);
+								combo.records = settings;
+								delete combo.conditions;
+								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
 					});
@@ -766,7 +749,7 @@ var lib = {
 				model: model
 			};
 			var options = utils.buildDeployerOptions(env, soajs, BL);
-			var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", env.code.toLowerCase() + '-' + "metricbeat"]
+			var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", env.code.toLowerCase() + '-' + "metricbeat"];
 			deployer.listServices(options, function (err, servicesList) {
 				var failed = [];
 				servicesList.forEach(function (oneService) {
