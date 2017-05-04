@@ -842,17 +842,6 @@ service.init(function () {
 	});
 
 	/**
-	* Deploy a new custom service
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
-	service.post("/cloud/services/custom/deploy", function (req, res) {
-		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployCustomService(config, req.soajs, res);
-		});
-	});
-
-	/**
 	* Redeploy a running service
 	* @param {String} API route
 	* @param {Function} API middleware
