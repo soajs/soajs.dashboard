@@ -253,6 +253,7 @@ var errors = {
 	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
 
 	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
+	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
 
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
