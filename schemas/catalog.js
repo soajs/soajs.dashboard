@@ -21,7 +21,7 @@ module.exports = {
                         "properties": {
                             "image": {
                                 "type": "object",
-                                "required": true,
+                                "required": false,
                                 "properties": {
                                     "prefix": { "type": "string", "required": false },
                                     "name": { "type": "string", "required": true },
@@ -101,22 +101,28 @@ module.exports = {
                             },
                             "env": {
                                 "type": "object",
-                                "required": false
+                                "required": false,
+                                "additionalProperties": {
+                                    "type": { "type": "string", "required": true, "enum": [ "static", "userInput", "computed" ]},
+                                    "value": {"type": "string", "required": false},
+                                    "label": {"type": "string", "required": false},
+                                    "fieldMsg": {"type": "string", "required": false},
+                                    "default": {"type": "string", "required": false},
+                                }
                             },
                             "cmd": {
                                 "type": "object",
                                 "required": false,
                                 "additionalProperties": false,
                                 "properties": {
-                                    "pre_deploy": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": false }
-                                    },
-                                    "post_deploy": {
-                                        "type": "array",
-                                        "required": false,
-                                        "items": { "type": "string", "required": false }
+                                    "deploy": {
+                                        "type": "object",
+                                        "required": true,
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "command": { "type": "array", "required": true},
+                                            "args": { "type": "array", "required": true}
+                                        }
                                     }
                                 }
                             }
