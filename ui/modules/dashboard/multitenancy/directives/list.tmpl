@@ -35,12 +35,13 @@
                                     <tab heading="{{translation.manageApplications[LANG]}}" ng-if="access.tenant.application.list">
                                         <div ng-include="'modules/dashboard/multitenancy/directives/list-applications.tmpl'"></div>
                                     </tab>
-                                    <tab heading="{{translation.oAuthUsers[LANG]}}" ng-click="listOauthUsers(row)" ng-if="access.tenant.oauth.users.list">
+                                    <tab heading="{{translation.oAuthUsers[LANG]}}" ng-click="listOauthUsers(row)" ng-if="access.tenant.oauth.users.list"
+                                         ng-show="row.oauth.secret && row.oauth.secret!=='' && row.loginMode==='miniurac'" >
                                         <div ng-include="'modules/dashboard/multitenancy/directives/list-oauth-users.tmpl'"></div>
                                     </tab>
                                 </tabset>
                             </div>
-                            <div class="entryAction">
+	                        <div class="entryAction">
                                 <a ng-if="access.tenant.update" href="" ng-click="tenantsList.actions.editTenant.command(row);">
                                     <span class="icon icon-pencil2" tooltip="{{translation.editTenant[LANG]}}"></span>
                                 </a>

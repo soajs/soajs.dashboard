@@ -338,6 +338,10 @@ var translation = {
 		"ENG": "Edit Tenant",
 		"FRA": "Edit Tenant"
 	},
+	"updateOAuth": {
+		"ENG": "Update oAuth",
+		"FRA": "Update oAuth"
+	},
 	"areUASureUWantClearAcl": {
 		"ENG": "Are you sure you want to clear the ACL?",
 		"FRA": "Are you sure you want to clear the ACL?"
