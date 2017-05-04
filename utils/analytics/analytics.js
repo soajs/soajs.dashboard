@@ -137,7 +137,6 @@ var lib = {
 							"update": function (call) {
 								//Todo fix this
 								settings.elasticsearch.status = true;
-								delete combo.conditions;
 								combo.records = settings;
 								model.saveEntry(soajs, combo, call);
 							}
@@ -616,8 +615,7 @@ var lib = {
 								settings.kibana = {
 									"status": "deployed"
 								};
-								combo.records = settings;
-								delete combo.conditions;
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
@@ -655,8 +653,7 @@ var lib = {
 								settings.logstash[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								combo.records = settings;
-								delete combo.conditions;
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
@@ -694,8 +691,7 @@ var lib = {
 								settings.filebeat[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								combo.records = settings;
-								delete combo.conditions;
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
@@ -733,8 +729,7 @@ var lib = {
 								settings.metricbeat[env.code.toLowerCase()] = {
 									"status": "deployed"
 								};
-								combo.records = settings;
-								delete combo.conditions;
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
