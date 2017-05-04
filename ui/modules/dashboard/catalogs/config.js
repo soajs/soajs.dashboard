@@ -7,6 +7,7 @@ var catalogAppConfig = {
                 {
 					'name': 'recipe',
 					'label': 'Recipe',
+                    'fieldMsg': "Click <a href='https://soajsorg.atlassian.net/wiki/display/BL/Deployment+Environment+Variables' target='_blank'>here</a> to see the list of environment variables available for each recipe type",
 					'type': 'jsoneditor',
 					'height': '450px',
                     'fixedHeight': true,
