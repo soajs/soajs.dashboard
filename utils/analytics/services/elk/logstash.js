@@ -1,9 +1,9 @@
 'use strict';
 module.exports = {
 	"env": "%env%",
-	"name": "%env%-logstash-service",
+	"name": "%env%-logstash",
 	"variables": [
-		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200'
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200'
 	],
 	"labels": {
 		"soajs.content": "true",

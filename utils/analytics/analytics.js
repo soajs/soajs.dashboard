@@ -91,6 +91,8 @@ var lib = {
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
 				//if deployment is kubernetes
+				var esNameSpace = '';
+				var logNameSpace = '';
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
 					if (serviceParams.memoryLimit){
 						delete serviceParams.memoryLimit;
@@ -101,23 +103,18 @@ var lib = {
 					else if (serviceParams.replication.mode === "global"){
 						serviceParams.replication.mode = "daemonset";
 					}
-					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					esNameSpace = '.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					logNameSpace =  '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					
 					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService){
-						namespace += '-soajs-analytics-elasticsearch-service';
+						esNameSpace += '-soajs-analytics-elasticsearch-service';
+						logNameSpace +=  '-' + env.code.toLowerCase() + '-logstash-service';
 					}
 					//change published port name
 					if (service === "elastic") {
 						serviceParams.ports[0].published = 30920;
 					}
-					//add namespace
-					if (service === "logstash" || service === "metricbeat") {
-						serviceParams.variables[0] = 'ELASTICSEARCH_URL=soajs-analytics-elasticsearch-service.' + namespace + ':9200';
-					}
-					if (service === "kibana") {
-						serviceParams.variables[0] = 'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch-service.' + namespace + ':9200';
-					}
 				}
-				
 				if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
 					serviceParams.volume = {
 						"type": loadContent.deployConfig.volume.type,
@@ -130,6 +127,13 @@ var lib = {
 					serviceParams.annotations = loadContent.deployConfig.annotations;
 				}
 				serviceParams = JSON.stringify(serviceParams);
+				//add namespace
+				if (service === "logstash" || service === "metricbeat" || service === "kibana") {
+					serviceParams = serviceParams.replace(/%esNameSpace%/g, esNameSpace);
+				}
+				if (service === "filebeat"){
+					serviceParams = serviceParams.replace(/%logNameSpace%/g, logNameSpace);
+				}
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
 				
