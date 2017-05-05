@@ -212,6 +212,10 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.activateAnalytics($scope);
 	};
 	
+	$scope.deactivateAnalytics = function () {
+		hacloudSrv.deactivateAnalytics($scope);
+	};
+	
 	$scope.showHideFailures = function(service){
 		service.tasks.forEach(function(oneTask){
 			if(Object.hasOwnProperty.call(oneTask, 'hideIt')){

@@ -967,7 +967,8 @@ var environmentsConfig = {
 		},
 		"analytics":{
 			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
-			"activate": ["dashboard", "/analytics/activateAnalytics", "get"]
+			"activate": ["dashboard", "/analytics/activateAnalytics", "get"],
+			"deactivate": ["dashboard", "/analytics/deactivateAnalytics", "get"]
 		}
 	}
 };

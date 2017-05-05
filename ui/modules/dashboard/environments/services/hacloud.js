@@ -1043,6 +1043,27 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		}
 	}
 	
+	function deactivateAnalytics(currentScope) {
+		var env = currentScope.envCode.toLowerCase();
+		if (currentScope.access.analytics.deactivate) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/analytics/deactivateAnalytics",
+				"params": {
+					"env": env
+				}
+			}, function (error) {
+				if (error) {
+					currentScope.displayAlert('danger', error);
+				}
+				else {
+					currentScope.displayAlert('info', "Analytics is Deactivated");
+					currentScope.showActivateAnalytics = true;
+				}
+			});
+		}
+	}
+	
 	return {
 		'listServices': listServices,
 		'deleteService': deleteService,
