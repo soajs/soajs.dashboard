@@ -165,7 +165,7 @@ var lib = {
 							},
 							"update": function (call) {
 								//Todo fix this
-								settings.elasticsearch.status = true;
+								settings.elasticsearch.status = "deployed";
 								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
