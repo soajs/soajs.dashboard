@@ -258,7 +258,8 @@ var errors = {
 	"950": "Catalog recipe not found",
 	"951": "You are not allowed to edit or delete a locked recipe",
 	"952": "Unable to update catalog recipe",
-	"953": "Unable to delete catalog recipe"
+	"953": "Unable to delete catalog recipe",
+	"954": "Unable to get catalog ID for specified service/deployment"
 };
 
 
