@@ -1082,7 +1082,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		"executeAwarenessTest": executeAwarenessTest,
 		'metrics': metrics,
 		'getSettings': getSettings,
-		'activateAnalytics': activateAnalytics
+		'activateAnalytics': activateAnalytics,
+		'deactivateAnalytics': deactivateAnalytics
 	};
 }]);
 var hacloudServices = soajsApp.components;
