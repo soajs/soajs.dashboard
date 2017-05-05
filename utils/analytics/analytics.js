@@ -92,6 +92,9 @@ var lib = {
 				}
 				//if deployment is kubernetes
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					if (serviceParams.memoryLimit){
+						delete serviceParams.memoryLimit;
+					}
 					serviceParams.replication.mode = "deployment";
 					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					//change published port name
