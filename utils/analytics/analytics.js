@@ -10,19 +10,6 @@ var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeat = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
 var lib = {
-	
-		"listNamespace": function (soajs, env, deployer, utils, model, cb) {
-			if ((env.deployer.type === 'container') && (env.deployer.selected.split('.')[1] === 'kubernetes')) {
-				var options = utils.buildDeployerOptions(env, soajs, BL);
-				deployer.listNameSpaces(options, function (error, namespaces) {
-					if (error){
-						return cb(error);
-					}
-					console.log(JSON.stringify(namespaces, null, 2));
-					return cb(null, true);
-				});
-			}
-		},
 		
 		"insertMongoData": function (soajs, config, model, cb) {
 			var comboFind = {}
@@ -105,6 +92,7 @@ var lib = {
 				}
 				//if deployment is kubernetes
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					var namespace = env.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					//change published port name
 					if (service === "elastic") {
 						serviceParams.ports[0].published = "32900";
@@ -872,18 +860,17 @@ var analyticsDriver = function (opts) {
 analyticsDriver.prototype.run = function () {
 	var _self = this;
 	
-	_self.operations.push(async.apply(lib.listNamespace, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
-	// _self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
-	// _self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	// _self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
+	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
+	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
+	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
