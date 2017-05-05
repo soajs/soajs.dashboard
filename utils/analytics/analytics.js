@@ -150,7 +150,7 @@ var lib = {
 							"update": function (call) {
 								//Todo fix this
 								settings.elasticsearch.status = true;
-								combo.records = settings;
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
