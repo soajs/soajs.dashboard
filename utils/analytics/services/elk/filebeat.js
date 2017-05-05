@@ -22,7 +22,7 @@ module.exports = {
 	"deployConfig": {
 		"image": "soajstest/filebeat",
 		"workDir": "/",
-		//"memoryLimit": "524288000",
+		"memoryLimit": "524288000",
 		"network": "soajsnet",
 		"replication": {
 			"mode": "replicated",
