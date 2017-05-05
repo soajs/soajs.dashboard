@@ -52,7 +52,7 @@ module.exports = {
 
 	"HA":{
 		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
-		"dynamicCatalogVariables": ['SOAJS_NX_CONTROLLER_IP_N', 'SOAJS_MONGO_IP_N','SOAJS_MONGO_PORT_N']
+		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N']
 	},
 
 	"gitAccounts": {
