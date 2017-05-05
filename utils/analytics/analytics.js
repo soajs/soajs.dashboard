@@ -150,7 +150,6 @@ var lib = {
 		},
 		
 		"deployElastic": function (soajs, env, deployer, utils, model, cb) {
-			console.log(16)
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -652,7 +651,6 @@ var lib = {
 		},
 		
 		"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
-			console.log(17)
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
