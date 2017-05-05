@@ -845,7 +845,7 @@ var lib = {
 				}
 				else {
 					setTimeout(function () {
-						lib.setDefaultIndex(cb);
+						lib.setDefaultIndex(soajs, env, esClient, model, cb);
 					}, 5000);
 				}
 			});
