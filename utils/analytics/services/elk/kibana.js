@@ -25,7 +25,8 @@ module.exports = {
 			}
 		],
 		"replication": {
-			"mode": "replicated",
+			//"mode": "replicated",
+			"mode": "deployment",
 			"replicas":1
 		},
 		"restartPolicy": {

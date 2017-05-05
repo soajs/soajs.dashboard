@@ -44,7 +44,8 @@ module.exports = {
 			"target": "/usr/share/elasticsearch/data"
 		},
 		"replication": {
-			"mode": "replicated",
+			//"mode": "replicated",
+			"mode": "deployment",
 			"replicas":1
 		},
 		"restartPolicy": {
