@@ -96,7 +96,7 @@ var lib = {
 					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					//change published port name
 					if (service === "elastic") {
-						serviceParams.ports[0].published = 32900;
+						serviceParams.ports[0].published = 30920;
 					}
 					//add namespace
 					if (service === "logstash" || service === "metricbeat") {
