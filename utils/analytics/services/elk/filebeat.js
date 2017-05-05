@@ -22,11 +22,17 @@ module.exports = {
 	"deployConfig": {
 		"image": "soajstest/filebeat",
 		"workDir": "/",
-		"memoryLimit": "524288000",
+		"memoryLimit": 524288000,
 		"network": "soajsnet",
 		"replication": {
 			"mode": "replicated",
 			"replicas":1
+		},
+		"volume": {
+			"type": "volume",
+			"readOnly": false,
+			"source": "soajs-filebeat",
+			"target": "/usr/share/filebeat/bin/data"
 		},
 		"restartPolicy": {
 			"condition": "on-failure",
