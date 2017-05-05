@@ -21,7 +21,7 @@ module.exports = {
 		"image": "soajstest/logstash",
 		"workDir": "/",
 		"memoryLimit": 1000000000,
-		"network": "deployment",
+		"network": "soajsnet",
 		"replication": {
 			"mode": "global",
 			"replicas":1
