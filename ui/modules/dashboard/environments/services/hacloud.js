@@ -319,7 +319,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				var formConfig = {
 					entries: []
 				};
-				
+
 				if(catalogRecipe.recipe.deployOptions.image.override){
 					//append images
 					formConfig.entries.push({
@@ -329,7 +329,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						'value': catalogRecipe.recipe.deployOptions.image.prefix,
 						'fieldMsg': "Override the image prefix if you want"
 					});
-										
+
 					formConfig.entries.push({
 						'name': "ImageName",
 						'label': "Image Name",
@@ -337,7 +337,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						'value': catalogRecipe.recipe.deployOptions.image.name,
 						'fieldMsg': "Override the image name if you want"
 					});
-										
+
 					formConfig.entries.push({
 						'name': "ImageTag",
 						'label': "Image Tag",
@@ -346,11 +346,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						'fieldMsg': "Override the image tag if you want"
 					});
 				}
-				
+
 				//append inputs whose type is userInput
 				for(var envVariable in catalogRecipe.recipe.buildOptions.env){
 					if(catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
-						
+
 						//push a new input for this variable
 						var newInput = {
 							'name': '_ci_' + envVariable,
@@ -359,15 +359,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							'value': catalogRecipe.recipe.buildOptions.env[envVariable].default || '',
 							'fieldMsg': catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
 						};
-						
+
 						if(!catalogRecipe.recipe.buildOptions.env[envVariable].default || catalogRecipe.recipe.buildOptions.env[envVariable].default === ''){
 							newInput.required = true;
 						}
-						
+
 						formConfig.entries.push(newInput);
 					}
 				}
-	    
+
 				if(formConfig.entries.length === 0){
 					doRebuild(null);
 				}
@@ -401,7 +401,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				}
 			}
 		});
-		
+
 		function doRebuild(formData){
 			var params = {
 				env: currentScope.envCode,
@@ -409,7 +409,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
 				action: 'rebuild'
 			};
-			
+
 			if(formData && Object.keys(formData).length > 0){
 				//inject user input catalog entry and image override
 				params.catalogUserInput = {
@@ -419,7 +419,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 						tag: formData['ImageTag']
 					}
 				};
-				
+
 				for( var input in formData){
 					if(input.indexOf('_ci_') !== -1){
 						if(!params.catalogUserInput.env){
@@ -429,7 +429,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 				}
 			}
-			
+
 			overlayLoading.show();
 			getSendDataFromServer(currentScope, ngDataApi, {
 				method: 'put',

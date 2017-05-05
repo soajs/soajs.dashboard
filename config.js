@@ -898,7 +898,7 @@ module.exports = {
 					"group": "Catalog"
 				}
 			},
-			
+
 			"/catalog/recipes/get": {
 				"_apiInfo": {
 					"l": "Get a Catalog",
@@ -2545,6 +2545,30 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": [ 'redeploy', 'rebuild' ]
+					}
+				},
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
+					"validation": {
+						"type": "object",
+						"required": false,
+						"properties": {
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
+						}
 					}
 				}
 			},

@@ -848,7 +848,7 @@ service.init(function () {
 	*/
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, res);
+			BL.redeployService(config, req.soajs, service.registry, res);
 		});
 	});
 
@@ -973,7 +973,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get a catalog
 	 * @param {String} API route
