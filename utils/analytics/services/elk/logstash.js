@@ -23,8 +23,8 @@ module.exports = {
 		"memoryLimit": 1000000000,
 		"network": "deployment",
 		"replication": {
-			//"mode": "global"
-			"mode": "deployment"
+			"mode": "global",
+			"replicas":1
 		},
 		"restartPolicy": {
 			"condition": "any",

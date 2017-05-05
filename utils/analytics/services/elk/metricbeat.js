@@ -23,8 +23,7 @@ module.exports = {
 		"memoryLimit": 500000000,
 		"network": "soajsnet",
 		"replication": {
-			//"mode": "replicated",
-			"mode": "deployment",
+			"mode": "replicated",
 			"replicas":1
 		},
 		"volume": {

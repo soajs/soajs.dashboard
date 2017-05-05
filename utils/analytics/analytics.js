@@ -77,7 +77,7 @@ var lib = {
 					"memoryLimit": loadContent.deployConfig.memoryLimit,
 					"replication": {
 						"mode": loadContent.deployConfig.replication.mode,
-						"replicas": ((loadContent.deployConfig.replication.mode === 'replicated') ? loadContent.deployConfig.replication.replicas : null)
+						"replicas": loadContent.deployConfig.replication.replicas
 					},
 					"containerDir": loadContent.deployConfig.workDir,
 					"restartPolicy": {
@@ -92,6 +92,7 @@ var lib = {
 				}
 				//if deployment is kubernetes
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					serviceParams.replication.mode = "deployment";
 					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					//change published port name
 					if (service === "elastic") {
