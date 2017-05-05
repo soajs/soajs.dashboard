@@ -92,7 +92,7 @@ var lib = {
 				}
 				//if deployment is kubernetes
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
-					var namespace = env.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					//change published port name
 					if (service === "elastic") {
 						serviceParams.ports[0].published = "32900";
