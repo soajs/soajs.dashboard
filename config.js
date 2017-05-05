@@ -2532,29 +2532,6 @@ module.exports = {
 						"type": "string",
 						"enum": [ 'redeploy', 'rebuild' ]
 					}
-				},
-				"ui": {
-					"source": ['body.ui'],
-					"required": false,
-					"validation": {
-						"type": "object",
-						"properties": {
-							"id": { "type": "string", "required": true },
-							"branch": { "type": "string", "required": true },
-							"commit": { "type": "string", "required": true }
-						}
-					}
-				},
-				"ssl": {
-                    "source": ['body.ssl'],
-                    "required": false,
-                    "validation": {
-                        "type": "object",
-                        "properties": {
-                            "supportSSL": { "type": "boolean", "required": false },
-                            "kubeSecret": { "type": "string", "required": false }
-                        }
-                    }
 				}
 			},
 
