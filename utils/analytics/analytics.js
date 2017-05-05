@@ -845,7 +845,6 @@ var lib = {
 				}
 				else {
 					setTimeout(function () {
-						lib.printProgress('Waiting for kibana to become available');
 						lib.setDefaultIndex(cb);
 					}, 5000);
 				}
