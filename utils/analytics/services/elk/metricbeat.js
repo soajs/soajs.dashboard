@@ -29,7 +29,7 @@ module.exports = {
 		"volume": {
 			"type": "bind",
 			"readOnly": true,
-			"source": "/var/run/docker.sock",
+			"source": "docker-sock",
 			"target": "/var/run/docker.sock"
 		},
 		"restartPolicy": {
