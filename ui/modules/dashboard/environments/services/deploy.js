@@ -16,7 +16,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			//append the custom catalog inputs
 			recipes.forEach(function(oneRecipe){
 				if(oneRecipe.type === type &&  oneRecipe._id === data){
-					if(oneRecipe.recipe.deployOptions.image.userInput){
+					if(oneRecipe.recipe.deployOptions.image.override){
 						//append images
 						form.entries[mainLevel].entries.push({
 							'name': '_ci_' + type + "ImagePrefix",
@@ -612,7 +612,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     		currentScope.recipes[type].forEach(function(catalogRecipe){
                     			if(catalogRecipe._id === currentScope.recipe){
                     				
-                    				if(catalogRecipe.recipe.deployOptions.image.userInput){
+                    				if(catalogRecipe.recipe.deployOptions.image.override){
 					                    currentScope._ci_serviceImagePrefix = catalogRecipe.recipe.deployOptions.image.prefix;
 					                    currentScope._ci_serviceImageName = catalogRecipe.recipe.deployOptions.image.name;
 					                    currentScope._ci_serviceImageTag = catalogRecipe.recipe.deployOptions.image.tag;
