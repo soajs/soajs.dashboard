@@ -16,48 +16,54 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			//append the custom catalog inputs
 			recipes.forEach(function(oneRecipe){
 				if(oneRecipe.type === type &&  oneRecipe._id === data){
-					
-					//append images
-					form.entries[mainLevel].entries.push({
-						'name': '_ci_' + type + "ImagePrefix",
-						'label': "Image Prefix",
-						'type': 'text',
-						'value': oneRecipe.recipe.deployOptions.image.prefix,
-						'fieldMsg': "Override the image prefix if you want"
-					});
-					form.formData['_ci_' + type + "ImagePrefix"] = oneRecipe.recipe.deployOptions.image.prefix;
-					
-					form.entries[mainLevel].entries.push({
-						'name': '_ci_' + type + "ImageName",
-						'label': "Image Name",
-						'type': 'text',
-						'value': oneRecipe.recipe.deployOptions.image.name,
-						'fieldMsg': "Override the image name if you want"
-					});
-					form.formData['_ci_' + type + "ImageName"] = oneRecipe.recipe.deployOptions.image.name;
-					
-					form.entries[mainLevel].entries.push({
-						'name': '_ci_' + type + "ImageTag",
-						'label': "Image Tag",
-						'type': 'text',
-						'value': oneRecipe.recipe.deployOptions.image.tag,
-						'fieldMsg': "Override the image tag if you want"
-					});
-					form.formData['_ci_' + type + "ImageTag"] = oneRecipe.recipe.deployOptions.image.tag;
+					if(oneRecipe.recipe.deployOptions.image.userInput){
+						//append images
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImagePrefix",
+							'label': "Image Prefix",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.prefix,
+							'fieldMsg': "Override the image prefix if you want"
+						});
+						form.formData['_ci_' + type + "ImagePrefix"] = oneRecipe.recipe.deployOptions.image.prefix;
+						
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImageName",
+							'label': "Image Name",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.name,
+							'fieldMsg': "Override the image name if you want"
+						});
+						form.formData['_ci_' + type + "ImageName"] = oneRecipe.recipe.deployOptions.image.name;
+						
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImageTag",
+							'label': "Image Tag",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.tag,
+							'fieldMsg': "Override the image tag if you want"
+						});
+						form.formData['_ci_' + type + "ImageTag"] = oneRecipe.recipe.deployOptions.image.tag;
+					}
 					
 					//append inputs whose type is userInput
 					for(var envVariable in oneRecipe.recipe.buildOptions.env){
 						if(oneRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
 							
 							//push a new input for this variable
-							form.entries[mainLevel].entries.push({
+							var newInput = {
 								'name': '_ci_' + type + "_" + envVariable,
 								'label': oneRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
 								'type': 'text',
 								'value': oneRecipe.recipe.buildOptions.env[envVariable].default || '',
-								'fieldMsg': oneRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
-								'required': true
-							});
+								'fieldMsg': oneRecipe.recipe.buildOptions.env[envVariable].fieldMsg
+							};
+							
+							if(!oneRecipe.recipe.buildOptions.env[envVariable].default || oneRecipe.recipe.buildOptions.env[envVariable].default === ''){
+								newInput.required = true;
+							}
+							
+							form.entries[mainLevel].entries.push(newInput);
 							form.formData['_ci_' + type + "_" + envVariable] = oneRecipe.recipe.buildOptions.env[envVariable].default || '';
 						}
 					}
@@ -470,7 +476,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     $scope.title = 'Deploy New Service';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
-
+	
+	                delete currentScope._ci_serviceImagePrefix;
+	                delete currentScope._ci_serviceImageName;
+	                delete currentScope._ci_serviceImageTag;
+	                currentScope.catalogUserInputs = {};
+	                
                     $scope.selectService = function (service) {
 
                         if (service.name === 'controller') {
@@ -600,11 +611,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     	for(var type in currentScope.recipes){
                     		currentScope.recipes[type].forEach(function(catalogRecipe){
                     			if(catalogRecipe._id === currentScope.recipe){
-				                    currentScope._ci_serviceImagePrefix = catalogRecipe.recipe.deployOptions.image.prefix;
-				                    currentScope._ci_serviceImageName = catalogRecipe.recipe.deployOptions.image.name;
-				                    currentScope._ci_serviceImageTag = catalogRecipe.recipe.deployOptions.image.tag;
-				                    
-				                    currentScope.catalogUserInputs = {};
+                    				
+                    				if(catalogRecipe.recipe.deployOptions.image.userInput){
+					                    currentScope._ci_serviceImagePrefix = catalogRecipe.recipe.deployOptions.image.prefix;
+					                    currentScope._ci_serviceImageName = catalogRecipe.recipe.deployOptions.image.name;
+					                    currentScope._ci_serviceImageTag = catalogRecipe.recipe.deployOptions.image.tag;
+				                    }
 				                    
 				                    //append inputs whose type is userInput
 				                    for(var envVariable in catalogRecipe.recipe.buildOptions.env){
@@ -613,7 +625,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 						                    	label : catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
 							                    name: "_ci_service_" + envVariable,
 							                    value: catalogRecipe.recipe.buildOptions.env[envVariable].default || "",
-							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
+							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
+							                    required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
 						                    };
 						                    currentScope.catalogUserInputs["_ci_service_" + envVariable] = newCatalogInput;
 						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";

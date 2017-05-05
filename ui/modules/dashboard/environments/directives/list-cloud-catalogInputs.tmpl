@@ -16,6 +16,6 @@
 
 <div ng-repeat="(userInputName,userInput) in currentScope.catalogUserInputs">
 	<label>{{userInput.label || userInput.name}}</label>
-	<input type="text" class="form-control" ng-model="currentScope[userInputName]" value="{{userInput.value}}" ng-required="true"/>
+	<input type="text" class="form-control" ng-model="currentScope[userInputName]" value="{{userInput.value}}" ng-required="userInput.required"/>
 	<div class="fieldMsg hint">{{userInput.fieldMsg}}</div>
 </div>
