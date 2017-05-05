@@ -2,6 +2,76 @@
 var deployService = soajsApp.components;
 deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function (ngDataApi, $timeout, $modal) {
 
+	function injectCatalogInputs(formConfig, recipes, opts){
+		var mainLevel = opts.mainLevel;
+		var subLevel = opts.subLevel;
+		var initialCount = opts.initialCount;
+		var type = opts.type;
+		
+		formConfig.entries[mainLevel].entries[subLevel].onAction = function(id, data, form){
+			
+			//reset form entries
+			form.entries[mainLevel].entries.length = initialCount;
+			
+			//append the custom catalog inputs
+			recipes.forEach(function(oneRecipe){
+				if(oneRecipe.type === type &&  oneRecipe._id === data){
+					if(oneRecipe.recipe.deployOptions.image.override){
+						//append images
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImagePrefix",
+							'label': "Image Prefix",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.prefix,
+							'fieldMsg': "Override the image prefix if you want"
+						});
+						form.formData['_ci_' + type + "ImagePrefix"] = oneRecipe.recipe.deployOptions.image.prefix;
+						
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImageName",
+							'label': "Image Name",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.name,
+							'fieldMsg': "Override the image name if you want"
+						});
+						form.formData['_ci_' + type + "ImageName"] = oneRecipe.recipe.deployOptions.image.name;
+						
+						form.entries[mainLevel].entries.push({
+							'name': '_ci_' + type + "ImageTag",
+							'label': "Image Tag",
+							'type': 'text',
+							'value': oneRecipe.recipe.deployOptions.image.tag,
+							'fieldMsg': "Override the image tag if you want"
+						});
+						form.formData['_ci_' + type + "ImageTag"] = oneRecipe.recipe.deployOptions.image.tag;
+					}
+					
+					//append inputs whose type is userInput
+					for(var envVariable in oneRecipe.recipe.buildOptions.env){
+						if(oneRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
+							
+							//push a new input for this variable
+							var newInput = {
+								'name': '_ci_' + type + "_" + envVariable,
+								'label': oneRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
+								'type': 'text',
+								'value': oneRecipe.recipe.buildOptions.env[envVariable].default || '',
+								'fieldMsg': oneRecipe.recipe.buildOptions.env[envVariable].fieldMsg
+							};
+							
+							if(!oneRecipe.recipe.buildOptions.env[envVariable].default || oneRecipe.recipe.buildOptions.env[envVariable].default === ''){
+								newInput.required = true;
+							}
+							
+							form.entries[mainLevel].entries.push(newInput);
+							form.formData['_ci_' + type + "_" + envVariable] = oneRecipe.recipe.buildOptions.env[envVariable].default || '';
+						}
+					}
+				}
+			});
+		};
+	}
+	
     /**
      * Deploy New Environment controller + Nginx
      * @param currentScope
@@ -66,9 +136,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 recipes.forEach(function (oneRecipe) {
                     if (oneRecipe.type === 'service') {
                         formConfig.entries[1].entries[4].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+	                    injectCatalogInputs(formConfig, recipes, {
+		                    mainLevel : 1,
+	                        subLevel: 4,
+	                        initialCount: 5,
+	                        type: 'service'
+	                    });
                     }
                     else if (oneRecipe.type === 'nginx') {
                         formConfig.entries[0].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+	                    injectCatalogInputs(formConfig, recipes, {
+		                    mainLevel : 0,
+		                    subLevel: 3,
+		                    initialCount: 4,
+		                    type: 'nginx'
+	                    });
                     }
                 });
 
@@ -159,7 +241,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     delete params.deployConfig.replication.replicas;
                 }
             }
-
+	
+            params.catalogUserInput = {
+            	image: {
+            		name: formData['_ci_serviceImageName'],
+		            prefix: formData['_ci_serviceImagePrefix'],
+		            tag: formData['_ci_serviceImageTag']
+	            }
+            };
+            
+            var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+            for( var input in formData){
+            	if(input.indexOf('_ci_service') !== -1 && excludes.indexOf(input) === -1){
+		            if(!params.catalogUserInput.env){
+			            params.catalogUserInput.env = {};
+		            }
+		            params.catalogUserInput.env[input.replace('_ci_service_', '')] = formData[input];
+	            }
+            }
+            
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",
                 "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -191,18 +291,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             });
         }
 
-        function listStaticContent(currentScope, cb) {
-            getSendDataFromServer(currentScope, ngDataApi, {
-                'method': 'post',
-                'routeName': '/dashboard/staticContent/list'
-            }, function (error, response) {
-                if (error) {
-                    currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-                } else {
-                    cb(response);
-                }
-            });
-        }
+        // function listStaticContent(currentScope, cb) {
+        //     getSendDataFromServer(currentScope, ngDataApi, {
+        //         'method': 'post',
+        //         'routeName': '/dashboard/staticContent/list'
+        //     }, function (error, response) {
+        //         if (error) {
+        //             currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+        //         } else {
+        //             cb(response);
+        //         }
+        //     });
+        // }
 
         function getControllerBranches(currentScope, cb) {
             overlayLoading.show();
@@ -250,6 +350,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 }
             }
 
+            //inject user input catalog entry and image override
+	        params.catalogUserInput = {
+		        image: {
+			        name: formData['_ci_nginxImageName'],
+			        prefix: formData['_ci_nginxImagePrefix'],
+			        tag: formData['_ci_nginxImageTag']
+		        }
+	        };
+	
+	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
+	        for( var input in formData){
+		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
+			        if(!params.catalogUserInput.env){
+				        params.catalogUserInput.env = {};
+			        }
+			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
+		        }
+	        }
+	        
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",
                 "routeName": "/dashboard/cloud/services/soajs/deploy",
@@ -357,7 +476,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     $scope.title = 'Deploy New Service';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
-
+	
+	                delete currentScope._ci_serviceImagePrefix;
+	                delete currentScope._ci_serviceImageName;
+	                delete currentScope._ci_serviceImageTag;
+	                currentScope.catalogUserInputs = {};
+	                
                     $scope.selectService = function (service) {
 
                         if (service.name === 'controller') {
@@ -482,6 +606,36 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     $scope.closeModal = function () {
                         $modalInstance.close();
                     };
+                    
+                    $scope.injectCatalogEntries = function(){
+                    	for(var type in currentScope.recipes){
+                    		currentScope.recipes[type].forEach(function(catalogRecipe){
+                    			if(catalogRecipe._id === currentScope.recipe){
+                    				
+                    				if(catalogRecipe.recipe.deployOptions.image.override){
+					                    currentScope._ci_serviceImagePrefix = catalogRecipe.recipe.deployOptions.image.prefix;
+					                    currentScope._ci_serviceImageName = catalogRecipe.recipe.deployOptions.image.name;
+					                    currentScope._ci_serviceImageTag = catalogRecipe.recipe.deployOptions.image.tag;
+				                    }
+				                    
+				                    //append inputs whose type is userInput
+				                    for(var envVariable in catalogRecipe.recipe.buildOptions.env){
+					                    if(catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
+						                    var newCatalogInput = {
+						                    	label : catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
+							                    name: "_ci_service_" + envVariable,
+							                    value: catalogRecipe.recipe.buildOptions.env[envVariable].default || "",
+							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
+							                    required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
+						                    };
+						                    currentScope.catalogUserInputs["_ci_service_" + envVariable] = newCatalogInput;
+						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
+					                    }
+				                    }
+			                    }
+		                    });
+	                    }
+                    };
 
                     function newController(currentScope) {
                         var params = {
@@ -517,7 +671,26 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 "replicas": currentScope.number,
                             }
                         };
-
+	
+	                    //inject user input catalog entry and image override
+	                    params.catalogUserInput = {
+		                    image: {
+			                    name: currentScope['_ci_serviceImageName'],
+			                    prefix: currentScope['_ci_serviceImagePrefix'],
+			                    tag: currentScope['_ci_serviceImageTag']
+		                    }
+	                    };
+	
+	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+	                    for( var input in currentScope){
+		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
+			                    if(!params.catalogUserInput.env){
+				                    params.catalogUserInput.env = {};
+			                    }
+			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+		                    }
+	                    }
+	                    
                         overlayLoading.show();
                         getSendDataFromServer(currentScope, ngDataApi, {
                             "method": "post",
@@ -533,7 +706,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 $timeout(function () {
                                     currentScope.listServices();
                                 }, 1500);
-
+	
+	                            for( var input in currentScope){
+		                            if(input.indexOf('_ci_service') !== -1){
+			                            delete currentScope[input];
+		                            }
+	                            }
+	                            currentScope.catalogUserInputs = {};
+	                            
                                 $modalInstance.close();
                             }
                         });
@@ -600,6 +780,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 delete params.deployConfig.replication.replicas;
                             }
                         }
+	
+	                    //inject user input catalog entry and image override
+	                    params.catalogUserInput = {
+		                    image: {
+			                    name: currentScope['_ci_serviceImageName'],
+			                    prefix: currentScope['_ci_serviceImagePrefix'],
+			                    tag: currentScope['_ci_serviceImageTag']
+		                    }
+	                    };
+	
+	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+	                    for( var input in currentScope){
+		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
+			                    if(!params.catalogUserInput.env){
+				                    params.catalogUserInput.env = {};
+			                    }
+			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+		                    }
+	                    }
 
                         var config = {
                             "method": "post",
@@ -618,7 +817,14 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 $timeout(function () {
                                     currentScope.listServices();
                                 }, 1500);
-
+	
+	                            for( var input in currentScope){
+		                            if(input.indexOf('_ci_service') !== -1){
+			                            delete currentScope[input];
+		                            }
+	                            }
+	                            currentScope.catalogUserInputs = {};
+	                            
                                 $modalInstance.close();
                             }
                         });
@@ -829,6 +1035,12 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             recipes.forEach(function (oneRecipe) {
                 if (oneRecipe.type === 'nginx') {
                     formConfig.entries[0].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+	                injectCatalogInputs(formConfig, recipes, {
+		                mainLevel : 0,
+		                subLevel: 3,
+		                initialCount: 4,
+		                type: 'nginx'
+	                });
                 }
             });
 
@@ -881,18 +1093,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             buildFormWithModal(currentScope, $modal, options);
         });
 
-        function listStaticContent(currentScope, cb) {
-            getSendDataFromServer(currentScope, ngDataApi, {
-                'method': 'post',
-                'routeName': '/dashboard/staticContent/list'
-            }, function (error, response) {
-                if (error) {
-                    currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-                } else {
-                    cb(response);
-                }
-            });
-        }
+        // function listStaticContent(currentScope, cb) {
+        //     getSendDataFromServer(currentScope, ngDataApi, {
+        //         'method': 'post',
+        //         'routeName': '/dashboard/staticContent/list'
+        //     }, function (error, response) {
+        //         if (error) {
+        //             currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
+        //         } else {
+        //             cb(response);
+        //         }
+        //     });
+        // }
 
         function deployNginx(formData, params) {
             params.type = 'nginx';
@@ -916,6 +1128,25 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     delete params.deployConfig.replication.replicas;
                 }
             }
+	
+	        //inject user input catalog entry and image override
+	        params.catalogUserInput = {
+		        image: {
+			        name: formData['_ci_nginxImageName'],
+			        prefix: formData['_ci_nginxImagePrefix'],
+			        tag: formData['_ci_nginxImageTag']
+		        }
+	        };
+	
+	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
+	        for( var input in formData){
+		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
+			        if(!params.catalogUserInput.env){
+				        params.catalogUserInput.env = {};
+			        }
+			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
+		        }
+	        }
 
             getSendDataFromServer(currentScope, ngDataApi, {
                 "method": "post",

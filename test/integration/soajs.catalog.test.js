@@ -187,9 +187,18 @@ describe("Testing Catalog Functionality", function() {
         it("Success - Edit a record", function (done) {
             catalog.recipe.buildOptions = {
                 "env": {
-                    "SOAJS_ENV_1": "SOAJS_ENV_1",
-                    "SOAJS_ENV_2": "SOAJS_ENV_2",
-                    "SOAJS_ENV_3": "SOAJS_ENV_3"
+                    "SOAJS_ENV_1": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_1"
+                    },
+                    "SOAJS_ENV_2": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_2"
+                    },
+                    "SOAJS_ENV_3": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_3"
+                    },
                 }
             };
             params = {
