@@ -9,7 +9,8 @@ module.exports = {
 		"soajs.content": "true",
 		"soajs.service.name": "kibana",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "kibana"
+		"soajs.service.label": "kibana",
+		"soajs.service.mode": "replicated"
 	},
 	"deployConfig": {
 		"version": "5.3.0",

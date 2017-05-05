@@ -19,7 +19,8 @@ module.exports = {
 		"soajs.service.type": "elk",
 		"soajs.service.name": "soajs-analytics-elasticsearch",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "soajs-analytics-elasticsearch"
+		"soajs.service.label": "soajs-analytics-elasticsearch",
+		"soajs.service.mode": "replicated"
 	},
 	"deployConfig": {
 		"image": "elasticsearch:alpine",

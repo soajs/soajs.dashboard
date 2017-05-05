@@ -11,7 +11,8 @@ module.exports = {
 		"soajs.service.type": "elk",
 		"soajs.service.name": "%env%-logstash",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "%env%-logstash"
+		"soajs.service.label": "%env%-logstash",
+		"soajs.service.mode": "global"
 	},
 	"command": {
 		"cmd": ["bash"],

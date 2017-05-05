@@ -94,6 +94,13 @@ var lib = {
 				var esNameSpace = '';
 				var logNameSpace = '';
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					//"soajs.service.mode": "deployment"
+					if (serviceParams.labels["soajs.service.mode"] === "replicated"){
+						serviceParams.labels["soajs.service.mode"] = "deployment";
+					}
+					else {
+						serviceParams.labels["soajs.service.mode"] = "daemonset";
+					}
 					if (serviceParams.memoryLimit){
 						delete serviceParams.memoryLimit;
 					}
