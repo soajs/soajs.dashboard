@@ -4,7 +4,7 @@ module.exports = {
 	"name": "%env%-filebeat",
 	"variables": [
 		"SOAJS_ENV=%env%",
-		'SOAJS_LOGSTASH_HOST=%env%-logstash',
+		'SOAJS_LOGSTASH_HOST=%env%-logstash-service',
 		'SOAJS_LOGSTASH_PORT=12201'
 	],
 	"labels": {

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
 	"env": "dashboard", //it's only used to get the deployer cluster
-	"name": "kibana",
+	"name": "kibana-service",
 	"variables": [
 		'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch:9200' //add support for kubernetes (add namespace)
 	],

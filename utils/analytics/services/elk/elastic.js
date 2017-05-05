@@ -13,7 +13,7 @@ var annotation = [
 ];
 module.exports = {
 	"env": "dashboard", //it's only used to get the deployer cluster
-	"name": "soajs-analytics-elasticsearch",
+	"name": "soajs-analytics-elasticsearch-service",
 	"variables": [],
 	"labels": {
 		"soajs.service.type": "elk",

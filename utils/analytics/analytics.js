@@ -95,18 +95,26 @@ var lib = {
 					if (serviceParams.memoryLimit){
 						delete serviceParams.memoryLimit;
 					}
-					serviceParams.replication.mode = "deployment";
+					if (serviceParams.replication.mode === "replicated"){
+						serviceParams.replication.mode = "deployment";
+					}
+					else if (serviceParams.replication.mode === "global"){
+						serviceParams.replication.mode = "daemonset";
+					}
 					var namespace = env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService){
+						namespace += '-soajs-analytics-elasticsearch-service';
+					}
 					//change published port name
 					if (service === "elastic") {
 						serviceParams.ports[0].published = 30920;
 					}
 					//add namespace
 					if (service === "logstash" || service === "metricbeat") {
-						serviceParams.variables[0] = 'ELASTICSEARCH_URL=soajs-analytics-elasticsearch.' + namespace + ':9200';
+						serviceParams.variables[0] = 'ELASTICSEARCH_URL=soajs-analytics-elasticsearch-service.' + namespace + ':9200';
 					}
 					if (service === "kibana") {
-						serviceParams.variables[0] = 'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch.' + namespace + ':9200';
+						serviceParams.variables[0] = 'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch-service.' + namespace + ':9200';
 					}
 				}
 				

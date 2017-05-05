@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
 	"env": "%env%",
-	"name": "%env%-logstash",
+	"name": "%env%-logstash-service",
 	"variables": [
 		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200'
 	],
@@ -22,6 +22,13 @@ module.exports = {
 		"workDir": "/",
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",
+		"ports": [
+			{
+				"isPublished": false,
+				"published": 12201,
+				"target": 12201
+			}
+		],
 		"replication": {
 			"mode": "global",
 			"replicas":1
@@ -32,4 +39,3 @@ module.exports = {
 		}
 	}
 };
-
