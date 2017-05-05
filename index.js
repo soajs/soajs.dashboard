@@ -973,6 +973,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Get a catalog
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/catalog/recipes/get", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.get(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * Git App features gitAccountsBL

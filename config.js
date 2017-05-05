@@ -898,6 +898,20 @@ module.exports = {
 					"group": "Catalog"
 				}
 			},
+			
+			"/catalog/recipes/get": {
+				"_apiInfo": {
+					"l": "Get a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
