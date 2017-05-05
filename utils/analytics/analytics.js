@@ -10,6 +10,20 @@ var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeat = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
 var lib = {
+	
+		"listNamespace": function (soajs, env, deployer, utils, model, cb) {
+			if ((env.deployer.type === 'container') && (env.deployer.selected.split('.')[1] === 'kubernetes')) {
+				var options = utils.buildDeployerOptions(env, soajs, BL);
+				deployer.listNameSpaces(options, function (error, namespaces) {
+					if (error){
+						return cb(error);
+					}
+					console.log(JSON.stringify(namespaces, null, 2));
+					return cb(null, true);
+				});
+			}
+		},
+		
 		"insertMongoData": function (soajs, config, model, cb) {
 			var comboFind = {}
 			comboFind.collection = colls.analytics;
@@ -86,11 +100,22 @@ var lib = {
 					"network": loadContent.deployConfig.network,
 					"ports": loadContent.deployConfig.ports || []
 				};
-				if (loadContent.command && loadContent.command.cmd){
+				if (loadContent.command && loadContent.command.cmd) {
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
-				if (service === "elastic" && env.deployer.selected.split(".")[1] === "kubernetes") {
-					serviceParams.ports[0].published = "32900";
+				//if deployment is kubernetes
+				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					//change published port name
+					if (service === "elastic") {
+						serviceParams.ports[0].published = "32900";
+					}
+					//add namespace
+					if (service === "logstash" || service === "metricbeat") {
+						serviceParams.variables[0] = 'ELASTICSEARCH_URL=soajs-analytics-elasticsearch.' + namespace + ':9200';
+					}
+					if (service === "kibana") {
+						serviceParams.variables[0] = 'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch.' + namespace + ':9200';
+					}
 				}
 				
 				if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
@@ -167,8 +192,8 @@ var lib = {
 				console.log("infoElastic")
 				if (error) {
 					setTimeout(function () {
-						lib.infoElastic(esClient, function(err, res){
-							if (err){
+						lib.infoElastic(esClient, function (err, res) {
+							if (err) {
 								console.log(err)
 								return cb(err);
 							}
@@ -243,7 +268,7 @@ var lib = {
 				
 				esClient.db.indices.exists(mapping, function (error, result) {
 					if (error || !result) {
-						esClient.db.indices.create(mapping, function(err){
+						esClient.db.indices.create(mapping, function (err) {
 							return cb(err, true);
 						});
 					}
@@ -557,7 +582,7 @@ var lib = {
 								return pCallback(error);
 							}
 							if (records && records.length > 0) {
-								records.forEach(function(onRecord){
+								records.forEach(function (onRecord) {
 									onRecord = JSON.stringify(onRecord);
 									onRecord = onRecord.replace(/%env%/g, serviceEnv);
 									onRecord = JSON.parse(onRecord);
@@ -647,7 +672,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.logstash){
+								if (!settings.logstash) {
 									settings.logstash = {};
 								}
 								settings.logstash[env.code.toLowerCase()] = {
@@ -685,7 +710,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.filebeat){
+								if (!settings.filebeat) {
 									settings.filebeat = {};
 								}
 								settings.filebeat[env.code.toLowerCase()] = {
@@ -723,7 +748,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.metricbeat){
+								if (!settings.metricbeat) {
 									settings.metricbeat = {};
 								}
 								settings.metricbeat[env.code.toLowerCase()] = {
@@ -847,24 +872,25 @@ var analyticsDriver = function (opts) {
 analyticsDriver.prototype.run = function () {
 	var _self = this;
 	
-	_self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
-	_self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
-	_self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
-	_self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
-	_self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
-	_self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
+	_self.operations.push(async.apply(lib.listNamespace, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.insertMongoData, _self.config.soajs, _self.config.config, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployElastic, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.checkElasticSearch, _self.config.esCluster));
+	// _self.operations.push(async.apply(lib.setMapping, _self.config.soajs, _self.config.envRecord, _self.config.model, _self.config.esCluster));
+	// _self.operations.push(async.apply(lib.addVisualizations, _self.config.soajs, _self.config.deployer, _self.config.esCluster, _self.config.utils, _self.config.envRecord, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployKibana, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployLogstash, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployFilebeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.deployMetricbeat, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.checkAvailability, _self.config.soajs, _self.config.envRecord, _self.config.deployer, _self.config.utils, _self.config.model));
+	// _self.operations.push(async.apply(lib.setDefaultIndex, _self.config.soajs, _self.config.envRecord, _self.config.esCluster, _self.config.model));
 	analyticsDriver.deploy.call(_self);
 };
 
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
-		if(err){
+		if (err) {
 			console.log(err);
 		}
 		else {
