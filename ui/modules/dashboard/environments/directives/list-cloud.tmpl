@@ -311,6 +311,7 @@
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												</ul>
 											</div>
