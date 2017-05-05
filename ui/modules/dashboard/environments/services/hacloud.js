@@ -305,28 +305,149 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     }
 
     function rebuildService(currentScope, service) {
-		var params = {
-			env: currentScope.envCode,
-			serviceId: service.id,
-			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
-			action: 'rebuild'
-		};
-
-		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
-			method: 'put',
-			routeName: '/dashboard/cloud/services/redeploy',
-			data: params
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
+			method: 'get',
+			routeName: '/dashboard/catalog/recipes/get',
+			params: {
+				'id': service.labels['soajs.catalog.id']
+			}
+		}, function (error, catalogRecipe) {
+			if(error){
 				currentScope.displayAlert('danger', error.message);
 			}
-			else {
-				currentScope.displayAlert('success', 'Service rebuilt successfully');
-				currentScope.listServices();
+			else{
+				var formConfig = {
+					entries: []
+				};
+				
+				if(catalogRecipe.recipe.deployOptions.image.override){
+					//append images
+					formConfig.entries.push({
+						'name': "ImagePrefix",
+						'label': "Image Prefix",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.prefix,
+						'fieldMsg': "Override the image prefix if you want"
+					});
+										
+					formConfig.entries.push({
+						'name': "ImageName",
+						'label': "Image Name",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.name,
+						'fieldMsg': "Override the image name if you want"
+					});
+										
+					formConfig.entries.push({
+						'name': "ImageTag",
+						'label': "Image Tag",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.tag,
+						'fieldMsg': "Override the image tag if you want"
+					});
+				}
+				
+				//append inputs whose type is userInput
+				for(var envVariable in catalogRecipe.recipe.buildOptions.env){
+					if(catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
+						
+						//push a new input for this variable
+						var newInput = {
+							'name': '_ci_' + envVariable,
+							'label': catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
+							'type': 'text',
+							'value': catalogRecipe.recipe.buildOptions.env[envVariable].default || '',
+							'fieldMsg': catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
+						};
+						
+						if(!catalogRecipe.recipe.buildOptions.env[envVariable].default || catalogRecipe.recipe.buildOptions.env[envVariable].default === ''){
+							newInput.required = true;
+						}
+						
+						formConfig.entries.push(newInput);
+					}
+				}
+	    
+				if(formConfig.entries.length === 0){
+					doRebuild(null);
+				}
+				else{
+					var options = {
+						timeout: $timeout,
+						form: formConfig,
+						name: 'rebuildService',
+						label: 'Rebuild Service',
+						actions: [
+							{
+								'type': 'submit',
+								'label': translation.submit[LANG],
+								'btn': 'primary',
+								'action': function (formData) {
+									doRebuild(formData);
+								}
+							},
+							{
+								'type': 'reset',
+								'label': translation.cancel[LANG],
+								'btn': 'danger',
+								'action': function () {
+									currentScope.modalInstance.dismiss('cancel');
+									currentScope.form.formData = {};
+								}
+							}
+						]
+					};
+					buildFormWithModal(currentScope, $modal, options);
+				}
 			}
 		});
+		
+		function doRebuild(formData){
+			var params = {
+				env: currentScope.envCode,
+				serviceId: service.id,
+				mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
+				action: 'rebuild'
+			};
+			
+			if(formData && Object.keys(formData).length > 0){
+				//inject user input catalog entry and image override
+				params.catalogUserInput = {
+					image: {
+						name: formData['ImageName'],
+						prefix: formData['ImagePrefix'],
+						tag: formData['ImageTag']
+					}
+				};
+				
+				for( var input in formData){
+					if(input.indexOf('_ci_') !== -1){
+						if(!params.catalogUserInput.env){
+							params.catalogUserInput.env = {};
+						}
+						params.catalogUserInput.env[input.replace('_ci_', '')] = formData[input];
+					}
+				}
+			}
+			
+			overlayLoading.show();
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'put',
+				routeName: '/dashboard/cloud/services/redeploy',
+				data: params
+			}, function (error, response) {
+				overlayLoading.hide();
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				}
+				else {
+					currentScope.displayAlert('success', 'Service rebuilt successfully');
+					currentScope.listServices();
+					overlayLoading.hide();
+					currentScope.modalInstance.dismiss();
+				}
+			});
+		}
     }
 
 
