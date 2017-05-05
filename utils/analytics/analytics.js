@@ -103,7 +103,7 @@ var lib = {
 					else if (serviceParams.replication.mode === "global"){
 						serviceParams.replication.mode = "daemonset";
 					}
-					esNameSpace = '.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					esNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					logNameSpace =  '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					
 					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService){
@@ -177,7 +177,6 @@ var lib = {
 		},
 		
 		"pingElastic": function (esClient, cb) {
-			console.log("pingElastic")
 			esClient.ping(function (error) {
 				if (error) {
 					setTimeout(function () {
@@ -193,19 +192,9 @@ var lib = {
 		"infoElastic": function (esClient, cb) {
 			
 			esClient.db.info(function (error) {
-				console.log("infoElastic")
 				if (error) {
 					setTimeout(function () {
-						lib.infoElastic(esClient, function (err, res) {
-							if (err) {
-								console.log(err)
-								return cb(err);
-							}
-							else {
-								console.log(res)
-								return cb(null, true);
-							}
-						});
+						lib.infoElastic(esClient, cb);
 					}, 3000);
 				}
 				else {
@@ -857,6 +846,7 @@ var lib = {
 				}
 				else {
 					setTimeout(function () {
+						console.log("Waiting for kibana to be available...");
 						lib.setDefaultIndex(soajs, env, esClient, model, cb);
 					}, 5000);
 				}
