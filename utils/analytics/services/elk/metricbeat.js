@@ -7,7 +7,7 @@ module.exports = {
 	"name": "%env%-metricbeat",
 	"variables": [
 		"SOAJS_ENV=%env%",
-		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200' //add support for kubernetes (add namespace)
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200' //add support for kubernetes (add namespace)
 	],
 	"labels": {
 		"soajs.content": "true",
@@ -29,7 +29,7 @@ module.exports = {
 		"volume": {
 			"type": "bind",
 			"readOnly": true,
-			"source": "/var/run/docker.sock",
+			"source": "docker-sock",
 			"target": "/var/run/docker.sock"
 		},
 		"restartPolicy": {

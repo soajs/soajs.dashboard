@@ -3,7 +3,7 @@ module.exports = {
 	"env": "%env%",
 	"name": "%env%-logstash",
 	"variables": [
-		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch:9200'
+		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200'
 	],
 	"labels": {
 		"soajs.content": "true",
@@ -22,8 +22,16 @@ module.exports = {
 		"workDir": "/",
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",
+		"ports": [
+			{
+				"isPublished": false,
+				"published": 12201,
+				"target": 12201
+			}
+		],
 		"replication": {
-			"mode": "global"
+			"mode": "global",
+			"replicas":1
 		},
 		"restartPolicy": {
 			"condition": "any",
@@ -31,4 +39,3 @@ module.exports = {
 		}
 	}
 };
-

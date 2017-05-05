@@ -10,6 +10,7 @@ var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeat = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
 var lib = {
+		
 		"insertMongoData": function (soajs, config, model, cb) {
 			var comboFind = {}
 			comboFind.collection = colls.analytics;
@@ -76,7 +77,7 @@ var lib = {
 					"memoryLimit": loadContent.deployConfig.memoryLimit,
 					"replication": {
 						"mode": loadContent.deployConfig.replication.mode,
-						"replicas": ((loadContent.deployConfig.replication.mode === 'replicated') ? loadContent.deployConfig.replication.replicas : null)
+						"replicas": loadContent.deployConfig.replication.replicas
 					},
 					"containerDir": loadContent.deployConfig.workDir,
 					"restartPolicy": {
@@ -86,13 +87,34 @@ var lib = {
 					"network": loadContent.deployConfig.network,
 					"ports": loadContent.deployConfig.ports || []
 				};
-				if (loadContent.command && loadContent.command.cmd){
+				if (loadContent.command && loadContent.command.cmd) {
 					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
 				}
-				if (service === "elastic" && env.deployer.selected.split(".")[1] === "kubernetes") {
-					serviceParams.ports[0].published = "32900";
+				//if deployment is kubernetes
+				var esNameSpace = '';
+				var logNameSpace = '';
+				if (env.deployer.selected.split(".")[1] === "kubernetes") {
+					if (serviceParams.memoryLimit){
+						delete serviceParams.memoryLimit;
+					}
+					if (serviceParams.replication.mode === "replicated"){
+						serviceParams.replication.mode = "deployment";
+					}
+					else if (serviceParams.replication.mode === "global"){
+						serviceParams.replication.mode = "daemonset";
+					}
+					esNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					logNameSpace =  '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					
+					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService){
+						esNameSpace += '-soajs-analytics-elasticsearch-service';
+						logNameSpace +=  '-' + env.code.toLowerCase() + '-logstash-service';
+					}
+					//change published port name
+					if (service === "elastic") {
+						serviceParams.ports[0].published = 30920;
+					}
 				}
-				
 				if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
 					serviceParams.volume = {
 						"type": loadContent.deployConfig.volume.type,
@@ -105,6 +127,13 @@ var lib = {
 					serviceParams.annotations = loadContent.deployConfig.annotations;
 				}
 				serviceParams = JSON.stringify(serviceParams);
+				//add namespace
+				if (service === "logstash" || service === "metricbeat" || service === "kibana") {
+					serviceParams = serviceParams.replace(/%esNameSpace%/g, esNameSpace);
+				}
+				if (service === "filebeat"){
+					serviceParams = serviceParams.replace(/%logNameSpace%/g, logNameSpace);
+				}
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
 				serviceParams = JSON.parse(serviceParams);
 				
@@ -136,8 +165,8 @@ var lib = {
 							},
 							"update": function (call) {
 								//Todo fix this
-								settings.elasticsearch.status = true;
-								combo.records = settings;
+								settings.elasticsearch.status = "deployed";
+								combo.record = settings;
 								model.saveEntry(soajs, combo, call);
 							}
 						}, cb);
@@ -148,7 +177,6 @@ var lib = {
 		},
 		
 		"pingElastic": function (esClient, cb) {
-			console.log("pingElastic")
 			esClient.ping(function (error) {
 				if (error) {
 					setTimeout(function () {
@@ -164,19 +192,9 @@ var lib = {
 		"infoElastic": function (esClient, cb) {
 			
 			esClient.db.info(function (error) {
-				console.log("infoElastic")
 				if (error) {
 					setTimeout(function () {
-						lib.infoElastic(esClient, function(err, res){
-							if (err){
-								console.log(err)
-								return cb(err);
-							}
-							else {
-								console.log(res)
-								return cb(null, true);
-							}
-						});
+						lib.infoElastic(esClient, cb);
 					}, 3000);
 				}
 				else {
@@ -243,7 +261,7 @@ var lib = {
 				
 				esClient.db.indices.exists(mapping, function (error, result) {
 					if (error || !result) {
-						esClient.db.indices.create(mapping, function(err){
+						esClient.db.indices.create(mapping, function (err) {
 							return cb(err, true);
 						});
 					}
@@ -557,7 +575,7 @@ var lib = {
 								return pCallback(error);
 							}
 							if (records && records.length > 0) {
-								records.forEach(function(onRecord){
+								records.forEach(function (onRecord) {
 									onRecord = JSON.stringify(onRecord);
 									onRecord = onRecord.replace(/%env%/g, serviceEnv);
 									onRecord = JSON.parse(onRecord);
@@ -647,7 +665,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.logstash){
+								if (!settings.logstash) {
 									settings.logstash = {};
 								}
 								settings.logstash[env.code.toLowerCase()] = {
@@ -685,7 +703,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.filebeat){
+								if (!settings.filebeat) {
 									settings.filebeat = {};
 								}
 								settings.filebeat[env.code.toLowerCase()] = {
@@ -723,7 +741,7 @@ var lib = {
 								deployer.deployService(options, call)
 							},
 							"update": function (call) {
-								if (!settings.metricbeat){
+								if (!settings.metricbeat) {
 									settings.metricbeat = {};
 								}
 								settings.metricbeat[env.code.toLowerCase()] = {
@@ -828,8 +846,8 @@ var lib = {
 				}
 				else {
 					setTimeout(function () {
-						lib.printProgress('Waiting for kibana to become available');
-						lib.setDefaultIndex(cb);
+						console.log("Waiting for kibana to be available...");
+						lib.setDefaultIndex(soajs, env, esClient, model, cb);
 					}, 5000);
 				}
 			});
@@ -864,10 +882,12 @@ analyticsDriver.prototype.run = function () {
 analyticsDriver.deploy = function () {
 	var _self = this;
 	async.series(_self.operations, function (err, result) {
-		if(err){
+		if (err) {
 			console.log(err);
 		}
 		else {
+			//close es connection
+			_self.config.esCluster.close();
 			console.log("Analytics Deployed successfully");
 		}
 	});

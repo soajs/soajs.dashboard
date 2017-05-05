@@ -45,7 +45,7 @@ module.exports = {
 		},
 		"replication": {
 			"mode": "replicated",
-			"replicas":1
+			"replicas": 1
 		},
 		"restartPolicy": {
 			"condition": "any",

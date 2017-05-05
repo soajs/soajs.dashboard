@@ -4,7 +4,7 @@ module.exports = {
 	"name": "%env%-filebeat",
 	"variables": [
 		"SOAJS_ENV=%env%",
-		'SOAJS_LOGSTASH_HOST=%env%-logstash',
+		'SOAJS_LOGSTASH_HOST=%env%-logstash%logNameSpace%',
 		'SOAJS_LOGSTASH_PORT=12201'
 	],
 	"labels": {
@@ -27,6 +27,12 @@ module.exports = {
 		"replication": {
 			"mode": "replicated",
 			"replicas":1
+		},
+		"volume": {
+			"type": "volume",
+			"readOnly": false,
+			"source": "soajs-filebeat",
+			"target": "/usr/share/filebeat/bin/data"
 		},
 		"restartPolicy": {
 			"condition": "on-failure",
