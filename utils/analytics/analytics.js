@@ -881,6 +881,8 @@ analyticsDriver.deploy = function () {
 			console.log(err);
 		}
 		else {
+			//close es connection
+			_self.config.esCluster.close();
 			console.log("Analytics Deployed successfully");
 		}
 	});
