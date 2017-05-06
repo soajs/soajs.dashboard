@@ -578,7 +578,7 @@ var environmentsConfig = {
 							'name': 'nginxMemoryLimit',
 							'label': 'Memory Limit Per Instance for Nginx (in MBytes)',
 							'type': 'number',
-							'value': 200,
+							'value': 500,
 							'fieldMsg': 'Set a custom memory limit for Nginx instances',
 							'required': false
 						},
@@ -630,7 +630,7 @@ var environmentsConfig = {
 							'name': 'ctrlMemoryLimit',
 							'label': 'Memory Limit Per Instance for Controllers (in MBytes)',
 							'type': 'number',
-							'value': 200,
+							'value': 500,
 							'fieldMsg': 'Set a custom memory limit for controller instances',
 							'required': false
 						},
