@@ -13,7 +13,8 @@ module.exports = {
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-filebeat",
 		"soajs.env.code": "%env%",
-		"soajs.service.type": "elk"
+		"soajs.service.type": "elk",
+		"soajs.service.mode": "replicated"
 	},
 	"command": {
 		"cmd": ["bash"],

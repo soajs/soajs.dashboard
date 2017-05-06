@@ -15,7 +15,8 @@ module.exports = {
 		"soajs.service.type": "elk",
 		"soajs.service.name": "%env%-metricbeat",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "%env%-metricbeat"
+		"soajs.service.label": "%env%-metricbeat",
+		"soajs.service.mode": "replicated"
 	},
 	"deployConfig": {
 		"image": "metricbeat-docker",
