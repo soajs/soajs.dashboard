@@ -320,7 +320,7 @@
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
 												<li ng-if="['elk','db', 'miscellaneous'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Nginx</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
-												<li ng-if="showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'service','metricbeat')"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
+												<li ng-if="showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'other','metricbeat')"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
 											</ul>
 										</div>
 									</div>

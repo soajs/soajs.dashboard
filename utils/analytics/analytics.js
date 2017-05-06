@@ -529,7 +529,6 @@ var lib = {
 						}, pCallback);
 					},
 					"metricbeat": function (pCallback) {
-						var metricbeatIndex = require("../analytics/indexes/metricbeat-index");
 						analyticsArray = analyticsArray.concat(
 							[
 								{
@@ -561,6 +560,23 @@ var lib = {
 									timeFieldName: '@timestamp',
 									fields: metricbeatIndex.fields,
 									fieldFormatMap: metricbeatIndex.fieldFormatMap
+								}
+							]
+						);
+						analyticsArray = analyticsArray.concat(
+							[
+								{
+									index: {
+										_index: '.kibana',
+										_type: 'index-pattern',
+										_id: 'filebeat-*-' + serviceEnv + "-*"
+									}
+								},
+								{
+									title: 'filebeat-*-' + serviceEnv + "-*",
+									timeFieldName: '@timestamp',
+									fields: filebeatIndex.fields,
+									fieldFormatMap: filebeatIndex.fieldFormatMap
 								}
 							]
 						);
