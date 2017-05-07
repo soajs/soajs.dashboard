@@ -1161,6 +1161,96 @@ describe("testing hosts deployment", function () {
 		
 	});
 	
+	// describe("testing analytics", function () {
+	//
+	// 	it("get analytics settings", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "/dashboard/analytics/getSettings", "post", function (body) {
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// 	it("success - activate analytics for the first time", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "dashboard/analytics/activateAnalytics", "post", function (body) {
+	// 			assert.ok(body.result);
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// 	it("get analytics settings - analytics being deployed ", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "/dashboard/analytics/getSettings", "post", function (body) {
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// 	it("get analytics settings - analytics deployed", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "/dashboard/analytics/getSettings", "post", function (body) {
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// 	it("deactivate analytics in environment", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "/dashboard/analytics/deactivateAnalytics", "post", function (body) {
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// 	it("success - activate analytics - elasticsearch and kibana deployed", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dashboard'
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "dashboard/analytics/activateAnalytics", "post", function (body) {
+	// 			assert.ok(body.result);
+	// 			assert.ok(body.data);
+	// 			done();
+	// 		});
+	// 	});
+	//
+	// });
+	
 	describe("maintenance operations", function () {
 		var ctrlDeployment = {};
 		before('get deployed controller service info', function (done) {
