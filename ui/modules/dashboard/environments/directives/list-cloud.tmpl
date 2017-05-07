@@ -366,7 +366,7 @@
 													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonStats(service)"><span class="icon icon-stats-dots"></span>&nbsp;{{translation.loadDaemonStatisticsOperation[LANG]}}</a></li>
 													<li><a href="" ng-show="service.labels['soajs.service.type'] === 'daemon'" ng-click="loadDaemonGroupConfig(service)"><span class="icon icon-equalizer"></span>&nbsp;{{translation.loadDaemonGroupConfig[LANG]}}</a></li>
 													<li><a href="" ng-if="service.labels['soajs.service.name'] === 'controller'" ng-click="executeAwarenessTest(service)"><span class="icon icon-connection"></span>&nbsp;Awareness Stat</a></li>
-													<li><a href="" ng-if="service.labels['soajs.service.name'] !== 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
+													<li><a href="" ng-if="service.labels['soajs.service.name'] === 'controller'" ng-click="loadServiceProvision(service)"><span class="icon icon-download3"></span>&nbsp;Load Provision</a></li>
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>

@@ -590,7 +590,7 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 			};
 			executeMyRequest(params, 'product/packages/delete', 'delete', function (body) {
 				assert.ok(body);
-				assert.ok(body.data);
+				assert.equal(body.data,'product package delete successful');
 				done();
 			});
 		});

@@ -21,6 +21,10 @@ module.exports = {
 	"oauth": true,
 	"session": true,
 	"uracDriver" : true,
+	"urac_Profile" : true,
+	"urac_ACL" : true,
+	"provision_ACL" : true,
+	"urac" : true,
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
