@@ -33,18 +33,11 @@
 					<fieldset>
 						<legend>Deployment Options</legend>
 						<div>
-							<label>Image Prefix</label>
-							<input type="text" class="form-control" ng-required="true" ng-model="currentScope.imagePrefix"/>
-							<label class="fieldMsg">The default image that will be used is soajsorg/soajs. Specify a
-								different prefix if you intend to use a custom image</label>
-							<br/>
-						</div>
-						<div>
-							<br>
 							<label>Deployment Mode</label>
 							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
 							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
 							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
+							<br>
 						</div>
 						<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
 							<label>Replica Count</label>
@@ -54,67 +47,15 @@
 						<div>
 							<label>Memory Limit Per Instance (in MBytes)</label>
 							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
+							<br />
+						</div>
+						<div>
+							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name for recipe in currentScope.recipes[currentScope.service.type]" ng-model="currentScope.recipe" ng-change="injectCatalogEntries()"></select>
 							<br>
 						</div>
-						<div ng-if="currentScope.service.type === 'nginx'">
-							<label>Exposed Port</label>
-							<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort"/>
-							<br/>
-						</div>
-						<div ng-if="currentScope.service.type !== 'nginx'">
-							<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false"/>&nbsp;Enable
-								SOAJS accelerated deployment</label>
-							<br><br>
-						</div>
-						<div ng-if="currentScope.service.type !== 'nginx'">
-							<label>{{translation.envVariables[LANG]}}</label>
-							<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
-							<br>
-							<label>{{translation.defaultEnvVariables[LANG]}}</label>
-
-							<div ng-bind-html="currentScope.defaultEnvVariables"></div>
-							<br>
-						</div>
+						<div ng-include="'modules/dashboard/environments/directives/list-cloud-catalogInputs.tmpl'"></div>
 					</fieldset>
-					<div ng-if="currentScope.isKubernetes">
-						<fieldset>
-							<legend>Readiness Probe</legend>
-							<div>
-								<label>Initial Delay (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.initialDelaySeconds" ng-required="true" />
-								<label class="fieldMsg">Number of seconds after the container has started before readiness probes are initiated</label>
-								<br>
-							</div>
-							<div>
-								<label>Timeout (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.timeoutSeconds" ng-required="true" />
-								<label class="fieldMsg">Number of seconds after which the probe times out</label>
-								<br>
-							</div>
-							<div>
-								<label>Period (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.periodSeconds" ng-required="true" />
-								<label class="fieldMsg">How often (in seconds) to perform the probe</label>
-								<br>
-							</div>
-							<div>
-								<label>Success Threshold Count</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.successThreshold" ng-required="true" />
-								<label class="fieldMsg">Minimum consecutive successes for the probe to be considered successful after having failed</label>
-								<br>
-							</div>
-							<div>
-								<label>Failure Threshold Count</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.failureThreshold" ng-required="true" />
-								<label class="fieldMsg">Minimum consecutive failures for the probe to be considered failed after having succeeded</label>
-								<br>
-							</div>
-							<div>
-								<br>
-								<label class="fieldMsg">Reference: <a target="_blank" href="https://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1_probe">Kubernetes Documentation</a></label>
-							</div>
-						</fieldset>
-					</div>
 				</div>
 			</form>
 		</div>
@@ -370,6 +311,7 @@
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												</ul>
 											</div>

@@ -12,6 +12,7 @@ var cloudDeployBL = require("./lib/cloud/deploy.js");
 var cloudNodesBL = require("./lib/cloud/nodes.js");
 var cloudMaintenanceBL = require("./lib/cloud/maintenance.js");
 var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
+var catalogBL = require("./lib/catalog/index.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -841,24 +842,13 @@ service.init(function () {
 	});
 
 	/**
-	* Deploy a new custom service
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
-	service.post("/cloud/services/custom/deploy", function (req, res) {
-		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployCustomService(config, req.soajs, res);
-		});
-	});
-
-	/**
 	* Redeploy a running service
 	* @param {String} API route
 	* @param {Function} API middleware
 	*/
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, res);
+			BL.redeployService(config, req.soajs, service.registry, res);
 		});
 	});
 
@@ -925,6 +915,75 @@ service.init(function () {
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
 			BL.delete(config, req.soajs, res);
+		});
+	});
+
+	/**
+	 * Catalog Recipes features
+	 */
+
+	/**
+  	* List catalogs
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.get("/catalog/recipes/list", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.list(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+  	* Add new catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.post("/catalog/recipes/add", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.add(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+  	* Update a catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.put("/catalog/recipes/update", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.edit(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+  	* Delete a catalog
+  	* @param {String} API route
+  	* @param {Function} API middleware
+  	*/
+	service.delete("/catalog/recipes/delete", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.delete(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	 * Get a catalog
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/catalog/recipes/get", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.get(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 

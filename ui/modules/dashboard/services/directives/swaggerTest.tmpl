@@ -4,7 +4,7 @@
 			<h3>Testing {{serviceName}}</h3>
 		</div>
 	</form>
-	
+
 	<div ng-show="environments.values.length > 1">
 		<label style="margin-top: 7px;" class="f-left">Select which environment you want to test the service in:&nbsp;&nbsp;</label>
 		<select ng-model="environments.value" ng-options="env for env in environments.values" ng-change="selectedEnv()" class="form-control f-left c45" ng-disabled="tempDisable"></select>
@@ -15,7 +15,7 @@
 			simulator.
 		</alert>
 	</div>
-	
+
 	<div ng-show="envTenants && envTenants.length > 0">
 		<label style="margin-top: 7px;" class="f-left">Select which tenant you want to test the service with:&nbsp;&nbsp;</label>
 		<select ng-model="selectedEnvTenant" ng-change="selectNewTenant()" class="form-control f-left c85" ng-disabled="tempDisable">
@@ -23,9 +23,14 @@
 		</select>
 		<div class="fieldMsg hint">Only the tenants that have keys in this environment are available.</div>
 	</div>
+	<div ng-show="envSelected && (!envTenants || envTenants.length === 0)">
+		<alert type="warning">
+			No tenants found for environment {{envSelected}}. Please head to <a target="_blank" href="#/multi-tenancy">mulit-tenancy</a> section, create a tenant and create an external key for it under environment: {{envSelected}}
+		</alert>
+	</div>
 	<hr/>
 	<br/>
-	
+
 	<div class="c-both w100 table" ng-show="envSelected">
 		<h4 class="f-left">Swagger Service Tester</h4>
 		<a class="btn btn-primary f-right" ng-click="collapseExpand()">
@@ -35,7 +40,7 @@
 		</a>
 	</div>
 	<hr/>
-	
+
 	<div class="f-left w49" ng-show="envSelected" ng-class="{'block': !collapsed, 'hidden': collapsed}">
 		<div id="editorTab" readonly="true" ui-ace="{useWrapMode : true, showGutter: true, mode: 'yaml', theme:'twilight', firstLineNumber: 1, onLoad: aceLoaded}"></div>
 	</div>

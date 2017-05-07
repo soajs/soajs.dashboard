@@ -16,14 +16,14 @@ var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d
 
 var access_token;
 
-function executeMyRequest(params, apiPath, method, cb) {
+function executeMyRequest (params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
 		assert.ok(body);
 		return cb(body);
 	});
-	
-	function requester(apiName, method, params, cb) {
+
+	function requester (apiName, method, params, cb) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/' + apiName,
 			headers: {
@@ -31,15 +31,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 			},
 			json: true
 		};
-		
+
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (params.headers.hasOwnProperty(h)) {
-					options.headers[h] = params.headers[h];
+					options.headers[ h ] = params.headers[ h ];
 				}
 			}
 		}
-		
+
 		if (params.timeout) {
 			options.timeout = params.timeout;
 		}
@@ -47,15 +47,15 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if (params.form) {
 			options.body = params.form;
 		}
-		
+
 		if (params.qs) {
 			options.qs = params.qs;
 		}
-		
+
 		if (params.formData) {
 			options.formData = params.formData;
 		}
-		request[method](options, function (error, response, body) {
+		request[ method ](options, function (error, response, body) {
 			//maintenance tests have a timeout set to avoid travis errors
 			//if timeout is exceeded, return cb() without checking for error since this is expected behavior
 			if (error && error.code && error.code === 'ESOCKETTIMEDOUT') {
@@ -69,7 +69,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-function getService(options, cb) {
+function getService (options, cb) {
 	var params = {
 		qs: {
 			access_token: access_token,
@@ -79,20 +79,20 @@ function getService(options, cb) {
 	executeMyRequest(params, "cloud/services/list", "get", function (body) {
 		assert.ifError(body.errors);
 		if (!options.serviceName) return cb(body);
-		
+
 		var services = body.data, service = {};
 		for (var i = 0; i < services.length; i++) {
-			if (services[i].labels['soajs.service.name'] === options.serviceName) {
-				service = services[i];
+			if (services[ i ].labels[ 'soajs.service.name' ] === options.serviceName) {
+				service = services[ i ];
 				break;
 			}
 		}
-		
+
 		return cb(service);
 	});
 }
 
-function deleteService(options, cb) {
+function deleteService (options, cb) {
 	var params = {
 		"qs": {
 			access_token: access_token,
@@ -107,13 +107,13 @@ function deleteService(options, cb) {
 describe("testing hosts deployment", function () {
 	var soajsauth, containerInfo;
 	var Authorization;
-	
+
 	before(function (done) {
 		process.env.SOAJS_ENV_WORKDIR = process.env.APP_DIR_FOR_CODE_COVERAGE;
 		console.log("***************************************************************");
 		console.log("* Setting SOAJS_ENV_WORKDIR for test mode as: ", process.env.APP_DIR_FOR_CODE_COVERAGE);
 		console.log("***************************************************************");
-		
+
 		var options1 = {
 			uri: 'http://localhost:4000/oauth/authorization',
 			headers: {
@@ -122,12 +122,12 @@ describe("testing hosts deployment", function () {
 			},
 			json: true
 		};
-		
+
 		request.get(options1, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			Authorization = body.data;
-			
+
 			var options = {
 				uri: 'http://localhost:4000/oauth/token',
 				headers: {
@@ -146,7 +146,7 @@ describe("testing hosts deployment", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				access_token = body.access_token;
-				
+
 				var validDeployerRecord = {
 					"type": "container",
 					"selected": "container.docker.local",
@@ -157,21 +157,21 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				
+
 				mongo.update("environment", {}, {
 					"$set": {
 						"deployer": validDeployerRecord,
 						"profile": __dirname + "/../profiles/profile.js"
 					}
-				}, {multi: true}, function (error) {
+				}, { multi: true }, function (error) {
 					assert.ifError(error);
 					done();
 				});
 			});
 		});
-		
+
 	});
-	
+
 	before('create dashboard environment record', function (done) {
 		var dashEnv = {
 			"code": "DASHBOARD",
@@ -305,7 +305,7 @@ describe("testing hosts deployment", function () {
 		var updateField = {
 			"$set": dashEnv
 		};
-		mongo.update("environment", {"code": "DASHBOARD"}, updateField, {
+		mongo.update("environment", { "code": "DASHBOARD" }, updateField, {
 			"upsert": true,
 			"multi": false
 		}, function (error) {
@@ -313,7 +313,7 @@ describe("testing hosts deployment", function () {
 			done();
 		});
 	});
-	
+
 	before('Activate swarm mode for local docker engine and create overlay network', function (done) {
 		var params = {
 			method: 'POST',
@@ -328,10 +328,10 @@ describe("testing hosts deployment", function () {
 				"ForceNewCluster": true
 			}
 		};
-		
+
 		request(params, function (error, response, nodeId) {
 			assert.ifError(error);
-			
+
 			params = {
 				method: 'POST',
 				uri: 'http://unix:/var/run/docker.sock:/networks/create',
@@ -350,42 +350,42 @@ describe("testing hosts deployment", function () {
 					}
 				}
 			};
-			
+
 			request(params, function (error, response, body) {
 				assert.ifError(error);
 				done();
 			});
 		});
 	});
-	
+
 	before("Perform cleanup of any previous services deployed", function (done) {
 		console.log('Deleting previous deployments ...');
 		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
 		done();
 	});
-	
+
 	after(function (done) {
 		mongo.closeDb();
 		done();
 	});
-	
+
 	beforeEach(function (done) {
 		setTimeout(function () {
 			done();
 		}, 700);
 	});
-	
+
 	describe("testing cluster nodes", function () {
-		
+
 		describe("testing list cluster nodes", function () {
-			
+
 			it("success - will list nodes", function (done) {
 				var params = {
 					qs: {
 						access_token: access_token
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
@@ -393,11 +393,11 @@ describe("testing hosts deployment", function () {
 					done();
 				});
 			});
-			
+
 		});
-		
+
 		describe("testing add cluster node", function () {
-			
+
 			it("fail - wrong node address provided", function (done) {
 				var params = {
 					qs: {
@@ -411,17 +411,17 @@ describe("testing hosts deployment", function () {
 						role: 'manager'
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						'code': 540,
 						'message': 'Unable to retrieve the docker swarm deployer'
 					});
 					done();
 				});
 			});
-			
+
 			it("fail - missing required params", function (done) {
 				var params = {
 					qs: {
@@ -433,16 +433,19 @@ describe("testing hosts deployment", function () {
 						role: 'manager'
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: host"});
+					assert.deepEqual(body.errors.details[ 0 ], {
+						"code": 172,
+						"message": "Missing required field: host"
+					});
 					done();
 				});
 			});
-			
+
 		});
-		
+
 		describe("testing update cluster node", function () {
 			var currentNode = {};
 			before("get node information", function (done) {
@@ -451,16 +454,16 @@ describe("testing hosts deployment", function () {
 						access_token: access_token
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
-					currentNode = body.data[0];
+
+					currentNode = body.data[ 0 ];
 					done();
 				});
 			});
-			
+
 			it("fail - invalid update option provided", function (done) {
 				var params = {
 					qs: {
@@ -473,17 +476,17 @@ describe("testing hosts deployment", function () {
 						value: 'test'
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						'code': 173,
 						'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"
 					});
 					done();
 				});
 			});
-			
+
 			it("fail - invalid operation, trying to demote last manager node in cluster", function (done) {
 				var params = {
 					qs: {
@@ -496,10 +499,10 @@ describe("testing hosts deployment", function () {
 						value: 'worker'
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						'code': 546,
 						'message': 'Unable to update the node in the docker swarm'
 					});
@@ -507,7 +510,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		describe("testing delete cluster node", function () {
 			var currentNode = {};
 			before("get node information", function (done) {
@@ -516,15 +519,15 @@ describe("testing hosts deployment", function () {
 						access_token: access_token
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					currentNode = body.data[0];
+					currentNode = body.data[ 0 ];
 					done();
 				});
 			});
-			
+
 			it("fail - invalid node id provided", function (done) {
 				var params = {
 					qs: {
@@ -533,17 +536,17 @@ describe("testing hosts deployment", function () {
 						nodeId: 'aacrh437t'
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						'code': 545,
 						'message': 'Unable to delete the node from the docker swarm'
 					});
 					done();
 				});
 			});
-			
+
 			it("fail - invalid operating, trying to delete a manager node in cluster", function (done) {
 				var params = {
 					qs: {
@@ -552,10 +555,10 @@ describe("testing hosts deployment", function () {
 						nodeId: currentNode.id
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						'code': 545,
 						'message': 'Unable to delete the node from the docker swarm'
 					});
@@ -564,9 +567,9 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-	
+
 	describe("testing controller deployment", function () {
-		
+
 		before('add static content record', function (done) {
 			var scRecord = {
 				"name": "Custom UI Test",
@@ -582,7 +585,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("success - deploy 1 controller service and delete it afterwards", function (done) {
 			var params = {
 				qs: {
@@ -598,10 +601,9 @@ describe("testing hosts deployment", function () {
 						branch: 'develop',
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
+					recipe: '59034e43c69a1b962fc62213', // todo
 					deployConfig: {
-						useLocalSOAJS: true,
 						memoryLimit: 209715200,
-						imagePrefix: 'soajsorg',
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -610,28 +612,29 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
-				getService({env: 'dev', serviceName: 'controller'}, function (service) {
+
+				getService({ env: 'dev', serviceName: 'controller' }, function (service) {
 					deleteService({
 						env: 'DEV',
 						id: service.id,
-						mode: service.labels['soajs.service.mode']
+						mode: service.labels[ 'soajs.service.mode' ]
 					}, function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
-						
+
 						done();
 					});
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 controller and use the main file specified in src", function (done) {
-			mongo.update("services", {name: 'controller'}, {'$set': {'src.main': '/index.js'}}, function (error) {
+			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/index.js' } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -640,6 +643,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'service',
 						name: 'controller',
+						recipe: '59034e43c69a1b962fc62213', // todo
 						gitSource: {
 							owner: 'soajs',
 							repo: 'soajs.controller',
@@ -647,9 +651,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -658,18 +660,19 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					done();
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 nginx service with static content", function (done) {
-			mongo.findOne("staticContent", {name: "Custom UI Test"}, function (error, record) {
+			mongo.findOne("staticContent", { name: "Custom UI Test" }, function (error, record) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -678,20 +681,13 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'nginx',
 						name: 'nginx',
+						recipe: '59034e43c69a1b962fc62212', // todo
 						deployConfig: {
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
 							},
-							ports: [
-								{
-									isPublished: true,
-									target: 80,
-									published: 80
-								}
-							]
 						},
 						contentConfig: {
 							nginx: {
@@ -704,18 +700,19 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
 				});
 			});
 		});
-		
-		
+
+
 	});
-	
+
 	describe("testing service deployment", function () {
 		it("success - deploy 1 core service, global mode", function (done) {
 			var params = {
@@ -726,6 +723,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'service',
 					name: 'urac',
+                    recipe: '59034e43c69a1b962fc62213',
 					gitSource: {
 						owner: 'soajs',
 						repo: 'soajs.urac',
@@ -743,29 +741,30 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
-				getService({env: 'dev', serviceName: 'urac'}, function (service) {
+
+				getService({ env: 'dev', serviceName: 'urac' }, function (service) {
 					deleteService({
 						env: 'DEV',
 						id: service.id,
-						mode: service.labels['soajs.service.mode']
+						mode: service.labels[ 'soajs.service.mode' ]
 					}, function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
-						
+
 						done();
 					});
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 gc service", function (done) {
 			mongo.findOne('gc', {}, function (error, gcRecord) {
 				assert.ifError(error);
 				assert.ok(gcRecord);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -774,6 +773,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'service',
 						name: 'gc_articles',
+						recipe: '59034e43c69a1b962fc62213',
 						variables: [
 							'TEST=true'
 						],
@@ -784,9 +784,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -808,11 +806,11 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("fail - trying to deploy to an environment that is configured to be deployed manually", function (done) {
-			mongo.update('environment', {code: 'PROD'}, {$set: {'deployer.type': 'manual'}}, function (error) {
+			mongo.update('environment', { code: 'PROD' }, { $set: { 'deployer.type': 'manual' } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -821,6 +819,7 @@ describe("testing hosts deployment", function () {
 						env: 'prod',
 						type: 'service',
 						name: 'controller',
+						recipe: '59034e43c69a1b962fc62213',
 						gitSource: {
 							owner: 'soajs',
 							repo: 'soajs.controller',
@@ -828,9 +827,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -840,13 +837,13 @@ describe("testing hosts deployment", function () {
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {'code': 618, 'message': errorCodes[618]});
+					assert.deepEqual(body.errors.details[ 0 ], { 'code': 618, 'message': errorCodes[ 618 ] });
 					done();
 				});
 			});
 		});
 	});
-	
+
 	describe("testing daemon deployment", function () {
 		it("success - deploy 1 daemon", function (done) {
 			var params = {
@@ -857,6 +854,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'daemon',
 					name: 'helloDaemon',
+					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
 					],
@@ -867,9 +865,7 @@ describe("testing hosts deployment", function () {
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
 					},
 					deployConfig: {
-						useLocalSOAJS: true,
 						memoryLimit: 209715200,
-						imagePrefix: 'soajsorg',
 						replication: {
 							mode: 'replicated',
 							replicas: 1
@@ -885,27 +881,27 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
-				getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+
+				getService({ env: 'dev', serviceName: 'helloDaemon' }, function (service) {
 					deleteService({
 						env: 'DEV',
 						id: service.id,
-						mode: service.labels['soajs.service.mode']
+						mode: service.labels[ 'soajs.service.mode' ]
 					}, function (body) {
 						assert.ok(body.result);
 						assert.ok(body.data);
-						
+
 						done();
 					});
 				});
 			});
 		});
-		
+
 		it("success - deploy 1 daemon that contians cmd info in its src", function (done) {
-			var cmdArray = ['sleep 36000'];
-			mongo.update('daemons', {name: 'helloDaemon'}, {'$set': {'src.cmd': cmdArray}}, function (error) {
+			var cmdArray = [ 'sleep 36000' ];
+			mongo.update('daemons', { name: 'helloDaemon' }, { '$set': { 'src.cmd': cmdArray } }, function (error) {
 				assert.ifError(error);
-				
+
 				var params = {
 					qs: {
 						access_token: access_token
@@ -914,6 +910,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						type: 'daemon',
 						name: 'helloDaemon',
+						recipe: '59034e43c69a1b962fc62210',
 						variables: [
 							'TEST=true'
 						],
@@ -924,9 +921,7 @@ describe("testing hosts deployment", function () {
 							commit: '67a61db0955803cddf94672b0192be28f47cf280'
 						},
 						deployConfig: {
-							useLocalSOAJS: true,
 							memoryLimit: 209715200,
-							imagePrefix: 'soajsorg',
 							replication: {
 								mode: 'replicated',
 								replicas: 1
@@ -942,23 +937,23 @@ describe("testing hosts deployment", function () {
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
-					getService({env: 'dev', serviceName: 'helloDaemon'}, function (service) {
+
+					getService({ env: 'dev', serviceName: 'helloDaemon' }, function (service) {
 						deleteService({
 							env: 'DEV',
 							id: service.id,
-							mode: service.labels['soajs.service.mode']
+							mode: service.labels[ 'soajs.service.mode' ]
 						}, function (body) {
 							assert.ok(body.result);
 							assert.ok(body.data);
-							
+
 							done();
 						});
 					});
 				});
 			});
 		});
-		
+
 		it("fail - missing required params", function (done) {
 			var params = {
 				qs: {
@@ -968,6 +963,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					type: 'daemon',
 					name: 'helloDaemon',
+					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
 					],
@@ -986,24 +982,24 @@ describe("testing hosts deployment", function () {
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {
+				assert.deepEqual(body.errors.details[ 0 ], {
 					"code": 172,
 					"message": "Missing required field: deployConfig"
 				});
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("testing redeploy service", function () {
 		var nginxDeployment, ctrlDeployment, uiRecord;
 		before("list services and get static content record", function (done) {
 			mongo.find('staticContent', {}, function (error, records) {
 				assert.ifError(error);
-				
-				uiRecord = records[0];
-				
+
+				uiRecord = records[ 0 ];
+
 				var params = {
 					qs: {
 						access_token: access_token,
@@ -1013,21 +1009,21 @@ describe("testing hosts deployment", function () {
 				executeMyRequest(params, "cloud/services/list", "get", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					for (var i = 0; i < body.data.length; i++) {
-						if (body.data[i].labels['soajs.service.name'] === 'controller') {
-							ctrlDeployment = body.data[i];
+						if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+							ctrlDeployment = body.data[ i ];
 						}
-						else if (body.data[i].labels['soajs.service.name'] === 'nginx') {
-							nginxDeployment = body.data[i];
+						else if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
+							nginxDeployment = body.data[ i ];
 						}
 					}
-					
+
 					done();
 				});
 			});
 		});
-		
+
 		it("success - will redeploy controller service", function (done) {
 			var params = {
 				qs: {
@@ -1036,10 +1032,11 @@ describe("testing hosts deployment", function () {
 				form: {
 					env: 'dev',
 					serviceId: ctrlDeployment.id,
-					mode: ctrlDeployment.labels['soajs.service.mode']
+					mode: ctrlDeployment.labels[ 'soajs.service.mode' ],
+					action: 'redeploy'
 				}
 			};
-			
+
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
@@ -1047,6 +1044,25 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
+		it("success - will rebuild service", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				form: {
+					env: 'dev',
+					serviceId: ctrlDeployment.id,
+					mode: ctrlDeployment.labels[ 'soajs.service.mode' ],
+					action: 'rebuild',
+				}
+			};
+			
+			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
 		it("success - will redeploy nginx and add custom ui to it", function (done) {
 			var params = {
 				qs: {
@@ -1055,15 +1071,11 @@ describe("testing hosts deployment", function () {
 				form: {
 					env: 'dev',
 					serviceId: nginxDeployment.id,
-					mode: nginxDeployment.labels['soajs.service.mode'],
-					ui: {
-						id: uiRecord._id.toString(),
-						branch: 'develop',
-						commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
-					}
+					mode: nginxDeployment.labels[ 'soajs.service.mode' ],
+					action: 'rebuild'
 				}
 			};
-			
+
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
@@ -1072,95 +1084,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 	});
-	
-	describe("deploy custom services", function () {
-		
-		it("fail - missing params", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					name: 'custom-service',
-					variables: [
-						'CUSTOM_ENV_VAR_1=test1',
-						'CUSTOM_ENV_VAR_2=test2'
-					],
-					labels: {
-						'service.type': 'custom',
-						'service.origin': 'test-cases'
-					},
-					command: {
-						cmd: ['sh'],
-						args: ['-c', 'sleep', '36000']
-					}
-				}
-			};
-			
-			executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
-				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {
-					'code': 172,
-					'message': 'Missing required field: deployConfig'
-				});
-				done();
-			});
-		});
-		
-		it("success - will deploy custom service", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					name: 'custom-service',
-					variables: [
-						'CUSTOM_ENV_VAR_1=test1',
-						'CUSTOM_ENV_VAR_2=test2'
-					],
-					labels: {
-						'service.type': 'custom',
-						'service.origin': 'test-cases'
-					},
-					command: {
-						cmd: ['sh'],
-						args: ['-c', 'sleep', '36000']
-					},
-					deployConfig: {
-						image: 'alpine',
-						workDir: '/',
-						memoryLimit: 209715200,
-						network: 'soajsnet',
-						replication: {
-							mode: 'replicated',
-							replicas: 2
-						},
-						restartPolicy: {
-							condition: 'on-failure',
-							maxAttempts: 2
-						},
-						volume: {
-							type: 'bind',
-							readOnly: true,
-							source: '/var/run/docker.sock',
-							target: '/var/run/docker.sock'
-						}
-					}
-				}
-			};
-			
-			executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				
-				done();
-			});
-		});
-		
-	});
-	
+
 	describe("maintenance operations", function () {
 		var ctrlDeployment = {};
 		before('get deployed controller service info', function (done) {
@@ -1173,18 +1097,18 @@ describe("testing hosts deployment", function () {
 			executeMyRequest(params, "cloud/services/list", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
-				
+
 				for (var i = 0; i < body.data.length; i++) {
-					if (body.data[i].labels['soajs.service.name'] === 'controller') {
-						ctrlDeployment = body.data[i];
+					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+						ctrlDeployment = body.data[ i ];
 						break;
 					}
 				}
-				
+
 				done();
 			});
 		});
-		
+
 		it.skip("success - will perform maintenace operation on deployed service", function (done) {
 			console.log('This test might take some time because the maintenance calls will timeout ...');
 			var params = {
@@ -1194,8 +1118,8 @@ describe("testing hosts deployment", function () {
 				form: {
 					env: 'dev',
 					serviceId: ctrlDeployment.id,
-					serviceName: ctrlDeployment.labels['soajs.service.name'],
-					type: ctrlDeployment.labels['soajs.service.type'],
+					serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
+					type: ctrlDeployment.labels[ 'soajs.service.type' ],
 					operation: 'heartbeat'
 				}
 			};
@@ -1205,7 +1129,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-		
+
 		it("fail - service not found", function (done) {
 			console.log('This test might take some time because the maintenance calls will timeout ...');
 			var params = {
@@ -1215,51 +1139,51 @@ describe("testing hosts deployment", function () {
 				form: {
 					env: 'dev',
 					serviceId: ctrlDeployment.id,
-					serviceName: ctrlDeployment.labels['soajs.service.name'],
+					serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
 					type: 'daemon', //controller won't be found in daemons collection, error will be returned
 					operation: 'heartbeat'
 				}
 			};
 			executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {"code": 795, "message": errorCodes[795]});
+				assert.deepEqual(body.errors.details[ 0 ], { "code": 795, "message": errorCodes[ 795 ] });
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("delete deployed services", function () {
 		it("fail - missing required params", function (done) {
-			deleteService({env: 'DEV'}, function (body) {
+			deleteService({ env: 'DEV' }, function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {
+				assert.deepEqual(body.errors.details[ 0 ], {
 					"code": 172,
 					"message": "Missing required field: serviceId, mode"
 				});
 				done();
 			});
 		});
-		
+
 		it("success - will delete deployed service", function (done) {
-			getService({env: 'dev', serviceName: 'gc-myservice'}, function (service) {
+			getService({ env: 'dev', serviceName: 'gc-myservice' }, function (service) {
 				deleteService({
 					env: 'dev',
 					id: service.id,
-					mode: service.labels['soajs.service.mode']
+					mode: service.labels[ 'soajs.service.mode' ]
 				}, function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					done();
 				});
 			});
 		});
-		
+
 		it("fail - service not found", function (done) {
-			deleteService({env: 'DEV', id: '123123123', mode: 'replicated'}, function (body) {
+			deleteService({ env: 'DEV', id: '123123123', mode: 'replicated' }, function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {
+				assert.deepEqual(body.errors.details[ 0 ], {
 					"code": 553,
 					"message": "Unable to delete the docker swarm service"
 				});
@@ -1267,7 +1191,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-	
+
 	describe("testing get service logs", function () {
 		it("success - getting service logs", function (done) {
 			var params = {
@@ -1282,11 +1206,11 @@ describe("testing hosts deployment", function () {
 				//only one service exist
 				var taskId;
 				for (var i = 0; i < body.data.length; i++) {
-					if (body.data[i].labels['soajs.service.name'] === 'nginx') {
-						taskId = ((body.data[i].tasks[0]) ? body.data[i].tasks[0].id : '');
+					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
+						taskId = ((body.data[ i ].tasks[ 0 ]) ? body.data[ i ].tasks[ 0 ].id : '');
 					}
 				}
-				
+
 				params = {
 					"qs": {
 						access_token: access_token,
@@ -1301,23 +1225,23 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		after("delete nginx service", function (done) {
-			getService({env: 'dev', serviceName: 'nginx'}, function (service) {
+			getService({ env: 'dev', serviceName: 'nginx' }, function (service) {
 				deleteService({
 					env: 'DEV',
 					id: service.id,
-					mode: service.labels['soajs.service.mode']
+					mode: service.labels[ 'soajs.service.mode' ]
 				}, function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
-					
+
 					done();
 				});
 			});
 		});
 	});
-	
+
 	describe("testing scale service", function () {
 		it("success - will scale service up to 2 instances", function (done) {
 			var params = {
@@ -1332,12 +1256,12 @@ describe("testing hosts deployment", function () {
 				//only one service exist
 				var serviceId;
 				for (var i = 0; i < body.data.length; i++) {
-					if (body.data[i].labels['soajs.service.name'] === 'controller') {
-						serviceId = body.data[i].id;
+					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+						serviceId = body.data[ i ].id;
 						break;
 					}
 				}
-				
+
 				params = {
 					qs: {
 						access_token: access_token
@@ -1348,7 +1272,7 @@ describe("testing hosts deployment", function () {
 						scale: 2
 					}
 				};
-				
+
 				executeMyRequest(params, "cloud/services/scale", "put", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
@@ -1356,7 +1280,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-		
+
 		it("fail - missing required params", function (done) {
 			var params = {
 				qs: {
@@ -1367,10 +1291,13 @@ describe("testing hosts deployment", function () {
 					scale: 2
 				}
 			};
-			
+
 			executeMyRequest(params, "cloud/services/scale", "put", function (body) {
 				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: serviceId"});
+				assert.deepEqual(body.errors.details[ 0 ], {
+					"code": 172,
+					"message": "Missing required field: serviceId"
+				});
 				done();
 			});
 		});
@@ -1392,13 +1319,13 @@ describe("testing hosts deployment", function () {
 
 				executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+					assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
 					done();
 				});
 			});
 
 			it("fail - operation not supported in manual deployment mode", function (done) {
-				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
 					assert.ifError(error);
 
 					var params = {
@@ -1412,14 +1339,14 @@ describe("testing hosts deployment", function () {
 
 					executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
 						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+						assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
 						done();
 					});
 				});
 			});
 
 			after("reset dashboard env deployer type to container", function (done) {
-				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "container"}}, function (error) {
+				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "container" } }, function (error) {
 					assert.ifError(error);
 					done();
 				});
@@ -1438,7 +1365,7 @@ describe("testing hosts deployment", function () {
 
 				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
+					assert.deepEqual(body.errors.details[ 0 ], {
 						"code": 172,
 						"message": 'Missing required field: namespaceId'
 					});
@@ -1456,13 +1383,13 @@ describe("testing hosts deployment", function () {
 
 				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+					assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
 					done();
 				});
 			});
 
 			it("fail - operation not supported in manual deployment mode", function (done) {
-				mongo.update("environment", {code: "DASHBOARD"}, {$set: {"deployer.type": "manual"}}, function (error) {
+				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
 					assert.ifError(error);
 
 					var params = {
@@ -1474,7 +1401,7 @@ describe("testing hosts deployment", function () {
 
 					executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
 						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[0], {"code": 909, "message": errorCodes[909]});
+						assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
 						done();
 					});
 				});

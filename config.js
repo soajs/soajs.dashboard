@@ -2,6 +2,7 @@
 var serviceConfig = require("./schemas/serviceConfig");
 var cbSchema = require("./schemas/cb");
 var aclSchema = require("./schemas/acl");
+var catalogSchema = require("./schemas/catalog");
 
 module.exports = {
 	type: 'service',
@@ -20,39 +21,40 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-	
+
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-	
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
-	
+
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
-	
+
 	"images": {
 		"nginx": 'nginx',
 		"services": "soajs"
 	},
-	
+
 	"network": 'soajsnet',
-	
-	"imagesDir": "/opt/soajs/FILES/deployer/",
-	
+
+	"imagesDir": "/opt/soajs/deployer/",
+
 	"kubeNginx": {
 		"minPort": 0,
 		"maxPort": 2767
 	},
-	
+
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
-	
-	"HA": {
-		"blacklist": ['soajs_mongo_password', 'soajs_git_token']
+
+	"HA":{
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
+		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N']
 	},
-	
+
 	"gitAccounts": {
 		"bitbucket_org": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -93,9 +95,9 @@ module.exports = {
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
-	
+
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -319,7 +321,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
@@ -360,7 +362,7 @@ module.exports = {
 					"type": "boolean"
 				}
 			},
-			
+
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -410,7 +412,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-			
+
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -507,7 +509,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"get": {
 			"/environment/list": {
 				_apiInfo: {
@@ -523,7 +525,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/dbs/list": {
 				_apiInfo: {
 					"l": "List Environment Databases",
@@ -531,7 +533,7 @@ module.exports = {
 				},
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			
+
 			"/environment/clusters/list": {
 				_apiInfo: {
 					"l": "List Environment Database Clusters",
@@ -539,7 +541,7 @@ module.exports = {
 				},
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			
+
 			"/environment/platforms/list": {
 				_apiInfo: {
 					"l": "List Environment Platforms",
@@ -554,7 +556,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/list": {
 				_apiInfo: {
 					"l": "List Products",
@@ -562,7 +564,7 @@ module.exports = {
 					"groupMain": true
 				}
 			},
-			
+
 			"/product/get": {
 				_apiInfo: {
 					"l": "Get Product",
@@ -570,7 +572,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-			
+
 			"/product/packages/list": {
 				_apiInfo: {
 					"l": "List Product Packages",
@@ -578,7 +580,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-			
+
 			"/product/packages/get": {
 				_apiInfo: {
 					"l": "Get Product Package",
@@ -601,7 +603,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/permissions/get": {
 				_apiInfo: {
 					"l": "Get Tenant Security Permissions",
@@ -905,7 +907,28 @@ module.exports = {
 					"group": "HA Cloud"
 				}
 			},
-			
+
+			"/catalog/recipes/list": {
+				"_apiInfo": {
+					"l": "List Catalog Recipes",
+					"group": "Catalog"
+				}
+			},
+
+			"/catalog/recipes/get": {
+				"_apiInfo": {
+					"l": "Get a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1439,6 +1462,30 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
+					"validation": {
+						"type": "object",
+						"required": false,
+						"properties": {
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
+						}
+					}
+				},
 				"env": {
 					"source": ['body.env'],
 					"required": true,
@@ -1470,13 +1517,11 @@ module.exports = {
 						"minimum": 1
 					}
 				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
+				"recipe": {
+					"source": ['body.recipe'],
+					"required": true,
 					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
+						"type": "string"
 					}
 				},
 				"gitSource": {
@@ -1500,43 +1545,14 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"useLocalSOAJS": {"required": false, "type": "boolean"},
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"imagePrefix": {"required": true, "type": "string", "default": "soajsorg"},
-							"ports": {
-								"required": false,
-								"type": "array",
-								"items": {
-									"type": "object",
-									"properties": {
-										"isPublished": {"required": false, "type": "boolean", "default": false},
-										"target": {"required": false, "type": "number"},
-										"published": {"required": false, "type": "number"}
-									}
-								}
-							},
-							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": {
-										"required": true,
-										"type": "string",
-										"enum": ['replicated', 'global', 'deployment', 'daemonset']
-									},
-									"replicas": {"required": false, "type": "number"}
-								}
-							},
-							"readinessProbe": { //NOTE: only applicable in kubernetes mode
-								"required": false,
-								"type": "object",
-								"properties": {
-									"initialDelaySeconds": {"required": true, "type": "number", "minimum": 1},
-									"timeoutSeconds": {"required": true, "type": "number", "minimum": 1},
-									"periodSeconds": {"required": true, "type": "number", "minimum": 1},
-									"successThreshold": {"required": true, "type": "number", "minimum": 1},
-									"failureThreshold": {"required": true, "type": "number", "minimum": 1}
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
+									"replicas": { "required": false, "type": "number" }
 								}
 							}
 						}
@@ -1562,141 +1578,6 @@ module.exports = {
 								"type": "object",
 								"properties": {
 									"grpConfName": {"required": true, "type": "string"}
-								}
-							},
-							"nginx": {
-								"required": false,
-								"type": "object",
-								"properties": {
-									"ui": {
-										"type": "object",
-										"required": false,
-										"properties": {
-											"id": {"type": "string", "required": true},
-											"branch": {"type": "string", "required": true},
-											"commit": {"type": "string", "required": true}
-										}
-									},
-									"supportSSL": {"required": false, "type": "boolean"},
-									"kubeSecret": {"required": false, "type": "string"}
-								}
-							}
-						}
-					}
-				}
-			},
-			
-			"/cloud/services/custom/deploy": {
-				"_apiInfo": {
-					"l": "Add A New Custom Service",
-					"group": "HA Cloud"
-				},
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"name": {
-					"required": true,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
-					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
-					}
-				},
-				"labels": {
-					"required": false,
-					"source": ['body.labels'],
-					"default": {},
-					"validation": {
-						"type": "object"
-					}
-				},
-				"command": {
-					"required": false,
-					"source": ['body.command'],
-					"validation": {
-						"type": "object",
-						"properties": {
-							"cmd": {"required": false, "type": "array"},
-							"args": {"required": false, "type": "array"}
-						}
-					}
-				},
-				"deployConfig": {
-					"required": true,
-					"source": ['body.deployConfig'],
-					"validation": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"image": {"required": true, "type": "string"},
-							"workDir": {"required": false, "type": "string"},
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"network": {"required": false, "type": "string"},
-							"ports": {
-								"required": false,
-								"type": "array",
-								"items": {
-									"type": "object",
-									"properties": {
-										"isPublished": {"required": false, "type": "boolean", "default": false},
-										"target": {"required": true, "type": "number"},
-										"published": {"required": false, "type": "number"}
-									}
-								}
-							},
-							"replication": {
-								"required": true,
-								"type": "object",
-								"properties": {
-									"mode": {"required": true, "type": "string", "enum": ['replicated', 'global']},
-									"replicas": {"required": false, "type": "number"}
-								}
-							},
-							"readinessProbe": { //NOTE: only applicable in kubernetes mode, httpGet readiness probe only supported
-								"required": false,
-								"type": "object",
-								"properties": {
-									"path": {"required": true, "type": "string"},
-									"port": {"required": true, "type": "string"},
-									"initialDelaySeconds": {"required": true, "type": "number", "minimum": 1},
-									"timeoutSeconds": {"required": true, "type": "number", "minimum": 1},
-									"periodSeconds": {"required": true, "type": "number", "minimum": 1},
-									"successThreshold": {"required": true, "type": "number", "minimum": 1},
-									"failureThreshold": {"required": true, "type": "number", "minimum": 1}
-								}
-							},
-							"restartPolicy": {
-								"required": true,
-								"type": "object",
-								"properties": {
-									"condition": {
-										"required": true,
-										"type": "string",
-										"enum": ['none', 'on-failure', 'any']
-									},
-									"maxAttempts": {"required": true, "type": "number"}
-								}
-							},
-							"volume": {
-								"required": false,
-								"type": "object",
-								"properties": {
-									"type": {"required": true, "type": "string", "enum": ['bind', 'volume']},
-									"readOnly": {"required": false, "type": "boolean"},
-									"source": {"required": true, "type": "string"},
-									"target": {"required": true, "type": "string"}
 								}
 							}
 						}
@@ -1782,7 +1663,15 @@ module.exports = {
 					}
 				}
 			},
-			
+
+			"/catalog/recipes/add": {
+				"_apiInfo": {
+					"l": "Add New Catalog",
+					"group": "Catalog"
+				},
+				"catalog": catalogSchema
+			},
+
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -2666,29 +2555,53 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"ui": {
-					"source": ['body.ui'],
-					"required": false,
+				"action": {
+					"source": ['body.action'],
+					"required": true,
 					"validation": {
-						"type": "object",
-						"properties": {
-							"id": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
-						}
+						"type": "string",
+						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
-				"ssl": {
-					"source": ['body.ssl'],
-					"required": false,
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
 					"validation": {
 						"type": "object",
+						"required": false,
 						"properties": {
-							"supportSSL": {"type": "boolean", "required": false},
-							"kubeSecret": {"type": "string", "required": false}
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
 						}
 					}
 				}
+			},
+
+			"/catalog/recipes/update": {
+				"_apiInfo": {
+					"l": "Update Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"catalog": catalogSchema
 			},
 			
 			"/gitAccounts/repo/sync": {
@@ -2987,7 +2900,21 @@ module.exports = {
 					}
 				}
 			},
-			
+
+			"/catalog/recipes/delete": {
+				"_apiInfo": {
+					"l": "Delete a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/gitAccounts/logout": {
 				"_apiInfo": {
 					"l": "Github Logout",
