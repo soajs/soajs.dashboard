@@ -3,28 +3,25 @@
  */
 'use strict';
 module.exports = {
-	"env": "%env%",
-	"name": "%env%-metricbeat",
+	"env": "dashboard",
+	"name": "soajs-metricbeat",
 	"variables": [
-		"SOAJS_ENV=%env%",
 		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200' //add support for kubernetes (add namespace)
 	],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.env.code": "%env%",
 		"soajs.service.type": "elk",
-		"soajs.service.name": "%env%-metricbeat",
+		"soajs.service.name": "soajs-metricbeat",
 		"soajs.service.group": "elk",
-		"soajs.service.label": "%env%-metricbeat",
-		"soajs.service.mode": "replicated"
+		"soajs.service.label": "soajs-metricbeat",
+		"soajs.service.mode": "global"
 	},
 	"deployConfig": {
-		"image": "metricbeat-docker",
-		//"workDir": "/",
+		"image": "soajstest/metricbeat",
 		"memoryLimit": 500000000,
 		"network": "soajsnet",
 		"replication": {
-			"mode": "replicated",
+			"mode": "global",
 			"replicas":1
 		},
 		"volume": {

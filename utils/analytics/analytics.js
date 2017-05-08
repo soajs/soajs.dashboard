@@ -772,7 +772,7 @@ var lib = {
 				if (error) {
 					return cb(error);
 				}
-				if (settings && settings.metricbeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
+				if (settings && settings.metricbeat && settings.metricbeat && settings.metricbeat.status === "deployed") {
 					soajs.log.debug("Metricbeat found..");
 					return cb(null, true);
 				}
@@ -789,7 +789,7 @@ var lib = {
 								if (!settings.metricbeat) {
 									settings.metricbeat = {};
 								}
-								settings.metricbeat[env.code.toLowerCase()] = {
+								settings.metricbeat = {
 									"status": "deployed"
 								};
 								combo.record = settings;

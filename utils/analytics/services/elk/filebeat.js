@@ -9,12 +9,12 @@ module.exports = {
 	],
 	"labels": {
 		"soajs.content": "true",
-		"soajs.service.name": "%env%-filebeat", //"%env%-filebeat"??
+		"soajs.service.name": "%env%-filebeat",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-filebeat",
 		"soajs.env.code": "%env%",
 		"soajs.service.type": "elk",
-		"soajs.service.mode": "replicated"
+		"soajs.service.mode": "global"
 	},
 	"command": {
 		"cmd": ["bash"],
@@ -26,7 +26,7 @@ module.exports = {
 		"memoryLimit": 524288000,
 		"network": "soajsnet",
 		"replication": {
-			"mode": "replicated",
+			"mode": "global",
 			"replicas":1
 		},
 		"volume": {

@@ -12,7 +12,7 @@ var annotation = [
 	}
 ];
 module.exports = {
-	"env": "dashboard", //it's only used to get the deployer cluster
+	"env": "dashboard",
 	"name": "soajs-analytics-elasticsearch",
 	"variables": [],
 	"labels": {
@@ -24,8 +24,6 @@ module.exports = {
 	},
 	"deployConfig": {
 		"image": "elasticsearch:alpine",
-		//"image": "elasticsearch",
-		//"workDir": "/",
 		"memoryLimit": 2000000000,
 		"network": "soajsnet",
 		"ports": [
