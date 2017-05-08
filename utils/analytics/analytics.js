@@ -95,27 +95,27 @@ var lib = {
 				var logNameSpace = '';
 				if (env.deployer.selected.split(".")[1] === "kubernetes") {
 					//"soajs.service.mode": "deployment"
-					if (serviceParams.labels["soajs.service.mode"] === "replicated"){
+					if (serviceParams.labels["soajs.service.mode"] === "replicated") {
 						serviceParams.labels["soajs.service.mode"] = "deployment";
 					}
 					else {
 						serviceParams.labels["soajs.service.mode"] = "daemonset";
 					}
-					if (serviceParams.memoryLimit){
+					if (serviceParams.memoryLimit) {
 						delete serviceParams.memoryLimit;
 					}
-					if (serviceParams.replication.mode === "replicated"){
+					if (serviceParams.replication.mode === "replicated") {
 						serviceParams.replication.mode = "deployment";
 					}
-					else if (serviceParams.replication.mode === "global"){
+					else if (serviceParams.replication.mode === "global") {
 						serviceParams.replication.mode = "daemonset";
 					}
 					esNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
-					logNameSpace =  '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
+					logNameSpace = '-service.' + env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.default;
 					
-					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService){
+					if (env.deployer.container["kubernetes"][env.deployer.selected.split('.')[2]].namespace.perService) {
 						esNameSpace += '-soajs-analytics-elasticsearch-service';
-						logNameSpace +=  '-' + env.code.toLowerCase() + '-logstash-service';
+						logNameSpace += '-' + env.code.toLowerCase() + '-logstash-service';
 					}
 					//change published port name
 					if (service === "elastic") {
@@ -123,6 +123,9 @@ var lib = {
 					}
 				}
 				if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
+					if (env.deployer.selected.split(".")[1] === "docker" && service === "metricbeat" ) {
+						loadContent.deployConfig.volume.source = loadContent.deployConfig.volume.target;
+					}
 					serviceParams.volume = {
 						"type": loadContent.deployConfig.volume.type,
 						"readOnly": loadContent.deployConfig.volume.readOnly || false,
@@ -138,7 +141,7 @@ var lib = {
 				if (service === "logstash" || service === "metricbeat" || service === "kibana") {
 					serviceParams = serviceParams.replace(/%esNameSpace%/g, esNameSpace);
 				}
-				if (service === "filebeat"){
+				if (service === "filebeat") {
 					serviceParams = serviceParams.replace(/%logNameSpace%/g, logNameSpace);
 				}
 				serviceParams = serviceParams.replace(/%env%/g, env.code.toLowerCase());
