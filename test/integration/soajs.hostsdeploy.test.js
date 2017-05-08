@@ -1043,6 +1043,25 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
+		
+		it("success - will rebuild service", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				form: {
+					env: 'dev',
+					serviceId: ctrlDeployment.id,
+					mode: ctrlDeployment.labels[ 'soajs.service.mode' ],
+					action: 'rebuild',
+				}
+			};
+			
+			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
 
 		it("success - will redeploy nginx and add custom ui to it", function (done) {
 			var params = {
@@ -1053,12 +1072,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					serviceId: nginxDeployment.id,
 					mode: nginxDeployment.labels[ 'soajs.service.mode' ],
-					action: 'rebuild',
-					ui: {
-						id: uiRecord._id.toString(),
-						branch: 'develop',
-						commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
-					}
+					action: 'rebuild'
 				}
 			};
 
@@ -1068,95 +1082,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-
-	});
-
-	describe("deploy custom services", function () {
-
-		it("fail - missing params", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					name: 'custom-service',
-					variables: [
-						'CUSTOM_ENV_VAR_1=test1',
-						'CUSTOM_ENV_VAR_2=test2'
-					],
-					labels: {
-						'service.type': 'custom',
-						'service.origin': 'test-cases'
-					},
-					command: {
-						cmd: [ 'sh' ],
-						args: [ '-c', 'sleep', '36000' ]
-					}
-				}
-			};
-
-			executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
-				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[ 0 ], {
-					'code': 172,
-					'message': 'Missing required field: deployConfig'
-				});
-				done();
-			});
-		});
-
-		it("success - will deploy custom service", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					name: 'custom-service',
-					variables: [
-						'CUSTOM_ENV_VAR_1=test1',
-						'CUSTOM_ENV_VAR_2=test2'
-					],
-					labels: {
-						'service.type': 'custom',
-						'service.origin': 'test-cases'
-					},
-					command: {
-						cmd: [ 'sh' ],
-						args: [ '-c', 'sleep', '36000' ]
-					},
-					deployConfig: {
-						image: 'alpine',
-						workDir: '/',
-						memoryLimit: 209715200,
-						network: 'soajsnet',
-						replication: {
-							mode: 'replicated',
-							replicas: 2
-						},
-						restartPolicy: {
-							condition: 'on-failure',
-							maxAttempts: 2
-						},
-						volume: {
-							type: 'bind',
-							readOnly: true,
-							source: '/var/run/docker.sock',
-							target: '/var/run/docker.sock'
-						}
-					}
-				}
-			};
-
-			executeMyRequest(params, "cloud/services/custom/deploy", "post", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-
-				done();
-			});
-		});
-
+		
 	});
 
 	describe("maintenance operations", function () {

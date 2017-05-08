@@ -187,9 +187,18 @@ describe("Testing Catalog Functionality", function() {
         it("Success - Edit a record", function (done) {
             catalog.recipe.buildOptions = {
                 "env": {
-                    "SOAJS_ENV_1": "SOAJS_ENV_1",
-                    "SOAJS_ENV_2": "SOAJS_ENV_2",
-                    "SOAJS_ENV_3": "SOAJS_ENV_3"
+                    "SOAJS_ENV_1": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_1"
+                    },
+                    "SOAJS_ENV_2": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_2"
+                    },
+                    "SOAJS_ENV_3": {
+                        "type": "computed",
+                        "default": "SOAJS_ENV_3"
+                    },
                 }
             };
             params = {
@@ -208,7 +217,39 @@ describe("Testing Catalog Functionality", function() {
             });
         });
     });
-
+	
+	describe("Testing Catalog GET API", function(){
+		it("fail - invalid catalog id", function(done){
+			params = {
+				"qs": {
+					"id": "invalidId"
+				}
+			};
+			
+			executeMyRequest(params, "catalog/recipes/get", 'get', function (result) {
+				assert.ok(result.errors);
+				assert.deepEqual(result.errors.details[0], {
+					"code": 701,
+					"message": "Invalid Id provided"
+				});
+				done();
+			});
+		});
+		
+		it("success- valid catalog id", function(done){
+			params = {
+				"qs": {
+					"id": catalogId
+				}
+			};
+			
+			executeMyRequest(params, "catalog/recipes/get", 'get', function (result) {
+				assert.ok(result.data);
+				done();
+			});
+		});
+	});
+	
     describe("Testing Catalog DELETE API", function() {
         //Delete a record that doesn't exist
         it("Fail - Delete a record that doesn't exist", function (done) {
@@ -262,4 +303,5 @@ describe("Testing Catalog Functionality", function() {
             });
         });
     });
+	
 });

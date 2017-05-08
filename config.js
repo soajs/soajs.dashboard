@@ -50,8 +50,9 @@ module.exports = {
 		types: ['ca', 'cert', 'key']
 	},
 
-	"HA": {
-		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token']
+	"HA":{
+		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
+		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N']
 	},
 
 	"gitAccounts": {
@@ -499,7 +500,7 @@ module.exports = {
 					"enum": ["urac", "miniurac", "off"]
 				}
 			},
-			'availableEnv': {
+			'availableEnv':{
 				'source': ['body.availableEnv'],
 				'required': true,
 				'validation': {
@@ -617,14 +618,14 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/key/get": {
 				_apiInfo: {
 					"l": "Get the user dashboard key",
 					"group": "Tenant"
 				}
 			},
-
+			
 			"/tenant/list": {
 				_apiInfo: {
 					"l": "List Tenants",
@@ -647,7 +648,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
@@ -655,7 +656,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
@@ -663,7 +664,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
@@ -671,7 +672,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
@@ -679,7 +680,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -687,7 +688,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId']
 			},
-
+			
 			"/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -695,7 +696,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key']
 			},
-
+			
 			"/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -703,7 +704,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key']
 			},
-
+			
 			"/tenant/db/keys/list": {
 				_apiInfo: {
 					"l": "List Dashboard Tenant Keys",
@@ -711,35 +712,35 @@ module.exports = {
 					"groupMain": true
 				}
 			},
-
+			
 			"/settings/tenant/get": {
 				_apiInfo: {
 					"l": "Get Tenant",
 					"group": "Tenant Settings"
 				}
 			},
-
+			
 			"/settings/tenant/oauth/list": {
 				_apiInfo: {
 					"l": "Get Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				}
 			},
-
+			
 			"/settings/tenant/oauth/users/list": {
 				_apiInfo: {
 					"l": "List Tenant oAuth Users",
 					"group": "Tenant Settings"
 				}
 			},
-
+			
 			"/settings/tenant/application/list": {
 				_apiInfo: {
 					"l": "List Tenant Applications",
 					"group": "Tenant Settings"
 				}
 			},
-
+			
 			"/settings/tenant/application/key/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Keys",
@@ -747,7 +748,7 @@ module.exports = {
 				},
 				"commonFields": ['appId']
 			},
-
+			
 			"/settings/tenant/application/key/ext/list": {
 				_apiInfo: {
 					"l": "List Tenant Application External Keys",
@@ -755,7 +756,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
-
+			
 			"/settings/tenant/application/key/config/list": {
 				_apiInfo: {
 					"l": "List Tenant Application Key Configuration",
@@ -788,7 +789,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/list": {
 				_apiInfo: {
 					"l": "List Daemon Group Configuration",
@@ -803,7 +804,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/serviceConfig/list": {
 				_apiInfo: {
 					"l": "List Service Configuration",
@@ -811,7 +812,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName']
 			},
-
+			
 			"/daemons/groupConfig/tenantExtKeys/list": {
 				_apiInfo: {
 					"l": "List Job's External Keys",
@@ -819,7 +820,7 @@ module.exports = {
 				},
 				'commonFields': ['id', 'jobName']
 			},
-
+			
 			"/staticContent/list": {
 				_apiInfo: {
 					"l": "List Static Content",
@@ -834,7 +835,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/hosts/list": {
 				_apiInfo: {
 					"l": "List Hosts",
@@ -850,7 +851,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/list": {
 				"_apiInfo": {
 					"l": "List Cloud Services",
@@ -864,14 +865,14 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/nodes/list": {
 				"_apiInfo": {
 					"l": "List HA Cloud Nodes",
 					"group": "HA Cloud"
 				}
 			},
-
+			
 			"/cloud/services/instances/logs": {
 				"_apiInfo": {
 					"l": "Get Service Container Logs",
@@ -911,6 +912,20 @@ module.exports = {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
 					"group": "Catalog"
+				}
+			},
+
+			"/catalog/recipes/get": {
+				"_apiInfo": {
+					"l": "Get a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
 				}
 			},
 
@@ -957,7 +972,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/getBranches": {
 				"_apiInfo": {
 					"l": "Get Repository Branches",
@@ -992,7 +1007,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cb/list": {
 				"_apiInfo": {
 					"l": "List Content Schema",
@@ -1007,7 +1022,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cb/get": {
 				"_apiInfo": {
 					"l": "Get One Content Schema",
@@ -1022,7 +1037,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cb/listRevisions": {
 				"_apiInfo": {
 					"l": "List Content Schema Revisions",
@@ -1153,7 +1168,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/dbs/add": {
 				_apiInfo: {
 					"l": "Add Environment Database",
@@ -1187,7 +1202,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/clusters/add": {
 				_apiInfo: {
 					"l": "Add Environment Database Cluster",
@@ -1197,7 +1212,7 @@ module.exports = {
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-
+			
 			"/environment/platforms/cert/upload": {
 				_apiInfo: {
 					"l": "Upload Certificate",
@@ -1285,7 +1300,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/tenant/oauth/users/add": {
@@ -1311,7 +1326,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId']
 			},
-
+			
 			"/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -1326,7 +1341,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -1355,7 +1370,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/settings/tenant/oauth/users/add": {
@@ -1373,7 +1388,7 @@ module.exports = {
 				},
 				"commonFields": ['appId']
 			},
-
+			
 			"/settings/tenant/application/key/ext/add": {
 				_apiInfo: {
 					"l": "Add Tenant Application External Key",
@@ -1388,7 +1403,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/application/key/ext/delete": { //TODO: should be delete, remove params passed in body and change its method
 				_apiInfo: {
 					"l": "Delete Tenant Application External Key",
@@ -1403,7 +1418,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/add": {
 				_apiInfo: {
 					"l": "Add Daemon Group Configuration",
@@ -1419,7 +1434,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/list": {
 				_apiInfo: {
 					"l": "List Daemons",
@@ -1446,6 +1461,30 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
+				},
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
+					"validation": {
+						"type": "object",
+						"required": false,
+						"properties": {
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
+						}
+					}
 				},
 				"env": {
 					"source": ['body.env'],
@@ -1506,18 +1545,14 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": {
-										"required": true,
-										"type": "string",
-										"enum": ['replicated', 'global', 'deployment', 'daemonset']
-									},
-									"replicas": {"required": false, "type": "number"}
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
+									"replicas": { "required": false, "type": "number" }
 								}
 							}
 						}
@@ -1549,125 +1584,7 @@ module.exports = {
 					}
 				}
 			},
-
-			"/cloud/services/custom/deploy": {
-				"_apiInfo": {
-					"l": "Add A New Custom Service",
-					"group": "HA Cloud"
-				},
-				"env": {
-					"source": ['body.env'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"name": {
-					"required": true,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"variables": {
-					"required": false,
-					"source": ['body.variables'],
-					"validation": {
-						"type": "array",
-						"minItems": 1,
-						"items": {"type": "string"}
-					}
-				},
-				"labels": {
-					"required": false,
-					"source": ['body.labels'],
-					"default": {},
-					"validation": {
-						"type": "object"
-					}
-				},
-				"command": {
-					"required": false,
-					"source": ['body.command'],
-					"validation": {
-						"type": "object",
-						"properties": {
-							"cmd": {"required": false, "type": "array"},
-							"args": {"required": false, "type": "array"}
-						}
-					}
-				},
-				"deployConfig": {
-					"required": true,
-					"source": ['body.deployConfig'],
-					"validation": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"image": {"required": true, "type": "string"},
-							"workDir": {"required": false, "type": "string"},
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"network": {"required": false, "type": "string"},
-							"ports": {
-								"required": false,
-								"type": "array",
-								"items": {
-									"type": "object",
-									"properties": {
-										"isPublished": {"required": false, "type": "boolean", "default": false},
-										"target": {"required": true, "type": "number"},
-										"published": {"required": false, "type": "number"}
-									}
-								}
-							},
-							"replication": {
-								"required": true,
-								"type": "object",
-								"properties": {
-									"mode": {"required": true, "type": "string", "enum": ['replicated', 'global']},
-									"replicas": {"required": false, "type": "number"}
-								}
-							},
-							"readinessProbe": { //NOTE: only applicable in kubernetes mode, httpGet readiness probe only supported
-								"required": false,
-								"type": "object",
-								"properties": {
-									"path": {"required": true, "type": "string"},
-									"port": {"required": true, "type": "string"},
-									"initialDelaySeconds": {"required": true, "type": "number", "minimum": 1},
-									"timeoutSeconds": {"required": true, "type": "number", "minimum": 1},
-									"periodSeconds": {"required": true, "type": "number", "minimum": 1},
-									"successThreshold": {"required": true, "type": "number", "minimum": 1},
-									"failureThreshold": {"required": true, "type": "number", "minimum": 1}
-								}
-							},
-							"restartPolicy": {
-								"required": true,
-								"type": "object",
-								"properties": {
-									"condition": {
-										"required": true,
-										"type": "string",
-										"enum": ['none', 'on-failure', 'any']
-									},
-									"maxAttempts": {"required": true, "type": "number"}
-								}
-							},
-							"volume": {
-								"required": false,
-								"type": "object",
-								"properties": {
-									"type": {"required": true, "type": "string", "enum": ['bind', 'volume']},
-									"readOnly": {"required": false, "type": "boolean"},
-									"source": {"required": true, "type": "string"},
-									"target": {"required": true, "type": "string"}
-								}
-							}
-						}
-					}
-				}
-			},
-
+			
 			"/cloud/nodes/add": {
 				"_apiInfo": {
 					"l": "Add HA Cloud Node",
@@ -1703,7 +1620,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/maintenance": {
 				"_apiInfo": {
 					"l": "Perform A Maintenance Operation on a Deployed Service",
@@ -1824,7 +1741,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/gitAccounts/repo/activate": {
 				"_apiInfo": {
 					"l": "Activate Repository",
@@ -1873,7 +1790,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cb/add": {
 				"_apiInfo": {
 					"l": "Add New Content Schema",
@@ -1886,7 +1803,7 @@ module.exports = {
 					"validation": cbSchema
 				}
 			},
-
+			
 			"/hosts/maintenanceOperation": {
 				"_apiInfo": {
 					"l": "Perform Maintenance Operation",
@@ -1937,7 +1854,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/swagger/simulate": {
 				"_apiInfo": {
 					"l": "Api simulation service",
@@ -1961,9 +1878,9 @@ module.exports = {
 						}
 					}
 				}
-
+				
 			},
-
+			
 			"/swagger/generate": {
 				"_apiInfo": {
 					"l": "Generate Service via Swagger",
@@ -2053,7 +1970,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"put": {
 			"/environment/update": {
 				_apiInfo: {
@@ -2100,7 +2017,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/key/update": {
 				_apiInfo: {
 					"l": "Update Environment Tenant Key Security",
@@ -2122,7 +2039,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/dbs/update": {
 				_apiInfo: {
 					"l": "Update Environment Database",
@@ -2156,7 +2073,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/dbs/updatePrefix": {
 				_apiInfo: {
 					"l": "Update Environment Databases Prefix",
@@ -2169,7 +2086,7 @@ module.exports = {
 					"validation": {"type": "string", "required": false}
 				}
 			},
-
+			
 			"/environment/clusters/update": {
 				_apiInfo: {
 					"l": "Update Environment Database Cluster",
@@ -2179,7 +2096,7 @@ module.exports = {
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-
+			
 			"/environment/platforms/cert/choose": {
 				_apiInfo: {
 					"l": "Choose Existing Certificates",
@@ -2215,7 +2132,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/platforms/driver/changeSelected": {
 				_apiInfo: {
 					"l": "Change Selected Driver",
@@ -2237,7 +2154,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/platforms/deployer/type/change": {
 				_apiInfo: {
 					"l": "Change Deployer Type",
@@ -2260,7 +2177,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/environment/platforms/deployer/update": {
 				_apiInfo: {
 					"l": "Change Deployer Type",
@@ -2300,7 +2217,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/update": {
 				_apiInfo: {
 					"l": "Update Product",
@@ -2308,7 +2225,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'name', 'description']
 			},
-
+			
 			"/product/packages/update": {
 				_apiInfo: {
 					"l": "Update Product Package",
@@ -2324,7 +2241,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -2354,7 +2271,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/tenant/oauth/users/update": {
@@ -2409,7 +2326,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -2417,7 +2334,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key', 'envCode', 'config']
 			},
-
+			
 			"/settings/tenant/update": {
 				_apiInfo: {
 					"l": "Update Tenant",
@@ -2434,7 +2351,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/oauth/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth Configuration",
@@ -2442,7 +2359,7 @@ module.exports = {
 				},
 				"commonFields": ['secret', 'redirectURI','oauthType','availableEnv']
 			},
-
+			
 			"/settings/tenant/oauth/users/update": {
 				_apiInfo: {
 					"l": "Update Tenant oAuth User",
@@ -2464,7 +2381,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/application/key/ext/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application External Key",
@@ -2479,7 +2396,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/settings/tenant/application/key/config/update": {
 				_apiInfo: {
 					"l": "Update Tenant Application Key Configuration",
@@ -2487,7 +2404,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key', 'envCode', 'config']
 			},
-
+			
 			"/daemons/groupConfig/update": {
 				_apiInfo: {
 					"l": "Update Daemon Group Configuration",
@@ -2503,7 +2420,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/serviceConfig/update": {
 				_apiInfo: {
 					"l": "Update Service Configuration",
@@ -2525,7 +2442,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/daemons/groupConfig/tenantExtKeys/update": {
 				_apiInfo: {
 					"l": "Update Job's External Keys",
@@ -2547,7 +2464,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/nodes/update": {
 				"_apiInfo": {
 					"l": "Update HA Cloud Node",
@@ -2583,7 +2500,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/scale": {
 				"_apiInfo": {
 					"l": "Scale HA Service",
@@ -2611,7 +2528,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/redeploy": {
 				"_apiInfo": {
 					"l": "Redeploy HA Service",
@@ -2643,29 +2560,30 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ['redeploy', 'rebuild']
+						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
-				"ui": {
-					"source": ['body.ui'],
-					"required": false,
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
 					"validation": {
 						"type": "object",
+						"required": false,
 						"properties": {
-							"id": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
-						}
-					}
-				},
-				"ssl": {
-					"source": ['body.ssl'],
-					"required": false,
-					"validation": {
-						"type": "object",
-						"properties": {
-							"supportSSL": {"type": "boolean", "required": false},
-							"kubeSecret": {"type": "string", "required": false}
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
 						}
 					}
 				}
@@ -2685,7 +2603,7 @@ module.exports = {
 				},
 				"catalog": catalogSchema
 			},
-
+			
 			"/gitAccounts/repo/sync": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -2727,7 +2645,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cb/update": {
 				"_apiInfo": {
 					"l": "Update Content Schema",
@@ -2740,7 +2658,7 @@ module.exports = {
 					"validation": cbSchema
 				}
 			},
-
+			
 			"/gitAccounts/repo/deactivate": {
 				"_apiInfo": {
 					"l": "Deactivate Repository",
@@ -2769,7 +2687,7 @@ module.exports = {
 				}
 			}
 		},
-
+		
 		"delete": {
 			"/environment/delete": {
 				_apiInfo: {
@@ -2778,7 +2696,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/environment/dbs/delete": {
 				_apiInfo: {
 					"l": "Delete Environment Database",
@@ -2787,7 +2705,7 @@ module.exports = {
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-
+			
 			"/environment/clusters/delete": {
 				_apiInfo: {
 					"l": "Delete Environment Database Cluster",
@@ -2796,7 +2714,7 @@ module.exports = {
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}},
 				"name": {"source": ['query.name'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-
+			
 			"/environment/platforms/cert/delete": {
 				_apiInfo: {
 					"l": "Remove Certificate",
@@ -2824,7 +2742,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/product/delete": {
 				_apiInfo: {
 					"l": "Delete Product",
@@ -2832,7 +2750,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/product/packages/delete": {
 				_apiInfo: {
 					"l": "Delete Product Package",
@@ -2848,7 +2766,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/tenant/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant",
@@ -2856,7 +2774,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
@@ -2864,7 +2782,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-
+			
 			"/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -2872,7 +2790,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'uId']
 			},
-
+			
 			"/tenant/application/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application",
@@ -2880,7 +2798,7 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId']
 			},
-
+			
 			"/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -2888,14 +2806,14 @@ module.exports = {
 				},
 				"commonFields": ['id', 'appId', 'key']
 			},
-
+			
 			"/settings/tenant/oauth/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				}
 			},
-
+			
 			"/settings/tenant/oauth/users/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant oAuth User",
@@ -2903,7 +2821,7 @@ module.exports = {
 				},
 				"commonFields": ['uId']
 			},
-
+			
 			"/settings/tenant/application/key/delete": {
 				_apiInfo: {
 					"l": "Delete Tenant Application Key",
@@ -2911,7 +2829,7 @@ module.exports = {
 				},
 				"commonFields": ['appId', 'key']
 			},
-
+			
 			"/daemons/groupConfig/delete": {
 				_apiInfo: {
 					"l": "Delete Daemon Group Configuration",
@@ -2919,7 +2837,7 @@ module.exports = {
 				},
 				'commonFields': ['id']
 			},
-
+			
 			"/cloud/nodes/remove": {
 				"_apiInfo": {
 					"l": "Remove HA Cloud Node",
@@ -2940,7 +2858,7 @@ module.exports = {
 					}
 				}
 			},
-
+			
 			"/cloud/services/delete": {
 				"_apiInfo": {
 					"l": "Delete HA Service",

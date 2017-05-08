@@ -33,11 +33,6 @@
 					<fieldset>
 						<legend>Deployment Options</legend>
 						<div>
-							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
-							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name for recipe in currentScope.recipes[currentScope.service.type]" ng-model="currentScope.recipe"></select>
-							<br>
-						</div>
-						<div>
 							<label>Deployment Mode</label>
 							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
 							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
@@ -52,7 +47,14 @@
 						<div>
 							<label>Memory Limit Per Instance (in MBytes)</label>
 							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
+							<br />
 						</div>
+						<div>
+							<label>Catalog Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name for recipe in currentScope.recipes[currentScope.service.type]" ng-model="currentScope.recipe" ng-change="injectCatalogEntries()"></select>
+							<br>
+						</div>
+						<div ng-include="'modules/dashboard/environments/directives/list-cloud-catalogInputs.tmpl'"></div>
 					</fieldset>
 				</div>
 			</form>
@@ -309,6 +311,7 @@
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												</ul>
 											</div>
