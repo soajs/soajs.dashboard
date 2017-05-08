@@ -955,11 +955,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			filter = "&_a=(query:(query_string:(analyze_wildcard:!t,query:'";
 			if (task && type === 'task') {
 				name = task.name + "." + task.id;
-				dashboardID = "Metricbeat-Docker-task";
+				dashboardID = "Metricbeat-Docker-"+env+"-"+type;
 				filter +="docker.container.name:"+ name;
 			}
 			else if (type) {
-				dashboardID = "Metricbeat-Docker-"+type;
+				dashboardID = "Metricbeat-Docker-"+env+"-"+type;
 				filter +="docker.container.name:"+ serviceName + ".*";
 			}
 			else {
@@ -1038,6 +1038,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				else {
 					currentScope.displayAlert('info', "Analytics is being Deployed, it may take a few minutes.");
 					currentScope.showActivateAnalytics = false;
+					currentScope.showAnalytics = false;
 				}
 			});
 		}
