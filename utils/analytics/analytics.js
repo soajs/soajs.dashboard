@@ -569,23 +569,6 @@ var lib = {
 									index: {
 										_index: '.kibana',
 										_type: 'index-pattern',
-										_id: 'metricbeat-' + serviceEnv + "-*"
-									}
-								},
-								{
-									title: 'metricbeat-' + serviceEnv + "-*",
-									timeFieldName: '@timestamp',
-									fields: metricbeatIndex.fields,
-									fieldFormatMap: metricbeatIndex.fieldFormatMap
-								}
-							]
-						);
-						analyticsArray = analyticsArray.concat(
-							[
-								{
-									index: {
-										_index: '.kibana',
-										_type: 'index-pattern',
 										_id: 'filebeat-*-' + serviceEnv + "-*"
 									}
 								},

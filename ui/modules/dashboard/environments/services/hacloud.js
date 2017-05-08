@@ -955,11 +955,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			filter = "&_a=(query:(query_string:(analyze_wildcard:!t,query:'";
 			if (task && type === 'task') {
 				name = task.name + "." + task.id;
-				dashboardID = "Metricbeat-Docker-"+env+"-"+type;
+				dashboardID = "Metricbeat-Docker-task";
 				filter +="docker.container.name:"+ name;
 			}
 			else if (type) {
-				dashboardID = "Metricbeat-Docker-"+env+"-"+type;
+				dashboardID = "Metricbeat-Docker-"+type;
 				filter +="docker.container.name:"+ serviceName + ".*";
 			}
 			else {
