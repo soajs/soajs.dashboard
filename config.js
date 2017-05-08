@@ -21,40 +21,40 @@ module.exports = {
 	"awarenessEnv": true,
 	"oauth": true,
 	"session": true,
-	
+
 	"hasher": {
 		"hashIterations": 1024,
 		"seedLength": 32
 	},
-	
+
 	"expDateTTL": 86400000,
 	"ncpLimit": 16,
-	
+
 	"profileLocation": process.env.SOAJS_PROFILE_LOC || "/opt/soajs/FILES/profiles/",
-	
+
 	"images": {
 		"nginx": 'nginx',
 		"services": "soajs"
 	},
-	
+
 	"network": 'soajsnet',
-	
+
 	"imagesDir": "/opt/soajs/deployer/",
-	
+
 	"kubeNginx": {
 		"minPort": 0,
 		"maxPort": 2767
 	},
-	
+
 	"certificates": {
 		types: ['ca', 'cert', 'key']
 	},
-	
-	"HA": {
+
+	"HA":{
 		"blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
 		"dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N']
 	},
-	
+
 	"gitAccounts": {
 		"bitbucket_org": {
 			apiDomain: 'https://api.bitbucket.org/1.0',
@@ -95,9 +95,9 @@ module.exports = {
 			"repoConfigsFolder": __dirname + '/repoConfigs'
 		}
 	},
-	
+
 	"errors": require("./utils/errors"),
-	
+
 	"schema": {
 		"commonFields": {
 			"description": {
@@ -321,7 +321,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"extKeyRequired": {
 				"source": ['body.extKeyRequired'],
 				"required": true,
@@ -362,7 +362,7 @@ module.exports = {
 					"type": "boolean"
 				}
 			},
-			
+
 			'jobs': {
 				'source': ['body.jobs'],
 				'required': true,
@@ -412,7 +412,7 @@ module.exports = {
 					'type': 'text'
 				}
 			},
-			
+
 			'status': {
 				'source': ['body.status'],
 				'required': true,
@@ -500,7 +500,7 @@ module.exports = {
 					"enum": ["urac", "miniurac", "off"]
 				}
 			},
-			'availableEnv': {
+			'availableEnv':{
 				'source': ['body.availableEnv'],
 				'required': true,
 				'validation': {
@@ -509,7 +509,7 @@ module.exports = {
 				}
 			}
 		},
-		
+
 		"get": {
 			"/environment/list": {
 				_apiInfo: {
@@ -525,7 +525,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/environment/dbs/list": {
 				_apiInfo: {
 					"l": "List Environment Databases",
@@ -533,7 +533,7 @@ module.exports = {
 				},
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			
+
 			"/environment/clusters/list": {
 				_apiInfo: {
 					"l": "List Environment Database Clusters",
@@ -541,7 +541,7 @@ module.exports = {
 				},
 				"env": {"source": ['query.env'], "required": true, "validation": {"type": "string", "required": true}}
 			},
-			
+
 			"/environment/platforms/list": {
 				_apiInfo: {
 					"l": "List Environment Platforms",
@@ -556,7 +556,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/product/list": {
 				_apiInfo: {
 					"l": "List Products",
@@ -564,7 +564,7 @@ module.exports = {
 					"groupMain": true
 				}
 			},
-			
+
 			"/product/get": {
 				_apiInfo: {
 					"l": "Get Product",
@@ -572,7 +572,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-			
+
 			"/product/packages/list": {
 				_apiInfo: {
 					"l": "List Product Packages",
@@ -580,7 +580,7 @@ module.exports = {
 				},
 				"commonFields": ['id']
 			},
-			
+
 			"/product/packages/get": {
 				_apiInfo: {
 					"l": "Get Product Package",
@@ -603,7 +603,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/permissions/get": {
 				_apiInfo: {
 					"l": "Get Tenant Security Permissions",
@@ -907,14 +907,28 @@ module.exports = {
 					"group": "HA Cloud"
 				}
 			},
-			
+
 			"/catalog/recipes/list": {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
 					"group": "Catalog"
 				}
 			},
-			
+
+			"/catalog/recipes/get": {
+				"_apiInfo": {
+					"l": "Get a Catalog",
+					"group": "Catalog"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
@@ -1286,7 +1300,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/tenant/oauth/users/add": {
@@ -1356,7 +1370,7 @@ module.exports = {
 					"l": "Add Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/settings/tenant/oauth/users/add": {
@@ -1448,26 +1462,26 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
-				"catalogUserInput": {
+				"catalogUserInput":{
 					"source": ["body.catalogUserInput"],
-					"required": false,
+					"required":false,
 					"validation": {
 						"type": "object",
 						"required": false,
 						"properties": {
-							"image": {
-								"type": "object",
+							"image" :{
+								"type":"object",
 								"required": false,
-								"properties": {
-									"prefix": {"required": false, "type": "string"},
-									"name": {"required": false, "type": "string"},
-									"tag": {"required": false, "type": "string"},
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
 								}
 							},
-							"env": {
+							"env":{
 								"type": "object",
 								"required": false,
-								"additionalProperties": {"type": "string"}
+                                "additionalProperties":{ "type": "string" }
 							}
 						}
 					}
@@ -1531,18 +1545,14 @@ module.exports = {
 						"type": "object",
 						"required": true,
 						"properties": {
-							"memoryLimit": {"required": false, "type": "number", "default": 209715200},
-							"isKubernetes": {"required": false, "type": "boolean"}, //NOTE: only required in case of controller deployment
+							"memoryLimit": { "required": false, "type": "number", "default": 209715200 },
+							"isKubernetes": { "required": false, "type": "boolean" }, //NOTE: only required in case of controller deployment
 							"replication": {
 								"required": true,
 								"type": "object",
 								"properties": {
-									"mode": {
-										"required": true,
-										"type": "string",
-										"enum": ['replicated', 'global', 'deployment', 'daemonset']
-									},
-									"replicas": {"required": false, "type": "number"}
+									"mode": { "required": true, "type": "string", "enum": ['replicated', 'global', 'deployment', 'daemonset'] },
+									"replicas": { "required": false, "type": "number" }
 								}
 							}
 						}
@@ -1653,7 +1663,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/add": {
 				"_apiInfo": {
 					"l": "Add New Catalog",
@@ -1661,7 +1671,7 @@ module.exports = {
 				},
 				"catalog": catalogSchema
 			},
-			
+
 			"/gitAccounts/login": {
 				"_apiInfo": {
 					"l": "Github Login",
@@ -2261,7 +2271,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant oAuth"
 				},
-				"commonFields": ['id', 'secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['id', 'secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/tenant/oauth/users/update": {
@@ -2347,7 +2357,7 @@ module.exports = {
 					"l": "Update Tenant oAuth Configuration",
 					"group": "Tenant Settings"
 				},
-				"commonFields": ['secret', 'redirectURI', 'oauthType', 'availableEnv']
+				"commonFields": ['secret', 'redirectURI','oauthType','availableEnv']
 			},
 			
 			"/settings/tenant/oauth/users/update": {
@@ -2550,34 +2560,35 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ['redeploy', 'rebuild']
+						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
-				"ui": {
-					"source": ['body.ui'],
-					"required": false,
+				"catalogUserInput":{
+					"source": ["body.catalogUserInput"],
+					"required":false,
 					"validation": {
 						"type": "object",
+						"required": false,
 						"properties": {
-							"id": {"type": "string", "required": true},
-							"branch": {"type": "string", "required": true},
-							"commit": {"type": "string", "required": true}
-						}
-					}
-				},
-				"ssl": {
-					"source": ['body.ssl'],
-					"required": false,
-					"validation": {
-						"type": "object",
-						"properties": {
-							"supportSSL": {"type": "boolean", "required": false},
-							"kubeSecret": {"type": "string", "required": false}
+							"image" :{
+								"type":"object",
+								"required": false,
+								"properties":{
+                                    "prefix": { "required": false, "type": "string" },
+                                    "name": { "required": false, "type": "string" },
+                                    "tag": { "required": false, "type": "string" },
+								}
+							},
+							"env":{
+								"type": "object",
+								"required": false,
+                                "additionalProperties":{ "type": "string" }
+							}
 						}
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/update": {
 				"_apiInfo": {
 					"l": "Update Catalog",
@@ -2889,7 +2900,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/catalog/recipes/delete": {
 				"_apiInfo": {
 					"l": "Delete a Catalog",
@@ -2903,7 +2914,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/gitAccounts/logout": {
 				"_apiInfo": {
 					"l": "Github Logout",

@@ -305,194 +305,149 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
     }
 
     function rebuildService(currentScope, service) {
-        overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
-			method: 'post',
-			routeName: '/dashboard/staticContent/list'
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
+			method: 'get',
+			routeName: '/dashboard/catalog/recipes/get',
+			params: {
+				'id': service.labels['soajs.catalog.id']
+			}
+		}, function (error, catalogRecipe) {
+			if(error){
 				currentScope.displayAlert('danger', error.message);
 			}
-			else {
-				var formConfig = angular.copy(environmentsConfig.form.nginxUI);
+			else{
+				var formConfig = {
+					entries: []
+				};
 
-				response.forEach(function (oneUIContent) {
-					if (service.labels['soajs.env.code'].toLowerCase() === 'dashboard' && oneUIContent.dashUI) {
-						formConfig.entries[0].value.push({
-							l: oneUIContent.name,
-							v: oneUIContent
-						});
-					}
-					else if (service.labels['soajs.env.code'].toLowerCase() !== 'dashboard' && !oneUIContent.dashUI) {
-						formConfig.entries[0].value.push({
-							l: oneUIContent.name,
-							v: oneUIContent
-						});
-					}
-				});
-
-				formConfig.entries[0].onAction = function (id, data, form) {
-					overlayLoading.show();
-					data = JSON.parse(data);
-					getSendDataFromServer(currentScope, ngDataApi, {
-						method: 'get',
-						routeName: '/dashboard/gitAccounts/getBranches',
-						params: {
-							type: 'static',
-							name: data.name
-						}
-					}, function (error, response) {
-						overlayLoading.hide();
-						if (error) {
-							currentScope.displayAlert('danger', error.message);
-						}
-						else {
-							response.branches.forEach(function (oneBranch) {
-								form.entries[1].value.push({
-									l: oneBranch.name,
-									v: oneBranch
-								});
-							});
-						}
+				if(catalogRecipe.recipe.deployOptions.image.override){
+					//append images
+					formConfig.entries.push({
+						'name': "ImagePrefix",
+						'label': "Image Prefix",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.prefix,
+						'fieldMsg': "Override the image prefix if you want"
 					});
-				};
 
-				if(currentScope.envPlatform !== "kubernetes"){
-					formConfig.entries.splice(3, 2);
+					formConfig.entries.push({
+						'name': "ImageName",
+						'label': "Image Name",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.name,
+						'fieldMsg': "Override the image name if you want"
+					});
+
+					formConfig.entries.push({
+						'name': "ImageTag",
+						'label': "Image Tag",
+						'type': 'text',
+						'value': catalogRecipe.recipe.deployOptions.image.tag,
+						'fieldMsg': "Override the image tag if you want"
+					});
 				}
-				else {
-					//Display the SSL information of the nginx container
-					//check if SSL is enabled
-					if(service.env.indexOf("SOAJS_NX_API_HTTPS=1") !== -1 && service.env.indexOf("SOAJS_NX_API_HTTP_REDIRECT=1") !== -1
-					&& service.env.indexOf("SOAJS_NX_SITE_HTTPS=1") !== -1 && service.env.indexOf("SOAJS_NX_SITE_HTTP_REDIRECT=1") !== -1){
-                        formConfig.entries[2].value[0].selected = true;
-                        delete formConfig.entries[2].value[1].selected;
 
-                        formConfig.entries[3].hidden = false;
-						formConfig.entries[3].value[0].selected = true;
-						delete formConfig.entries[3].value[1].selected;
-						//Check if the certificates are self signed or custom
-                        if(service.env.indexOf("SOAJS_NX_CUSTOM_SSL=1" !== -1)){
-                            formConfig.entries[3].value[1].selected = true;
-                            delete formConfig.entries[3].value[0].selected;
-                            //Display the name of the kubernetes secret containing the certificates
-							for(var i=0; i<service.env.length; i++){
-								if(service.env[i].indexOf("SOAJS_NX_SSL_SECRET") !== -1){
-                                    formConfig.entries[4].value = service.env[i].split("=")[1];
-                                    formConfig.entries[4].hidden = false;
-                                    break;
-								}
-							}
+				//append inputs whose type is userInput
+				for(var envVariable in catalogRecipe.recipe.buildOptions.env){
+					if(catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
+
+						//push a new input for this variable
+						var newInput = {
+							'name': '_ci_' + envVariable,
+							'label': catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
+							'type': 'text',
+							'value': catalogRecipe.recipe.buildOptions.env[envVariable].default || '',
+							'fieldMsg': catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
+						};
+
+						if(!catalogRecipe.recipe.buildOptions.env[envVariable].default || catalogRecipe.recipe.buildOptions.env[envVariable].default === ''){
+							newInput.required = true;
 						}
+
+						formConfig.entries.push(newInput);
 					}
+				}
 
-                    formConfig.entries[2].onAction = function (id, data, form) {
-                        if (data === "true") {
-                            form.entries[3].required = true;
-                            form.entries[3].hidden = false;
-                        }
-                        else {
-                            form.entries[3].required = false;
-                            form.entries[3].hidden = true;
-                            form.entries[3].value[0].selected = true;
-                            delete form.entries[3].value[1].selected;
-                            form.formData.certType = "true";
-
-                            form.entries[4].required = false;
-                            form.entries[4].hidden = true;
-                            form.entries[4].value = null;
-                            form.formData.kubeSecret = null;
-                        }
-
-                    };
-
-                    //Handling the possibilities of certificate type
-                    formConfig.entries[3].onAction = function (id, data, form) {
-                        if (data === "true") {
-                            form.entries[4].required = false;
-                            form.entries[4].hidden = true;
-                            form.formData.kubeSecret = null;
-                        }
-                        else {
-                            form.entries[4].required = true;
-                            form.entries[4].hidden = false;
-                        }
-                    };
-                }
-				var options = {
-					timeout: $timeout,
-					form: formConfig,
-					name: 'rebuildService',
-					label: 'Rebuild Service',
-					actions: [
-						{
-							'type': 'submit',
-							'label': translation.submit[LANG],
-							'btn': 'primary',
-							'action': function (formData) {
-
-								var params = {
-						            env: currentScope.envCode,
-						            serviceId: service.id,
-									mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
-									action: 'rebuild'
-						        };
-
-								if(formData.supportSSL){
-									params.ssl = {
-										"supportSSL": true
-									};
-									if(currentScope.envPlatform === "kubernetes" && !formData.certType && formData.kubeSecret){
-										params.ssl.kubeSecret = formData.kubeSecret;
-									}
+				if(formConfig.entries.length === 0){
+					doRebuild(null);
+				}
+				else{
+					var options = {
+						timeout: $timeout,
+						form: formConfig,
+						name: 'rebuildService',
+						label: 'Rebuild Service',
+						actions: [
+							{
+								'type': 'submit',
+								'label': translation.submit[LANG],
+								'btn': 'primary',
+								'action': function (formData) {
+									doRebuild(formData);
 								}
-
-                                if(formData.branch && formData.content){
-                                    formData.branch = JSON.parse(formData.branch);
-                                    formData.content = JSON.parse(formData.content);
-
-                                    params.ui = {
-                                        id: formData.content._id,
-                                        branch: formData.branch.name,
-                                        commit: formData.branch.commit.sha
-                                    }
-                                }
-
-								overlayLoading.show();
-								getSendDataFromServer(currentScope, ngDataApi, {
-						            method: 'put',
-						            routeName: '/dashboard/cloud/services/redeploy',
-						            data: params
-						        }, function (error, response) {
-						            overlayLoading.hide();
-									currentScope.modalInstance.dismiss();
+							},
+							{
+								'type': 'reset',
+								'label': translation.cancel[LANG],
+								'btn': 'danger',
+								'action': function () {
+									currentScope.modalInstance.dismiss('cancel');
 									currentScope.form.formData = {};
-						            if (error) {
-						                currentScope.displayAlert('danger', error.message);
-						            }
-						            else {
-						                currentScope.displayAlert('success', 'Service rebuilt successfully');
-						                currentScope.listServices();
-						            }
-						        });
+								}
 							}
-						},
-						{
-							'type': 'reset',
-							'label': translation.cancel[LANG],
-							'btn': 'danger',
-							'action': function () {
-								currentScope.modalInstance.dismiss('cancel');
-								currentScope.form.formData = {};
-							}
-						}
-					]
-				};
-
-				buildFormWithModal(currentScope, $modal, options);
+						]
+					};
+					buildFormWithModal(currentScope, $modal, options);
+				}
 			}
 		});
+
+		function doRebuild(formData){
+			var params = {
+				env: currentScope.envCode,
+				serviceId: service.id,
+				mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : ''),
+				action: 'rebuild'
+			};
+
+			if(formData && Object.keys(formData).length > 0){
+				//inject user input catalog entry and image override
+				params.catalogUserInput = {
+					image: {
+						name: formData['ImageName'],
+						prefix: formData['ImagePrefix'],
+						tag: formData['ImageTag']
+					}
+				};
+
+				for( var input in formData){
+					if(input.indexOf('_ci_') !== -1){
+						if(!params.catalogUserInput.env){
+							params.catalogUserInput.env = {};
+						}
+						params.catalogUserInput.env[input.replace('_ci_', '')] = formData[input];
+					}
+				}
+			}
+
+			overlayLoading.show();
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'put',
+				routeName: '/dashboard/cloud/services/redeploy',
+				data: params
+			}, function (error, response) {
+				overlayLoading.hide();
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				}
+				else {
+					currentScope.displayAlert('success', 'Service rebuilt successfully');
+					currentScope.listServices();
+					overlayLoading.hide();
+					currentScope.modalInstance.dismiss();
+				}
+			});
+		}
     }
 
 

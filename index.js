@@ -74,7 +74,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete an environment
 	 * @param {String} API route
@@ -87,7 +87,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing environment
 	 * @param {String} API route
@@ -100,7 +100,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all environments
 	 * @param {String} API route
@@ -113,7 +113,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update environment tenant security key
 	 * @param {String} API route
@@ -126,7 +126,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List environment databases
 	 * @param {String} API route
@@ -139,7 +139,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete environment database
 	 * @param {String} API route
@@ -165,7 +165,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update environment database
 	 * @param {String} API route
@@ -191,7 +191,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add environment cluster
 	 * @param {String} API route
@@ -204,7 +204,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete environment cluster
 	 * @param {String} API route
@@ -217,7 +217,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update environment cluster
 	 * @param {String} API route
@@ -230,7 +230,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List environment clusters
 	 * @param {String} API route
@@ -269,7 +269,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete platform certificate
 	 * @param {String} API route
@@ -295,7 +295,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Change selected platform
 	 * @param {String} API route
@@ -321,7 +321,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update deployer configuration
 	 * @param {String} API route
@@ -334,7 +334,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Products features
 	 */
@@ -364,7 +364,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing product
 	 * @param {String} API route
@@ -377,7 +377,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List available products
 	 * @param {String} API route
@@ -390,7 +390,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get a specific product
 	 * @param {String} API route
@@ -403,7 +403,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get package of specific product
 	 * @param {String} API route
@@ -416,7 +416,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all product packages
 	 * @param {String} API route
@@ -442,7 +442,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update a product package
 	 * @param {String} API route
@@ -455,7 +455,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a product package
 	 * @param {String} API route
@@ -468,7 +468,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Tenants features
 	 */
@@ -485,7 +485,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete an existing tenant
 	 * @param {String} API route
@@ -498,7 +498,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List available tenants
 	 * @param {String} API route
@@ -511,7 +511,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing tenant
 	 * @param {String} API route
@@ -524,7 +524,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get a specific tenant
 	 * @param {String} API route
@@ -550,7 +550,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add new tenant oauth configuration
 	 * @param {String} API route
@@ -563,7 +563,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update existing oauth configuration
 	 * @param {String} API route
@@ -576,7 +576,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete oauth configuration
 	 * @param {String} API route
@@ -589,7 +589,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List tenant oauth users
 	 * @param {String} API route
@@ -602,7 +602,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete tenant oauth user
 	 * @param {String} API route
@@ -615,7 +615,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add new tenant oauth user
 	 * @param {String} API route
@@ -628,7 +628,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update tenant oauth user
 	 * @param {String} API route
@@ -641,7 +641,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List tenant applications
 	 * @param {String} API route
@@ -667,7 +667,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing tenant application
 	 * @param {String} API route
@@ -680,7 +680,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a tenant application
 	 * @param {String} API route
@@ -693,7 +693,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get tenant ACL
 	 * @param {String} API route
@@ -706,7 +706,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new application key
 	 * @param {String} API route
@@ -719,7 +719,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all tenant application keys
 	 * @param {String} API route
@@ -732,7 +732,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete application key
 	 * @param {String} API route
@@ -745,7 +745,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List application external keys for a specific key
 	 * @param {String} API route
@@ -758,7 +758,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new application external key for a specific key
 	 * @param {String} API route
@@ -771,7 +771,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing application external key
 	 * @param {String} API route
@@ -784,7 +784,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete an existing application external key
 	 * @param {String} API route
@@ -797,7 +797,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update the service configuration for a specific key
 	 * @param {String} API route
@@ -810,7 +810,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List service configuration for a specific key
 	 * @param {String} API route
@@ -823,7 +823,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get an external key
 	 * @param {String} API route
@@ -836,7 +836,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get user permissions
 	 * @param {String} API route
@@ -849,7 +849,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Dashboard Keys
 	 */
@@ -866,7 +866,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Hosts features
 	 */
@@ -896,7 +896,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * High Availability Cloud features
 	 */
@@ -952,7 +952,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all services per environment deployed in container mode
 	 * @param {String} API route
@@ -965,7 +965,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Deploy a new SOAJS service
 	 * @param {String} API route
@@ -986,7 +986,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, res, function (error, data) {
+			BL.redeployService(config, req.soajs, service.registry, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1017,7 +1017,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Perform maintenance operations on services deployed in container mode
 	 * @param {String} API route
@@ -1030,7 +1030,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get container logs
 	 * @param {String} API route
@@ -1043,7 +1043,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List available namespaces
 	 * @param {String} API route
@@ -1056,7 +1056,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a namespace
 	 * @param {String} API route
@@ -1069,11 +1069,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Catalog Recipes features
 	 */
-	
+
 	/**
 	 * List catalogs
 	 * @param {String} API route
@@ -1086,7 +1086,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add new catalog
 	 * @param {String} API route
@@ -1099,7 +1099,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update a catalog
 	 * @param {String} API route
@@ -1112,7 +1112,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a catalog
 	 * @param {String} API route
@@ -1125,24 +1125,35 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
-	 * Git App features gitAccountsBL
-	 */
-	
-	/**
-	 * Add a new git account
+	 * Get a catalog
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.post("/gitAccounts/login", function (req, res) {
-		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.login(config, req, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
+	service.get("/catalog/recipes/get", function (req, res) {
+		initBLModel(req, res, catalogBL, dbModel, function (BL) {
+			BL.get(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
-	
+
+	/**
+	 * Git App features gitAccountsBL
+	 */
+
+	/**
+ 	* Add a new git account
+ 	* @param {String} API route
+ 	* @param {Function} API middleware
+ 	*/
+	service.post("/gitAccounts/login", function (req, res) {
+		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
+			BL.login(config, req, res);
+		});
+	});
+
 	/**
 	 * Delete an existing git account
 	 * @param {String} API route
@@ -1168,7 +1179,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get git account repositories
 	 * @param {String} API route
@@ -1181,7 +1192,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get file content from a repository, restricted to YAML files
 	 * @param {String} API route
@@ -1194,7 +1205,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get repository barnches
 	 * @param {String} API route
@@ -1207,7 +1218,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Activate a repository
 	 * @param {String} API route
@@ -1220,7 +1231,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Deactivate a repository
 	 * @param {String} API route
@@ -1233,7 +1244,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Sync an active repository
 	 * @param {String} API route
@@ -1263,7 +1274,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get all environments where a specific service is deployed
 	 * @param {String} API route
@@ -1292,7 +1303,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List available daemon group configurations
 	 * @param {String} API route
@@ -1305,7 +1316,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new group configuration
 	 * @param {String} API route
@@ -1318,7 +1329,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an exiting daemon group configuration
 	 * @param {String} API route
@@ -1331,7 +1342,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete a group configuration
 	 * @param {String} API route
@@ -1344,7 +1355,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update the service configuration of a specific group configuration
 	 * @param {String} API route
@@ -1357,7 +1368,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List service configurations per group configuration
 	 * @param {String} API route
@@ -1370,7 +1381,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update list of tenant external keys per group configuration
 	 * @param {String} API route
@@ -1383,7 +1394,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List tenant external keys per group configuration
 	 * @param {String} API route
@@ -1413,11 +1424,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Settings features
 	 */
-	
+
 	/**
 	 * Update logged in user's tenant
 	 * @param {String} API route
@@ -1432,7 +1443,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get current logged-in user's tenant
 	 * @param {String} API route
@@ -1456,7 +1467,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List current tenant's oauth configuration
 	 * @param {String} API route
@@ -1471,7 +1482,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add new oauth configuration for current tenant
 	 * @param {String} API route
@@ -1486,7 +1497,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update current tenant's oauth configuration
 	 * @param {String} API route
@@ -1501,7 +1512,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete current tenant's oauth configuration
 	 * @param {String} API route
@@ -1516,7 +1527,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List current tenant's oauth users
 	 * @param {String} API route
@@ -1531,7 +1542,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete current tenant's oauth user
 	 * @param {String} API route
@@ -1546,7 +1557,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new oauth user for current tenant
 	 * @param {String} API route
@@ -1561,7 +1572,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update current tennant oauth user
 	 * @param {String} API route
@@ -1576,7 +1587,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List current tenant applications
 	 * @param {String} API route
@@ -1591,7 +1602,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add application key for current tenant
 	 * @param {String} API route
@@ -1606,7 +1617,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List current tenant's keys
 	 * @param {String} API route
@@ -1621,7 +1632,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete current tenant's application key
 	 * @param {String} API route
@@ -1636,7 +1647,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List external keys of current tenant
 	 * @param {String} API route
@@ -1651,7 +1662,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add external key to current tenant's application
 	 * @param {String} API route
@@ -1666,7 +1677,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update external key of current tenant's application
 	 * @param {String} API route
@@ -1681,7 +1692,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete external key of current tenant's application
 	 * @param {String} API route
@@ -1696,7 +1707,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update service configuration of current tenant's key
 	 * @param {String} API route
@@ -1711,7 +1722,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List service configuration of current tenant's key
 	 * @param {String} API route
@@ -1726,11 +1737,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * content builder features
 	 */
-	
+
 	/**
 	 * List available content builders
 	 * @param {String} API route
@@ -1743,7 +1754,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Get a specific content builder
 	 * @param {String} API route
@@ -1756,7 +1767,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List revisions of a specific content builder
 	 * @param {String} API route
@@ -1769,7 +1780,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new content builder
 	 * @param {String} API route
@@ -1782,7 +1793,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update an existing content builder
 	 * @param {String} API route
@@ -1795,7 +1806,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Simulation api that mimics a service api behavior used by swagger feature.
 	 * Api takes a yaml input and simulate the imfv validation of a requested service API
@@ -1809,7 +1820,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Swagger generate service API
 	 * Api takes service information and yaml code as service api schema
@@ -1826,7 +1837,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Service Start
 	 */

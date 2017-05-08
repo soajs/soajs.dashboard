@@ -1043,6 +1043,25 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
+		
+		it("success - will rebuild service", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				form: {
+					env: 'dev',
+					serviceId: ctrlDeployment.id,
+					mode: ctrlDeployment.labels[ 'soajs.service.mode' ],
+					action: 'rebuild',
+				}
+			};
+			
+			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+				assert.ok(body);
+				done();
+			});
+		});
 
 		it("success - will redeploy nginx and add custom ui to it", function (done) {
 			var params = {
@@ -1053,12 +1072,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					serviceId: nginxDeployment.id,
 					mode: nginxDeployment.labels[ 'soajs.service.mode' ],
-					action: 'rebuild',
-					ui: {
-						id: uiRecord._id.toString(),
-						branch: 'develop',
-						commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
-					}
+					action: 'rebuild'
 				}
 			};
 
@@ -1068,7 +1082,7 @@ describe("testing hosts deployment", function () {
 				done();
 			});
 		});
-
+		
 	});
 
 	describe("maintenance operations", function () {
