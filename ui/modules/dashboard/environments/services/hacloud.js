@@ -1059,6 +1059,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				else {
 					currentScope.displayAlert('info', "Analytics is Deactivated");
 					currentScope.showActivateAnalytics = true;
+					currentScope.showAnalytics = false;
 				}
 			});
 		}

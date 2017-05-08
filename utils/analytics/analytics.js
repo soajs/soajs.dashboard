@@ -7,7 +7,7 @@ var colls = {
 };
 var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
-var metricbeat = require("./indexes/metricbeat-index");
+var metricbeatIndex = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
 var lib = {
 		
