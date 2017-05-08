@@ -31,7 +31,7 @@ var dbModel = "mongo";
 
 var service = new soajs.server.service(config);
 
-function checkMyAccess(req, res, cb) {
+function checkMyAccess (req, res, cb) {
 	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
 		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 	}
@@ -45,7 +45,7 @@ function checkMyAccess(req, res, cb) {
 	}
 }
 
-function initBLModel(req, res, BLModule, modelName, cb) {
+function initBLModel (req, res, BLModule, modelName, cb) {
 	BLModule.init(modelName, function (error, BL) {
 		if (error) {
 			req.soajs.log.error(error);
@@ -974,19 +974,6 @@ service.init(function () {
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
 			BL.deployService(config, req.soajs, service.registry, res, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-	
-	/**
-	 * Deploy a new custom service
-	 * @param {String} API route
-	 * @param {Function} API middleware
-	 */
-	service.post("/cloud/services/custom/deploy", function (req, res) {
-		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployCustomService(config, req.soajs, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
