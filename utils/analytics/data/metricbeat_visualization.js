@@ -17,7 +17,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "Docker-Container",
+		"id": "Docker-Container-%env%",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {
@@ -26,7 +26,7 @@ var visuals = [
 			"visState": "{\"title\":\"Container Stats\",\"type\":\"table\",\"params\":{\"perPage\":1,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":1,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"11\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.total\",\"customLabel\":\"Mem used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"asc\"}}}}",
 			"description": "",
-			"savedSearchId": "Metricbeat-Docker",
+			"savedSearchId": "Metricbeat-Docker-%env%",
 			"version": 1,
 			"kibanaSavedObjectMeta": {
 				"searchSourceJSON": "{\"filter\":[]}"
@@ -34,7 +34,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "Docker-Containers",
+		"id": "Docker-Containers-%env%",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {
@@ -43,7 +43,7 @@ var visuals = [
 			"visState": "{\"title\":\"Containers Stats\",\"type\":\"table\",\"params\":{\"perPage\":5,\"showMeticsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"docker.container.name\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"_term\",\"customLabel\":\"Name\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.cpu.total.pct\",\"customLabel\":\"CPU usage (%)\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.diskio.total\",\"customLabel\":\"DiskIO\"}},{\"id\":\"11\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.usage.total\",\"customLabel\":\"Mem Used\"}},{\"id\":\"10\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.limit\",\"customLabel\":\"Mem Limit\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.memory.rss.total\",\"customLabel\":\"Mem RSS\"}},{\"id\":\"8\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.in.bytes\",\"customLabel\":\"Net In\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"docker.network.out.bytes\",\"customLabel\":\"Net Out\"}}],\"listeners\":{}}",
 			"uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":1,\"direction\":\"asc\"}}}}",
 			"description": "",
-			"savedSearchId": "Metricbeat-Docker",
+			"savedSearchId": "Metricbeat-Docker-%env%",
 			"version": 1,
 			"kibanaSavedObjectMeta": {
 				"searchSourceJSON": "{\"filter\":[]}"
@@ -51,7 +51,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "Docker-CPU-usage",
+		"id": "Docker-CPU-usage-%env%",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {
@@ -67,7 +67,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "Docker-memory-usage",
+		"id": "Docker-memory-usage-%env%",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {
@@ -83,7 +83,7 @@ var visuals = [
 		}
 	},
 	{
-		"id": "Docker-Network-IO",
+		"id": "Docker-Network-IO-%env%",
 		"_type": "visualization",
 		"_shipper": "metricbeat",
 		"_source": {

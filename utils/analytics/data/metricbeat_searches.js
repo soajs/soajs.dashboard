@@ -1,7 +1,7 @@
 'use strict';
 var searches = [
 	{
-		"id": "Metricbeat-Docker",
+		"id": "Metricbeat-Docker-%env%",
 		"_type": "search",
 		"_shipper": "metricbeat",
 		"_source": {
@@ -23,10 +23,9 @@ var searches = [
 		}
 	},
 	{
-		"id": "Service-Errors",
+		"id": "Service-Errors-%env%",
 		"_type": "search",
 		"_shipper": "metricbeat",
-		
 		"_source": {
 			"env": "%env%",
 			"title": "Service Errors",
