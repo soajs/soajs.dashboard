@@ -9,6 +9,7 @@ module.exports = {
 		"soajs.content": "true",
 		"soajs.service.name": "kibana",
 		"soajs.service.group": "elk",
+		"soajs.service.type": "elk",
 		"soajs.service.label": "kibana",
 		"soajs.service.mode": "replicated"
 	},
