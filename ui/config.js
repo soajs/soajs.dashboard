@@ -51,6 +51,7 @@ var modules = {
 			contentManagement: 'modules/dev/contentManagement/install.js'
 		},
 		"stg": {
+			urac: 'modules/stg/urac/install.js',
 			contentManagement: 'modules/stg/contentManagement/install.js'
 		}
 	},
