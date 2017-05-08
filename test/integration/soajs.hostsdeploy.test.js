@@ -1171,7 +1171,7 @@ describe("testing hosts deployment", function () {
 				}
 			};
 
-			executeMyRequest(params, "/analytics/getSettings", "get", function (body) {
+			executeMyRequest(params, "analytics/getSettings", "get", function (body) {
 				assert.ok(body.data);
 				done();
 			});
@@ -1186,26 +1186,12 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				assert.ok(body.result);
+				console.log(JSON.stringify(body, null, 2))
 				assert.ok(body.data);
 				done();
 			});
 		});
-
-		it("get analytics settings - analytics being deployed ", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dashboard'
-				}
-			};
-
-			executeMyRequest(params, "analytics/getSettings", "get", function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-
+		
 		it("get analytics settings - analytics deployed", function (done) {
 			var params = {
 				qs: {
@@ -1214,7 +1200,7 @@ describe("testing hosts deployment", function () {
 				}
 			};
 
-			executeMyRequest(params, "/analytics/getSettings", "get", function (body) {
+			executeMyRequest(params, "analytics/getSettings", "get", function (body) {
 				assert.ok(body.data);
 				done();
 			});
@@ -1234,7 +1220,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 
-		it("success - activate analytics - elasticsearch and kibana deployed", function (done) {
+		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token,
@@ -1242,6 +1228,34 @@ describe("testing hosts deployment", function () {
 				}
 			};
 
+			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		it("success - activate analytics - elasticsearch and kibana deployed - dashboard", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'dashboard'
+				}
+			};
+			
+			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		it("success - activate analytics - elasticsearch and kibana deployed - dev ", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'dev'
+				}
+			};
+			
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);

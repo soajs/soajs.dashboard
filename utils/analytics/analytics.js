@@ -9,6 +9,7 @@ var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeatIndex = require("./indexes/metricbeat-index");
 var allIndex = require("./indexes/all-index");
+var counter = 0;
 var lib = {
 		
 		"insertMongoData": function (soajs, config, model, cb) {
@@ -190,6 +191,11 @@ var lib = {
 			esClient.ping(function (error) {
 				if (error) {
 					setTimeout(function () {
+						if (counter > 150 ){ // wait 5 min
+							soajs.log.error("Elasticsearch wasn't deployed... exiting");
+							cb(error);
+						}
+						counter++;
 						lib.pingElastic(esClient, cb);
 					}, 2000);
 				}
@@ -200,7 +206,6 @@ var lib = {
 		},
 		
 		"infoElastic": function (esClient, cb) {
-			
 			esClient.db.info(function (error) {
 				if (error) {
 					setTimeout(function () {
@@ -219,6 +224,7 @@ var lib = {
 		},
 		
 		"setMapping": function (soajs, env, model, esClient, cb) {
+			soajs.log.debug("Adding Mapping and templates");
 			async.series({
 				"mapping": function (callback) {
 					lib.putMapping(soajs, model, esClient, callback);
@@ -283,6 +289,7 @@ var lib = {
 		},
 		
 		"addVisualizations": function (soajs, deployer, esClient, utils, env, model, cb) {
+			soajs.log.debug("Adding Kibana Visualizations");
 			var BL = {
 				model: model
 			};
@@ -635,6 +642,7 @@ var lib = {
 		},
 		
 		"deployKibana": function (soajs, env, deployer, utils, model, cb) {
+			soajs.log.debug("Checking Kibana");
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -645,9 +653,11 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.kibana && settings.kibana.status === "deployed") {
+					soajs.log.debug("Kibana found..");
 					return cb(null, true);
 				}
 				else {
+					soajs.log.debug("Deploying Kibana..");
 					lib.getAnalyticsContent("kibana", env, function (err, content) {
 						var options = utils.buildDeployerOptions(env, soajs, model);
 						options.params = content;
@@ -670,6 +680,7 @@ var lib = {
 		},
 		
 		"deployLogstash": function (soajs, env, deployer, utils, model, cb) {
+			soajs.log.debug("Checking Logstash..");
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -680,10 +691,12 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.logstash && settings.logstash[env.code.toLowerCase()] && settings.logstash[env.code.toLowerCase()].status === "deployed") {
+					soajs.log.debug("Logstash found..");
 					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("logstash", env, function (err, content) {
+						soajs.log.debug("Deploying Logstash..");
 						var options = utils.buildDeployerOptions(env, soajs, model);
 						options.params = content;
 						async.parallel({
@@ -708,6 +721,7 @@ var lib = {
 		},
 		
 		"deployFilebeat": function (soajs, env, deployer, utils, model, cb) {
+			soajs.log.debug("Checking Filebeat..");
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -718,10 +732,12 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.filebeat && settings.filebeat[env.code.toLowerCase()] && settings.filebeat[env.code.toLowerCase()].status === "deployed") {
+					soajs.log.debug("Filebeat found..");
 					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("filebeat", env, function (err, content) {
+						soajs.log.debug("Deploying Filebeat..");
 						var options = utils.buildDeployerOptions(env, soajs, model);
 						options.params = content;
 						async.parallel({
@@ -746,6 +762,7 @@ var lib = {
 		},
 		
 		"deployMetricbeat": function (soajs, env, deployer, utils, model, cb) {
+			soajs.log.debug("Checking Metricbeat..");
 			var combo = {};
 			combo.collection = colls.analytics;
 			combo.conditions = {
@@ -756,10 +773,12 @@ var lib = {
 					return cb(error);
 				}
 				if (settings && settings.metricbeat && settings.metricbeat[env.code.toLowerCase()] && settings.metricbeat[env.code.toLowerCase()].status === "deployed") {
+					soajs.log.debug("Metricbeat found..");
 					return cb(null, true);
 				}
 				else {
 					lib.getAnalyticsContent("metricbeat", env, function (err, content) {
+						soajs.log.debug("Deploying Metricbeat..");
 						var options = utils.buildDeployerOptions(env, soajs, model);
 						options.params = content;
 						async.parallel({
@@ -784,6 +803,7 @@ var lib = {
 		},
 		
 		"checkAvailability": function (soajs, env, deployer, utils, model, cb) {
+			soajs.log.debug("Finalizing...");
 			var BL = {
 				model: model
 			};
@@ -872,7 +892,6 @@ var lib = {
 				}
 				else {
 					setTimeout(function () {
-						console.log("Waiting for kibana to be available...");
 						lib.setDefaultIndex(soajs, env, esClient, model, cb);
 					}, 5000);
 				}
