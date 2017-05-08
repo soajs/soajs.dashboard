@@ -42,7 +42,7 @@ module.exports = {
 				return mainCb({"code": data.error.code, "msg": data.error.msg});
 			}
 
-			if (typeof (data.error) === 'object' && (data.error.message || data.error.msg)) {
+			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
 			}
 
