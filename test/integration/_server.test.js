@@ -29,12 +29,13 @@ describe("importing sample data", function () {
 	it("update environment before starting service", function (done) {
 		var setDoc = {
 			"$set": {
-				"services.config.logger.level": "fatal",
-				"services.config.logger.formatter.outputMode": "short"
+				"services.config.logger.level": "debug",
+				"services.config.logger.formatter.outputMode": "long",
+				"services.config.logger.src": true
 			},
-			"$unset": {
-				"services.config.logger.src": ""
-			}
+			// "$unset": {
+			// 	"services.config.logger.src": ""
+			// }
 		};
 		mongo.update('environment', {'code': 'DEV'}, setDoc, {
 			"multi": false,
