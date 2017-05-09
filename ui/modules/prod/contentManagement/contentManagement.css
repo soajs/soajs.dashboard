@@ -1,0 +1,25 @@
+.imageBox{
+    margin:5px;
+    width:32%;
+}
+
+.audioBox{
+    margin:5px;
+    width:48%;
+}
+
+#preview{
+    margin:0;
+    padding:0;
+    list-style-type:none;
+}
+
+.wrapper-audio,
+.wrapper-video,
+.wrapper-document,
+.wrapper-image{
+    /*border:solid 1px red;*/
+    height:20px;
+    display:table;
+    margin-bottom:40px;
+}
