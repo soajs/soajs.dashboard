@@ -6,6 +6,7 @@ module.exports = {
 		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200'
 	],
 	"labels": {
+		"soajs.content": "true",
 		"soajs.env.code": "%env%",
 		"soajs.service.type": "elk",
 		"soajs.service.name": "%env%-logstash",

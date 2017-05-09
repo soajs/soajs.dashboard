@@ -200,8 +200,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.hostLogs($scope, task);
 	};
 	
-	$scope.metrics = function (task, serviceName, type, shipper) {
-		hacloudSrv.metrics($scope, task, serviceName, type, shipper);
+	$scope.metrics = function (task, serviceName, type, shipper, mode) {
+		hacloudSrv.metrics($scope, task, serviceName, type, shipper, mode);
 	};
 	
 	$scope.getSettings = function () {

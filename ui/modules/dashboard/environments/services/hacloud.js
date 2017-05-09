@@ -944,7 +944,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 * @param type
 	 * @param shipper
 	 */
-	function metrics(currentScope, task, serviceName, type, shipper) {
+	function metrics(currentScope, task, serviceName, type, shipper, mode) {
 		var env = currentScope.envCode.toLowerCase();
 		var dashboardID = "";
 		var name = serviceName;
@@ -954,7 +954,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			logType = "Metrics";
 			filter = "&_a=(query:(query_string:(analyze_wildcard:!t,query:'";
 			if (task && type === 'task') {
-				name = task.name + "." + task.id;
+				var id = task.id;
+				if(currentScope.envPlatform === 'docker' && mode === 'global'){
+					id = task.ref.node.id + "." + task.id;
+				}
+				name = task.name + "." + id;
 				dashboardID = "Metricbeat-Docker-task";
 				filter +="docker.container.name:"+ name;
 			}
