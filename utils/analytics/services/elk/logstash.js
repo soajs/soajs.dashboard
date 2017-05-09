@@ -12,7 +12,7 @@ module.exports = {
 		"soajs.service.name": "%env%-logstash",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-logstash",
-		"soajs.service.mode": "global"
+		"soajs.service.mode": "replicated"
 	},
 	"command": {
 		"cmd": ["bash"],

@@ -88,8 +88,12 @@ var lib = {
 					"network": loadContent.deployConfig.network,
 					"ports": loadContent.deployConfig.ports || []
 				};
+				
 				if (loadContent.command && loadContent.command.cmd) {
-					serviceParams.cmd = loadContent.command.cmd.concat(loadContent.command.args)
+					serviceParams.command = loadContent.command.cmd;
+				}
+				if (loadContent.command && loadContent.command.args) {
+					serviceParams.args = loadContent.command.args;
 				}
 				//if deployment is kubernetes
 				var esNameSpace = '';
@@ -123,16 +127,33 @@ var lib = {
 						serviceParams.ports[0].published = 30920;
 					}
 				}
-				if (loadContent.deployConfig.volume && Object.keys(loadContent.deployConfig.volume).length > 0) {
-					if (env.deployer.selected.split(".")[1] === "docker" && service === "metricbeat" ) {
-						loadContent.deployConfig.volume.source = loadContent.deployConfig.volume.target;
+				if (loadContent.deployConfig.volume) {
+					if (env.deployer.selected.split(".")[1] === "kubernetes") {
+						serviceParams.voluming = {
+							"volumes": [],
+							"volumeMounts": []
+						};
+						loadContent.deployConfig.volume.forEach(function (oneVolume) {
+							serviceParams.voluming.volumes.push ({
+								"name": oneVolume.Source,
+								"hostPath": {
+									"path": oneVolume.Target
+								}
+							});
+							serviceParams.voluming.volumeMounts.push({
+								"name": oneVolume.Source,
+								"mountPath": oneVolume.Target
+							});
+						})
 					}
-					serviceParams.volume = {
-						"type": loadContent.deployConfig.volume.type,
-						"readOnly": loadContent.deployConfig.volume.readOnly || false,
-						"source": loadContent.deployConfig.volume.source,
-						"target": loadContent.deployConfig.volume.target
-					};
+					else if (env.deployer.selected.split(".")[1] === "docker") {
+						if (service === "metricbeat") {
+							loadContent.deployConfig.volume[0].Source= loadContent.deployConfig.volume[0].Target;
+						}
+						serviceParams.voluming = {
+							"volumes": loadContent.deployConfig.volume
+						};
+					}
 				}
 				if (loadContent.deployConfig.annotations) {
 					serviceParams.annotations = loadContent.deployConfig.annotations;

@@ -36,12 +36,12 @@ module.exports = {
 		"annotations": {
 			"pod.beta.kubernetes.io/init-containers": JSON.stringify(annotation)
 		},
-		"volume": {
-			"type": "volume",
-			"readOnly": false,
-			"source": "elasticsearch-volume",
-			"target": "/usr/share/elasticsearch/data"
-		},
+		"volume": [{
+			"Type": "volume",
+			"ReadOnly": false,
+			"Source": "elasticsearch-volume",
+			"Target": "/usr/share/elasticsearch/data"
+		}],
 		"replication": {
 			"mode": "replicated",
 			"replicas": 1

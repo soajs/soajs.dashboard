@@ -21,14 +21,14 @@ module.exports = {
 		"network": "soajsnet",
 		"replication": {
 			"mode": "global",
-			"replicas":1
+			"replicas": 1
 		},
-		"volume": {
-			"type": "bind",
-			"readOnly": true,
-			"source": "docker-sock",
-			"target": "/var/run/docker.sock"
-		},
+		"volume": [{
+			"Type": "bind",
+			"ReadOnly": true,
+			"Source": "docker-sock",
+			"Target": "/var/run/docker.sock"
+		}],
 		"restartPolicy": {
 			"condition": "any",
 			"maxAttempts": 15

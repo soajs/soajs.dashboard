@@ -27,14 +27,21 @@ module.exports = {
 		"network": "soajsnet",
 		"replication": {
 			"mode": "global",
-			"replicas":1
+			"replicas": 1
 		},
-		"volume": {
-			"type": "volume",
-			"readOnly": false,
-			"source": "soajs-filebeat",
-			"target": "/usr/share/filebeat/bin/data"
-		},
+		"volume": [
+			{
+				"Type": "volume",
+				"ReadOnly": false,
+				"Source": "soajs-filebeat",
+				"Target": "/usr/share/filebeat/bin/data"
+			},
+			{
+				"Type": "volume",
+				"ReadOnly": false,
+				"Source": "soajs_log_volume",
+				"Target": "/var/log/soajs/"
+			}],
 		"restartPolicy": {
 			"condition": "on-failure",
 			"maxAttempts": 15
