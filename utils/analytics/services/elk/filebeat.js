@@ -8,7 +8,6 @@ module.exports = {
 		'SOAJS_LOGSTASH_PORT=12201'
 	],
 	"labels": {
-		"soajs.content": "true",
 		"soajs.service.name": "%env%-filebeat",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-filebeat",

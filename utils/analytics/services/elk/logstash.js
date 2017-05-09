@@ -6,13 +6,12 @@ module.exports = {
 		'ELASTICSEARCH_URL=soajs-analytics-elasticsearch%esNameSpace%:9200'
 	],
 	"labels": {
-		"soajs.content": "true",
 		"soajs.env.code": "%env%",
 		"soajs.service.type": "elk",
 		"soajs.service.name": "%env%-logstash",
 		"soajs.service.group": "elk",
 		"soajs.service.label": "%env%-logstash",
-		"soajs.service.mode": "global"
+		"soajs.service.mode": "replicated"
 	},
 	"command": {
 		"cmd": ["bash"],
@@ -31,8 +30,8 @@ module.exports = {
 			}
 		],
 		"replication": {
-			"mode": "global",
-			"replicas":1
+			"mode": "replicated",
+			"replicas": 1
 		},
 		"restartPolicy": {
 			"condition": "any",

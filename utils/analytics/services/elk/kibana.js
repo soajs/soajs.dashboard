@@ -6,7 +6,6 @@ module.exports = {
 		'ELASTICSEARCH_URL=http://soajs-analytics-elasticsearch%esNameSpace%:9200' //add support for kubernetes (add namespace)
 	],
 	"labels": {
-		"soajs.content": "true",
 		"soajs.service.name": "kibana",
 		"soajs.service.group": "elk",
 		"soajs.service.type": "elk",
