@@ -209,8 +209,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             var params = {
                 proxy: false,
                 env: envCode,
-                type: 'service',
-                name: 'controller',
+	            custom: {
+		            type: 'service',
+		            name: 'controller',
+	            },
                 recipe: formData.ctrlRecipe,
                 gitSource: {
                     owner: formData.owner,
@@ -224,8 +226,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     replication: {
                         mode: formData.controllerDeploymentMode
                     },
-                },
-                contentConfig: {}
+                }
             };
 
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
@@ -242,21 +243,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 }
             }
 	
-            params.catalogUserInput = {
-            	image: {
-            		name: formData['_ci_serviceImageName'],
+            if(formData['_ci_serviceImageName'] && formData['_ci_serviceImagePrefix'] && formData['_ci_serviceImageTag']){
+	            params.custom['image'] = {
+		            name: formData['_ci_serviceImageName'],
 		            prefix: formData['_ci_serviceImagePrefix'],
 		            tag: formData['_ci_serviceImageTag']
-	            }
-            };
+	            };
+            }
             
             var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
             for( var input in formData){
             	if(input.indexOf('_ci_service') !== -1 && excludes.indexOf(input) === -1){
-		            if(!params.catalogUserInput.env){
-			            params.catalogUserInput.env = {};
+		            if(!params.custom.env){
+			            params.custom.env = {};
 		            }
-		            params.catalogUserInput.env[input.replace('_ci_service_', '')] = formData[input];
+		            params.custom.env[input.replace('_ci_service_', '')] = formData[input];
 	            }
             }
             
@@ -328,8 +329,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             //save controller deployment mode in case needed later for rollback
             currentScope.controller = { mode: params.deployConfig.replication.mode };
 
-            params.type = 'nginx';
-            params.name = 'nginx';
+            params.custom = {
+            	"type": "nginx",
+	            "name": "nginx"
+            };
+            
             params.recipe = formData.nginxRecipe;
             params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
             params.deployConfig.replication = {
@@ -351,21 +355,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
 
             //inject user input catalog entry and image override
-	        params.catalogUserInput = {
-		        image: {
+	        if(formData['_ci_nginxImageName'] && formData['_ci_nginxImagePrefix'] && formData['_ci_nginxImageTag']){
+		        params.custom['image'] = {
 			        name: formData['_ci_nginxImageName'],
 			        prefix: formData['_ci_nginxImagePrefix'],
 			        tag: formData['_ci_nginxImageTag']
-		        }
-	        };
+		        };
+	        }
 	
 	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
 	        for( var input in formData){
 		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
-			        if(!params.catalogUserInput.env){
-				        params.catalogUserInput.env = {};
+			        if(!params.custom.env){
+				        params.custom.env = {};
 			        }
-			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
+			        params.custom.env[input.replace('_ci_nginx_', '')] = formData[input];
 		        }
 	        }
 	        
@@ -480,7 +484,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 	                delete currentScope._ci_serviceImagePrefix;
 	                delete currentScope._ci_serviceImageName;
 	                delete currentScope._ci_serviceImageTag;
-	                currentScope.catalogUserInputs = {};
+	                currentScope.custom = {};
 	                
                     $scope.selectService = function (service) {
 
@@ -628,7 +632,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
 							                    required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
 						                    };
-						                    currentScope.catalogUserInputs["_ci_service_" + envVariable] = newCatalogInput;
+						                    currentScope.custom["_ci_service_" + envVariable] = newCatalogInput;
 						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
 					                    }
 				                    }
@@ -640,8 +644,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     function newController(currentScope) {
                         var params = {
                             'env': env,
-                            'name': 'controller',
-                            'type': 'service',
+	                        'custom':{
+		                        'name': 'controller',
+		                        'type': 'service'
+	                        },
                             'recipe': currentScope.recipe
                         };
 
@@ -673,21 +679,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         };
 	
 	                    //inject user input catalog entry and image override
-	                    params.catalogUserInput = {
-		                    image: {
+	                    if(currentScope['_ci_serviceImageName'] && currentScope['_ci_serviceImagePrefix'] && currentScope['_ci_serviceImageTag']){
+		                    params.custom['image'] = {
 			                    name: currentScope['_ci_serviceImageName'],
 			                    prefix: currentScope['_ci_serviceImagePrefix'],
 			                    tag: currentScope['_ci_serviceImageTag']
-		                    }
-	                    };
+		                    };
+	                    }
 	
 	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
 	                    for( var input in currentScope){
 		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
-			                    if(!params.catalogUserInput.env){
-				                    params.catalogUserInput.env = {};
+			                    if(!params.custom.env){
+				                    params.custom.env = {};
 			                    }
-			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+			                    params.custom.env[input.replace('_ci_service_', '')] = currentScope[input];
 		                    }
 	                    }
 	                    
@@ -712,7 +718,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			                            delete currentScope[input];
 		                            }
 	                            }
-	                            currentScope.catalogUserInputs = {};
+	                            currentScope.custom = {};
 	                            
                                 $modalInstance.close();
                             }
@@ -722,8 +728,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     function newService(currentScope) {
                         var params = {
                             'env': env,
-                            'type': 'service',
-                            "version": parseInt(currentScope.version),
+	                        'custom':{
+		                        'type': 'service',
+		                        "version": parseInt(currentScope.version)
+	                        },
                             'recipe': currentScope.recipe
                         };
 
@@ -741,25 +749,18 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         }
 
                         if (currentScope.service.gcId) {
-                            params.contentConfig = {
-                                "service": {
-                                    "gc": true,
-                                    "gcName": currentScope.service.name,
-                                    "gcVersion": currentScope.service.version
-                                }
+                            params.custom.gc = {
+                                "gcName": currentScope.service.name,
+                                "gcVersion": currentScope.service.version
                             }
 
                         } else {
-                            params.name = currentScope.service.name;
+                            params.custom.name = currentScope.service.name;
                         }
 
                         if (currentScope.groupConfig) {
-                            params.type = 'daemon';
-                            params.contentConfig = {
-                                "daemon": {
-                                    "grpConfName": currentScope.groupConfig.daemonConfigGroup
-                                }
-                            }
+                            params.custom.type = 'daemon';
+                            params.custom.daemonGroup = currentScope.groupConfig.daemonConfigGroup;
                         }
 
                         params.deployConfig = {
@@ -782,21 +783,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                         }
 	
 	                    //inject user input catalog entry and image override
-	                    params.catalogUserInput = {
-		                    image: {
+	                    if(currentScope['_ci_serviceImageName'] && currentScope['_ci_serviceImagePrefix'] && currentScope['_ci_serviceImageTag']){
+		                    params.custom.image = {
 			                    name: currentScope['_ci_serviceImageName'],
 			                    prefix: currentScope['_ci_serviceImagePrefix'],
 			                    tag: currentScope['_ci_serviceImageTag']
-		                    }
-	                    };
+		                    };
+	                    }
 	
 	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
 	                    for( var input in currentScope){
 		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
-			                    if(!params.catalogUserInput.env){
-				                    params.catalogUserInput.env = {};
+			                    if(!params.custom.env){
+				                    params.custom.env = {};
 			                    }
-			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
+			                    params.custom.env[input.replace('_ci_service_', '')] = currentScope[input];
 		                    }
 	                    }
 
@@ -823,7 +824,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 			                            delete currentScope[input];
 		                            }
 	                            }
-	                            currentScope.catalogUserInputs = {};
+	                            currentScope.custom = {};
 	                            
                                 $modalInstance.close();
                             }
@@ -1107,8 +1108,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         // }
 
         function deployNginx(formData, params) {
-            params.type = 'nginx';
-            params.name = 'nginx';
+        	params.custom = {
+        		type: 'nginx',
+		        name: 'nginx'
+	        };
+            
             params.recipe = formData.nginxRecipe;
             params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
             params.deployConfig.replication = {
@@ -1130,21 +1134,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
 	
 	        //inject user input catalog entry and image override
-	        params.catalogUserInput = {
-		        image: {
+	        if(formData['_ci_nginxImageName'] && formData['_ci_nginxImagePrefix'] && formData['_ci_nginxImageTag']){
+		        params.custom.image = {
 			        name: formData['_ci_nginxImageName'],
 			        prefix: formData['_ci_nginxImagePrefix'],
 			        tag: formData['_ci_nginxImageTag']
-		        }
-	        };
+		        };
+	        }
 	
 	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
 	        for( var input in formData){
 		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
-			        if(!params.catalogUserInput.env){
-				        params.catalogUserInput.env = {};
+			        if(!params.custom.env){
+				        params.custom.env = {};
 			        }
-			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
+			        params.custom.env[input.replace('_ci_nginx_', '')] = formData[input];
 		        }
 	        }
 
