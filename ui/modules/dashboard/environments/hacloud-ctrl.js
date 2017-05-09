@@ -200,8 +200,8 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 		hacloudSrv.hostLogs($scope, task);
 	};
 	
-	$scope.metrics = function (task, serviceName, type, shipper) {
-		hacloudSrv.metrics($scope, task, serviceName, type, shipper);
+	$scope.metrics = function (task, serviceName, type, shipper, mode) {
+		hacloudSrv.metrics($scope, task, serviceName, type, shipper, mode);
 	};
 	
 	$scope.getSettings = function () {
@@ -210,10 +210,18 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	
 	$scope.activateAnalytics = function () {
 		hacloudSrv.activateAnalytics($scope);
+		$timeout(function(){
+			$scope.listServices(function(){
+				$scope.getSettings();
+			});
+		}, 30000);
 	};
 	
 	$scope.deactivateAnalytics = function () {
 		hacloudSrv.deactivateAnalytics($scope);
+		$timeout(function(){
+			$scope.listServices(function(){});
+		}, 5000);
 	};
 	
 	$scope.showHideFailures = function(service){

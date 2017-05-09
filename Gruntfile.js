@@ -142,6 +142,7 @@ module.exports = function (grunt) {
 				'utils/*.js',
 				'utils/*/*.js',
 				'utils/*/*/*.js',
+				'utils/*/*/*/*.js',
 				'test/*.js'
 			],
 			options: {
