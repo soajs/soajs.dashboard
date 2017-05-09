@@ -2539,8 +2539,8 @@ module.exports = {
 						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
-				"catalogUserInput":{
-					"source": ["body.catalogUserInput"],
+				"custom":{
+					"source": ["body.custom"],
 					"required":false,
 					"validation": {
 						"type": "object",

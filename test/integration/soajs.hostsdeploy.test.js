@@ -372,7 +372,7 @@ describe("testing hosts deployment", function () {
 	beforeEach(function (done) {
 		setTimeout(function () {
 			done();
-		}, 700);
+		}, process.env.SOAJS_TEST_LATENCY || 700);
 	});
 
 	describe("testing cluster nodes", function () {
@@ -704,8 +704,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-
-
+		
 	});
 
 	describe("testing service deployment", function () {
@@ -796,6 +795,7 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -835,7 +835,6 @@ describe("testing hosts deployment", function () {
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], { 'code': 618, 'message': errorCodes[ 618 ] });
 					done();
 				});
 			});
@@ -984,7 +983,7 @@ describe("testing hosts deployment", function () {
 
 	});
 
-	describe.skip("testing redeploy service", function () {
+	describe("testing redeploy service", function () {
 		var nginxDeployment, ctrlDeployment, uiRecord;
 		before("list services and get static content record", function (done) {
 			mongo.find('staticContent', {}, function (error, records) {

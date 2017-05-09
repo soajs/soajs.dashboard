@@ -412,7 +412,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			if(formData && Object.keys(formData).length > 0){
 				//inject user input catalog entry and image override
-				params.catalogUserInput = {
+				params.custom = {
 					image: {
 						name: formData['ImageName'],
 						prefix: formData['ImagePrefix'],
@@ -422,10 +422,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 				for( var input in formData){
 					if(input.indexOf('_ci_') !== -1){
-						if(!params.catalogUserInput.env){
-							params.catalogUserInput.env = {};
+						if(!params.custom.env){
+							params.custom.env = {};
 						}
-						params.catalogUserInput.env[input.replace('_ci_', '')] = formData[input];
+						params.custom.env[input.replace('_ci_', '')] = formData[input];
 					}
 				}
 			}

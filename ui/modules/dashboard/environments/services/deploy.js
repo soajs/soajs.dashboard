@@ -134,7 +134,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             getCatalogRecipes(currentScope, function (recipes) {
                 // adding available recipes to form
                 recipes.forEach(function (oneRecipe) {
-                    if (oneRecipe.type === 'service') {
+                    if (oneRecipe.type === 'service' || oneRecipe.type === 'soajs') {
                         formConfig.entries[1].entries[4].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 1,
