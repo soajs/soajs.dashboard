@@ -619,14 +619,6 @@ var environmentsConfig = {
 							'required': true
 						},
 						{
-							'name': 'branch',
-							'label': 'Branch',
-							'type': 'select',
-							'value': [],
-							'fieldMsg': 'Select a branch to deploy from',
-							'required': true
-						},
-						{
 							'name': 'ctrlMemoryLimit',
 							'label': 'Memory Limit Per Instance for Controllers (in MBytes)',
 							'type': 'number',

@@ -72,7 +72,11 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	if($cookies.getObject('selectedInterval')){
 		$scope.selectedInterval = $cookies.getObject('selectedInterval');
 	}
-
+	
+	$scope.changeSectionType = function(sectionType){
+		$scope.sectionType = sectionType;
+	};
+	
 	$scope.changeInterval = function(oneInt){
 		$scope.refreshIntervals.forEach(function(oneInterval){
 			if(oneInterval.v === oneInt.v){
@@ -137,10 +141,6 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 
 	$scope.deployNewService = function () {
 		deploySrv.deployNewService($scope);
-	};
-
-	$scope.deployNewNginx = function () {
-		deploySrv.deployNewNginx($scope);
 	};
 
 	$scope.listServices = function (cb) {
