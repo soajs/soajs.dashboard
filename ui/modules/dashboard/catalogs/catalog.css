@@ -2,11 +2,17 @@
     width: 32% !important;
     float: left !important;
     margin-right: 1% !important;
-    height: 200px !important;
+    /*height: 200px !important;*/
+    text-align:left;
+}
+
+.recipe-box label{
+    margin-bottom:0;
 }
 
 .catalogIcon {
-    margin-top: 5% !important;
+    margin: 1% !important;
+    float:left;
 }
 
 .blueRecipeBox{
@@ -16,4 +22,13 @@
 .blueBoxHeader{
     background-color: #DEF1F7 !important;
     border-bottom-color:#337ab7 !important;
+}
+
+.greenRecipeBox{
+    border: solid 1px #3c763d !important;
+}
+
+.greenBoxHeader{
+    background-color: #dff0d8 !important;
+    border-bottom-color:#3c763d !important;
 }

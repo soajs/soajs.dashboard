@@ -61,10 +61,19 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             formConfig.entries[1].value = recipeTemplate;
         }
         else {
+        	var groups = [];
             $scope.recipes.forEach(function (oneRecipe) {
-                formConfig.entries[0].value.push({ l: oneRecipe.name, v: oneRecipe });
+            	var label = oneRecipe.name;
+            	if(oneRecipe.subtype){
+            		label += " (" + oneRecipe.subtype + ")";
+	            }
+                formConfig.entries[0].value.push({ l: label, v: oneRecipe, group: oneRecipe.type });
+            	
+            	if(groups.indexOf(oneRecipe.type) === -1){
+            		groups.push(oneRecipe.type);
+	            }
             });
-
+	        formConfig.entries[0].groups = groups;
             formConfig.entries[0].onAction = function (id, data, form) {
                 var recipeTemplate = JSON.parse(data);
                 delete recipeTemplate._id;

@@ -15,9 +15,9 @@
     <div ng-if="access.list">
         <div ng-if="recipes && recipes.length > 0" class="entryBoxes">
             <br />
-            <div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked}">
-                <div class="header" ng-class="{blueBoxHeader: !recipe.locked}">
-                    {{recipe.name}}<span ng-if="recipe.locked" class="icon icon-lock"></span>
+            <div ng-repeat="recipe in recipes" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
+                <div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
+                    {{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
                     <div class="rightActions" style="display:inline;">
                         <a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe)" ng-confirm-click="Are you sure you want to delete this recipe?">
                             <span class="icon icon-cross" tooltip="Delete Recipe"></span>
@@ -30,9 +30,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="body" ng-style="{'text-align': 'center'}">
-                    <img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px" >
-                    <br /><br />
+                <div class="body">
+                    <img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
                     <label>{{recipe.type|capitalizeFirst}} Recipe</label>
                     <p>{{recipe.description}}</p>
                 </div>
