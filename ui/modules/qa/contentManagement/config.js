@@ -1,5 +1,5 @@
 "use strict";
-var cmModuleDevConfig = {
+var cmConfig = {
 	permissions: {},
 	
 	grid: {
