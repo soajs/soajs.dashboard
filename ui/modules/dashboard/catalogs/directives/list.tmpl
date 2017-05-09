@@ -1,5 +1,8 @@
 <section ng-controller="catalogAppCtrl">
-    <div class="dropdown">
+	<div class="f-right w20 searchBoxContainer">
+		<input type="text" name="tag" ng-model="query" ng-keyup="filterData(query, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+	</div>
+    <div class="dropdown f-left">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             Add New Recipe&nbsp;<span class="caret"></span>
         </button>
