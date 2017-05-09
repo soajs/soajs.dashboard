@@ -18,16 +18,12 @@ var lib = {
 			comboFind.conditions = {
 				"_type": "settings"
 			};
+			
 			model.findEntry(soajs, comboFind, function (error, response) {
 				if (error) {
 					return cb(error);
 				}
-				if (response && response.mongoImported) {
-					return cb(null, true);
-				}
-				else {
-					var records = [];
-					var dataFolder = __dirname + "/data/";
+				function importData(call){
 					fs.readdir(dataFolder, function (err, items) {
 						async.forEachOf(items, function (item, key, callback) {
 							if (key === 0) {
@@ -45,12 +41,43 @@ var lib = {
 							comboInsert.collection = colls.analytics;
 							comboInsert.record = records;
 							if (records) {
-								model.insertEntry(soajs, comboInsert, cb);
+								model.insertEntry(soajs, comboInsert, call);
 							}
 							else {
-								throw new Error("No Elastic db name found!"); //todo check this
+								throw call(null, true);
 							}
 						});
+					});
+				}
+				if (response && response.mongoImported) {
+					return cb(null, true);
+				}
+				else {
+					var records = [];
+					var dataFolder = __dirname + "/data/";
+					importData(function(err){
+						if(err){
+							return cb(err);
+						}
+						else {
+							var combo = {
+								"collection": colls.analytics,
+								"conditions": {
+									"_type": "settings"
+								},
+								"fields": {
+									"$set": {
+										"mongoImported": true
+									}
+								},
+								"options": {
+									"safe": true,
+									"multi": false,
+									"upsert": false
+								}
+							};
+							model.updateEntry(soajs, combo, cb);
+						}
 					});
 				}
 			})
@@ -172,7 +199,12 @@ var lib = {
 						options.params = content;
 						async.parallel({
 							"deploy": function (call) {
-								deployer.deployService(options, call)
+								if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+									deployer.deployService(options, call)
+								}
+								else {
+									return call(null, true);
+								}
 							},
 							"update": function (call) {
 								//Todo fix this
@@ -188,21 +220,26 @@ var lib = {
 		},
 		
 		"pingElastic": function (esClient, cb) {
-			esClient.ping(function (error) {
-				if (error) {
-					setTimeout(function () {
-						if (counter > 150 ){ // wait 5 min
-							soajs.log.error("Elasticsearch wasn't deployed... exiting");
-							cb(error);
-						}
-						counter++;
-						lib.pingElastic(esClient, cb);
-					}, 2000);
-				}
-				else {
-					lib.infoElastic(esClient, cb)
-				}
-			});
+			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				esClient.ping(function (error) {
+					if (error) {
+						setTimeout(function () {
+							if (counter > 150) { // wait 5 min
+								soajs.log.error("Elasticsearch wasn't deployed... exiting");
+								cb(error);
+							}
+							counter++;
+							lib.pingElastic(esClient, cb);
+						}, 2000);
+					}
+					else {
+						lib.infoElastic(esClient, cb)
+					}
+				});
+			}
+			else {
+				return cb(null, true);
+			}
 		},
 		
 		"infoElastic": function (esClient, cb) {
@@ -225,14 +262,14 @@ var lib = {
 		
 		"setMapping": function (soajs, env, model, esClient, cb) {
 			soajs.log.debug("Adding Mapping and templates");
-			async.series({
-				"mapping": function (callback) {
-					lib.putMapping(soajs, model, esClient, callback);
-				},
-				"template": function (callback) {
-					lib.putTemplate(soajs, model, esClient, callback);
-				}
-			}, cb);
+				async.series({
+					"mapping": function (callback) {
+						lib.putMapping(soajs, model, esClient, callback);
+					},
+					"template": function (callback) {
+						lib.putTemplate(soajs, model, esClient, callback);
+					}
+				}, cb);
 		},
 		
 		"putTemplate": function (soajs, model, esClient, cb) {
@@ -255,9 +292,14 @@ var lib = {
 						'name': oneTemplate._name,
 						'body': oneTemplate._json
 					};
-					esClient.db.indices.putTemplate(options, function (error) {
-						return callback(error, true);
-					});
+					if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+						esClient.db.indices.putTemplate(options, function (error) {
+							return callback(error, true);
+						});
+					}
+					else {
+						return callback(null, true);
+					}
 				}, cb);
 			});
 		},
@@ -274,17 +316,21 @@ var lib = {
 					index: '.kibana',
 					body: mappings._json
 				};
-				
-				esClient.db.indices.exists(mapping, function (error, result) {
-					if (error || !result) {
-						esClient.db.indices.create(mapping, function (err) {
-							return cb(err, true);
-						});
-					}
-					else {
-						return cb(null, true);
-					}
-				});
+				if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+					esClient.db.indices.exists(mapping, function (error, result) {
+						if (error || !result) {
+							esClient.db.indices.create(mapping, function (err) {
+								return cb(err, true);
+							});
+						}
+						else {
+							return cb(null, true);
+						}
+					});
+				}
+				else {
+					return cb(null, true);
+				}
 			});
 		},
 		
@@ -294,10 +340,15 @@ var lib = {
 				model: model
 			};
 			var options = utils.buildDeployerOptions(env, soajs, BL);
-			deployer.listServices(options, function (err, servicesList) {
-				lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
-				
-			});
+			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				deployer.listServices(options, function (err, servicesList) {
+					lib.configureKibana(soajs, servicesList, esClient, env, model, cb);
+					
+				});
+			}
+			else {
+				return cb(null, true);
+			}
 		},
 		
 		"esBulk": function (esClient, array, cb) {
@@ -614,7 +665,7 @@ var lib = {
 					if (err) {
 						return cb(err);
 					}
-					if (analyticsArray.length !== 0) {
+					if (analyticsArray.length !== 0 && !(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
 						lib.esBulk(esClient, analyticsArray, cb);
 					}
 					else {
@@ -646,7 +697,12 @@ var lib = {
 						options.params = content;
 						async.parallel({
 							"deploy": function (call) {
-								deployer.deployService(options, call)
+								if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+									deployer.deployService(options, call)
+								}
+								else {
+									return call(null, true);
+								}
 							},
 							"update": function (call) {
 								settings.kibana = {
@@ -684,7 +740,12 @@ var lib = {
 						options.params = content;
 						async.parallel({
 							"deploy": function (call) {
-								deployer.deployService(options, call)
+								if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+									deployer.deployService(options, call)
+								}
+								else {
+									return call(null, true);
+								}
 							},
 							"update": function (call) {
 								if (!settings.logstash) {
@@ -725,7 +786,12 @@ var lib = {
 						options.params = content;
 						async.parallel({
 							"deploy": function (call) {
-								deployer.deployService(options, call)
+								if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+									deployer.deployService(options, call)
+								}
+								else {
+									return call(null, true);
+								}
 							},
 							"update": function (call) {
 								if (!settings.filebeat) {
@@ -766,7 +832,12 @@ var lib = {
 						options.params = content;
 						async.parallel({
 							"deploy": function (call) {
-								deployer.deployService(options, call)
+								if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+									deployer.deployService(options, call);
+								}
+								else {
+									return call(null, true);
+								}
 							},
 							"update": function (call) {
 								if (!settings.metricbeat) {
@@ -791,31 +862,37 @@ var lib = {
 				model: model
 			};
 			var options = utils.buildDeployerOptions(env, soajs, BL);
-			var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", env.code.toLowerCase() + '-' + "metricbeat"];
-			deployer.listServices(options, function (err, servicesList) {
-				var failed = [];
-				servicesList.forEach(function (oneService) {
-					if (flk.indexOf(oneService.name) == !-1) {
-						var status = false;
-						oneService.tasks.forEach(function (oneTask) {
-							if (oneTask.status.state === "running") {
-								status = true;
+			var flk = ["kibana", "logstash", env.code.toLowerCase() + '-' + "filebeat", "soajs-metricbeat"];
+			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				deployer.listServices(options, function (err, servicesList) {
+					var failed = [];
+					servicesList.forEach(function (oneService) {
+						if (flk.indexOf(oneService.name) == !-1) {
+							var status = false;
+							oneService.tasks.forEach(function (oneTask) {
+								if (oneTask.status.state === "running") {
+									status = true;
+								}
+							});
+							if (!status) {
+								failed.push(oneService.name)
 							}
-						});
-						if (!status) {
-							failed.push(oneService.name)
 						}
+					});
+					if (failed.length !== 0) {
+						setTimeout(function () {
+							return lib.checkAvailability(soajs, env, deployer, utils, model, cb);
+						}, 1000);
+					}
+					else {
+						return cb(null, true)
 					}
 				});
-				if (failed.length !== 0) {
-					setTimeout(function () {
-						return lib.checkAvailability(soajs, env, deployer, utils, model, cb);
-					}, 1000);
-				}
-				else {
-					return cb(null, true)
-				}
-			});
+			}
+			else {
+				return cb(null, true);
+			}
+			
 		},
 		
 		"setDefaultIndex": function (soajs, env, esClient, model, cb) {
@@ -834,51 +911,56 @@ var lib = {
 				collection: colls.analytics,
 				conditions: {"_type": "settings"}
 			};
-			esClient.db.search(condition, function (err, res) {
-				if (err) {
-					return cb(err);
-				}
-				if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
-					model.findEntry(soajs, combo, function (err, result) {
-						if (err) {
-							return cb(err);
-						}
-						index.id = res.hits.hits[0]._id;
-						async.parallel({
-							"updateES": function (call) {
-								esClient.db.update(index, call);
-							},
-							"updateSettings": function (call) {
-								var criteria = {
-									"$set": {
-										"kibana": {
-											"version": index.id,
-											"status": "deployed",
-											"port": "32601"
-										}
-									}
-								};
-								result.env[env.code.toLowerCase()] = true;
-								criteria["$set"].env = result.env;
-								var options = {
-									"safe": true,
-									"multi": false,
-									"upsert": true
-								};
-								combo.fields = criteria;
-								combo.options = options;
-								model.updateEntry(soajs, combo, call);
+			if (!(process.env.SOAJS_TEST_ANALYTICS === 'test')) {
+				esClient.db.search(condition, function (err, res) {
+					if (err) {
+						return cb(err);
+					}
+					if (res && res.hits && res.hits.hits && res.hits.hits.length > 0) {
+						model.findEntry(soajs, combo, function (err, result) {
+							if (err) {
+								return cb(err);
 							}
-							
-						}, cb)
-					});
-				}
-				else {
-					setTimeout(function () {
-						lib.setDefaultIndex(soajs, env, esClient, model, cb);
-					}, 5000);
-				}
-			});
+							index.id = res.hits.hits[0]._id;
+							async.parallel({
+								"updateES": function (call) {
+									esClient.db.update(index, call);
+								},
+								"updateSettings": function (call) {
+									var criteria = {
+										"$set": {
+											"kibana": {
+												"version": index.id,
+												"status": "deployed",
+												"port": "32601"
+											}
+										}
+									};
+									result.env[env.code.toLowerCase()] = true;
+									criteria["$set"].env = result.env;
+									var options = {
+										"safe": true,
+										"multi": false,
+										"upsert": false
+									};
+									combo.fields = criteria;
+									combo.options = options;
+									model.updateEntry(soajs, combo, call);
+								}
+								
+							}, cb)
+						});
+					}
+					else {
+						setTimeout(function () {
+							lib.setDefaultIndex(soajs, env, esClient, model, cb);
+						}, 5000);
+					}
+				});
+			}
+			else {
+				return cb(null, true);
+			}
 		}
 	}
 ;
@@ -909,7 +991,7 @@ analyticsDriver.prototype.run = function () {
 
 analyticsDriver.deploy = function () {
 	var _self = this;
-	async.series(_self.operations, function (err, result) {
+	async.series(_self.operations, function (err) {
 		if (err) {
 			console.log(err);
 		}
