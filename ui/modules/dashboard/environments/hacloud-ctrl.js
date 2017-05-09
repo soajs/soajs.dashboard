@@ -210,10 +210,18 @@ environmentsApp.controller('hacloudCtrl', ['$scope', '$cookies', '$timeout', 'no
 	
 	$scope.activateAnalytics = function () {
 		hacloudSrv.activateAnalytics($scope);
+		$timeout(function(){
+			$scope.listServices(function(){
+				$scope.getSettings();
+			});
+		}, 30000);
 	};
 	
 	$scope.deactivateAnalytics = function () {
 		hacloudSrv.deactivateAnalytics($scope);
+		$timeout(function(){
+			$scope.listServices(function(){});
+		}, 5000);
 	};
 	
 	$scope.showHideFailures = function(service){
