@@ -6,7 +6,7 @@
 var titlePrefix = "SOAJS";
 var mydomain = "soajs.org";
 var mydomainport = location.port;
-if(mydomainport && mydomainport !== 80){
+if (mydomainport && mydomainport !== 80) {
 	mydomain += ":" + mydomainport;
 }
 var protocol = window.location.protocol;
@@ -20,6 +20,7 @@ var apiConfiguration = {
 var uiModuleDev = 'modules/dev';
 var uiModuleStg = 'modules/stg';
 var uiModuleProd = 'modules/prod';
+var uiModuleQa = 'modules/qa';
 
 var modules = {
 	"develop": {
@@ -47,12 +48,20 @@ var modules = {
 	},
 	"operate": {
 		"dev": {
-			urac: 'modules/dev/urac/install.js',
-			contentManagement: 'modules/dev/contentManagement/install.js'
+			urac: uiModuleDev + '/urac/install.js',
+			contentManagement: uiModuleDev + '/contentManagement/install.js'
+		},
+		"qa": {
+			urac: uiModuleQa + '/urac/install.js',
+			contentManagement: uiModuleQa + '/contentManagement/install.js'
 		},
 		"stg": {
-			urac: 'modules/stg/urac/install.js',
-			contentManagement: 'modules/stg/contentManagement/install.js'
+			urac: uiModuleStg + '/urac/install.js',
+			contentManagement: uiModuleStg + '/contentManagement/install.js'
+		},
+		"prod": {
+			urac: uiModuleProd + '/urac/install.js',
+			contentManagement: uiModuleProd + '/contentManagement/install.js'
 		}
 	},
 	"common": {

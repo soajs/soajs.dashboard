@@ -126,7 +126,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	};
 
 	$scope.listCMDataEntries = function () {
-		var grid = angular.copy(cmConfig.grid);
+		var grid = angular.copy(cmModuleDevConfig.grid);
 		for (var i = 0; i < $scope.selectedService.schema.soajsUI.list.columns.length; i++) {
 			$scope.selectedService.schema.soajsUI.list.columns[i].field = $scope.selectedService.schema.soajsUI.list.columns[i].field.replace("fields.", "");
 		}
@@ -178,7 +178,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 	};
 
 	$scope.addCMDataEntry = function () {
-		var config = cmConfig.form.add;
+		var config = cmModuleDevConfig.form.add;
 		config.entries = $scope.selectedService.schema.soajsUI.form.add;
 
 		var options = {
@@ -289,7 +289,7 @@ contentManagementApp.controller("ContentManagementModuleDevCtrl", ['$scope', 'ng
 		});
 
 		function editAndSaveEntry(data) {
-			var config = cmConfig.form.update;
+			var config = cmModuleDevConfig.form.update;
 			config.entries = $scope.selectedService.schema.soajsUI.form.update;
 
 			//combine config entries of input type files and data from gcs database
