@@ -809,7 +809,7 @@ var lib = {
 				});
 				if (failed.length !== 0) {
 					setTimeout(function () {
-						return lib.checkAvailability(soajs, deployer, utils, env, model, cb);
+						return lib.checkAvailability(soajs, env, deployer, utils, model, cb);
 					}, 1000);
 				}
 				else {
