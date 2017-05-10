@@ -2,8 +2,8 @@
     width: 32% !important;
     float: left !important;
     margin-right: 1% !important;
-    /*height: 200px !important;*/
     text-align:left;
+    min-height: 120px;
 }
 
 .recipe-box label{
