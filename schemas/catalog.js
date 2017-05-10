@@ -36,23 +36,8 @@ module.exports = {
                             },
                             "readinessProbe": {
                                 "type": "object",
-                                "required": false,
-                                "additionalProperties": false,
-                                "properties": {
-                                    "httpGet": {
-                                        "type": "object",
-                                        "required": true,
-                                        "properties": {
-                                            "path": { "type": "string", "required": true },
-                                            "port": { "type": "string", "required": true }
-                                        }
-                                    },
-                                    "initialDelaySeconds": { "type": "number", "required": true },
-                                    "timeoutSeconds": { "type": "number", "required": true },
-                                    "periodSeconds": { "type": "number", "required": true },
-                                    "successThreshold": { "type": "number", "required": true },
-                                    "failureThreshold": { "type": "number", "required": true }
-                                }
+                                "required": false
+                                //NOTE: removed validation for readinessProbe to allow free schema
                             },
                             "ports": {
                                 "type": "array",
