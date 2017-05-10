@@ -20,7 +20,7 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                 $scope.displayAlert('danger', error.message);
             }
             else {
-                $scope.recipes = response;
+	            $scope.originalRecipes = $scope.recipes = response;
             }
         });
     };
@@ -61,10 +61,19 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             formConfig.entries[1].value = recipeTemplate;
         }
         else {
+        	var groups = [];
             $scope.recipes.forEach(function (oneRecipe) {
-                formConfig.entries[0].value.push({ l: oneRecipe.name, v: oneRecipe });
+            	var label = oneRecipe.name;
+            	if(oneRecipe.subtype){
+            		label += " (" + oneRecipe.subtype + ")";
+	            }
+                formConfig.entries[0].value.push({ l: label, v: oneRecipe, group: oneRecipe.type });
+            	
+            	if(groups.indexOf(oneRecipe.type) === -1){
+            		groups.push(oneRecipe.type);
+	            }
             });
-
+	        formConfig.entries[0].groups = groups;
             formConfig.entries[0].onAction = function (id, data, form) {
                 var recipeTemplate = JSON.parse(data);
                 delete recipeTemplate._id;
@@ -205,7 +214,26 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             }
         });
     };
-
+	
+	$scope.filterData = function (query, tabIndex) {
+		if (query && query !== "") {
+			query = query.toLowerCase();
+			var filtered = [];
+			var recipes = $scope.recipes;
+			for (var i = 0; i < recipes.length; i++) {
+				if (recipes[i].name.toLowerCase().indexOf(query) !== -1 || recipes[i].type.toLowerCase().indexOf(query) !== -1 || recipes[i].description.toLowerCase().indexOf(query) !== -1 ||recipes[i].subtype && recipes[i].subtype.toLowerCase().indexOf(query) !== -1) {
+					filtered.push(recipes[i]);
+				}
+			}
+			$scope.recipes = filtered;
+		} else {
+			if ($scope.recipes && $scope.originalRecipes) {
+				$scope.recipes = $scope.originalRecipes;
+				
+			}
+		}
+	};
+    
     injectFiles.injectCss("modules/dashboard/catalogs/catalog.css");
 
     // Start here

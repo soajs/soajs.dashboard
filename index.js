@@ -25,7 +25,8 @@ var swaggerBL = require("./lib/swagger.js");
 var gitAccounts = require("./lib/git.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
-// var cb = require("./lib/contentbuilder.js"); // redundant
+//var cb = require("./lib/contentbuilder.js");
+var analyticsBL = require("./lib/analytics.js");
 
 var dbModel = "mongo";
 
@@ -1837,6 +1838,42 @@ service.init(function () {
 			BL.generate(config, req, res, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
+		});
+	});
+	
+	/**
+	 * Analytics:
+	 * Api that get settings of current Analytics in all environments
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/getSettings", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.getSettings(config, req, res);
+		});
+	});
+	
+	/**
+	 * Analytics:
+	 * Api that activate analytics in an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/activateAnalytics", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.activateAnalytics(config, req, res);
+		});
+	});
+	
+	/**
+	 * Analytics:
+	 * Api that deactivate analytics in an environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/analytics/deactivateAnalytics", function (req, res) {
+		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
+			BL.deactivateAnalytics(config, req, res);
 		});
 	});
 

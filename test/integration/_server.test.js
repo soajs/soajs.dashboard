@@ -29,13 +29,12 @@ describe("importing sample data", function () {
 	it("update environment before starting service", function (done) {
 		var setDoc = {
 			"$set": {
-				"services.config.logger.level": "debug",
-				"services.config.logger.formatter.outputMode": "long",
-				"services.config.logger.src": true
+				"services.config.logger.level": "fatal",
+				"services.config.logger.formatter.outputMode": "short"
 			},
-			// "$unset": {
-			// 	"services.config.logger.src": ""
-			// }
+			"$unset": {
+				"services.config.logger.src": ""
+			}
 		};
 		mongo.update('environment', {'code': 'DEV'}, setDoc, {
 			"multi": false,
@@ -101,7 +100,7 @@ describe("importing sample data", function () {
 			require("./soajs.dashboard.test.js");
 			require("./soajs.dashboard.test.services.js");
 			require("./soajs.uploadCertificate.test.js");
-            require("./soajs.catalog.test.js");
+			require("./soajs.catalog.test.js");
             require("./soajs.hostsdeploy.test.js");
 			require("./soajs.dashboard.test.gitAccounts.js");
 			done();
