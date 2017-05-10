@@ -8,7 +8,8 @@ module.exports = {
         "properties": {
             "name": { "type": "string", "required": true },
             "locked": { "type": "boolean", "required": false },
-            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "nginx", "nodejs", "mongo", "es" ] },
+            "type": { "type": "string", "required": true, "enum": [ "soajs", "nginx", "nodejs", "mongo", "es" ] },
+            "subtype": { "type": "string", "required": false, "enum": [ "service", "daemon" ] },
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",
@@ -29,25 +30,14 @@ module.exports = {
                                     "pullPolicy": { "type": "string", "required": false }
                                 }
                             },
+                            "specifyGitConfiguration": {
+                                "type": "boolean",
+                                "required": false
+                            },
                             "readinessProbe": {
                                 "type": "object",
-                                "required": false,
-                                "additionalProperties": false,
-                                "properties": {
-                                    "httpGet": {
-                                        "type": "object",
-                                        "required": true,
-                                        "properties": {
-                                            "path": { "type": "string", "required": true },
-                                            "port": { "type": "string", "required": true }
-                                        }
-                                    },
-                                    "initialDelaySeconds": { "type": "number", "required": true },
-                                    "timeoutSeconds": { "type": "number", "required": true },
-                                    "periodSeconds": { "type": "number", "required": true },
-                                    "successThreshold": { "type": "number", "required": true },
-                                    "failureThreshold": { "type": "number", "required": true }
-                                }
+                                "required": false
+                                //NOTE: removed validation for readinessProbe to allow free schema
                             },
                             "ports": {
                                 "type": "array",
