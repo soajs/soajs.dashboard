@@ -978,6 +978,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('danger', "unable to retrieve settings");
 				}
 				else {
+					currentScope.analyticsIsDeployed = (response.activated);
 					currentScope.showAnalytics = (response[env]);
 					currentScope.kibanaPort = (response.kibana && response.kibana.port) ? response.kibana.port : "32601";
 					currentScope.showActivateAnalytics = !(response.tracker && response.tracker.info);
