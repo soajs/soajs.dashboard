@@ -8,8 +8,8 @@ module.exports = {
         "properties": {
             "name": { "type": "string", "required": true },
             "locked": { "type": "boolean", "required": false },
-            "type": { "type": "string", "required": true, "enum": [ "service", "daemon", "nginx", "nodejs", "mongo", "es" ] },
-            "subtype": { "type": "string", "required": false },
+            "type": { "type": "string", "required": true, "enum": [ "soajs", "nginx", "nodejs", "mongo", "es" ] },
+            "subtype": { "type": "string", "required": false, "enum": [ "service", "daemon" ] },
             "description": { "type": "string", "required": true },
             "recipe": {
                 "type": "object",
