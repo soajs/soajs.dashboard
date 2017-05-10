@@ -13,56 +13,56 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
 		if (currentScope.access.listHosts) {
-            getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "get",
-                "routeName": "/dashboard/cloud/services/list",
-                "params": {
-                    "env": env
-                }
-            }, function (error, response) {
-                if (error || !response) {
-                    currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
-                }
-                else {
-                    if (response && response.length > 0) {
-	                    currentScope.hosts = {
-		                    'soajs': {
-			                    "label": "SOAJS"
-		                    },
-		                    'nginx':{
-			                    "label": "Nginx",
-			                    "list": []
-		                    },
-		                    'elk': {
-			                    "label": "ELK",
-			                    "list": []
-		                    },
-		                    'db': {
-			                    "label": "Clusters",
-			                    "list": []
-		                    },
-		                    'miscellaneous': {
-			                    "label": "Miscellaneous",
-			                    "list": []
-		                    }
-	                    };
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/cloud/services/list",
+				"params": {
+					"env": env
+				}
+			}, function (error, response) {
+				if (error || !response) {
+					currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
+				}
+				else {
+					if (response && response.length > 0) {
+						currentScope.hosts = {
+							'soajs': {
+								"label": "SOAJS"
+							},
+							'nginx': {
+								"label": "Nginx",
+								"list": []
+							},
+							'elk': {
+								"label": "ELK",
+								"list": []
+							},
+							'db': {
+								"label": "Clusters",
+								"list": []
+							},
+							'miscellaneous': {
+								"label": "Miscellaneous",
+								"list": []
+							}
+						};
 
-                        for (var j = 0; j < response.length; j++) {
-                        	response[j].expanded = true;
+						for (var j = 0; j < response.length; j++) {
+							response[j].expanded = true;
 
-                        	var failures = 0;
-	                        response[j].tasks.forEach(function(oneTask){
-		                        if(['running','preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1){
-			                        failures++;
-			                        oneTask.hideIt = true;
-		                        }
-	                        });
+							var failures = 0;
+							response[j].tasks.forEach(function (oneTask) {
+								if (['running', 'preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1) {
+									failures++;
+									oneTask.hideIt = true;
+								}
+							});
 
-	                        if(failures === response[j].tasks.length){
-		                        response[j].hideIt = true;
-	                        }
+							if (failures === response[j].tasks.length) {
+								response[j].hideIt = true;
+							}
 
-	                        response[j].failures = failures;
+							response[j].failures = failures;
 
                         	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
 		                        currentScope.soajsServices = true;
@@ -78,15 +78,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				                        currentScope.hosts.soajs.groups = {};
 			                        }
 
-			                        response[j]['color'] = 'green';
-			                        response[j]['healthy'] = true;
-			                        var groupName = response[j].labels['soajs.service.group'];
-			                        if(!currentScope.hosts.soajs.groups[groupName]){
-				                        currentScope.hosts.soajs.groups[groupName] = {
-				                        	expanded : true,
-					                        list: []
-				                        };
-			                        }
+									response[j]['color'] = 'green';
+									response[j]['healthy'] = true;
+									var groupName = response[j].labels['soajs.service.group'];
+									if (!currentScope.hosts.soajs.groups[groupName]) {
+										currentScope.hosts.soajs.groups[groupName] = {
+											expanded: true,
+											list: []
+										};
+									}
 
 			                        if(response[j].labels['soajs.service.name'] === 'controller'){
 				                        currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
@@ -116,53 +116,53 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
             });
         }
 
-        function step2(){
-	        currentScope.controllers.forEach(function(oneController){
-		        var i = 1;
-		        var failure = 0;
+		function step2() {
+			currentScope.controllers.forEach(function (oneController) {
+				var i = 1;
+				var failure = 0;
 
-	        	oneController.tasks.forEach(function(oneCtrlTask){
-			        oneCtrlTask.code = "CTRL-" + i;
-			        var healthy = (oneCtrlTask.status.state === 'running');
-			        oneCtrlTask.healthy = healthy;
-			        if(!healthy){
-			        	failure++;
-			        }
+				oneController.tasks.forEach(function (oneCtrlTask) {
+					oneCtrlTask.code = "CTRL-" + i;
+					var healthy = (oneCtrlTask.status.state === 'running');
+					oneCtrlTask.healthy = healthy;
+					if (!healthy) {
+						failure++;
+					}
 
-			        var tooltip = "<b>Name:</b> " + oneCtrlTask.name + "<br>";
-			        tooltip += "<b>State:</b> " + oneCtrlTask.status.state + "<br>";
-			        tooltip += "<b>Started:</b> " + oneCtrlTask.status.ts;
+					var tooltip = "<b>Name:</b> " + oneCtrlTask.name + "<br>";
+					tooltip += "<b>State:</b> " + oneCtrlTask.status.state + "<br>";
+					tooltip += "<b>Started:</b> " + oneCtrlTask.status.ts;
 
-			        oneCtrlTask.tooltip = $sce.trustAsHtml(tooltip);
-			        i++;
-		        });
+					oneCtrlTask.tooltip = $sce.trustAsHtml(tooltip);
+					i++;
+				});
 
-	        	if(failure === 0){
-	        		oneController.color = 'green';
-		        }
-	        	else if(failure > 0 && failure < oneController.tasks.length){
-			        oneController.color = 'yellow';
-		        }
-		        else if (failure === oneController.tasks.length){
-	        		oneController.color = 'red';
-		        }
-	        });
-	        if(cb && typeof(cb) === 'function'){
-	        	return cb();
-	        }
-        }
-    }
+				if (failure === 0) {
+					oneController.color = 'green';
+				}
+				else if (failure > 0 && failure < oneController.tasks.length) {
+					oneController.color = 'yellow';
+				}
+				else if (failure === oneController.tasks.length) {
+					oneController.color = 'red';
+				}
+			});
+			if (cb && typeof(cb) === 'function') {
+				return cb();
+			}
+		}
+	}
 
 	/**
-     * List all namespaces for kubernetes deployments and add values to scope
-     *
-     * @param {Scope Object} currentScope
-     * @param {Function} cb
-     */
+	 * List all namespaces for kubernetes deployments and add values to scope
+	 *
+	 * @param {Scope Object} currentScope
+	 * @param {Function} cb
+	 */
 	function listNamespaces(currentScope, cb) {
 		if (currentScope.envPlatform !== 'kubernetes') {
 			//in case of swarm deployment, set namespace value to All Namespaces and set filter value to null in order to always display all fields
-			currentScope.namespaces = [ currentScope.namespaceConfig.defaultValue ];
+			currentScope.namespaces = [currentScope.namespaceConfig.defaultValue];
 			currentScope.namespaceConfig.namespace = currentScope.namespaceConfig.defaultValue.id;
 			return cb();
 		}
@@ -175,7 +175,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
-				currentScope.namespaces = [ currentScope.namespaceConfig.defaultValue ];
+				currentScope.namespaces = [currentScope.namespaceConfig.defaultValue];
 				currentScope.namespaces = currentScope.namespaces.concat(response);
 
 				currentScope.namespaceConfig.namespace = currentScope.namespaceConfig.defaultValue.id; //setting current selected to 'All Namespaces'
@@ -187,75 +187,75 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 	}
 
-    function deleteService(currentScope, service) {
-        var params = {
-            env: currentScope.envCode,
-            serviceId: service.id,
+	function deleteService(currentScope, service) {
+		var params = {
+			env: currentScope.envCode,
+			serviceId: service.id,
 			mode: ((service.labels && service.labels['soajs.service.mode']) ? service.labels['soajs.service.mode'] : '')
-        };
+		};
 
-        overlayLoading.show();
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'delete',
-            routeName: '/dashboard/cloud/services/delete',
-            params: params
-        }, function (error, response) {
-            overlayLoading.hide();
-            if (error) {
-                currentScope.displayAlert('danger', error.message);
-            }
-            else {
-                currentScope.displayAlert('success', 'Service deleted successfully');
-                currentScope.listServices();
-            }
-        });
-    }
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'delete',
+			routeName: '/dashboard/cloud/services/delete',
+			params: params
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.displayAlert('success', 'Service deleted successfully');
+				currentScope.listServices();
+			}
+		});
+	}
 
-    function scaleService(currentScope, service) {
-        $modal.open({
-            templateUrl: "scaleService.tmpl",
-            size: 'm',
-            backdrop: true,
-            keyboard: true,
-            controller: function ($scope, $modalInstance) {
-                fixBackDrop();
+	function scaleService(currentScope, service) {
+		$modal.open({
+			templateUrl: "scaleService.tmpl",
+			size: 'm',
+			backdrop: true,
+			keyboard: true,
+			controller: function ($scope, $modalInstance) {
+				fixBackDrop();
 
-                $scope.currentScale = service.tasks.length;
-                $scope.title = service.name + ' | Scale Service';
+				$scope.currentScale = service.tasks.length;
+				$scope.title = service.name + ' | Scale Service';
 
-                $scope.onSubmit = function () {
-                    overlayLoading.show();
-                    getSendDataFromServer(currentScope, ngDataApi, {
-                        method: 'put',
-                        routeName: '/dashboard/cloud/services/scale',
-                        data: {
-	                        env: currentScope.envCode,
-	                        serviceId: service.id,
-	                        scale: $scope.newScale
-                        }
-                    }, function (error, result) {
-                        overlayLoading.hide();
-                        $modalInstance.close();
-                        if (error) {
-                            currentScope.displayAlert('danger', error.message);
-                        }
-                        else {
-                            currentScope.displayAlert('success', 'Service scaled successfully! If scaling up, new instances will appear as soon as they are ready or on the next refresh');
-                            $timeout(function(){
-                            	currentScope.listServices();
-                            }, 1500);
-                        }
-                    });
-                };
+				$scope.onSubmit = function () {
+					overlayLoading.show();
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'put',
+						routeName: '/dashboard/cloud/services/scale',
+						data: {
+							env: currentScope.envCode,
+							serviceId: service.id,
+							scale: $scope.newScale
+						}
+					}, function (error, result) {
+						overlayLoading.hide();
+						$modalInstance.close();
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							currentScope.displayAlert('success', 'Service scaled successfully! If scaling up, new instances will appear as soon as they are ready or on the next refresh');
+							$timeout(function () {
+								currentScope.listServices();
+							}, 1500);
+						}
+					});
+				};
 
-                $scope.closeModal = function () {
-                    $modalInstance.close();
-                };
-            }
-        });
-    }
+				$scope.closeModal = function () {
+					$modalInstance.close();
+				};
+			}
+		});
+	}
 
-	function inspectService(currentScope, service){
+	function inspectService(currentScope, service) {
 		$modal.open({
 			templateUrl: "infoService.tmpl",
 			size: 'm',
@@ -267,8 +267,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				$scope.title = service.name + ' | Service Info';
 				$scope.serviceInfo = service;
 
-				$scope.fillAceWithInfo = function(_editor){
-					$timeout(function(){
+				$scope.fillAceWithInfo = function (_editor) {
+					$timeout(function () {
 						_editor.setValue(JSON.stringify($scope.serviceInfo, null, 2));
 					}, 1000);
 				};
@@ -288,22 +288,22 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			action: 'redeploy'
         };
 
-        overlayLoading.show();
-        getSendDataFromServer(currentScope, ngDataApi, {
-            method: 'put',
-            routeName: '/dashboard/cloud/services/redeploy',
-            data: params
-        }, function (error, response) {
-            overlayLoading.hide();
-            if (error) {
-                currentScope.displayAlert('danger', error.message);
-            }
-            else {
-                currentScope.displayAlert('success', 'Service redeployed successfully');
-                currentScope.listServices();
-            }
-        });
-    }
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'put',
+			routeName: '/dashboard/cloud/services/redeploy',
+			data: params
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.displayAlert('success', 'Service redeployed successfully');
+				currentScope.listServices();
+			}
+		});
+	}
 
     function rebuildService(currentScope, service) {
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -459,8 +459,8 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	 * @param oneHost
 	 * @param cb
 	 */
-    function reloadServiceRegistry (currentScope, service) {
-        //reload registry for all service instances in parallel
+	function reloadServiceRegistry(currentScope, service) {
+		//reload registry for all service instances in parallel
 		getSendDataFromServer(currentScope, ngDataApi, {
 			"method": "post",
 			"routeName": "/dashboard/cloud/services/maintenance",
@@ -477,9 +477,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 			else {
 				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-				response.forEach(function(oneRegistry){
-					service.tasks.forEach(function(oneTask){
-						if(oneTask.id === oneRegistry.id && oneTask.status.state === 'running'){
+				response.forEach(function (oneRegistry) {
+					service.tasks.forEach(function (oneTask) {
+						if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
 							formConfig.entries[0].tabs.push({
 								'label': oneRegistry.id,
 								'entries': [
@@ -517,188 +517,188 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				buildFormWithModal(currentScope, $modal, options);
 			}
 		});
-    }
+	}
 
-    function loadServiceProvision (currentScope, service) {
-        //reload provision for all service instances in parallel
-	    getSendDataFromServer(currentScope, ngDataApi, {
-		    "method": "post",
-		    "routeName": "/dashboard/cloud/services/maintenance",
-		    "data": {
-			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
-			    "operation": "loadProvision",
-			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
-		    }
-	    }, function (error, response) {
-		    if (error) {
-			    currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Load Provision for: " + service.name + " @ " + new Date().toISOString());
-		    }
-		    else {
+	function loadServiceProvision(currentScope, service) {
+		//reload provision for all service instances in parallel
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/cloud/services/maintenance",
+			"data": {
+				"serviceId": service.id,
+				"serviceName": service.labels['soajs.service.name'],
+				"operation": "loadProvision",
+				"env": currentScope.envCode,
+				"type": service.labels['soajs.service.type']
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Load Provision for: " + service.name + " @ " + new Date().toISOString());
+			}
+			else {
 
-			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-			    response.forEach(function(oneRegistry){
-				    service.tasks.forEach(function(oneTask) {
-					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
-						    formConfig.entries[0].tabs.push({
-							    'label': oneRegistry.id,
-							    'entries': [
-								    {
-									    'name': service.name,
-									    'type': 'jsoneditor',
-									    'height': '500px',
-									    "value": oneRegistry.response
-								    }
-							    ]
-						    });
-					    }
-				    });
-			    });
+				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+				response.forEach(function (oneRegistry) {
+					service.tasks.forEach(function (oneTask) {
+						if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+							formConfig.entries[0].tabs.push({
+								'label': oneRegistry.id,
+								'entries': [
+									{
+										'name': service.name,
+										'type': 'jsoneditor',
+										'height': '500px',
+										"value": oneRegistry.response
+									}
+								]
+							});
+						}
+					});
+				});
 
-			    var options = {
-				    timeout: $timeout,
-				    form: formConfig,
-				    name: 'reloadProvision',
-				    label: "Reloaded Provisioned Data of " + service.name,
-				    actions: [
-					    {
-						    'type': 'reset',
-						    'label': translation.ok[LANG],
-						    'btn': 'primary',
-						    'action': function (formData) {
-							    currentScope.modalInstance.dismiss('cancel');
-							    currentScope.provisionInfo = [];
-							    currentScope.form.formData = {};
-						    }
-					    }
-				    ]
-			    };
+				var options = {
+					timeout: $timeout,
+					form: formConfig,
+					name: 'reloadProvision',
+					label: "Reloaded Provisioned Data of " + service.name,
+					actions: [
+						{
+							'type': 'reset',
+							'label': translation.ok[LANG],
+							'btn': 'primary',
+							'action': function (formData) {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.provisionInfo = [];
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
 
-			    buildFormWithModal(currentScope, $modal, options);
-		    }
-	    });
-    }
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
+	}
 
-    function loadDaemonStats(currentScope, service){
-	    getSendDataFromServer(currentScope, ngDataApi, {
-		    "method": "post",
-		    "routeName": "/dashboard/cloud/services/maintenance",
-		    "data": {
-			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
-			    "operation": "daemonStats",
-			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
-		    }
-	    }, function (error, response) {
-		    if (error) {
-			    currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Reload Daemon Stat for: " + service.name + " @ " + new Date().toISOString());
-		    }
-		    else {
+	function loadDaemonStats(currentScope, service) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/cloud/services/maintenance",
+			"data": {
+				"serviceId": service.id,
+				"serviceName": service.labels['soajs.service.name'],
+				"operation": "daemonStats",
+				"env": currentScope.envCode,
+				"type": service.labels['soajs.service.type']
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Reload Daemon Stat for: " + service.name + " @ " + new Date().toISOString());
+			}
+			else {
 
-			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-			    response.forEach(function(oneRegistry){
-				    service.tasks.forEach(function(oneTask) {
-					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
-						    formConfig.entries[0].tabs.push({
-							    'label': oneRegistry.id,
-							    'entries': [
-								    {
-									    'name': service.name,
-									    'type': 'jsoneditor',
-									    'height': '500px',
-									    "value": oneRegistry.response
-								    }
-							    ]
-						    });
-					    }
-				    });
-			    });
+				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+				response.forEach(function (oneRegistry) {
+					service.tasks.forEach(function (oneTask) {
+						if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+							formConfig.entries[0].tabs.push({
+								'label': oneRegistry.id,
+								'entries': [
+									{
+										'name': service.name,
+										'type': 'jsoneditor',
+										'height': '500px',
+										"value": oneRegistry.response
+									}
+								]
+							});
+						}
+					});
+				});
 
-			    var options = {
-				    timeout: $timeout,
-				    form: formConfig,
-				    name: 'loadDaemonStat',
-				    label: "Reloaded Daemon Stat for " + service.name,
-				    actions: [
-					    {
-						    'type': 'reset',
-						    'label': translation.ok[LANG],
-						    'btn': 'primary',
-						    'action': function (formData) {
-							    currentScope.modalInstance.dismiss('cancel');
-							    currentScope.provisionInfo = [];
-							    currentScope.form.formData = {};
-						    }
-					    }
-				    ]
-			    };
+				var options = {
+					timeout: $timeout,
+					form: formConfig,
+					name: 'loadDaemonStat',
+					label: "Reloaded Daemon Stat for " + service.name,
+					actions: [
+						{
+							'type': 'reset',
+							'label': translation.ok[LANG],
+							'btn': 'primary',
+							'action': function (formData) {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.provisionInfo = [];
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
 
-			    buildFormWithModal(currentScope, $modal, options);
-		    }
-	    });
-    }
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
+	}
 
-    function loadDaemonGroupConfig(currentScope, service){
-	    getSendDataFromServer(currentScope, ngDataApi, {
-		    "method": "post",
-		    "routeName": "/dashboard/cloud/services/maintenance",
-		    "data": {
-			    "serviceId": service.id,
-			    "serviceName": service.labels['soajs.service.name'],
-			    "operation": "reloadDaemonConf",
-			    "env": currentScope.envCode,
-			    "type": service.labels['soajs.service.type']
-		    }
-	    }, function (error, response) {
-		    if (error) {
-			    currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Reload Daemon Group Configuration for: " + service.name + " @ " + new Date().toISOString());
-		    }
-		    else {
+	function loadDaemonGroupConfig(currentScope, service) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/cloud/services/maintenance",
+			"data": {
+				"serviceId": service.id,
+				"serviceName": service.labels['soajs.service.name'],
+				"operation": "reloadDaemonConf",
+				"env": currentScope.envCode,
+				"type": service.labels['soajs.service.type']
+			}
+		}, function (error, response) {
+			if (error) {
+				currentScope.generateNewMsg(currentScope.envCode, 'danger', "Error Executing Reload Daemon Group Configuration for: " + service.name + " @ " + new Date().toISOString());
+			}
+			else {
 
-			    var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
-			    response.forEach(function(oneRegistry){
-				    service.tasks.forEach(function(oneTask) {
-					    if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
-						    formConfig.entries[0].tabs.push({
-							    'label': oneRegistry.id,
-							    'entries': [
-								    {
-									    'name': service.name,
-									    'type': 'jsoneditor',
-									    'height': '500px',
-									    "value": oneRegistry.response
-								    }
-							    ]
-						    });
-					    }
-				    });
-			    });
+				var formConfig = angular.copy(environmentsConfig.form.multiServiceInfo);
+				response.forEach(function (oneRegistry) {
+					service.tasks.forEach(function (oneTask) {
+						if (oneTask.id === oneRegistry.id && oneTask.status.state === 'running') {
+							formConfig.entries[0].tabs.push({
+								'label': oneRegistry.id,
+								'entries': [
+									{
+										'name': service.name,
+										'type': 'jsoneditor',
+										'height': '500px',
+										"value": oneRegistry.response
+									}
+								]
+							});
+						}
+					});
+				});
 
-			    var options = {
-				    timeout: $timeout,
-				    form: formConfig,
-				    name: 'reloadDaemonConf',
-				    label: "Reloaded Daemon Group Configuration for " + service.name,
-				    actions: [
-					    {
-						    'type': 'reset',
-						    'label': translation.ok[LANG],
-						    'btn': 'primary',
-						    'action': function (formData) {
-							    currentScope.modalInstance.dismiss('cancel');
-							    currentScope.provisionInfo = [];
-							    currentScope.form.formData = {};
-						    }
-					    }
-				    ]
-			    };
+				var options = {
+					timeout: $timeout,
+					form: formConfig,
+					name: 'reloadDaemonConf',
+					label: "Reloaded Daemon Group Configuration for " + service.name,
+					actions: [
+						{
+							'type': 'reset',
+							'label': translation.ok[LANG],
+							'btn': 'primary',
+							'action': function (formData) {
+								currentScope.modalInstance.dismiss('cancel');
+								currentScope.provisionInfo = [];
+								currentScope.form.formData = {};
+							}
+						}
+					]
+				};
 
-			    buildFormWithModal(currentScope, $modal, options);
-		    }
-	    });
-    }
+				buildFormWithModal(currentScope, $modal, options);
+			}
+		});
+	}
 
 	function executeHeartbeatTest(currentScope, service) {
 		getSendDataFromServer(currentScope, ngDataApi, {
@@ -718,10 +718,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			}
 			else {
 				var failCount = 0;
-				heartbeatResponse.forEach(function(oneHeartBeat){
-					service.tasks.forEach(function(oneServiceTask){
-						if(oneServiceTask.id === oneHeartBeat.id){
-							if(!oneHeartBeat.response.result){
+				heartbeatResponse.forEach(function (oneHeartBeat) {
+					service.tasks.forEach(function (oneServiceTask) {
+						if (oneServiceTask.id === oneHeartBeat.id) {
+							if (!oneHeartBeat.response.result) {
 								oneServiceTask.status.state = 'Unreachable';
 
 								var tooltip = "<b>Code:</b> " + oneHeartBeat.response.error.code + "<br>";
@@ -733,15 +733,15 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 								oneServiceTask.status.error = tooltip;
 								failCount++;
 
-								if(service.labels['soajs.service.name'] === 'controller'){
-									currentScope.controllers.forEach(function(oneController){
-										if(oneController.id === oneServiceTask.id){
+								if (service.labels['soajs.service.name'] === 'controller') {
+									currentScope.controllers.forEach(function (oneController) {
+										if (oneController.id === oneServiceTask.id) {
 											oneController.healthy = false;
 										}
 									});
 								}
 							}
-							else{
+							else {
 								oneServiceTask.status.state = 'running';
 							}
 							oneServiceTask.status.lastTs = oneHeartBeat.response.ts;
@@ -749,10 +749,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					});
 				});
 
-				if(failCount === heartbeatResponse.length){
+				if (failCount === heartbeatResponse.length) {
 					service.color = 'red';
 				}
-				else if(failCount > 0 && failCount < heartbeatResponse.length){
+				else if (failCount > 0 && failCount < heartbeatResponse.length) {
 					service.color = 'yellow';
 				}
 				else {
@@ -762,28 +762,28 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		});
 	}
 
-	function executeAwarenessTest(currentScope, service){
-        getSendDataFromServer(currentScope, ngDataApi, {
-            "method": "post",
-            "routeName": "/dashboard/cloud/services/maintenance",
-            "data": {
-                "serviceId": service.id,
-                "serviceName": "controller",
-                "operation": "awarenessStat",
-                "env": currentScope.envCode,
-                "type": "service"
-            }
-        }, function (error, heartbeatResponse) {
-            if (error) {
-                currentScope.displayAlert('danger', translation.errorExecutingHeartbeatTest[LANG] + " " + service.name + " " + translation.onHostName[LANG] + " @ " + new Date().toISOString());
-            }
-            else {
-                currentScope.displayAlert('success', "Controller awareness has been reloaded @ " + new Date().toISOString());
-            }
-        });
+	function executeAwarenessTest(currentScope, service) {
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "post",
+			"routeName": "/dashboard/cloud/services/maintenance",
+			"data": {
+				"serviceId": service.id,
+				"serviceName": "controller",
+				"operation": "awarenessStat",
+				"env": currentScope.envCode,
+				"type": "service"
+			}
+		}, function (error, heartbeatResponse) {
+			if (error) {
+				currentScope.displayAlert('danger', translation.errorExecutingHeartbeatTest[LANG] + " " + service.name + " " + translation.onHostName[LANG] + " @ " + new Date().toISOString());
+			}
+			else {
+				currentScope.displayAlert('success', "Controller awareness has been reloaded @ " + new Date().toISOString());
+			}
+		});
 	}
 
-	function hostLogs (currentScope, task) {
+	function hostLogs(currentScope, task) {
 		overlayLoading.show();
 		getSendDataFromServer(currentScope, ngDataApi, {
 			method: "get",
@@ -815,7 +815,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							highlightMyCode()
 						}, 500);
 
-						$scope.refreshLogs = function(){
+						$scope.refreshLogs = function () {
 							getSendDataFromServer(currentScope, ngDataApi, {
 								method: "get",
 								routeName: "/dashboard/cloud/services/instances/logs",
@@ -839,7 +839,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										highlightMyCode()
 									}, 500);
 
-									autoRefreshPromise = $timeout(function(){
+									autoRefreshPromise = $timeout(function () {
 										$scope.refreshLogs();
 									}, 5000);
 								}
@@ -854,10 +854,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 				});
 
-				mInstance.result.then(function(){
+				mInstance.result.then(function () {
 					//Get triggers when modal is closed
 					$timeout.cancel(autoRefreshPromise);
-				}, function(){
+				}, function () {
 					//gets triggers when modal is dismissed.
 					$timeout.cancel(autoRefreshPromise);
 				});
@@ -878,8 +878,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				/\uFFFD/g,
 				/\u000b/g, '/[\u180e|\u000c]/g',
 				/\u2013/g, /\u2014/g,
-				/\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g];
-			var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...'];
+				/\xa9/g, /\xae/g, /\xb7/g, /\u2018/g, /\u2019/g, /\u201c/g, /\u201d/g, /\u2026/g,
+				/</g, />/g
+			];
+			var repChar = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', ' ', '', '\t', '', '-', '--', '(c)', '(r)', '*', "'", "'", '"', '"', '...', '&lt;', '&gt;'];
 			for (var i = 0; i < rExps.length; i++) {
 				str = str.replace(rExps[i], repChar[i]);
 			}
@@ -893,21 +895,159 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		}
 	}
 
-    return {
-        'listServices': listServices,
+	/**
+	 * Analytics
+	 * @param currentScope
+	 * @param task
+	 * @param serviceName
+	 * @param type
+	 * @param shipper
+	 */
+	function metrics(currentScope, task, serviceName, type, shipper, mode) {
+		var env = currentScope.envCode.toLowerCase();
+		var dashboardID = "";
+		var name = serviceName;
+		var logType = "Analytics";
+		var filter = "";
+		if (shipper && shipper === "metricbeat") {
+			logType = "Metrics";
+			filter = "&_a=(query:(query_string:(analyze_wildcard:!t,query:'";
+			if (task && type === 'task') {
+				var id = task.id;
+				if(currentScope.envPlatform === 'docker' && mode === 'global'){
+					id = task.ref.node.id + "." + task.id;
+				}
+				name = task.name + "." + id;
+				dashboardID = "Metricbeat-Docker-task";
+				filter +="docker.container.name:"+ name;
+			}
+			else if (type) {
+				dashboardID = "Metricbeat-Docker-"+type;
+				filter +="docker.container.name:"+ serviceName + ".*";
+			}
+			else {
+				filter += "*";
+			}
+			filter += "')))"
+		}
+		else if (task && type === 'task') {
+			name = task.name;
+			dashboardID = name;
+			dashboardID = dashboardID.replace(/[\/*?"<>|,.-]/g, "_");
+			dashboardID = shipper + "-" + dashboardID;
+		}
+		else if (type === 'service') {
+			dashboardID = shipper + "-" + serviceName + "-" + env;
+		}
+		else if (type === 'env') {
+			dashboardID = shipper + "-" + env;
+		}
+		else {
+			return currentScope.displayAlert('danger', "Invalid type provided!");
+		}
+		var url = "http://" + window.location.hostname + ":" + currentScope.kibanaPort + "/app/kibana#/dashboard/" + dashboardID + "?embed=true&_g=(refreshInterval%3A('%24%24hashKey'%3A'object%3A4602'%2Cdisplay%3A'10%20seconds'%2Cpause%3A!f%2Csection%3A1%2Cvalue%3A5000)%2Ctime%3A(from%3Anow-15m%2Cmode%3Aquick%2Cto%3Anow))"+filter;
+		$modal.open({
+			templateUrl: "metrics.html",
+			size: 'lg',
+			backdrop: true,
+			keyboard: true,
+			windowClass: 'large-Modal',
+			controller: function ($scope, $modalInstance) {
+				$scope.title = logType + " of " + name;
+				$scope.url = url;
+				fixBackDrop();
+				$scope.ok = function () {
+					$modalInstance.dismiss('ok');
+				};
+			}
+		});
+	}
+
+	function getSettings(currentScope) {
+		var env = currentScope.envCode.toLowerCase();
+		if (currentScope.access.analytics.getSettings) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/analytics/getSettings",
+				"params": {
+					"env": env
+				}
+			}, function (error, response) {
+				if (error || !response) {
+					currentScope.displayAlert('danger', "unable to retrieve settings");
+				}
+				else {
+					currentScope.showAnalytics = (response[env]);
+					currentScope.kibanaPort = (response.kibana && response.kibana.port) ? response.kibana.port : "32601";
+					currentScope.showActivateAnalytics = !(response.tracker && response.tracker.info);
+				}
+			});
+		}
+	}
+
+	function activateAnalytics(currentScope) {
+		var env = currentScope.envCode.toLowerCase();
+		if (currentScope.access.analytics.activate) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/analytics/activateAnalytics",
+				"params": {
+					"env": env
+				}
+			}, function (error) {
+				if (error) {
+					currentScope.displayAlert('danger', error);
+				}
+				else {
+					currentScope.displayAlert('info', "Analytics is being Deployed, it may take a few minutes.");
+					currentScope.showActivateAnalytics = false;
+					currentScope.showAnalytics = false;
+				}
+			});
+		}
+	}
+
+	function deactivateAnalytics(currentScope) {
+		var env = currentScope.envCode.toLowerCase();
+		if (currentScope.access.analytics.deactivate) {
+			getSendDataFromServer(currentScope, ngDataApi, {
+				"method": "get",
+				"routeName": "/dashboard/analytics/deactivateAnalytics",
+				"params": {
+					"env": env
+				}
+			}, function (error) {
+				if (error) {
+					currentScope.displayAlert('danger', error);
+				}
+				else {
+					currentScope.displayAlert('info', "Analytics is Deactivated");
+					currentScope.showActivateAnalytics = true;
+					currentScope.showAnalytics = false;
+				}
+			});
+		}
+	}
+
+	return {
+		'listServices': listServices,
+		'deleteService': deleteService,
 		'listNamespaces': listNamespaces,
-        'deleteService': deleteService,
-        'scaleService': scaleService,
+		'scaleService': scaleService,
 		'redeployService': redeployService,
 		'rebuildService': rebuildService,
 
-        'executeHeartbeatTest': executeHeartbeatTest,
-        'hostLogs': hostLogs,
-        'reloadServiceRegistry': reloadServiceRegistry,
-        'loadServiceProvision': loadServiceProvision,
-        'inspectService': inspectService,
-        'loadDaemonStats': loadDaemonStats,
-	    "loadDaemonGroupConfig": loadDaemonGroupConfig,
-		"executeAwarenessTest": executeAwarenessTest
-    };
+		'executeHeartbeatTest': executeHeartbeatTest,
+		'hostLogs': hostLogs,
+		'reloadServiceRegistry': reloadServiceRegistry,
+		'loadServiceProvision': loadServiceProvision,
+		'inspectService': inspectService,
+		'loadDaemonStats': loadDaemonStats,
+		"loadDaemonGroupConfig": loadDaemonGroupConfig,
+		"executeAwarenessTest": executeAwarenessTest,
+		'metrics': metrics,
+		'getSettings': getSettings,
+		'activateAnalytics': activateAnalytics,
+		'deactivateAnalytics': deactivateAnalytics
+	};
 }]);
