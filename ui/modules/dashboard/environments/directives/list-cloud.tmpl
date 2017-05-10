@@ -233,8 +233,8 @@
 			</div>
 			<div class="c-both w100 table">
 				<button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New Service</button>
-				<span class="col-sm-2" ng-show="showActivateAnalytics && groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
-				<span class="col-sm-2" ng-show="showAnalytics && groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
+				<span class="col-sm-2" ng-show="showActivateAnalytics"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
+				<span class="col-sm-2" ng-show="showAnalytics"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
 				<div class="dropdown refreshDropDown f-right">
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
