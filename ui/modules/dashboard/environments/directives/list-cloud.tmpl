@@ -231,7 +231,7 @@
 				<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
 				<br />
 			</div>
-			<div class="c-both w100 table">
+			<div class="c-both w100 table" ng-if="envDeployed">
 				<button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New Service</button>
 				<span class="col-sm-2" ng-show="showActivateAnalytics"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
 				<span class="col-sm-2" ng-show="showAnalytics"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
@@ -271,7 +271,7 @@
 												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
-												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Nginx</a></li>
+												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
 												<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
 												<li ng-if="showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'other','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
 											</ul>

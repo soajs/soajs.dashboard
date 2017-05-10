@@ -74,6 +74,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 			                        currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
 		                        }
 		                        else{
+                        			currentScope.envDeployed = true;
                         			if(!currentScope.hosts.soajs.groups){
 				                        currentScope.hosts.soajs.groups = {};
 			                        }
