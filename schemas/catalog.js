@@ -74,7 +74,10 @@ module.exports = {
                                     }
                                 }
                             },
-
+                            "labels": {
+                                "type": "object",
+                                "required": false
+                            }
                         }
                     },
                     "buildOptions": {
