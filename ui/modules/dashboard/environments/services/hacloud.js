@@ -1,7 +1,6 @@
 "use strict";
 var hacloudServices = soajsApp.components;
 hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce', function (ngDataApi, $timeout, $modal, $sce) {
-
 	/**
 	 * Service Functions
 	 * @param currentScope
@@ -11,6 +10,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	function listServices(currentScope, cb) {
 		var env = currentScope.envCode.toLowerCase();
 		currentScope.showCtrlHosts = true;
+		currentScope.soajsServices = false;
         currentScope.controllers =[];
 		if (currentScope.access.listHosts) {
             getSendDataFromServer(currentScope, ngDataApi, {
@@ -65,6 +65,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 	                        response[j].failures = failures;
 
                         	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
+		                        currentScope.soajsServices = true;
                         		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
 			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
 			                        response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
@@ -105,7 +106,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		                        currentScope.hosts[myGroup].list.push(response[j]);
 	                        }
                         }
-
+	                    
 	                    step2();
                     }
                     else{
@@ -412,7 +413,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 			if(formData && Object.keys(formData).length > 0){
 				//inject user input catalog entry and image override
-				params.catalogUserInput = {
+				params.custom = {
 					image: {
 						name: formData['ImageName'],
 						prefix: formData['ImagePrefix'],
@@ -422,10 +423,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 
 				for( var input in formData){
 					if(input.indexOf('_ci_') !== -1){
-						if(!params.catalogUserInput.env){
-							params.catalogUserInput.env = {};
+						if(!params.custom.env){
+							params.custom.env = {};
 						}
-						params.catalogUserInput.env[input.replace('_ci_', '')] = formData[input];
+						params.custom.env[input.replace('_ci_', '')] = formData[input];
 					}
 				}
 			}

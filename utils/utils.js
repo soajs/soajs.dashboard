@@ -16,12 +16,13 @@ module.exports = {
                 soajs.log.error(data.error);
                 return res.jsonp(soajs.buildResponse({"code": data.error.code, "msg": data.error.msg}));
             }
-
-            if (typeof (data.error) === 'object') {
-                soajs.log.error(data.error);
+	        else{
+	            if (typeof (data.error) === 'object') {
+		            soajs.log.error(data.error);
+	            }
+	
+	            return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
             }
-
-            return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
         } else {
             if (cb) return cb();
         }

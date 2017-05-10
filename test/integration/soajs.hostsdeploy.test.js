@@ -593,8 +593,10 @@ describe("testing hosts deployment", function () {
 				},
 				form: {
 					env: 'dev',
-					type: 'service',
-					name: 'controller',
+					custom:{
+						type: 'service',
+						name: 'controller',
+					},
 					gitSource: {
 						owner: 'soajs',
 						repo: 'soajs.controller',
@@ -612,7 +614,6 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
 
@@ -641,8 +642,10 @@ describe("testing hosts deployment", function () {
 					},
 					form: {
 						env: 'dev',
-						type: 'service',
-						name: 'controller',
+						custom: {
+							type: 'service',
+							name: 'controller',
+						},
 						recipe: '59034e43c69a1b962fc62213', // todo
 						gitSource: {
 							owner: 'soajs',
@@ -660,7 +663,6 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 
@@ -679,8 +681,10 @@ describe("testing hosts deployment", function () {
 					},
 					"form": {
 						env: 'dev',
-						type: 'nginx',
-						name: 'nginx',
+						custom: {
+							type: 'nginx',
+							name: 'nginx',
+						},
 						recipe: '59034e43c69a1b962fc62212', // todo
 						deployConfig: {
 							memoryLimit: 209715200,
@@ -688,15 +692,6 @@ describe("testing hosts deployment", function () {
 								mode: 'replicated',
 								replicas: 1
 							},
-						},
-						contentConfig: {
-							nginx: {
-								ui: {
-									id: record._id.toString(),
-									branch: 'develop',
-									commit: 'ac23581e16511e32e6569af56a878c943e2725bc'
-								}
-							}
 						}
 					}
 				};
@@ -709,8 +704,7 @@ describe("testing hosts deployment", function () {
 				});
 			});
 		});
-
-
+		
 	});
 
 	describe("testing service deployment", function () {
@@ -721,8 +715,10 @@ describe("testing hosts deployment", function () {
 				},
 				"form": {
 					env: 'dev',
-					type: 'service',
-					name: 'urac',
+					custom: {
+						type: 'service',
+						name: 'urac',
+					},
                     recipe: '59034e43c69a1b962fc62213',
 					gitSource: {
 						owner: 'soajs',
@@ -771,8 +767,14 @@ describe("testing hosts deployment", function () {
 					},
 					"form": {
 						env: 'dev',
-						type: 'service',
-						name: 'gc_articles',
+						custom: {
+							type: 'service',
+							name: 'gc_articles',
+							gc:{
+								gcName: gcRecord.name,
+								gcVersion: gcRecord.v
+							}
+						},
 						recipe: '59034e43c69a1b962fc62213',
 						variables: [
 							'TEST=true'
@@ -789,17 +791,11 @@ describe("testing hosts deployment", function () {
 								mode: 'replicated',
 								replicas: 1
 							}
-						},
-						contentConfig: {
-							service: {
-								gc: true,
-								gcName: gcRecord.name,
-								gcVersion: gcRecord.v
-							}
 						}
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -817,8 +813,10 @@ describe("testing hosts deployment", function () {
 					},
 					"form": {
 						env: 'prod',
-						type: 'service',
-						name: 'controller',
+						custom: {
+							type: 'service',
+							name: 'controller',
+						},
 						recipe: '59034e43c69a1b962fc62213',
 						gitSource: {
 							owner: 'soajs',
@@ -837,7 +835,6 @@ describe("testing hosts deployment", function () {
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
 					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], { 'code': 618, 'message': errorCodes[ 618 ] });
 					done();
 				});
 			});
@@ -852,8 +849,11 @@ describe("testing hosts deployment", function () {
 				},
 				"form": {
 					env: 'dev',
-					type: 'daemon',
-					name: 'helloDaemon',
+					custom: {
+						type: 'daemon',
+						name: 'helloDaemon',
+						daemonGroup: 'group1'
+					},
 					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
@@ -869,11 +869,6 @@ describe("testing hosts deployment", function () {
 						replication: {
 							mode: 'replicated',
 							replicas: 1
-						}
-					},
-					contentConfig: {
-						daemon: {
-							grpConfName: 'group1'
 						}
 					}
 				}
@@ -908,8 +903,11 @@ describe("testing hosts deployment", function () {
 					},
 					"form": {
 						env: 'dev',
-						type: 'daemon',
-						name: 'helloDaemon',
+						custom: {
+							type: 'daemon',
+							name: 'helloDaemon',
+							daemonGroup: 'group1'
+						},
 						recipe: '59034e43c69a1b962fc62210',
 						variables: [
 							'TEST=true'
@@ -925,11 +923,6 @@ describe("testing hosts deployment", function () {
 							replication: {
 								mode: 'replicated',
 								replicas: 1
-							}
-						},
-						contentConfig: {
-							daemon: {
-								grpConfName: 'group1'
 							}
 						}
 					}
@@ -961,8 +954,11 @@ describe("testing hosts deployment", function () {
 				},
 				"form": {
 					env: 'dev',
-					type: 'daemon',
-					name: 'helloDaemon',
+					custom: {
+						type: 'daemon',
+						name: 'helloDaemon',
+						daemonGroup: 'group1'
+					},
 					recipe: '59034e43c69a1b962fc62210',
 					variables: [
 						'TEST=true'
@@ -972,11 +968,6 @@ describe("testing hosts deployment", function () {
 						repo: 'soajs.prx', //dummy value, does not need to be accurate
 						branch: 'develop',
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
-					},
-					contentConfig: {
-						daemon: {
-							grpConfName: 'group1'
-						}
 					}
 				}
 			};

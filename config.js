@@ -1462,59 +1462,11 @@ module.exports = {
 					"l": "Deploy A New SOAJS Service",
 					"group": "HA Cloud"
 				},
-				"catalogUserInput":{
-					"source": ["body.catalogUserInput"],
-					"required":false,
-					"validation": {
-						"type": "object",
-						"required": false,
-						"properties": {
-							"image" :{
-								"type":"object",
-								"required": false,
-								"properties":{
-                                    "prefix": { "required": false, "type": "string" },
-                                    "name": { "required": false, "type": "string" },
-                                    "tag": { "required": false, "type": "string" },
-								}
-							},
-							"env":{
-								"type": "object",
-								"required": false,
-                                "additionalProperties":{ "type": "string" }
-							}
-						}
-					}
-				},
 				"env": {
 					"source": ['body.env'],
 					"required": true,
 					"validation": {
 						"type": "string"
-					}
-				},
-				"type": {
-					"required": true,
-					"source": ['body.type'],
-					"validation": {
-						"type": "string",
-						"enum": ['service', 'daemon', 'nginx']
-					}
-				},
-				"name": {
-					"required": true,
-					"source": ['body.name'],
-					"validation": {
-						"type": "string"
-					}
-				},
-				"version": {
-					"source": ['body.version'],
-					"required": false,
-					"default": 1,
-					"validation": {
-						"type": "number",
-						"minimum": 1
 					}
 				},
 				"recipe": {
@@ -1558,26 +1510,50 @@ module.exports = {
 						}
 					}
 				},
-				"contentConfig": {
-					"required": false,
-					"source": ['body.contentConfig'],
+				"custom":{
+					"source": ["body.custom"],
+					"required":false,
 					"validation": {
 						"type": "object",
+						"required": false,
 						"properties": {
-							"service": {
+							"image" :{
+								"type":"object",
 								"required": false,
-								"type": "object",
-								"properties": {
-									"gc": {"required": true, "type": "boolean"},
-									"gcName": {"required": true, "type": "string"},
-									"gcVersion": {"required": true, "type": "number"}
+								"properties":{
+									"prefix": { "required": false, "type": "string" },
+									"name": { "required": false, "type": "string" },
+									"tag": { "required": false, "type": "string" },
 								}
 							},
-							"daemon": {
+							"env":{
+								"type": "object",
+								"required": false,
+								"additionalProperties":{ "type": "string" }
+							},
+							"type": {
+								"required": true,
+								"type": "string"
+							},
+							"name": {
+								"required": false,
+								"type": "string"
+							},
+							"version": {
+								"required": false,
+								"type": "number",
+								"minimum": 1
+							},
+							"daemonGroup": {
+								"required": false,
+								"type": "string"
+							},
+							"gc":{
 								"required": false,
 								"type": "object",
-								"properties": {
-									"grpConfName": {"required": true, "type": "string"}
+								"properties":{
+									"gcName": {"required": true, "type": "string"},
+									"gcVersion": {"required": true, "type": "number"}
 								}
 							}
 						}
@@ -2563,8 +2539,8 @@ module.exports = {
 						"enum": [ 'redeploy', 'rebuild' ]
 					}
 				},
-				"catalogUserInput":{
-					"source": ["body.catalogUserInput"],
+				"custom":{
+					"source": ["body.custom"],
 					"required":false,
 					"validation": {
 						"type": "object",

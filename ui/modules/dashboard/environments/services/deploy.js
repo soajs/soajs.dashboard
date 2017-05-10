@@ -67,6 +67,23 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 							form.formData['_ci_' + type + "_" + envVariable] = oneRecipe.recipe.buildOptions.env[envVariable].default || '';
 						}
 					}
+					
+					if(oneRecipe.recipe.deployOptions.specifyGitConfiguration && opts.deployment && opts.deployment.type === 'environment'){
+						var newInput = {
+							'name': 'branch',
+							'label': 'Branch',
+							'type': 'select',
+							'value': [],
+							'fieldMsg': 'Select a branch to deploy from',
+							'required': true
+						};
+						
+		                opts.deployment.data.branches.forEach(function (oneBranch) {
+		                    delete oneBranch.commit.url;
+			                newInput.value.push({'v': oneBranch, 'l': oneBranch.name});
+		                });
+						form.entries[mainLevel].entries.push(newInput);
+					}
 				}
 			});
 		};
@@ -117,30 +134,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
         };
 
         getControllerBranches(currentScope, function (branchInfo) {
-            for (var i = 0; i < formConfig.entries.length; i++) {
-                if (formConfig.entries[i].name === 'controllers') {
-                    var ctrlEntries = formConfig.entries[i].entries;
-                    for (var j = 0; j < ctrlEntries.length; j++) {
-                        if (ctrlEntries[j].name === 'branch') {
-                            branchInfo.branches.forEach(function (oneBranch) {
-                                delete oneBranch.commit.url;
-                                ctrlEntries[j].value.push({'v': oneBranch, 'l': oneBranch.name});
-                            });
-                        }
-                    }
-                }
-            }
-
             getCatalogRecipes(currentScope, function (recipes) {
                 // adding available recipes to form
                 recipes.forEach(function (oneRecipe) {
-                    if (oneRecipe.type === 'service') {
-                        formConfig.entries[1].entries[4].value.push({ l: oneRecipe.name, v: oneRecipe._id });
+                    if (oneRecipe.type === 'soajs' && oneRecipe.subtype === 'service') {
+                        formConfig.entries[1].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
 	                    injectCatalogInputs(formConfig, recipes, {
 		                    mainLevel : 1,
-	                        subLevel: 4,
-	                        initialCount: 5,
-	                        type: 'service'
+	                        subLevel: 3,
+	                        initialCount: 4,
+	                        type: 'soajs',
+		                    deployment: {
+		                    	type: "environment",
+			                    data: branchInfo
+		                    }
 	                    });
                     }
                     else if (oneRecipe.type === 'nginx') {
@@ -209,8 +216,10 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             var params = {
                 proxy: false,
                 env: envCode,
-                type: 'service',
-                name: 'controller',
+	            custom: {
+		            type: 'service',
+		            name: 'controller',
+	            },
                 recipe: formData.ctrlRecipe,
                 gitSource: {
                     owner: formData.owner,
@@ -224,8 +233,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     replication: {
                         mode: formData.controllerDeploymentMode
                     },
-                },
-                contentConfig: {}
+                }
             };
 
             if (formData.controllerDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
@@ -242,21 +250,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 }
             }
 	
-            params.catalogUserInput = {
-            	image: {
-            		name: formData['_ci_serviceImageName'],
+            if(formData['_ci_serviceImageName'] && formData['_ci_serviceImagePrefix'] && formData['_ci_serviceImageTag']){
+	            params.custom['image'] = {
+		            name: formData['_ci_serviceImageName'],
 		            prefix: formData['_ci_serviceImagePrefix'],
 		            tag: formData['_ci_serviceImageTag']
-	            }
-            };
+	            };
+            }
             
             var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
             for( var input in formData){
             	if(input.indexOf('_ci_service') !== -1 && excludes.indexOf(input) === -1){
-		            if(!params.catalogUserInput.env){
-			            params.catalogUserInput.env = {};
+		            if(!params.custom.env){
+			            params.custom.env = {};
 		            }
-		            params.catalogUserInput.env[input.replace('_ci_service_', '')] = formData[input];
+		            params.custom.env[input.replace('_ci_service_', '')] = formData[input];
 	            }
             }
             
@@ -290,20 +298,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 }
             });
         }
-
-        // function listStaticContent(currentScope, cb) {
-        //     getSendDataFromServer(currentScope, ngDataApi, {
-        //         'method': 'post',
-        //         'routeName': '/dashboard/staticContent/list'
-        //     }, function (error, response) {
-        //         if (error) {
-        //             currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-        //         } else {
-        //             cb(response);
-        //         }
-        //     });
-        // }
-
+ 
         function getControllerBranches(currentScope, cb) {
             overlayLoading.show();
             getSendDataFromServer(currentScope, ngDataApi, {
@@ -328,8 +323,11 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             //save controller deployment mode in case needed later for rollback
             currentScope.controller = { mode: params.deployConfig.replication.mode };
 
-            params.type = 'nginx';
-            params.name = 'nginx';
+            params.custom = {
+            	"type": "nginx",
+	            "name": "nginx"
+            };
+            
             params.recipe = formData.nginxRecipe;
             params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
             params.deployConfig.replication = {
@@ -351,21 +349,21 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
             }
 
             //inject user input catalog entry and image override
-	        params.catalogUserInput = {
-		        image: {
+	        if(formData['_ci_nginxImageName'] && formData['_ci_nginxImagePrefix'] && formData['_ci_nginxImageTag']){
+		        params.custom['image'] = {
 			        name: formData['_ci_nginxImageName'],
 			        prefix: formData['_ci_nginxImagePrefix'],
 			        tag: formData['_ci_nginxImageTag']
-		        }
-	        };
+		        };
+	        }
 	
 	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
 	        for( var input in formData){
 		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
-			        if(!params.catalogUserInput.env){
-				        params.catalogUserInput.env = {};
+			        if(!params.custom.env){
+				        params.custom.env = {};
 			        }
-			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
+			        params.custom.env[input.replace('_ci_nginx_', '')] = formData[input];
 		        }
 	        }
 	        
@@ -472,15 +470,20 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 keyboard: true,
                 controller: function ($scope, $modalInstance) {
                     fixBackDrop();
-
+	                currentScope.allowGitOverride = false;
                     $scope.title = 'Deploy New Service';
                     $scope.imagePath = 'themes/' + themeToUse + '/img/loading.gif';
                     $scope.currentScope = currentScope;
 	
+	                $scope.myRecipes = [];
+	                for(var type in currentScope.recipes){
+		                $scope.myRecipes = $scope.myRecipes.concat(currentScope.recipes[type]);
+	                }
+	                
 	                delete currentScope._ci_serviceImagePrefix;
 	                delete currentScope._ci_serviceImageName;
 	                delete currentScope._ci_serviceImageTag;
-	                currentScope.catalogUserInputs = {};
+	                currentScope.custom = {};
 	                
                     $scope.selectService = function (service) {
 
@@ -569,19 +572,19 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
                     $scope.onSubmit = function () {
 
-                        if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
-                            currentScope.message.danger = "Please select a service, branch, and number of instances";
-                            $timeout(function () {
-                                currentScope.message.danger = "";
-                            }, 5000);
-                        }
-                        else if (currentScope.conflictCommits && Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
-                            currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
-                            $timeout(function () {
-                                currentScope.message.danger = "";
-                            }, 5000);
-                        }
-                        else {
+                        // if (!currentScope.service || (currentScope.service.type !== 'nginx' && (!currentScope.branch || ((currentScope.mode === "replicated" || currentScope.mode === "deployment") && !currentScope.number)))) {
+                        //     currentScope.message.danger = "Please select a service, branch, and number of instances";
+                        //     $timeout(function () {
+                        //         currentScope.message.danger = "";
+                        //     }, 5000);
+                        // }
+                        // else if (currentScope.conflictCommits && Object.keys(currentScope.conflictCommits).length > 0 && !currentScope.commit && !currentScope.confirmBranch) {
+                        //     currentScope.message.danger = "Please select a commit to deploy from or confirm deployment from new branch";
+                        //     $timeout(function () {
+                        //         currentScope.message.danger = "";
+                        //     }, 5000);
+                        // }
+                        // else {
 
                             if (currentScope.service && currentScope.service.prerequisites && currentScope.service.prerequisites.memory) {
                                 if (currentScope.memoryLimit < currentScope.service.prerequisites.memory) {
@@ -594,13 +597,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                                 }
                             }
 
-                            if (currentScope.service.name === 'controller') {
-                                newController(currentScope);
-                            }
-                            else {
-                                newService(currentScope);
-                            }
-                        }
+                            doDeploy(currentScope);
+                        // }
                     };
 
                     $scope.closeModal = function () {
@@ -628,207 +626,153 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 							                    fieldMsg: catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg,
 							                    required: (catalogRecipe.recipe.buildOptions.env[envVariable].default && catalogRecipe.recipe.buildOptions.env[envVariable].default !== '') ? false : true
 						                    };
-						                    currentScope.catalogUserInputs["_ci_service_" + envVariable] = newCatalogInput;
+						                    currentScope.custom["_ci_service_" + envVariable] = newCatalogInput;
 						                    currentScope["_ci_service_" + envVariable] = catalogRecipe.recipe.buildOptions.env[envVariable].default || "";
 					                    }
+				                    }
+				
+				                    if(catalogRecipe.recipe.deployOptions.specifyGitConfiguration){
+					                    currentScope.service = '';
+					                    currentScope.version = '';
+					                    currentScope.groupConfig = '';
+					                    currentScope.branch = '';
+					                    
+					                    // currentScope.allowGitOverride = true;
+					                    getServices(function () {
+						                    getDaemons(function () {
+							                    if (Object.keys(currentScope.services).length === 0) {
+								                    currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
+							                    }
+							                    else {
+							                    	currentScope.allowGitOverride = true;
+							                    }
+						                    });
+					                    });
 				                    }
 			                    }
 		                    });
 	                    }
                     };
-
-                    function newController(currentScope) {
-                        var params = {
-                            'env': env,
-                            'name': 'controller',
-                            'type': 'service',
-                            'recipe': currentScope.recipe
-                        };
-
-                        params.gitSource = {
-                            "owner": currentScope.serviceOwner,
-                            "repo": currentScope.serviceRepo,
-                        };
-
-                        if (currentScope.commit && !currentScope.confirmBranch) {
-                            params.gitSource.branch = getBranchFromCommit(currentScope.commit);
-                            params.gitSource.commit = currentScope.commit;
-                        } else {
-                            params.gitSource.branch = currentScope.branch.name;
-                            params.gitSource.commit = currentScope.branch.commit.sha;
-                        }
-
-                        if (currentScope.service.latest) {
-                            params.version = currentScope.service.latest;
-                        }
-
-                        //Fill deployConfig information
-                        params.deployConfig = {
-                            'isKubernetes': currentScope.isKubernetes,
-                            'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                            "replication": {
-                                "mode": currentScope.mode,
-                                "replicas": currentScope.number,
-                            }
-                        };
 	
-	                    //inject user input catalog entry and image override
-	                    params.catalogUserInput = {
-		                    image: {
-			                    name: currentScope['_ci_serviceImageName'],
-			                    prefix: currentScope['_ci_serviceImagePrefix'],
-			                    tag: currentScope['_ci_serviceImageTag']
-		                    }
-	                    };
-	
-	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
-	                    for( var input in currentScope){
-		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
-			                    if(!params.catalogUserInput.env){
-				                    params.catalogUserInput.env = {};
-			                    }
-			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
-		                    }
-	                    }
-	                    
-                        overlayLoading.show();
-                        getSendDataFromServer(currentScope, ngDataApi, {
-                            "method": "post",
-                            "routeName": "/dashboard/cloud/services/soajs/deploy",
-                            "data": params
-                        }, function (error, response) {
-                            overlayLoading.hide();
-                            if (error) {
-                                currentScope.generateNewMsg(env, 'danger', error.message);
-                                $modalInstance.close();
-                            }
-                            else {
-                                $timeout(function () {
-                                    currentScope.listServices();
-                                }, 1500);
-	
-	                            for( var input in currentScope){
-		                            if(input.indexOf('_ci_service') !== -1){
-			                            delete currentScope[input];
-		                            }
-	                            }
-	                            currentScope.catalogUserInputs = {};
-	                            
-                                $modalInstance.close();
-                            }
-                        });
-                    }
-
-                    function newService(currentScope) {
-                        var params = {
-                            'env': env,
-                            'type': 'service',
-                            "version": parseInt(currentScope.version),
-                            'recipe': currentScope.recipe
-                        };
-
-                        params.gitSource = {
-                            "owner": currentScope.serviceOwner,
-                            "repo": currentScope.serviceRepo,
-                        };
-
-                        if (currentScope.commit && !currentScope.confirmBranch) {
-                            params.gitSource.branch = getBranchFromCommit(currentScope.commit);
-                            params.gitSource.commit = currentScope.commit;
-                        } else {
-                            params.gitSource.branch = currentScope.branch.name;
-                            params.gitSource.commit = currentScope.branch.commit.sha;
-                        }
-
-                        if (currentScope.service.gcId) {
-                            params.contentConfig = {
-                                "service": {
-                                    "gc": true,
-                                    "gcName": currentScope.service.name,
-                                    "gcVersion": currentScope.service.version
-                                }
-                            }
-
-                        } else {
-                            params.name = currentScope.service.name;
-                        }
-
-                        if (currentScope.groupConfig) {
-                            params.type = 'daemon';
-                            params.contentConfig = {
-                                "daemon": {
-                                    "grpConfName": currentScope.groupConfig.daemonConfigGroup
-                                }
-                            }
-                        }
-
-                        params.deployConfig = {
-                            'isKubernetes': currentScope.isKubernetes,
-                            'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
-                            "replication": {
-                                "mode": currentScope.mode,
-                                "replicas": currentScope.number
-                            }
-                        };
-
-                        if (params.deployConfig.isKubernetes) {
-                            if (params.deployConfig.replication.mode === 'replicated') {
-                                params.deployConfig.replication.mode = "deployment";
-                            }
-                            if (params.deployConfig.replication.mode === 'global') {
-                                params.deployConfig.replication.mode = "daemonset";
-                                delete params.deployConfig.replication.replicas;
-                            }
-                        }
-	
-	                    //inject user input catalog entry and image override
-	                    params.catalogUserInput = {
-		                    image: {
-			                    name: currentScope['_ci_serviceImageName'],
-			                    prefix: currentScope['_ci_serviceImagePrefix'],
-			                    tag: currentScope['_ci_serviceImageTag']
-		                    }
-	                    };
-	
-	                    var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
-	                    for( var input in currentScope){
-		                    if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
-			                    if(!params.catalogUserInput.env){
-				                    params.catalogUserInput.env = {};
-			                    }
-			                    params.catalogUserInput.env[input.replace('_ci_service_', '')] = currentScope[input];
-		                    }
-	                    }
-
-                        var config = {
-                            "method": "post",
-                            "routeName": "/dashboard/cloud/services/soajs/deploy",
-                            "data": params
-                        };
-                        overlayLoading.show();
-                        getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
-                            overlayLoading.hide();
-                            if (error) {
-                                currentScope.displayAlert('danger', error.message);
-                                $modalInstance.close();
-                            }
-                            else {
-                                currentScope.displayAlert('success', 'New service deployed successfully and will be available in a few minutes');
-                                $timeout(function () {
-                                    currentScope.listServices();
-                                }, 1500);
-	
-	                            for( var input in currentScope){
-		                            if(input.indexOf('_ci_service') !== -1){
-			                            delete currentScope[input];
-		                            }
-	                            }
-	                            currentScope.catalogUserInputs = {};
-	                            
-                                $modalInstance.close();
-                            }
-                        });
-                    }
+	                function doDeploy(currentScope) {
+	                	
+		                var params = {
+			                'env': env,
+			                'custom':{
+				                'name': currentScope.service.name,
+				                'type': 'service',
+				                "version": parseInt(currentScope.version) || 1
+			                },
+			                'recipe': currentScope.recipe
+		                };
+		
+		                if(currentScope.serviceOwner && currentScope.serviceRepo){
+			                params.gitSource = {
+				                "owner": currentScope.serviceOwner,
+				                "repo": currentScope.serviceRepo,
+			                };
+			
+			                if(currentScope.branch){
+				                if (currentScope.commit && !currentScope.confirmBranch) {
+					                params.gitSource.branch = getBranchFromCommit(currentScope.commit);
+					                params.gitSource.commit = currentScope.commit;
+				                } else {
+					                params.gitSource.branch = currentScope.branch.name;
+					                if(currentScope.branch.commit.sha){
+						                params.gitSource.commit = currentScope.branch.commit.sha;
+					                }
+				                }
+			                }
+		                }
+		
+		                if (currentScope.service.latest) {
+			                params.version = parseInt(currentScope.service.latest) || 1;
+		                }
+		
+		                if (currentScope.service.gcId) {
+			                params.custom.gc = {
+				                "gcName": currentScope.service.name,
+				                "gcVersion": currentScope.service.version
+			                }
+			
+		                }
+		                
+		                params.custom.name = currentScope.service.name;
+		
+		                if (currentScope.groupConfig) {
+			                params.custom.type = 'daemon';
+			                params.custom.daemonGroup = currentScope.groupConfig.daemonConfigGroup;
+		                }
+		
+		                //Fill deployConfig information
+		                params.deployConfig = {
+			                'isKubernetes': currentScope.isKubernetes,
+			                'memoryLimit': (currentScope.memoryLimit * 1048576), //converting to bytes
+			                "replication": {
+				                "mode": currentScope.mode,
+				                "replicas": currentScope.number
+			                }
+		                };
+		
+		                if (params.deployConfig.isKubernetes) {
+			                if (params.deployConfig.replication.mode === 'replicated') {
+				                params.deployConfig.replication.mode = "deployment";
+			                }
+			                if (params.deployConfig.replication.mode === 'global') {
+				                params.deployConfig.replication.mode = "daemonset";
+				                delete params.deployConfig.replication.replicas;
+			                }
+		                }
+		
+		                //inject user input catalog entry and image override
+		                if(currentScope['_ci_serviceImageName'] && currentScope['_ci_serviceImagePrefix'] && currentScope['_ci_serviceImageTag']){
+			                params.custom['image'] = {
+				                name: currentScope['_ci_serviceImageName'],
+				                prefix: currentScope['_ci_serviceImagePrefix'],
+				                tag: currentScope['_ci_serviceImageTag']
+			                };
+		                }
+		
+		                var excludes = ['_ci_serviceImageName', '_ci_serviceImagePrefix', '_ci_serviceImageTag'];
+		                for( var input in currentScope){
+			                if(input.indexOf('_ci_service_') !== -1 && excludes.indexOf(input) === -1){
+				                if(!params.custom.env){
+					                params.custom.env = {};
+				                }
+				                params.custom.env[input.replace('_ci_service_', '')] = currentScope[input];
+			                }
+		                }
+		
+		                var config = {
+			                "method": "post",
+			                "routeName": "/dashboard/cloud/services/soajs/deploy",
+			                "data": params
+		                };
+		                
+		                overlayLoading.show();
+		                getSendDataFromServer(currentScope, ngDataApi, config, function (error, response) {
+			                overlayLoading.hide();
+			                if (error) {
+				                currentScope.displayAlert('danger', error.message);
+				                $modalInstance.close();
+			                }
+			                else {
+				                currentScope.displayAlert('success', 'New service deployed successfully and will be available in a few minutes');
+				                $timeout(function () {
+					                currentScope.listServices();
+				                }, 1500);
+				
+				                for( var input in currentScope){
+					                if(input.indexOf('_ci_service') !== -1){
+						                delete currentScope[input];
+					                }
+				                }
+				                currentScope.custom = {};
+				
+				                $modalInstance.close();
+			                }
+		                });
+	                }
 
                     function getBranchFromCommit(commit) {
                         return currentScope.conflictCommits[commit].branch;
@@ -845,6 +789,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 if (error) {
                     currentScope.generateNewMsg(env, 'danger', translation.unableRetrieveListServices[LANG]);
                 } else {
+	                currentScope.services =[];
                     response.forEach(function (oneService) {
                         oneService.type = 'service';
                         if (oneService.name === 'controller') {
@@ -978,17 +923,8 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
         //Start here
         if (currentScope.hosts && currentScope.controllers) {
-            getServices(function () {
-                getDaemons(function () {
-                    if (Object.keys(currentScope.services).length === 0) {
-                        currentScope.generateNewMsg(env, 'danger', "There are no new services to deploy");
-                    }
-                    else {
-                        getCatalogRecipes(function () {
-                            openModalForm();
-                        });
-                    }
-                });
+            getCatalogRecipes(function () {
+	            openModalForm();
             });
         }
         else {
@@ -998,178 +934,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                 type: 'service'
             });
         }
-    }
-
-    /**
-     * Deploy New Nginx
-     * @param currentScope
-     */
-    function deployNewNginx(currentScope) {
-        var formConfig = angular.copy(environmentsConfig.form.deploy);
-        formConfig.entries.pop();
-
-        var kubeConfig = environmentsConfig.deployer.kubernetes;
-        var envCode = currentScope.envCode;
-
-        currentScope.isKubernetes = (currentScope.envDeployer.selected.split('.')[1] === "kubernetes");
-        if (currentScope.isKubernetes) {
-            formConfig.entries[0].entries[0].value = [
-                {l: 'Deployment', v: 'deployment', 'selected': true},
-                {l: 'Daemonset', v: 'daemonset'}
-            ];
-        }
-
-        formConfig.entries[0].entries[0].onAction = function (id, data, form) {
-            if (data === 'global') {
-                form.entries[0].entries[1].disabled = true;
-                form.entries[0].entries[1].required = false;
-            }
-            else {
-                delete form.entries[0].entries[1].disabled;
-                form.entries[0].entries[1].required = true;
-            }
-        };
-
-        getCatalogRecipes(currentScope, function (recipes) {
-            // adding available recipes to form
-            recipes.forEach(function (oneRecipe) {
-                if (oneRecipe.type === 'nginx') {
-                    formConfig.entries[0].entries[3].value.push({ l: oneRecipe.name, v: oneRecipe._id });
-	                injectCatalogInputs(formConfig, recipes, {
-		                mainLevel : 0,
-		                subLevel: 3,
-		                initialCount: 4,
-		                type: 'nginx'
-	                });
-                }
-            });
-
-            var options = {
-                timeout: $timeout,
-                form: formConfig,
-                name: 'deployEnv',
-                label: translation.deployEnvironment[LANG] + ' ' + envCode,
-                actions: [
-                    {
-                        'type': 'submit',
-                        'label': translation.submit[LANG],
-                        'btn': 'primary',
-                        'action': function (formData) {
-                            var text = "<h2>Deploying New Nginx in " + envCode + " Environment</h2>";
-                            text += "<p>" + translation.deploying[LANG] + formData.nginxCount + translation.newNginxEnvironment[LANG] + envCode + ".</p>";
-                            text += "<p>" + translation.doNotRefreshThisPageThisWillTakeFewMinutes[LANG] + "</p>";
-                            text += "<div id='progress_deploy_" + envCode + "' style='padding:10px;'></div>";
-                            jQuery('#overlay').html("<div class='bg'></div><div class='content'>" + text + "</div>");
-                            jQuery("#overlay .content").css("width", "40%").css("left", "30%");
-                            overlay.show();
-
-                            var params = {
-                                "env": envCode.toLowerCase(),
-                                gitSource: {
-                                    owner: "",
-                                    repo: "",
-                                    branch: "",
-                                    commit: ""
-                                },
-                                contentConfig: {},
-                                deployConfig: {
-                                    isKubernetes: currentScope.isKubernetes
-                                }
-                            };
-                            deployNginx(formData, params);
-                        }
-                    },
-                    {
-                        'type': 'reset',
-                        'label': translation.cancel[LANG],
-                        'btn': 'danger',
-                        'action': function () {
-                            currentScope.modalInstance.dismiss('cancel');
-                            currentScope.form.formData = {};
-                        }
-                    }
-                ]
-            };
-            buildFormWithModal(currentScope, $modal, options);
-        });
-
-        // function listStaticContent(currentScope, cb) {
-        //     getSendDataFromServer(currentScope, ngDataApi, {
-        //         'method': 'post',
-        //         'routeName': '/dashboard/staticContent/list'
-        //     }, function (error, response) {
-        //         if (error) {
-        //             currentScope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
-        //         } else {
-        //             cb(response);
-        //         }
-        //     });
-        // }
-
-        function deployNginx(formData, params) {
-            params.type = 'nginx';
-            params.name = 'nginx';
-            params.recipe = formData.nginxRecipe;
-            params.deployConfig.memoryLimit = (formData.nginxMemoryLimit * 1048576);
-            params.deployConfig.replication = {
-                mode: formData.nginxDeploymentMode
-            };
-
-            if (formData.nginxDeploymentMode === 'replicated' || formData.nginxDeploymentMode === 'deployment') {
-                params.deployConfig.replication.replicas = formData.nginxCount;
-            }
-
-            if (params.deployConfig.isKubernetes) {
-                if (params.deployConfig.replication.mode === 'replicated') {
-                    params.deployConfig.replication.mode = "deployment";
-                }
-                if (params.deployConfig.replication.mode === 'global') {
-                    params.deployConfig.replication.mode = "daemonset";
-                    delete params.deployConfig.replication.replicas;
-                }
-            }
-	
-	        //inject user input catalog entry and image override
-	        params.catalogUserInput = {
-		        image: {
-			        name: formData['_ci_nginxImageName'],
-			        prefix: formData['_ci_nginxImagePrefix'],
-			        tag: formData['_ci_nginxImageTag']
-		        }
-	        };
-	
-	        var excludes = ['_ci_nginxImageName', '_ci_nginxImagePrefix', '_ci_nginxImageTag'];
-	        for( var input in formData){
-		        if(input.indexOf('_ci_nginx_') !== -1 && excludes.indexOf(input) === -1){
-			        if(!params.catalogUserInput.env){
-				        params.catalogUserInput.env = {};
-			        }
-			        params.catalogUserInput.env[input.replace('_ci_nginx_', '')] = formData[input];
-		        }
-	        }
-
-            getSendDataFromServer(currentScope, ngDataApi, {
-                "method": "post",
-                "routeName": "/dashboard/cloud/services/soajs/deploy",
-                "data": params
-            }, function (error, response) {
-                if (error) {
-                    currentScope.form.displayAlert('danger', error.message);
-                    overlay.hide();
-                }
-                else {
-                    currentScope.modalInstance.dismiss("ok");
-                    overlay.hide(function () {
-
-                        currentScope.isDeploying = true;
-                        $timeout(function () {
-                            currentScope.listServices();
-                        }, 1500);
-                    });
-                }
-            });
-        }
-
     }
 
     function getCatalogRecipes(currentScope, cb) {
@@ -1190,7 +954,6 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
     return {
         'deployEnvironment': deployEnvironment,
-        'deployNewService': deployNewService,
-        'deployNewNginx': deployNewNginx
+        'deployNewService': deployNewService
     }
 }]);
