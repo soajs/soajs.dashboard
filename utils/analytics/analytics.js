@@ -8,7 +8,6 @@ var colls = {
 var uuid = require('uuid');
 var filebeatIndex = require("./indexes/filebeat-index");
 var metricbeatIndex = require("./indexes/metricbeat-index");
-var allIndex = require("./indexes/all-index");
 var counter = 0;
 var lib = {
 		
@@ -383,7 +382,7 @@ var lib = {
 		
 		"configureKibana": function (soajs, servicesList, esClient, env, model, cb) {
 			var analyticsArray = [];
-			var serviceEnv = env.code.toLowerCase(); //todo check this Lowecase or Uppercase
+			var serviceEnv = env.code.toLowerCase();
 			async.parallel({
 					"filebeat": function (pCallback) {
 						async.each(servicesList, function (oneService, callback) {
@@ -411,43 +410,6 @@ var lib = {
 											if (oneTask.status && oneTask.status.state && oneTask.status.state === "running") {
 												taskName = oneTask.name;
 												taskName = taskName.replace(/[\/*?"<>|,.-]/g, "_");
-												// analyticsArray = analyticsArray.concat(
-												// 	[
-												// 		{
-												// 			index: {
-												// 				_index: '.kibana',
-												// 				_type: 'index-pattern',
-												// 				_id: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
-												// 			}
-												// 		},
-												// 		{
-												// 			title: 'filebeat-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
-												// 			timeFieldName: '@timestamp',
-												// 			fields: filebeatIndex.fields,
-												// 			fieldFormatMap: filebeatIndex.fieldFormatMap,
-												// 			env: serviceEnv
-												// 		}
-												// 	]
-												// );
-												// analyticsArray = analyticsArray.concat(
-												// 	[
-												// 		{
-												// 			index: {
-												// 				_index: '.kibana',
-												// 				_type: 'index-pattern',
-												// 				_id: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*"
-												// 			}
-												// 		},
-												// 		{
-												// 			title: '*-' + serviceName + "-" + serviceEnv + "-" + taskName + "-" + "*",
-												// 			timeFieldName: '@timestamp',
-												// 			fields: allIndex.fields,
-												// 			fieldFormatMap: allIndex.fieldFormatMap,
-												// 			env: serviceEnv
-												// 		}
-												// 	]
-												// );
-												
 												if (key == 0) {
 													//filebeat-service-environment-*
 													
@@ -468,67 +430,6 @@ var lib = {
 															}
 														]
 													);
-													
-													
-													// analyticsArray = analyticsArray.concat(
-													// 	[
-													// 		{
-													// 			index: {
-													// 				_index: '.kibana',
-													// 				_type: 'index-pattern',
-													// 				_id: '*-' + serviceName + "-" + serviceEnv + "-" + "*"
-													// 			}
-													// 		},
-													// 		{
-													// 			title: '*-' + serviceName + "-" + serviceEnv + "-" + "*",
-													// 			timeFieldName: '@timestamp',
-													// 			fields: allIndex.fields,
-													// 			fieldFormatMap: allIndex.fieldFormatMap,
-													// 			env: serviceEnv
-													// 		}
-													// 	]
-													// );
-													
-													//filebeat-service-environment-*
-													
-													
-													// analyticsArray = analyticsArray.concat(
-													// 	[
-													// 		{
-													// 			index: {
-													// 				_index: '.kibana',
-													// 				_type: 'index-pattern',
-													// 				_id: 'filebeat-' + serviceName + '-' + "*"
-													// 			}
-													// 		},
-													// 		{
-													// 			title: 'filebeat-' + serviceName + '-' + "*",
-													// 			timeFieldName: '@timestamp',
-													// 			fields: filebeatIndex.fields,
-													// 			fieldFormatMap: filebeatIndex.fieldFormatMap,
-													// 			env: serviceEnv
-													// 		}
-													// 	]
-													// );
-													
-													// analyticsArray = analyticsArray.concat(
-													// 	[
-													// 		{
-													// 			index: {
-													// 				_index: '.kibana',
-													// 				_type: 'index-pattern',
-													// 				_id: '*-' + serviceName + "-" + "*"
-													// 			}
-													// 		},
-													// 		{
-													// 			title: '*-' + serviceName + "-" + "*",
-													// 			timeFieldName: '@timestamp',
-													// 			fields: allIndex.fields,
-													// 			fieldFormatMap: allIndex.fieldFormatMap,
-													// 			env: serviceEnv
-													// 		}
-													// 	]
-													// );
 												}
 												
 												var options = {
