@@ -372,7 +372,7 @@ describe("testing hosts deployment", function () {
 	beforeEach(function (done) {
 		setTimeout(function () {
 			done();
-		}, process.env.SOAJS_TEST_LATENCY || 700);
+		}, 700);
 	});
 
 	describe("testing cluster nodes", function () {
