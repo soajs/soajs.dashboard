@@ -1044,11 +1044,12 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					serviceId: ctrlDeployment.id,
 					mode: ctrlDeployment.labels[ 'soajs.service.mode' ],
-					action: 'rebuild',
+					action: 'rebuild'
 				}
 			};
 			
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
+				// console.log(body);
 				assert.ok(body);
 				done();
 			});
