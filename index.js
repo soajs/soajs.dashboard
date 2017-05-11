@@ -13,6 +13,7 @@ var cloudNodesBL = require("./lib/cloud/nodes.js");
 var cloudMaintenanceBL = require("./lib/cloud/maintenance.js");
 var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
 var catalogBL = require("./lib/catalog/index.js");
+var ciBL = require("./lib/ci/index.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -62,7 +63,7 @@ service.init(function () {
 	/**
 	 * Environments features
 	 */
-	
+
 	/**
 	 * Add a new environment
 	 * @param {String} API route
@@ -153,7 +154,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add environment database
 	 * @param {String} API route
@@ -179,7 +180,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update environment's database prefix
 	 * @param {String} API route
@@ -244,7 +245,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List enviornment platforms
 	 * @param {String} API route
@@ -257,7 +258,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Upload platform certificate
 	 * @param {String} API route
@@ -283,7 +284,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Choose existing platform certificate
 	 * @param {String} API route
@@ -309,7 +310,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Change selected platform driver
 	 * @param {String} API route
@@ -339,7 +340,7 @@ service.init(function () {
 	/**
 	 * Products features
 	 */
-	
+
 	/**
 	 * Add a new product
 	 * @param {String} API route
@@ -352,7 +353,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete an existing product
 	 * @param {String} API route
@@ -430,7 +431,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new product package
 	 * @param {String} API route
@@ -473,7 +474,7 @@ service.init(function () {
 	/**
 	 * Tenants features
 	 */
-	
+
 	/**
 	 * Add a new tenant
 	 * @param {String} API route
@@ -538,7 +539,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List tenant oauth configuration
 	 * @param {String} API route
@@ -655,7 +656,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new tenant application
 	 * @param {String} API route
@@ -854,7 +855,7 @@ service.init(function () {
 	/**
 	 * Dashboard Keys
 	 */
-	
+
 	/**
 	 * List external keys with dashboard access
 	 * @param {String} API route
@@ -871,7 +872,7 @@ service.init(function () {
 	/**
 	 * Hosts features
 	 */
-	
+
 	/**
 	 * List existing hosts in manual deployment mode
 	 * @param {String} API route
@@ -884,7 +885,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Perform maintenance operation on a host deployed in manual mode
 	 * @param {String} API route
@@ -901,7 +902,7 @@ service.init(function () {
 	/**
 	 * High Availability Cloud features
 	 */
-	
+
 	/**
 	 * Get all available cluster nodes
 	 * @param {String} API route
@@ -914,7 +915,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Add a new cluster node
 	 * @param {String} API route
@@ -927,7 +928,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Remove an existing cluster node
 	 * @param {String} API route
@@ -940,7 +941,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Update the role or availability of an existing cluster node
 	 * @param {String} API route
@@ -979,7 +980,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Redeploy a running service
 	 * @param {String} API route
@@ -992,7 +993,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Scale an existing service deployment
 	 * @param {String} API route
@@ -1005,7 +1006,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete an existing deployment
 	 * @param {String} API route
@@ -1141,6 +1142,62 @@ service.init(function () {
 	});
 
 	/**
+	* Continuous Integration/Delivery features
+	*/
+
+	/**
+	* Get a CI configuration
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.get("/ci", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.getConfig(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	* Save a CI configuration
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.post("/ci", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.saveConfig(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	* Delete a CI configuration
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.delete("/ci", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.deleteConfig(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
+	* Download a CI recipe
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.get("/ci/download", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.downloadRecipe(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Git App features gitAccountsBL
 	 */
 
@@ -1169,7 +1226,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * List all available git accounts
 	 * @param {String} API route
@@ -1260,11 +1317,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Services features
 	 */
-	
+
 	/**
 	 * List available services
 	 * @param {String} API route
@@ -1293,7 +1350,7 @@ service.init(function () {
 	/**
 	 * Daemons features
 	 */
-	
+
 	/**
 	 * List available daemons
 	 * @param {String} API route
@@ -1410,11 +1467,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Static Content features
 	 */
-	
+
 	/**
 	 * List available static content
 	 * @param {String} API route
@@ -1840,7 +1897,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Analytics:
 	 * Api that get settings of current Analytics in all environments
@@ -1854,7 +1911,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Analytics:
 	 * Api that activate analytics in an environment
@@ -1868,7 +1925,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Analytics:
 	 * Api that deactivate analytics in an environment
