@@ -98,6 +98,10 @@ function checkForMongo(soajs) {
 }
 
 module.exports = {
+	"checkForMongo": function (soajs) {
+		checkForMongo(soajs);
+	},
+
     "getDb": function(soajs) {
         checkForMongo(soajs);
         return mongo;
