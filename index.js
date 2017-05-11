@@ -1191,7 +1191,7 @@ service.init(function () {
 	*/
 	service.get("/ci/download", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.downloadRecipe(config, req, function (error, data) {
+			BL.downloadRecipe(config, req, res, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});

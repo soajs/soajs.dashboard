@@ -37,6 +37,10 @@ module.exports = {
 		"services": "soajs"
 	},
 
+	"templates": {
+		"path": __dirname + '/templates/'
+	},
+
 	"network": 'soajsnet',
 
 	"imagesDir": "/opt/soajs/deployer/",
@@ -1724,7 +1728,7 @@ module.exports = {
 								"properties": {
 									"domain": { "type": "string", "required": true },
 									"owner": { "type": "string", "required": true },
-									"token": { "type": "string", "required": true }
+									"gitToken": { "type": "string", "required": true }
 								}
 							},
 							"recipe": { "type": "string", "required": true }
