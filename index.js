@@ -1849,7 +1849,9 @@ service.init(function () {
 	 */
 	service.get("/analytics/getSettings", function (req, res) {
 		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
-			BL.getSettings(config, req, res);
+			BL.getSettings(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1861,7 +1863,9 @@ service.init(function () {
 	 */
 	service.get("/analytics/activateAnalytics", function (req, res) {
 		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
-			BL.activateAnalytics(config, req, res);
+			BL.activateAnalytics(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 	
@@ -1873,7 +1877,9 @@ service.init(function () {
 	 */
 	service.get("/analytics/deactivateAnalytics", function (req, res) {
 		initBLModel(req, res, analyticsBL, dbModel, function (BL) {
-			BL.deactivateAnalytics(config, req, res);
+			BL.deactivateAnalytics(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
 		});
 	});
 
