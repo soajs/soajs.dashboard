@@ -260,8 +260,23 @@ var errors = {
 	"952": "Unable to update catalog recipe",
 	"953": "Unable to delete catalog recipe",
 	"954": "Unable to get catalog ID for specified service/deployment",
-	
-	"960": "Elasticsearch analytics cluster not found"
+
+	"955": "No CI configuration found",
+
+	"960": "Elasticsearch analytics cluster not found",
+
+    "969": "The chosen Continuous Integration Service does not exist",
+    "970": "The chosen driver does not support the selected function",
+    "971": "Unable to submit your request to the service.",
+
+    "972": "Please provide a valid Github token.",
+    "973": "The provided Github token does not have sufficient oauth permissions.",
+
+    "974": "Please provide a valid Travis access token.",
+    "975": "Please provide the name of the repositories owner.",
+
+    "976": "Could not find any repository for the requested owner.",
+    "977": "Could not find the requested repository."
 };
 
 
