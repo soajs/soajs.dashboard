@@ -262,7 +262,6 @@ var errors = {
 	"954": "Unable to get catalog ID for specified service/deployment",
 
 	"955": "No CI configuration found",
-	"956": "Unable to generate CI recipe file",
 
 	"960": "Elasticsearch analytics cluster not found"
 };
