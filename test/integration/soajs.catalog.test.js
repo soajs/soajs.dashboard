@@ -48,7 +48,8 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 let catalog = {
     "name": "testCatalog",
-    "type": "service",
+    "type": "soajs",
+    "subtype": "service",
     "description": "This is a catalog for testing purposes.",
     "recipe": {
         "deployOptions" : {
