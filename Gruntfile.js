@@ -101,11 +101,15 @@ module.exports = function (grunt) {
 				// NODE_ENV: 'test',
 				// APP_DIR: process.cwd(),
 				APP_DIR_FOR_CODE_COVERAGE: '../',
-				SOAJS_SRVIP: '127.0.0.1'
+				SOAJS_SRVIP: '127.0.0.1',
+				SOAJS_DEPLOY_TEST: true,
+				SOAJS_TEST_ANALYTICS: 'test'
 			},
 			coverage: {
 				// NODE_ENV: 'test',
 				// APP_DIR: process.cwd(),
+				SOAJS_DEPLOY_TEST: true,
+				SOAJS_TEST_ANALYTICS: 'test',
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1',
 				SOAJS_PROFILE: '',
@@ -141,6 +145,7 @@ module.exports = function (grunt) {
 				'utils/*.js',
 				'utils/*/*.js',
 				'utils/*/*/*.js',
+				'utils/*/*/*/*.js',
 				'test/*.js'
 			],
 			options: {
@@ -170,7 +175,7 @@ module.exports = function (grunt) {
 					reporter: 'spec',
 					timeout: 90000
 				},
-				src: ['test/unit/*.js']
+				src: ['test/unit/*.js', 'test/unit/**/*.js']
 			},
 			integration: {
 				options: {

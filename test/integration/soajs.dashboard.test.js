@@ -1711,7 +1711,7 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'access_token': access_token
 					}
 				}, 'settings/tenant/get', 'get', function (body) {
-					console.log(JSON.stringify(body, null, 2));
+					// console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					tenantId = body.data.tenant._id.toString();
@@ -1744,7 +1744,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				
@@ -1772,7 +1774,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key2",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
@@ -1823,7 +1827,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					form: {
 						"secret": "my secret key2",
-						"redirectURI": "http://www.myredirecturi.com/"
+						"redirectURI": "http://www.myredirecturi.com/",
+						"oauthType" : "urac",
+						"availableEnv" : ["dashboard","dev","stg"]
 					}
 				};
 				executeMyRequest(params, 'settings/tenant/oauth/update/', 'put', function (body) {
@@ -2629,11 +2635,11 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					json: true
 				};
-				console.log(options);
+				// console.log(options);
 				request.post(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
-					console.log(JSON.stringify(body, null, 2));
+					// console.log(JSON.stringify(body, null, 2));
 					access_token = body.access_token;
 					assert.ok(body.access_token);
 					done();

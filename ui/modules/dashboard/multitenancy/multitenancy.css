@@ -38,3 +38,19 @@
 .valid {
     color: green !important;
 }
+
+div.entryBox .body .btn-primary {
+    float: right;
+    top: -10px;
+    position: inherit;
+}
+
+.tenantTab .entryBoxes .btn {
+    float: right;
+    margin-right: 5px;
+    position: inherit;
+}
+
+.tenantTab .entryBoxes .applicationsGrid {
+    margin-top:15px;
+}

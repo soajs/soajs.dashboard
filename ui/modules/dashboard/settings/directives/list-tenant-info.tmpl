@@ -14,17 +14,13 @@
 						<textarea tooltip="{{translation.formDescriptionTenantToolTip[LANG]}}" placeholder="{{translation.formTentDescriptionPlaceHolder[LANG]}}" class="form-control" ng-model="tenant.description" rows="5" name="description" id="iddescription"></textarea>
 					</td>
 				</tr>
-				<tr class="form-group ng-scope" ng-if="access.tenant.oauth.list">
-					<td class="ng-scope">
-						<label class="ng-binding">{{translation.oAuthSecret[LANG]}}</label>
-						<input type="text" tooltip="{{translation.formSecretToolTip[LANG]}}" placeholder="{{translation.formSecretPlaceHolder[LANG]}}" value="{{translation.mySecretPhrase[LANG]}}" ng-model="tenant.oauth.secret" name="secret" class="form-control"/>
-					</td>
-				</tr>
 			</tbody>
 		</table>
 	</div>
 	<div class="footer"><br/>
 		<input ng-if="access.tenant.update" type="submit" class="btn btn-sm btn-primary" ng-click="saveTenant()" value="{{translation.updateTenant[LANG]}}"/>
-		<input ng-if="access.tenant.oauth.delete" type="submit" class="btn btn-sm btn-danger" ng-click="clearOauth()" value="{{translation.deleteoAuthInfo[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && tenant.oauth.secret" type="submit" class="btn btn-sm btn-primary" ng-click="updateOAuth()" value="{{translation.updateOAuth[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && !tenant.oauth.secret" type="submit" class="btn btn-sm btn-primary" ng-click="updateOAuth()" value="{{translation.turnOnOAuth[LANG]}}"/>
+		<input ng-if="access.tenant.oauth.update && tenant.oauth.secret" type="submit" class="btn btn-sm btn-danger" ng-click="turnOffOAuth()" value="{{translation.turnOffOAuth[LANG]}}"/>
 	</div>
 </form>

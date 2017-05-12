@@ -16,16 +16,44 @@ module.exports = {
                 soajs.log.error(data.error);
                 return res.jsonp(soajs.buildResponse({"code": data.error.code, "msg": data.error.msg}));
             }
-
-            if (typeof (data.error) === 'object' && (data.error.message || data.error.msg)) {
-                soajs.log.error(data.error);
+	        else{
+	            if (typeof (data.error) === 'object') {
+		            soajs.log.error(data.error);
+	            }
+	
+	            return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
             }
-
-            return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
         } else {
             if (cb) return cb();
         }
     },
+
+	/**
+	 * Same as checkIfError; but with callback instead of res
+	 *
+	 * @param {Object} soajs
+	 * @param {Callback Function} mainCb
+	 * @param {Object} data
+	 * @param {Callback Function} cb
+	 */
+	checkErrorReturn: function (soajs, mainCb, data, cb) {
+		if (data.error) {
+			if (data.error.source === 'driver') {
+				soajs.log.error(data.error);
+				return mainCb({"code": data.error.code, "msg": data.error.msg});
+			}
+
+			if (typeof (data.error) === 'object') {
+				soajs.log.error(data.error);
+			}
+
+			return mainCb({"code": data.code, "msg": data.config.errors[data.code]});
+		} else {
+			if (cb) {
+				return cb();
+			}
+		}
+	},
 
     /**
      * Build an object that contains required values to be included when calling a soajs.core.drivers function

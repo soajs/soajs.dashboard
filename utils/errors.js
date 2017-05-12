@@ -252,7 +252,16 @@ var errors = {
 	"908": "Updating deployer configuration is only supported for kubernetes deployments",
 	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
 
-	"910": "Specified memory limit is less than minimum memory prerequisite for this service"
+	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
+	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
+
+	"950": "Catalog recipe not found",
+	"951": "You are not allowed to edit or delete a locked recipe",
+	"952": "Unable to update catalog recipe",
+	"953": "Unable to delete catalog recipe",
+	"954": "Unable to get catalog ID for specified service/deployment",
+	
+	"960": "Elasticsearch analytics cluster not found"
 };
 
 
