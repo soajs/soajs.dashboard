@@ -24,7 +24,7 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 		    else {
 		    	var submitLabel = "Turn On";
 		    	var data = {};
-		    	var turnOff;
+		    	var turnOff, download;
 		    	$scope.ciData = response;
 			    
 			    /**
@@ -48,6 +48,16 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 						    $scope.deleteRecipe();
 					    }
 				    };
+				    
+				    download = {
+					    type: 'submit',
+					    label: 'Download Continuous Integration',
+					    btn: 'success',
+					    action: function () {
+						    $scope.downloadRecipe();
+					    }
+				    };
+				    
 				    submitLabel = "Update";
 			    }
 			
@@ -117,6 +127,7 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 				    ]
 			    };
 			    if(turnOff && Object.keys(turnOff).length > 0){
+			    	options.actions.push(download);
 			    	options.actions.push(turnOff);
 			    }
 			    buildForm($scope, $modal, options);
@@ -140,6 +151,25 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
             }
         });
     };
+	
+	$scope.downloadRecipe = function () {
+		var options = {
+			routeName: "/dashboard/ci/download",
+			method: 'get',
+			headers: {
+				"Accept": "application/zip"
+			},
+			responseType: 'arraybuffer'
+		};
+		getSendDataFromServer($scope, ngDataApi, options, function (error, data) {
+			if (error) {
+				$scope.$parent.displayAlert("danger", error.message);
+			}
+			else {
+				openSaveAsDialog("ci.zip", data, "application/zip");
+			}
+		});
+	};
     
     injectFiles.injectCss("modules/dashboard/ci/ci.css");
 

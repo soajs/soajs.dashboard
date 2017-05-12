@@ -53,7 +53,7 @@ var ciAppConfig = {
 					'type': 'textarea',
 					'value': '',
 					'required': true,
-					'rows': 40,
+					'rows': 20,
 					'cols': 100,
 					'fieldMsg': "Provide the Continuous Integration Recipe as YAML code"
 				}
