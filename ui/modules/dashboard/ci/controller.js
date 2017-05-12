@@ -27,8 +27,6 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 		    	var turnOff;
 		    	$scope.ciData = response;
 			    
-		    	console.log($scope.ciData);
-		    	
 			    /**
 			     * Create/update and render continuous integration form
 			     */
@@ -122,13 +120,6 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 			    	options.actions.push(turnOff);
 			    }
 			    buildForm($scope, $modal, options);
-			
-			    /**
-			     * Create/update and render continuous integration repository list
-			     */
-			    if($scope.ciData.list && $scope.ciData.list.length > 0){
-			    	
-			    }
 		    }
 	    });
     };

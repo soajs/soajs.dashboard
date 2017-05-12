@@ -112,16 +112,38 @@ var lib = {
 										id: oneRepo.id,
 										name: oneRepo.slug,
 										active: oneRepo.active,
-										description: oneRepo.description,
-										build:{
-											id: oneRepo.last_build_id,
-											number: oneRepo.last_build_number,
-											state: oneRepo.last_build_state,
-											duration: oneRepo.last_build_duration,
-											started: oneRepo.last_build_started_at,
-											finished: oneRepo.last_build_finished_at
-										}
+										description: oneRepo.description
 									};
+									
+									var build = {};
+									if(oneRepo.last_build_id){
+										build.id = oneRepo.last_build_id;
+									}
+									
+									if(oneRepo.last_build_number){
+										build.number = oneRepo.last_build_number;
+									}
+									
+									if(oneRepo.last_build_state){
+										build.state = oneRepo.last_build_state;
+									}
+									
+									if(oneRepo.last_build_duration){
+										build.duration = oneRepo.last_build_duration;
+									}
+									
+									if(oneRepo.last_build_started_at){
+										build.started = oneRepo.last_build_started_at;
+									}
+									
+									if(oneRepo.last_build_finished_at){
+										build.finished = oneRepo.last_build_finished_at;
+									}
+									
+									if(Object.keys(build).length > 0){
+										myRepo.build = build;
+									}
+									
 									repos.push(myRepo);
 								});
 								
