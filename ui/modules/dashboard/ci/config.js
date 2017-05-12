@@ -34,12 +34,12 @@ var ciAppConfig = {
 							'fieldMsg': "Enter the Owner of the account"
 						},
 						{
-							'name': 'token',
-							'label': 'Token',
+							'name': 'gitToken',
+							'label': 'GIT Token',
 							'type': 'text',
 							'value': '',
 							'required': true,
-							'fieldMsg': "Enter the Token Value"
+							'fieldMsg': "Enter the GIT Token Value"
 						},
 					]
 				}
@@ -53,7 +53,7 @@ var ciAppConfig = {
 					'type': 'textarea',
 					'value': '',
 					'required': true,
-					'rows': 100,
+					'rows': 40,
 					'cols': 100,
 					'fieldMsg': "Provide the Continuous Integration Recipe as YAML code"
 				}

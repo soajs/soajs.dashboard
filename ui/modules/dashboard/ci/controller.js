@@ -12,39 +12,95 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
     $scope.getRecipe = function () {
 	    var formConfig = angular.copy(ciAppConfig.form.f1);
     	
-	    // overlayLoading.show();
-	    // getSendDataFromServer($scope, ngDataApi, {
-		 //    method: 'get',
-		 //    routeName: '/dashboard/ci/get'
-	    // }, function (error, response) {
-		 //    overlayLoading.hide();
-		 //    if (error) {
-			//     $scope.form.displayAlert('danger', error.message);
-		 //    }
-		 //    else {
-		 //    	$scope.ciData = response;
-			    if($scope.ciData.settings){
-				    formConfig = angular.copy(ciAppConfig.form.f2);
+	    overlayLoading.show();
+	    getSendDataFromServer($scope, ngDataApi, {
+		    method: 'get',
+		    routeName: '/dashboard/ci'
+	    }, function (error, response) {
+		    overlayLoading.hide();
+		    if (error) {
+			    $scope.form.displayAlert('danger', error.message);
+		    }
+		    else {
+		    	var submitLabel = "Turn On";
+		    	var data = {};
+		    	var turnOff;
+		    	$scope.ciData = response;
+			
+			    /**
+			     * Create/update and render continuous integration form
+			     */
+			    if($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0){
+				    formConfig.entries = formConfig.entries.concat(angular.copy(ciAppConfig.form.f2.entries));
+				    //show the list and the yaml file
+				    formConfig.entries[1].collapsed = true;
+				
+				    data['driver'] = $scope.ciData.settings.driver;
+				    data['domain'] = $scope.ciData.settings.settings.domain;
+				    data['owner'] = $scope.ciData.settings.settings.owner;
+				    data['gitToken'] = $scope.ciData.settings.settings.gitToken;
+				    data['recipe'] = $scope.ciData.settings.recipe;
+				    turnOff = {
+					    type: 'submit',
+					    label: 'Turn Off Continuous Integration',
+					    btn: 'danger',
+					    action: function () {
+						    $scope.deleteRecipe();
+					    }
+				    };
+				    submitLabel = "Update";
 			    }
-		
-			    console.log(formConfig);
-			    
+			
+			    formConfig.entries[0].onAction = function(id, data, form){
+				    if($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0){
+					    if(data !== $scope.ciData.settings.driver){
+						    form.formData.domain = '';
+						    form.formData.owner = '';
+						    form.formData.gitToken = '';
+					    }
+					    else{
+						    form.formData.domain = $scope.ciData.settings.settings.domain;
+						    form.formData.owner = $scope.ciData.settings.settings.owner;
+						    form.formData.gitToken = $scope.ciData.settings.settings.gitToken;
+					    }
+				    }
+				    else {
+					    form.formData.domain = '';
+					    form.formData.owner = '';
+					    form.formData.gitToken = '';
+				    }
+			    };
+				
 			    var options = {
 				    timeout: $timeout,
-				    form: formConfig,
+				    entries: formConfig.entries,
 				    name: 'continuousIntegration',
 				    label: 'Continuous Integration',
+				    data: data,
 				    actions: [
 					    {
 						    type: 'submit',
-						    label: 'Submit',
+						    label: submitLabel+ " Continuous Integration",
 						    btn: 'primary',
 						    action: function (formData) {
+						    	
+						    	var data = {
+						    		config : {
+									    "driver": formData.driver,
+									    "settings": {
+										    "domain": formData.domain,
+										    "owner": formData.owner,
+										    "gitToken": formData.gitToken
+									    },
+									    "recipe": (formData.recipe) ? formData.recipe : ""
+								    }
+							    };
+						    	
 							    overlayLoading.show();
 							    getSendDataFromServer($scope, ngDataApi, {
 								    method: 'post',
 								    routeName: '/dashboard/ci',
-								    data: formData
+								    data: data
 							    }, function (error, response) {
 								    overlayLoading.hide();
 								    if (error) {
@@ -52,7 +108,6 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 								    }
 								    else {
 									    $scope.form.displayAlert('success', 'Recipe Saved successfully');
-									    $scope.modalInstance.close();
 									    $scope.form.formData = {};
 									    $scope.getRecipe();
 								    }
@@ -61,15 +116,22 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 					    }
 				    ]
 			    };
+			    if(turnOff && Object.keys(turnOff).length > 0){
+			    	options.actions.push(turnOff);
+			    }
+			    buildForm($scope, $modal, options);
 			
-			    buildForm($scope, $modal, options, function(){
+			    /**
+			     * Create/update and render continuous integration repository list
+			     */
+			    if($scope.ciData.list && $scope.ciData.list.length > 0){
 			    	
-			    });
-		 //    }
-	    // });
+			    }
+		    }
+	    });
     };
-
-    $scope.deleteRecipe = function (recipe) {
+    
+    $scope.deleteRecipe = function () {
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'delete',
