@@ -26,7 +26,9 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 		    	var data = {};
 		    	var turnOff;
 		    	$scope.ciData = response;
-			
+			    
+		    	console.log($scope.ciData);
+		    	
 			    /**
 			     * Create/update and render continuous integration form
 			     */

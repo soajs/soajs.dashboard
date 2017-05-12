@@ -1,9 +1,11 @@
 "use strict";
+const fs = require('fs');
 const errorFile = require("../../errors.js");
+
 let cache = {};
 
 function checkIfSupported(options, cb, fcb) {
-    let isSupported = ((options.strategy[options.function] && typeof (options.strategy[options.function]) === 'function') ? true : false);
+    let isSupported = ((options.driver[options.function] && typeof (options.driver[options.function]) === 'function') ? true : false);
 
     if (isSupported) return fcb();
     else return cb({
@@ -17,13 +19,13 @@ function getStrategy(options, cb) {
     checkCache(options, (error, strategy) => {
         if (strategy) return cb(null, strategy);
 
-        let path = __dirname + "/strategies/" + options.strategy + ".js";
+        let path = __dirname + "/strategies/" + options.driver + ".js";
 
         checkStrategy(path, (error) => {
             if (error) return cb(error);
 
             try {
-                cache[options.strategy] = require(path);
+                cache[options.driver] = require(path);
             }
             catch (e) {
                 console.log("Error");
@@ -31,13 +33,13 @@ function getStrategy(options, cb) {
                 return cb(e);
             }
 
-            return cb(null, cache[options.strategy]);
+            return cb(null, cache[options.driver]);
         });
     });
 
     function checkCache(options, cb) {
-        if (cache[options.strategy]) {
-            return cb(null, cache[options.strategy]);
+        if (cache[options.driver]) {
+            return cb(null, cache[options.driver]);
         }
 
         return cb();
@@ -48,6 +50,14 @@ function getStrategy(options, cb) {
     }
 }
 
+function checkError(error, code, cb, fcB){
+	if (error) {
+		return cb({code: code, message: error.message });
+	} else {
+		if (fcB) return fcB();
+	}
+}
+
 module.exports = {
     /**
      * Generate a travis token from a Github token
@@ -56,8 +66,8 @@ module.exports = {
      */
     generateToken (options, cb) {
         getStrategy(options, (error, strategy) => {
-            utils.checkError(error, 969, cb, () => {
-                checkIfSupported({strategy: strategy, function: 'generateToken'}, cb, () => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'generateToken'}, cb, () => {
                     strategy.generateToken(options, cb);
                 });
             });
@@ -71,8 +81,8 @@ module.exports = {
      */
     listRepos (options, cb) {
         getStrategy(options, (error, strategy) => {
-            utils.checkError(error, 969, cb, () => {
-                checkIfSupported({strategy: strategy, function: 'listRepos'}, cb, () => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'listRepos'}, cb, () => {
                     strategy.listRepos(options, cb);
                 });
             });
