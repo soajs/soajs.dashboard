@@ -49,14 +49,16 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 					    }
 				    };
 				    
-				    download = {
-					    type: 'submit',
-					    label: 'Download Continuous Integration',
-					    btn: 'success',
-					    action: function () {
-						    $scope.downloadRecipe();
-					    }
-				    };
+				    if(data['recipe'].trim() !== '') {
+					    download = {
+						    type: 'submit',
+						    label: 'Download Continuous Integration',
+						    btn: 'success',
+						    action: function () {
+							    $scope.downloadRecipe();
+						    }
+					    };
+				    }
 				    
 				    submitLabel = "Update";
 			    }
@@ -78,6 +80,10 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 					    form.formData.domain = '';
 					    form.formData.owner = '';
 					    form.formData.gitToken = '';
+					
+					    if(data === 'travis'){
+						    form.formData.domain = "api.travis-ci.org";
+					    }
 				    }
 			    };
 				
@@ -126,8 +132,11 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 					    }
 				    ]
 			    };
+			    if(download && Object.keys(download).length > 0){
+				    options.actions.push(download);
+			    }
+			    
 			    if(turnOff && Object.keys(turnOff).length > 0){
-			    	options.actions.push(download);
 			    	options.actions.push(turnOff);
 			    }
 			    buildForm($scope, $modal, options);

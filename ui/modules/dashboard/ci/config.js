@@ -20,7 +20,7 @@ var ciAppConfig = {
 							'name': 'domain',
 							'label': 'Domain',
 							'type': 'text',
-							'value': '',
+							'value': 'api.travis-ci.org',
 							'placeholder': "",
 							'required': true,
 							'fieldMsg': "Enter the domain value"
