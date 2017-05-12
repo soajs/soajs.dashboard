@@ -606,6 +606,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
                     };
                     
                     $scope.injectCatalogEntries = function(){
+	                    currentScope.allowGitOverride = false;
                     	for(var type in currentScope.recipes){
                     		currentScope.recipes[type].forEach(function(catalogRecipe){
                     			if(catalogRecipe._id === currentScope.recipe){
