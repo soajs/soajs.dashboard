@@ -19,3 +19,30 @@
 .mr-10{
     margin-right:10px;
 }
+
+table.infoTable{
+    border-color:#999999;
+    position:absolute;
+    top: 0;
+    left:0;
+}
+table.infoTable th, table.infoTable td{
+    padding: 5px;
+    border-color:#999999;
+}
+
+table.infoTable td label{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+table.infoTable td.val{
+    font-size: 12px;
+}
+
+div.infoTableContainer{
+    width:100%;
+    overflow-x: scroll;
+    height:225px;
+    position:relative;
+}
