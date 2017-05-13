@@ -44,27 +44,27 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						"</thead>" +
 						"<tbody>" +
 						"<tr>" +
-						"<td><label>SOAJS_KEY</label></td>" +
+						"<td><label>SOAJS_CD_AUTH_KEY</label></td>" +
 						"<td class='val'>" + $cookies.get('soajs_dashboard_key') + "</td>" +
 						"</tr>" +
 						"<tr>" +
-						"<td><label>SOAJS_DEPLOY_TOKEN</label></td>" +
+						"<td><label>SOAJS_CD_DEPLOY_TOKEN</label></td>" +
 						"<td class='val'>" + $scope.ciData.settings.settings.gitToken + "</td>" +
 						"</tr>" +
 						"<tr>" +
-						"<td><label>SOAJS_APID_DOMAIN</label></td>" +
+						"<td><label>SOAJS_CD_DASHBOARD_DOMAIN</label></td>" +
 						"<td class='val'>" + $scope.ciData.api.domain + "</td>" +
 						"</tr>" +
 						"<tr>" +
-						"<td><label>SOAJS_API_URL</label></td>" +
+						"<td><label>SOAJS_CD_API_ROUTE</label></td>" +
 						"<td class='val'>" + $scope.ciData.api.url + "</td>" +
 						"</tr>" +
 						"<tr>" +
-						"<td><label>SOAJS_API_PORT</label></td>" +
+						"<td><label>SOAJS_CD_DASHBOARD_PORT</label></td>" +
 						"<td class='val'>" + (mydomainport || 80) + "</td>" +
 						"</tr>" +
 						"<tr>" +
-						"<td><label>SOAJS_API_PROTOCOL</label></td>" +
+						"<td><label>SOAJS_CD_DASHBOARD_PROTOCOL</label></td>" +
 						"<td class='val'>" + protocol.replace(":", "") + "</td>" +
 						"</tr>" +
 						"</tbody>" +
