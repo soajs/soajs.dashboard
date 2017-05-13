@@ -5,7 +5,7 @@
  */
 var titlePrefix = "SOAJS";
 var mydomain = "soajs.org";
-var mydomainport = location.port;
+var mydomainport = 8181; //location.port;
 if (mydomainport && mydomainport !== 80) {
 	mydomain += ":" + mydomainport;
 }
@@ -31,7 +31,8 @@ var modules = {
 			githubApp: 'modules/dashboard/gitAccounts/install.js',
 			swaggerEditorApp: 'modules/dashboard/swaggerEditor/install.js',
 			catalogs: 'modules/dashboard/catalogs/install.js',
-			ci: 'modules/dashboard/ci/install.js'
+			ci: 'modules/dashboard/ci/install.js',
+			cd: 'modules/dashboard/cd/install.js'
 		}
 	},
 	"manage": {

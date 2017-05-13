@@ -933,6 +933,13 @@ module.exports = {
 					}
 				}
 			},
+			
+			"/cd": {
+				"_apiInfo": {
+					"l": "Get CD Configuration",
+					"group": "Continuous Delivery"
+				}
+			},
 
 			"/ci": {
 				"_apiInfo": {
@@ -1732,6 +1739,38 @@ module.exports = {
 								}
 							},
 							"recipe": { "type": "string", "required": true }
+						}
+					}
+				}
+			},
+			
+			"/cd": {
+				"_apiInfo": {
+					"l": "Save CD Configuration",
+					"group": "Continuous Delivery"
+				},
+				"config": {
+					"source": ['body.config'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"patternProperties": {
+							"^[a-zA-Z]{3,}$": {
+								"type":"object",
+								"required": true,
+								"properties":{
+									"branch": {"type": "string", "required": true}, //{ "DEV": { "branch": "develop" } }
+								},
+								"additionalProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
+									"^[a-z0-9]+$": {
+										"type": "object",
+										"required": false,
+										"properties":{
+											"branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
+										}
+									}
+								}
+							}
 						}
 					}
 				}

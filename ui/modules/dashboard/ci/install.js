@@ -6,7 +6,7 @@ var ciNav = [
         'label': "Continuous Integration",
         'checkPermission': {
             'service': 'dashboard',
-            'route': '/ci/get',
+            'route': '/ci',
             'method': 'get'
         },
         'url': '#/continuous-integration',

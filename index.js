@@ -14,6 +14,7 @@ var cloudMaintenanceBL = require("./lib/cloud/maintenance.js");
 var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
 var catalogBL = require("./lib/catalog/index.js");
 var ciBL = require("./lib/ci/index.js");
+var cdBL = require("./lib/cd/index.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
@@ -1140,9 +1141,39 @@ service.init(function () {
 			});
 		});
 	});
-
+	
 	/**
-	* Continuous Integration/Delivery features
+	 * Continuous Delivery Features
+	 */
+	
+	/**
+	 * Get a CD configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cd", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.getConfig(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	 * Save a CD configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cd", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.saveConfig(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	* Continuous Integration features
 	*/
 
 	/**

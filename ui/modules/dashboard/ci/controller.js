@@ -19,7 +19,7 @@ ciApp.controller ('ciAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 	    }, function (error, response) {
 		    overlayLoading.hide();
 		    if (error) {
-			    $scope.form.displayAlert('danger', error.message);
+			    $scope.displayAlert('danger', error.message);
 		    }
 		    else {
 		    	var submitLabel = "Turn On";
