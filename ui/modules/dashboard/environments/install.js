@@ -1454,6 +1454,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 1,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js','modules/dashboard/environments/services/template.js', 'modules/dashboard/environments/controller.js'],

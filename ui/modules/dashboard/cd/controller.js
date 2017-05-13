@@ -1,13 +1,14 @@
 'use strict';
 
 var cdApp = soajsApp.components;
-cdApp.controller ('cdAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, ngDataApi, injectFiles) {
+cdApp.controller ('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, $cookies, ngDataApi, injectFiles) {
     $scope.$parent.isUserLoggedIn();
 
     $scope.access = {};
     constructModulePermissions($scope, $scope.access, cdAppConfig.permissions);
 	
-	$scope.ciData = {};
+	$scope.cdData = {};
+	$scope.myEnv = $cookies.getObject('myEnv').code;
 	
     $scope.getRecipe = function () {
 	    var formConfig = angular.copy(cdAppConfig.form);
@@ -23,25 +24,31 @@ cdApp.controller ('cdAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'in
 		    }
 		    else {
 		    	$scope.cdData = response;
+				delete $scope.cdData._id;
+				delete $scope.cdData.soajsauth;
 				
 			    var options = {
 				    timeout: $timeout,
 				    entries: formConfig.entries,
 				    name: 'continuousDelivery',
 				    label: 'Continuous Delivery',
-				    data: $scope.cdData,
+				    data: {'cd': $scope.cdData[$scope.myEnv]},
 				    actions: [
 					    {
 						    type: 'submit',
 						    label: "Update Continuous Delivery Settings",
 						    btn: 'primary',
 						    action: function (formData) {
+							    
+								$scope.cdData[$scope.myEnv] = formData.cd;
+							    var data = $scope.cdData;
+							    
 							    overlayLoading.show();
 							    getSendDataFromServer($scope, ngDataApi, {
 								    method: 'post',
 								    routeName: '/dashboard/cd',
 								    data: {
-								    	"config": formData
+								    	"config": data
 								    }
 							    }, function (error, response) {
 								    overlayLoading.hide();
