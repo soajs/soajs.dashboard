@@ -917,6 +917,13 @@ module.exports = {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
 					"group": "Catalog"
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
@@ -930,6 +937,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "number"
 					}
 				}
 			},
@@ -3017,6 +3031,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "number"
 					}
 				}
 			},
