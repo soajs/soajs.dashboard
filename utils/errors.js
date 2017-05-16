@@ -262,6 +262,7 @@ var errors = {
 	"954": "Unable to get catalog ID for specified service/deployment",
 
 	"955": "No CI configuration found",
+	"956": "Authentication failed. The deploy token provided is not valid.",
 
 	"960": "Elasticsearch analytics cluster not found",
 

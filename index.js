@@ -1141,11 +1141,11 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Continuous Delivery Features
 	 */
-	
+
 	/**
 	 * Get a CD configuration
 	 * @param {String} API route
@@ -1158,7 +1158,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Save a CD configuration
 	 * @param {String} API route
@@ -1171,7 +1171,20 @@ service.init(function () {
 			});
 		});
 	});
-	
+
+	/**
+	 * Trigger CD deploy operation
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post("/cd/deploy", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.cdDeploy(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
 	/**
 	* Continuous Integration features
 	*/
