@@ -276,7 +276,10 @@ var errors = {
     "975": "Please provide the name of the repositories owner.",
 
     "976": "Could not find any repository for the requested owner.",
-    "977": "Could not find the requested repository."
+    "977": "Could not find the requested repository.",
+
+	"978": "Please provide a valid environment variable ID.",
+	"979": "Could not find the desired environment variable. Ensure the repo ID and the environment variable ID are correct.",
 };
 
 

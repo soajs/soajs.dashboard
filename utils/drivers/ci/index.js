@@ -88,6 +88,96 @@ module.exports = {
             });
         });
     },
+
+    /**
+     * Lists all environment variables available for a repo
+     * @param opts
+     * @param cb
+     */
+    listEnvVars (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'listEnvVars'}, cb, () => {
+                    strategy.listEnvVars(options, cb);
+                });
+            });
+        });
+    },
+
+    /**
+     * Add an environment variable to a repo
+     * @param opts
+     * @param cb
+     */
+    addEnvVar (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'addEnvVar'}, cb, () => {
+                    strategy.listRepos(addEnvVar, cb);
+                });
+            });
+        });
+    },
+
+    /**
+     * LUpdate an environment variable for a repo
+     * @param opts
+     * @param cb
+     */
+    updateEnvVar (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'updateEnvVar'}, cb, () => {
+                    strategy.updateEnvVar(options, cb);
+                });
+            });
+        });
+    },
+
+    /**
+     * Delete an environment variable from a repo
+     * @param opts
+     * @param cb
+     */
+    deleteEnvVar (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'deleteEnvVar'}, cb, () => {
+                    strategy.deleteEnvVar(options, cb);
+                });
+            });
+        });
+    },
+
+    /**
+     * Lists the state of each repo
+     * @param opts
+     * @param cb
+     */
+    listHooks (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'listHooks'}, cb, () => {
+                    strategy.listHooks(options, cb);
+                });
+            });
+        });
+    },
+
+    /**
+     * Enables/desables a repo
+     * @param opts
+     * @param cb
+     */
+    setHook (options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'setHook'}, cb, () => {
+                    strategy.setHook(options, cb);
+                });
+            });
+        });
+    },
 };
 
 

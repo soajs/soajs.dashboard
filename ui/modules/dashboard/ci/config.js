@@ -7,7 +7,7 @@ var ciAppConfig = {
 					'name': 'driver',
 					'label': 'Choose Driver',
 					'type': 'select',
-					'value': [{'v': 'travis', 'l': "Travis", 'selected': true}, {'v': 'drone', 'l': "Drone"}],
+					'value': [{'v': 'travis', 'l': "Travis", 'selected': true}],
 					'required': true,
 					'fieldMsg': "Select which driver you would like to integrated with."
 				},
