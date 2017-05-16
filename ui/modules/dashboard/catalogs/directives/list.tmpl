@@ -48,7 +48,30 @@
 		<tab heading="Previous Versions">
 			<br />
 			<div class="f-right w20 searchBoxContainer">
-				<input type="text" name="tag" ng-model="queryVersions" ng-keyup="filterDataVersions(query, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+				<input type="text" name="tag" ng-model="queryVersions" ng-keyup="filterDataVersions(queryVersions, $index)" class="form-control text-field-align-right mb5" placeholder="Search"/>
+			</div>
+			<div ng-if="access.list">
+				<div ng-if="archives && archives.length > 0" class="entryBoxes">
+					<br />
+					<div ng-repeat="recipe in archives" class="entryBox recipe-box" ng-class="{blueRecipeBox: !recipe.locked, greenRecipeBox: (recipe.type === 'soajs' && !recipe.locked)}">
+						<div class="header" ng-class="{blueBoxHeader: !recipe.locked, greenBoxHeader: (recipe.type ==='soajs' && !recipe.locked)}">
+							{{recipe.name}}<span ng-if="recipe.type ==='soajs'"><em>(soajs)</em></span>  <span ng-if="recipe.locked" class="icon icon-lock"></span>
+							<div class="rightActions" style="display:inline;">
+								<a href="" ng-if="access.delete && !recipe.locked" ng-click="deleteRecipe(recipe, true)" ng-confirm-click="Are you sure you want to delete this recipe?">
+									<span class="icon icon-cross" tooltip="Delete Recipe"></span>
+								</a>
+								<a href="" ng-if="access.list" ng-click="viewRecipe(recipe)">
+									<span class="icon icon-zoom-in" tooltip="View Recipe"></span>
+								</a>
+							</div>
+						</div>
+						<div class="body">
+							<img ng-src="{{catalogImage}}" class="catalogIcon" width="32px" height="32px"/>
+							<label>{{recipe.type|capitalizeFirst}} Recipe</label>
+							<p>{{recipe.description}}</p>
+						</div>
+					</div>
+				</div>
 			</div>
 		</tab>
 	</tabset>
