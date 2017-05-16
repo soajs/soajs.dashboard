@@ -82,7 +82,7 @@ var lib = {
 				}
 
 				if(opts.settings.ciToken){
-					finalUrl += + "&&access_token=" + opts.settings.ciToken;
+					finalUrl += + "&access_token=" + opts.settings.ciToken;
 				}
 				
 				params.uri = "https://" + opts.settings.domain + finalUrl;
@@ -168,7 +168,7 @@ var lib = {
     listEnvVars (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.travis.headers.userAgent,
             "Accept": config.travis.headers.accept,
@@ -211,7 +211,7 @@ var lib = {
     addEnvVar (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.addEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.addEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.travis.headers.userAgent,
             "Accept": config.travis.headers.accept,
@@ -245,7 +245,7 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.updateEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
 			params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
@@ -284,7 +284,7 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.deleteEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.deleteEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
             params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
@@ -294,8 +294,6 @@ var lib = {
                 "Host": opts.settings.domain
             };
             params.json = true;
-
-            console.log(params)
 
             params.body = {
                 "env_var": opts.settings.envVar
@@ -315,6 +313,86 @@ var lib = {
         });
     },
 
+    /**
+     * Lists all the hooks
+     * @param opts
+     * @param cb
+     */
+    listHooks (opts, cb) {
+    	let params = {};
+
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listHooks + "?access_token=" + opts.settings.ciToken;
+        params.headers = {
+            "User-Agent": config.travis.headers.userAgent,
+            "Accept": config.travis.headers.accept,
+            "Content-Type": config.travis.headers.contentType,
+            "Host": opts.settings.domain
+        };
+        params.json = true;
+
+        params.body = {
+            "env_var": opts.settings.envVar
+        };
+
+        //send the request to obtain the Travis token
+        request.get(params, function (error, response, body) {
+
+            //Check for errors in the request function
+            utils.checkError(error, {code: 971}, cb, () => {
+                utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                	let resHooks = [];
+                    //Standardize response
+                	body.hooks.forEach(function(oneHook){
+                		let hook = {
+                			"id": oneHook.id,
+							"name": oneHook.name,
+							"owner": oneHook.owner_name,
+							"description": oneHook.description,
+							"active": oneHook.active,
+							"private": oneHook.private,
+							"admin": oneHook.admin
+						};
+                		resHooks.push(hook);
+					});
+                	return cb(null, resHooks);
+                });
+            });
+        });
+    },
+
+    /**
+     * activate/deactivate hook
+     * @param opts
+     * @param cb
+     */
+    setHook (opts, cb) {
+        let params = {};
+
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.setHook + "?access_token=" + opts.settings.ciToken;
+        params.headers = {
+            "User-Agent": config.travis.headers.userAgent,
+            "Accept": config.travis.headers.accept,
+            "Content-Type": config.travis.headers.contentType,
+            "Host": opts.settings.domain
+        };
+        params.json = true;
+
+        params.body = {
+        	"hook": opts.settings.hook
+		}
+
+        //send the request to obtain the Travis token
+        request.put(params, function (error, response, body) {
+            //Check for errors in the request function
+            utils.checkError(error, {code: 971}, cb, () => {
+                utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                    utils.checkError(body === "Sorry, we experienced an error.", {code: 980}, cb, () => {
+						return cb(null, true)
+                    });
+                });
+            });
+        });
+    },
 };
 
 module.exports = lib;
