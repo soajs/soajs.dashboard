@@ -295,8 +295,6 @@ var lib = {
             };
             params.json = true;
 
-            console.log(params)
-
             params.body = {
                 "env_var": opts.settings.envVar
             };
