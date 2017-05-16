@@ -82,7 +82,7 @@ var lib = {
 				}
 
 				if(opts.settings.ciToken){
-					finalUrl += + "&&access_token=" + opts.settings.ciToken;
+					finalUrl += + "&access_token=" + opts.settings.ciToken;
 				}
 				
 				params.uri = "https://" + opts.settings.domain + finalUrl;
@@ -168,7 +168,7 @@ var lib = {
     listEnvVars (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.travis.headers.userAgent,
             "Accept": config.travis.headers.accept,
@@ -211,7 +211,7 @@ var lib = {
     addEnvVar (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.addEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.addEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.travis.headers.userAgent,
             "Accept": config.travis.headers.accept,
@@ -245,7 +245,7 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.updateEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
 			params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
@@ -284,7 +284,7 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.deleteEnvVar + opts.settings.repoId + "&&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.deleteEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
             params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
@@ -311,8 +311,7 @@ var lib = {
                 });
             });
         });
-    },
-
+    }
 };
 
 module.exports = lib;
