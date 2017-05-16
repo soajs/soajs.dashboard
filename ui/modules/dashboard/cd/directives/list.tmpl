@@ -1,3 +1,16 @@
 <section ng-controller="cdAppCtrl">
-	<ngform></ngform>
+	<tabset>
+		<tab heading="Configuration">
+			<br>
+			<ngform></ngform>
+		</tab>
+		<tab heading="ledger">
+			<br>
+			<p>list the services whose catalog service has been updated after they were deployed</p>
+			<br>
+			<p>OR</p>
+			<br>
+			<p>the services whose repo update was triggered by ci but stopped by cd configuration because the later strategy is set to notify me</p>
+		</tab>
+	</tabset>
 </section>

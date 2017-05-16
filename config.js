@@ -917,6 +917,13 @@ module.exports = {
 				"_apiInfo": {
 					"l": "List Catalog Recipes",
 					"group": "Catalog"
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
@@ -930,6 +937,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "number"
 					}
 				}
 			},
@@ -1760,6 +1774,7 @@ module.exports = {
 								"required": true,
 								"properties":{
 									"branch": {"type": "string", "required": true}, //{ "DEV": { "branch": "develop" } }
+									"strategy": {"type": "string", "enum": ["notify", "update"], "required": true}
 								},
 								"additionalProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
 									"^[a-z0-9]+$": {
@@ -1767,6 +1782,7 @@ module.exports = {
 										"required": false,
 										"properties":{
 											"branch": {"type": "string", "required": true}, //{'DEV': {'branch': 'develop'} }
+											"strategy": {"type": "string", "enum": ["notify", "update"], "required": true}
 										}
 									}
 								}
@@ -3015,6 +3031,13 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				'version': {
+					"source": ['query.version'],
+					"required": false,
+					"validation": {
+						"type": "number"
 					}
 				}
 			},
