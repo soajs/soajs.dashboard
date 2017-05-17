@@ -46,6 +46,7 @@ var lib = {
 			"github_token": opts.settings.gitToken
 		};
 		
+		opts.log.debug(params);
 		//send the request to obtain the Travis token
 		request.post(params, function (error, response, body) {
 			//Check for errors in the request function
@@ -95,6 +96,7 @@ var lib = {
 				};
 				params.json = true;
 				
+				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
 					//Check for errors in the request function
@@ -176,7 +178,7 @@ var lib = {
             "Host": opts.settings.domain
         };
         params.json = true;
-
+	    opts.log.debug(params);
         //send the request to obtain the environment variables
         request.get(params, function (error, response, body) {
             //Check for errors in the request function
@@ -223,7 +225,7 @@ var lib = {
         params.body = {
             "env_var": opts.settings.envVar
         };
-
+	    opts.log.debug(params);
         //send the request to obtain the Travis token
         request.post(params, function (error, response, body) {
             //Check for errors in the request function
@@ -259,7 +261,7 @@ var lib = {
             params.body = {
                 "env_var": opts.settings.envVar
             };
-
+	        opts.log.debug(params);
             //send the request to obtain the Travis token
             request.patch(params, function (error, response, body) {
                 //Check for errors in the request function
@@ -298,7 +300,7 @@ var lib = {
             params.body = {
                 "env_var": opts.settings.envVar
             };
-
+	        opts.log.debug(params);
             //send the request to obtain the Travis token
             request.delete(params, function (error, response, body) {
                 //Check for errors in the request function
@@ -333,7 +335,7 @@ var lib = {
         params.body = {
             "env_var": opts.settings.envVar
         };
-
+	    opts.log.debug(params);
         //send the request to obtain the Travis token
         request.get(params, function (error, response, body) {
 
@@ -380,7 +382,7 @@ var lib = {
         params.body = {
         	"hook": opts.settings.hook
 		};
-
+	    opts.log.debug(params);
         //send the request to obtain the Travis token
         request.put(params, function (error, response, body) {
             //Check for errors in the request function
