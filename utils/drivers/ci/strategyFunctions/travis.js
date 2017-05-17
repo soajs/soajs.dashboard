@@ -49,6 +49,10 @@ var lib = {
 		opts.log.debug(params);
 		//send the request to obtain the Travis token
 		request.post(params, function (error, response, body) {
+			
+			console.log(error);
+			console.log(body);
+			console.log(typeof(body));
 			//Check for errors in the request function
 			utils.checkError(error, {code: 971}, cb, () => {
 				//github token parameter is null or not passed
