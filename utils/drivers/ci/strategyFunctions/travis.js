@@ -379,7 +379,7 @@ var lib = {
 
         params.body = {
         	"hook": opts.settings.hook
-		}
+		};
 
         //send the request to obtain the Travis token
         request.put(params, function (error, response, body) {
