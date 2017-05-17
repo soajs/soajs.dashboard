@@ -17,10 +17,10 @@ let utils = {
 					};
 				}
 			}
-			
+
 			return cb(error);
 		}
-		
+
 		return callback();
 	}
 };
@@ -33,7 +33,7 @@ var lib = {
 	 */
 	generateToken (opts, cb) {
 		let params = {};
-		
+
 		params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.githubAuth;
 		params.headers = {
 			"User-Agent": config.travis.headers.userAgent,
@@ -45,11 +45,11 @@ var lib = {
 		params.body = {
 			"github_token": opts.settings.gitToken
 		};
-		
+
 		opts.log.debug(params);
 		//send the request to obtain the Travis token
 		request.post(params, function (error, response, body) {
-			
+
 			console.log(error);
 			console.log(body);
 			console.log(typeof(body));
@@ -68,7 +68,7 @@ var lib = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Lists all repos or a specific repo for a repo owner
 	 * @param opts
@@ -81,17 +81,17 @@ var lib = {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
 				let finalUrl = config.travis.headers.api.url.listRepos + "/" + opts.settings.owner;
-				
+
 				if (opts.settings.repo) {
 					finalUrl += "/" + opts.settings.repo;
 				}
 
 				if(opts.settings.ciToken){
-					finalUrl += + "&access_token=" + opts.settings.ciToken;
+					finalUrl += "&access_token=" + opts.settings.ciToken;
 				}
-				
+
 				params.uri = "https://" + opts.settings.domain + finalUrl;
-				
+
 				params.headers = {
 					"User-Agent": config.travis.headers.userAgent,
 					"Accept": config.travis.headers.accept,
@@ -99,63 +99,63 @@ var lib = {
 					"Host": opts.settings.domain
 				};
 				params.json = true;
-				
+
 				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
 					//Check for errors in the request function
 					utils.checkError(error, {code: 971}, cb, () => {
 						//Check if the requested owner has repos
-						utils.checkError(Array.isArray((body.repos)) && body.repos.length === 0, {code: 976}, cb, () => {
+						utils.checkError(!Array.isArray(body.repos), {code: 976}, cb, () => {
 							//check if the requested repo is found
 							utils.checkError(body.file && body.file === 'not found', {code: 977}, cb, () => {
-								
+
 								//todo: need to map the response
 								body = body.repos;
-								
+
 								var repos = [];
-								
+
 								body.forEach(function (oneRepo) {
-									
+
 									var myRepo = {
 										id: oneRepo.id,
 										name: oneRepo.slug,
 										active: oneRepo.active,
 										description: oneRepo.description
 									};
-									
+
 									var build = {};
 									if(oneRepo.last_build_id){
 										build.id = oneRepo.last_build_id;
 									}
-									
+
 									if(oneRepo.last_build_number){
 										build.number = oneRepo.last_build_number;
 									}
-									
+
 									if(oneRepo.last_build_state){
 										build.state = oneRepo.last_build_state;
 									}
-									
+
 									if(oneRepo.last_build_duration){
 										build.duration = oneRepo.last_build_duration;
 									}
-									
+
 									if(oneRepo.last_build_started_at){
 										build.started = oneRepo.last_build_started_at;
 									}
-									
+
 									if(oneRepo.last_build_finished_at){
 										build.finished = oneRepo.last_build_finished_at;
 									}
-									
+
 									if(Object.keys(build).length > 0){
 										myRepo.build = build;
 									}
-									
+
 									repos.push(myRepo);
 								});
-								
+
 								return cb(null, repos)
 							});
 						});
@@ -163,7 +163,7 @@ var lib = {
 				});
 			});
 		});
-		
+
 	},
 
     /**
