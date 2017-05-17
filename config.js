@@ -968,6 +968,27 @@ module.exports = {
 					"group": "Continuous Integration"
 				}
 			},
+			
+			"/ci/status": {
+				"_apiInfo": {
+					"l": "Turn On/Off Repository CI",
+					"group": "Continuous Integration"
+				},
+				'id':{
+					'source': ['query.id'],
+					'requied': true,
+					'validation':{
+						'type': 'number'
+					}
+				},
+				'enable':{
+					'source': ['query.enable'],
+					'requied': true,
+					'validation':{
+						'type': 'boolean'
+					}
+				}
+			},
 
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {

@@ -1188,6 +1188,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Turn On/Off Repository CI
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/ci/status", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.toggleRepoStatus(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	* Save a CI configuration

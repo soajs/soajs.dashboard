@@ -20,10 +20,22 @@
 							    <label>Build:</label> {{oneRepo.build.number}} / <label>ID:</label> {{oneRepo.build.id}}
 						    </div>
 					    </div>
-					    <div class="body" ng-show="{{oneRepo.description && oneRepo.description !== ''}}">
-						    <p>{{oneRepo.description}}</p>
+					    <div class="body">
+						    <div class="f-left w5">
+							    <a href="" ng-click="toggleStatus('on', oneRepo)">
+							        <span tooltip="Turn Off" class="icon icon-switch red" ng-show="oneRepo.active === true" ></span>
+							    </a>
+							    <a href="" ng-click="toggleStatus('off', oneRepo)">
+							        <span tooltip="Turn On" class="icon icon-switch green" ng-show="oneRepo.active !== true" ></span>
+							    </a>
+							    <a href="" ng-click="configureRepo(oneRepo)">
+							        <span tooltip="Configure" class="icon icon-cog"></span>
+							    </a>
+							    <br /><br />
+						    </div>
+						    <div class="f-left w90" ng-show="oneRepo.description && oneRepo.description !== ''"><p>{{oneRepo.description}}</p></div>
 					    </div>
-					    <div class="footer" ng-show="{{oneRepo.build && oneRepo.build.duration}}">
+					    <div class="footer" ng-show="oneRepo.build && oneRepo.build.duration">
 						    <em class="f-right mr-10"><b>Dates:</b> {{oneRepo.build.started}} - {{oneRepo.build.finished}} / {{oneRepo.build.duration}}</em>
 					    </div>
 				    </div>

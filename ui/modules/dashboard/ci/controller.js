@@ -180,7 +180,13 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				if (turnOff && Object.keys(turnOff).length > 0) {
 					options.actions.push(turnOff);
 				}
-				buildForm($scope, $modal, options);
+				buildForm($scope, $modal, options, function(){
+					if($scope.ciData.list && $scope.ciData.list.length > 0){
+						for(var i =0; i < $scope.ciData.list.length -1; i++){
+							$scope.ciData.list[i].status = ($scope.ciData.list[i].active) ? 'ON' : 'OFF';
+						}
+					}
+				});
 			}
 		});
 	};
@@ -219,6 +225,40 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				openSaveAsDialog("ci.zip", data, "application/zip");
 			}
 		});
+	};
+	
+	$scope.toggleStatus = function(status, oneRepo){
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/ci/status',
+			params:{
+				'id': oneRepo.id,
+				'enable': (status === 'on')
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				var statusL = (status === 'on') ? 'Enabled' : 'Disabled';
+				
+				$scope.displayAlert('success', 'Recipe ' + statusL + ' successfully');
+		        $scope.getRecipe();
+			}
+		});
+	};
+	
+	$scope.configureRepo = function(oneRepo){
+		/**
+		 * call get repo api,
+		 *
+		 * generate form entries ( env variables )
+		 *
+		 * print form
+		 *
+		 */
 	};
 	
 	injectFiles.injectCss("modules/dashboard/ci/ci.css");
