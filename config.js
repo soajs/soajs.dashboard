@@ -947,7 +947,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd": {
 				"_apiInfo": {
 					"l": "Get CD Configuration",
@@ -1778,7 +1778,7 @@ module.exports = {
 					}
 				}
 			},
-			
+
 			"/cd": {
 				"_apiInfo": {
 					"l": "Save CD Configuration",
@@ -1809,6 +1809,34 @@ module.exports = {
 								}
 							}
 						}
+					}
+				}
+			},
+
+			"/cd/deploy": {
+				"_apiInfo": {
+					"l": "Trigger CD Deployment",
+					"group": "Continuous Delivery"
+				},
+				"deploy_token": {
+					"source": ['query.deploy_token'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"repo": {
+					"source": ['body.repo'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"branch": {
+					"source": ['body.branch'],
+					"required": true,
+					"validation": {
+						"type": "string"
 					}
 				}
 			},

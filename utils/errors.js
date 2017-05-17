@@ -262,6 +262,7 @@ var errors = {
 	"954": "Unable to get catalog ID for specified service/deployment",
 
 	"955": "No CI configuration found",
+	"956": "Authentication failed. The deploy token provided is not valid.",
 
 	"960": "Elasticsearch analytics cluster not found",
 
@@ -280,6 +281,7 @@ var errors = {
 
 	"978": "Please provide a valid environment variable ID.",
 	"979": "Could not find the desired environment variable. Ensure the repo ID and the environment variable ID are correct.",
+    "980": "Error while updating hook. Ensure the hook ID and the access token are correct.",
 };
 
 
