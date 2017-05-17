@@ -976,14 +976,14 @@ module.exports = {
 				},
 				'id':{
 					'source': ['query.id'],
-					'requied': true,
+					'required': true,
 					'validation':{
 						'type': 'number'
 					}
 				},
 				'enable':{
 					'source': ['query.enable'],
-					'requied': true,
+					'required': true,
 					'validation':{
 						'type': 'boolean'
 					}
