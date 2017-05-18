@@ -338,6 +338,7 @@ var lib = {
         params.body = {
             "env_var": opts.settings.envVar
         };
+        
 	    opts.log.debug(params);
         //send the request to obtain the Travis token
         request.get(params, function (error, response, body) {
@@ -383,9 +384,10 @@ var lib = {
         params.json = true;
 
         params.body = {
-        	"hook": opts.settings.hook
+        	"hook": opts.hook
 		};
 	    opts.log.debug(params);
+	    
         //send the request to obtain the Travis token
         request.put(params, function (error, response, body) {
             //Check for errors in the request function
