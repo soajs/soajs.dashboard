@@ -49,10 +49,6 @@ var lib = {
 		opts.log.debug(params);
 		//send the request to obtain the Travis token
 		request.post(params, function (error, response, body) {
-
-			console.log(error);
-			console.log(body);
-			console.log(typeof(body));
 			//Check for errors in the request function
 			utils.checkError(error, {code: 971}, cb, () => {
 				//github token parameter is null or not passed
@@ -81,13 +77,14 @@ var lib = {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
 				let finalUrl = config.travis.headers.api.url.listRepos + "/" + opts.settings.owner;
-
+				
+				opts.log.debug(opts.settings);
 				if (opts.settings.repo) {
 					finalUrl += "/" + opts.settings.repo;
 				}
 
 				if(opts.settings.ciToken){
-					finalUrl += "&access_token=" + opts.settings.ciToken;
+					finalUrl += "?access_token=" + opts.settings.ciToken;
 				}
 
 				params.uri = "https://" + opts.settings.domain + finalUrl;
@@ -100,9 +97,11 @@ var lib = {
 				};
 				params.json = true;
 
+				
 				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
+					
 					//Check for errors in the request function
 					utils.checkError(error, {code: 971}, cb, () => {
 						//Check if the requested owner has repos
