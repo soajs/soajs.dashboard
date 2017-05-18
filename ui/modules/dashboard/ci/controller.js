@@ -15,7 +15,10 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
-			routeName: '/dashboard/ci'
+			routeName: '/dashboard/ci',
+			params:{
+				'port': (mydomainport || 80)
+			}
 		}, function (error, response) {
 			overlayLoading.hide();
 			if (error) {
@@ -31,7 +34,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				 * Create/update and render continuous integration form
 				 */
 				if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-					formConfig.entries.push({
+					var htmlString = {
 						'name': '',
 						'label': 'Environment Varlables',
 						'type': 'html',
@@ -42,35 +45,18 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						"<th width='80%'>Value</th>" +
 						"</tr>" +
 						"</thead>" +
-						"<tbody>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_AUTH_KEY</label></td>" +
-						"<td class='val'>" + $cookies.get('soajs_dashboard_key') + "</td>" +
-						"</tr>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_DEPLOY_TOKEN</label></td>" +
-						"<td class='val'>" + $scope.ciData.settings.settings.gitToken + "</td>" +
-						"</tr>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_DASHBOARD_DOMAIN</label></td>" +
-						"<td class='val'>" + $scope.ciData.api.domain + "</td>" +
-						"</tr>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_API_ROUTE</label></td>" +
-						"<td class='val'>" + $scope.ciData.api.url + "</td>" +
-						"</tr>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_DASHBOARD_PORT</label></td>" +
-						"<td class='val'>" + (mydomainport || 80) + "</td>" +
-						"</tr>" +
-						"<tr>" +
-						"<td><label>SOAJS_CD_DASHBOARD_PROTOCOL</label></td>" +
-						"<td class='val'>" + protocol.replace(":", "") + "</td>" +
-						"</tr>" +
-						"</tbody>" +
-						"</table></div>",
+						"<tbody>",
 						'fieldMsg': "Please add the following environment variables in your account on " + $scope.ciData.settings.driver + " so that when the build passes successfully, " + $scope.ciData.settings.driver + " will use them and trigger the continuous deliver API in the dashboard to redeploy your services with the new code updates."
-					});
+					};
+					for(var oneVar in $scope.ciData.variables){
+						htmlString.value += "<tr>" +
+								"<td><label>" + oneVar + "</label></td>" +
+								"<td class='val'>" + $scope.ciData.variables[oneVar] + "</td>" +
+							"</tr>";
+					}
+					htmlString.value += "</tbody></table></div>";
+					
+					formConfig.entries.push(htmlString);
 					
 					formConfig.entries = formConfig.entries.concat(angular.copy(ciAppConfig.form.f2.entries));
 					//show the list and the yaml file

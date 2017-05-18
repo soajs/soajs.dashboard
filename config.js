@@ -959,6 +959,13 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Get CI Configuration",
 					"group": "Continuous Integration"
+				},
+				'port':{
+					'source': ['query.port'],
+					'required': true,
+					'validation':{
+						'type': 'number'
+					}
 				}
 			},
 

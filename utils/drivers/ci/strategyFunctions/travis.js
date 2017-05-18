@@ -1,4 +1,5 @@
 "use strict";
+const async = require("async");
 const request = require("request");
 const config = require("./config.js");
 
@@ -72,6 +73,7 @@ var lib = {
 	 */
 	listRepos (opts, cb) {
 		let params = {};
+		let repos = [];
 		//check if an access token is provided
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
@@ -111,51 +113,11 @@ var lib = {
 
 								//todo: need to map the response
 								body = body.repos;
-
-								var repos = [];
-
-								body.forEach(function (oneRepo) {
-
-									var myRepo = {
-										id: oneRepo.id,
-										name: oneRepo.slug,
-										active: oneRepo.active,
-										description: oneRepo.description
-									};
-
-									var build = {};
-									if(oneRepo.last_build_id){
-										build.id = oneRepo.last_build_id;
-									}
-
-									if(oneRepo.last_build_number){
-										build.number = oneRepo.last_build_number;
-									}
-
-									if(oneRepo.last_build_state){
-										build.state = oneRepo.last_build_state;
-									}
-
-									if(oneRepo.last_build_duration){
-										build.duration = oneRepo.last_build_duration;
-									}
-
-									if(oneRepo.last_build_started_at){
-										build.started = oneRepo.last_build_started_at;
-									}
-
-									if(oneRepo.last_build_finished_at){
-										build.finished = oneRepo.last_build_finished_at;
-									}
-
-									if(Object.keys(build).length > 0){
-										myRepo.build = build;
-									}
-
-									repos.push(myRepo);
+								async.each(body, updateRepoVars, function(error, response){
+									utils.checkError(error, {code: 978}, cb, () => {
+										return cb(null, repos)
+									})
 								});
-
-								return cb(null, repos)
 							});
 						});
 					});
@@ -163,6 +125,46 @@ var lib = {
 			});
 		});
 
+		function updateRepoVars(oneRepo, cb){
+			let myRepo = {
+				id: oneRepo.id,
+				name: oneRepo.slug,
+				active: oneRepo.active,
+				description: oneRepo.description
+			};
+			
+			let build = {};
+			if(oneRepo.last_build_id){
+				build.id = oneRepo.last_build_id;
+			}
+			
+			if(oneRepo.last_build_number){
+				build.number = oneRepo.last_build_number;
+			}
+			
+			if(oneRepo.last_build_state){
+				build.state = oneRepo.last_build_state;
+			}
+			
+			if(oneRepo.last_build_duration){
+				build.duration = oneRepo.last_build_duration;
+			}
+			
+			if(oneRepo.last_build_started_at){
+				build.started = oneRepo.last_build_started_at;
+			}
+			
+			if(oneRepo.last_build_finished_at){
+				build.finished = oneRepo.last_build_finished_at;
+			}
+			
+			if(Object.keys(build).length > 0){
+				myRepo.build = build;
+			}
+			
+			repos.push(myRepo);
+			return cb(null, true);
+		}
 	},
 
     /**
