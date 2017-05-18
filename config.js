@@ -975,7 +975,7 @@ module.exports = {
 					"group": "Continuous Integration"
 				}
 			},
-			
+
 			"/ci/status": {
 				"_apiInfo": {
 					"l": "Turn On/Off Repository CI",
@@ -993,6 +993,34 @@ module.exports = {
 					'required': true,
 					'validation':{
 						'type': 'boolean'
+					}
+				}
+			},
+
+			"/ci/envs": {
+				"_apiInfo": {
+					"l": "Get CI Repository Environment Variables",
+					"group": "Continuous Integration"
+				},
+				'id':{
+					'source': ['query.id'],
+					'required': true,
+					'validation':{
+						'type': 'number'
+					}
+				}
+			},
+
+			"/ci/settings": {
+				"_apiInfo": {
+					"l": "Get CI Repository Settings & Environment Variables",
+					"group": "Continuous Integration"
+				},
+				'id':{
+					'source': ['query.id'],
+					'required': true,
+					'validation':{
+						'type': 'number'
 					}
 				}
 			},

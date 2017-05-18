@@ -12,7 +12,8 @@ module.exports = {
                   "updateEnvVar": "/settings/env_vars/#ENV_ID#?repository_id=",
                   "deleteEnvVar": "/settings/env_vars/#ENV_ID#?repository_id=",
                   "listHooks": "/hooks",
-                  "setHook": "/hooks/"
+                  "setHook": "/hooks/",
+                  "listSettings": "/repos/#REPO_ID#/settings"
               },
           },
           "userAgent": "Travis/1.0.0",

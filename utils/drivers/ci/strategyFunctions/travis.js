@@ -79,7 +79,7 @@ var lib = {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
 				let finalUrl = config.travis.headers.api.url.listRepos + "/" + opts.settings.owner;
-				
+
 				opts.log.debug(opts.settings);
 				if (opts.settings.repo) {
 					finalUrl += "/" + opts.settings.repo;
@@ -99,11 +99,11 @@ var lib = {
 				};
 				params.json = true;
 
-				
+
 				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
-					
+
 					//Check for errors in the request function
 					utils.checkError(error, {code: 971}, cb, () => {
 						//Check if the requested owner has repos
@@ -132,36 +132,36 @@ var lib = {
 				active: oneRepo.active,
 				description: oneRepo.description
 			};
-			
+
 			let build = {};
 			if(oneRepo.last_build_id){
 				build.id = oneRepo.last_build_id;
 			}
-			
+
 			if(oneRepo.last_build_number){
 				build.number = oneRepo.last_build_number;
 			}
-			
+
 			if(oneRepo.last_build_state){
 				build.state = oneRepo.last_build_state;
 			}
-			
+
 			if(oneRepo.last_build_duration){
 				build.duration = oneRepo.last_build_duration;
 			}
-			
+
 			if(oneRepo.last_build_started_at){
 				build.started = oneRepo.last_build_started_at;
 			}
-			
+
 			if(oneRepo.last_build_finished_at){
 				build.finished = oneRepo.last_build_finished_at;
 			}
-			
+
 			if(Object.keys(build).length > 0){
 				myRepo.build = build;
 			}
-			
+
 			repos.push(myRepo);
 			return cb(null, true);
 		}
@@ -175,7 +175,7 @@ var lib = {
     listEnvVars (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.params.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.travis.headers.userAgent,
             "Accept": config.travis.headers.accept,
@@ -340,7 +340,7 @@ var lib = {
         params.body = {
             "env_var": opts.settings.envVar
         };
-        
+
 	    opts.log.debug(params);
         //send the request to obtain the Travis token
         request.get(params, function (error, response, body) {
@@ -389,7 +389,7 @@ var lib = {
         	"hook": opts.hook
 		};
 	    opts.log.debug(params);
-	    
+
         //send the request to obtain the Travis token
         request.put(params, function (error, response, body) {
             //Check for errors in the request function
@@ -402,6 +402,60 @@ var lib = {
             });
         });
     },
+
+	/**
+	 * Function that lists general settings of a travis repo
+	 * @param  {Object}   opts
+	 * @param  {Function} cb
+	 *
+	 */
+	listSettings (opts, cb) {
+		let params = {};
+
+		//check if an access token is provided
+		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
+			//check if the repositories owner name is provided
+			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
+				let finalUrl = config.travis.headers.api.url.listSettings.replace('#REPO_ID#', opts.params.repoId);
+
+				if(opts.settings.ciToken){
+					finalUrl += "?access_token=" + opts.settings.ciToken;
+				}
+
+				params.uri = "https://" + opts.settings.domain + finalUrl;
+
+				params.headers = {
+					"User-Agent": config.travis.headers.userAgent,
+					"Accept": config.travis.headers.accept,
+					"Content-Type": config.travis.headers.contentType,
+					"Host": opts.settings.domain
+				};
+				params.json = true;
+
+
+				opts.log.debug(params);
+				//send the request to obtain the repos
+				request.get(params, function (error, response, body) {
+					utils.checkError(error, {code: 981}, cb, () => {
+						utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+							/*
+							Sample output:
+							{
+								"settings": {
+									"builds_only_with_travis_yml": true,
+									"build_pushes": true,
+									"build_pull_requests": true,
+									"maximum_number_of_builds": 0
+								}
+							}
+							 */
+							return cb(null, body.settings);
+						});
+					});
+				});
+			});
+		});
+	}
 };
 
 module.exports = lib;
