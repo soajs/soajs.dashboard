@@ -2,7 +2,7 @@
 const fs = require('fs');
 
 function getStrategy(options, cb) {
-	let path = __dirname + options.driver + "/index.js";
+	let path = __dirname + "/" + options.driver + "/index.js";
 	
 	checkStrategy(path, (error) => {
 		if (error) return cb(error);
