@@ -10,7 +10,6 @@ module.exports = {
 				"addEnvVar": "/settings/env_vars?repository_id=",
 				"updateEnvVar": "/settings/env_vars/#ENV_ID#?repository_id=",
 				"deleteEnvVar": "/settings/env_vars/#ENV_ID#?repository_id=",
-				"listHooks": "/hooks",
 				"setHook": "/hooks/",
 				"listSettings": "/repos/#REPO_ID#/settings"
 			},
