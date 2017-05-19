@@ -1255,19 +1255,6 @@ service.init(function () {
 	});
 
 	/**
-	* Get ci repository environment variables
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
-	service.get("/ci/envs", function (req, res) {
-		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.getRepoEnvVars(config, req, function (error, data) {
-				return res.jsonp(req.soajs.buildResponse(error, data));
-			});
-		});
-	});
-
-	/**
 	* Get ci repository settings and environment variables
 	* @param {String} API route
 	* @param {Function} API middleware

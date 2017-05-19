@@ -997,20 +997,6 @@ module.exports = {
 				}
 			},
 
-			"/ci/envs": {
-				"_apiInfo": {
-					"l": "Get CI Repository Environment Variables",
-					"group": "Continuous Integration"
-				},
-				'id':{
-					'source': ['query.id'],
-					'required': true,
-					'validation':{
-						'type': 'number'
-					}
-				}
-			},
-
 			"/ci/settings": {
 				"_apiInfo": {
 					"l": "Get CI Repository Settings & Environment Variables",

@@ -37,11 +37,11 @@ var lib = {
     generateToken (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.githubAuth;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.githubAuth;
         params.headers = {
-            "User-Agent": config.travis.headers.userAgent,
-            "Accept": config.travis.headers.accept,
-            "Content-Type": config.travis.headers.contentType,
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
         params.json = true;
@@ -80,7 +80,7 @@ var lib = {
         utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
             //check if the repositories owner name is provided
             utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
-                let finalUrl = config.travis.headers.api.url.listRepos + "/" + opts.settings.owner;
+                let finalUrl = config.headers.api.url.listRepos + "/" + opts.settings.owner;
 
                 opts.log.debug(opts.settings);
                 if (opts.settings.repo) {
@@ -94,9 +94,9 @@ var lib = {
                 params.uri = "https://" + opts.settings.domain + finalUrl;
 
                 params.headers = {
-                    "User-Agent": config.travis.headers.userAgent,
-                    "Accept": config.travis.headers.accept,
-                    "Content-Type": config.travis.headers.contentType,
+                    "User-Agent": config.headers.userAgent,
+                    "Accept": config.headers.accept,
+                    "Content-Type": config.headers.contentType,
                     "Host": opts.settings.domain
                 };
                 params.json = true;
@@ -234,11 +234,11 @@ var lib = {
     listEnvVars (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listEnvVars + opts.params.repoId + "&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.listEnvVars + opts.params.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
-            "User-Agent": config.travis.headers.userAgent,
-            "Accept": config.travis.headers.accept,
-            "Content-Type": config.travis.headers.contentType,
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
         params.json = true;
@@ -278,11 +278,11 @@ var lib = {
     addEnvVar (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.addEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.addEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
-            "User-Agent": config.travis.headers.userAgent,
-            "Accept": config.travis.headers.accept,
-            "Content-Type": config.travis.headers.contentType,
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
         params.json = true;
@@ -312,13 +312,13 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
             params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
-                "User-Agent": config.travis.headers.userAgent,
-                "Accept": config.travis.headers.accept,
-                "Content-Type": config.travis.headers.contentType,
+                "User-Agent": config.headers.userAgent,
+                "Accept": config.headers.accept,
+                "Content-Type": config.headers.contentType,
                 "Host": opts.settings.domain
             };
             params.json = true;
@@ -351,13 +351,13 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.deleteEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.headers.api.url.deleteEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
             params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
-                "User-Agent": config.travis.headers.userAgent,
-                "Accept": config.travis.headers.accept,
-                "Content-Type": config.travis.headers.contentType,
+                "User-Agent": config.headers.userAgent,
+                "Accept": config.headers.accept,
+                "Content-Type": config.headers.contentType,
                 "Host": opts.settings.domain
             };
             params.json = true;
@@ -388,11 +388,11 @@ var lib = {
     listHooks (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.listHooks + "?access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.listHooks + "?access_token=" + opts.settings.ciToken;
         params.headers = {
-            "User-Agent": config.travis.headers.userAgent,
-            "Accept": config.travis.headers.accept,
-            "Content-Type": config.travis.headers.contentType,
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
         params.json = true;
@@ -436,11 +436,11 @@ var lib = {
     setHook (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.travis.headers.api.url.setHook + "?access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.setHook + "?access_token=" + opts.settings.ciToken;
         params.headers = {
-            "User-Agent": config.travis.headers.userAgent,
-            "Accept": config.travis.headers.accept,
-            "Content-Type": config.travis.headers.contentType,
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
         params.json = true;
@@ -476,7 +476,7 @@ var lib = {
 		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
 			//check if the repositories owner name is provided
 			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
-				let finalUrl = config.travis.headers.api.url.listSettings.replace('#REPO_ID#', opts.params.repoId);
+				let finalUrl = config.headers.api.url.listSettings.replace('#REPO_ID#', opts.params.repoId);
 
 				if(opts.settings.ciToken){
 					finalUrl += "?access_token=" + opts.settings.ciToken;
@@ -485,9 +485,9 @@ var lib = {
 				params.uri = "https://" + opts.settings.domain + finalUrl;
 
 				params.headers = {
-					"User-Agent": config.travis.headers.userAgent,
-					"Accept": config.travis.headers.accept,
-					"Content-Type": config.travis.headers.contentType,
+					"User-Agent": config.headers.userAgent,
+					"Accept": config.headers.accept,
+					"Content-Type": config.headers.contentType,
 					"Host": opts.settings.domain
 				};
 				params.json = true;
