@@ -2836,6 +2836,34 @@ module.exports = {
 				}
 			},
 
+			"/ci/settings": {
+				"_apiInfo": {
+					"l": "Update CI Repository Settings",
+					"group": "Continuous Integration"
+				},
+				"id": {
+					"source": ['query.id'],
+					"required": true,
+					"validation": {
+						"type": "number"
+					}
+				},
+				"settings": {
+					"source": ['body.settings'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				},
+				"variables": {
+					"source": ['body.variables'],
+					"required": true,
+					"validation": {
+						"type": "object"
+					}
+				}
+			},
+
 			"/cb/update": {
 				"_apiInfo": {
 					"l": "Update Content Schema",

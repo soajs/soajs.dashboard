@@ -283,7 +283,8 @@ var errors = {
 	"979": "Could not find the desired environment variable. Ensure the repo ID and the environment variable ID are correct.",
     "980": "Error while updating hook. Ensure the hook ID and the access token are correct.",
 
-	"981": "Unable to get repository settings"
+	"981": "Unable to get repository settings",
+	"982": "Unable to update repository settings"
 };
 
 

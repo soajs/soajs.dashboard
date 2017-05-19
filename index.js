@@ -1268,6 +1268,19 @@ service.init(function () {
 	});
 
 	/**
+	* Update ci repository settings and environment variables
+	* @param {String} API route
+	* @param {Function} API middleware
+	*/
+	service.put("/ci/settings", function (req, res) {
+		initBLModel(req, res, ciBL, dbModel, function (BL) {
+			BL.updateRepoSettings(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Git App features gitAccountsBL
 	 */
 

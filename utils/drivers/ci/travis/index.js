@@ -76,7 +76,7 @@ var lib = {
     listRepos (opts, cb) {
         let params = {};
         let repos = [];
-        
+
         //check if an access token is provided
         utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
             //check if the repositories owner name is provided
@@ -181,9 +181,9 @@ var lib = {
      * @param id
      * @param cb
      */
-    ensureRepoVars(opts, id, cb) {
+    ensureRepoVars(opts, cb) {
         //If there are no variables, skip the check
-        if(!opts.variables || (opts.variables && Object.keys(opts.variables).length === 0))
+        if(!opts.params.variables || (opts.params.variables && Object.keys(opts.params.variables).length === 0))
             return cb();
         else {
             //list the environment variables of each repo
@@ -193,24 +193,25 @@ var lib = {
                     "ciToken": opts.settings.ciToken
                 },
 				"params": {
-					"repoId": id
-				}
+					"repoId": opts.params.repoId
+				},
+                "log": opts.log
             };
 
             //List the env variables
             lib.listEnvVars(options, (err, repoVars) => {
                 //delete all the environment variables
-				async.each(repoVars, function(oneVar, callback){
+				async.eachSeries(repoVars, function(oneVar, callback){
 					options.settings.varID = oneVar.id;
 					lib.deleteEnvVar(options, callback);
 				}, (err) => {
-                    let inputVariables = opts.variables;
+                    let inputVariables = opts.params.variables;
 
                     if(options.settings.varID)
                     	delete options.settings.varID;
 
 					//add the supplied environment variables
-					async.each(Object.keys(inputVariables), function(inputVar, callback) {
+					async.eachSeries(Object.keys(inputVariables), function(inputVar, callback) {
 						//set up the env variable record
 						options.settings.envVar = {
 							"name": inputVar,
@@ -242,7 +243,8 @@ var lib = {
             "Content-Type": config.headers.contentType,
             "Host": opts.settings.domain
         };
-        
+        params.json = true;
+
         opts.log.debug(params);
         //send the request to obtain the environment variables
         request.get(params, function (error, response, body) {
@@ -279,7 +281,7 @@ var lib = {
     addEnvVar (opts, cb) {
         let params = {};
 
-        params.uri = "https://" + opts.settings.domain + config.headers.api.url.addEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+        params.uri = "https://" + opts.settings.domain + config.headers.api.url.addEnvVar + opts.params.repoId + "&access_token=" + opts.settings.ciToken;
         params.headers = {
             "User-Agent": config.headers.userAgent,
             "Accept": config.headers.accept,
@@ -313,7 +315,7 @@ var lib = {
             let params = {};
 
             //replace the environment variable ID in the URI
-            params.uri = "https://" + opts.settings.domain + config.headers.api.url.deleteEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+            params.uri = "https://" + opts.settings.domain + config.headers.api.url.deleteEnvVar + opts.params.repoId + "&access_token=" + opts.settings.ciToken;
             params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
             params.headers = {
@@ -322,7 +324,7 @@ var lib = {
                 "Content-Type": config.headers.contentType,
                 "Host": opts.settings.domain
             };
-            
+
             opts.log.debug(params);
             //send the request to obtain the Travis token
             request.delete(params, function (error, response, body) {
@@ -337,7 +339,7 @@ var lib = {
             });
         });
     },
-	
+
 	/**
 	 * Updates an environment variable in a repository
 	 * @param opts
@@ -346,11 +348,11 @@ var lib = {
 	updateEnvVar (opts, cb) {
 		utils.checkError(!opts.settings.varID, {code: 978}, cb, () => {
 			let params = {};
-			
+
 			//replace the environment variable ID in the URI
 			params.uri = "https://" + opts.settings.domain + config.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
 			params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
-			
+
 			params.headers = {
 				"User-Agent": config.headers.userAgent,
 				"Accept": config.headers.accept,
@@ -358,7 +360,7 @@ var lib = {
 				"Host": opts.settings.domain
 			};
 			params.json = true;
-			
+
 			params.body = {
 				"env_var": opts.settings.envVar
 			};
@@ -376,7 +378,7 @@ var lib = {
 			});
 		});
 	},
-	
+
     /**
      * activate/deactivate hook
      * @param opts
@@ -464,7 +466,52 @@ var lib = {
 				});
 			});
 		});
-	}
+	},
+
+    /**
+	 * Function that updates general settings of a travis repo
+	 * @param  {Object}   opts
+	 * @param  {Function} cb
+	 *
+	 */
+    updateSettings(opts, cb) {
+        let params = {};
+
+		//check if an access token is provided
+		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
+			//check if the repositories owner name is provided
+			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
+				let finalUrl = config.headers.api.url.updateSettings.replace('#REPO_ID#', opts.params.repoId);
+
+				if(opts.settings.ciToken){
+					finalUrl += "?access_token=" + opts.settings.ciToken;
+				}
+
+				params.uri = "https://" + opts.settings.domain + finalUrl;
+
+				params.headers = {
+					"User-Agent": config.headers.userAgent,
+					"Accept": config.headers.accept,
+					"Content-Type": config.headers.contentType,
+					"Host": opts.settings.domain
+				};
+				params.json = true;
+
+                params.body = {
+                    "settings": opts.params.settings
+                };
+
+				opts.log.debug(params);
+                request.patch(params, (error, response, body) => {
+                    utils.checkError(error, { code: 982 }, cb, () => {
+                        utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                            return cb(null, true);
+                        });
+                    });
+                });
+            });
+        });
+    }
 };
 
 module.exports = lib;

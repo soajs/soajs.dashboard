@@ -3,12 +3,12 @@ const fs = require('fs');
 
 function getStrategy(options, cb) {
 	let path = __dirname + "/" + options.driver + "/index.js";
-	
+
 	checkStrategy(path, (error) => {
 		if (error) return cb(error);
 		return cb(null, require(path));
 	});
-	
+
 	function checkStrategy(path, cb) {
 		fs.access(path, fs.constants.F_OK | fs.constants.R_OK, cb);
 	}
@@ -35,7 +35,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Lists all repos or a specific repo for a repo owner
 	 * @param opts
@@ -48,7 +48,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Lists all environment variables available for a repo
 	 * @param opts
@@ -61,7 +61,20 @@ module.exports = {
 			});
 		});
 	},
-	
+
+    /**
+	 * Update all environment variables available for a repo
+	 * @param opts
+	 * @param cb
+	 */
+	ensureRepoVars (options, cb) {
+		getStrategy(options, (error, strategy) => {
+			checkError(error, 969, cb, () => {
+				strategy.ensureRepoVars(options, cb);
+			});
+		});
+	},
+
 	/**
 	 * Add an environment variable to a repo
 	 * @param opts
@@ -74,7 +87,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * LUpdate an environment variable for a repo
 	 * @param opts
@@ -87,7 +100,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Delete an environment variable from a repo
 	 * @param opts
@@ -100,7 +113,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Lists the state of each repo
 	 * @param opts
@@ -113,7 +126,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Enables/desables a repo
 	 * @param opts
@@ -126,7 +139,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Function that lists general settings of a travis repo
 	 * @param  {Object}   options
@@ -140,7 +153,7 @@ module.exports = {
 			});
 		});
 	},
-	
+
 	/**
 	 * Function that updates general settings of a travis repo
 	 * @param  {Object}   options
