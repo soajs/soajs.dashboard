@@ -51,6 +51,10 @@ div.infoTableContainer{
     width:5%;
 }
 
+.entryBox .header{
+    margin-bottom: 5px !important;
+}
+
 #repoSettings #maximum_number_of_builds-wrapper label,
 #repoSettings #builds_only_with_travis_yml-wrapper label,
 #repoSettings #builds_only_with_travis_yml-wrapper ul,

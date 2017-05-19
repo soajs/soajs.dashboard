@@ -37,9 +37,8 @@
 							    <a href="" ng-click="configureRepo(oneRepo)">
 							        <span tooltip="Configure" class="icon icon-cog"></span>
 							    </a>
-							    <br /><br />
 						    </div>
-						    <div class="f-left w90" ng-show="oneRepo.description && oneRepo.description !== ''"><p>{{oneRepo.description}}</p></div>
+						    <div class="f-left w90" ng-show="oneRepo.description && oneRepo.description !== ''"><span>{{oneRepo.description}}</span></div>
 					    </div>
 					    <div class="footer" ng-show="oneRepo.build && oneRepo.build.duration">
 						    <em class="f-right mr-10"><b>Dates:</b> {{oneRepo.build.started}} - {{oneRepo.build.finished}} / {{oneRepo.build.duration}}</em>
