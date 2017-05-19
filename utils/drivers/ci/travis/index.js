@@ -76,6 +76,7 @@ var lib = {
     listRepos (opts, cb) {
         let params = {};
         let repos = [];
+        
         //check if an access token is provided
         utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
             //check if the repositories owner name is provided
