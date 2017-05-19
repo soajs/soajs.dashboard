@@ -34,6 +34,10 @@ const engine = {
     'setHook': function(options, cb){
         travis.setHook(options, cb);
     },
+
+    'listSettings': function (options, cb) {
+        travis.listSettings(options, cb);
+    }
 };
 
 module.exports = engine;

@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 "use strict";
 const async = require("async");
 const request = require("request");
@@ -245,24 +247,25 @@ var lib = {
         request.get(params, function (error, response, body) {
             //Check for errors in the request function
             utils.checkError(error, {code: 971}, cb, () => {
-                utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
-                    //Standardize the reponse
-                    let envVars = [];
-                    if(body.env_vars && body.env_vars.length > 0) {
-                        body.env_vars.forEach(function (envVar) {
-                            let oneVar = {
-                                "id": envVar.id,
-                                "name": envVar.name,
-                                "value": envVar.value, //returned only if public is set to true
-                                "public": envVar.public,
-                                "repoId": envVar.repository_id
-                            };
-                            envVars.push(oneVar);
-                        });
-                    }
-                    return cb (null, envVars);
+                utils.checkError(body.error, { code: 977 }, cb, () => {
+                    utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                        //Standardize the reponse
+                        let envVars = [];
+                        if(body.env_vars && body.env_vars.length > 0) {
+                            body.env_vars.forEach(function (envVar) {
+                                let oneVar = {
+                                    "id": envVar.id,
+                                    "name": envVar.name,
+                                    "value": envVar.value, //returned only if public is set to true
+                                    "public": envVar.public,
+                                    "repoId": envVar.repository_id
+                                };
+                                envVars.push(oneVar);
+                            });
+                        }
+                        return cb (null, envVars);
+                    });
                 });
-
             });
         });
     },

@@ -178,6 +178,20 @@ module.exports = {
             });
         });
     },
+
+    /**
+	 * Function that lists general settings of a travis repo
+	 * @param  {Object}   options
+	 * @param  {Function} cb
+	 *
+	 */
+    listSettings(options, cb) {
+        getStrategy(options, (error, strategy) => {
+            checkError(error, 969, cb, () => {
+                checkIfSupported({driver: strategy, function: 'listSettings'}, cb, () => {
+                    strategy.listSettings(options, cb);
+                });
+            });
+        });
+    }
 };
-
-
