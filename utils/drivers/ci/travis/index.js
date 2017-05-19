@@ -337,7 +337,46 @@ var lib = {
             });
         });
     },
-
+	
+	/**
+	 * Updates an environment variable in a repository
+	 * @param opts
+	 * @param cb
+	 */
+	updateEnvVar (opts, cb) {
+		utils.checkError(!opts.settings.varID, {code: 978}, cb, () => {
+			let params = {};
+			
+			//replace the environment variable ID in the URI
+			params.uri = "https://" + opts.settings.domain + config.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+			params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
+			
+			params.headers = {
+				"User-Agent": config.headers.userAgent,
+				"Accept": config.headers.accept,
+				"Content-Type": config.headers.contentType,
+				"Host": opts.settings.domain
+			};
+			params.json = true;
+			
+			params.body = {
+				"env_var": opts.settings.envVar
+			};
+			opts.log.debug(params);
+			//send the request to obtain the Travis token
+			request.patch(params, function (error, response, body) {
+				//Check for errors in the request function
+				utils.checkError(error, {code: 971}, cb, () => {
+					utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+						utils.checkError(body.error === "Could not find a requested setting", {code: 979}, cb, () => {
+							return cb(null, true);
+						});
+					});
+				});
+			});
+		});
+	},
+	
     /**
      * activate/deactivate hook
      * @param opts
