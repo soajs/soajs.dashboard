@@ -2848,6 +2848,13 @@ module.exports = {
 						"type": "number"
 					}
 				},
+				'port':{
+					'source': ['body.port'],
+					'required': true,
+					'validation':{
+						'type': 'number'
+					}
+				},
 				"settings": {
 					"source": ['body.settings'],
 					"required": true,
