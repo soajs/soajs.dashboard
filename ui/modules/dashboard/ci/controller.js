@@ -420,7 +420,10 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						overlayLoading.show();
 						getSendDataFromServer($scope, ngDataApi, {
 							method: 'get',
-							routeName: '/dashboard/ci/sync'
+							routeName: '/dashboard/ci/sync',
+							params: {
+								port: (mydomainport || 80)
+							}
 						}, function (error, response) {
 							overlayLoading.hide();
 							if (error) {
@@ -428,6 +431,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							}
 							else {
 								$scope.displayAlert('success', 'Repositories have been synced');
+								$scope.modalInstance.close();
 								$scope.getRecipe();
 							}
 						});

@@ -1011,6 +1011,20 @@ module.exports = {
 				}
 			},
 
+			"/ci/sync": {
+				"_apiInfo": {
+					"l": "Sync All CI Repositories",
+					"group": "Continuous Integration"
+				},
+				"port": {
+					'source': ['query.port'],
+					'required': true,
+					'validation':{
+						'type': 'number'
+					}
+				}
+			},
+
 			"/gitAccounts/accounts/list": {
 				"_apiInfo": {
 					"l": "List Git Accounts",
