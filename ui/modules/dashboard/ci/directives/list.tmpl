@@ -10,6 +10,12 @@
 		    </tab>
 		    <tab heading="Repositories List">
 			    <br />
+			    <label class="btn btn-sm btn-success f-right" ng-click="syncAll">
+				    <span class="icon icon-loop2"></span>
+				    <span>Sync All</span>
+			    </label>
+			    <br />
+			    <br />
 			    <div class="entryBoxes">
 				    <div ng-repeat="oneRepo in ciData.list" class="c-both w100 table entryBox" id="{{oneRepo.id}}" ng-class="{greenRecipeBox: (oneRepo.build && oneRepo.build.state === 'passed'), redRecipeBox: (oneRepo.build && oneRepo.build.state !== 'passed')}">
 					    <div class="header table w100 c-both">
