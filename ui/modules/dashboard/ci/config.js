@@ -153,7 +153,17 @@ var ciAppConfig = {
 					});
 				}
 			}
-		]
+		],
+		sync: {
+			entries: [
+				{
+					'name': 'info',
+					'label': 'SOAJS Environment Variables',
+					'type': 'html',
+					'fieldMsg': "The following environment variables are needed by SOAJS to set up your CI/CD integration. These variables will be added when you click on Sync Repos in all your active repositories."
+				}
+			]
+		}
 	},
 	permissions: {
 		get: ['dashboard', '/ci', 'get'],

@@ -4,13 +4,13 @@
 	</div>
     <div ng-if="ciData.list && ciData.list.length > 0">
 	    <tabset>
-		    <tab heading="Configuration Recipe">
+		    <tab heading="Configuration Recipe" ng-click="getRecipe()">
 			    <br />
 				<ngform></ngform>
 		    </tab>
 		    <tab heading="Repositories List">
 			    <br />
-			    <label class="btn btn-sm btn-success f-right" ng-click="syncAll">
+			    <label class="btn btn-sm btn-success f-right" ng-click="syncAll()">
 				    <span class="icon icon-loop2"></span>
 				    <span>Sync All</span>
 			    </label>
@@ -39,6 +39,7 @@
 							    </a>
 						    </div>
 						    <div class="f-left w90" ng-show="oneRepo.description && oneRepo.description !== ''"><span>{{oneRepo.description}}</span></div>
+						    <div class="c-both w100 bottom-body-spacing"></div>
 					    </div>
 					    <div class="footer" ng-show="oneRepo.build && oneRepo.build.duration">
 						    <em class="f-right mr-10"><b>Dates:</b> {{oneRepo.build.started}} - {{oneRepo.build.finished}} / {{oneRepo.build.duration}}</em>

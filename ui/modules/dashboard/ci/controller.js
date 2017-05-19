@@ -46,7 +46,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						"</tr>" +
 						"</thead>" +
 						"<tbody>",
-						'fieldMsg': "Please add the following environment variables in your account on " + $scope.ciData.settings.driver + " so that when the build passes successfully, " + $scope.ciData.settings.driver + " will use them and trigger the continuous deliver API in the dashboard to redeploy your services with the new code updates."
+						'fieldMsg': "The following environment variables are needed by SOAJS to set up your CI/CD integration. These variables are automatically created when you click on Sync All or when you update the settings of a repository in the second tab."
 					};
 					for (var oneVar in $scope.ciData.variables) {
 						htmlString.value += "<tr>" +
@@ -272,6 +272,11 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					});
 				}
 				
+				formConfig.entries[1].entries.push({
+					"type":"html",
+					"value": "<br /><p><em>Once you submit this form, the above SOAJS environment variables will be added to your repository configuration.</em></p>"
+				});
+				
 				var count = 0;
 				customEnvs.forEach(function (enVar) {
 					formConfig.entries[2].entries = [];
@@ -288,6 +293,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
 					count++;
 				});
+				
 				
 				var oneClone = angular.copy(ciAppConfig.form.envVar);
 				for (var i = 0; i < oneClone.length; i++) {
@@ -324,6 +330,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							btn: 'primary',
 							action: function (formData) {
 								var data = {
+									"port": (mydomainport || 80),
 									"settings":{
 										"build_pull_requests": formData.build_pull_requests,
 										"build_pushes": formData.build_pushes,
@@ -375,7 +382,68 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.syncAll = function () {
+		var formConfig = angular.copy(ciAppConfig.form.sync);
 		
+		formConfig.entries[0].value = "<div class='infoTableContainer'><table class='infoTable' width='100%' border='1' cellpadding='3' cellspacing='2'>" +
+			"<thead>" +
+			"<tr>" +
+				"<th width='20%'>Variable Name</th>" +
+				"<th width='80%'>Value</th>" +
+			"</tr>" +
+			"</thead>" +
+			"<tbody>";
+		
+		for (var oneVar in $scope.ciData.variables) {
+			formConfig.entries[0].value += "<tr>" +
+				"<td><label>" + oneVar + "</label></td>" +
+				"<td class='val'>" + $scope.ciData.variables[oneVar] + "</td>" +
+				"</tr>";
+		}
+		
+		formConfig.entries[0].value += "</tbody></table></div>";
+		
+		var options = {
+			timeout: $timeout,
+			form: formConfig,
+			name: 'syncRepos',
+			label: 'Sync all Repos',
+			actions: [
+				{
+					type: 'submit',
+					label: "Sync Repos",
+					btn: 'primary',
+					action: function () {
+						overlayLoading.show();
+						getSendDataFromServer($scope, ngDataApi, {
+							method: 'get',
+							routeName: '/dashboard/ci/sync'
+						}, function (error, response) {
+							overlayLoading.hide();
+							if (error) {
+								$scope.displayAlert('danger', error.message);
+							}
+							else {
+								$scope.displayAlert('success', 'Repositories have been synced');
+								$scope.getRecipe();
+							}
+						});
+					}
+				},
+				{
+					type: 'reset',
+					label: 'Cancel',
+					btn: 'danger',
+					action: function () {
+						$scope.modalInstance.dismiss('cancel');
+						$scope.form.formData = {};
+					}
+				}
+			]
+		};
+		
+		buildFormWithModal($scope, $modal, options, function () {
+			
+		});
 	};
 	
 	injectFiles.injectCss("modules/dashboard/ci/ci.css");
