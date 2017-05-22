@@ -353,16 +353,23 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				for(var envVariable in catalogRecipe.recipe.buildOptions.env){
 					if(catalogRecipe.recipe.buildOptions.env[envVariable].type === 'userInput'){
 
+						var defaultValue = catalogRecipe.recipe.buildOptions.env[envVariable].default || '';
+						//todo: get value from service.env
+						service.env.forEach(function(oneEnv){
+							if(oneEnv.indexOf(envVariable) !== -1){
+								defaultValue = oneEnv.split("=")[1];
+							}
+						});
 						//push a new input for this variable
 						var newInput = {
 							'name': '_ci_' + envVariable,
 							'label': catalogRecipe.recipe.buildOptions.env[envVariable].label || envVariable,
 							'type': 'text',
-							'value': catalogRecipe.recipe.buildOptions.env[envVariable].default || '',
+							'value': defaultValue,
 							'fieldMsg': catalogRecipe.recipe.buildOptions.env[envVariable].fieldMsg
 						};
 
-						if(!catalogRecipe.recipe.buildOptions.env[envVariable].default || catalogRecipe.recipe.buildOptions.env[envVariable].default === ''){
+						if(!defaultValue || defaultValue === ''){
 							newInput.required = true;
 						}
 
