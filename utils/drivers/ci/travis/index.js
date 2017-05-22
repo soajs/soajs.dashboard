@@ -201,7 +201,7 @@ var lib = {
             //List the env variables
             lib.listEnvVars(options, (err, repoVars) => {
                 //delete all the environment variables
-				async.each(repoVars, function(oneVar, callback){
+				async.eachSeries(repoVars, function(oneVar, callback){
 					options.settings.varID = oneVar.id;
 					lib.deleteEnvVar(options, callback);
 				}, (err) => {
@@ -211,7 +211,7 @@ var lib = {
                     	delete options.settings.varID;
 
 					//add the supplied environment variables
-					async.each(Object.keys(inputVariables), function(inputVar, callback) {
+					async.eachSeries(Object.keys(inputVariables), function(inputVar, callback) {
 						//set up the env variable record
 						options.settings.envVar = {
 							"name": inputVar,
