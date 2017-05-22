@@ -279,19 +279,22 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 				var count = 0;
 				customEnvs.forEach(function (enVar) {
-					formConfig.entries[2].entries = [];
-					var oneClone = angular.copy(ciAppConfig.form.envVar);
-					for (var i = 0; i < oneClone.length; i++) {
-						oneClone[i].name = oneClone[i].name.replace("%count%", count);
-						if(oneClone[i].name.indexOf('envName') !== -1){
-							oneClone[i].value = enVar.name;
+					
+					if(!$scope.ciData.variables[enVar.name]){
+						formConfig.entries[2].entries = [];
+						var oneClone = angular.copy(ciAppConfig.form.envVar);
+						for (var i = 0; i < oneClone.length; i++) {
+							oneClone[i].name = oneClone[i].name.replace("%count%", count);
+							if(oneClone[i].name.indexOf('envName') !== -1){
+								oneClone[i].value = enVar.name;
+							}
+							if(oneClone[i].name.indexOf('envVal') !== -1){
+								oneClone[i].value = enVar.value;
+							}
 						}
-						if(oneClone[i].name.indexOf('envVal') !== -1){
-							oneClone[i].value = enVar.value;
-						}
+						formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
+						count++;
 					}
-					formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
-					count++;
 				});
 
 
@@ -341,7 +344,9 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 								data.variables = {};
 								for (var i = 0; i < count; i++) {
-									data.variables[formData['envName' + i]] = formData['envVal' + i];
+									if(!$scope.ciData.variables[formData['envName' + i]]){
+										data.variables[formData['envName' + i]] = formData['envVal' + i];
+									}
 								}
 
 								overlayLoading.show();
