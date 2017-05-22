@@ -122,9 +122,18 @@
                                                 <em>{{translation.specifyAlgorithmPasswordMinimumCharacters[LANG]}} <a href="https://github.com/Gozala/crypto" target="_blank">Crypto</a></em>
                                             </div>
                                         </tab>
-                                        <tab heading="Logger">
+                                        <tab heading="Logger"><br>
+                                            <alert type="warning">
+                                                <h5><u>{{translation.warning[LANG]}}:</u></h5>
+                                                {{translation.changingLoggingConfigurationMayCauseImproperFunctionality[LANG]}}<br/>{{translation.adviceToKeepConfigurationAsIs[LANG]}}
+                                            </alert>
                                             <div class="grouped clearfix" style="vertical-align: top">
-                                                <div id="loggerEditor" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: editorLoaded}" ng-model="jsonEditor.logger.data" style="height: 200px;"></div>
+                                                <div ng-if="formEnvironment.analytics">
+                                                    <div id="loggerEditor" readonly="true" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: editorLoaded}" ng-model="jsonEditor.logger.data" style="height: 200px;"></div>
+                                                </div>
+                                                <div ng-if="!formEnvironment.analytics">
+                                                    <div id="loggerEditor" ui-ace="{maxLines: Infinity, useWrapMode : true, showGutter: true, mode: 'json', firstLineNumber: 1, onLoad: editorLoaded}" ng-model="jsonEditor.logger.data" style="height: 200px;"></div>
+                                                </div>
                                                 <em style="margin-left:10px;">{{translation.specifyLoggerConfiguration[LANG]}} <a href="https://github.com/trentm/node-bunyan" target="_blank">Bunyan</a></em>
                                             </div>
                                         </tab>
