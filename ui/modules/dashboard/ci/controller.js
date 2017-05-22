@@ -278,10 +278,9 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				});
 
 				var count = 0;
+				formConfig.entries[2].entries = [];
 				customEnvs.forEach(function (enVar) {
-					
 					if(!$scope.ciData.variables[enVar.name]){
-						formConfig.entries[2].entries = [];
 						var oneClone = angular.copy(ciAppConfig.form.envVar);
 						for (var i = 0; i < oneClone.length; i++) {
 							oneClone[i].name = oneClone[i].name.replace("%count%", count);
