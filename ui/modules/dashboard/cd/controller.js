@@ -71,6 +71,27 @@ cdApp.controller ('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngD
 	    });
     };
 	
+    $scope.getLedger = function(){
+    
+    	$scope.cdLedger = [];
+	    overlayLoading.show();
+	    getSendDataFromServer($scope, ngDataApi, {
+		    method: 'get',
+		    routeName: '/dashboard/cd/ledger',
+		    params:{
+		    	"env": $scope.myEnv
+		    }
+	    }, function (error, response) {
+		    overlayLoading.hide();
+		    if (error) {
+			    $scope.displayAlert('danger', error.message);
+		    }
+		    else {
+			    $scope.cdLedger = response;
+		    }
+	    });
+    };
+    
     injectFiles.injectCss("modules/dashboard/cd/cd.css");
 
     // Start here

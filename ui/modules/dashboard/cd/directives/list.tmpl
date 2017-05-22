@@ -1,16 +1,11 @@
 <section ng-controller="cdAppCtrl">
 	<tabset>
-		<tab heading="Configuration">
+		<tab heading="Configuration" ng-click="getRecipe()">
 			<br>
 			<ngform></ngform>
 		</tab>
-		<tab heading="ledger">
-			<br>
-			<p>list the services whose catalog service has been updated after they were deployed</p>
-			<br>
-			<p>OR</p>
-			<br>
-			<p>the services whose repo update was triggered by ci but stopped by cd configuration because the later strategy is set to notify me</p>
+		<tab heading="ledger" ng-click="getLedger()">
+			<pre>{{cdLedger}}</pre>
 		</tab>
 	</tabset>
 </section>

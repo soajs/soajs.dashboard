@@ -954,6 +954,20 @@ module.exports = {
 					"group": "Continuous Delivery"
 				}
 			},
+			
+			"/cd/ledger": {
+				"_apiInfo": {
+					"l": "Get Update Notification Ledger",
+					"group": "Continuous Delivery"
+				},
+				"env":{
+					'source': ['query.env'],
+					'required': true,
+					'validation':{
+						'type': 'string'
+					}
+				}
+			},
 
 			"/ci": {
 				"_apiInfo": {
