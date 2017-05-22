@@ -68,7 +68,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					data['gitToken'] = $scope.ciData.settings.settings.gitToken;
 					data['recipe'] = $scope.ciData.settings.recipe;
 					turnOff = {
-						type: 'submit',
+						type: 'button',
 						label: 'Turn Off Continuous Integration',
 						btn: 'danger',
 						action: function () {

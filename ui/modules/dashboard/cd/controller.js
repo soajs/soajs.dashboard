@@ -42,6 +42,7 @@ cdApp.controller ('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngD
 							    
 								$scope.cdData[$scope.myEnv] = formData.cd;
 							    var data = $scope.cdData;
+							    delete data.type;
 							    
 							    overlayLoading.show();
 							    getSendDataFromServer($scope, ngDataApi, {
