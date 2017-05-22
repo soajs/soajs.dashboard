@@ -5,7 +5,70 @@
 			<ngform></ngform>
 		</tab>
 		<tab heading="ledger" ng-click="getLedger()">
-			<pre>{{cdLedger}}</pre>
+			<br />
+			<fieldset ng-show="catalogLedger && catalogLedger.length > 0">
+				<legend>New Catalog Updates</legend>
+				<div class="grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Catalog</th>
+								<th>Current Version</th>
+								<th>New Version</th>
+								<th>Update Available Since</th>
+								<th>Take Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="oneEntry in catalogLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
+								<td>{{oneEntry.id}}</td>
+								<td>{{oneEntry.name}}</td>
+								<td>{{oneEntry.catalog.name}}<em>&nbsp; ({{oneEntry.catalog.type}}<span ng-show="oneEntry.catalog.subtype">/{{oneEntry.catalog.subtype}}</span>)</em></td>
+								<td>
+									<span ng-show="oneEntry.labels['soajs.catalog.v']">Version {{oneEntry.labels['soajs.catalog.v']}}</span>
+									<span ng-show="!oneEntry.labels['soajs.catalog.v']">N/A</span>
+								</td>
+								<td>{{oneEntry.catalog.v}}</td>
+								<td>{{oneEntry.catalog.ts|fulldate}}</td>
+								<td><input type="button" class="btn btn-sm btn-primary" value="Update" ng-click="updateEntry(oneEntry);"/></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<br>
+			</fieldset>
+			<fieldset ng-show="codeLedger && codeLedger.length > 0">
+				<legend>New Code Updates</legend>
+				<div class="grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Catalog</th>
+								<th>Branch</th>
+								<th>Update Available Since</th>
+								<th>Take Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="oneEntry in codeLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
+								<td>{{oneEntry.id}}</td>
+								<td>{{oneEntry.name}}</td>
+								<td>{{oneEntry.catalog.name}}<em>&nbsp; ({{oneEntry.catalog.type}}<span ng-show="oneEntry.catalog.subtype">/{{oneEntry.catalog.subtype}}</span>)</em>&nbsp;
+									<span ng-show="oneEntry.labels['soajs.catalog.v']">Version {{oneEntry.labels['soajs.catalog.v']}}</span>
+									<span ng-show="!oneEntry.labels['soajs.catalog.v']">N/A</span>
+								</td>
+								<td>{{oneEntry.repo.branch}}</td>
+								<td>{{oneEntry.repo.ts|fulldate}}</td>
+								<td><input type="button" class="btn btn-sm btn-primary" value="Update" ng-click="updateEntry(oneEntry);"/></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</fieldset>
 		</tab>
 	</tabset>
 </section>
