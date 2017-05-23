@@ -190,6 +190,7 @@ var lib = {
      * @param cb
      */
     listRepoBranches(opts, cb) {
+	    let params = {};
         let finalUrl = config.headers.api.url.listRepoBranches.replace('#REPO_ID#', opts.params.repoId);
 
         opts.log.debug(opts.settings);
