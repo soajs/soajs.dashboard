@@ -26,8 +26,10 @@
 								<td>{{oneEntry.name}}</td>
 								<td>{{oneEntry.image.prefix}}/{{oneEntry.image.name}}:{{oneEntry.image.tag}}</td>
 								<td>
-									<span ng-show="oneEntry.image.upgrade">New Image Version</span>
+									<span ng-show="oneEntry.image.deployer">New Image Version, Deployer Upgraded</span>
+									<span ng-show="oneEntry.image.upgrade">New Image Version, SOAJS Updated</span>
 									<span ng-show="oneEntry.image.update">Image Updated</span>
+									<span ng-show="oneEntry.image.noimage">Possible Image Update.</span>
 								</td>
 								<td>
 									{{oneEntry.image.ts|fulldate}}
