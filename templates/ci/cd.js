@@ -20,11 +20,23 @@ var utils = {
         //check the build environment
         if(process.env.TRAVIS){
             console.log("Travis build environment detected");
+
+            if(!process.env.TRAVIS_REPO_SLUG || !process.env.TRAVIS_BRANCH){
+                console.log("Could not find Travis environment variables (Repo Slug | branch). Aborting");
+                process.exit(0);
+            }
+
             gitRepo = process.env.TRAVIS_REPO_SLUG.split("/")[1];
             gitBranch = process.env.TRAVIS_BRANCH;
         }
         else if(process.env.DRONE){
             console.log("Drone build environment detected");
+
+            if(!process.env.DRONE_REPO_NAME || !process.env.DRONE_REPO_BRANCH){
+                console.log("Could not find Drone environment variables (Repo name | branch). Aborting");
+                process.exit(0);
+            }
+
             gitRepo = process.env.DRONE_REPO_NAME;
             gitBranch = process.env.DRONE_REPO_BRANCH;
         }
@@ -32,6 +44,7 @@ var utils = {
             console.log("Could not find any build environment. Aborting...");
             process.exit(0);
         }
+
         //Check if required envs are set
         console.log("Checking if required environment variables are set")
         //check auth env variables
@@ -73,16 +86,16 @@ var utils = {
             "branch": gitBranch
         };
         //if not a multi repo
-        if(config && config.type !== "multi"){
+        if(config && config.type && config.type !== "multi" && config.serviceName){
             params.body.services = [{"serviceName": config.serviceName}];
             if(config.serviceVersion) {
-                params.body.services[0] = {
-                    "serviceVersion": config.serviceVersion
-                }
+                params.body.services[0].serviceVersion = config.serviceVersion;
+
             }
         }
 
         else if(config && config.type === "multi"){
+
             //loop over each service to add its
             var services = [];
             config.folders.forEach(function(service){
@@ -93,14 +106,13 @@ var utils = {
                   "serviceName": serviceConfig.serviceName
                 };
 
-                if(serviceConfigPath.serviceVersion){
-                    oneService.serviceVersion = serviceConfigPath.serviceVersion;
+                if(serviceConfig.serviceVersion){
+                    oneService.serviceVersion = serviceConfig.serviceVersion;
                 }
                 services.push(oneService);
             });
             params.body.services = services;
         }
-
         return cb(params);
     }
 };
