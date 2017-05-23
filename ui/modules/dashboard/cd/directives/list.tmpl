@@ -4,10 +4,10 @@
 			<br>
 			<ngform></ngform>
 		</tab>
-		<tab heading="ledger" ng-click="getLedger()">
+		<tab heading="ledger {{updateCount}}" ng-click="getLedger()">
 			<br />
 			<fieldset ng-show="imageLedger && imageLedger.length > 0">
-				<legend>New Image Updates</legend>
+				<legend>New Image Updates ({{imageLedger.length}})</legend>
 				<div class="grid">
 					<table width="100%">
 						<thead>
@@ -54,7 +54,7 @@
 				<br>
 			</fieldset>
 			<fieldset ng-show="catalogLedger && catalogLedger.length > 0">
-				<legend>New Catalog Updates</legend>
+				<legend>New Catalog Updates ({{catalogLedger.length}})</legend>
 				<div class="grid">
 					<table width="100%">
 						<thead>
@@ -100,7 +100,7 @@
 				<br>
 			</fieldset>
 			<fieldset ng-show="codeLedger && codeLedger.length > 0">
-				<legend>New Code Updates</legend>
+				<legend>New Code Updates ({{codeLedger.length}})</legend>
 				<div class="grid">
 					<table width="100%">
 						<thead>
