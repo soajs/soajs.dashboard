@@ -1891,11 +1891,18 @@ module.exports = {
 						"type": "string"
 					}
 				},
-				"version": {
-					"source": ['body.version'],
-					"required": true,
+				"services": {
+					"source": ['body.services'],
+					"required": false,
 					"validation": {
-						"type": "number"
+						"type": "array",
+						"items":{
+							"type":"object",
+							"properties":{
+								"serviceName": {"type":"string","required": true},
+								"serviceVersion": {"type":"number","required": false}
+							}
+						}
 					}
 				}
 			},
