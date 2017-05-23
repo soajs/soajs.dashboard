@@ -190,6 +190,7 @@ var lib = {
      * @param cb
      */
     listRepoBranches(opts, cb) {
+	    let params = {};
         let finalUrl = config.headers.api.url.listRepoBranches.replace('#REPO_ID#', opts.params.repoId);
 
         opts.log.debug(opts.settings);
@@ -215,9 +216,9 @@ var lib = {
             utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
                 let repoBranches = [];
                 //standardize response
-                if(body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
-                    let oneBranch = {};
+                if(body && body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
                     body.commits.forEach(function(oneCommit) {
+	                    let oneBranch = {};
                         oneBranch.name = oneCommit.branch;
                         oneBranch.lastCommit = oneCommit["committed_at"];
                         //get the remaining properties from the corresponding branch object

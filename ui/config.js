@@ -5,7 +5,7 @@
  */
 var titlePrefix = "SOAJS";
 var mydomain = "soajs.org";
-var mydomainport = location.port;
+var mydomainport = 8181; //location.port;
 if (mydomainport && mydomainport !== 80) {
 	mydomain += ":" + mydomainport;
 }
