@@ -6,6 +6,45 @@
 		</tab>
 		<tab heading="ledger" ng-click="getLedger()">
 			<br />
+			<fieldset ng-show="imageLedger && imageLedger.length > 0">
+				<legend>New Image Updates</legend>
+				<div class="grid">
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Image</th>
+								<th>Available Last Update</th>
+								<th>Take Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="oneEntry in imageLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
+								<td>{{oneEntry.id}}</td>
+								<td>{{oneEntry.name}}</td>
+								<td>{{oneEntry.image.prefix}}/{{oneEntry.image.name}}:{{oneEntry.image.tag}}</td>
+								<td>
+									{{oneEntry.image.ts|fulldate}}
+								</td>
+								<td>
+									<div class="dropdown serviceOpsDropdown">
+										<button class="btn btn-default dropdown-toggle" type="button" id="serviceOps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+											Service Operations
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" aria-labelledby="serviceOps">
+											<li><a href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
+											<li><a href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<br>
+			</fieldset>
 			<fieldset ng-show="catalogLedger && catalogLedger.length > 0">
 				<legend>New Catalog Updates</legend>
 				<div class="grid">
@@ -17,7 +56,7 @@
 								<th>Catalog</th>
 								<th>Current Version</th>
 								<th>New Version</th>
-								<th>Update Available Since</th>
+								<th>Catalog Last Update</th>
 								<th>Take Action</th>
 							</tr>
 						</thead>
@@ -32,7 +71,7 @@
 								</td>
 								<td>{{oneEntry.catalog.v}}</td>
 								<td>{{oneEntry.catalog.ts|fulldate}}</td>
-								<td><input type="button" class="btn btn-sm btn-primary" value="Update" ng-click="updateEntry(oneEntry);"/></td>
+								<td><a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></td>
 							</tr>
 						</tbody>
 					</table>
@@ -49,7 +88,7 @@
 								<th>Name</th>
 								<th>Catalog</th>
 								<th>Branch</th>
-								<th>Update Available Since</th>
+								<th>Code Last Update</th>
 								<th>Take Action</th>
 							</tr>
 						</thead>
@@ -63,7 +102,7 @@
 								</td>
 								<td>{{oneEntry.repo.branch}}</td>
 								<td>{{oneEntry.repo.ts|fulldate}}</td>
-								<td><input type="button" class="btn btn-sm btn-primary" value="Update" ng-click="updateEntry(oneEntry);"/></td>
+								<td><a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></td>
 							</tr>
 						</tbody>
 					</table>
