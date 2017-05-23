@@ -33,10 +33,10 @@
 									{{oneEntry.image.ts|fulldate}}
 								</td>
 								<td>
-									<div ng-show="oneEntry.image.name ==='soajs' && oneEntry.image.prefix === 'soajsorg'" >
+									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
 										<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
 									</div>
-									<div ng-show="oneEntry.image.name !=='soajs' && oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
+									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
 										<button class="btn btn-default dropdown-toggle" type="button" id="serviceOps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 											Service Operations
 											<span class="caret"></span>
@@ -79,7 +79,20 @@
 								</td>
 								<td>{{oneEntry.catalog.v}}</td>
 								<td>{{oneEntry.catalog.ts|fulldate}}</td>
-								<td><a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></td>
+								<td>
+									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
+										<div ng-show="oneEntry.rms">
+											<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
+										</div>
+										<div ng-show="!oneEntry.rms">
+											<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a>
+										</div>
+									</div>
+									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
+										<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a>
+									</div>
+									
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -110,7 +123,19 @@
 								</td>
 								<td>{{oneEntry.repo.branch}}</td>
 								<td>{{oneEntry.repo.ts|fulldate}}</td>
-								<td><a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></td>
+								<td>
+									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
+										<div ng-show="oneEntry.rms">
+											<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
+										</div>
+										<div ng-show="!oneEntry.rms">
+											<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
+										</div>
+									</div>
+									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
+										<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
+									</div>
+								</td>
 							</tr>
 						</tbody>
 					</table>

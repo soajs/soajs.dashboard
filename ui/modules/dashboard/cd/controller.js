@@ -75,35 +75,44 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.getLedger = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
-		   method: 'get',
-		   routeName: '/dashboard/cd/ledger',
-		   params:{
-		   	"env": $scope.myEnv
-		   }
+			method: 'get',
+			routeName: '/dashboard/cd/ledger',
+			params: {
+				"env": $scope.myEnv
+			}
 		}, function (error, response) {
-		   overlayLoading.hide();
-		   if (error) {
-		    $scope.displayAlert('danger', error.message);
-		   }
-		   else {
-		    parseMyResponse(response);
-		   }
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				parseMyResponse(response);
+			}
 		});
 		
 		
-		function parseMyResponse(list){
+		function parseMyResponse(list) {
 			$scope.imageLedger = [];
 			$scope.catalogLedger = [];
 			$scope.codeLedger = [];
 			
-			list.forEach(function(oneEntry){
-				switch(oneEntry.mode){
+			list.forEach(function (oneEntry) {
+				
+				if($scope.myEnv.toLowerCase() === 'dashboard'){
+					oneEntry.rms = true;
+				}
+				else if(oneEntry.labels && oneEntry.labels['soajs.content'] === 'true' && oneEntry.labels['soajs.service.name']){
+					if(SOAJSRMS.indexOf(oneEntry.labels['soajs.service.name'].toLowerCase()) !== -1){
+						oneEntry.rms = true;
+					}
+				}
+				switch (oneEntry.mode) {
 					case 'image':
 						$scope.imageLedger.push(oneEntry);
 						break;
 					case 'rebuild':
 						$scope.catalogLedger.push(oneEntry);
-						if(oneEntry.repo){
+						if (oneEntry.repo) {
 							$scope.codeLedger.push(oneEntry);
 						}
 						break;
@@ -115,16 +124,16 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		}
 	};
 	
-	$scope.updateEntry = function(oneEntry, operation){
+	$scope.updateEntry = function (oneEntry, operation) {
 		var formConfig = {
 			entries: []
 		};
 		
-		if(operation === 'redeploy'){
+		if (operation === 'redeploy') {
 			doRebuild(null);
 		}
-		else{
-			if(oneEntry.catalog.image && oneEntry.catalog.image.override){
+		else {
+			if (oneEntry.catalog.image && oneEntry.catalog.image.override) {
 				//append images
 				formConfig.entries.push({
 					'name': "ImagePrefix",
@@ -152,14 +161,14 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 			
 			//append inputs whose type is userInput
-			if(oneEntry.catalog.envs){
-				for(var envVariable in oneEntry.catalog.envs){
-					if(oneEntry.catalog.envs[envVariable].type === 'userInput'){
+			if (oneEntry.catalog.envs) {
+				for (var envVariable in oneEntry.catalog.envs) {
+					if (oneEntry.catalog.envs[envVariable].type === 'userInput') {
 						
 						var defaultValue = oneEntry.catalog.envs[envVariable].default || '';
 						//todo: get value from service.env
-						oneEntry.service.env.forEach(function(oneEnv){
-							if(oneEnv.indexOf(envVariable) !== -1){
+						oneEntry.service.env.forEach(function (oneEnv) {
+							if (oneEnv.indexOf(envVariable) !== -1) {
 								defaultValue = oneEnv.split("=")[1];
 							}
 						});
@@ -173,7 +182,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							'fieldMsg': oneEntry.catalog.envs[envVariable].fieldMsg
 						};
 						
-						if(!defaultValue || defaultValue === ''){
+						if (!defaultValue || defaultValue === '') {
 							newInput.required = true;
 						}
 						
@@ -182,10 +191,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 			}
 			
-			if(formConfig.entries.length === 0){
+			if (formConfig.entries.length === 0) {
 				doRebuild(null);
 			}
-			else{
+			else {
 				var options = {
 					timeout: $timeout,
 					form: formConfig,
@@ -215,15 +224,15 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		}
 		
-		function doRebuild(formData){
+		function doRebuild(formData) {
 			var params = {
-				env: $scope.myEnv.toLowerCase(),
+				env: $scope.myEnv.toUpperCase(),
 				serviceId: oneEntry.id,
 				mode: ((oneEntry.labels && oneEntry.labels['soajs.service.mode']) ? oneEntry.labels['soajs.service.mode'] : ''),
 				action: operation
 			};
 			
-			if(formData && Object.keys(formData).length > 0){
+			if (formData && Object.keys(formData).length > 0) {
 				//inject user input catalog entry and image override
 				params.custom = {
 					image: {
@@ -233,9 +242,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					}
 				};
 				
-				for( var input in formData){
-					if(input.indexOf('_ci_') !== -1){
-						if(!params.custom.env){
+				for (var input in formData) {
+					if (input.indexOf('_ci_') !== -1) {
+						if (!params.custom.env) {
 							params.custom.env = {};
 						}
 						params.custom.env[input.replace('_ci_', '')] = formData[input];
@@ -257,7 +266,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					$scope.displayAlert('success', 'Service rebuilt successfully');
 					$scope.getRecipe();
 					overlayLoading.hide();
-					$scope.modalInstance.dismiss();
+					if($scope.modalInstance){
+						$scope.modalInstance.dismiss();
+					}
 				}
 			});
 		}
