@@ -15,7 +15,8 @@
 								<th width="14%">ID</th>
 								<th width="16%">Name</th>
 								<th width="20%">Image</th>
-								<th width="36%">Available Last Update</th>
+								<th width="16%">Update Type</th>
+								<th width="20%">Available Last Update</th>
 								<th width="14%">Take Action</th>
 							</tr>
 						</thead>
@@ -24,6 +25,10 @@
 								<td>{{oneEntry.id}}</td>
 								<td>{{oneEntry.name}}</td>
 								<td>{{oneEntry.image.prefix}}/{{oneEntry.image.name}}:{{oneEntry.image.tag}}</td>
+								<td>
+									<span ng-show="oneEntry.image.upgrade">New Image Version</span>
+									<span ng-show="oneEntry.image.update">Image Updated</span>
+								</td>
 								<td>
 									{{oneEntry.image.ts|fulldate}}
 								</td>
@@ -89,8 +94,8 @@
 							<tr>
 								<th width="14%">ID</th>
 								<th width="16%">Name</th>
-								<th width="20%">Catalog</th>
-								<th width="20%">Branch</th>
+								<th width="30%">Catalog</th>
+								<th width="10%">Branch</th>
 								<th width="16%">Code Last Update</th>
 								<th width="14%">Take Action</th>
 							</tr>
