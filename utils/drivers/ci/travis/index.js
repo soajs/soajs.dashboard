@@ -216,7 +216,7 @@ var lib = {
             utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
                 let repoBranches = [];
                 //standardize response
-                if(body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
+                if(body && body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
                     body.commits.forEach(function(oneCommit) {
 	                    let oneBranch = {};
                         oneBranch.name = oneCommit.branch;
