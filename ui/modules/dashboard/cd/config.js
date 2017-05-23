@@ -16,6 +16,6 @@ var cdAppConfig = {
 	permissions: {
 		get: ['dashboard', '/cd', 'get'],
 		save: ['dashboard', '/cd', 'post']
-	}
-	
+	},
+	upgradeSpaceLink : "http://soajsorg.atlassian.net"
 };

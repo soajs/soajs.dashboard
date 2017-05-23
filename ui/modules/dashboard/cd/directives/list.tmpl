@@ -12,11 +12,11 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Image</th>
-								<th>Available Last Update</th>
-								<th>Take Action</th>
+								<th width="14%">ID</th>
+								<th width="16%">Name</th>
+								<th width="20%">Image</th>
+								<th width="36%">Available Last Update</th>
+								<th width="14%">Take Action</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -28,7 +28,10 @@
 									{{oneEntry.image.ts|fulldate}}
 								</td>
 								<td>
-									<div class="dropdown serviceOpsDropdown">
+									<div ng-show="oneEntry.image.name ==='soajs' && oneEntry.image.prefix === 'soajsorg'" >
+										<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
+									</div>
+									<div ng-show="oneEntry.image.name !=='soajs' && oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
 										<button class="btn btn-default dropdown-toggle" type="button" id="serviceOps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 											Service Operations
 											<span class="caret"></span>
@@ -51,13 +54,13 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Catalog</th>
-								<th>Current Version</th>
-								<th>New Version</th>
-								<th>Catalog Last Update</th>
-								<th>Take Action</th>
+								<th width="14%">ID</th>
+								<th width="16%">Name</th>
+								<th width="20%">Catalog</th>
+								<th width="10%">Current Version</th>
+								<th width="10%">New Version</th>
+								<th width="16%">Catalog Last Update</th>
+								<th width="14%">Take Action</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -66,7 +69,7 @@
 								<td>{{oneEntry.name}}</td>
 								<td>{{oneEntry.catalog.name}}<em>&nbsp; ({{oneEntry.catalog.type}}<span ng-show="oneEntry.catalog.subtype">/{{oneEntry.catalog.subtype}}</span>)</em></td>
 								<td>
-									<span ng-show="oneEntry.labels['soajs.catalog.v']">Version {{oneEntry.labels['soajs.catalog.v']}}</span>
+									<span ng-show="oneEntry.labels['soajs.catalog.v']">{{oneEntry.labels['soajs.catalog.v']}}</span>
 									<span ng-show="!oneEntry.labels['soajs.catalog.v']">N/A</span>
 								</td>
 								<td>{{oneEntry.catalog.v}}</td>
@@ -84,12 +87,12 @@
 					<table width="100%">
 						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Catalog</th>
-								<th>Branch</th>
-								<th>Code Last Update</th>
-								<th>Take Action</th>
+								<th width="14%">ID</th>
+								<th width="16%">Name</th>
+								<th width="20%">Catalog</th>
+								<th width="20%">Branch</th>
+								<th width="16%">Code Last Update</th>
+								<th width="14%">Take Action</th>
 							</tr>
 						</thead>
 						<tbody>
