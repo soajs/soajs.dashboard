@@ -217,8 +217,8 @@ var lib = {
                 let repoBranches = [];
                 //standardize response
                 if(body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
-                    let oneBranch = {};
                     body.commits.forEach(function(oneCommit) {
+	                    let oneBranch = {};
                         oneBranch.name = oneCommit.branch;
                         oneBranch.lastCommit = oneCommit["committed_at"];
                         //get the remaining properties from the corresponding branch object
