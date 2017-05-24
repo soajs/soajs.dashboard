@@ -1198,6 +1198,32 @@ service.init(function () {
 		});
 	});
 
+    /**
+     * Take action based on ledger notification
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.put("/cd/action", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.cdAction(config, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+
+    /**
+     * Lists the ledgers of a specific environment
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.get("/cd/ledger", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.getLedger(config, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+
 	/**
 	* Continuous Integration features
 	*/

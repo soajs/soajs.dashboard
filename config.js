@@ -519,6 +519,28 @@ module.exports = {
 		},
 
 		"get": {
+            "/cd/ledger": {
+                "_apiInfo": {
+                    "l": "Lists the ledgers of a specific environment",
+                    "group": "Continuous Delivery"
+                },
+                "env":{
+                    'source': ['body.env'],
+                    'required': true,
+                    'validation':{
+                        'type': 'string'
+                    }
+                },
+                "start":{
+                    'source': ['body.start'],
+                    'required': false,
+                    'validation':{
+                        'type': 'number',
+						'default': 0,
+						'minimum': 0
+                    }
+                },
+            },
 			"/environment/list": {
 				_apiInfo: {
 					"l": "List Environments",
@@ -2207,6 +2229,20 @@ module.exports = {
 		},
 
 		"put": {
+            "/cd/action": {
+                "_apiInfo": {
+                    "l": "Redeploy service action",
+                    "group": "Continuous Delivery"
+                },
+                "id":{
+                    'source': ['body.id'],
+                    'required': true,
+                    'validation':{
+                        'type': 'string'
+                    }
+                }
+            },
+
 			"/environment/update": {
 				_apiInfo: {
 					"l": "Update Environment",
