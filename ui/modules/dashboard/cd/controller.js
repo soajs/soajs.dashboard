@@ -283,17 +283,21 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			var params;
 			if(operation === 'redeploy'){
 				params = {
-					id: oneEntry._id.toString()
+					data:{
+						id: oneEntry._id.toString()
+					}
 				}
 			}
 			else{
 				params = {
-					env: $scope.myEnv.toUpperCase(),
-					serviceId: oneEntry.id || oneEntry.serviceId,
-					serviceName: oneEntry.labels['soajs.service.name'],
-					serviceVersion: oneEntry.labels['soajs.service.version'] || null,
-					mode: (oneEntry.labels && oneEntry.labels['soajs.service.mode']) ? oneEntry.labels['soajs.service.mode'] : oneEntry.mode,
-					action: operation
+					data:{
+						env: $scope.myEnv.toUpperCase(),
+						serviceId: oneEntry.id || oneEntry.serviceId,
+						serviceName: oneEntry.labels['soajs.service.name'],
+						serviceVersion: oneEntry.labels['soajs.service.version'] || null,
+						mode: (oneEntry.labels && oneEntry.labels['soajs.service.mode']) ? oneEntry.labels['soajs.service.mode'] : oneEntry.mode,
+						action: operation
+					}
 				};
 				
 				if (formData && Object.keys(formData).length > 0) {
