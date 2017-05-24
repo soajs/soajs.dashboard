@@ -9,6 +9,7 @@ var catalogAppConfig = {
 					'label': 'Recipe',
                     'fieldMsg': "Click <a href='https://soajsorg.atlassian.net/wiki/display/SOAJ/Catalog+Recipes' target='_blank'>here</a> to see the list of environment variables available for each recipe type",
 					'type': 'jsoneditor',
+                    'readonly': true,
 					'height': '450px',
                     'fixedHeight': true,
 					'value': {},
@@ -79,9 +80,7 @@ var catalogAppConfig = {
                     "settings": {
                         "accelerateDeployment": true
                     },
-                    "env": {
-                        "NODE_ENV": "production",
-                    },
+                    "env": {},
                     "cmd": {
                         "pre_deploy": [],
                         "post_deploy": []
