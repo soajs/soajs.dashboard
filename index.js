@@ -1164,9 +1164,9 @@ service.init(function () {
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.get("/cd/ledger", function (req, res) {
+	service.get("/cd/updates", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.getLedger(config, req, function (error, data) {
+			BL.getUpdates(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});

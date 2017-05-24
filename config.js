@@ -958,7 +958,7 @@ module.exports = {
 				}
 			},
 			
-			"/cd/ledger": {
+			"/cd/updates": {
 				"_apiInfo": {
 					"l": "Get Update Notification Ledger",
 					"group": "Continuous Delivery"
