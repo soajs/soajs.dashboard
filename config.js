@@ -2231,16 +2231,50 @@ module.exports = {
 		"put": {
             "/cd/action": {
                 "_apiInfo": {
-                    "l": "Redeploy service action",
+                    "l": "Take Action",
                     "group": "Continuous Delivery"
                 },
-                "id":{
-                    'source': ['body.id'],
-                    'required': true,
-                    'validation':{
-                        'type': 'string'
-                    }
-                }
+				"oneOf":[
+					{
+						"id":{
+                            'source': ['body.id'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        }
+                    },
+					{
+                        "env":{
+                            'source': ['body.env'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        },
+                        "action":{
+                            'source': ['body.action'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        },
+                        "mode":{
+                            'source': ['body.mode'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        },
+                        "serviceId":{
+                            'source': ['body.serviceId'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        }
+					}
+                ]
             },
 
 			"/environment/update": {
