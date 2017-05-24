@@ -80,9 +80,7 @@ var catalogAppConfig = {
                     "settings": {
                         "accelerateDeployment": true
                     },
-                    "env": {
-                        "NODE_ENV": "production",
-                    },
+                    "env": {},
                     "cmd": {
                         "pre_deploy": [],
                         "post_deploy": []
