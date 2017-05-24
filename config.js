@@ -525,14 +525,14 @@ module.exports = {
                     "group": "Continuous Delivery"
                 },
                 "env":{
-                    'source': ['body.env'],
+                    'source': ['query.env'],
                     'required': true,
                     'validation':{
                         'type': 'string'
                     }
                 },
                 "start":{
-                    'source': ['body.start'],
+                    'source': ['query.start'],
                     'required': false,
                     'validation':{
                         'type': 'number',
