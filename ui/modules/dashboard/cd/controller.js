@@ -123,60 +123,60 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.getLedger = function () {
-		// overlayLoading.show();
-		// getSendDataFromServer($scope, ngDataApi, {
-		// 	method: 'get',
-		// 	routeName: '/dashboard/cd/ledger',
-		// 	params: {
-		// 		"env": $scope.myEnv
-		// 	}
-		// }, function (error, response) {
-		// 	overlayLoading.hide();
-		// 	if (error) {
-		// 		$scope.displayAlert('danger', error.message);
-		// 	}
-		// 	else {
-		// 		$scope.ledger = response;
-		// 	}
-		// });
-		
-		$scope.ledger = [
-			{
-				"serviceId": '1234',
-				"mode": 'replica',
-				"serviceName": 'urac',
-				"serviceVersion": 2,
-				"repo": 'soajs.urac',
-				"branch": 'develop',
-				"env": 'dev',
-				"ts": new Date().getTime(),
-				"notify": true
-			},
-			{
-				"serviceId": '1234',
-				"mode": 'replica',
-				"serviceName": 'urac',
-				"serviceVersion": 2,
-				"repo": 'soajs.urac',
-				"branch": 'develop',
-				"env": 'dev',
-				"ts": new Date().getTime(),
-				"notify": true,
-				"manual": true,
-				"manualTs": new Date().getTime()
-			},
-			{
-				"serviceId": '1234',
-				"mode": 'replica',
-				"serviceName": 'urac',
-				"serviceVersion": 1,
-				"repo": 'soajs.urac',
-				"branch": 'develop',
-				"env": 'dev',
-				"ts": new Date().getTime(),
-				"update": true
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cd/ledger',
+			params: {
+				"env": $scope.myEnv
 			}
-		];
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.ledger = response;
+			}
+		});
+		
+		// $scope.ledger = [
+		// 	{
+		// 		"serviceId": '1234',
+		// 		"mode": 'replica',
+		// 		"serviceName": 'urac',
+		// 		"serviceVersion": 2,
+		// 		"repo": 'soajs.urac',
+		// 		"branch": 'develop',
+		// 		"env": 'dev',
+		// 		"ts": new Date().getTime(),
+		// 		"notify": true
+		// 	},
+		// 	{
+		// 		"serviceId": '1234',
+		// 		"mode": 'replica',
+		// 		"serviceName": 'urac',
+		// 		"serviceVersion": 2,
+		// 		"repo": 'soajs.urac',
+		// 		"branch": 'develop',
+		// 		"env": 'dev',
+		// 		"ts": new Date().getTime(),
+		// 		"notify": true,
+		// 		"manual": true,
+		// 		"manualTs": new Date().getTime()
+		// 	},
+		// 	{
+		// 		"serviceId": '1234',
+		// 		"mode": 'replica',
+		// 		"serviceName": 'urac',
+		// 		"serviceVersion": 1,
+		// 		"repo": 'soajs.urac',
+		// 		"branch": 'develop',
+		// 		"env": 'dev',
+		// 		"ts": new Date().getTime(),
+		// 		"update": true
+		// 	}
+		// ];
 	};
 	
 	$scope.updateEntry = function (oneEntry, operation) {
@@ -280,36 +280,43 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		}
 		
 		function doRebuild(formData) {
-			var params = {
-				env: $scope.myEnv.toUpperCase(),
-				serviceId: oneEntry.id,
-				mode: ((oneEntry.labels && oneEntry.labels['soajs.service.mode']) ? oneEntry.labels['soajs.service.mode'] : ''),
-				action: operation
-			};
-			
-			if (formData && Object.keys(formData).length > 0) {
-				//inject user input catalog entry and image override
-				params.custom = {
-					image: {
-						name: formData['ImageName'],
-						prefix: formData['ImagePrefix'],
-						tag: formData['ImageTag']
-					}
+			var params;
+			if(operation === 'redeploy'){
+				params = {
+					id: oneEntry._id.toString()
+				}
+			}
+			else{
+				params = {
+					env: $scope.myEnv.toUpperCase(),
+					serviceId: oneEntry.id || oneEntry.serviceId,
+					serviceName: oneEntry.labels['soajs.service.name'],
+					serviceVersion: oneEntry.labels['soajs.service.version'] || null,
+					mode: (oneEntry.labels && oneEntry.labels['soajs.service.mode']) ? oneEntry.labels['soajs.service.mode'] : oneEntry.mode,
+					action: operation
 				};
 				
-				for (var input in formData) {
-					if (input.indexOf('_ci_') !== -1) {
-						if (!params.custom.env) {
-							params.custom.env = {};
+				if (formData && Object.keys(formData).length > 0) {
+					//inject user input catalog entry and image override
+					params.custom = {
+						image: {
+							name: formData['ImageName'],
+							prefix: formData['ImagePrefix'],
+							tag: formData['ImageTag']
 						}
-						params.custom.env[input.replace('_ci_', '')] = formData[input];
+					};
+					
+					for (var input in formData) {
+						if (input.indexOf('_ci_') !== -1) {
+							if (!params.custom.env) {
+								params.custom.env = {};
+							}
+							params.custom.env[input.replace('_ci_', '')] = formData[input];
+						}
 					}
 				}
 			}
 			
-			
-			console.log(params);
-			return false;
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				method: 'put',

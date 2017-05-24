@@ -13,11 +13,17 @@
 							<span ng-if="oneEntry.update">
 								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically update on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
 							</span>
+							
 							<span ng-if="oneEntry.notify && !oneEntry.manual">
 								New Update Received for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
 							</span>
+							
 							<span ng-if="oneEntry.manual">
-								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually update on <em>{{oneEntry.manualTs|fulldate}}</em> by the administrator
+								Catalog was manually rebuilt for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
+							</span>
+							
+							<span ng-if="oneEntry.rebuild">
+								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually update on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
 							</span>
 						</div>
 						<div ng-if="oneEntry.notify && !oneEntry.manual" class="f-right">
