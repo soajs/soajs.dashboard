@@ -10,6 +10,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.cdData = {};
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
+	$scope.updateCount;
 	
 	$scope.getRecipe = function () {
 		var formConfig = angular.copy(cdAppConfig.form);
@@ -96,8 +97,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			$scope.catalogLedger = [];
 			$scope.codeLedger = [];
 			
+			$scope.updateCount =0;
+			
 			list.forEach(function (oneEntry) {
-				
+				$scope.updateCount++;
 				if($scope.myEnv.toLowerCase() === 'dashboard'){
 					oneEntry.rms = true;
 				}
@@ -121,6 +124,8 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						break;
 				}
 			});
+			
+			$scope.updateCount = "(" + $scope.updateCount + ")";
 		}
 	};
 	

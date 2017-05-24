@@ -17,5 +17,5 @@ var cdAppConfig = {
 		get: ['dashboard', '/cd', 'get'],
 		save: ['dashboard', '/cd', 'post']
 	},
-	upgradeSpaceLink : "http://soajsorg.atlassian.net"
+	upgradeSpaceLink : "https://soajsorg.atlassian.net/wiki/spaces/UU"
 };
