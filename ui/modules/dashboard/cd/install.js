@@ -11,7 +11,7 @@ var cdNav = [
         },
         'url': '#/continuous-delivery',
         'tplPath': 'modules/dashboard/cd/directives/list.tmpl',
-        'icon': 'file-text2',
+        'icon': 'download',
         'pillar': {
             'name': 'deployment',
             'label': translation.deploy[LANG],
