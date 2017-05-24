@@ -73,11 +73,11 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 	
-	$scope.getLedger = function () {
+	$scope.getUpdates = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
-			routeName: '/dashboard/cd/ledger',
+			routeName: '/dashboard/cd/updates',
 			params: {
 				"env": $scope.myEnv
 			}
@@ -95,7 +95,6 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		function parseMyResponse(list) {
 			$scope.imageLedger = [];
 			$scope.catalogLedger = [];
-			$scope.codeLedger = [];
 			
 			$scope.updateCount =0;
 			
@@ -115,18 +114,69 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						break;
 					case 'rebuild':
 						$scope.catalogLedger.push(oneEntry);
-						if (oneEntry.repo) {
-							$scope.codeLedger.push(oneEntry);
-						}
-						break;
-					default:
-						$scope.codeLedger.push(oneEntry);
 						break;
 				}
 			});
 			
 			$scope.updateCount = "(" + $scope.updateCount + ")";
 		}
+	};
+	
+	$scope.getLedger = function () {
+		// overlayLoading.show();
+		// getSendDataFromServer($scope, ngDataApi, {
+		// 	method: 'get',
+		// 	routeName: '/dashboard/cd/ledger',
+		// 	params: {
+		// 		"env": $scope.myEnv
+		// 	}
+		// }, function (error, response) {
+		// 	overlayLoading.hide();
+		// 	if (error) {
+		// 		$scope.displayAlert('danger', error.message);
+		// 	}
+		// 	else {
+		// 		$scope.ledger = response;
+		// 	}
+		// });
+		
+		$scope.ledger = [
+			{
+				"serviceId": '1234',
+				"mode": 'replica',
+				"serviceName": 'urac',
+				"serviceVersion": 2,
+				"repo": 'soajs.urac',
+				"branch": 'develop',
+				"env": 'dev',
+				"ts": new Date().getTime(),
+				"notify": true
+			},
+			{
+				"serviceId": '1234',
+				"mode": 'replica',
+				"serviceName": 'urac',
+				"serviceVersion": 2,
+				"repo": 'soajs.urac',
+				"branch": 'develop',
+				"env": 'dev',
+				"ts": new Date().getTime(),
+				"notify": true,
+				"manual": true,
+				"manualTs": new Date().getTime()
+			},
+			{
+				"serviceId": '1234',
+				"mode": 'replica',
+				"serviceName": 'urac',
+				"serviceVersion": 1,
+				"repo": 'soajs.urac',
+				"branch": 'develop',
+				"env": 'dev',
+				"ts": new Date().getTime(),
+				"update": true
+			}
+		];
 	};
 	
 	$scope.updateEntry = function (oneEntry, operation) {
@@ -257,10 +307,13 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 			}
 			
+			
+			console.log(params);
+			return false;
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				method: 'put',
-				routeName: '/dashboard/cloud/services/redeploy',
+				routeName: '/dashboard/cloud/services/action',
 				data: params
 			}, function (error, response) {
 				overlayLoading.hide();
