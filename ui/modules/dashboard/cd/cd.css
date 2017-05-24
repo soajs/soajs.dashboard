@@ -19,3 +19,29 @@
 .mr-10{
     margin-right:10px;
 }
+
+.grid .table {
+    margin: 2px 0;
+}
+.grid .table .row{
+    margin: 0;
+    height:55px;
+    padding:10px;
+}
+.grid .table .row.first {
+    border-top: solid 1px #cccccc;
+}
+
+.grid .table .row.last {
+    border-bottom: solid 1px #cccccc;
+}
+
+.grid .table .row.even {
+    background-color: #f8f8f8;
+    border-top: solid 1px #cccccc;
+    border-bottom: solid 1px #cccccc;
+}
+
+.grid .table .row:hover {
+    background-color: lightgoldenrodyellow;
+}

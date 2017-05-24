@@ -6,143 +6,36 @@
 		</tab>
 		<tab heading="ledger {{updateCount}}" ng-click="getLedger()">
 			<br />
-			<fieldset ng-show="imageLedger && imageLedger.length > 0">
-				<legend>New Image Updates ({{imageLedger.length}})</legend>
-				<div class="grid">
-					<table width="100%">
-						<thead>
-							<tr>
-								<th width="14%">ID</th>
-								<th width="16%">Name</th>
-								<th width="20%">Image</th>
-								<th width="16%">Update Type</th>
-								<th width="20%">Available Last Update</th>
-								<th width="14%">Take Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="oneEntry in imageLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
-								<td>{{oneEntry.id}}</td>
-								<td>{{oneEntry.name}}</td>
-								<td>{{oneEntry.image.prefix}}/{{oneEntry.image.name}}:{{oneEntry.image.tag}}</td>
-								<td>
-									<span ng-show="oneEntry.image.deployer">New Image Version, Deployer Upgraded</span>
-									<span ng-show="oneEntry.image.upgrade">New Image Version, SOAJS Updated</span>
-									<span ng-show="oneEntry.image.update">Image Updated</span>
-									<span ng-show="oneEntry.image.noimage">Possible Image Update.</span>
-								</td>
-								<td>
-									{{oneEntry.image.ts|fulldate}}
-								</td>
-								<td>
-									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
-										<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
-									</div>
-									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
-										<button class="btn btn-default dropdown-toggle" type="button" id="serviceOps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-											Service Operations
-											<span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu" aria-labelledby="serviceOps">
-											<li><a href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
-											<li><a href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+			<div class="grid" ng-show="ledger && ledger.length > 0">
+				<div class="table">
+					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">
+						<div class="f-left">
+							<span ng-if="oneEntry.update">
+								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically update on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
+							</span>
+							<span ng-if="oneEntry.notify && !oneEntry.manual">
+								New Update Received for service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
+							</span>
+							<span ng-if="oneEntry.manual">
+								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually update on <em>{{oneEntry.manualTs|fulldate}}</em> by the administrator
+							</span>
+						</div>
+						<div ng-if="oneEntry.notify && !oneEntry.manual" class="f-right">
+							<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
+								<div ng-show="oneEntry.rms">
+									<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
+								</div>
+								<div ng-show="!oneEntry.rms">
+									<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
+								</div>
+							</div>
+							<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
+								<a class="btn btn-primary" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
+							</div>
+						</div>
+					</div>
 				</div>
-				<br>
-			</fieldset>
-			<fieldset ng-show="catalogLedger && catalogLedger.length > 0">
-				<legend>New Catalog Updates ({{catalogLedger.length}})</legend>
-				<div class="grid">
-					<table width="100%">
-						<thead>
-							<tr>
-								<th width="14%">ID</th>
-								<th width="16%">Name</th>
-								<th width="20%">Catalog</th>
-								<th width="10%">Current Version</th>
-								<th width="10%">New Version</th>
-								<th width="16%">Catalog Last Update</th>
-								<th width="14%">Take Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="oneEntry in catalogLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
-								<td>{{oneEntry.id}}</td>
-								<td>{{oneEntry.name}}</td>
-								<td>{{oneEntry.catalog.name}}<em>&nbsp; ({{oneEntry.catalog.type}}<span ng-show="oneEntry.catalog.subtype">/{{oneEntry.catalog.subtype}}</span>)</em></td>
-								<td>
-									<span ng-show="oneEntry.labels['soajs.catalog.v']">{{oneEntry.labels['soajs.catalog.v']}}</span>
-									<span ng-show="!oneEntry.labels['soajs.catalog.v']">N/A</span>
-								</td>
-								<td>{{oneEntry.catalog.v}}</td>
-								<td>{{oneEntry.catalog.ts|fulldate}}</td>
-								<td>
-									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
-										<div ng-show="oneEntry.rms">
-											<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
-										</div>
-										<div ng-show="!oneEntry.rms">
-											<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a>
-										</div>
-									</div>
-									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
-										<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'rebuild');"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a>
-									</div>
-									
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<br>
-			</fieldset>
-			<fieldset ng-show="codeLedger && codeLedger.length > 0">
-				<legend>New Code Updates ({{codeLedger.length}})</legend>
-				<div class="grid">
-					<table width="100%">
-						<thead>
-							<tr>
-								<th width="14%">ID</th>
-								<th width="16%">Name</th>
-								<th width="30%">Catalog</th>
-								<th width="10%">Branch</th>
-								<th width="16%">Code Last Update</th>
-								<th width="14%">Take Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="oneEntry in codeLedger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="rows">
-								<td>{{oneEntry.id}}</td>
-								<td>{{oneEntry.name}}</td>
-								<td>{{oneEntry.catalog.name}}<em>&nbsp; ({{oneEntry.catalog.type}}<span ng-show="oneEntry.catalog.subtype">/{{oneEntry.catalog.subtype}}</span>)</em>&nbsp;
-									<span ng-show="oneEntry.labels['soajs.catalog.v']">Version {{oneEntry.labels['soajs.catalog.v']}}</span>
-									<span ng-show="!oneEntry.labels['soajs.catalog.v']">N/A</span>
-								</td>
-								<td>{{oneEntry.repo.branch}}</td>
-								<td>{{oneEntry.repo.ts|fulldate}}</td>
-								<td>
-									<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
-										<div ng-show="oneEntry.rms">
-											<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>
-										</div>
-										<div ng-show="!oneEntry.rms">
-											<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
-										</div>
-									</div>
-									<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
-										<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</fieldset>
+			</div>
 		</tab>
 	</tabset>
 </section>
