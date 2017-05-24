@@ -23,10 +23,10 @@
 							</span>
 							
 							<span ng-if="oneEntry.rebuild">
-								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually update on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
+								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was manually rebuilt on <em>{{oneEntry.ts|fulldate}}</em> by the administrator
 							</span>
 						</div>
-						<div ng-if="oneEntry.notify && !oneEntry.manual" class="f-right">
+						<div ng-if="oneEntry.notify && !oneEntry.manual && !oneEntry.oldTs" class="f-right">
 							<div ng-show="oneEntry.image.prefix === 'soajsorg'" >
 								<div ng-show="oneEntry.rms">
 									<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn More</a>

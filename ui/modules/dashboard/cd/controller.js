@@ -139,44 +139,6 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.ledger = response;
 			}
 		});
-		
-		// $scope.ledger = [
-		// 	{
-		// 		"serviceId": '1234',
-		// 		"mode": 'replica',
-		// 		"serviceName": 'urac',
-		// 		"serviceVersion": 2,
-		// 		"repo": 'soajs.urac',
-		// 		"branch": 'develop',
-		// 		"env": 'dev',
-		// 		"ts": new Date().getTime(),
-		// 		"notify": true
-		// 	},
-		// 	{
-		// 		"serviceId": '1234',
-		// 		"mode": 'replica',
-		// 		"serviceName": 'urac',
-		// 		"serviceVersion": 2,
-		// 		"repo": 'soajs.urac',
-		// 		"branch": 'develop',
-		// 		"env": 'dev',
-		// 		"ts": new Date().getTime(),
-		// 		"notify": true,
-		// 		"manual": true,
-		// 		"manualTs": new Date().getTime()
-		// 	},
-		// 	{
-		// 		"serviceId": '1234',
-		// 		"mode": 'replica',
-		// 		"serviceName": 'urac',
-		// 		"serviceVersion": 1,
-		// 		"repo": 'soajs.urac',
-		// 		"branch": 'develop',
-		// 		"env": 'dev',
-		// 		"ts": new Date().getTime(),
-		// 		"update": true
-		// 	}
-		// ];
 	};
 	
 	$scope.updateEntry = function (oneEntry, operation) {
@@ -324,7 +286,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			overlayLoading.show();
 			getSendDataFromServer($scope, ngDataApi, {
 				method: 'put',
-				routeName: '/dashboard/cloud/services/action',
+				routeName: '/dashboard/cd/action',
 				data: params
 			}, function (error, response) {
 				overlayLoading.hide();
@@ -333,7 +295,13 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 				else {
 					$scope.displayAlert('success', 'Service rebuilt successfully');
-					$scope.getRecipe();
+					
+					if(operation === 'redeploy'){
+						$scope.getLedger();
+					}
+					else{
+						$scope.getUpdates();
+					}
 					overlayLoading.hide();
 					if($scope.modalInstance){
 						$scope.modalInstance.dismiss();
