@@ -2272,6 +2272,20 @@ module.exports = {
                             'validation':{
                                 'type': 'string'
                             }
+                        },
+                        "serviceName":{
+                            'source': ['body.serviceName'],
+                            'required': true,
+                            'validation':{
+                                'type': 'string'
+                            }
+                        },
+                        "serviceVersion":{
+                            'source': ['body.serviceVersion'],
+                            'required': false,
+                            'validation':{
+                                'type': 'string'
+                            }
                         }
 					}
                 ]
