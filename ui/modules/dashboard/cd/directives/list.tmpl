@@ -15,17 +15,16 @@
 	<tabset class="">
 		<tab heading="Configuration" ng-click="getRecipe()">
 			<br>
-			<ngform></ngform>
 			<div class="configCd">
 				<div>
 					<label>Branch:</label>
-					<select class="form-control">
+					<select data-ng-model="configuration.branch" class="form-control">
 						<option ng-repeat="branch in branches" value="{{branch}}">{{branch}}</option>
 					</select>
 				</div>
 				<div>
 					<label>Strategy:</label>
-					<select class="form-control">
+					<select data-ng-model="configuration.strategy" class="form-control">
 						<option value="notify">notify</option>
 						<option value="update">update</option>
 					</select>
@@ -68,6 +67,9 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div style="float: right">
+					<input class="btn btn-sm btn-primary" ng-click="saveUpdate()" value="Update Continuous Delivery Settings" type="submit">
 				</div>
 			</div>
 

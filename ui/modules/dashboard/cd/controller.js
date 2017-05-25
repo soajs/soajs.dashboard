@@ -13,28 +13,20 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.updateCount;
 	
 	$scope.getRecipe = function () {
-		var formConfig = angular.copy(cdAppConfig.form);
-		
+
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
 			routeName: '/dashboard/cd'
 		}, function (error, response) {
 			overlayLoading.hide();
-			response = {
-				"branch": "develop",
-				"strategy": "notify",
-				"urac": {
-					"v2": {
-						"branch": "develop",
-						"strategy": "update"
-					},
-					"branch": "master",
-					"strategy": "notify"
-				}
-			};
 
-			if(response){
+			if(!response){
+				response = {
+					"branch": "develop",
+					"strategy": "notify",
+					"urac": {}
+				};
 				$scope.configuration = response;
 				for (var key in response){
 					if(key !=='branch' && key !== 'strategy' && key !== 'include'){
@@ -55,54 +47,52 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			if (error) {
 				$scope.displayAlert('danger', error.message);
 			}
-			else {
-				$scope.cdData = response;
-				delete $scope.cdData._id;
-				delete $scope.cdData.soajsauth;
+		});
+	};
+	
+	$scope.saveUpdate = function() {
+		var configuration={};
+		configuration.branch = $scope.configuration.branch;
+		configuration.strategy = $scope.configuration.strategy;
 
-
-				// $scope.configuration
-
-				var options = {
-					timeout: $timeout,
-					entries: formConfig.entries,
-					name: 'continuousDelivery',
-					label: 'Continuous Delivery',
-					data: {'cd': $scope.cdData[$scope.myEnv]},
-					actions: [
-						{
-							type: 'submit',
-							label: "Update Continuous Delivery Settings",
-							btn: 'primary',
-							action: function (formData) {
-								
-								$scope.cdData[$scope.myEnv] = formData.cd;
-								var data = $scope.cdData;
-								delete data.type;
-								
-								overlayLoading.show();
-								getSendDataFromServer($scope, ngDataApi, {
-									method: 'post',
-									routeName: '/dashboard/cd',
-									data: {
-										"config": data
-									}
-								}, function (error, response) {
-									overlayLoading.hide();
-									if (error) {
-										$scope.form.displayAlert('danger', error.message);
-									}
-									else {
-										$scope.form.displayAlert('success', 'Recipe Saved successfully');
-										$scope.form.formData = {};
-										$scope.getRecipe();
-									}
-								});
+		for(var key in $scope.configuration){
+			if( key!== 'branch' && key !== 'strategy'){
+				if($scope.configuration[key].include){
+					configuration[key] = {
+						branch: $scope.configuration[key].branch,
+						strategy: $scope.configuration[key].strategy
+					};
+					for(var str in $scope.configuration[key]){
+						if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
+							if($scope.configuration[key][str].include){
+								configuration[key][str] = {
+									branch:$scope.configuration[key][str].branch,
+									strategy:$scope.configuration[key][str].strategy
+								};
 							}
 						}
-					]
-				};
-				buildForm($scope, $modal, options);
+					}
+				}
+			}
+		}
+		$scope.cdData[$scope.myEnv] = configuration;
+		var data = $scope.cdData;
+		delete data.type;
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
 			}
 		});
 	};
@@ -177,12 +167,11 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 	$scope.getServices = function () {
 		overlayLoading.show();
-		
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
 			routeName: '/dashboard/cloud/services/list',
 			params: {
-				"env": $scope.myEnv
+				"env": $scope.myEnv.toLowerCase()
 			}
 		}, function (error, response) {
 			overlayLoading.hide();
@@ -217,7 +206,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							var branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
 							service.branch = branch;
 							if(branches.indexOf(branch) === -1){
-								branches.push(branch);	
+								branches.push(branch);
 							}
 							break;
 						}
