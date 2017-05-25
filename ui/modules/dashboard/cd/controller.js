@@ -413,7 +413,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
         getSendDataFromServer($scope, ngDataApi, {
             method: 'put',
             routeName: '/dashboard/cd/ledger/read',
-            data: {"all": true}
+            data: {
+            	"data": {"all": true}
+            }
 
         }, function (error, response) {
             overlayLoading.hide();
@@ -422,6 +424,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
             }
             else {
                 $scope.displayAlert('success', 'All entries updated');
+                $scope.getLedger();
             }
         });
 	};
@@ -431,7 +434,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
         getSendDataFromServer($scope, ngDataApi, {
             method: 'put',
             routeName: '/dashboard/cd/ledger/read',
-            data: {"id": oneEntry._id}
+            data: {
+            	"data": {"id": oneEntry._id}
+            }
 
         }, function (error, response) {
             overlayLoading.hide();
@@ -440,6 +445,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
             }
             else {
                 $scope.displayAlert('success', 'Entry updated');
+	            $scope.getLedger();
             }
         });
     };

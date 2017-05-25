@@ -74,16 +74,14 @@
 		</tab>
 		<tab heading="ledger {{updateCount}}" ng-click="getLedger()">
 			<br/>
-			<input ng-show="ledger && ledger.length > 0" type="button" class="btn btn-primary" ng-confirm-click="Clicking this button means you have read all the ledger entries. Are you sure you want to proceed?" ng-click="readAll()" value="Mark All as Read" />
+			<input ng-show="ledger && ledger.length > 0" type="button" class="btn btn-sm btn-primary" ng-confirm-click="Clicking this button means you have read all the ledger entries. Are you sure you want to proceed?" ng-click="readAll()" value="Mark All as Read" />
 			<div class="grid" ng-show="ledger && ledger.length > 0">
 				<div class="table">
-					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last}" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">
-						<div class="f-left">
-							<a href="" ng-click="readOne(oneEntry)">
-								<span class="icon icon-drawer2" ></span>&nbsp;Read
+					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last, 'notread' : !oneEntry.read }" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">
+						<div class="f-left mt-5">
+							<a href="" ng-click="readOne(oneEntry)" tooltip="Mark as Read" class="mr-10">
+								<span class="icon icon-drawer2" ></span>
 							</a>
-						</div>
-						<div class="f-left">
 							<span ng-if="oneEntry.update">
 								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically update on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
 							</span>
@@ -103,16 +101,16 @@
 						<div ng-if="oneEntry.notify && !oneEntry.manual && !oneEntry.oldTs" class="f-right">
 							<div ng-show="oneEntry.image.prefix === 'soajsorg'">
 								<div ng-show="oneEntry.rms">
-									<a class="btn btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn
+									<a class="btn btn-sm btn-default" href="{{upgradeSpaceLink}}" target="_blank">Learn
 										More</a>
 								</div>
 								<div ng-show="!oneEntry.rms">
-									<a class="btn btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy
+									<a class="btn btn-sm btn-default" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy
 										Service</a>
 								</div>
 							</div>
 							<div ng-show="oneEntry.image.prefix !== 'soajsorg'" class="dropdown serviceOpsDropdown">
-								<a class="btn btn-primary" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy
+								<a class="btn btn-sm btn-primary" href="" ng-click="updateEntry(oneEntry, 'redeploy');"><span class="icon icon-loop2"></span>&nbsp;Redeploy
 									Service</a>
 							</div>
 						</div>
