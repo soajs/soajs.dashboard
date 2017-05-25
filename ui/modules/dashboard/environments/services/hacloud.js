@@ -522,7 +522,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('success', 'Service rebuilt successfully');
 					currentScope.listServices();
 					overlayLoading.hide();
-					currentScope.modalInstance.dismiss();
+					if(currentScope.modalInstance){
+						currentScope.modalInstance.dismiss();
+					}
 				}
 			});
 		}

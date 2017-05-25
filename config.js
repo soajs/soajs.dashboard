@@ -59,7 +59,7 @@ module.exports = {
     },
     "HA":{
         "blacklist": ['soajs_mongo_password', 'soajs_git_token', 'soajs_config_repo_token'],
-        "dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N'],
+        "dynamicCatalogVariables": ['$SOAJS_NX_CONTROLLER_IP_N', '$SOAJS_MONGO_IP_N', '$SOAJS_MONGO_PORT_N', '$SOAJS_ANALYTICS_ES_IP_N', '$SOAJS_ANALYTICS_ES_PORT_N'],
         "clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
     },
 
@@ -2227,8 +2227,43 @@ module.exports = {
                 }
             }
         },
-
         "put": {
+            "/cd/ledger/read":{
+                "_apiInfo": {
+                    "l": "Mark as read",
+                    "group": "Continuous Delivery"
+                },
+                "data":{
+                    "required": true,
+                    "source": ["body.data"],
+                    "validation":{
+                        "oneOf":[
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "all": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'boolean'
+                                        }
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                }
+            },
             "/cd/action": {
                 "_apiInfo": {
                     "l": "Take Action",
