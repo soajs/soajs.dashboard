@@ -396,7 +396,43 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			});
 		}
 	};
-	
+
+	$scope.readAll = function () {
+        overlayLoading.show();
+        getSendDataFromServer($scope, ngDataApi, {
+            method: 'put',
+            routeName: '/dashboard/cd/ledger/read',
+            data: {"all": true}
+
+        }, function (error, response) {
+            overlayLoading.hide();
+            if (error) {
+                $scope.displayAlert('danger', error.message);
+            }
+            else {
+                $scope.displayAlert('success', 'All entries updated');
+            }
+        });
+	};
+
+    $scope.readOne = function (oneEntry) {
+        overlayLoading.show();
+        getSendDataFromServer($scope, ngDataApi, {
+            method: 'put',
+            routeName: '/dashboard/cd/ledger/read',
+            data: {"id": oneEntry._id}
+
+        }, function (error, response) {
+            overlayLoading.hide();
+            if (error) {
+                $scope.displayAlert('danger', error.message);
+            }
+            else {
+                $scope.displayAlert('success', 'Entry updated');
+            }
+        });
+    };
+
 	injectFiles.injectCss("modules/dashboard/cd/cd.css");
 	
 	// Start here
