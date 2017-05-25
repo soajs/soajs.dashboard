@@ -3,7 +3,7 @@
 var cdApp = soajsApp.components;
 cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, $cookies, ngDataApi, injectFiles) {
 	$scope.$parent.isUserLoggedIn();
-	
+	$scope.configuration={};
 	$scope.access = {};
 	constructModulePermissions($scope, $scope.access, cdAppConfig.permissions);
 	
@@ -21,6 +21,37 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			routeName: '/dashboard/cd'
 		}, function (error, response) {
 			overlayLoading.hide();
+			response = {
+				"branch": "develop",
+				"strategy": "notify",
+				"urac": {
+					"v2": {
+						"branch": "develop",
+						"strategy": "update"
+					},
+					"branch": "master",
+					"strategy": "notify"
+				}
+			};
+
+			if(response){
+				$scope.configuration = response;
+				for (var key in response){
+					if(key !=='branch' && key !== 'strategy' && key !== 'include'){
+						if($scope.configuration[key]){
+							$scope.configuration[key].include = true;
+							for (var ver in response[key]){
+								if(ver !=='branch' && ver !== 'strategy' && ver !== 'include'){
+									if($scope.configuration[key][ver]){
+										$scope.configuration[key][ver].include = true;
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
 			if (error) {
 				$scope.displayAlert('danger', error.message);
 			}
@@ -28,7 +59,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.cdData = response;
 				delete $scope.cdData._id;
 				delete $scope.cdData.soajsauth;
-				
+
+
+				// $scope.configuration
+
 				var options = {
 					timeout: $timeout,
 					entries: formConfig.entries,
@@ -140,7 +174,70 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-	
+
+	$scope.getServices = function () {
+		overlayLoading.show();
+		
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cloud/services/list',
+			params: {
+				"env": $scope.myEnv
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				var myServices=[];
+				var objServices={};
+				var branches=[];
+				// SOAJS_GIT_BRANCH=master
+				response.forEach(function(service){
+					if(service.labels && service.labels['soajs.content']){
+						if (service.labels['soajs.service.name']){
+							service.serviceName = service.labels['soajs.service.name'];
+						}
+						if(!objServices[service.serviceName]){
+							objServices[service.serviceName]={
+								versions:[]
+							};
+						}
+						// version.labels['soajs.service.version']
+						service.versionLabel = 'v'+service.labels['soajs.service.version'];
+						objServices[service.serviceName].versions.push(service);
+						myServices.push(service);
+					}
+					for (var x =0; x < service.env.length; x++){
+						if(service){
+							// myServices
+						}
+						if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
+							var branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
+							service.branch = branch;
+							if(branches.indexOf(branch) === -1){
+								branches.push(branch);	
+							}
+							break;
+						}
+					}
+				});
+				$scope.branches= branches;
+				$scope.services = myServices;
+				$scope.objServices = objServices;
+			}
+		});
+	};
+
+	$scope.assignService = function(name) {
+		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
+	};
+
+	$scope.setVersion = function(name,version) {
+		$scope.configuration[name][version.versionLabel].branch = version.branch;
+	};
+
 	$scope.updateEntry = function (oneEntry, operation) {
 		var formConfig = {
 			entries: []
@@ -315,6 +412,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	
 	// Start here
 	if ($scope.access.get) {
+		$scope.getServices();
 		$scope.getRecipe();
 	}
 	
