@@ -1224,6 +1224,19 @@ service.init(function () {
         });
     });
 
+
+    /**
+     * Marks records as read
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.put("/cd/ledger/read", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.markRead(config, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
 	/**
 	* Continuous Integration features
 	*/

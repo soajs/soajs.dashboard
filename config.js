@@ -2227,8 +2227,43 @@ module.exports = {
                 }
             }
         },
-
         "put": {
+            "/cd/ledger/read":{
+                "_apiInfo": {
+                    "l": "Mark as read",
+                    "group": "Continuous Delivery"
+                },
+                "data":{
+                    "required": true,
+                    "source": ["body.data"],
+                    "validation":{
+                        "oneOf":[
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "all": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'boolean'
+                                        }
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                }
+            },
             "/cd/action": {
                 "_apiInfo": {
                     "l": "Take Action",
