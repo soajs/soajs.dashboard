@@ -260,15 +260,11 @@
 								<div class="entryBox mb20">
 									<div class="header table">
 										<span class="serviceLabelBox">{{service.labels['soajs.service.name'] || service.name}}</span>
-										<span class="red" ng-show="service.imageUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Image Update&nbsp;
+										
+										<span class="red" ng-show="service.imageUpdate || service.catalogUpdate || service.codeUpdate">
+											<span class="icon icon-notification"></span>&nbsp;New Updates Available
 										</span>
-										<span class="green" ng-show="service.catalogUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Catalog Update&nbsp;
-										</span>
-										<span class="yellow" ng-show="service.codeUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Code Update&nbsp;
-										</span>
+										
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">
 											<a href="" ng-if="service.labels['soajs.service.name'] === 'nginx' && showAnalytics" ng-click="metrics('', service.labels['soajs.service.name'],'service','Filebeat',service.labels['soajs.service.mode'])"><span class="icon icon-pie-chart" title="{{translation.getServiceAnalytics[LANG]}}"></span></a>
@@ -348,15 +344,11 @@
 									<div class="entryBox mb20 {{service.color}}">
 										<div class="header table">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
-											<span class="red" ng-show="service.imageUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Image Update&nbsp;
+											
+											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate || service.codeUpdate">
+												<span class="icon icon-notification"></span>&nbsp;New Updates Available
 											</span>
-											<span class="green" ng-show="service.catalogUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Catalog Update&nbsp;
-											</span>
-											<span class="yellow" ng-show="service.codeUpdate">
-												<span class="icon icon-notification"></span>&nbsp;New Code Update&nbsp;
-											</span>
+											
 											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 											<div class="dropdown serviceOpsDropdown">
 												<button class="btn btn-default dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

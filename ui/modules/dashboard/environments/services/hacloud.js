@@ -170,9 +170,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					oneController.color = 'red';
 				}
 			});
+			if(cb && typeof cb === 'function'){
+				return cb();
+			}
 		}
 		
 		function getUpdatesNotifications(cb){
+			//check for code updates
 			getSendDataFromServer(currentScope, ngDataApi, {
 				method: 'get',
 				routeName: '/dashboard/cd/ledger',
@@ -184,8 +188,36 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('danger', error.message);
 				}
 				else {
-					currentScope.updatesNotifications = response;
-					return cb();
+					currentScope.updatesNotifications = [];
+					response.forEach(function(oneCodeUpdateEntry){
+						if(oneCodeUpdateEntry.notify && !oneCodeUpdateEntry.manual){
+							currentScope.updatesNotifications.push({
+								id: oneCodeUpdateEntry.serviceId
+							})
+						}
+					});
+					
+					//check for image or catalog recipe updates
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/cd/updates',
+						params: {
+							"env": env
+						}
+					}, function (error, response) {
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							response.forEach(function(oneUpdateEntry){
+								currentScope.updatesNotifications.push({
+									id: oneUpdateEntry.id,
+									mode: oneUpdateEntry.mode
+								})
+							});
+							return cb();
+						}
+					});
 				}
 			});
 		}
