@@ -261,8 +261,11 @@
 									<div class="header table">
 										<span class="serviceLabelBox">{{service.labels['soajs.service.name'] || service.name}}</span>
 										
-										<span class="red" ng-show="service.imageUpdate || service.catalogUpdate || service.codeUpdate">
+										<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
 											<span class="icon icon-notification"></span>&nbsp;New Updates Available
+										</span>
+										<span class="red" ng-show="service.codeUpdate">
+											<span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger
 										</span>
 										
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
@@ -345,8 +348,12 @@
 										<div class="header table">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
 											
-											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate || service.codeUpdate">
+											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
 												<span class="icon icon-notification"></span>&nbsp;New Updates Available
+											</span>
+											
+											<span class="red" ng-show="service.codeUpdate">
+												<span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger
 											</span>
 											
 											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
