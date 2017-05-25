@@ -1,0 +1,21 @@
+.greenRecipeBox{
+    border: solid 1px #3c763d !important;
+}
+
+.greenRecipeBox .header{
+    background-color: #dff0d8 !important;
+    border-bottom-color:#3c763d !important;
+}
+
+.redRecipeBox{
+    border: solid 1px #c9302c !important;
+}
+
+.redRecipeBox .header{
+    background-color: #f2dede !important;
+    border-bottom-color:#c9302c !important;
+}
+
+.mr-10{
+    margin-right:10px;
+}

@@ -21,9 +21,29 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
             }
             else {
 	            $scope.originalRecipes = $scope.recipes = response;
+	            $scope.listArchives();
             }
         });
     };
+	
+	$scope.listArchives = function () {
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/catalog/recipes/list',
+			'params':{
+				'version': true
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.originalArchives = $scope.archives = response;
+			}
+		});
+	};
 
     $scope.viewRecipe = function (recipe) {
         var formConfig = angular.copy(catalogAppConfig.form.viewRecipe);
@@ -98,6 +118,9 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                             //do not allow user to lock a recipe
                             delete formData.recipe.locked;
                         }
+	                    delete formData.recipe.v;
+	                    delete formData.recipe.ts;
+	                    delete formData.recipe.refId;
 
                         overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
@@ -155,6 +178,10 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
                             //do not allow user to lock a recipe
                             delete formData.recipe.locked;
                         }
+	
+	                    delete formData.recipe.v;
+	                    delete formData.recipe.ts;
+	                    delete formData.recipe.refId;
 
                         overlayLoading.show();
                         getSendDataFromServer($scope, ngDataApi, {
@@ -195,14 +222,20 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
         buildFormWithModal($scope, $modal, options);
     };
 
-    $scope.deleteRecipe = function (recipe) {
+    $scope.deleteRecipe = function (recipe, versioning) {
+    	var params = {
+		    id: recipe._id
+	    };
+    	if(versioning){
+    		params.id = recipe.refId;
+    		params.version = recipe.v;
+	    }
+    	
         overlayLoading.show();
         getSendDataFromServer($scope, ngDataApi, {
             method: 'delete',
             routeName: '/dashboard/catalog/recipes/delete',
-            params: {
-                id: recipe._id
-            }
+            params: params
         }, function (error, response) {
             overlayLoading.hide();
             if (error) {
@@ -229,6 +262,25 @@ catalogApp.controller ('catalogAppCtrl', ['$scope', '$timeout', '$modal', 'ngDat
 		} else {
 			if ($scope.recipes && $scope.originalRecipes) {
 				$scope.recipes = $scope.originalRecipes;
+				
+			}
+		}
+	};
+	
+	$scope.filterDataVersions = function (query, tabIndex) {
+		if (query && query !== "") {
+			query = query.toLowerCase();
+			var filtered = [];
+			var recipes = $scope.archives;
+			for (var i = 0; i < recipes.length; i++) {
+				if (recipes[i].name.toLowerCase().indexOf(query) !== -1 || recipes[i].type.toLowerCase().indexOf(query) !== -1 || recipes[i].description.toLowerCase().indexOf(query) !== -1 ||recipes[i].subtype && recipes[i].subtype.toLowerCase().indexOf(query) !== -1) {
+					filtered.push(recipes[i]);
+				}
+			}
+			$scope.archives = filtered;
+		} else {
+			if ($scope.archives && $scope.originalArchives) {
+				$scope.archives = $scope.originalArchives;
 				
 			}
 		}

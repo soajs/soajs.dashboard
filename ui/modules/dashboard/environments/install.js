@@ -1009,6 +1009,16 @@ var envTranslation ={
 	 You need to go to Multi-Tenancy and generate new keys for all your tenants
 	 Specify the algorithm to use and a password (minimum 5 characters) to encrypt tenant keys. More info on what options are supported is found at
 	 */
+	"changingLoggingConfigurationMayCauseImproperFunctionality":{
+        "ENG": "Changing the formatter configuration will cause the analytics to function improperly.",
+        "FRA": "Changing the formatter configuration will cause the analytics to function improperly.",
+	},
+
+	"adviceToKeepConfigurationAsIs":{
+        "ENG": "It is advisable to keep the Logger configuration as is, in case you choose to turn on Analytics in the future.",
+        "FRA": "It is advisable to keep the Logger configuration as is, in case you choose to turn on Analytics in the future.",
+	},
+
 	"changingTenantKeySecurityEncryptionConfigurationDisablesTenantKeys": {
 		"ENG": "Changing the tenant key security encryption configuration, disables the usage of all tenant keys.",
 		"FRA": "Changing the tenant key security encryption configuration, disables the usage of all tenant keys."
@@ -1454,6 +1464,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 1,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js','modules/dashboard/environments/services/template.js', 'modules/dashboard/environments/controller.js'],

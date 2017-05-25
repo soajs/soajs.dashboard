@@ -30,7 +30,9 @@ var modules = {
 			staticContent: 'modules/dashboard/staticContent/install.js',
 			githubApp: 'modules/dashboard/gitAccounts/install.js',
 			swaggerEditorApp: 'modules/dashboard/swaggerEditor/install.js',
-			catalogs: 'modules/dashboard/catalogs/install.js'
+			catalogs: 'modules/dashboard/catalogs/install.js',
+			ci: 'modules/dashboard/ci/install.js',
+			cd: 'modules/dashboard/cd/install.js'
 		}
 	},
 	"manage": {

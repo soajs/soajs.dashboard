@@ -114,9 +114,6 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', function
 					} else if(formData.groupMain.length === 0) {
 						$scope.form.displayAlert('danger', translation.enterAPIgroupMainProceed[LANG]);
 						return false;
-					} else if(formData.inputs.length === 0) {
-						$scope.form.displayAlert('danger', translation.enterAPIinputsProceed[LANG]);
-						return false;
 					} else {
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
 						allowedErrorCodes = Object.keys(allowedErrorCodes);
@@ -206,9 +203,6 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', function
 						return false;
 					} else if(formData.groupMain.length === 0) {
 						$scope.form.displayAlert('danger', translation.enterAPIgroupMainProceed[LANG]);
-						return false;
-					} else if(formData.inputs.length === 0) {
-						$scope.form.displayAlert('danger', translation.enterAPIinputsProceed[LANG]);
 						return false;
 					} else{
 						var allowedErrorCodes = JSON.parse(formData.codeValues);
