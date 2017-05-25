@@ -42,6 +42,12 @@
 					</div>
 				</div>
 			</div>
+			
+			<div ng-show="!ledger || ledger.length === 0">
+				<alert type="info">
+					No Updates available at this moment.
+				</alert>
+			</div>
 		</tab>
 	</tabset>
 </section>
