@@ -192,41 +192,43 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				$scope.displayAlert('danger', error.message);
 			}
 			else {
-				var myServices=[];
 				var objServices={};
 				var branches=[];
-				// SOAJS_GIT_BRANCH=master
 				response.forEach(function(service){
-					if(service.labels && service.labels['soajs.content']){
+					if (service.labels && service.labels['soajs.content']){
+						var branch;
+						if (service.labels['service.branch']){
+							branch = service.labels['service.branch'];
+						}
 						if (service.labels['soajs.service.name']){
 							service.serviceName = service.labels['soajs.service.name'];
+							if(!objServices[service.serviceName]){
+								objServices[service.serviceName]={
+									versions:[]
+								};
+							}
+							service.versionLabel = 'v'+service.labels['soajs.service.version'];
+							objServices[service.serviceName].versions.push(service);
 						}
-						if(!objServices[service.serviceName]){
-							objServices[service.serviceName]={
-								versions:[]
-							};
+						////
+						if (!branch){
+							for (var x =0; x < service.env.length; x++) {
+								if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
+									branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
+									break;
+								}
+							}
 						}
-						// version.labels['soajs.service.version']
-						service.versionLabel = 'v'+service.labels['soajs.service.version'];
-						objServices[service.serviceName].versions.push(service);
-						myServices.push(service);
-					}
-					for (var x =0; x < service.env.length; x++){
-						if(service){
-							// myServices
-						}
-						if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
-							var branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
+						////
+						if (branch) {
 							service.branch = branch;
 							if(branches.indexOf(branch) === -1){
 								branches.push(branch);
 							}
-							break;
 						}
 					}
 				});
 				$scope.branches= branches;
-				$scope.services = myServices;
 				$scope.objServices = objServices;
 			}
 		});
