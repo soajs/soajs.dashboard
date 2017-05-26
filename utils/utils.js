@@ -12,13 +12,12 @@ module.exports = {
 	 */
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
 		if (data.error) {
-			if (data.error.source === 'driver') {
-				soajs.log.error(data.error);
-				return mainCb({"code": data.error.code, "msg": data.error.msg});
-			}
-
 			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
+			}
+
+			if (data.error.source === 'driver') {
+				return mainCb({"code": data.error.code, "msg": data.error.msg});
 			}
 
 			return mainCb({"code": data.code, "msg": data.config.errors[data.code]});
@@ -54,7 +53,7 @@ module.exports = {
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
-
+	    
         options.deployerConfig = envDeployer;
         options.soajs = { registry: soajs.registry };
         options.model = BL.model;
