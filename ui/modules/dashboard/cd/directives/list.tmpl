@@ -7,19 +7,22 @@
 		padding-top: 4px;
 	}
 
-	.configCd .entryServiceBoxes{
+	.configCd .entryServiceBoxes {
 		margin-top: 10px;
 	}
+
 	.configCd label,
-	.configCd .entryServiceBoxes .service-container label{
+	.configCd .entryServiceBoxes .service-container label {
 		font-weight: bold;
 		width: 75px;
 		padding-bottom: 2px;
 	}
-	.configCd label.version{
+
+	.configCd label.version {
 		margin-bottom: 3px;
 	}
-	.configCd select.form-control{
+
+	.configCd select.form-control {
 		margin-top: 3px;
 		margin-bottom: 5px;
 		min-width: 120px;
@@ -43,7 +46,13 @@
 						<option value="update">update</option>
 					</select>
 				</div>
+				<div ng-show="myEnv==='DASHBOARD'">
+
+				</div>
 				<div ng-hide="myEnv==='DASHBOARD'" class="entryServiceBoxes ng-scope">
+					<div ng-show="servicesNumber===0">
+						You do not have any services deployed yet.
+					</div>
 					<div class="clearfix service-container" ng-repeat="(name, service) in objServices">
 						<div class="clearfix serviceNameHead">
 							<input ng-model="configuration[name].include" ng-click="assignService(name)" type="checkbox">
@@ -92,13 +101,13 @@
 		</tab>
 		<tab heading="ledger {{updateCount}}" ng-click="getLedger()">
 			<br/>
-			<input ng-show="ledger && ledger.length > 0" type="button" class="btn btn-sm btn-primary" ng-confirm-click="Clicking this button means you have read all the ledger entries. Are you sure you want to proceed?" ng-click="readAll()" value="Mark All as Read" />
+			<input ng-show="ledger && ledger.length > 0" type="button" class="btn btn-sm btn-primary" ng-confirm-click="Clicking this button means you have read all the ledger entries. Are you sure you want to proceed?" ng-click="readAll()" value="Mark All as Read"/>
 			<div class="grid" ng-show="ledger && ledger.length > 0">
 				<div class="table">
 					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last, 'notread' : !oneEntry.read }" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">
 						<div class="f-left mt-5">
 							<a href="" ng-click="readOne(oneEntry)" tooltip="Mark as Read" class="mr-10">
-								<span class="icon icon-drawer2" ></span>
+								<span class="icon icon-drawer2"></span>
 							</a>
 							<span ng-if="oneEntry.update">
 								Service <b>{{oneEntry.serviceName}}</b><b ng-if="oneEntry.serviceVersion">/Version{{oneEntry.serviceVersion}}</b> in Environment <b>{{oneEntry.env}}</b> was automatically update on <em>{{oneEntry.ts|fulldate}}</em> based on Continuous Delivery Strategy
