@@ -20,21 +20,26 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			routeName: '/dashboard/cd'
 		}, function (error, response) {
 			overlayLoading.hide();
-			if(!response){
-				response={};
+			if(!response) {
+				response = {};
 			}
-			if(!response['DASHBOARD']){
-				response['DASHBOARD']={
+			
+			if(!response['DASHBOARD']) {
+				response['DASHBOARD'] = {
 					"branch": "master",
 					"strategy": "notify"
 				};
 			}
-			if(!response['DEV']){
-				response['DEV']={
-					"branch": "master",
-					"strategy": "notify"
-				};
+			
+			if($scope.myEnv.toUpperCase() !== 'DASHBOARD') {
+				if(!response[$scope.myEnv.toUpperCase()]) {
+					response['DASHBOARD'] = {
+						"branch": "master",
+						"strategy": "notify"
+					};
+				}
 			}
+			
 			if(response){
 				$scope.cdData = response;
 			}
