@@ -238,6 +238,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				});
 				$scope.branches= branches;
 				$scope.objServices = objServices;
+				$scope.servicesNumber = Object.keys(objServices);
 			}
 		});
 	};
