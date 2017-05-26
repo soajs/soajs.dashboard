@@ -33,6 +33,13 @@
 		<tab heading="Configuration" ng-click="getRecipe()">
 			<br>
 			<div class="configCd">
+				<div ng-show="myEnv==='DASHBOARD'">
+					<alert type="info">
+						The Dashboard environment is auto-configured to listen on branch master for all services deployed in it.<br />
+						The default Continuous Deployment Strategy is also set to notify.<br />
+						All code updates are record in the ledger; please check the ledger for further details on how to handle these updates.
+					</alert>
+				</div>
 				<div>
 					<label>Branch:</label>
 					<select ng-disabled="myEnv==='DASHBOARD'" data-ng-model="configuration.branch" class="form-control">
@@ -46,11 +53,8 @@
 						<option value="update">update</option>
 					</select>
 				</div>
-				<div ng-show="myEnv==='DASHBOARD'">
-
-				</div>
 				<div ng-hide="myEnv==='DASHBOARD'" class="entryServiceBoxes ng-scope">
-					<div ng-show="servicesNumber===0">
+					<div ng-show="servicesNumber.length ===0">
 						You do not have any services deployed yet.
 					</div>
 					<div class="clearfix service-container" ng-repeat="(name, service) in objServices">
