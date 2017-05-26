@@ -4,43 +4,26 @@ var helper = require("../../helper.js");
 var utils = helper.requireModule('./lib/daemons.js');
 
 describe("testing daemons.js", function () {
-
+	
 	var daemon;
 	var req = {
 		soajs: {
-			inputmaskData: {},
-			buildResponse: function (error, data) {
-				var resp = {};
-				if (error) {
-					resp.result = false;
-					resp.errors = {};
-					resp.errors.details = [];
-					resp.errors.details.push({
-						code: error.code,
-						message: error.message || error.msg
-					});
-				}
-				else {
-					resp.result = true;
-					resp.data = data;
-				}
-				return resp;
-			}
+			inputmaskData: {}
 		}
 	};
 	var res = {};
-
+	
 	it("Init model", function (done) {
-
+		
 		utils.init('mongo', function (error, body) {
 			assert.ok(body);
 			daemon = body;
 			done();
 		});
 	});
-
+	
 	describe("addGroupConfig()", function () {
-
+		
 		it("Success type cron", function (done) {
 			req.soajs.inputmaskData = {
 				type: 'cron',
@@ -96,24 +79,24 @@ describe("testing daemons.js", function () {
 		});
 		
 	});
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 	});
-
+	
 });
