@@ -71,6 +71,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD TESTS: Continuous integration", function (){
 
+	before(function(done){
+		setTimeout(function(){
+			done();
+		}, 1500);
+	});
+	
 	afterEach(function(done){
 		setTimeout(function(){
 			done();
@@ -98,6 +104,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
 			mongo.findOne("git_accounts", {"owner": usernamePersonal}, function(error, response){
 				assert.ifError(error);
 				assert.ok(response);
+				assert.ok(response.token);
 				config.config.settings.gitToken = response.token;
 				done();
 			});
