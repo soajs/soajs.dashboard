@@ -20,15 +20,28 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			routeName: '/dashboard/cd'
 		}, function (error, response) {
 			overlayLoading.hide();
-
 			if(!response){
 				response = {
-					"branch": "develop",
-					"strategy": "notify",
-					"urac": {}
+					"DASHBOARD":{
+						"branch": "master",
+						"strategy": "notify"
+					},
+					"DEV":{
+						"branch": "master",
+						"strategy": "notify"
+					}
 				};
-				$scope.configuration = response;
-				for (var key in response){
+			}
+			if(response){
+				$scope.cdData = response;
+			}
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+
+			if(response[$scope.myEnv.toUpperCase()]){
+				$scope.configuration = response[$scope.myEnv.toUpperCase()];
+				for (var key in $scope.configuration){
 					if(key !=='branch' && key !== 'strategy' && key !== 'include'){
 						if($scope.configuration[key]){
 							$scope.configuration[key].include = true;
@@ -42,10 +55,6 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						}
 					}
 				}
-
-			}
-			if (error) {
-				$scope.displayAlert('danger', error.message);
 			}
 		});
 	};
@@ -75,6 +84,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 			}
 		}
+		$scope.cdData['DASHBOARD'] = {
+			"branch": "master",
+			"strategy": "notify"
+		};
 		$scope.cdData[$scope.myEnv] = configuration;
 		var data = $scope.cdData;
 		delete data.type;
@@ -220,11 +233,17 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 
 	$scope.assignService = function(name) {
+		if(!$scope.configuration[name].strategy){
+			$scope.configuration[name].strategy= 'notify';
+		}
 		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
 	};
 
 	$scope.setVersion = function(name,version) {
 		$scope.configuration[name][version.versionLabel].branch = version.branch;
+		if(!$scope.configuration[name][version.versionLabel].strategy){
+			$scope.configuration[name][version.versionLabel].strategy = 'notify';
+		}
 	};
 
 	$scope.updateEntry = function (oneEntry, operation) {
