@@ -4,6 +4,13 @@ var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
 
+var Mongo = require("soajs.core.modules").mongo;
+var dbConfig = require("./db.config.test.js");
+
+var dashboardConfig = dbConfig();
+dashboardConfig.name = "core_provision";
+var mongo = new Mongo(dashboardConfig);
+
 var config = helper.requireModule('./config');
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 
@@ -13,11 +20,13 @@ var config = {
       "settings": {
           "domain": "api.travis-ci.org",
           "owner": "soajsTestAccount",
-          "gitToken": "d4a02540f6453862aafa906dc920e8d4333e44fd"
+          "gitToken": process.env.SOAJS_TEST_GIT_TOKEN
       },
       "recipe": "",
   }
 };
+
+var repoToUse;
 
 function executeMyRequest(params, apiPath, method, cb) {
     requester(apiPath, method, params, function (error, body) {
@@ -61,12 +70,13 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD TESTS: Continuous integration", function (){
-
+	
     it("Success - Save config (without recipe)", function(done){
         var params = {};
         params.form = config;
 
         executeMyRequest(params, 'ci', 'post', function (body) {
+        	console.log(JSON.stringify(body, null, 2));
             assert.ok(body.data);
             assert.ok(body.result);
             done();
@@ -99,6 +109,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
 
         executeMyRequest(params, 'ci', 'get', function (body) {
             assert.ok(body.result);
+            repoToUse = body.data.list[0];
             done();
         });
     });
@@ -124,7 +135,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
     it("Success - Enable Repo", function(done){
         var params = {
             "qs": {
-                "id": 12464664,
+                "id": repoToUse.id,
                 "enable": true
             }
         };
@@ -139,7 +150,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
     it("Success - Disable Repo", function(done){
         var params = {
             "qs": {
-                "id": 12464664,
+                "id": repoToUse.id,
                 "enable": false
             }
         };
@@ -150,7 +161,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
             done();
         });
     });
-
+	
     it("Success - get repo settings", function(done){
         var params = {
             "qs": {
