@@ -298,6 +298,14 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', func
 					var op = angular.copy(options);
 					op.label = translation.updateUserInput[LANG];
 					op.entries = angular.copy(cbConfig.form.step2.user);
+
+                    /**
+                     * if the input field of the "required" field is not selected
+                     * force it to show false;
+                     */
+					if(!op.entries[1].entries[1].value[0].selected )
+                        op.entries[1].entries[1].value[0].selected = true;
+
 					$scope.input = {};
 					$scope.input.user = angular.extend($scope);
 					buildForm($scope.input.user, null, op, function() {
@@ -356,9 +364,6 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', func
 								}
 								if(formData.required.length === 0) {
 									$scope.form.displayAlert('danger', translation.checkInputrequiredProceed[LANG]);
-									return false;
-								} else if(formData.listing.length === 0){
-									$scope.form.displayAlert('danger', translation.enterInputlistingPropertiesProceed[LANG]);
 									return false;
 								} else if(formData.type.length === 0){
 									$scope.form.displayAlert('danger', translation.entertypeForUIProceed[LANG]);
