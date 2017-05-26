@@ -275,7 +275,7 @@ var lib = {
                         });
                     });
                 });
-			};
+			}
         });
     },
 
@@ -369,18 +369,21 @@ module.exports = {
 
     "getBranches": function (soajs, data, model, options, cb) {
         data.getAccount(soajs, model, options, function (error, accountRecord) {
-            checkIfError(error, {}, cb, function () {
-                options.token = accountRecord.token;
-                lib.getRepoBranches(options, function (error, branches) {
-                    checkIfError(error, {}, cb, function () {
-                        var result = {
-                            owner: options.owner,
-                            repo: options.repo,
-                            branches: branches
-                        };
-                        return cb (null, result);
-                    });
-                });
+            // todo : add code
+	        checkIfError(error, {}, cb, function () {
+	            checkIfError(!accountRecord, {code: 759}, cb, function () {
+		            options.token = accountRecord.token;
+		            lib.getRepoBranches(options, function (error, branches) {
+			            checkIfError(error, {}, cb, function () {
+				            var result = {
+					            owner: options.owner,
+					            repo: options.repo,
+					            branches: branches
+				            };
+				            return cb (null, result);
+			            });
+		            });
+	            });
             });
         });
     },
