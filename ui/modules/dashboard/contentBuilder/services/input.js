@@ -215,10 +215,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', func
 								if(formData.required.length === 0) {
 									$scope.form.displayAlert('danger', translation.checkInputrequiredProceed[LANG]);
 									return false;
-								} else if(formData.listing.length === 0){
-									$scope.form.displayAlert('danger', translation.enterInputlistingPropertiesProceed[LANG]);
-									return false;
-								}else if(formData.type.length === 0){
+								} else if(formData.type.length === 0){
 									$scope.form.displayAlert('danger', translation.entertypeForUIProceed[LANG]);
 									return false;
 								}
