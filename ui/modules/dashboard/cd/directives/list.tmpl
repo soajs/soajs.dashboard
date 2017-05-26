@@ -13,9 +13,16 @@
 	.configCd label,
 	.configCd .entryServiceBoxes .service-container label{
 		font-weight: bold;
+		width: 75px;
+		padding-bottom: 2px;
 	}
-	.configCd select{
+	.configCd label.version{
+		margin-bottom: 3px;
+	}
+	.configCd select.form-control{
+		margin-top: 3px;
 		margin-bottom: 5px;
+		min-width: 120px;
 	}
 </style>
 <section ng-controller="cdAppCtrl">
@@ -58,11 +65,13 @@
 									<div ng-repeat="version in objServices[name].versions">
 
 										<input ng-click="setVersion(name,version)" ng-model="configuration[name][version.versionLabel].include" type="checkbox">
-										<label>Version:</label> {{version.versionLabel}}
-										<div style="padding-left: 10px;">
-											<div>Branch: {{version.branch}}
+										<label class="version">Version:</label> {{version.versionLabel}}
+										<div style="padding-left: 17px;">
+											<div>
+												<label class="">Branch:</label> {{version.branch}}
 											</div>
-											<div>Strategy:
+											<div>
+												<label class="">Strategy:</label>
 												<select class="form-control" data-ng-model="configuration[name][version.versionLabel].strategy">
 													<option value="notify">notify</option>
 													<option value="update">update</option>
