@@ -51,6 +51,10 @@
     margin-top:5px;
 }
 
+.configCd .entryServiceBoxes .service-container .serviceNameHead{
+    background-color: white;
+    border-bottom: none;
+}
 .configCd .serviceNameHead .serviceName{
     width: 30%;
 }
