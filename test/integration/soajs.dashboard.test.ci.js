@@ -71,6 +71,12 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD TESTS: Continuous integration", function (){
 
+	afterEach(function(done){
+		setTimeout(function(){
+			done();
+		}, 700);
+	});
+	
 	it("success - login to github", function(done){
 		var passwordPersonal = 'test2016';
 		var usernamePersonal = 'soajsTestAccount';
@@ -103,6 +109,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         params.form = config;
 
         executeMyRequest(params, 'ci', 'post', function (body) {
+        	console.log(JSON.stringify(body, null, 2));
             assert.ok(body.data);
             assert.ok(body.result);
             done();
