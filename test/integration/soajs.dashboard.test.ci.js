@@ -1,16 +1,11 @@
 "use strict";
+var fs = require('fs');
 var assert = require('assert');
 var request = require("request");
 var helper = require("../helper.js");
 
 var config = helper.requireModule('./config');
-var errorCodes = config.errors;
-
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
-var passwordPersonal = 'test2016';
-var usernamePersonal = 'soajsTestAccount';
-var gitToken = "177231bdd9f3727ddbd3e8c5281bf95383e90426";
-var ciToken = null;
 
 var config = {
   "config": {
@@ -23,19 +18,6 @@ var config = {
       "recipe": "",
   }
 };
-
-function debugLog(data) {
-    if (process.env.LOCAL_SOAJS) {
-        if (data) {
-            if (typeof (data) === 'object') {
-                console.log(JSON.stringify(data, null, 2));
-            }
-            else {
-                console.log(data);
-            }
-        }
-    }
-}
 
 function executeMyRequest(params, apiPath, method, cb) {
     requester(apiPath, method, params, function (error, body) {
@@ -92,39 +74,55 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
     });
 
     it("Success - Save config (with recipe)", function(done){
-        var params = {};
-        params.form = config;
-        params.form.config.recipe = __dirname + "/../uploads/.travis.yml",
-
-        executeMyRequest(params, 'ci', 'post', function (body) {
-            assert.ok(body.data);
-            assert.ok(body.result);
-            done();
-        });
+    	
+    	fs.readFile(__dirname + "/../uploads/.travis.yml", {"encoding": "utf8"}, function(error, data){
+    		assert.ifError(error);
+    		assert.ok(data);
+    		
+	        var params = {};
+	        params.form = config;
+	        params.form.config.recipe = data;
+	        executeMyRequest(params, 'ci', 'post', function (body) {
+	            assert.ok(body.data);
+	            assert.ok(body.result);
+	            done();
+	        });
+	    })
     });
 
     it("Success - get config", function(done){
         var params = {
-            "qs": {"port":30}
+            "qs": {
+            	"port":80
+            }
         };
 
         executeMyRequest(params, 'ci', 'get', function (body) {
+        	console.log(JSON.stringify(body, null, 2));
             assert.ok(body.result);
             done();
         });
     });
 
-    //TODO: this api couldn't be tested because of the template path
     it("Success - download recipe", function(done){
-        var params = {};
-
-        executeMyRequest(params, 'ci/download', 'get', function (body) {
-            assert.ok(body);
-            done();
-        });
+	    var options = {
+		    uri: 'http://localhost:4000/dashboard/ci/download',
+		    headers: {
+			    'Content-Type': 'application/json',
+			    'Accept': 'application/zip',
+			    key: extKey
+		    },
+		    json: true
+	    };
+		request.get(options).pipe(fs.createWriteStream("./ci.zip")).on('close', function(){
+			fs.exists("./ci.zip", function(exists){
+				assert.equal(exists, true);
+				done();
+			});
+		});
     });
 
-    it("Success - Enable Repo", function(done){
+    it.skip("Success - Enable Repo", function(done){
         var params = {
             "qs": {
                 "id": 12464664,
@@ -139,7 +137,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it("Success - Disable Repo", function(done){
+    it.skip("Success - Disable Repo", function(done){
         var params = {
             "qs": {
                 "id": 12464664,
@@ -154,7 +152,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it("Success - get repo settings", function(done){
+    it.skip("Success - get repo settings", function(done){
         var params = {
             "qs": {
                 "id": 12464664
@@ -167,7 +165,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it("Success - get repo settings", function(done){
+    it.skip("Success - get repo settings", function(done){
         var params = {
             "qs": {
                 "id": 12464664
