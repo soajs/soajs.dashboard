@@ -2,7 +2,6 @@
 var assert = require("assert");
 var helper = require("../../../helper.js");
 var helpers = helper.requireModule('./lib/helpers/host.js');
-var host;
 
 var mongoStub = {
 	checkForMongo: function (soajs) {
