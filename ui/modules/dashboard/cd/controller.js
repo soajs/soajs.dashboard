@@ -11,7 +11,8 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
 	$scope.updateCount;
-	
+	$scope.servicesNumber=[];
+
 	$scope.getRecipe = function () {
 
 		overlayLoading.show();
@@ -20,6 +21,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			routeName: '/dashboard/cd'
 		}, function (error, response) {
 			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+
 			if(!response) {
 				response = {};
 			}
@@ -33,19 +38,14 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			
 			if($scope.myEnv.toUpperCase() !== 'DASHBOARD') {
 				if(!response[$scope.myEnv.toUpperCase()]) {
-					response['DASHBOARD'] = {
+					response[$scope.myEnv.toUpperCase()] = {
 						"branch": "master",
 						"strategy": "notify"
 					};
 				}
 			}
 			
-			if(response){
-				$scope.cdData = response;
-			}
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
+			$scope.cdData = response;
 
 			if(response[$scope.myEnv.toUpperCase()]){
 				$scope.configuration = response[$scope.myEnv.toUpperCase()];
