@@ -71,7 +71,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD Tests: Git Accounts", function () {
 	var gitAccId;
-	var passwordPersonal = 'test2016';
+	var passwordPersonal = process.env.SOAJS_TEST_GIT_PWD;
 	var usernamePersonal = 'soajsTestAccount';
 	var soajsAccId = '56f1189430f153a571b9c8be';
 
