@@ -13,7 +13,7 @@ var config = {
       "settings": {
           "domain": "api.travis-ci.org",
           "owner": "soajsTestAccount",
-          "gitToken": "177231bdd9f3727ddbd3e8c5281bf95383e90426"
+          "gitToken": "d4a02540f6453862aafa906dc920e8d4333e44fd"
       },
       "recipe": "",
   }
@@ -51,7 +51,7 @@ function executeMyRequest(params, apiPath, method, cb) {
         if (params.qs) {
             options.qs = params.qs;
         }
-
+	    
         request[method](options, function (error, response, body) {
             assert.ifError(error);
             assert.ok(body);
@@ -98,7 +98,6 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         };
 
         executeMyRequest(params, 'ci', 'get', function (body) {
-        	console.log(JSON.stringify(body, null, 2));
             assert.ok(body.result);
             done();
         });
@@ -122,7 +121,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
 		});
     });
 
-    it.skip("Success - Enable Repo", function(done){
+    it("Success - Enable Repo", function(done){
         var params = {
             "qs": {
                 "id": 12464664,
@@ -137,7 +136,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it.skip("Success - Disable Repo", function(done){
+    it("Success - Disable Repo", function(done){
         var params = {
             "qs": {
                 "id": 12464664,
@@ -152,7 +151,7 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it.skip("Success - get repo settings", function(done){
+    it("Success - get repo settings", function(done){
         var params = {
             "qs": {
                 "id": 12464664
@@ -165,13 +164,13 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-    it.skip("Success - get repo settings", function(done){
+    it("Success - change repo settings", function(done){
         var params = {
             "qs": {
                 "id": 12464664
             },
             "form":{
-                "port": 30,
+                "port": 80,
                 "settings": {},
                 "variables":{
                     "var1": "val1",
@@ -187,15 +186,15 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
         });
     });
 
-
-    it.skip("Success - get repo settings", function(done){
+    it("Success - get repo settings again", function(done){
         var params = {
-            "form":{
-                "port": 30,
+            "qs":{
+                "port": 80,
             }
         };
         executeMyRequest(params, 'ci/sync', 'get', function (body) {
-            console.log(JSON.stringify(body,null,2));
+            assert.ok(body.result);
+            assert.ok(body.data);
             done();
         });
     });
