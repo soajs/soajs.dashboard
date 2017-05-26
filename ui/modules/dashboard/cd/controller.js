@@ -29,7 +29,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					"strategy": "notify"
 				};
 			}
-			if(!response['DASHBOARD']){
+			if(!response['DEV']){
 				response['DEV']={
 					"branch": "master",
 					"strategy": "notify"
