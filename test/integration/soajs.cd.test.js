@@ -66,26 +66,17 @@ function executeMyRequest (params, apiPath, method, cb) {
 	}
 }
 
-function getService (options, cb) {
+function getServices (env, cb) {
 	var params = {
 		qs: {
 			access_token: access_token,
-			env: options.env
+			env: env
 		}
 	};
 	executeMyRequest(params, "cloud/services/list", "get", function (body) {
 		assert.ifError(body.errors);
-		if (!options.serviceName) return cb(body);
-		
-		var services = body.data, service = {};
-		for (var i = 0; i < services.length; i++) {
-			if (services[ i ].labels[ 'soajs.service.name' ] === options.serviceName) {
-				service = services[ i ];
-				break;
-			}
-		}
-		
-		return cb(service);
+		var services = body.data;
+		return cb(services);
 	});
 }
 
@@ -102,7 +93,7 @@ function deleteService (options, cb) {
 }
 
 describe("testing hosts deployment", function () {
-	var soajsauth, containerInfo;
+	var soajsauth, recipesInfo;
 	var Authorization;
 	
 	before(function (done) {
@@ -154,15 +145,17 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				
-				mongo.update("environment", {}, {
-					"$set": {
-						"deployer": validDeployerRecord,
-						"profile": __dirname + "/../profiles/profile.js"
-					}
-				}, { multi: true }, function (error) {
+				mongo.remove("ledger", {}, function(error){
 					assert.ifError(error);
-					done();
+					mongo.update("environment", {}, {
+						"$set": {
+							"deployer": validDeployerRecord,
+							"profile": __dirname + "/../profiles/profile.js"
+						}
+					}, { multi: true }, function (error) {
+						assert.ifError(error);
+						done();
+					});
 				});
 			});
 		});
@@ -365,11 +358,385 @@ describe("testing hosts deployment", function () {
 	
 	after(function (done) {
 		mongo.closeDb();
-		done();
+		console.log('Deleting deployments and cleaning up...');
+		shell.exec('docker service rm $(docker service ls -q) && docker rm -f $(docker ps -qa)');
+		setTimeout(function(){
+			done();
+		}, 1500);
 	});
 	
 	describe("testing service deployment", function () {
-		it("success - deploy 1 core service, global mode", function (done) {
+		
+		function mimicCall(token, version, cb){
+			var options = {
+				qs: {
+					deploy_token: token
+				},
+				form: {
+					repo: 'soajs.controller',
+					branch: 'master',
+					services: [{serviceName: 'controller'}]
+				}
+			};
+			
+			if(version){
+				options.form.services[0].serviceVersion = version;
+			}
+			
+			executeMyRequest(options, "cd/deploy", "post", function (body) {
+				cb(body);
+			});
+		}
+		
+		function configureCD(config, cb){
+			var options = {
+				qs: {
+					access_token: access_token
+				},
+				form: {
+					"config": config
+				}
+			};
+			
+			executeMyRequest(options, "cd/", "post", function (body) {
+				return cb(body);
+			});
+		}
+		
+		it("update catalog recipe", function(done){
+			var recipes = [
+				{
+					"name": "soajsCatalog",
+					"type": "soajs",
+					"description": "This is a test catalog for deploying service instances",
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "soajsorg",
+								"name": "soajs",
+								"tag": "latest"
+							}
+						},
+						"buildOptions": {
+							"settings": {
+								"accelerateDeployment": true
+							},
+							"env": {
+								"NODE_ENV": {
+									"type": "static",
+									"value": "production"
+								},
+								"SOAJS_ENV": {
+									"type": "computed",
+									"value": "$SOAJS_ENV"
+								},
+								"SOAJS_PROFILE": {
+									"type": "static",
+									"value": "/opt/soajs/FILES/profiles/profile.js"
+								},
+								"SOAJS_SRV_AUTOREGISTERHOST": {
+									"type": "static",
+									"value": "true"
+								},
+								"SOAJS_SRV_MEMORY": {
+									"type": "computed",
+									"value": "$SOAJS_SRV_MEMORY"
+								},
+								"SOAJS_GC_NAME": {
+									"type": "computed",
+									"value": "$SOAJS_GC_NAME"
+								},
+								"SOAJS_GC_VERSION": {
+									"type": "computed",
+									"value": "$SOAJS_GC_VERSION"
+								},
+								"SOAJS_GIT_OWNER": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_OWNER"
+								},
+								"SOAJS_GIT_BRANCH": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_BRANCH"
+								},
+								"SOAJS_GIT_COMMIT": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_COMMIT"
+								},
+								"SOAJS_GIT_REPO": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_REPO"
+								},
+								"SOAJS_GIT_TOKEN": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_TOKEN"
+								},
+								"SOAJS_DEPLOY_HA": {
+									"type": "computed",
+									"value": "$SOAJS_DEPLOY_HA"
+								},
+								"SOAJS_HA_NAME": {
+									"type": "computed",
+									"value": "$SOAJS_HA_NAME"
+								},
+								"SOAJS_MONGO_NB": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_NB"
+								},
+								"SOAJS_MONGO_PREFIX": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PREFIX"
+								},
+								"SOAJS_MONGO_RSNAME": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_RSNAME"
+								},
+								"SOAJS_MONGO_AUTH_DB": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_AUTH_DB"
+								},
+								"SOAJS_MONGO_SSL": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_SSL"
+								},
+								"SOAJS_MONGO_IP": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_IP_N"
+								},
+								"SOAJS_MONGO_PORT": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PORT_N"
+								}
+							},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"bash",
+										"-c"
+									],
+									"args": [
+										"node index.js -T service"
+									]
+								}
+							}
+						}
+					},
+					v:1,
+					ts: new Date().getTime()
+				},
+				{
+					"name": "soajsCatalog2",
+					"type": "nginx",
+					"description": "This is a test catalog for deploying service instances",
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "soajsorg",
+								"name": "nginx",
+								"tag": "1.0.x"
+							},
+							"ports": [
+								{
+									"name": "http",
+									"target": 80,
+									"isPublished": true,
+									"published": 81
+								},
+								{
+									"name": "https",
+									"target": 443,
+									"isPublished": true,
+									"published": 444
+								}
+							]
+						},
+						"buildOptions": {
+							"settings": {
+								"accelerateDeployment": true
+							},
+							"env": {
+								"SOAJS_ENV": {
+									"type": "computed",
+									"value": "$SOAJS_ENV"
+								},
+								"SOAJS_NX_DOMAIN": {
+									"type": "computed",
+									"value": "$SOAJS_NX_DOMAIN"
+								},
+								"SOAJS_NX_API_DOMAIN": {
+									"type": "computed",
+									"value": "$SOAJS_NX_API_DOMAIN"
+								},
+								"SOAJS_NX_SITE_DOMAIN": {
+									"type": "computed",
+									"value": "$SOAJS_NX_SITE_DOMAIN"
+								},
+								
+								"SOAJS_NX_CONTROLLER_NB": {
+									"type": "computed",
+									"value": "$SOAJS_NX_CONTROLLER_NB"
+								},
+								"SOAJS_NX_CONTROLLER_IP": {
+									"type": "computed",
+									"value": "$SOAJS_NX_CONTROLLER_IP_N"
+								},
+								"SOAJS_NX_CONTROLLER_PORT": {
+									"type": "computed",
+									"value": "$SOAJS_NX_CONTROLLER_PORT"
+								},
+								
+								"SOAJS_DEPLOY_HA": {
+									"type": "computed",
+									"value": "$SOAJS_DEPLOY_HA"
+								},
+								"SOAJS_HA_NAME": {
+									"type": "computed",
+									"value": "$SOAJS_HA_NAME"
+								}
+								
+							},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"bash",
+										"-c"
+									],
+									"args": [
+										"node index.js -T nginx"
+									]
+								}
+							}
+						}
+					},
+					v:1,
+					ts: new Date().getTime()
+				},
+				{
+					"name": "soajsCatalog3",
+					"type": "soajs",
+					"description": "This is a test catalog for deploying service instances",
+					"recipe": {
+						"deployOptions": {
+							"image": {
+								"prefix": "soajsorg",
+								"name": "soajs",
+								"tag": "1.0.x-1.0.x"
+							}
+						},
+						"buildOptions": {
+							"settings": {
+								"accelerateDeployment": true
+							},
+							"env": {
+								"NODE_ENV": {
+									"type": "static",
+									"value": "production"
+								},
+								"SOAJS_ENV": {
+									"type": "computed",
+									"value": "$SOAJS_ENV"
+								},
+								"SOAJS_PROFILE": {
+									"type": "static",
+									"value": "/opt/soajs/FILES/profiles/profile.js"
+								},
+								"SOAJS_SRV_AUTOREGISTERHOST": {
+									"type": "static",
+									"value": "true"
+								},
+								"SOAJS_SRV_MEMORY": {
+									"type": "computed",
+									"value": "$SOAJS_SRV_MEMORY"
+								},
+								"SOAJS_GC_NAME": {
+									"type": "computed",
+									"value": "$SOAJS_GC_NAME"
+								},
+								"SOAJS_GC_VERSION": {
+									"type": "computed",
+									"value": "$SOAJS_GC_VERSION"
+								},
+								"SOAJS_GIT_OWNER": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_OWNER"
+								},
+								"SOAJS_GIT_BRANCH": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_BRANCH"
+								},
+								"SOAJS_GIT_COMMIT": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_COMMIT"
+								},
+								"SOAJS_GIT_REPO": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_REPO"
+								},
+								"SOAJS_GIT_TOKEN": {
+									"type": "computed",
+									"value": "$SOAJS_GIT_TOKEN"
+								},
+								"SOAJS_DEPLOY_HA": {
+									"type": "computed",
+									"value": "$SOAJS_DEPLOY_HA"
+								},
+								"SOAJS_HA_NAME": {
+									"type": "computed",
+									"value": "$SOAJS_HA_NAME"
+								},
+								"SOAJS_MONGO_NB": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_NB"
+								},
+								"SOAJS_MONGO_PREFIX": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PREFIX"
+								},
+								"SOAJS_MONGO_RSNAME": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_RSNAME"
+								},
+								"SOAJS_MONGO_AUTH_DB": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_AUTH_DB"
+								},
+								"SOAJS_MONGO_SSL": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_SSL"
+								},
+								"SOAJS_MONGO_IP": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_IP_N"
+								},
+								"SOAJS_MONGO_PORT": {
+									"type": "computed",
+									"value": "$SOAJS_MONGO_PORT_N"
+								}
+							},
+							"cmd": {
+								"deploy": {
+									"command": [
+										"bash",
+										"-c"
+									],
+									"args": [
+										"node index.js -T service"
+									]
+								}
+							}
+						}
+					},
+					v:1,
+					ts: new Date().getTime()
+				}
+			];
+			mongo.insert('catalogs', recipes, function(error, response){
+				assert.ifError(error);
+				recipesInfo = response;
+				done();
+			});
+		});
+		
+		it("success - deploy 1 service using catalog 1", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -380,12 +747,78 @@ describe("testing hosts deployment", function () {
 						type: 'service',
 						name: 'controller',
 					},
-					recipe: '59034e43c69a1b962fc62213',
+					recipe: recipesInfo[0]._id.toString(),
 					gitSource: {
 						owner: 'soajs',
 						repo: 'soajs.controller',
-						branch: 'develop',
+						branch: 'master',
 						commit: '67a61db0955803cddf94672b0192be28f47cf280'
+					},
+					deployConfig: {
+						memoryLimit: 209715200,
+						replication: {
+							mode: 'replicated',
+							replicas: 1
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				setTimeout(function(){
+					done();
+				}, 1000);
+			});
+		});
+		
+		it("success - deploy 1 service using catalog2", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				"form": {
+					env: 'dev',
+					custom: {
+						type: 'nginx',
+						name: 'nginx',
+					},
+					recipe: recipesInfo[1]._id.toString(),
+					deployConfig: {
+						memoryLimit: 209715200,
+						replication: {
+							mode: 'replicated',
+							replicas: 1
+						}
+					}
+				}
+			};
+			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				setTimeout(function(){
+					done();
+				}, 700);
+			});
+		});
+		
+		it("success - deploy 1 service using catalog3", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				"form": {
+					env: 'dev',
+					custom: {
+						type: 'service',
+						name: 'urac',
+					},
+					recipe: recipesInfo[2]._id.toString(),
+					gitSource: {
+						owner: 'soajs',
+						repo: 'soajs.urac',
+						branch: 'develop',
+						commit: '4470c1cd2bc2aef867ffecf26c02602df19e1f3a'
 					},
 					deployConfig: {
 						memoryLimit: 209715200,
@@ -403,30 +836,256 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("configuring cd for this env", function(done){
-			done();
+		it("configuring ci", function(done){
+			let doc = {
+				"$set":{
+					"driver": "travis",
+					"settings": {
+						"domain": "api.travis-ci.org",
+						"owner": "soajs",
+						"gitToken": "1234567890",
+						"ciToken": "abcd1234"
+					}
+				}
+			};
+			mongo.update("cicd", {"type":"ci"}, doc, {"upsert": true, safe: true, multi: false}, function(error){
+				assert.ifError(error);
+				done();
+			});
 		});
 		
-		it("mimic call for cd/deploy of urac in dev", function(done){
-			done();
+		it("mimic call to cd/deploy, nothing should happen", function(done){
+			mimicCall("1234567890", null, function(body){
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("configuring cd for this env", function(done){
+			configureCD({
+				"DEV": {
+					"branch": "master",
+					"strategy": "notify"
+				}
+			}, function(body){
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("fail - mimic call for cd/deploy of controller in dev", function(done){
+			mimicCall("invalid", null, function(body){
+				assert.equal(body.result, false);
+				assert.ok(body.errors);
+				done();
+			});
+		});
+		
+		it("mimic call for cd/deploy of controller in dev", function(done){
+			mimicCall("1234567890", null, function(body){
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("configure cd again with specific entry for controller", function(done){
+			configureCD({
+				"DEV": {
+					"branch": "master",
+					"strategy": "notify",
+					"controller":{
+						"branch": "master",
+						"strategy": "notify"
+					}
+				}
+			}, function(body){
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("mimic call for cd/deploy of controller in dev again", function(done){
+			mimicCall("1234567890", null, function(body){
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("configure cd again with specific version for controller", function(done){
+			configureCD({
+				"DEV": {
+					"branch": "master",
+					"strategy": "notify",
+					"controller":{
+						"branch": "master",
+						"strategy": "notify",
+						"v1":{
+							"branch": "master",
+							"strategy": "notify"
+						}
+					}
+				}
+			}, function(body){
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("mimic call for cd/deploy of controller in dev again", function(done){
+			mimicCall("1234567890", 1, function(body){
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
 		});
 		
 		it("get ledger", function(done){
-			done();
+			var options = {
+				qs: {
+					deploy_token: access_token,
+					env: 'dev'
+				}
+			};
+			
+			executeMyRequest(options, "cd/ledger", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				
+				var list = body.data;
+				if(list.length === 0){
+					done();
+				}
+				else{
+					var options = {
+						qs: {
+							deploy_token: access_token
+						},
+						form: {
+							data: {
+								id: list[0]._id
+							}
+						}
+					};
+					
+					executeMyRequest(options, "cd/ledger/read", "put", function (body) {
+						assert.ok(body.result);
+						assert.ok(body.data);
+						done();
+					});
+				}
+			});
+		});
+		
+		it("mark all ledger entries as read", function(done){
+			var options = {
+				qs: {
+					deploy_token: access_token
+				},
+				form: {
+					data: {
+						all: true
+					}
+				}
+			};
+			
+			executeMyRequest(options, "cd/ledger/read", "put", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		it("trigger catalog update", function(done){
+			mongo.update('catalogs', {'name': "soajsCatalog"}, {$set:{v: 2, ts: new Date().getTime()}}, function(error){
+				assert.ifError(error);
+				done();
+			});
 		});
 		
 		it("get updates", function(done){
-			done();
+			var options = {
+				qs: {
+					deploy_token: access_token,
+					env: 'dev'
+				}
+			};
+			
+			executeMyRequest(options, "cd/updates", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
 		});
 		
+		it("configure cd for automatic controller update", function(done){
+			configureCD({
+				"DEV": {
+					"branch": "master",
+					"strategy": "notify",
+					"controller":{
+						"branch": "master",
+						"strategy": "update",
+						"v2":{
+							"branch": "master",
+							"strategy": "notify"
+						}
+					}
+				}
+			}, function(body){
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
+		});
 		
-		it.skip("clean up service", function(done){
-			getService({ env: 'dev', serviceName: 'controller' }, function (service) {
-				deleteService({
-					env: 'DEV',
-					id: service.id,
-					mode: service.labels[ 'soajs.service.mode' ]
-				}, function (body) {
+		it("mimic call for cd/deploy of controller in dev again", function(done){
+			mimicCall("1234567890", 1, function(body){
+				assert.equal(body.result, true);
+				assert.ok(body.data);
+				done();
+			});
+		});
+		
+		//todo: need to trigger get action api, redeploy and rebuild
+		it("calling take action on redeploy", function(done){
+			var options = {
+				qs: {
+					deploy_token: access_token,
+					env: 'dev'
+				}
+			};
+			
+			executeMyRequest(options, "cd/ledger", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				
+				var list = body.data;
+				var oneUpdate;
+				for(var i =0; i < list.length; i++){
+					if(list[i].notify && !list[i].manual){
+						oneUpdate = list[i];
+						break;
+					}
+				}
+				
+				var options = {
+					qs: {
+						deploy_token: access_token
+					},
+					form:{
+						data:{
+							id: oneUpdate._id.toString()
+						}
+					}
+				};
+				
+				executeMyRequest(options, "cd/action", "put", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -434,5 +1093,31 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
+		it("calling take action on rebuild", function(done){
+			getServices('dev', function(list){
+				var lastEntry = list[list.length -1];
+				var options = {
+					qs: {
+						deploy_token: access_token
+					},
+					form:{
+						data:{
+							"env": 'dev',
+							"action": 'rebuild',
+							"mode": lastEntry.labels['soajs.service.mode'],
+							"serviceId": lastEntry.id,
+							"serviceName": lastEntry.name,
+							"serviceVersion": 1
+						}
+					}
+				};
+
+				executeMyRequest(options, "cd/action", "put", function (body) {
+					assert.ok(body.result);
+					assert.ok(body.data);
+					done();
+				});
+			});
+		});
 	});
 });
