@@ -1,0 +1,26 @@
+sudo: required
+
+language: node_js
+
+node_js: 6.9.5
+
+branches:
+  only:
+    - master
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
+before_install:
+  - sudo apt-get update && sudo apt-get install python make g++
+
+before_script:
+  - npm install -g grunt-cli
+  - sleep 10
+
+script:
+  - 'grunt unit'
