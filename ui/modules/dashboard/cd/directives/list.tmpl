@@ -7,8 +7,15 @@
 		padding-top: 4px;
 	}
 
-	.configCd label {
+	.configCd .entryServiceBoxes{
+		margin-top: 10px;
+	}
+	.configCd label,
+	.configCd .entryServiceBoxes .service-container label{
 		font-weight: bold;
+	}
+	.configCd select{
+		margin-bottom: 5px;
 	}
 </style>
 <section ng-controller="cdAppCtrl">
@@ -18,25 +25,25 @@
 			<div class="configCd">
 				<div>
 					<label>Branch:</label>
-					<select data-ng-model="configuration.branch" class="form-control">
+					<select ng-disabled="myEnv==='DASHBOARD'" data-ng-model="configuration.branch" class="form-control">
 						<option ng-repeat="branch in branches" value="{{branch}}">{{branch}}</option>
 					</select>
 				</div>
 				<div>
 					<label>Strategy:</label>
-					<select data-ng-model="configuration.strategy" class="form-control">
+					<select ng-disabled="myEnv==='DASHBOARD'" data-ng-model="configuration.strategy" class="form-control">
 						<option value="notify">notify</option>
 						<option value="update">update</option>
 					</select>
 				</div>
-				<div class="entryServiceBoxes ng-scope">
+				<div ng-hide="myEnv==='DASHBOARD'" class="entryServiceBoxes ng-scope">
 					<div class="clearfix service-container" ng-repeat="(name, service) in objServices">
 						<div class="clearfix serviceNameHead">
 							<input ng-model="configuration[name].include" ng-click="assignService(name)" type="checkbox">
 							{{name}}
 						</div>
 						<div>
-							<div class="body listApis openApis">
+							<div ng-show="configuration[name].include" class="body listApis openApis">
 								<div>
 									<label>Branch:</label> {{objServices[name].versions[0].branch}}
 								</div>
@@ -68,7 +75,7 @@
 						</div>
 					</div>
 				</div>
-				<div style="float: right">
+				<div ng-hide="myEnv==='DASHBOARD'" style="float: right">
 					<input class="btn btn-sm btn-primary" ng-click="saveUpdate()" value="Update Continuous Delivery Settings" type="submit">
 				</div>
 			</div>
