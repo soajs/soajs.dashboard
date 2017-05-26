@@ -21,15 +21,18 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		}, function (error, response) {
 			overlayLoading.hide();
 			if(!response){
-				response = {
-					"DASHBOARD":{
-						"branch": "master",
-						"strategy": "notify"
-					},
-					"DEV":{
-						"branch": "master",
-						"strategy": "notify"
-					}
+				response={};
+			}
+			if(!response['DASHBOARD']){
+				response['DASHBOARD']={
+					"branch": "master",
+					"strategy": "notify"
+				};
+			}
+			if(!response['DASHBOARD']){
+				response['DEV']={
+					"branch": "master",
+					"strategy": "notify"
 				};
 			}
 			if(response){
