@@ -20,7 +20,7 @@ var config = {
       "settings": {
           "domain": "api.travis-ci.org",
           "owner": "soajsTestAccount",
-          "gitToken": ""
+          "gitToken": process.env.SOAJS_TEST_GIT_TOKEN
       },
       "recipe": "",
   }
@@ -70,46 +70,6 @@ function executeMyRequest(params, apiPath, method, cb) {
 }
 
 describe("DASHBOARD TESTS: Continuous integration", function (){
-
-	before(function(done){
-		setTimeout(function(){
-			done();
-		}, 1500);
-	});
-	
-	afterEach(function(done){
-		setTimeout(function(){
-			done();
-		}, 700);
-	});
-	
-	it("success - login to github", function(done){
-		var passwordPersonal = 'test2016';
-		var usernamePersonal = 'soajsTestAccount';
-		
-		var params = {
-			form: {
-				"username": usernamePersonal,
-				"password": passwordPersonal,
-				"label": "soajs Test Account",
-				"provider": "github",
-				"domain": "github.com",
-				"type": "personal",
-				"access": "private"
-			}
-		};
-		executeMyRequest(params, 'gitAccounts/login', 'post', function (body) {
-			assert.ok(body);
-			
-			mongo.findOne("git_accounts", {"owner": usernamePersonal}, function(error, response){
-				assert.ifError(error);
-				assert.ok(response);
-				assert.ok(response.token);
-				config.config.settings.gitToken = response.token;
-				done();
-			});
-		});
-	});
 	
     it("Success - Save config (without recipe)", function(done){
         var params = {};
