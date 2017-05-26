@@ -1,35 +1,9 @@
 'use strict';
 
 module.exports = {
-
-    /**
-     * Check if error is available and return it in response, else return callback function
-     *
-     * @param {Object} soajs
-     * @param {Object} data
-     * @param {Response Object} res
-     * @param {Callback Function} cb
-     */
-    checkIfError: function (soajs, res, data, cb) {
-        if (data.error) {
-            if (data.error.source === 'driver') {
-                soajs.log.error(data.error);
-                return res.jsonp(soajs.buildResponse({"code": data.error.code, "msg": data.error.msg}));
-            }
-	        else{
-	            if (typeof (data.error) === 'object') {
-		            soajs.log.error(data.error);
-	            }
 	
-	            return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
-            }
-        } else {
-            if (cb) return cb();
-        }
-    },
-
 	/**
-	 * Same as checkIfError; but with callback instead of res
+	 * Check if error is available and return it in response, else return callback function
 	 *
 	 * @param {Object} soajs
 	 * @param {Callback Function} mainCb
