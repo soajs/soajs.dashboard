@@ -248,9 +248,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		if(!$scope.configuration[name].strategy){
 			$scope.configuration[name].strategy= 'notify';
 		}
-		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
 		$scope.objServices[name].icon = 'minus';
-		$scope.showHide($scope.objServices, name);
+		jQuery('#cd_' + name).slideDown()
+		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
+		
 	};
 	
 	$scope.showHide = function(oneService, name){
