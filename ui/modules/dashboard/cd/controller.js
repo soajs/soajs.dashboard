@@ -99,6 +99,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		$scope.cdData[$scope.myEnv] = configuration;
 		var data = $scope.cdData;
 		delete data.type;
+		delete data.soajsauth;
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
@@ -215,7 +216,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 									versions:[]
 								};
 							}
-							service.versionLabel = 'v'+service.labels['soajs.service.version'];
+							service.versionLabel = service.labels['soajs.service.version'];
 							objServices[service.serviceName].versions.push(service);
 						}
 						////
@@ -248,6 +249,18 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			$scope.configuration[name].strategy= 'notify';
 		}
 		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
+		$scope.objServices[name].icon = 'minus';
+	};
+	
+	$scope.showHide = function(oneService, name){
+		if(oneService.icon === 'minus'){
+			oneService.icon = 'plus';
+			jQuery('#cd_' + name).slideUp();
+		}
+		else{
+			oneService.icon = 'minus';
+			jQuery('#cd_' + name).slideDown()
+		}
 	};
 
 	$scope.setVersion = function(name,version) {
