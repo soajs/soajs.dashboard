@@ -250,6 +250,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		}
 		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
 		$scope.objServices[name].icon = 'minus';
+		$scope.showHide($scope.objServices, name);
 	};
 	
 	$scope.showHide = function(oneService, name){
