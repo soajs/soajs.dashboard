@@ -29,7 +29,7 @@ describe("importing sample data", function () {
 	it("update environment before starting service", function (done) {
 		var setDoc = {
 			"$set": {
-				"services.config.logger.level": "debug",
+				"services.config.logger.level": "fatal",
 				"services.config.logger.formatter.outputMode": "short"
 			},
 			"$unset": {
