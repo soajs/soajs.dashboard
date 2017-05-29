@@ -29,6 +29,7 @@ var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
 //var cb = require("./lib/contentbuilder.js");
 var analyticsBL = require("./lib/analytics.js");
+var gitDriver = require('./utils/drivers/git/index.js');
 
 var dbModel = "mongo";
 
@@ -1356,7 +1357,7 @@ service.init(function () {
  	*/
 	service.post("/gitAccounts/login", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.login(config, req, res, function (error, data) {
+			BL.login(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1369,7 +1370,7 @@ service.init(function () {
 	 */
 	service.delete("/gitAccounts/logout", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.logout(config, req, res, function (error, data) {
+			BL.logout(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1382,7 +1383,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/accounts/list", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.listAccounts(config, req, res, function (error, data) {
+			BL.listAccounts(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1395,7 +1396,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getRepos", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getRepos(config, req, res, function (error, data) {
+			BL.getRepos(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1408,7 +1409,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getFile(config, req, res, function (error, data) {
+			BL.getFile(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1421,7 +1422,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getBranches(config, req, res, function (error, data) {
+			BL.getBranches(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1434,7 +1435,7 @@ service.init(function () {
 	 */
 	service.post("/gitAccounts/repo/activate", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.activateRepo(config, req, res, function (error, data) {
+			BL.activateRepo(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1447,7 +1448,7 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.deactivateRepo(config, req, res, function (error, data) {
+			BL.deactivateRepo(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1460,7 +1461,7 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.syncRepo(config, req, res, function (error, data) {
+			BL.syncRepo(config, req, gitDriver, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
