@@ -45,7 +45,7 @@ describe("testing helper host.js", function () {
 		}
 	};
 	
-	describe("getTenants ()", function () {
+	describe("getTenants", function () {
 		var output;
 		beforeEach(() => {
 			output = {
