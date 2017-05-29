@@ -23,7 +23,7 @@
 					<br>
 				</div>
 				<div ng-show="myEnv!=='DASHBOARD' && servicesNumber.length ===0">
-					<alert type="info">
+					<alert type="warning">
 						You do not have any services deployed yet.
 					</alert>
 				</div>
@@ -51,7 +51,7 @@
 					<br />
 				</div>
 				<div ng-hide="myEnv==='DASHBOARD' && servicesNumber.length > 0" class="entryServiceBoxes ng-scope">
-					<fieldset>
+					<fieldset ng-show="servicesNumber.length > 0">
 						<legend>Specific Service(s) Strategy</legend>
 						<!--<p>-->
 							<!--Override the default environment strategy per service and per version if needed.-->
@@ -120,7 +120,7 @@
 						</div>
 					</fieldset>
 				</div>
-				<div ng-hide="myEnv==='DASHBOARD' || (servicesNumber.length ===0)" style="float: right">
+				<div ng-hide="myEnv==='DASHBOARD' || (servicesNumber.length === 0)" style="float: right">
 					<input class="btn btn-sm btn-primary" ng-click="saveUpdate()" value="Update Continuous Delivery Settings" type="submit">
 				</div>
 			</div>
