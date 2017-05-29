@@ -22,7 +22,7 @@ describe("testing daemons.js", function () {
 		});
 	});
 	
-	describe("addGroupConfig()", function () {
+	describe("addGroupConfig", function () {
 		
 		it("Success type cron", function (done) {
 			req.soajs.inputmaskData = {
