@@ -237,11 +237,13 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 				data['servicePort'] = currentScope.config.genericService.config.servicePort;
 			}
 
-			if(currentScope.config.genericService.config.requestTimeout) {
+			data['requestTimeout'] = 30;
+			if(currentScope.config.genericService.config.requestTimeout && currentScope.config.genericService.config.requestTimeout>=0) {
 				data['requestTimeout'] = currentScope.config.genericService.config.requestTimeout;
 			}
 
-			if(currentScope.config.genericService.config.requestTimeoutRenewal) {
+            data['requestTimeoutRenewal'] = 5;
+			if(currentScope.config.genericService.config.requestTimeoutRenewal && currentScope.config.genericService.config.requestTimeoutRenewal>=0) {
 				data['requestTimeoutRenewal'] = currentScope.config.genericService.config.requestTimeoutRenewal;
 			}
 
