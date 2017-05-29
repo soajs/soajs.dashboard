@@ -30,6 +30,7 @@ var staticContent = require('./lib/staticContent.js');
 //var cb = require("./lib/contentbuilder.js");
 var analyticsBL = require("./lib/analytics.js");
 var gitDriver = require('./utils/drivers/git/index.js');
+var ciDriver = require('./utils/drivers/ci/index.js');
 
 var dbModel = "mongo";
 
@@ -1249,7 +1250,7 @@ service.init(function () {
 	*/
 	service.get("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.getConfig(config, req, function (error, data) {
+			BL.getConfig(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1262,7 +1263,7 @@ service.init(function () {
 	 */
 	service.get("/ci/status", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.toggleRepoStatus(config, req, function (error, data) {
+			BL.toggleRepoStatus(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1275,7 +1276,7 @@ service.init(function () {
 	*/
 	service.post("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.saveConfig(config, req, function (error, data) {
+			BL.saveConfig(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1288,7 +1289,7 @@ service.init(function () {
 	*/
 	service.delete("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.deleteConfig(config, req, function (error, data) {
+			BL.deleteConfig(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1301,7 +1302,7 @@ service.init(function () {
 	*/
 	service.get("/ci/download", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.downloadRecipe(config, req, res, function (error, data) {
+			BL.downloadRecipe(config, req, res, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1314,7 +1315,7 @@ service.init(function () {
 	*/
 	service.get("/ci/settings", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.getRepoSettings(config, req, function (error, data) {
+			BL.getRepoSettings(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1327,7 +1328,7 @@ service.init(function () {
 	*/
 	service.put("/ci/settings", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.updateRepoSettings(config, req, function (error, data) {
+			BL.updateRepoSettings(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1340,7 +1341,7 @@ service.init(function () {
 	*/
 	service.get("/ci/sync", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
-			BL.syncRepos(config, req, function (error, data) {
+			BL.syncRepos(config, req, ciDriver, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
