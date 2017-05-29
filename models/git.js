@@ -64,7 +64,7 @@ var methods = {
     "checkIfAccountExists": function (soajs, model, record, cb) {
         var opts = {
             collection: collName,
-            conditions: { owner: record.owner, provider: record.provider },
+            conditions: { owner: record.owner, provider: record.provider }
         };
         model.countEntries(soajs, opts, cb);
     },
