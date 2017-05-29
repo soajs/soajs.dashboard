@@ -112,7 +112,6 @@ var lib = {
                         utils.checkError(!Array.isArray(body.repos), {code: 976}, cb, () => {
                             //check if the requested repo is found
                             utils.checkError(body.file && body.file === 'not found', {code: 977}, cb, () => {
-
                                 //todo: need to map the response
                                 body = body.repos;
                                 if(body && body.length > 0) {
@@ -124,7 +123,7 @@ var lib = {
                                 }
                                 else {
                                     return cb(null, repos);
-								}
+                                }
 
                             });
                         });
@@ -170,9 +169,71 @@ var lib = {
                 myRepo.build = build;
             }
 
-            repos.push(myRepo);
-            return cb(null, true);
+
+            opts.params = {
+                "repoId": oneRepo.id
+            };
+
+            lib.listRepoBranches(opts, (errBranches, branches) => {
+                myRepo.branches = branches;
+                repos.push(myRepo);
+                return cb(null, true);
+            });
+
+            
         }
+    },
+
+    /**
+     * Lists the branches of a repository
+     * @param opts
+     * @param cb
+     */
+    listRepoBranches(opts, cb) {
+	    let params = {};
+        let finalUrl = config.headers.api.url.listRepoBranches.replace('#REPO_ID#', opts.params.repoId);
+
+        opts.log.debug(opts.settings);
+
+        if(opts.settings.ciToken){
+            finalUrl += "?access_token=" + opts.settings.ciToken;
+        }
+
+        params.uri = "https://" + opts.settings.domain + finalUrl;
+
+        params.headers = {
+            "User-Agent": config.headers.userAgent,
+            "Accept": config.headers.accept,
+            "Content-Type": config.headers.contentType,
+            "Host": opts.settings.domain
+        };
+        params.json = true;
+
+        opts.log.debug(params);
+        //send the request to obtain the repository variables
+        request.get(params, function (error, response, body) {
+            //Check for errors in the request function
+            utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                let repoBranches = [];
+                //standardize response
+                if(body && body.branches && body.branches.length > 0 && body.commits && body.commits.length > 0){
+                    body.commits.forEach(function(oneCommit) {
+	                    let oneBranch = {};
+                        oneBranch.name = oneCommit.branch;
+                        oneBranch.lastCommit = oneCommit["committed_at"];
+                        //get the remaining properties from the corresponding branch object
+                        for(let i=0; i<body.branches.length; i++){
+                            if(body.branches[i].commit_id === oneCommit.id){
+                                oneBranch.lastBuild = body.branches[i]["started_at"];
+                                oneBranch.state = body.branches[i].state;
+                            }
+                        }
+                        repoBranches.push(oneBranch);
+                    });
+                }
+                return cb(null, repoBranches);
+            });
+        });
     },
 
     /**
@@ -192,38 +253,38 @@ var lib = {
                     "domain": opts.settings.domain,
                     "ciToken": opts.settings.ciToken
                 },
-				"params": {
-					"repoId": opts.params.repoId
-				},
+                "params": {
+                    "repoId": opts.params.repoId
+                },
                 "log": opts.log
             };
 
             //List the env variables
             lib.listEnvVars(options, (err, repoVars) => {
                 //delete all the environment variables
-				async.eachSeries(repoVars, function(oneVar, callback){
-					options.settings.varID = oneVar.id;
-					lib.deleteEnvVar(options, callback);
-				}, (err) => {
+                async.eachSeries(repoVars, function(oneVar, callback){
+                    options.settings.varID = oneVar.id;
+                    lib.deleteEnvVar(options, callback);
+                }, (err) => {
                     let inputVariables = opts.params.variables;
 
                     if(options.settings.varID)
-                    	delete options.settings.varID;
+                        delete options.settings.varID;
 
-					//add the supplied environment variables
-					async.eachSeries(Object.keys(inputVariables), function(inputVar, callback) {
-						//set up the env variable record
-						options.settings.envVar = {
-							"name": inputVar,
-							"value": inputVariables[inputVar],
-							"public": true
-						};
-						//set the public status of each env var
-						if(inputVar === "SOAJS_CD_AUTH_KEY" || inputVar === "SOAJS_CD_DEPLOY_TOKEN")
-							options.settings.envVar.public = false;
-						lib.addEnvVar(options, callback);
-					}, cb);
-				});
+                    //add the supplied environment variables
+                    async.eachSeries(Object.keys(inputVariables), function(inputVar, callback) {
+                        //set up the env variable record
+                        options.settings.envVar = {
+                            "name": inputVar,
+                            "value": inputVariables[inputVar],
+                            "public": true
+                        };
+                        //set the public status of each env var
+                        if(inputVar === "SOAJS_CD_AUTH_KEY" || inputVar === "SOAJS_CD_DEPLOY_TOKEN")
+                            options.settings.envVar.public = false;
+                        lib.addEnvVar(options, callback);
+                    }, cb);
+                });
             });
         }
     },
@@ -340,44 +401,44 @@ var lib = {
         });
     },
 
-	/**
-	 * Updates an environment variable in a repository
-	 * @param opts
-	 * @param cb
-	 */
-	updateEnvVar (opts, cb) {
-		utils.checkError(!opts.settings.varID, {code: 978}, cb, () => {
-			let params = {};
+    /**
+     * Updates an environment variable in a repository
+     * @param opts
+     * @param cb
+     */
+    updateEnvVar (opts, cb) {
+        utils.checkError(!opts.settings.varID, {code: 978}, cb, () => {
+            let params = {};
 
-			//replace the environment variable ID in the URI
-			params.uri = "https://" + opts.settings.domain + config.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
-			params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
+            //replace the environment variable ID in the URI
+            params.uri = "https://" + opts.settings.domain + config.headers.api.url.updateEnvVar + opts.settings.repoId + "&access_token=" + opts.settings.ciToken;
+            params.uri = params.uri.replace("#ENV_ID#", opts.settings.varID);
 
-			params.headers = {
-				"User-Agent": config.headers.userAgent,
-				"Accept": config.headers.accept,
-				"Content-Type": config.headers.contentType,
-				"Host": opts.settings.domain
-			};
-			params.json = true;
+            params.headers = {
+                "User-Agent": config.headers.userAgent,
+                "Accept": config.headers.accept,
+                "Content-Type": config.headers.contentType,
+                "Host": opts.settings.domain
+            };
+            params.json = true;
 
-			params.body = {
-				"env_var": opts.settings.envVar
-			};
-			opts.log.debug(params);
-			//send the request to obtain the Travis token
-			request.patch(params, function (error, response, body) {
-				//Check for errors in the request function
-				utils.checkError(error, {code: 971}, cb, () => {
-					utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
-						utils.checkError(body.error === "Could not find a requested setting", {code: 979}, cb, () => {
-							return cb(null, true);
-						});
-					});
-				});
-			});
-		});
-	},
+            params.body = {
+                "env_var": opts.settings.envVar
+            };
+            opts.log.debug(params);
+            //send the request to obtain the Travis token
+            request.patch(params, function (error, response, body) {
+                //Check for errors in the request function
+                utils.checkError(error, {code: 971}, cb, () => {
+                    utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                        utils.checkError(body.error === "Could not find a requested setting", {code: 979}, cb, () => {
+                            return cb(null, true);
+                        });
+                    });
+                });
+            });
+        });
+    },
 
     /**
      * activate/deactivate hook
@@ -414,94 +475,94 @@ var lib = {
         });
     },
 
-	/**
-	 * Function that lists general settings of a travis repo
-	 * @param  {Object}   opts
-	 * @param  {Function} cb
-	 *
-	 */
-	listSettings (opts, cb) {
-		let params = {};
+    /**
+     * Function that lists general settings of a travis repo
+     * @param  {Object}   opts
+     * @param  {Function} cb
+     *
+     */
+    listSettings (opts, cb) {
+        let params = {};
 
-		//check if an access token is provided
-		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
-			//check if the repositories owner name is provided
-			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
-				let finalUrl = config.headers.api.url.listSettings.replace('#REPO_ID#', opts.params.repoId);
+        //check if an access token is provided
+        utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
+            //check if the repositories owner name is provided
+            utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
+                let finalUrl = config.headers.api.url.listSettings.replace('#REPO_ID#', opts.params.repoId);
 
-				if(opts.settings.ciToken){
-					finalUrl += "?access_token=" + opts.settings.ciToken;
-				}
+                if(opts.settings.ciToken){
+                    finalUrl += "?access_token=" + opts.settings.ciToken;
+                }
 
-				params.uri = "https://" + opts.settings.domain + finalUrl;
+                params.uri = "https://" + opts.settings.domain + finalUrl;
 
-				params.headers = {
-					"User-Agent": config.headers.userAgent,
-					"Accept": config.headers.accept,
-					"Content-Type": config.headers.contentType,
-					"Host": opts.settings.domain
-				};
-				params.json = true;
+                params.headers = {
+                    "User-Agent": config.headers.userAgent,
+                    "Accept": config.headers.accept,
+                    "Content-Type": config.headers.contentType,
+                    "Host": opts.settings.domain
+                };
+                params.json = true;
 
 
-				opts.log.debug(params);
-				//send the request to obtain the repos
-				request.get(params, function (error, response, body) {
-					utils.checkError(error, {code: 981}, cb, () => {
-						utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
-							/*
-							Sample output:
-							{
-								"settings": {
-									"builds_only_with_travis_yml": true,
-									"build_pushes": true,
-									"build_pull_requests": true,
-									"maximum_number_of_builds": 0
-								}
-							}
-							 */
-							return cb(null, body.settings);
-						});
-					});
-				});
-			});
-		});
-	},
+                opts.log.debug(params);
+                //send the request to obtain the repos
+                request.get(params, function (error, response, body) {
+                    utils.checkError(error, {code: 981}, cb, () => {
+                        utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {
+                            /*
+                             Sample output:
+                             {
+                             "settings": {
+                             "builds_only_with_travis_yml": true,
+                             "build_pushes": true,
+                             "build_pull_requests": true,
+                             "maximum_number_of_builds": 0
+                             }
+                             }
+                             */
+                            return cb(null, body.settings);
+                        });
+                    });
+                });
+            });
+        });
+    },
 
     /**
-	 * Function that updates general settings of a travis repo
-	 * @param  {Object}   opts
-	 * @param  {Function} cb
-	 *
-	 */
+     * Function that updates general settings of a travis repo
+     * @param  {Object}   opts
+     * @param  {Function} cb
+     *
+     */
     updateSettings(opts, cb) {
         let params = {};
 
-		//check if an access token is provided
-		utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
-			//check if the repositories owner name is provided
-			utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
-				let finalUrl = config.headers.api.url.updateSettings.replace('#REPO_ID#', opts.params.repoId);
+        //check if an access token is provided
+        utils.checkError(!opts.settings.ciToken, {code: 974}, cb, () => {
+            //check if the repositories owner name is provided
+            utils.checkError(!opts.settings && !opts.settings.owner, {code: 975}, cb, () => {
+                let finalUrl = config.headers.api.url.updateSettings.replace('#REPO_ID#', opts.params.repoId);
 
-				if(opts.settings.ciToken){
-					finalUrl += "?access_token=" + opts.settings.ciToken;
-				}
+                if(opts.settings.ciToken){
+                    finalUrl += "?access_token=" + opts.settings.ciToken;
+                }
 
-				params.uri = "https://" + opts.settings.domain + finalUrl;
+                params.uri = "https://" + opts.settings.domain + finalUrl;
 
-				params.headers = {
-					"User-Agent": config.headers.userAgent,
-					"Accept": config.headers.accept,
-					"Content-Type": config.headers.contentType,
-					"Host": opts.settings.domain
-				};
-				params.json = true;
+                params.headers = {
+                    "User-Agent": config.headers.userAgent,
+                    "Accept": config.headers.accept,
+                    "Content-Type": config.headers.contentType,
+                    "Host": opts.settings.domain
+                };
+                params.json = true;
 
                 params.body = {
                     "settings": opts.params.settings
                 };
 
-				opts.log.debug(params);
+                opts.log.debug(params);
                 request.patch(params, (error, response, body) => {
                     utils.checkError(error, { code: 982 }, cb, () => {
                         utils.checkError(body === "no access token supplied" || body === "access denied", {code: 974}, cb, () => {

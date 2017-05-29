@@ -1480,7 +1480,7 @@ var environmentsNav = [
 		'label': translation.platformsAndCertificates[LANG],
 		'url': '#/environments-platforms',
 		'tplPath': 'modules/dashboard/environments/directives/list-platforms.tmpl',
-		'icon': 'download3',
+		'icon': 'drawer',
 		'pillar': {
 			'name': 'deployment',
 			'label': translation.deploy[LANG],

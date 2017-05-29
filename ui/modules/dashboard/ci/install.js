@@ -11,7 +11,7 @@ var ciNav = [
         },
         'url': '#/continuous-integration',
         'tplPath': 'modules/dashboard/ci/directives/list.tmpl',
-        'icon': 'file-text2',
+        'icon': 'upload',
         'pillar': {
             'name': 'development',
             'label': translation.develop[LANG],

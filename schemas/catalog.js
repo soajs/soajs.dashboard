@@ -8,7 +8,8 @@ module.exports = {
         "properties": {
             "name": { "type": "string", "required": true },
             "locked": { "type": "boolean", "required": false },
-            "type": { "type": "string", "required": true, "enum": [ "soajs", "nginx", "nodejs", "mongo", "es" ] },
+            "active": { "type": "boolean", "required": false },
+            "type": { "type": "string", "required": true },
             "subtype": { "type": "string", "required": false, "enum": [ "service", "daemon" ] },
             "description": { "type": "string", "required": true },
             "recipe": {
@@ -101,7 +102,7 @@ module.exports = {
 		                                "type": { "type": "string", "required": true, "enum": [ "static", "userInput", "computed" ]},
 		                                "label": {"type": "string", "required": false},
 		                                "fieldMsg": {"type": "string", "required": false},
-		                                "default": {"type": "string", "required": false},
+		                                "default": {"type": "string", "required": false}
 	                                }
                                 }
                             },
@@ -124,7 +125,7 @@ module.exports = {
                         }
                     }
                 }
-            },
+            }
         }
     }
 };

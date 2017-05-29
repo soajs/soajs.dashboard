@@ -911,7 +911,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/nodes/list", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.listNodes(config, req.soajs, res, function (error, data) {
+			BL.listNodes(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -924,7 +924,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/nodes/add", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.addNode(config, req.soajs, res, function (error, data) {
+			BL.addNode(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -937,7 +937,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/nodes/remove", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.removeNode(config, req.soajs, res, function (error, data) {
+			BL.removeNode(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -950,7 +950,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/nodes/update", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.updateNode(config, req.soajs, res, function (error, data) {
+			BL.updateNode(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -963,7 +963,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/list", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.listServices(config, req.soajs, res, function (error, data) {
+			BL.listServices(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1002,7 +1002,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/scale", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.scaleService(config, req.soajs, res, function (error, data) {
+			BL.scaleService(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1015,7 +1015,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/services/delete", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.deleteService(config, req.soajs, res, function (error, data) {
+			BL.deleteService(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1028,7 +1028,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/maintenance", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
-			BL.maintenance(config, req.soajs, res, function (error, data) {
+			BL.maintenance(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1054,7 +1054,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/namespaces/list", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.list(config, req.soajs, res, function (error, data) {
+			BL.list(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1067,7 +1067,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.delete(config, req.soajs, res, function (error, data) {
+			BL.delete(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1158,6 +1158,19 @@ service.init(function () {
 			});
 		});
 	});
+	
+	/**
+	 * Get Get Update Notification Ledger
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cd/updates", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.getUpdates(config, req, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
 	 * Save a CD configuration
@@ -1185,6 +1198,45 @@ service.init(function () {
 		});
 	});
 
+    /**
+     * Take action based on ledger notification
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.put("/cd/action", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.cdAction(config, service.registry, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+
+    /**
+     * Lists the ledgers of a specific environment
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.get("/cd/ledger", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.getLedger(config, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
+
+
+    /**
+     * Marks records as read
+     * @param {String} API route
+     * @param {Function} API middleware
+     */
+    service.put("/cd/ledger/read", function (req, res) {
+        initBLModel(req, res, cdBL, dbModel, function (BL) {
+            BL.markRead(config, req, function (error, data) {
+                return res.jsonp(req.soajs.buildResponse(error, data));
+            });
+        });
+    });
 	/**
 	* Continuous Integration features
 	*/

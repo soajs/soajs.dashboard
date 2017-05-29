@@ -13,108 +13,130 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
 		if (currentScope.access.listHosts) {
-			getSendDataFromServer(currentScope, ngDataApi, {
-				"method": "get",
-				"routeName": "/dashboard/cloud/services/list",
-				"params": {
-					"env": env
-				}
-			}, function (error, response) {
-				if (error || !response) {
-					currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
-				}
-				else {
-					if (response && response.length > 0) {
-						currentScope.hosts = {
-							'soajs': {
-								"label": "SOAJS"
-							},
-							'nginx': {
-								"label": "Nginx",
-								"list": []
-							},
-							'elk': {
-								"label": "ELK",
-								"list": []
-							},
-							'db': {
-								"label": "Clusters",
-								"list": []
-							},
-							'miscellaneous': {
-								"label": "Miscellaneous",
-								"list": []
-							}
-						};
-
-						for (var j = 0; j < response.length; j++) {
-							response[j].expanded = true;
-
-							var failures = 0;
-							response[j].tasks.forEach(function (oneTask) {
-								if (['running', 'preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1) {
-									failures++;
-									oneTask.hideIt = true;
+			
+			getUpdatesNotifications(function(){
+				getSendDataFromServer(currentScope, ngDataApi, {
+					"method": "get",
+					"routeName": "/dashboard/cloud/services/list",
+					"params": {
+						"env": env
+					}
+				}, function (error, response) {
+					if (error || !response) {
+						currentScope.displayAlert('danger', translation.unableRetrieveServicesHostsInformation[LANG]);
+					}
+					else {
+						if (response && response.length > 0) {
+							currentScope.hosts = {
+								'soajs': {
+									"label": "SOAJS"
+								},
+								'nginx': {
+									"label": "Nginx",
+									"list": []
+								},
+								'elk': {
+									"label": "ELK",
+									"list": []
+								},
+								'db': {
+									"label": "Clusters",
+									"list": []
+								},
+								'miscellaneous': {
+									"label": "Miscellaneous",
+									"list": []
 								}
-							});
-
-							if (failures === response[j].tasks.length) {
-								response[j].hideIt = true;
-							}
-
-							response[j].failures = failures;
-
-                        	if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
-		                        currentScope.soajsServices = true;
-                        		if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
-			                        response[j].labels['soajs.service.group'] = "SOAJS Core Services";
-			                        response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
-		                        }
-                        		if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
-			                        currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
-		                        }
-		                        else{
-                        			currentScope.envDeployed = true;
-                        			if(!currentScope.hosts.soajs.groups){
-				                        currentScope.hosts.soajs.groups = {};
-			                        }
-
-									response[j]['color'] = 'green';
-									response[j]['healthy'] = true;
-									var groupName = response[j].labels['soajs.service.group'];
-									if (!currentScope.hosts.soajs.groups[groupName]) {
-										currentScope.hosts.soajs.groups[groupName] = {
-											expanded: true,
-											list: []
-										};
+							};
+							
+							for (var j = 0; j < response.length; j++) {
+								response[j].expanded = true;
+								
+								for(var u=0; u < currentScope.updatesNotifications.length; u++){
+									if(response[j].id === currentScope.updatesNotifications[u].id){
+										switch (currentScope.updatesNotifications[u].mode) {
+											case 'image':
+												response[j].imageUpdate = true;
+												break;
+											case 'rebuild':
+												response[j].catalogUpdate = true;
+												if (currentScope.updatesNotifications[u].repo) {
+													response[j].codeUpdate = true;
+												}
+												break;
+											default:
+												response[j].codeUpdate = true;
+												break;
+										}
 									}
-
-			                        if(response[j].labels['soajs.service.name'] === 'controller'){
-				                        currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
-				                        currentScope.controllers.push(response[j]);
-			                        }
-			                        else{
-				                        currentScope.hosts.soajs.groups[groupName].list.push(response[j]);
-			                        }
-		                        }
-	                        }
-                        	else{
-		                        //service is not SOAJS
-		                        var myGroup = 'miscellaneous';
-		                        if(response[j].labels && response[j].labels['soajs.service.group']){
-			                        myGroup = response[j].labels['soajs.service.group'];
-		                        }
-		                        currentScope.hosts[myGroup].list.push(response[j]);
-	                        }
-                        }
-	                    
-	                    step2();
-                    }
-                    else{
-                    	delete currentScope.hosts;
-                    }
-                }
-            });
+								}
+								
+								var failures = 0;
+								response[j].tasks.forEach(function (oneTask) {
+									if (['running', 'preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1) {
+										failures++;
+										oneTask.hideIt = true;
+									}
+								});
+								
+								if (failures === response[j].tasks.length) {
+									response[j].hideIt = true;
+								}
+								
+								response[j].failures = failures;
+								
+								if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
+									currentScope.soajsServices = true;
+									if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
+										response[j].labels['soajs.service.group'] = "SOAJS Core Services";
+										response[j].labels['soajs.service.group'] = response[j].labels['soajs.service.group'].toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-');
+									}
+									if(['nginx', 'db', 'elk'].indexOf(response[j].labels['soajs.service.group']) !== -1){
+										currentScope.hosts[response[j].labels['soajs.service.group']].list.push(response[j]);
+									}
+									else{
+										currentScope.envDeployed = true;
+										if(!currentScope.hosts.soajs.groups){
+											currentScope.hosts.soajs.groups = {};
+										}
+										
+										response[j]['color'] = 'green';
+										response[j]['healthy'] = true;
+										var groupName = response[j].labels['soajs.service.group'];
+										if (!currentScope.hosts.soajs.groups[groupName]) {
+											currentScope.hosts.soajs.groups[groupName] = {
+												expanded: true,
+												list: []
+											};
+										}
+										
+										if(response[j].labels['soajs.service.name'] === 'controller'){
+											currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
+											currentScope.controllers.push(response[j]);
+										}
+										else{
+											currentScope.hosts.soajs.groups[groupName].list.push(response[j]);
+										}
+									}
+								}
+								else{
+									//service is not SOAJS
+									var myGroup = 'miscellaneous';
+									if(response[j].labels && response[j].labels['soajs.service.group']){
+										myGroup = response[j].labels['soajs.service.group'];
+									}
+									currentScope.hosts[myGroup].list.push(response[j]);
+								}
+							}
+							
+							step2();
+						}
+						else{
+							delete currentScope.hosts;
+						}
+					}
+				});
+			});
         }
 
 		function step2() {
@@ -148,9 +170,56 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					oneController.color = 'red';
 				}
 			});
-			if (cb && typeof(cb) === 'function') {
+			if(cb && typeof cb === 'function'){
 				return cb();
 			}
+		}
+		
+		function getUpdatesNotifications(cb){
+			//check for code updates
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/cd/ledger',
+				params: {
+					"env": env
+				}
+			}, function (error, response) {
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+				}
+				else {
+					currentScope.updatesNotifications = [];
+					response.forEach(function(oneCodeUpdateEntry){
+						if(oneCodeUpdateEntry.notify && !oneCodeUpdateEntry.manual){
+							currentScope.updatesNotifications.push({
+								id: oneCodeUpdateEntry.serviceId
+							})
+						}
+					});
+					
+					//check for image or catalog recipe updates
+					getSendDataFromServer(currentScope, ngDataApi, {
+						method: 'get',
+						routeName: '/dashboard/cd/updates',
+						params: {
+							"env": env
+						}
+					}, function (error, response) {
+						if (error) {
+							currentScope.displayAlert('danger', error.message);
+						}
+						else {
+							response.forEach(function(oneUpdateEntry){
+								currentScope.updatesNotifications.push({
+									id: oneUpdateEntry.id,
+									mode: oneUpdateEntry.mode
+								})
+							});
+							return cb();
+						}
+					});
+				}
+			});
 		}
 	}
 
@@ -453,7 +522,9 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					currentScope.displayAlert('success', 'Service rebuilt successfully');
 					currentScope.listServices();
 					overlayLoading.hide();
-					currentScope.modalInstance.dismiss();
+					if(currentScope.modalInstance){
+						currentScope.modalInstance.dismiss();
+					}
 				}
 			});
 		}

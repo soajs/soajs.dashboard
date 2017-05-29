@@ -4,16 +4,8 @@ language: node_js
 
 node_js: 6.9.5
 
-services:
-  - mongodb
-  - docker
-
-env:
-  - CXX=g++-4.8
-
 branches:
   only:
-    - staging
     - master
 
 addons:
@@ -22,17 +14,13 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-  hosts:
-    - localhost
-    - dev-controller
 
 before_install:
-  - sudo apt-get update && sudo apt-get install sendmail python make g++
+  - sudo apt-get update && sudo apt-get install python make g++
 
 before_script:
   - npm install -g grunt-cli
-  - docker pull soajsorg/soajs
   - sleep 10
 
 script:
-  - grunt coverage
+  - 'grunt unit'

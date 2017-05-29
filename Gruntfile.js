@@ -129,7 +129,7 @@ module.exports = function (grunt) {
 		copy: {
 			main: {
 				files: [
-					{expand: true, src: ['templates/swagger/tmpl/*.txt', 'templates/ci/*.sh'], dest: 'test/coverage/instrument/', filter: 'isFile'},
+					{expand: true, src: ['templates/swagger/tmpl/*.txt', 'templates/ci/*'], dest: 'test/coverage/instrument/', filter: 'isFile'},
 				]
 			}
 		},
@@ -139,6 +139,7 @@ module.exports = function (grunt) {
 				'config.js',
 				'index.js',
 				'lib/*.js',
+				'lib/helpers/*.js',
 				'lib/*/*.js',
 				'models/*.js',
 				'schemas/*.js',

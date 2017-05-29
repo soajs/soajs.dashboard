@@ -55,7 +55,7 @@ var ciAppConfig = {
 					'required': true,
 					'rows': 20,
 					'cols': 100,
-					'fieldMsg': "Provide the Continuous Integration Recipe as YAML code"
+					'fieldMsg': "Provide the Continuous Integration Recipe as YAML code. Once you submit, the dashboard will ensure that the continuous delivery integration script is included in your recipe and that it should run only if the build passes in case you did not provide it."
 				}
 			]
 		},
