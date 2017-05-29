@@ -209,16 +209,6 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						if (service.labels['service.branch']){
 							branch = service.labels['service.branch'];
 						}
-						if (service.labels['soajs.service.name']){
-							service.serviceName = service.labels['soajs.service.name'];
-							if(!objServices[service.serviceName]){
-								objServices[service.serviceName]={
-									versions:[]
-								};
-							}
-							service.versionLabel = service.labels['soajs.service.version'];
-							objServices[service.serviceName].versions.push(service);
-						}
 						////
 						if (!branch){
 							for (var x =0; x < service.env.length; x++) {
@@ -233,6 +223,17 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							service.branch = branch;
 							if(branches.indexOf(branch) === -1){
 								branches.push(branch);
+							}
+							
+							if (service.labels['soajs.service.name']){
+								service.serviceName = service.labels['soajs.service.name'];
+								if(!objServices[service.serviceName]){
+									objServices[service.serviceName]={
+										versions:[]
+									};
+								}
+								service.versionLabel = service.labels['soajs.service.version'];
+								objServices[service.serviceName].versions.push(service);
 							}
 						}
 					}
