@@ -83,7 +83,7 @@ module.exports = {
 	addEnvVar (options, cb) {
 		getStrategy(options, (error, strategy) => {
 			checkError(error, 969, cb, () => {
-				strategy.listRepos(addEnvVar, cb);
+				strategy.addEnvVar(options, cb);
 			});
 		});
 	},
