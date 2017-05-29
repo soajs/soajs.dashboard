@@ -1,0 +1,116 @@
+.greenRecipeBox{
+    border: solid 1px #3c763d !important;
+}
+
+.greenRecipeBox .header{
+    background-color: #dff0d8 !important;
+    border-bottom-color:#3c763d !important;
+}
+
+.redRecipeBox{
+    border: solid 1px #c9302c !important;
+}
+
+.redRecipeBox .header{
+    background-color: #f2dede !important;
+    border-bottom-color:#c9302c !important;
+}
+
+.mr-10{
+    margin-right:10px;
+}
+
+table.infoTable{
+    border-color:#999999;
+    position:absolute;
+    top: 0;
+    left:0;
+}
+table.infoTable th, table.infoTable td{
+    padding: 5px;
+    border-color:#999999;
+}
+
+table.infoTable td label{
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+table.infoTable td.val{
+    font-size: 12px;
+}
+
+div.infoTableContainer{
+    width:100%;
+    overflow-x: scroll;
+    height:225px;
+    position:relative;
+}
+
+.w5{
+    width:5%;
+}
+
+.entryBox .header{
+    margin-bottom: 5px !important;
+}
+
+.bottom-body-spacing{
+    padding-bottom:5px;
+}
+
+#repoSettings #maximum_number_of_builds-wrapper label,
+#repoSettings #builds_only_with_travis_yml-wrapper label,
+#repoSettings #builds_only_with_travis_yml-wrapper ul,
+#repoSettings #builds_only_with_travis_yml-wrapper ul li,
+#repoSettings #build_pushes-wrapper label,
+#repoSettings #build_pushes-wrapper ul,
+#repoSettings #build_pushes-wrapper ul li,
+#repoSettings #build_pull_requests-wrapper label,
+#repoSettings #build_pull_requests-wrapper ul,
+#repoSettings #build_pull_requests-wrapper ul li{
+    float:left;
+}
+
+#repoSettings #builds_only_with_travis_yml-wrapper ul,
+#repoSettings #build_pushes-wrapper ul,
+#repoSettings #build_pull_requests-wrapper ul{
+    margin-top: 15px;
+    list-style-type:none;
+}
+
+#repoSettings #maximum_number_of_builds-wrapper input,
+#repoSettings #builds_only_with_travis_yml-wrapper ul li,
+#repoSettings #build_pushes-wrapper ul li,
+#repoSettings #build_pull_requests-wrapper ul li{
+    margin-left:10px;
+}
+
+#repoSettings #maximum_number_of_builds-wrapper input{
+    float:left;
+    width:50px;
+}
+
+#repoSettings #envs tr[class^="form-group tr-envName"] {
+    width: 35%;
+    float:left;
+}
+
+#repoSettings #envs tr[class^="form-group tr-envVal"] {
+    width: 60%;
+    float:left;
+}
+
+#repoSettings #envs tr[class^="form-group tr-removeEnv"] {
+    width: 5%;
+    float:left;
+}
+
+#repoSettings #envs tr td{
+    display:block;
+    width:95%;
+}
+
+#repoSettings #envs tr[class^="form-group tr-removeEnv"] td{
+    padding-top:45px;
+}

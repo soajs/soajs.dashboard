@@ -71,7 +71,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 
 describe("DASHBOARD Tests: Git Accounts", function () {
 	var gitAccId;
-	var passwordPersonal = 'test2016';
+	var passwordPersonal = process.env.SOAJS_TEST_GIT_PWD;
 	var usernamePersonal = 'soajsTestAccount';
 	var soajsAccId = '56f1189430f153a571b9c8be';
 
@@ -378,7 +378,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					});
 				});
 
-
 				it("success - will activate single service repo", function (done) {
 					var params = {
 						qs: {
@@ -484,49 +483,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
 						assert.ok(body);
 						// assert.deepEqual(body.errors.details[0], {"code": 759, "message": errorCodes[759]});
-						done();
-					});
-				});
-
-				it("success - will get Branches for service", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							"name": "sampleSuccessSingle",
-							"type": "service"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
-
-				it("success - will get Branches for daemon", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							"name": "singleDaemon1",
-							"type": "daemon"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
-
-				it("success - will get Branches for static", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							"name": "SampleTest4",
-							"type": "static"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
 						done();
 					});
 				});

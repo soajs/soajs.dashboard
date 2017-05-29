@@ -252,7 +252,39 @@ var errors = {
 	"908": "Updating deployer configuration is only supported for kubernetes deployments",
 	"909": "Namepsace operations are only supported in kubernetes container deployment mode",
 
-	"910": "Specified memory limit is less than minimum memory prerequisite for this service"
+	"910": "Specified memory limit is less than minimum memory prerequisite for this service",
+	"911": "Missing value for environment variable %ENV_NAME% of type %ENV_TYPE% set in catalog recipe",
+
+	"950": "Catalog recipe not found",
+	"951": "You are not allowed to edit or delete a locked recipe",
+	"952": "Unable to update catalog recipe",
+	"953": "Unable to delete catalog recipe",
+	"954": "Unable to get catalog ID for specified service/deployment",
+
+	"955": "No CI configuration found",
+	"956": "Authentication failed. The deploy token provided is not valid.",
+
+	"960": "Elasticsearch analytics cluster not found",
+
+    "969": "The chosen Continuous Integration Service does not exist",
+    "970": "The chosen driver does not support the selected function",
+    "971": "Unable to submit your request to the service.",
+
+    "972": "Please provide a valid Github token.",
+    "973": "The provided Github token does not have sufficient oauth permissions.",
+
+    "974": "Please provide a valid Travis access token.",
+    "975": "Please provide the name of the repositories owner.",
+
+    "976": "Could not find any repository for the requested owner.",
+    "977": "Could not find the requested repository.",
+
+	"978": "Please provide a valid environment variable ID.",
+	"979": "Could not find the desired environment variable. Ensure the repo ID and the environment variable ID are correct.",
+    "980": "Error while updating hook. Ensure the hook ID and the access token are correct.",
+
+	"981": "Unable to get repository settings",
+	"982": "Unable to update repository settings"
 };
 
 

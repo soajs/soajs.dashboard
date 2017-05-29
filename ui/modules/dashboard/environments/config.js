@@ -73,7 +73,7 @@ var environmentsConfig = {
 			required: ['ca', 'cert', 'key']
 		}
 	},
-	
+
 	form: {
 		template: {
 			'name': '',
@@ -426,7 +426,7 @@ var environmentsConfig = {
 								'placeholder': 'true',
 								'required': false
 							}
-						
+
 						]
 					},
 					{
@@ -575,91 +575,19 @@ var environmentsConfig = {
 							'required': true
 						},
 						{
-							'name': 'exposedPort',
-							'label': 'Exposed Port',
-							'type': 'number',
-							'value': "",
-							'fieldMsg': 'Mandatory: Specify a Nginx port to be exposed for this environment',
-							'required': true
-						},
-						{
 							'name': 'nginxMemoryLimit',
 							'label': 'Memory Limit Per Instance for Nginx (in MBytes)',
 							'type': 'number',
-							'value': 200,
+							'value': 500,
 							'fieldMsg': 'Set a custom memory limit for Nginx instances',
 							'required': false
 						},
 						{
-							'name': 'nginxImagePrefix',
-							'label': 'SOAJS Image Prefix',
-							'type': 'text',
-							'value': 'soajsorg',
-							'fieldMsg': 'The default image that will be used is soajsorg/nginx. Specify a different prefix if you intend to use a custom image',
-							'required': true
-						},
-						{
-							'name': 'supportSSL',
-							'label': 'Do you want to enable SSL for Nginx?',
-							'type': 'radio',
-							'value': [{'v': true, 'l': 'Yes'}, {'v': false, 'l': 'No', 'selected': true}],
-							'required': false
-						},
-                        {
-                            'name': 'certType',
-                            'label': 'Do you want the system to generate self signed certificates?',
-                            'type': 'radio',
-                            'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
-                            'required': false,
-                            'hidden': true
-                        },
-                        {
-                            'name': 'kubeSecret',
-                            'label': 'Kubernetes secret',
-                            'type': 'text',
-                            'value': null,
-                            'fieldMsg': 'Provide the kubernetes secret that contains the certificates',
-                            'required': false,
-                            'hidden': true
-                        },
-						{
-							'name': 'nginxRPInitialDelay',
-							'label': 'Readiness Probe: Initial Delay (in seconds)',
-							'type': 'number',
-							'value': 15,
-							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
-							'required': true
-						},
-						{
-							'name': 'nginxRPTimeout',
-							'label': 'Readiness Probe: Timeout (in seconds)',
-							'type': 'number',
-							'value': 1,
-							'fieldMsg': 'Number of seconds after which the probe times out',
-							'required': true
-						},
-						{
-							'name': 'nginxRPPeriod',
-							'label': 'Readiness Probe: Period (in seconds)',
-							'type': 'number',
-							'value': 10,
-							'fieldMsg': 'How often (in seconds) to perform the probe',
-							'required': true
-						},
-						{
-							'name': 'nginxRPSuccessThreshold',
-							'label': 'Readiness Probe: Success Threshold',
-							'type': 'number',
-							'value': 1,
-							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
-							'required': true
-						},
-						{
-							'name': 'nginxRPFailureThreshold',
-							'label': 'Readiness Probe: Failure Threshold',
-							'type': 'number',
-							'value': 3,
-							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'name': 'nginxRecipe',
+							'label': 'Nginx Catalog Recipe',
+							'type': 'select',
+							'value': [],
+							'tooltip': 'Specify the catalog recipe to be used when deploying nginx',
 							'required': true
 						}
 					]
@@ -691,87 +619,19 @@ var environmentsConfig = {
 							'required': true
 						},
 						{
-							'name': 'branch',
-							'label': 'Branch',
-							'type': 'select',
-							'value': [],
-							'fieldMsg': 'Select a branch to deploy from',
-							'required': true
-						},
-						{
 							'name': 'ctrlMemoryLimit',
 							'label': 'Memory Limit Per Instance for Controllers (in MBytes)',
 							'type': 'number',
-							'value': 200,
+							'value': 500,
 							'fieldMsg': 'Set a custom memory limit for controller instances',
 							'required': false
 						},
 						{
-							'name': 'ctrlImagePrefix',
-							'label': 'SOAJS Image Prefix',
-							'type': 'text',
-							'value': 'soajsorg',
-							'fieldMsg': 'The default image that will be used is soajsorg/soajs. Specify a different prefix if you intend to use a custom image',
-							'required': true
-						},
-						{
-							'name': 'useLocalSOAJS',
-							'label': 'Do you want to accelerate deployment by using the SOAJS package within the image?',
-							'type': 'radio',
-							'value': [{'v': true, 'l': 'Yes', 'selected': true}, {'v': false, 'l': 'No'}],
-							'required': false
-						},
-						{
-							'name': 'variables',
-							"label": translation.environmentVariables[LANG],
-							"type": "textarea",
-							"required": false,
-							"tooltip": translation.provideOptionalEnvironmentVariablesSeparatedComma[LANG],
-							"fieldMsg": "ENV_VAR1=val1,ENV_VAR2=val2,..."
-						},
-						{
-							"name": "defaultENVVAR",
-							"type": "html",
-							"value": "<p>" + translation.defaultEnvironmentVariables[LANG] + "<br /><ul><li>SOAJS_SRV_AUTOREGISTER=true</li><li>NODE_ENV=production</li><li>SOAJS_ENV=%envName%</li><li>SOAJS_PROFILE=%profilePathToUse%</li></ul></p>"
-						},
-						{
-							'name': 'ctrlRPInitialDelay',
-							'label': 'Readiness Probe: Initial Delay (in seconds)',
-							'type': 'number',
-							'value': 15,
-							'fieldMsg': 'Number of seconds after the container has started before readiness probes are initiated',
-							'required': true
-						},
-						{
-							'name': 'ctrlRPTimeout',
-							'label': 'Readiness Probe: Timeout (in seconds)',
-							'type': 'number',
-							'value': 1,
-							'fieldMsg': 'Number of seconds after which the probe times out',
-							'required': true
-						},
-						{
-							'name': 'ctrlRPPeriod',
-							'label': 'Readiness Probe: Period (in seconds)',
-							'type': 'number',
-							'value': 10,
-							'fieldMsg': 'How often (in seconds) to perform the probe',
-							'required': true
-						},
-						{
-							'name': 'ctrlRPSuccessThreshold',
-							'label': 'Readiness Probe: Success Threshold',
-							'type': 'number',
-							'value': 1,
-							'fieldMsg': 'Minimum consecutive successes for the probe to be considered successful after having failed',
-							'required': true
-						},
-						{
-							'name': 'ctrlRPFailureThreshold',
-							'label': 'Readiness Probe: Failure Threshold',
-							'type': 'number',
-							'value': 3,
-							'fieldMsg': 'Minimum consecutive failures for the probe to be considered failed after having succeeded',
+							'name': 'ctrlRecipe',
+							'label': 'Controller Catalog Recipe',
+							'type': 'select',
+							'value': [],
+							'tooltip': 'Specify the catalog recipe to be used when deploying controller',
 							'required': true
 						}
 					]
@@ -913,7 +773,7 @@ var environmentsConfig = {
 			msg: 'Key from SSL Provider'
 		}
 	},
-	
+
 	jsoneditorConfig: {
 		'height': '200px'
 	},
@@ -964,6 +824,11 @@ var environmentsConfig = {
 				"redeploy": ['dashboard', '/hacloud/services/redeploy', 'put'],
 				"logs": ['dashboard', '/hacloud/services/instances/logs', 'get']
 			}
+		},
+		"analytics":{
+			"getSettings": ["dashboard", "/analytics/getSettings", "get"],
+			"activate": ["dashboard", "/analytics/activateAnalytics", "get"],
+			"deactivate": ["dashboard", "/analytics/deactivateAnalytics", "get"]
 		}
 	}
 };

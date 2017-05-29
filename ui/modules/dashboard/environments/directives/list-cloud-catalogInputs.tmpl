@@ -1,0 +1,25 @@
+<div ng-show="currentScope._ci_serviceImagePrefix">
+	<label>Image Prefix</label>
+	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImagePrefix"/>
+	<div class="fieldMsg hint">Override the image prefix if you want</div>
+	<br />
+</div>
+<div ng-show="currentScope._ci_serviceImageName">
+	<label>Image Name</label>
+	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImageName"/>
+	<div class="fieldMsg hint">Override the image name if you want</div>
+	<br />
+</div>
+<div ng-show="currentScope._ci_serviceImageTag">
+	<label>Image Tag</label>
+	<input type="text" class="form-control" ng-model="currentScope._ci_serviceImageTag"/>
+	<div class="fieldMsg hint">Override the image tag if you want</div>
+	<br />
+</div>
+
+<div ng-repeat="(userInputName,userInput) in currentScope.custom">
+	<label>{{userInput.label || userInput.name}}</label>
+	<input type="text" class="form-control" ng-model="currentScope[userInputName]" value="{{userInput.value}}" ng-required="userInput.required"/>
+	<div class="fieldMsg hint">{{userInput.fieldMsg}}</div>
+	<br />
+</div>

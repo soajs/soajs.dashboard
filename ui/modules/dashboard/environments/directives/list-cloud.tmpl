@@ -8,6 +8,35 @@
 			<form name="deploy" id="deploy" ng-submit="deploy.$valid && onSubmit()">
 				<div class="form-group">
 					<fieldset>
+						<legend>Deployment Options</legend>
+						<div>
+							<label>Deployment Mode</label>
+							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
+							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each
+								node.</label>
+							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas
+								based on the availability of resources.</label>
+							<br>
+						</div>
+						<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
+							<label>Replica Count</label>
+							<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true"/>
+							<br>
+						</div>
+						<div>
+							<label>Memory Limit Per Instance (in MBytes)</label>
+							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
+							<br/>
+						</div>
+						<div>
+							<label>Catalog
+								Recipe</label><img class="loadingImage" ng-src={{imagePath}} ng-if="currentScope.loadingRecipes">
+							<select class="form-control" ng-required="true" ng-options="recipe._id as recipe.name group by recipe.type for recipe in myRecipes" ng-model="currentScope.recipe" ng-change="injectCatalogEntries()"></select>
+							<br>
+						</div>
+						<div ng-include="'modules/dashboard/environments/directives/list-cloud-catalogInputs.tmpl'"></div>
+					</fieldset>
+					<fieldset ng-if="currentScope.allowGitOverride">
 						<legend>Service Options</legend>
 						<div>
 							<label>{{translation.serviceName[LANG]}}</label>
@@ -30,91 +59,6 @@
 							<br>
 						</div>
 					</fieldset>
-					<fieldset>
-						<legend>Deployment Options</legend>
-						<div>
-							<label>Image Prefix</label>
-							<input type="text" class="form-control" ng-required="true" ng-model="currentScope.imagePrefix"/>
-							<label class="fieldMsg">The default image that will be used is soajsorg/soajs. Specify a
-								different prefix if you intend to use a custom image</label>
-							<br/>
-						</div>
-						<div>
-							<br>
-							<label>Deployment Mode</label>
-							<select class="form-control" ng-required="true" ng-options="mode for mode in currentScope.deploymentModes" ng-model="currentScope.mode"></select>
-							<label class="fieldMsg">Global/Daemonset mode deploys one replica of the service on each node.</label>
-							<label class="fieldMsg">Replicated/Deployment mode deploys the specified number of replicas based on the availability of resources.</label>
-						</div>
-						<div ng-if="currentScope.mode == 'replicated' || currentScope.mode == 'deployment'">
-							<label>Replica Count</label>
-							<input type="number" class="form-control" ng-model="currentScope.number" ng-required="true" />
-							<br>
-						</div>
-						<div>
-							<label>Memory Limit Per Instance (in MBytes)</label>
-							<input type="number" class="form-control" ng-model="currentScope.memoryLimit" ng-required="true"/>
-							<br>
-						</div>
-						<div ng-if="currentScope.service.type === 'nginx'">
-							<label>Exposed Port</label>
-							<input type="number" class="form-control" ng-required="false" ng-model="currentScope.exposedPort"/>
-							<br/>
-						</div>
-						<div ng-if="currentScope.service.type !== 'nginx'">
-							<label><input type="checkbox" ng-model="currentScope.useLocalSOAJS" ng-value-true="true" ng-value-false="false"/>&nbsp;Enable
-								SOAJS accelerated deployment</label>
-							<br><br>
-						</div>
-						<div ng-if="currentScope.service.type !== 'nginx'">
-							<label>{{translation.envVariables[LANG]}}</label>
-							<textarea class="form-control" rows="5" ng-model="currentScope.envVariables" ng-required="false"></textarea>
-							<br>
-							<label>{{translation.defaultEnvVariables[LANG]}}</label>
-
-							<div ng-bind-html="currentScope.defaultEnvVariables"></div>
-							<br>
-						</div>
-					</fieldset>
-					<div ng-if="currentScope.isKubernetes">
-						<fieldset>
-							<legend>Readiness Probe</legend>
-							<div>
-								<label>Initial Delay (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.initialDelaySeconds" ng-required="true" />
-								<label class="fieldMsg">Number of seconds after the container has started before readiness probes are initiated</label>
-								<br>
-							</div>
-							<div>
-								<label>Timeout (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.timeoutSeconds" ng-required="true" />
-								<label class="fieldMsg">Number of seconds after which the probe times out</label>
-								<br>
-							</div>
-							<div>
-								<label>Period (in seconds)</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.periodSeconds" ng-required="true" />
-								<label class="fieldMsg">How often (in seconds) to perform the probe</label>
-								<br>
-							</div>
-							<div>
-								<label>Success Threshold Count</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.successThreshold" ng-required="true" />
-								<label class="fieldMsg">Minimum consecutive successes for the probe to be considered successful after having failed</label>
-								<br>
-							</div>
-							<div>
-								<label>Failure Threshold Count</label>
-								<input type="number" class="form-control" ng-model="currentScope.readinessProbe.failureThreshold" ng-required="true" />
-								<label class="fieldMsg">Minimum consecutive failures for the probe to be considered failed after having succeeded</label>
-								<br>
-							</div>
-							<div>
-								<br>
-								<label class="fieldMsg">Reference: <a target="_blank" href="https://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1_probe">Kubernetes Documentation</a></label>
-							</div>
-						</fieldset>
-					</div>
 				</div>
 			</form>
 		</div>
@@ -180,6 +124,24 @@
 	</div>
 </script>
 
+<script type="text/ng-template" id="metrics.html">
+	<div class="modal-header">
+		<table width="100%">
+			<tr>
+				<td width="80%">
+					<h3 class="modal-title">{{title}}</h3>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="modal-body">
+		<iframe ng-src="{{url | toTrustedSrc}}" height="800" width="100%"></iframe>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">{{translation.ok[LANG]}}</button>
+	</div>
+</script>
+
 <section ng-controller="hacloudCtrl">
 	<tabset>
 		<tab heading="Nodes" ng-if="access.hacloud.nodes.list">
@@ -192,7 +154,8 @@
 			</div>
 			<div ng-if="!localDeployment">
 				<div ng-if="envCode === 'DASHBOARD'">
-					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add && envPlatform !== 'kubernetes'" ng-click="addNode()">Add New Node
+					<button class="btn btn-primary" ng-if="access.hacloud.nodes.add && envPlatform !== 'kubernetes'" ng-click="addNode()">
+						Add New Node
 					</button>
 					<br/><br/>
 				</div>
@@ -257,38 +220,57 @@
 		<tab heading="Services" ng-if="access.listHosts">
 			<br/>
 			<div ng-if="!hosts">
-				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
-				<br />
-				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+				<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!
+				</alert>
+				<br/>
+				<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">
+					Deploy Environment
+				</button>
 			</div>
-			<select ng-if="envPlatform === 'kubernetes' && namespaces.length > 0" class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
+			<div ng-if="envPlatform === 'kubernetes' && namespaces.length > 0">
+				<select class="form-control namespaceSelect" ng-options="namespace.id as namespace.name for namespace in namespaces" ng-model="namespaceConfig.namespace"></select>
+				<br />
+			</div>
+			<div class="c-both w100 table" ng-if="envDeployed">
+				<button class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New Service</button>
+				<span class="col-sm-2" ng-show="showActivateAnalytics"><button class="btn btn-success" ng-click="activateAnalytics()">Activate Analytics</button></span>
+				<span class="col-sm-2" ng-show="showAnalytics"><button class="btn btn-danger" ng-click="deactivateAnalytics()">Deactivate Analytics</button></span>
+				<div class="dropdown refreshDropDown f-right">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="refreshDropdown">
+						<li ng-repeat="oneInterval in refreshIntervals">
+							<a href="" ng-click="changeInterval(oneInterval)">{{oneInterval.l}}</a></li>
+					</ul>
+				</div>
+				<br /><br />
+			</div>
 			<tabset ng-if="hosts">
-				<tab ng-repeat="(groupName, list) in hosts track by $index" heading="{{list.label}}">
-					<br/>
-                    <button ng-show="groupName === 'soajs' && (list.groups || hosts['nginx'].list.length  > 0)" class="btn btn-primary f-left" ng-click="deployNewService()">Deploy New  Service</button>
-                    <button ng-show="groupName === 'nginx' && list.list.length === 0" class="btn btn-primary f-left" ng-click="deployNewNginx()">Deploy New  Nginx</button>
-					<div class="dropdown refreshDropDown f-right">
-						<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-							<span class="icon icon-loop2"></span>&nbsp;{{selectedInterval.l}}
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="refreshDropdown">
-							<li ng-repeat="oneInterval in refreshIntervals"><a href="" ng-click="changeInterval(oneInterval)">{{oneInterval.l}}</a></li>
-						</ul>
-					</div>
+				<tab ng-repeat="(groupName, list) in hosts track by $index" heading="{{list.label}}" ng-show="((groupName !== 'soajs' && list.list.length > 0)||(groupName === 'soajs' && soajsServices))" ng-click="changeSectionType(groupName)">
 					<br/><br/>
-					<div ng-if="['nginx', 'miscellaneous', 'elk','db'].indexOf(groupName) !== -1">
+					<div ng-if="['soajs'].indexOf(groupName) === -1">
 						<fieldset class="groupFieldset" ng-repeat="service in list.list | filter:namespaceConfig.namespace:true">
 							<legend>
-								<a href="" class="icon" ng-class="{'icon-minus': service.expanded, 'icon-plus': !service.expanded}" ng-click="showHideContent(service)"></a> {{service.name}}
+								<a href="" class="icon" ng-class="{'icon-minus': service.expanded, 'icon-plus': !service.expanded}" ng-click="showHideContent(service)"></a>
+								{{service.name}}
 							</legend>
 							<div class="entryBoxes" ng-show="service.expanded">
 								<div class="entryBox mb20">
 									<div class="header table">
 										<span class="serviceLabelBox">{{service.labels['soajs.service.name'] || service.name}}</span>
-
+										
+										<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
+											<span class="icon icon-notification"></span>&nbsp;New Updates Available
+										</span>
+										<span class="red" ng-show="service.codeUpdate">
+											<span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger
+										</span>
+										
 										<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 										<div class="dropdown serviceOpsDropdown">
+											<a href="" ng-if="service.labels['soajs.service.name'] === 'nginx' && showAnalytics" ng-click="metrics('', service.labels['soajs.service.name'],'service','Filebeat',service.labels['soajs.service.mode'])"><span class="icon icon-pie-chart" title="{{translation.getServiceAnalytics[LANG]}}"></span></a>
 											<button class="btn btn-default dropdown-toggle" type="button" id="nginxOpsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 												Service Operations
 												<span class="caret"></span>
@@ -296,9 +278,10 @@
 											<ul class="dropdown-menu" aria-labelledby="serviceOpsDropdown">
 												<li><a href="" ng-click="inspectService(service)"><span class="icon icon-info"></span>&nbsp;Inspect Service</a></li>
 												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.scale" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
-												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
-												<li ng-if="['elk','db', 'miscellaneous'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Nginx</a></li>
-												<li ng-if="['elk','db'].indexOf(groupName) === -1"><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-loop2"></span>&nbsp;Redeploy Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, 'ui')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
+												<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+												<li ng-if="['elk','db'].indexOf(groupName) === -1 && showAnalytics && envPlatform === 'docker'"> <a href="" ng-click="metrics('', service.name,'other','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li>
 											</ul>
 										</div>
 									</div>
@@ -319,6 +302,9 @@
 															<a href="" ng-if="access.hacloud.services.logs">
 																<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 															</a>
+															<a href="" ng-if="(showAnalytics || (analyticsIsDeployed && !service.labels['soajs.env.code']))&& envPlatform === 'docker'">
+																<span ng-click="metrics(instance,service.labels['soajs.service.repo.name'],'task','metricbeat',service.labels['soajs.service.mode'])" class="icon icon-stats-bars" title="{{translation.getContainerMetrics[LANG]}}"></span>
+															</a>
 														</td>
 														<td>{{instance.name}}</td>
 														<td>{{instance.status.ts}}</td>
@@ -337,23 +323,39 @@
 					<div ng-if="groupName === 'soajs'">
 						<div ng-if="!list.groups">
 							<div ng-show="hosts['nginx'].list.length === 0">
-								<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been deployed yet!</alert>
-								<br />
-								<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">Deploy Environment</button>
+								<alert type="warning" ng-style="{'text-align': 'center'}">This environment has not been
+									deployed yet!
+								</alert>
+								<br/>
+								<button ng-style="{'margin-left': '44%'}" ng-if="access.hacloud.services.add" class="btn btn-primary" ng-click="deployNewEnv()">
+									Deploy Environment
+								</button>
 							</div>
 						</div>
 						<fieldset class="groupFieldset" ng-repeat="(name, group) in list.groups">
 							<legend>
-								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a> {{name}}
+								<a href="" class="icon" ng-class="{'icon-minus': group.expanded, 'icon-plus': !group.expanded}" ng-click="showHideContent(group)"></a>
+								{{name}}
 							</legend>
 							<div class="entryBoxes" ng-show="group.expanded">
 								<div style="padding: 10px 0px 25px 5px;" ng-show="(waitMessage && waitMessage.message !== '')">
-									<alert type="{{waitMessage.type}}" close="waitMessage.close()">{{waitMessage.message}}</alert>
+									<alert type="{{waitMessage.type}}" close="waitMessage.close()">
+										{{waitMessage.message}}
+									</alert>
 								</div>
 								<fieldset ng-repeat="service in group.list | filter:namespaceConfig.namespace:true">
 									<div class="entryBox mb20 {{service.color}}">
 										<div class="header table">
 											<span class="serviceLabelBox">{{service.labels['soajs.service.name']}} / Version: {{service.labels['soajs.service.version']}}</span>
+											
+											<span class="red" ng-show="service.imageUpdate || service.catalogUpdate">
+												<span class="icon icon-notification"></span>&nbsp;New Updates Available
+											</span>
+											
+											<span class="red" ng-show="service.codeUpdate">
+												<span class="icon icon-notification"></span>&nbsp;New Updates Available, Check the Ledger
+											</span>
+											
 											<span ng-show="service.failures > 0" class="btn btn-sm btn-danger f-right" ng-click="showHideFailures(service);">Failures: {{service.failures}}</span>
 											<div class="dropdown serviceOpsDropdown">
 												<button class="btn btn-default dropdown-toggle" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -370,7 +372,9 @@
 													<li><a href="" ng-click="reloadServiceRegistry(service)"><span class="icon icon-undo"></span>&nbsp;Reload Registry</a></li>
 													<li><a href="" ng-if="access.hacloud.services.scale && service.labels['soajs.service.mode'] !== 'global' && service.labels['soajs.service.mode'] !== 'daemonset'" ng-click="scaleService(service)"><span class="icon icon-enlarge"></span>&nbsp;Scale Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="redeployService(service)"><span class="icon icon-undo"></span>&nbsp;Redeploy Service</a></li>
+													<li><a href="" ng-if="access.hacloud.services.redeploy" ng-click="rebuildService(service, '')"><span class="icon icon-loop2"></span>&nbsp;Rebuild Service</a></li>
 													<li><a href="" ng-if="access.hacloud.services.delete" ng-click="deleteService(service)"><span class="icon icon-cross"></span>&nbsp;Delete Service</a></li>
+													<li ng-if="showAnalytics && envPlatform === 'docker'"><a href="" ng-click="metrics('', service.name,'service','metricbeat',service.labels['soajs.service.mode'])"><span class="icon icon-stats-bars"></span>&nbsp;Get Service Metrics</a></li><li>
 												</ul>
 											</div>
 										</div>
@@ -383,9 +387,15 @@
 															<td class="maintenanceHeader">Container Name</td>
 															<td class="maintenanceHeader">Started On</td>
 															<td class="maintenanceHeader">Last Check On</td>
-															<td class="statusHeader2" ng-if="service.labels['soajs.service.name'] === 'controller'">Status</td>
-															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Status</td>
-															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">Controllers</td>
+															<td class="statusHeader2" ng-if="service.labels['soajs.service.name'] === 'controller'">
+																Status
+															</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
+																Status
+															</td>
+															<td class="statusHeader" ng-if="service.labels['soajs.service.name'] !== 'controller'">
+																Controllers
+															</td>
 														</tr>
 													</thead>
 													<tbody>
@@ -394,10 +404,15 @@
 																<a href="" ng-if="access.hacloud.services.logs">
 																	<span ng-click="hostLogs(instance)" class="icon icon-terminal" title="{{translation.getContainerLogs[LANG]}}"></span>
 																</a>
+																<a href="" ng-if="showAnalytics && envPlatform === 'docker'">
+																	<span ng-click="metrics(instance, service.labels['soajs.service.repo.name'],'task','metricbeat',service.labels['soajs.service.mode'])" class="icon icon-stats-bars" title="{{translation.getContainerLogs[LANG]}}"></span>
+																</a>
 															</td>
 															<td>{{instance.name}}</td>
 															<td>{{instance.status.ts}}</td>
-															<td ng-show="instance.status.lastTs">{{instance.status.lastTs|fulldate}}</td>
+															<td ng-show="instance.status.lastTs">
+																{{instance.status.lastTs|fulldate}}
+															</td>
 															<td ng-show="!instance.status.lastTs">N/A</td>
 															<td>
 																<span ng-show="instance.status.state === 'Unreachable'" tooltip-class="ctrl-tooltip" tooltip-placement="left" tooltip-html="instance.status.error" class="red"><b>{{instance.status.state}}</b></span>

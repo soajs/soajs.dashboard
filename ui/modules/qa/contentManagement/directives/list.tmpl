@@ -1,0 +1,37 @@
+<section ng-controller="ContentManagementModuleQaCtrl">
+    <script type="text/ng-template" id="infoBox.html">
+        <div ng-include="'/modules/qa/contentManagement/directives/infoBox.tmpl'"></div>
+    </script>
+    <tabset>
+        <div ng-if="services.length >0" class="entryBoxes entryBoxesGrid">
+            <div ng-repeat="oneService in services" class="dbBox w10" ng-show="hp">
+                <div class="head">
+                    <h4>{{oneService.name}}</h4>
+                        <span class="rightActions">
+                            <span class="icon icon-newspaper"></span>
+                        </span>
+                </div>
+                <div class="info">
+                    <b style = "text-transform: lowercase">version:</b>&nbsp;{{oneService.v}}<br/><br/>
+                    <a href="" ng-click="loadUIModule(oneService)" class="btn btn-primary">{{translation.manageContent[LANG]}}</a>
+
+                </div>
+            </div>
+
+            <div ng-show="!hp">
+                <h2>{{translation.managingContentOf[LANG]}} {{selectedService.name}}</h2>
+                <a href="" ng-click="goBack()" class="f-right btn btn-primary">{{translation.goBack[LANG]}}</a>
+                <div id="contentGridContainer"><br/><p>{{translation.loadingData[LANG]}}...</p></div>
+            </div>
+
+        </div>
+
+        <div ng-if="services.length === 0">
+            <div class="redFlag"> {{translation.noContentManagementServicesRunning[LANG]}}</div>
+            <br/>
+
+            <p ng-if="noCB">{{translation.createNewServicesIn[LANG]}} <a href="#/content-builder">{{translation.contentBuilder[LANG]}}</a></p>
+            <p ng-if="!noCB">{{translation.noContentManagementServiceDeployedYet[LANG]}} <a href="#/environments">{{translation.environments[LANG]}}</a> {{translation.sectionAndDeployThem[LANG]}}</p>
+        </div>
+    </tabset>
+</section>

@@ -17,6 +17,7 @@ var hostsCollectionName = 'hosts';
 var oauthUracCollectionName = 'oauth_urac';
 var gitAccountsCollectionName = 'git_accounts';
 var gcCollectionName = 'gc';
+var analyticsCollection = "analytics";
 
 function checkForMongo(soajs) {
     if (!mongo) {
@@ -84,6 +85,9 @@ function checkForMongo(soajs) {
 		//gc
 		mongo.ensureIndex(gcCollectionName, {name: 1}, errorLogger);
 		mongo.ensureIndex(gcCollectionName, {_id: 1, refId: 1, v: 1}, errorLogger);
+		
+		//analytics
+	    mongo.ensureIndex(analyticsCollection, {id: 1}, errorLogger);
     }
 
     function errorLogger(error) {
@@ -94,6 +98,10 @@ function checkForMongo(soajs) {
 }
 
 module.exports = {
+	"checkForMongo": function (soajs) {
+		checkForMongo(soajs);
+	},
+
     "getDb": function(soajs) {
         checkForMongo(soajs);
         return mongo;

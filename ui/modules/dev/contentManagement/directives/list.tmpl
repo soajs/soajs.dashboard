@@ -1,7 +1,7 @@
+<script type="text/ng-template" id="infoBox.html">
+	<div ng-include="cmModuleDev+'/directives/infoBox.tmpl'"></div>
+</script>
 <section ng-controller="ContentManagementModuleDevCtrl">
-	<script type="text/ng-template" id="infoBox.html">
-		<div ng-include="'modules/dev/contentManagement/directives/infoBox.tmpl'"></div>
-	</script>
 	<tabset>
 		<div ng-if="services.length >0" class="entryBoxes entryBoxesGrid">
 			<div ng-repeat="oneService in services" class="dbBox w10" ng-show="hp">
