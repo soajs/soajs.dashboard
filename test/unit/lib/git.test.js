@@ -7,6 +7,8 @@ var config = {
 	errors: {}
 };
 
+var deployer = require("soajs").drivers;
+
 var mongoStub = {
 	checkForMongo: function (soajs) {
 		return true;
@@ -90,6 +92,7 @@ var gitDriver = {
 		return cb(null, branches);
 	}
 };
+
 describe("testing git.js", function () {
 	
 	describe("testing init", function () {
@@ -102,7 +105,6 @@ describe("testing git.js", function () {
 		});
 		
 		it("Model Name not found", function (done) {
-			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
@@ -129,7 +131,7 @@ describe("testing git.js", function () {
 				"name": "soajsTestAccount/testMulti",
 				"type": "repo"
 			};
-			lib.listAccounts(config, req, gitDriver, function (error, body) {
+			lib.listAccounts(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -150,7 +152,7 @@ describe("testing git.js", function () {
 				"page": 1,
 				"per_page": 50
 			};
-			lib.getRepos(config, req, gitDriver, function (error, body) {
+			lib.getRepos(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -167,7 +169,7 @@ describe("testing git.js", function () {
 				"name": "soajsTestAccount/testMulti",
 				"type": "repo"
 			};
-			lib.getBranches(config, req, gitDriver, function (error, body) {
+			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				assert.ok(body.branches);
 				done();
@@ -188,7 +190,7 @@ describe("testing git.js", function () {
 				"name": "sample__Single",
 				"type": "service"
 			};
-			lib.getBranches(config, req, gitDriver, function (error) {
+			lib.getBranches(config, req, gitDriver, deployer, function (error) {
 				assert.ok(error);
 				assert.equal(error.code, 759);
 				done();
@@ -224,7 +226,7 @@ describe("testing git.js", function () {
 				"type": "service"
 			};
 			
-			lib.getBranches(config, req, gitDriver, function (error, body) {
+			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -257,7 +259,7 @@ describe("testing git.js", function () {
 				"type": "daemon"
 			};
 			
-			lib.getBranches(config, req, gitDriver, function (error, body) {
+			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -291,7 +293,7 @@ describe("testing git.js", function () {
 				"type": "static"
 			};
 			
-			lib.getBranches(config, req, gitDriver, function (error, body) {
+			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
