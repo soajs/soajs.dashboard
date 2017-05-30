@@ -7,6 +7,7 @@ const sinon = require('sinon');
 var host;
 var config;
 var myDeployer = {};
+var deployer = require("soajs").drivers;
 
 describe("testing host.js", function () {
 	var soajs = {
@@ -125,7 +126,7 @@ describe("testing host.js", function () {
 		});
 	});
 	
-	describe("listHAhostEnv ()", function () {
+	describe("listHAhostEnv", function () {
 		var envs = [ {
 			_id: '',
 			code: 'DEV',
@@ -176,7 +177,7 @@ describe("testing host.js", function () {
 				return cb(null, tenants);
 			};
 			
-			host.listHAhostEnv(config, soajs, function (error, body) {
+			host.listHAhostEnv(config, soajs, deployer, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
