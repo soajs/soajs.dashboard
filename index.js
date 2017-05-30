@@ -31,6 +31,7 @@ var staticContent = require('./lib/staticContent.js');
 var analyticsBL = require("./lib/analytics.js");
 var gitDriver = require('./utils/drivers/git/index.js');
 var ciDriver = require('./utils/drivers/ci/index.js');
+var deployer = require("soajs").drivers;
 
 var dbModel = "mongo";
 
@@ -978,7 +979,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, service.registry, res, function (error, data) {
+			BL.deployService(config, req.soajs, service.registry, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -991,7 +992,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, service.registry, res, function (error, data) {
+			BL.redeployService(config, req.soajs, service.registry, res, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
