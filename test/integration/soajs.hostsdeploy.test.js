@@ -1183,71 +1183,71 @@ describe("testing hosts deployment", function () {
 
 	});
 	
-	describe("maintenance operations", function () {
+	describe.skip("maintenance operations", function () {
 		var ctrlDeployment = {};
-		before('get deployed controller service info', function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dev'
-				}
-			};
-			executeMyRequest(params, "cloud/services/list", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				
-				for (var i = 0; i < body.data.length; i++) {
-					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
-						ctrlDeployment = body.data[ i ];
-						break;
-					}
-				}
-				
-				done();
-			});
-		});
+		// before('get deployed controller service info', function (done) {
+		// 	var params = {
+		// 		qs: {
+		// 			access_token: access_token,
+		// 			env: 'dev'
+		// 		}
+		// 	};
+		// 	executeMyRequest(params, "cloud/services/list", "get", function (body) {
+		// 		assert.ok(body.result);
+		// 		assert.ok(body.data);
+		//		
+		// 		for (var i = 0; i < body.data.length; i++) {
+		// 			if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+		// 				ctrlDeployment = body.data[ i ];
+		// 				break;
+		// 			}
+		// 		}
+		//		
+		// 		done();
+		// 	});
+		// });
 		
-		it("success - will perform maintenace operation on deployed service", function (done) {
-			console.log('This test might take some time because the maintenance calls will timeout ...');
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					serviceId: ctrlDeployment.id,
-					serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
-					type: ctrlDeployment.labels[ 'soajs.service.type' ],
-					operation: 'heartbeat'
-				}
-			};
-			executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				done();
-			});
-		});
+		// it.skip("success - will perform maintenace operation on deployed service", function (done) {
+		// 	console.log('This test might take some time because the maintenance calls will timeout ...');
+		// 	var params = {
+		// 		qs: {
+		// 			access_token: access_token
+		// 		},
+		// 		form: {
+		// 			env: 'dev',
+		// 			serviceId: ctrlDeployment.id,
+		// 			serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
+		// 			type: ctrlDeployment.labels[ 'soajs.service.type' ],
+		// 			operation: 'heartbeat'
+		// 		}
+		// 	};
+		// 	executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
+		// 		assert.ok(body.result);
+		// 		assert.ok(body.data);
+		// 		done();
+		// 	});
+		// });
 		
-		it("fail - service not found", function (done) {
-			console.log('This test might take some time because the maintenance calls will timeout ...');
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					serviceId: ctrlDeployment.id,
-					serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
-					type: 'daemon', //controller won't be found in daemons collection, error will be returned
-					operation: 'heartbeat'
-				}
-			};
-			executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
-				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[0], {"code": 795, "message": errorCodes[795]});
-				done();
-			});
-		});
+		// it.skip("fail - service not found", function (done) {
+		// 	console.log('This test might take some time because the maintenance calls will timeout ...');
+		// 	var params = {
+		// 		qs: {
+		// 			access_token: access_token
+		// 		},
+		// 		form: {
+		// 			env: 'dev',
+		// 			serviceId: ctrlDeployment.id,
+		// 			serviceName: ctrlDeployment.labels[ 'soajs.service.name' ],
+		// 			type: 'daemon', //controller won't be found in daemons collection, error will be returned
+		// 			operation: 'heartbeat'
+		// 		}
+		// 	};
+		// 	executeMyRequest(params, "cloud/services/maintenance", "post", function (body) {
+		// 		assert.ok(body.errors);
+		// 		assert.deepEqual(body.errors.details[0], {"code": 795, "message": errorCodes[795]});
+		// 		done();
+		// 	});
+		// });
 		
 	});
 	
@@ -1340,66 +1340,66 @@ describe("testing hosts deployment", function () {
 		});
 	});
 	
-	describe("testing scale service", function () {
-		it("success - will scale service up to 2 instances", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token,
-					env: 'dev'
-				}
-			};
-			executeMyRequest(params, "cloud/services/list", "get", function (body) {
-				assert.ok(body.result);
-				assert.ok(body.data);
-				//only one service exist
-				var serviceId;
-				for (var i = 0; i < body.data.length; i++) {
-					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
-						serviceId = body.data[ i ].id;
-						break;
-					}
-				}
-				
-				params = {
-					qs: {
-						access_token: access_token
-					},
-					form: {
-						env: 'dev',
-						serviceId: serviceId,
-						scale: 2
-					}
-				};
-				
-				executeMyRequest(params, "cloud/services/scale", "put", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					done();
-				});
-			});
-		});
-		
-		it("fail - missing required params", function (done) {
-			var params = {
-				qs: {
-					access_token: access_token
-				},
-				form: {
-					env: 'dev',
-					scale: 2
-				}
-			};
-			
-			executeMyRequest(params, "cloud/services/scale", "put", function (body) {
-				assert.ok(body.errors);
-				assert.deepEqual(body.errors.details[ 0 ], {
-					"code": 172,
-					"message": "Missing required field: serviceId"
-				});
-				done();
-			});
-		});
-	});
+	// describe("testing scale service", function () {
+	// 	it.skip("success - will scale service up to 2 instances", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token,
+	// 				env: 'dev'
+	// 			}
+	// 		};
+	// 		executeMyRequest(params, "cloud/services/list", "get", function (body) {
+	// 			assert.ok(body.result);
+	// 			assert.ok(body.data);
+	// 			//only one service exist
+	// 			var serviceId;
+	// 			for (var i = 0; i < body.data.length; i++) {
+	// 				if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+	// 					serviceId = body.data[ i ].id;
+	// 					break;
+	// 				}
+	// 			}
+	//
+	// 			params = {
+	// 				qs: {
+	// 					access_token: access_token
+	// 				},
+	// 				form: {
+	// 					env: 'dev',
+	// 					serviceId: serviceId,
+	// 					scale: 2
+	// 				}
+	// 			};
+	//
+	// 			executeMyRequest(params, "cloud/services/scale", "put", function (body) {
+	// 				assert.ok(body.result);
+	// 				assert.ok(body.data);
+	// 				done();
+	// 			});
+	// 		});
+	// 	});
+	//
+	// 	it.skip("fail - missing required params", function (done) {
+	// 		var params = {
+	// 			qs: {
+	// 				access_token: access_token
+	// 			},
+	// 			form: {
+	// 				env: 'dev',
+	// 				scale: 2
+	// 			}
+	// 		};
+	//
+	// 		executeMyRequest(params, "cloud/services/scale", "put", function (body) {
+	// 			assert.ok(body.errors);
+	// 			assert.deepEqual(body.errors.details[ 0 ], {
+	// 				"code": 172,
+	// 				"message": "Missing required field: serviceId"
+	// 			});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
 	describe("testing kubernetes namespaces", function () {
 
