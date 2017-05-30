@@ -48,6 +48,33 @@ var mongoStub = {
 	}
 };
 
+var deployer = {
+	addNode: function (options, cb) {
+		return cb(null, true);
+	},
+	updateNode: function (options, cb) {
+		return cb(null, true);
+	},
+	removeNode: function (options, cb) {
+		return cb(null, true);
+	},
+	listNodes: function (options, cb) {
+		var arr = [];
+		return cb(null, arr);
+	},
+	listServices: function (data, cb) {
+		var arr = [
+			{
+				labels: {
+					'soajs.env.code': 'dev'
+				},
+				ports: []
+			}
+		];
+		return cb(null, arr);
+	}
+};
+
 describe("testing maintenance.js", function () {
 
 	describe("testing init", function () {
@@ -98,7 +125,7 @@ describe("testing maintenance.js", function () {
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
-			maintenance.streamLogs(config, req.soajs, {}, function (error, body) {
+			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});

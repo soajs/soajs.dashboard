@@ -2,6 +2,8 @@
 var assert = require("assert");
 var helper = require("../../helper.js");
 var utils = helper.requireModule('./lib/git.js');
+var helpers = helper.requireModule('./lib/helpers/git.js');
+
 var lib;
 var config = {
 	errors: {}
@@ -131,7 +133,7 @@ describe("testing git.js", function () {
 				"name": "soajsTestAccount/testMulti",
 				"type": "repo"
 			};
-			lib.listAccounts(config, req, gitDriver, deployer, function (error, body) {
+			lib.listAccounts(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -152,7 +154,7 @@ describe("testing git.js", function () {
 				"page": 1,
 				"per_page": 50
 			};
-			lib.getRepos(config, req, gitDriver, deployer, function (error, body) {
+			lib.getRepos(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -169,7 +171,7 @@ describe("testing git.js", function () {
 				"name": "soajsTestAccount/testMulti",
 				"type": "repo"
 			};
-			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
+			lib.getBranches(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				assert.ok(body.branches);
 				done();
@@ -190,7 +192,7 @@ describe("testing git.js", function () {
 				"name": "sample__Single",
 				"type": "service"
 			};
-			lib.getBranches(config, req, gitDriver, deployer, function (error) {
+			lib.getBranches(config, req, gitDriver, helpers, function (error) {
 				assert.ok(error);
 				assert.equal(error.code, 759);
 				done();
@@ -226,7 +228,7 @@ describe("testing git.js", function () {
 				"type": "service"
 			};
 			
-			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
+			lib.getBranches(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -259,7 +261,7 @@ describe("testing git.js", function () {
 				"type": "daemon"
 			};
 			
-			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
+			lib.getBranches(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});
@@ -293,7 +295,7 @@ describe("testing git.js", function () {
 				"type": "static"
 			};
 			
-			lib.getBranches(config, req, gitDriver, deployer, function (error, body) {
+			lib.getBranches(config, req, gitDriver, helpers, function (error, body) {
 				assert.ok(body);
 				done();
 			});

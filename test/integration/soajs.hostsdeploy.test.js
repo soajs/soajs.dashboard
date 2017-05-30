@@ -379,74 +379,75 @@ describe("testing hosts deployment", function () {
 		
 		describe("testing list cluster nodes", function () {
 			
-			it("success - will list nodes", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					assert.equal(body.data.length, 1);
-					done();
-				});
-			});
+			// it.skip("success - will list nodes", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token
+			// 		}
+			// 	};
+			//	
+			// 	executeMyRequest(params, "cloud/nodes/list", "get", function (body) {
+			// 		console.log(body);
+			// 		assert.ok(body.result);
+			// 		assert.ok(body.data);
+			// 		assert.equal(body.data.length, 1);
+			// 		done();
+			// 	});
+			// });
 			
 		});
 		
-		describe("testing add cluster node", function () {
-			
-			it("fail - wrong node address provided", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
-					},
-					headers: {},
-					form: {
-						env: 'dashboard',
-						host: '192.168.99.100',
-						port: 2376,
-						role: 'manager'
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[0], {
-						'code': 540,
-						'message': 'Unable to retrieve the docker swarm deployer'
-					});
-					done();
-				});
-			});
-			
-			it("fail - missing required params", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
-					},
-					form: {
-						env: 'dashboard',
-						port: 2376,
-						role: 'manager'
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						"code": 172,
-						"message": "Missing required field: host"
-					});
-					done();
-				});
-			});
-			
-		});
+		// describe.skip("testing add cluster node", function () {
+		//
+		// 	it.skip("fail - wrong node address provided", function (done) {
+		// 		var params = {
+		// 			qs: {
+		// 				access_token: access_token
+		// 			},
+		// 			headers: {},
+		// 			form: {
+		// 				env: 'dashboard',
+		// 				host: '192.168.99.100',
+		// 				port: 2376,
+		// 				role: 'manager'
+		// 			}
+		// 		};
+		//
+		// 		executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
+		// 			assert.ok(body.errors);
+		// 			assert.deepEqual(body.errors.details[0], {
+		// 				'code': 540,
+		// 				'message': 'Unable to retrieve the docker swarm deployer'
+		// 			});
+		// 			done();
+		// 		});
+		// 	});
+		//
+		// 	it("fail - missing required params", function (done) {
+		// 		var params = {
+		// 			qs: {
+		// 				access_token: access_token
+		// 			},
+		// 			form: {
+		// 				env: 'dashboard',
+		// 				port: 2376,
+		// 				role: 'manager'
+		// 			}
+		// 		};
+		//
+		// 		executeMyRequest(params, "cloud/nodes/add", "post", function (body) {
+		// 			assert.ok(body.errors);
+		// 			assert.deepEqual(body.errors.details[ 0 ], {
+		// 				"code": 172,
+		// 				"message": "Missing required field: host"
+		// 			});
+		// 			done();
+		// 		});
+		// 	});
+		//
+		// });
 		
-		describe("testing update cluster node", function () {
+		describe.skip("testing update cluster node", function () {
 			var currentNode = {};
 			before("get node information", function (done) {
 				var params = {
@@ -464,54 +465,54 @@ describe("testing hosts deployment", function () {
 				});
 			});
 			
-			it("fail - invalid update option provided", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dashboard',
-						nodeId: currentNode.id
-					},
-					form: {
-						type: 'hostname',
-						value: 'test'
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						'code': 173,
-						'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"
-					});
-					done();
-				});
-			});
+			// it.skip("fail - invalid update option provided", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token,
+			// 			env: 'dashboard',
+			// 			nodeId: currentNode.id
+			// 		},
+			// 		form: {
+			// 			type: 'hostname',
+			// 			value: 'test'
+			// 		}
+			// 	};
+			//
+			// 	executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], {
+			// 			'code': 173,
+			// 			'message': "Validation failed for field: type -> The parameter 'type' failed due to: instance is not one of enum values: role,availability"
+			// 		});
+			// 		done();
+			// 	});
+			// });
 			
-			it("fail - invalid operation, trying to demote last manager node in cluster", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dashboard',
-						nodeId: currentNode.id
-					},
-					form: {
-						type: 'role',
-						value: 'worker'
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						'code': 546,
-						'message': 'Unable to update the node in the docker swarm'
-					});
-					done();
-				});
-			});
+			// it.skip("fail - invalid operation, trying to demote last manager node in cluster", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token,
+			// 			env: 'dashboard',
+			// 			nodeId: currentNode.id
+			// 		},
+			// 		form: {
+			// 			type: 'role',
+			// 			value: 'worker'
+			// 		}
+			// 	};
+			//
+			// 	executeMyRequest(params, "cloud/nodes/update", "put", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], {
+			// 			'code': 546,
+			// 			'message': 'Unable to update the node in the docker swarm'
+			// 		});
+			// 		done();
+			// 	});
+			// });
 		});
 		
-		describe("testing delete cluster node", function () {
+		describe.skip("testing delete cluster node", function () {
 			var currentNode = {};
 			before("get node information", function (done) {
 				var params = {
@@ -528,43 +529,43 @@ describe("testing hosts deployment", function () {
 				});
 			});
 			
-			it("fail - invalid node id provided", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dashboard',
-						nodeId: 'aacrh437t'
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						'code': 545,
-						'message': 'Unable to delete the node from the docker swarm'
-					});
-					done();
-				});
-			});
-			
-			it("fail - invalid operating, trying to delete a manager node in cluster", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dashboard',
-						nodeId: currentNode.id
-					}
-				};
-				
-				executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						'code': 545,
-						'message': 'Unable to delete the node from the docker swarm'
-					});
-					done();
-				});
-			});
+			// it.skip("fail - invalid node id provided", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token,
+			// 			env: 'dashboard',
+			// 			nodeId: 'aacrh437t'
+			// 		}
+			// 	};
+			//	
+			// 	executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], {
+			// 			'code': 545,
+			// 			'message': 'Unable to delete the node from the docker swarm'
+			// 		});
+			// 		done();
+			// 	});
+			// });
+			//
+			// it.skip("fail - invalid operating, trying to delete a manager node in cluster", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token,
+			// 			env: 'dashboard',
+			// 			nodeId: currentNode.id
+			// 		}
+			// 	};
+			//	
+			// 	executeMyRequest(params, "cloud/nodes/remove", "delete", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], {
+			// 			'code': 545,
+			// 			'message': 'Unable to delete the node from the docker swarm'
+			// 		});
+			// 		done();
+			// 	});
+			// });
 		});
 	});
 	
@@ -684,7 +685,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						custom: {
 							type: 'nginx',
-							name: 'nginx',
+							name: 'nginx'
 						},
 						recipe: '59034e43c69a1b962fc62212', // todo
 						deployConfig: {
@@ -692,7 +693,7 @@ describe("testing hosts deployment", function () {
 							replication: {
 								mode: 'replicated',
 								replicas: 1
-							},
+							}
 						}
 					}
 				};
@@ -708,7 +709,7 @@ describe("testing hosts deployment", function () {
 
 	});
 	
-	describe.skip("testing service deployment", function () {
+	describe("testing service deployment", function () {
 		it("success - deploy 1 core service, global mode", function (done) {
 			var params = {
 				qs: {
@@ -842,7 +843,7 @@ describe("testing hosts deployment", function () {
 		});
 	});
 	
-	describe.skip("testing daemon deployment", function () {
+	describe("testing daemon deployment", function () {
 		it("success - deploy 1 daemon", function (done) {
 			var params = {
 				qs: {
@@ -984,7 +985,7 @@ describe("testing hosts deployment", function () {
 		
 	});
 	
-	describe.skip("testing redeploy service", function () {
+	describe("testing redeploy service", function () {
 		var nginxDeployment, ctrlDeployment, uiRecord;
 		before("list services and get static content record", function (done) {
 			mongo.find('staticContent', {}, function (error, records) {
@@ -1077,8 +1078,8 @@ describe("testing hosts deployment", function () {
 		});
 		
 	});
-	
-	describe.skip("testing analytics", function () {
+
+	describe("testing analytics", function () {
 
 		it("get analytics settings", function (done) {
 			var params = {
@@ -1103,7 +1104,7 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				console.log(JSON.stringify(body, null, 2))
+				console.log(JSON.stringify(body, null, 2));
 				assert.ok(body.data);
 				done();
 			});
@@ -1182,7 +1183,7 @@ describe("testing hosts deployment", function () {
 
 	});
 	
-	describe.skip("maintenance operations", function () {
+	describe("maintenance operations", function () {
 		var ctrlDeployment = {};
 		before('get deployed controller service info', function (done) {
 			var params = {
@@ -1206,7 +1207,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("success - will perform maintenace operation on deployed service", function (done) {
+		it("success - will perform maintenace operation on deployed service", function (done) {
 			console.log('This test might take some time because the maintenance calls will timeout ...');
 			var params = {
 				qs: {
@@ -1250,7 +1251,7 @@ describe("testing hosts deployment", function () {
 		
 	});
 	
-	describe.skip("delete deployed services", function () {
+	describe("delete deployed services", function () {
 		it("fail - missing required params", function (done) {
 			deleteService({ env: 'DEV' }, function (body) {
 				assert.ok(body.errors);
@@ -1289,7 +1290,7 @@ describe("testing hosts deployment", function () {
 		});
 	});
 	
-	describe.skip("testing get service logs", function () {
+	describe("testing get service logs", function () {
 		it("success - getting service logs", function (done) {
 			var params = {
 				qs: {
@@ -1339,7 +1340,7 @@ describe("testing hosts deployment", function () {
 		});
 	});
 	
-	describe.skip("testing scale service", function () {
+	describe("testing scale service", function () {
 		it("success - will scale service up to 2 instances", function (done) {
 			var params = {
 				qs: {
@@ -1400,47 +1401,47 @@ describe("testing hosts deployment", function () {
 		});
 	});
 
-	describe.skip("testing kubernetes namespaces", function () {
+	describe("testing kubernetes namespaces", function () {
 
 		describe("testing list namespaces", function () {
 
-			it("fail - operation not supported in swarm mode", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
-					},
-					headers: {
-						soajsauth: soajsauth
-					}
-				};
-
-				executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
-					done();
-				});
-			});
-
-			it("fail - operation not supported in manual deployment mode", function (done) {
-				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
-					assert.ifError(error);
-
-					var params = {
-						qs: {
-							access_token: access_token
-						},
-						headers: {
-							soajsauth: soajsauth
-						}
-					};
-
-					executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
-						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
-						done();
-					});
-				});
-			});
+			// it.skip("fail - operation not supported in swarm mode", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token
+			// 		},
+			// 		headers: {
+			// 			soajsauth: soajsauth
+			// 		}
+			// 	};
+			//
+			// 	executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
+			// 		done();
+			// 	});
+			// });
+			//
+			// it.skip("fail - operation not supported in manual deployment mode", function (done) {
+			// 	mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
+			// 		assert.ifError(error);
+			//
+			// 		var params = {
+			// 			qs: {
+			// 				access_token: access_token
+			// 			},
+			// 			headers: {
+			// 				soajsauth: soajsauth
+			// 			}
+			// 		};
+			//
+			// 		executeMyRequest(params, "cloud/namespaces/list", "get", function (body) {
+			// 			assert.ok(body.errors);
+			// 			assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
+			// 			done();
+			// 		});
+			// 	});
+			// });
 
 			after("reset dashboard env deployer type to container", function (done) {
 				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "container" } }, function (error) {
@@ -1453,56 +1454,56 @@ describe("testing hosts deployment", function () {
 
 		describe("testing delete namespace", function () {
 
-			it("fail - missing required field", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
-					}
-				};
-
-				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], {
-						"code": 172,
-						"message": 'Missing required field: namespaceId'
-					});
-					done();
-				});
-			});
-
-			it("fail - operation not supported in swarm mode", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token,
-						namespaceId: 'myns'
-					}
-				};
-
-				executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
-					assert.ok(body.errors);
-					assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
-					done();
-				});
-			});
-
-			it("fail - operation not supported in manual deployment mode", function (done) {
-				mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
-					assert.ifError(error);
-
-					var params = {
-						qs: {
-							access_token: access_token,
-							namespaceId: 'myns'
-						}
-					};
-
-					executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
-						assert.ok(body.errors);
-						assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
-						done();
-					});
-				});
-			});
+			// it.skip("fail - missing required field", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token
+			// 		}
+			// 	};
+			//
+			// 	executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], {
+			// 			"code": 172,
+			// 			"message": 'Missing required field: namespaceId'
+			// 		});
+			// 		done();
+			// 	});
+			// });
+			//
+			// it.skip("fail - operation not supported in swarm mode", function (done) {
+			// 	var params = {
+			// 		qs: {
+			// 			access_token: access_token,
+			// 			namespaceId: 'myns'
+			// 		}
+			// 	};
+			//
+			// 	executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+			// 		assert.ok(body.errors);
+			// 		assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
+			// 		done();
+			// 	});
+			// });
+			//
+			// it.skip("fail - operation not supported in manual deployment mode", function (done) {
+			// 	mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "manual" } }, function (error) {
+			// 		assert.ifError(error);
+			//
+			// 		var params = {
+			// 			qs: {
+			// 				access_token: access_token,
+			// 				namespaceId: 'myns'
+			// 			}
+			// 		};
+			//
+			// 		executeMyRequest(params, "cloud/namespaces/delete", "delete", function (body) {
+			// 			assert.ok(body.errors);
+			// 			assert.deepEqual(body.errors.details[ 0 ], { "code": 909, "message": errorCodes[ 909 ] });
+			// 			done();
+			// 		});
+			// 	});
+			// });
 
 		});
 

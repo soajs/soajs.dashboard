@@ -6,8 +6,7 @@ var mongo = helper.requireModule('./models/mongo.js');
 const sinon = require('sinon');
 var host;
 var config;
-var myDeployer = {};
-var deployer = require("soajs").drivers;
+var deployer = {};
 
 describe("testing host.js", function () {
 	var soajs = {
@@ -85,7 +84,7 @@ describe("testing host.js", function () {
 		}
 
 	};
-	myDeployer = {
+	deployer = {
 		listServices: function (data, cb) {
 			var arr = [
 				{
@@ -120,7 +119,6 @@ describe("testing host.js", function () {
 				assert.ok(body);
 				host = body;
 				host.model = stubMongo;
-				host.myDeployer = myDeployer;
 				done();
 			});
 		});
