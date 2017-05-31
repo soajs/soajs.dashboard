@@ -1,8 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/helpers/git.js');
-var config = helper.requireModule('./config.js');
+var helpers = helper.requireModule('./lib/helpers/host.js');
 
 var mongoStub = {
 	checkForMongo: function (soajs) {
@@ -22,92 +21,219 @@ var mongoStub = {
 	}
 };
 
-describe("testing helper git.js", function () {
+describe("testing helper host.js", function () {
 	var soajs = {
 		// uracDriver: {},
 		inputmaskData: {},
-		tenant: {}
+		tenant: {
+			application: {
+				acl_all_env: {
+					dashboard: {
+						dashboard: {
+							access: false
+						},
+						proxy: {}
+					}
+				},
+				acl: {
+					urac: {
+						access: false
+					}
+				},
+				package_acl_all_env: {}
+			}
+		}
 	};
-	var req = {
-		soajs: soajs
-	};
-	describe("comparePaths", function () {
+	
+	describe("getTenants", function () {
+		var output;
 		beforeEach(() => {
-		});
-		var remote = [];
-		var local = [];
-		it("Test 1: will remove", function (done) {
-			remote = [ '/sample1', '/sample2', '/sample3', '/sample4' ];
-			local = [
-				{
-					contentType: 'service',
-					contentName: 'sampleFake1',
-					path: '/sampleFake1/config.js',
-					sha: '95b14565e3fdd0048e351493056025a7020ea561'
-				},
-				{
-					contentType: 'daemon',
-					contentName: 'sampleFake2',
-					path: '/sampleFake2/config.js',
-					sha: '15b14565e3fdd0048e351493056025a7020ea561'
-				},
-				{
-					contentType: 'static',
-					contentName: 'sampleFake3',
-					path: '/sampleFake3/config.js',
-					sha: '15b14565e3fdd0048e351493056025a7020ea567'
+			output = {
+				dashboard: {},
+				dev: {
+					domain: 'api.api.myDomain.com'
 				}
-			];
-			soajs.inputmaskData = {
-				id: '592d8b62448c393e25964d0b',
-				provider: 'github',
-				owner: 'soajsTestAccount',
-				repo: 'test.successMulti'
 			};
-			helpers.comparePaths(req, config, remote, local, function (error, body) {
+			mongoStub.findEntries = function (soajs, opts, cb) {
+				cb(null, [
+					{
+						_id: '',
+						code: '',
+						applications: [
+							{
+								keys: [
+									{
+										extKeys: []
+									}
+								]
+							}
+						]
+					}
+				]);
+			};
+		});
+		
+		it("Success getTenants with acl_all_env", function (done) {
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});
 		});
-
-		it("Test 2: will sync", function (done) {
-			remote = [ '/sample1', '/sample2', '/sample3', '/sample4' ];
-			local = [
-				{
-					contentType: 'service',
-					contentName: 'samplesuccess1',
-					path: '/sample1/config.js',
-					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
+		
+		it("Success getTenants with acl 1", function (done) {
+			soajs.tenant.application = {
+				acl: {
+					dashboard: {
+						access: false,
+						apisPermission: 'restricted',
+						get: {
+							apis: {
+								"/tenant/list": {}
+							}
+						}
+					},
+					urac: {
+						access: false
+					}
 				},
-				{
-					contentType: 'service',
-					contentName: 'samplesuccess2',
-					path: '/sample2/config.js',
-					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
-				},
-				{
-					contentType: 'daemon',
-					contentName: 'sampledaemonsuccess1',
-					path: '/sample3/config.js',
-					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
-				},
-				{
-					contentType: 'static',
-					contentName: 'sampletest4',
-					path: '/sample4/config.js',
-					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
-				}
-			];
-			soajs.inputmaskData = {
-				id: '592d8befa60dc176250235a8',
-				provider: 'github',
-				owner: 'soajsTestAccount',
-				repo: 'test.successMulti'
+				package_acl_all_env: {}
 			};
-			helpers.comparePaths(req, config, remote, local, function (error, body) {
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});
 		});
-
+		
+		it("Success getTenants with acl 2", function (done) {
+			soajs.tenant.application = {
+				acl: {
+					dashboard: {
+						access: false,
+						apisPermission: 'restricted',
+						get: {}
+					},
+					urac: {
+						access: false
+					}
+				},
+				package_acl_all_env: {}
+			};
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success getTenants with acl 3", function (done) {
+			soajs.tenant.application = {
+				acl: {
+					dashboard: {
+						access: true,
+						apisPermission: 'restricted',
+						get: {
+							apis: {
+								"/tenant/list": {
+									access: []
+								}
+							}
+						}
+					},
+					urac: {
+						access: false
+					}
+				},
+				package_acl_all_env: {}
+			};
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success getTenants with package_acl_all_env", function (done) {
+			soajs.tenant.application = {
+				package_acl_all_env: {
+					dashboard: {
+						access: false,
+						apis: {}
+					},
+					dev: {
+						urac: {
+							access: false
+						}
+					}
+				}
+			};
+			var output = {
+				dashboard: {},
+				dev: {
+					domain: 'api.api.myDomain.com'
+				}
+			};
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success getTenants with package_acl", function (done) {
+			soajs.tenant.application = {
+				package_acl: {
+					dashboard: {
+						access: false,
+						apisRegExp: [
+							{
+								"regExp": /^\/admin\/.+$/,
+								"access": true
+							}
+						]
+					},
+					urac: {
+						access: false
+					}
+				}
+			};
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success getTenants with user acl", function (done) {
+			soajs.uracDriver = {
+				getAcl: function () {
+					return {
+						dashboard: {
+							access: true,
+							apisPermission: 'restricted',
+							get: {
+								apis: {
+									"/tenant/list": {
+										access: [ 'gold' ]
+									}
+								}
+							}
+						},
+						urac: {
+							access: false
+						}
+					};
+				},
+				getProfile: function () {
+					return {
+						groups: [ 'gold' ]
+					};
+				}
+			};
+			soajs.tenant.application = {
+				acl: {},
+				package_acl_all_env: {}
+			};
+			
+			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
+				done();
+			});
+		});
+		
 	});
 	
 });
