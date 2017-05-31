@@ -31,14 +31,14 @@ function checkIfError (error, options, cb, callback) {
 var lib = require('./helpers/bitbucket_org.js');
 
 var driver = {
-	helper: {},
+	helper: lib,
 	
 	login: function (soajs, data, model, options, cb) {
 		data.checkIfAccountExists(soajs, model, options, function (error, count) {
 			checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, { code: 752, message: 'Account already added' }, cb, function () {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
-						lib.checkUserRecord(options, function (error, record) {
+						driver.helper.checkUserRecord(options, function (error, record) {
 							checkIfError(error, {}, cb, function () {
 								options.owner = record.user.username;
 								return data.saveNewAccount(soajs, model, options, cb);
@@ -46,7 +46,7 @@ var driver = {
 						});
 					}
 					else if (options.access === 'private') {//create token for account and save
-						lib.createAuthToken(options, function (error, tokenInfo) {
+						driver.helper.createAuthToken(options, function (error, tokenInfo) {
 							checkIfError(error, {}, cb, function () {
 								options.token = tokenInfo.access_token;
 								//these fields are required in order to refresh the token when it exipres
@@ -57,7 +57,7 @@ var driver = {
 								delete options.tokenInfo.access_token;
 								delete options.password;
 								delete options.action;
-								lib.checkUserRecord(options, function (error, record) {
+								driver.helper.checkUserRecord(options, function (error, record) {
 									checkIfError(error, {}, cb, function () {
 										options.owner = record.user.username;
 										return data.saveNewAccount(soajs, model, options, cb);
@@ -93,17 +93,17 @@ var driver = {
 				options.type = accountRecord.type;
 				options.owner = accountRecord.owner;
 				options.tokenInfo = accountRecord.tokenInfo;
-				lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
+				driver.helper.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
 					checkIfError(error, {}, cb, function () {
 						if (updated) {
 							options.token = newTokenInfo.token;
 							options.tokenInfo = newTokenInfo.tokenInfo;
 						}
-						lib.getAllRepos(options, function (error, result) {
+						driver.helper.getAllRepos(options, function (error, result) {
 							checkIfError(error, {}, cb, function () {
-								result = lib.buildReposArray(result);
+								result = driver.helper.buildReposArray(result);
 								checkIfError(!result, {}, cb, function () {
-									lib.addReposStatus(result, accountRecord.repos, function (repos) {
+									driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
 										return cb(null, repos);
 									});
 								});
@@ -121,14 +121,14 @@ var driver = {
 				options.token = accountRecord.token;
 				options.tokenInfo = accountRecord.tokenInfo;
 				
-				lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
+				driver.helper.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
 					checkIfError(error, {}, cb, function () {
 						if (updated) {
 							options.token = newTokenInfo.token;
 							options.tokenInfo = newTokenInfo.tokenInfo;
 						}
-						lib.getRepoBranches(options, function (error, branches) {
-							branches = lib.buildBranchesArray(branches);
+						driver.helper.getRepoBranches(options, function (error, branches) {
+							branches = driver.helper.buildBranchesArray(branches);
 							checkIfError(error, {}, cb, function () {
 								var result = {
 									owner: options.owner,
@@ -147,13 +147,13 @@ var driver = {
 	getJSONContent: function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error, {}, cb, function () {
-				lib.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
+				driver.helper.checkAuthToken(soajs, options, model, accountRecord, function (error, updated, newTokenInfo) {
 					if (updated) {
 						options.token = newTokenInfo.token;
 						options.tokenInfo = newTokenInfo.tokenInfo;
 					}
 					checkIfError(error, {}, cb, function () {
-						lib.getRepoContent(options, function (error, response) {
+						driver.helper.getRepoContent(options, function (error, response) {
 							checkIfError(error, {}, cb, function () {
 								var configFile = response.replace(/require\s*\(.+\)/g, '""');
 								var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
@@ -166,7 +166,7 @@ var driver = {
 									soajs: soajs
 								};
 								
-								lib.writeFile(fileInfo, function (error) {
+								driver.helper.writeFile(fileInfo, function (error) {
 									checkIfError(error, {}, cb, function () {
 										var repoConfig;
 										if (require.resolve(fileInfo.configFilePath)) {
@@ -191,14 +191,14 @@ var driver = {
 	},
 	
 	getAnyContent: function (soajs, data, model, options, cb) {
-		lib.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
+		driver.helper.checkAuthToken(soajs, options, model, options.accountRecord, function (error, updated, newTokenInfo) {
 			checkIfError(error, {}, cb, function () {
 				if (updated) {
 					options.token = newTokenInfo.token;
 					options.tokenInfo = newTokenInfo.tokenInfo;
 				}
 				
-				lib.getRepoContent(options, function (error, response) {
+				driver.helper.getRepoContent(options, function (error, response) {
 					checkIfError(error, {}, cb, function () {
 						var downloadLink = config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getContent
 								.replace('%USERNAME%', options.user)

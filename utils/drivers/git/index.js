@@ -13,7 +13,9 @@ function getGitDriver (config, cbMain, cb) {
 		return cbMain({ code: 778, message: 'Git driver does not exist' });
 	}
 	var helper = getGitHelperDriver({ provider: config.provider });
-	gitDriver.helper = helper;
+	if (helper) {
+		gitDriver.helper = helper;
+	}
 	return cb(gitDriver);
 }
 

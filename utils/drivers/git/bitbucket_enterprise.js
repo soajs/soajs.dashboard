@@ -20,47 +20,47 @@ function checkIfError (error, options, cb, callback) {
 				};
 			}
 		}
-
+		
 		return cb(error);
 	}
-
+	
 	return callback();
 }
 
 var lib = require('./helpers/bitbucket_enterprise.js');
 
 var driver = {
-	helper: {},
-
+	helper: lib,
+	
 	"login": function (soajs, data, model, options, cb) {
 		data.checkIfAccountExists(soajs, model, options, function (error, count) {
 			checkIfError(error, {}, cb, function () {
 				checkIfError(count > 0, { code: 752, message: 'Account already exists' }, cb, function () {
-
+					
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
-						lib.checkUserRecord(options, function (error) {
+						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								lib.authenticate(options);
+								driver.helper.authenticate(options);
 								data.saveNewAccount(soajs, model, options, cb);
 							});
 						});
 					}
 					else if (options.access === 'private') {
 						options.token = options.owner + ":" + options.password;
-
+						
 						var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
 						var tempClient = new BitbucketClient(domain, {
 							type: 'basic',
 							username: options.owner,
 							password: options.password
 						});
-
+						
 						// if able to get user's settings, it means we have valid credentials
 						tempClient.settings.get(options.owner)
 							.then(function () {
 								delete options.password;
-								lib.authenticate(options);
-
+								driver.helper.authenticate(options);
+								
 								options.token = new Buffer(options.token).toString('base64');
 								data.saveNewAccount(soajs, model, options, cb);
 							})
@@ -72,12 +72,12 @@ var driver = {
 								tempClient = null;
 							});
 					}
-
+					
 				});
 			});
 		});
 	},
-
+	
 	"logout": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error || !accountRecord, {}, cb, function () {
@@ -90,27 +90,27 @@ var driver = {
 			});
 		});
 	},
-
+	
 	"getRepos": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error || !accountRecord, {}, cb, function () {
 				options.domain = accountRecord.domain;
-
+				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					lib.authenticate(options);
+					driver.helper.authenticate(options);
 				}
-
+				
 				options.type = accountRecord.type;
 				options.owner = accountRecord.owner;
-
+				
 				if (error) {
 					return cb(error, null);
 				}
-
-				lib.getAllRepos(options, function (error, result) {
+				
+				driver.helper.getAllRepos(options, function (error, result) {
 					checkIfError(error, {}, cb, function () {
-						lib.addReposStatus(result, accountRecord.repos, function (repos) {
+						driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
 							return cb(null, repos);
 						});
 					});
@@ -118,18 +118,18 @@ var driver = {
 			});
 		});
 	},
-
+	
 	"getBranches": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error, {}, cb, function () {
 				options.domain = accountRecord.domain;
-
+				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					lib.authenticate(options);
+					driver.helper.authenticate(options);
 				}
-
-				lib.getRepoBranches(options, function (error, branches) {
+				
+				driver.helper.getRepoBranches(options, function (error, branches) {
 					checkIfError(error, {}, cb, function () {
 						var result = {
 							owner: options.owner,
@@ -142,44 +142,44 @@ var driver = {
 			});
 		});
 	},
-
+	
 	"getJSONContent": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error || !accountRecord, {}, cb, function () {
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
 					options.domain = accountRecord.domain;
-					lib.authenticate(options);
+					driver.helper.authenticate(options);
 				}
-
-				lib.getRepoContent(options, function (error, response) {
+				
+				driver.helper.getRepoContent(options, function (error, response) {
 					checkIfError(error, {}, cb, function () {
-
+						
 						// bitbucket Client returns no 'sha', use the path instead, its unique
 						var configSHA = options.repo + options.path;
-
+						
 						// bitbucket Client returns file content as an array of lines
 						// concatenate them in one string
 						var content = "";
 						for (var i = 0; i < response.lines.length; ++i) {
 							content += response.lines[ i ].text + "\n";
 						}
-
+						
 						// remove all "require('...')" occurrences
 						var configFile = content;
 						configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
-
+						
 						var repoConfigsFolder = config.gitAccounts.bitbucket_enterprise.repoConfigsFolder;
 						var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
-
+						
 						var fileInfo = {
 							configDirPath: configDirPath,
 							configFilePath: repoConfigsFolder + options.path,
 							configFile: configFile,
 							soajs: soajs
 						};
-
-						lib.writeFile(fileInfo, function (error) {
+						
+						driver.helper.writeFile(fileInfo, function (error) {
 							checkIfError(error, {}, cb, function () {
 								var repoConfig;
 								if (require.resolve(fileInfo.configFilePath)) {
@@ -191,8 +191,8 @@ var driver = {
 								catch (e) {
 									return cb(e);
 								}
-
-								lib.clearDir({ repoConfigsFolder: repoConfigsFolder }, function (error) {
+								
+								driver.helper.clearDir({ repoConfigsFolder: repoConfigsFolder }, function (error) {
 									checkIfError(error, {}, cb, function () {
 										return cb(null, repoConfig, configSHA);
 									});
@@ -204,15 +204,15 @@ var driver = {
 			});
 		});
 	},
-
+	
 	"getAnyContent": function (soajs, data, model, options, cb) {
 		if (options.accountRecord.token) {
 			options.token = new Buffer(options.accountRecord.token, 'base64').toString();
 			options.domain = options.accountRecord.domain;
-			lib.authenticate(options);
+			driver.helper.authenticate(options);
 		}
-
-		lib.getRepoContent(options, function (error, response) {
+		
+		driver.helper.getRepoContent(options, function (error, response) {
 			checkIfError(error, {}, cb, function () {
 				// bitbucket Client returns file content as an array of lines
 				// concatenate them in one string
@@ -220,14 +220,14 @@ var driver = {
 				for (var i = 0; i < response.lines.length; ++i) {
 					content += response.lines[ i ].text + "\n";
 				}
-
+				
 				var downloadLink = 'https://' + config.gitAccounts.bitbucket_enterprise.downloadUrl
 						.replace('%PROVIDER_DOMAIN%', options.domain)
 						.replace('%PROJECT_NAME%', options.project)
 						.replace('%REPO_NAME%', options.repo)
 						.replace('%PATH%', options.path)
 						.replace('%BRANCH%', options.ref || 'master');
-
+				
 				return cb(null, {
 					token: options.token,
 					downloadLink: downloadLink,
