@@ -6,7 +6,7 @@ var mongo = helper.requireModule('./models/mongo.js');
 const sinon = require('sinon');
 var host;
 var config;
-var myDeployer = {};
+var deployer = {};
 
 describe("testing host.js", function () {
 	var soajs = {
@@ -84,7 +84,7 @@ describe("testing host.js", function () {
 		}
 
 	};
-	myDeployer = {
+	deployer = {
 		listServices: function (data, cb) {
 			var arr = [
 				{
@@ -119,13 +119,12 @@ describe("testing host.js", function () {
 				assert.ok(body);
 				host = body;
 				host.model = stubMongo;
-				host.myDeployer = myDeployer;
 				done();
 			});
 		});
 	});
 	
-	describe("listHAhostEnv ()", function () {
+	describe("listHAhostEnv", function () {
 		var envs = [ {
 			_id: '',
 			code: 'DEV',
@@ -176,7 +175,7 @@ describe("testing host.js", function () {
 				return cb(null, tenants);
 			};
 			
-			host.listHAhostEnv(config, soajs, function (error, body) {
+			host.listHAhostEnv(config, soajs, deployer, function (error, body) {
 				// assert.ok(body);
 				done();
 			});

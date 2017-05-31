@@ -1060,7 +1060,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev'
 				}
 			};
-			
+
 			executeMyRequest(options, "cd/ledger", "get", function (body) {
 				assert.ok(body.result);
 				assert.ok(body.data);
@@ -1084,7 +1084,6 @@ describe("testing hosts deployment", function () {
 						}
 					}
 				};
-				
 				executeMyRequest(options, "cd/action", "put", function (body) {
 					assert.ok(body.result);
 					assert.ok(body.data);

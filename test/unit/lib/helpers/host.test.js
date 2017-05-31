@@ -97,7 +97,7 @@ describe("testing helper host.js", function () {
 				},
 				package_acl_all_env: {}
 			};
-
+			
 			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});
@@ -117,12 +117,12 @@ describe("testing helper host.js", function () {
 				},
 				package_acl_all_env: {}
 			};
-
+			
 			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success getTenants with acl 3", function (done) {
 			soajs.tenant.application = {
 				acl: {
@@ -143,12 +143,12 @@ describe("testing helper host.js", function () {
 				},
 				package_acl_all_env: {}
 			};
-
+			
 			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});
 		});
-
+		
 		it("Success getTenants with package_acl_all_env", function (done) {
 			soajs.tenant.application = {
 				package_acl_all_env: {
@@ -197,7 +197,7 @@ describe("testing helper host.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success getTenants with user acl", function (done) {
 			soajs.uracDriver = {
 				getAcl: function () {
@@ -208,7 +208,7 @@ describe("testing helper host.js", function () {
 							get: {
 								apis: {
 									"/tenant/list": {
-										access: ['gold']
+										access: [ 'gold' ]
 									}
 								}
 							}
@@ -228,7 +228,7 @@ describe("testing helper host.js", function () {
 				acl: {},
 				package_acl_all_env: {}
 			};
-
+			
 			helpers.getTenants(soajs, output, mongoStub, function (error, body) {
 				done();
 			});

@@ -1,11 +1,10 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/maintenance.js');
-var maintenance;
-var config = {
-	errors: {}
-};
+var utils = helper.requireModule('./lib/cloud/services.js');
+var services;
+var config = helper.requireModule('./config.js');
+
 var req = {
 	soajs: {
 		servicesConfig: {
@@ -86,9 +85,7 @@ var envRecord = {
 	},
 	services: {
 		config: {
-			ports: {
-				maintenanceInc: 5
-			}
+			ports: {}
 		}
 	}
 };
@@ -103,20 +100,47 @@ var deployer = {
 	updateNode: function (options, cb) {
 		return cb(null, true);
 	},
-	removeNode: function (options, cb) {
+	deleteService: function (options, cb) {
 		return cb(null, true);
 	},
-	listNodes: function (options, cb) {
-		var arr = [];
+	listServices: function (options, cb) {
+		var arr = [
+			{
+				env: [
+					'NODE_ENV=production',
+					'SOAJS_ENV=dev',
+					'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+					'SOAJS_SRV_AUTOREGISTERHOST=true',
+					'SOAJS_SRV_MEMORY=200',
+					'SOAJS_GIT_OWNER=soajs',
+					'SOAJS_GIT_BRANCH=develop',
+					'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+					'SOAJS_GIT_REPO=soajs.controller',
+					'SOAJS_DEPLOY_HA=swarm'
+				]
+			}
+		];
 		return cb(null, arr);
+	},
+	scaleService: function (options, cb) {
+		return cb(null);
 	},
 	getContainerLogs: function (data, cb) {
 		return;
 	}
 };
 
-describe("testing maintenance.js", function () {
+describe("testing services.js", function () {
 
+	before(() => {
+		mongoStub.findEntry = function (soajs, opts, cb) {
+			if (opts.collection === 'environment') {
+				return cb(null, envRecord);
+			}
+			return cb(null, {});
+		};
+
+	});
 	describe("testing init", function () {
 
 		it("No Model Requested", function (done) {
@@ -138,86 +162,48 @@ describe("testing maintenance.js", function () {
 
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
-				maintenance = body;
-				maintenance.model = mongoStub;
+				services = body;
+				services.model = mongoStub;
 				done();
 			});
 		});
 
 	});
 
-	describe("streamLogs", function () {
+	describe("listServices", function () {
 
-		it("Failed", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, {
-					_id: '',
-					code: '',
-					deployer: {
-						type: 'manual',
-						selected: 'container.docker.local',
-						container: {
-							docker: {},
-							kubernetes: {}
-						}
-					}
-				});
-			};
+		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
-			req.soajs.inputmaskData.serviceId = '123';
-			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
-				assert.ok(error);
-				done();
-			});
-		});
+			req.soajs.inputmaskData.type = 'daemon';
 
-		it.skip("Success", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, envRecord);
-			};
-			req.soajs.inputmaskData.env = 'dev';
-			req.soajs.inputmaskData.serviceId = '123';
-			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
-				assert.ok(error);
-				done();
-			});
-		});
-
-	});
-
-	describe("maintenance", function () {
-
-		it("Success service", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				if (opts.collection === 'environment') {
-					return cb(null, envRecord);
-				}
-				return cb(null, {});
-			};
-			req.soajs.inputmaskData.env = 'dev';
-			req.soajs.inputmaskData.type = 'service';
-			req.soajs.inputmaskData.serviceName = 'test';
-			req.soajs.inputmaskData.serviceId = '123';
-
-			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
+			services.listServices(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
 
-		it("Success daemon", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				if (opts.collection === 'environment') {
-					return cb(null, envRecord);
-				}
-				return cb(null, {});
-			};
+	});
+
+	describe("scaleService", function () {
+
+		it("Success", function (done) {
 			req.soajs.inputmaskData.env = 'dev';
-			req.soajs.inputmaskData.type = 'daemon';
-			req.soajs.inputmaskData.serviceName = 'test';
+
+			services.scaleService(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
+	describe("deleteService", function () {
+
+		it("Success", function (done) {
+			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
 
-			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
+			services.deleteService(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
