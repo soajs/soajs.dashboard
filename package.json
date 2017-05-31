@@ -34,8 +34,8 @@
     "sinon": "1.17.6",
     "soajs.controller": "1.0.*",
     "soajs.mongodb.data": "1.0.*",
-    "soajs.oauth": "git://github.com/soajs/soajs.oauth#feature/sessionLessCtrl",
-    "soajs.urac": "git://github.com/soajs/soajs.urac#feature/sessionLessCtrl"
+    "soajs.oauth": "1.0.*",
+    "soajs.urac": "1.0.*"
   },
   "dependencies": {
     "async": "2.1.4",
@@ -55,7 +55,7 @@
     "request": "2.79.0",
     "rimraf": "2.5.4",
     "shortid": "^2.2.4",
-    "soajs": "git://github.com/soajs/soajs#feature/sessionLessCtrl",
+    "soajs": "1.0.*",
     "unzip2": "0.2.5",
     "yamljs": "0.2.8"
   }
