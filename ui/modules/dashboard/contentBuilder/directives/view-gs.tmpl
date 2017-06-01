@@ -15,21 +15,25 @@
     <tr class="ng-scope">
         <td><b>{{translation.extKeyRequired[LANG]}}:</b></td>
         <td>{{data.genericService.config.extKeyRequired}}</td>
-        <td><b>{{translation.awareness[LANG]}}:</b></td>
-        <td>{{data.genericService.config.awareness}}</td>
+        <td><b>Urac:</b></td>
+        <td>{{data.genericService.config.urac}}</td>
     </tr>
     <tr class="ng-scope">
         <td><b>oAuth:</b></td>
-        <td>{{data.genericService.options.oauth || false}}</td>
-        <td><b>ACL:</b></td>
-        <td>{{data.genericService.options.acl}}</td>
+        <td>{{data.genericService.config.oauth || false}}</td>
+        <td><b>Urac Profile</b></td>
+	    <td>{{data.genericService.config.urac_Profile}}</td>
     </tr>
     <tr class="ng-scope">
-        <td><b>{{translation.keySecurity[LANG]}}:</b></td>
-        <td>{{data.genericService.options.security}}</td>
-        <td><b>{{translation.persistentSession[LANG]}}:</b></td>
-        <td>{{data.genericService.options.session}}</td>
+        <td><b>Urac ACL:</b></td>
+	    <td>{{data.genericService.config.urac_ACL}}</td>
+        <td><b>Provision ACL:</b></td>
+	    <td>{{data.genericService.config.provision_ACL}}</td>
     </tr>
+	<tr class="ng-scope">
+		<td><b>Session:</b></td>
+		<td>{{data.genericService.config.session}}</td>
+	</tr>
     <tr class="ng-scope">
         <td><b>{{translation.defaultCollection[LANG]}}:</b></td>
         <td>{{data.soajsService.db.collection}}</td>

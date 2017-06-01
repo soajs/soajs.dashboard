@@ -12,12 +12,12 @@
             </div>
             <div>
                 <label>{{translation.createNewDatabase[LANG]}}</label><br/>
-                <input ng-model="config.genericService.options.multitenant" type="radio" value="true" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="true" ng-click="renderServiceMultiTenant(true);"/>
+                <input ng-model="config.genericService.config.extKeyRequired" type="radio" value="true" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="true" ng-click="renderServiceMultiTenant(true);"/>
                 Yes<em>&nbsp;&nbsp;( {{translation.createsNewMultitenantDatabaseSameNameService[LANG]}} )</em><br/>
-                <input ng-model="config.genericService.options.multitenant" type="radio" value="false" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="false" ng-click="renderServiceMultiTenant(false);"/>
+                <input ng-model="config.genericService.config.extKeyRequired" type="radio" value="false" tooltip="{{translation.specifyIfServiceMultitenantNot[LANG]}}" data-ng-value="false" ng-click="renderServiceMultiTenant(false);"/>
                 No<em>&nbsp;&nbsp;( {{translation.specifyDatabaseUseEveryEnvironment[LANG]}} )</em><br/>
             </div>
-            <div ng-show="config.genericService.options.multitenant === false">
+            <div ng-show="config.genericService.config.extKeyRequired === false">
                 <label>{{translation.selectDatabaseToUse[LANG]}}:</label>
                 <tabset>
                     <tab heading="{{env.name}}" ng-repeat="env in envList">
@@ -38,7 +38,7 @@
                     </tab>
                 </tabset>
             </div>
-            <div ng-show="config.genericService.options.multitenant === true">
+            <div ng-show="config.genericService.config.extKeyRequired === true">
                 <label>{{translation.selectClusterToUse[LANG]}}:</label>
                 <tabset>
                     <tab heading="{{env.name}}" ng-repeat="env in envList"><br/>

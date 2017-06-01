@@ -9,9 +9,17 @@ var genericService = {
 				"servicePort": {"type": "integer", "min": 4100},
 				"requestTimeout": {"type": "integer", "min": 10},
 				"requestTimeoutRenewal": {"type": "integer", "max": 10},
+				
 				"extKeyRequired": {"type": "boolean"},
-				"awareness": {"type": "boolean"},
-                "maxFileUpload": { "type": "string" },
+				"oauth": {"type": "boolean"},
+				"session": {"type": "boolean"},
+				
+				"urac": {"type": "boolean"},
+				"urac_Profile": {"type": "boolean"},
+				"urac_ACL": {"type": "boolean"},
+				"provision_ACL": {"type": "boolean"},
+                
+				"maxFileUpload": { "type": "string" },
 				"errors": {
 					"type": "object",
 					"patternProperties": {
@@ -59,10 +67,6 @@ var genericService = {
 				}
 			},
 			"required": ["serviceName", "servicePort", "requestTimeout", "requestTimeoutRenewal", "extKeyRequired", "errors", "schema"]
-		},
-		"options": {
-			"type": "object",
-			"additionalProperties": {"type": "boolean", "required": true}
 		}
 	},
 	"required": ["config", "options"]
