@@ -55,7 +55,7 @@ describe("testing helper host.js", function () {
 				}
 			};
 			mongoStub.findEntries = function (soajs, opts, cb) {
-				cb(null, [
+				var tenants = [
 					{
 						_id: '',
 						code: '',
@@ -69,7 +69,8 @@ describe("testing helper host.js", function () {
 							}
 						]
 					}
-				]);
+				];
+				cb(null, tenants);
 			};
 		});
 		

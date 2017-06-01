@@ -24,6 +24,7 @@ var mongoStub = {
 
 describe("testing helper git.js", function () {
 	var soajs = {
+		registry: {},
 		log: {
 			debug: function (data) {
 				console.log(data);
@@ -335,6 +336,63 @@ describe("testing helper git.js", function () {
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
+		});
+
+	});
+
+	describe("buildDeployerOptions", function () {
+		var output;
+		beforeEach(() => {
+
+		});
+		var envRecord = {
+			_id: '',
+			code: 'DEV',
+			deployer: {
+				"type": "container",
+				"selected": "container.docker.local",
+				"container": {
+					"docker": {
+						"local": {
+							"socketPath": "/var/run/docker.sock"
+						},
+						"remote": {
+							"nodes": ""
+						}
+					},
+					"kubernetes": {
+						"local": {
+							"nginxDeployType": "",
+							"namespace": {},
+							"auth": {
+								"token": ""
+							}
+						},
+						"remote": {
+							"nginxDeployType": "",
+							"namespace": {},
+							"auth": {
+								"token": ""
+							}
+						}
+					}
+				}
+			},
+			services: {
+				config: {
+					ports: {
+						maintenanceInc: 5
+					}
+				}
+			}
+		};
+		it("Success", function (done) {
+			var options = helpers.buildDeployerOptions(envRecord, soajs, mongoStub);
+			console.log(options);
+			assert.ok(options);
+			assert.ok(options.strategy);
+			assert.ok(options.deployerConfig);
+			done();
 		});
 
 	});
