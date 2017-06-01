@@ -399,14 +399,46 @@ var cbTranslation = {
 		"ENG": "Should this service apply device and geo security checks on provided keys?",
 		"FRA": "Should this service apply device and geo security checks on provided keys?"
 	},
-	"secureWithoAuth": {
-		"ENG": "Secure with oAuth",
-		"FRA": "Secure with oAuth"
-	},
-	"cbFormStep3oauthFieldMsg": {
-		"ENG": "Should this service be secured via oAuth?",
-		"FRA": "Should this service be secured via oAuth?"
-	},
+    "secureWithoAuth": {
+        "ENG": "Secure with oAuth",
+        "FRA": "Secure with oAuth"
+    },
+    "requireurac": {
+        "ENG": "URAC",
+        "FRA": "URAC"
+    },
+    "urac_Profile": {
+        "ENG": "URAC Profile",
+        "FRA": "name"
+    },
+    "urac_ACL": {
+        "ENG": "URAC ACL",
+        "FRA": "URAC ACL"
+    },
+    "provision_ACL": {
+        "ENG": "Provision ACL",
+        "FRA": "Provision ACL"
+    },
+    "cbFormStep3oauthFieldMsg": {
+        "ENG": "Should this service be secured via oAuth?",
+        "FRA": "Should this service be secured via oAuth?"
+    },
+    "cbFormStep3uracFieldMsg": {
+        "ENG": "",
+        "FRA": ""
+    },
+    "cbFormStep3urac_ProfileFieldMsg": {
+        "ENG": "",
+        "FRA": ""
+    },
+    "cbFormStep3urac_ACLFieldMsg": {
+        "ENG": "",
+        "FRA": ""
+    },
+    "cbFormStep3provision_ACLFieldMsg": {
+        "ENG": "",
+        "FRA": ""
+    },
 	"basicAPIInformation": {
 		"ENG": "Basic API Information'",
 		"FRA": "Basic API Information'"
