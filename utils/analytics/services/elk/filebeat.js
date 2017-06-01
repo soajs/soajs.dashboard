@@ -21,7 +21,7 @@ module.exports = {
 		"args": ["-c", "/usr/share/filebeat/bin/filebeat -e -c /etc/filebeat/filebeat.yml"]
 	},
 	"deployConfig": {
-		"image": "soajstest/filebeat",
+		"image": "soajsorg/filebeat",
 		"workDir": "/",
 		"memoryLimit": 524288000,
 		"network": "soajsnet",
