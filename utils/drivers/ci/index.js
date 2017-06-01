@@ -115,19 +115,6 @@ module.exports = {
 	},
 
 	/**
-	 * Lists the state of each repo
-	 * @param opts
-	 * @param cb
-	 */
-	listHooks (options, cb) {
-		getStrategy(options, (error, strategy) => {
-			checkError(error, 969, cb, () => {
-				strategy.listHooks(options, cb);
-			});
-		});
-	},
-
-	/**
 	 * Enables/desables a repo
 	 * @param opts
 	 * @param cb
