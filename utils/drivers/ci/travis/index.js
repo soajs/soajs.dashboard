@@ -447,7 +447,6 @@ var lib = {
 	 */
 	setHook (opts, cb) {
 		let params = {};
-		
 		params.uri = "https://" + opts.settings.domain + config.headers.api.url.setHook + "?access_token=" + opts.settings.ciToken;
 		params.headers = {
 			"User-Agent": config.headers.userAgent,
@@ -461,14 +460,13 @@ var lib = {
 			"hook": opts.hook
 		};
 		opts.log.debug(params);
-		
 		//send the request to obtain the Travis token
 		request.put(params, function (error, response, body) {
 			//Check for errors in the request function
 			utils.checkError(error, { code: 971 }, cb, () => {
 				utils.checkError(body === "no access token supplied" || body === "access denied", { code: 974 }, cb, () => {
 					utils.checkError(body === "Sorry, we experienced an error.", { code: 980 }, cb, () => {
-						return cb(null, true)
+						return cb(null, true);
 					});
 				});
 			});
@@ -483,7 +481,6 @@ var lib = {
 	 */
 	listSettings (opts, cb) {
 		let params = {};
-		
 		//check if an access token is provided
 		utils.checkError(!opts.settings.ciToken, { code: 974 }, cb, () => {
 			//check if the repositories owner name is provided
@@ -503,8 +500,7 @@ var lib = {
 					"Host": opts.settings.domain
 				};
 				params.json = true;
-				
-				
+
 				opts.log.debug(params);
 				//send the request to obtain the repos
 				request.get(params, function (error, response, body) {
