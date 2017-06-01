@@ -84,7 +84,7 @@ describe("testing services.js", function () {
 			settings: {
 				domain: 'api.travis-ci.org',
 				owner: 'soajsTestAccount',
-				gitToken: '78fa461ee6f5c2e9588434346a5530e705415ec6'
+				gitToken: '78fa461ee6f5c25530e705415ec6'
 			},
 			recipe: 'sudo',
 			type: 'ci'
@@ -155,7 +155,7 @@ describe("testing services.js", function () {
 				settings: {
 					domain: 'api.travis-ci.org',
 					owner: 'soajsTestAccount',
-					gitToken: '78fa461ee6f5c2e9588434346a5530e705415ec6',
+					gitToken: '78fa461e6a5530e705415ec6',
 					ciToken: '1234'
 				},
 				recipe: 'sudo',
