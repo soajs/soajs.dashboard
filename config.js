@@ -80,12 +80,20 @@ module.exports = {
                 domain: 'https://bitbucket.org/site/oauth2/access_token'
             },
             repoConfigsFolder: __dirname + '/repoConfigs',
-            defaultConfigFilePath: "config.js"
+            defaultConfigFilePath: "config.js",
+            customConfigFilesPath: {
+                "soajsFile": "soa.js",
+                "swaggerFile": "swagger.yml"
+            }
         },
         "bitbucket_enterprise": {
             userAgent: "SOAJS Bitbucket App",
             defaultConfigFilePath: "config.js",
             repoConfigsFolder: __dirname + '/repoConfigs',
+            customConfigFilesPath: {
+                "soajsFile": "soa.js",
+                "swaggerFile": "swagger.yml"
+            },
             // required for OAuth
             apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
             downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
@@ -104,6 +112,10 @@ module.exports = {
             },
             "tokenScope": ["repo", "admin:repo_hook"],
             "defaultConfigFilePath": "config.js",
+            "customConfigFilesPath": {
+                "soajsFile": "soa.js",
+                "swaggerFile": "swagger.yml"
+            },
             "repoConfigsFolder": __dirname + '/repoConfigs'
         }
     },
