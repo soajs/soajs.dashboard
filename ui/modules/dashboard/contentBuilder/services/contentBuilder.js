@@ -258,16 +258,18 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
                 data['maxFileUpload'] = currentScope.config.genericService.config.maxFileUpload;
             }
 
-			data['extKeyRequired'] = (currentScope.config.genericService.config.extKeyRequired);
-			data['awareness'] = (currentScope.config.genericService.config.awareness);
-			data['session'] = (currentScope.config.genericService.options.session);
-			data['acl'] = (currentScope.config.genericService.options.acl);
-			data['security'] = (currentScope.config.genericService.options.security);
-			data['oauth'] = (currentScope.config.genericService.options.oauth);
+            data['extKeyRequired'] = (currentScope.config.genericService.config.extKeyRequired=== false ? false  : true);
+            data['session'] = (currentScope.config.genericService.options.session=== true ? true  : false);
+            data['oauth'] = (currentScope.config.genericService.options.oauth=== false ? false  : true);
+            // ja make sure  config.genericService.config and not config.genericService.options
+            data['urac'] =  (currentScope.config.genericService.config.urac === false ? false  : true);
+            data['urac_Profile'] = (currentScope.config.genericService.config.urac_Profile=== true ? true  : false);
+            data['urac_ACL'] = (currentScope.config.genericService.config.urac_ACL=== true ? true  : false);
+            data['provision_ACL'] = (currentScope.config.genericService.config.provision_ACL=== true ? true  : false);
 
-			if(currentScope.config.genericService.options.multitenant) {
+
+            if(currentScope.config.genericService.options.multitenant) {
 				data['extKeyRequired'] = true;
-				data['security'] = true;
 			}
 
 			if(currentScope.config.soajsService.db.collection) {
