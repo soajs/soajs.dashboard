@@ -229,6 +229,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 			label: '',
 			actions: []
 		};
+
 		buildForm(currentScope, null, options);
 
 		function reconstructData() {
@@ -337,7 +338,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 			for(var i in commonFields) {
 				if(commonFields.hasOwnProperty(i)) {
 					if(commonFields[i].required) {
-						commonFields[i].req = commonFields[i].required;
+						commonFields[i].req = commonFields[i].required ? true : false;
 						delete commonFields[i].required;
 					}
 				}
@@ -350,10 +351,9 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 					for(var field in formConfig[j]) {
 						if(formConfig[j].hasOwnProperty(field)) {
 							if(field === 'required') {
-								formConfig[j].req = formConfig[j]['required'];
+								formConfig[j].req = formConfig[j]['required'] ?formConfig[j]['required']  : false ;
 								delete formConfig[j]['required'];
 							}
-
 							if(field === 'type') {
 								formConfig[j]._type = formConfig[j]['type'];
 								delete formConfig[j]['type'];

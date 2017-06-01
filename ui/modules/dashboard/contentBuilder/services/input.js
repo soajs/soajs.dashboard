@@ -57,10 +57,11 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', func
 				'_type': formType,
 				'placeholder': formData.placeholder || '',
 				'tooltip': formData.tooltip || '',
-				'req': (formData.required === 'true'),
+				'req': (formData.required === 'true'? true: false),
 				'value': populateValue(formType, formData.defaultValue),
 				'limit': parseInt(formData.limit)
 			};
+
 
 			var found = false;
 			for(var i = 0; i < currentScope.config.soajsUI.form.add.length; i++) {
@@ -92,7 +93,7 @@ cbInputService.service('cbInputHelper', ['ngDataApi', '$timeout', '$modal', func
 				imfv = JSON.parse(imfv);
 			}
 			var imfv2 = {
-				"req": ((formData.required === 'true') || formData.required[0] === true),
+				"req": ( ((formData.required === 'true') || formData.required[0] === true) ? true : false),
 				"source": ["body." + machineName],
 				"validation": imfv
 			};

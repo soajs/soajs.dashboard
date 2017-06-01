@@ -18,6 +18,7 @@ cbAPIService.service('cbAPIHelper', ['ngDataApi', '$timeout', '$modal', function
 		if(formData.groupMain && formData.groupMain === "true") { gcAPI._apiInfo.groupMain = true; }
 		if(formData.inputs && Object.keys(formData.inputs).length > 0) { gcAPI.commonFields = formData.inputs; }
 
+
 		var wfAPI = {
 			"method": formData.method,
 			"mw": {'code': formData.code},
