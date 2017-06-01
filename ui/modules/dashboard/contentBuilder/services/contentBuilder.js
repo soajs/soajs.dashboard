@@ -201,7 +201,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 			else {
 				currentScope.envList = [];
 				response.forEach(function(oneEnvironment) {
-					if(oneEnvironment.code !== 'dashboard'){
+					if(oneEnvironment.code.toLowerCase() !== 'dashboard'){
 						if(Object.keys(oneEnvironment.dbs.clusters).length > 0) {
 							currentScope.nextStep = true;
 						}
@@ -212,6 +212,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 						});
 					}
 				});
+				
 				if(cb && typeof(cb) === 'function') { cb(); }
 			}
 		});
