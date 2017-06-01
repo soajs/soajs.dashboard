@@ -65,9 +65,9 @@ describe("testing ci index.js", function () {
 
 	});
 
-	describe("testing listHooks", function () {
+	describe("empty repo settings", function () {
 
-		it("Call listHooks", function (done) {
+		it("empty repo settings", function (done) {
 			var options = {
 				log: {
 					debug: function () {

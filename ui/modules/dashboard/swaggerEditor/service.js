@@ -8,11 +8,43 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 	 */
 	function generateService(currentScope){
 		var extKeyRequired = false;
+		var urac= false;
+		var urac_Profile= false;
+		var urac_ACL = false;
+		var provision_ACL = false;
 		if(Array.isArray(currentScope.form.formData.extKeyRequired)){
 			extKeyRequired = (currentScope.form.formData.extKeyRequired[0] === 'true');
 		}
 		else{
 			extKeyRequired = (currentScope.form.formData.extKeyRequired === 'true');
+		}
+		
+		if(Array.isArray(currentScope.form.formData.urac)){
+			urac = (currentScope.form.formData.urac[0] === 'true');
+		}
+		else{
+			urac = (currentScope.form.formData.urac=== 'true');
+		}
+		
+		if(Array.isArray(currentScope.form.formData.urac_Profile)){
+			urac_Profile = (currentScope.form.formData.urac_Profile[0] === 'true');
+		}
+		else{
+			urac_Profile = (currentScope.form.formData.urac_Profile=== 'true');
+		}
+		
+		if(Array.isArray(currentScope.form.formData.urac_ACL)){
+			urac_ACL = (currentScope.form.formData.urac_ACL[0] === 'true');
+		}
+		else{
+			urac_ACL = (currentScope.form.formData.urac_ACL=== 'true');
+		}
+		
+		if(Array.isArray(currentScope.form.formData.provision_ACL)){
+			provision_ACL = (currentScope.form.formData.provision_ACL[0] === 'true');
+		}
+		else{
+			provision_ACL = (currentScope.form.formData.provision_ACL=== 'true');
 		}
 		
 		var oauth = false;
@@ -135,7 +167,11 @@ swaggerEditorSrv.service('swaggerEditorSrv',['$timeout', 'ngDataApi', function (
 						"requestTimeoutRenewal": requestTimeoutRenewal,
 						"extKeyRequired": extKeyRequired,
 						"oauth": oauth,
-						"session": session
+						"session": session,
+						"urac": urac,
+						"urac_Profile": urac_Profile,
+						"urac_ACL": urac_ACL,
+						"provision_ACL": provision_ACL
 					},
 					"yaml": yaml
 				}

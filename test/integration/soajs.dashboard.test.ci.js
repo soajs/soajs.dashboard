@@ -182,7 +182,12 @@ describe("DASHBOARD TESTS: Continuous integration", function (){
             },
             "form":{
                 "port": 80,
-                "settings": {},
+                "settings": {
+	                build_pull_requests:false,
+	                build_pushes: true,
+	                builds_only_with_travis_yml: true,
+	                maximum_number_of_builds: 0
+                },
                 "variables":{
                     "var1": "val1",
                     "var2": "val2"
