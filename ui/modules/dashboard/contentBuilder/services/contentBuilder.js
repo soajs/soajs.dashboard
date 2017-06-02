@@ -172,7 +172,7 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
 				"soajsService": data.soajsService,
 				"soajsUI": data.soajsUI
 			};
-			if(currentScope.config.genericService.options.multitenant) {
+			if(currentScope.config.genericService.config.extKeyRequired) {
 				for(var envName in data.soajsService.db.config) {
 					var dbName = data.name;
 					currentScope.config.clustertoUse[envName] = {
@@ -259,18 +259,12 @@ contentBuilderService.service('cbHelper', ['ngDataApi', '$timeout', '$modal', fu
             }
 
             data['extKeyRequired'] = (currentScope.config.genericService.config.extKeyRequired=== false ? false  : true);
-            data['session'] = (currentScope.config.genericService.options.session=== true ? true  : false);
-            data['oauth'] = (currentScope.config.genericService.options.oauth=== false ? false  : true);
-            // ja make sure  config.genericService.config and not config.genericService.options
+            data['session'] = (currentScope.config.genericService.config.session=== true ? true  : false);
+            data['oauth'] = (currentScope.config.genericService.config.oauth=== false ? false  : true);
             data['urac'] =  (currentScope.config.genericService.config.urac === false ? false  : true);
             data['urac_Profile'] = (currentScope.config.genericService.config.urac_Profile=== true ? true  : false);
             data['urac_ACL'] = (currentScope.config.genericService.config.urac_ACL=== true ? true  : false);
             data['provision_ACL'] = (currentScope.config.genericService.config.provision_ACL=== true ? true  : false);
-
-
-            if(currentScope.config.genericService.options.multitenant) {
-				data['extKeyRequired'] = true;
-			}
 
 			if(currentScope.config.soajsService.db.collection) {
 				data['collection'] = currentScope.config.soajsService.db.collection;

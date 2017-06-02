@@ -17,7 +17,7 @@ module.exports = {
 		"soajs.service.mode": "global"
 	},
 	"deployConfig": {
-		"image": "soajstest/metricbeat",
+		"image": "soajsorg/metricbeat",
 		"memoryLimit": 500000000,
 		"network": "soajsnet",
 		"replication": {

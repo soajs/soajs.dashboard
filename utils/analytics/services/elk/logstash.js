@@ -19,7 +19,7 @@ module.exports = {
 		"args": ["-c", "logstash -f /usr/share/logstash/config/logstash.conf"]
 	},
 	"deployConfig": {
-		"image": "soajstest/logstash",
+		"image": "soajsorg/logstash",
 		"workDir": "/",
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",

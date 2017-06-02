@@ -424,20 +424,20 @@ var cbTranslation = {
         "FRA": "Should this service be secured via oAuth?"
     },
     "cbFormStep3uracFieldMsg": {
-        "ENG": "",
-        "FRA": ""
+        "ENG": "This service requires access to the logged in user record in its business logic",
+        "FRA": "This service requires access to the logged in user record in its business logic"
     },
     "cbFormStep3urac_ProfileFieldMsg": {
-        "ENG": "",
-        "FRA": ""
+        "ENG": "This service requires access to the logged in user profile in its business logic",
+        "FRA": "This service requires access to the logged in user profile in its business logic"
     },
     "cbFormStep3urac_ACLFieldMsg": {
-        "ENG": "",
-        "FRA": ""
+        "ENG": "This service requires access to the logged in user Access Level in its business logic",
+        "FRA": "This service requires access to the logged in user Access Level in its business logic"
     },
     "cbFormStep3provision_ACLFieldMsg": {
-        "ENG": "",
-        "FRA": ""
+        "ENG": "This service requires access to package and tenant ACL in its business logic",
+        "FRA": "This service requires access to package and tenant ACL in its business logic"
     },
 	"basicAPIInformation": {
 		"ENG": "Basic API Information'",

@@ -15,7 +15,7 @@ module.exports = {
 	},
 	"deployConfig": {
 		"version": "5.3.0",
-		"image": "soajstest/kibana",
+		"image": "soajsorg/kibana",
 		"workDir": "/",
 		"memoryLimit": 1000000000,
 		"network": "soajsnet",

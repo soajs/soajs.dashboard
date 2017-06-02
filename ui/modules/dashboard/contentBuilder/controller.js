@@ -92,7 +92,7 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$scope', '$routeParams', '$
 		else {
 			$scope.config.clustertoUse = {};
 		}
-		$scope.config.genericService.options.multitenant = multitenant;
+		$scope.config.genericService.config.extKeyRequired = multitenant;
 		$scope.config.soajsService.db.multitenant = multitenant;
 	};
 
@@ -220,27 +220,30 @@ contentBuilderApp.controller("contentBuilderCtrl", ['$scope', '$routeParams', '$
                     if(formData['maxFileUpload']) {
                         $scope.config.genericService.config.maxFileUpload = formData['maxFileUpload'];
                     }
-					if(formData['awareness']) {
-						$scope.config.genericService.config.awareness = (formData['awareness'] && formData['awareness'] === 'true');
-					}
+					
 					if(formData['extKeyRequired']) {
 						$scope.config.genericService.config.extKeyRequired = (formData['extKeyRequired'] && formData['extKeyRequired'] === 'true');
 					}
-					if(formData['security']) {
-						$scope.config.genericService.options.security = (formData['security'] && formData['security'] === 'true');
-					}
 					if(formData['session']) {
-						$scope.config.genericService.options.session = (formData['session'] && formData['session'] === 'true');
-					}
-					if(formData['acl']) {
-						$scope.config.genericService.options.acl = (formData['acl'] && formData['acl'] === 'true');
+						$scope.config.genericService.config.session = (formData['session'] && formData['session'] === 'true');
 					}
 					if(formData['oauth']) {
-						$scope.config.genericService.options.oauth = (formData['oauth'] && formData['oauth'] === 'true');
+						$scope.config.genericService.config.oauth = (formData['oauth'] && formData['oauth'] === 'true');
+					}
+					if(formData['urac']) {
+						$scope.config.genericService.config.urac = (formData['urac'] && formData['urac'] === 'true');
+					}
+					if(formData['urac_Profile']) {
+						$scope.config.genericService.config.urac_Profile = (formData['urac_Profile'] && formData['urac_Profile'] === 'true');
+					}
+					if(formData['urac_ACL']) {
+						$scope.config.genericService.config.urac_ACL = (formData['urac_ACL'] && formData['urac_ACL'] === 'true');
+					}
+					if(formData['provision_ACL']) {
+						$scope.config.genericService.config.provision_ACL = (formData['provision_ACL'] && formData['provision_ACL'] === 'true');
 					}
 
 					$scope.goForward();
-
 				}
 				catch(e) {
 					$scope.$parent.displayAlert('danger', translation.invalidErrorCodeFormatPleaseMakeJSONObject[LANG]);
