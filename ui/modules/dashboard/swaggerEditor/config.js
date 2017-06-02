@@ -178,6 +178,58 @@ var swaggerEditorConfig = {
 				
 			},
 			{
+				'name': 'urac',
+				'label': "urac",
+				'type': 'radio',
+				'value': [
+					{l: 'true', v: 'true'},
+					{l: 'false', v: 'false', selected: true}
+				],
+				'tooltip': "Choose your property",
+				'required': true,
+				'fieldMsg': "This service requires access to the logged in user record in its business logic"
+				
+			},
+			{
+				'name': 'urac_Profile',
+				'label': "urac_Profile",
+				'type': 'radio',
+				'value': [
+					{l: 'true', v: 'true'},
+					{l: 'false', v: 'false', selected: true}
+				],
+				'tooltip': "Choose your property",
+				'required': true,
+				'fieldMsg': "This service requires access to the logged in user profile in its business logic"
+				
+			},
+			{
+				'name': 'urac_ACL',
+				'label': "urac_ACL",
+				'type': 'radio',
+				'value': [
+					{l: 'true', v: 'true'},
+					{l: 'false', v: 'false', selected: true}
+				],
+				'tooltip': "Choose your property",
+				'required': true,
+				'fieldMsg': "This service requires access to the logged in user Access Level in its business logic"
+				
+			},
+			{
+				'name': 'provision_ACL',
+				'label': "provision_ACL",
+				'type': 'radio',
+				'value': [
+					{l: 'true', v: 'true'},
+					{l: 'false', v: 'false', selected: true}
+				],
+				'tooltip': "Choose your property",
+				'required': true,
+				'fieldMsg': "This service requires access to package and tenant ACL in its business logic"
+				
+			},
+			{
 				'name': 'dbs',
 				'label': 'Database',
 				'type': 'group',

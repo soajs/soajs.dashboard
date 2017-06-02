@@ -380,6 +380,7 @@ var cbConfig = {
 				    "tooltip": translation.cbFormStep3errorsTooltip[LANG],
 					'fieldMsg': translation.cbFormStep3errorsFieldMsg[LANG]
 				},
+
 				{
 					"name": "extKeyRequired",
 					"label": translation.requiresExternalKey[LANG],
@@ -387,14 +388,6 @@ var cbConfig = {
 					"value": [{"v": true}, {"v": false}],
 					"required": true,
 					'fieldMsg': translation.cbFormStep3extKeyRequiredFieldMsg[LANG]
-				},
-				{
-					"name": "awareness",
-					"label": translation.requiresAwareness[LANG],
-					"type": "radio",
-					"value": [{"v": true}, {"v": false}],
-					"required": true,
-					'fieldMsg': translation.cbFormStep3requiresAwarenessFieldMsg[LANG]
 				},
 				{
 					"name": "session",
@@ -405,22 +398,6 @@ var cbConfig = {
 					'fieldMsg': translation.cbFormStep3SessionFieldMsg[LANG]
 				},
 				{
-					"name": "acl",
-					"label": translation.supportsAccessLevels[LANG],
-					"type": "radio",
-					"value": [{"v": true}, {"v": false}],
-					"required": true,
-					'fieldMsg': translation.cbFormStep3AccessLevelsFieldMsg[LANG]
-				},
-				{
-					"name": "security",
-					"label": translation.supportsKeySecurity[LANG],
-					"type": "radio",
-					"value": [{"v": true}, {"v": false}],
-					"required": true,
-					'fieldMsg': translation.cbFormStep3KeySecurityFieldMsg[LANG]
-				},
-				{
 					"name": "oauth",
 					"label": translation.secureWithoAuth[LANG],
 					"type": "radio",
@@ -428,6 +405,42 @@ var cbConfig = {
 					"required": true,
 					'fieldMsg': translation.cbFormStep3oauthFieldMsg[LANG]
 				}
+                ,
+                {
+                    "name": "urac",
+                    "label": translation.requireurac[LANG],
+                    "type": "radio",
+                    "value": [{"v": true}, {"v": false}],
+                    "required": true,
+                    'fieldMsg': translation.cbFormStep3uracFieldMsg[LANG]
+                }
+                ,
+                {
+                    "name": "urac_Profile",
+                    "label": translation.urac_Profile[LANG],
+                    "type": "radio",
+                    "value": [{"v": true}, {"v": false}],
+                    "required": true,
+                    'fieldMsg': translation.cbFormStep3urac_ProfileFieldMsg[LANG]
+                }
+                ,
+                {
+                    "name": "urac_ACL",
+                    "label": translation.urac_ACL[LANG],
+                    "type": "radio",
+                    "value": [{"v": true}, {"v": false}],
+                    "required": true,
+                    'fieldMsg': translation.cbFormStep3urac_ACLFieldMsg[LANG]
+                }
+                ,
+                {
+                    "name": "provision_ACL",
+                    "label": translation.provision_ACL[LANG],
+                    "type": "radio",
+                    "value": [{"v": true}, {"v": false}],
+                    "required": true,
+                    'fieldMsg': translation.cbFormStep3provision_ACLFieldMsg[LANG]
+                }
 			]
 		},
 		step4: [

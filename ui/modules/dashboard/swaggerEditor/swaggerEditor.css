@@ -52,6 +52,10 @@
     cursor: pointer;
 }
 
+#provision_ACL-wrapper label,
+#urac_ACL-wrapper label,
+#urac_Profile-wrapper label,
+#urac-wrapper label,
 #extKeyRequired-wrapper label,
 #oauth-wrapper label,
 #session-wrapper label{
@@ -59,6 +63,10 @@
     width:115px;
 }
 
+#provision_ACL-wrapper ul,
+#urac_ACL-wrapper ul,
+#urac_Profile-wrapper ul,
+#urac-wrapper ul,
 #extKeyRequired-wrapper ul,
 #oauth-wrapper ul,
 #session-wrapper ul{
@@ -75,6 +83,10 @@
 }
 
 .dbsList ul li,
+#provision_ACL-wrapper ul li,
+#urac_ACL-wrapper ul li,
+#urac_Profile-wrapper ul li,
+#urac-wrapper ul li,
 #extKeyRequired-wrapper ul li,
 #oauth-wrapper ul li,
 #session-wrapper ul li{

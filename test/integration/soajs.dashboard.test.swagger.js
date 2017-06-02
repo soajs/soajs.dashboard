@@ -287,6 +287,12 @@ describe("Swagger", function () {
 						"requestTimeout": 30,
 						"requestTimeoutRenewal": 5,
 						"extKeyRequired": false,
+						"oauth": false,
+						"urac": false,
+						"urac_Profile": false,
+						"urac_ACL": false,
+						"provision_ACL": false,
+						"session": false,
 						"dbs": [
 							{
 								"name": "myDatabase",
@@ -320,7 +326,12 @@ describe("Swagger", function () {
 					"versions": {
 						"1": {
 							"extKeyRequired": oParams.form.data.service.extKeyRequired,
-							"awareness": true,
+							"oauth": false,
+							"urac": false,
+							"urac_Profile": false,
+							"urac_ACL": false,
+							"provision_ACL": false,
+							"session": false,
 							"apis": [
 								{
 									"l": "get users",
