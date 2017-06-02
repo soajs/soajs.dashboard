@@ -88,7 +88,7 @@ describe("testing services.js", function () {
 			settings: {
 				domain: 'api.travis-ci.org',
 				owner: 'soajsTestAccount',
-				gitToken: '78fa461ee6f5'
+				gitToken: 'mygitToken'
 			},
 			recipe: 'sudo',
 			type: 'ci'
@@ -171,7 +171,7 @@ describe("testing services.js", function () {
 				settings: {
 					domain: 'api.travis-ci.org',
 					owner: 'soajsTestAccount',
-					gitToken: '78fa461e6a55',
+					gitToken: 'mygitToken',
 					ciToken: '1234'
 				},
 				recipe: 'sudo',
@@ -199,7 +199,7 @@ describe("testing services.js", function () {
 			fs.readFile(path, { "encoding": "utf8" }, function (error, data) {
 				assert.ifError(error);
 				// assert.ok(data);
-
+				
 				var configData = {
 					"config": {
 						"driver": "travis",
@@ -220,7 +220,7 @@ describe("testing services.js", function () {
 				});
 			});
 		});
-
+		
 		it("Success saveConfig without recipe", function (done) {
 			var configData = {
 				"config": {
@@ -241,7 +241,7 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 		it.skip("saveConfig failed recipe", function (done) {
 			var configData = {
 				"config": {
@@ -298,7 +298,7 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success - disable", function (done) {
 			req.soajs.inputmaskData = {
 				enable: false
@@ -352,14 +352,14 @@ describe("testing services.js", function () {
 		});
 		
 	});
-
+	
 	describe("testing syncRepos", function () {
-
+		
 		before(() => {
 		});
 		after(() => {
 		});
-
+		
 		it("Success syncRepos", function (done) {
 			ciDriver.listRepos = function (options, cb) {
 				var repos = [
@@ -408,8 +408,8 @@ describe("testing services.js", function () {
 					settings: {
 						domain: 'api.travis-ci.org',
 						owner: 'soajsTestAccount',
-						gitToken: '36431b4301b24da980df1b949170e7a93b79d967',
-						ciToken: '8ZXvX0MudBHQRGY68xEBsg'
+						gitToken: '36431b4301b',
+						ciToken: '8ZXvX0Mu'
 					},
 					recipe: 'sudo: required\nlanguage',
 					type: 'ci'
@@ -424,16 +424,16 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe.skip("testing downloadRecipe", function () {
-
+		
 		before(() => {
 		});
 		after(() => {
 		});
-
+		
 		it("Success downloadRecipe", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var rec = {
@@ -442,8 +442,8 @@ describe("testing services.js", function () {
 					settings: {
 						domain: 'api.travis-ci.org',
 						owner: 'soajsTestAccount',
-						gitToken: '36431b4301b24da980df1b949170e7a93b79d967',
-						ciToken: '8ZXvX0MudBHQRGY68xEBsg'
+						gitToken: 'mygitToken',
+						ciToken: '8ZXvX0MudBH'
 					},
 					recipe: 'sudo: required\nlanguage',
 					type: 'ci'
@@ -458,6 +458,6 @@ describe("testing services.js", function () {
 				done();
 			});
 		});
-
+		
 	});
 });

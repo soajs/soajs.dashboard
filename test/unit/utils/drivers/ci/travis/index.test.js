@@ -609,7 +609,7 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing listSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
@@ -623,7 +623,7 @@ describe("testing ci travis index.js", function () {
 				});
 			done();
 		});
-
+		
 		it("Call listSettings", function (done) {
 			var options = {
 				log: {
@@ -648,5 +648,5 @@ describe("testing ci travis index.js", function () {
 			});
 		});
 	});
-
+	
 });
