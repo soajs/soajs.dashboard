@@ -196,13 +196,15 @@ var config = {
 				"requestTimeoutRenewal": {"type": "integer", "max": 10},
 				"extKeyRequired": {"type": "boolean"},
 				"session": {"type": "boolean"},
+                "oauth": {"type": "boolean"},
+                "urac": {"type": "boolean"},
+                "urac_Profile": {"type": "boolean"},
+                "urac_ACL": {"type": "boolean"},
+                "provision_ACL": {"type": "boolean"},
+
 				"swagger": {"type": "boolean"},
-				"acl": {"type": "boolean"},
-				"oauth": {"type": "boolean"},
-				"security": {"type": "boolean"},
 				"multitenant": {"type": "boolean"},
 				"roaming": {"type": "boolean"},
-				"awareness": {"type": "boolean"},
 				"awarenessEnv": {"type": "boolean"},
 				"errors": {
 					"oneOf":[

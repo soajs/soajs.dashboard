@@ -339,6 +339,35 @@ module.exports = {
                 "required": true,
                 "validation": {"type": "boolean"}
             },
+
+            "urac": {
+                "required": true,
+                "source": ["body.urac"],
+                "validation": {
+                    "type": "boolean"
+                }
+            },
+            "urac_Profile": {
+                "required": true,
+                "source": ["body.urac_Profile"],
+                "validation": {
+                    "type": "boolean"
+                }
+            },
+            "urac_ACL": {
+                "required": true,
+                "source": ["body.urac_ACL"],
+                "validation": {
+                    "type": "boolean"
+                }
+            },
+            "provision_ACL": {
+                "required": true,
+                "source": ["body.provision_ACL"],
+                "validation": {
+                    "type": "boolean"
+                }
+            },
             "requestTimeout": {
                 "source": ['body.requestTimeout'],
                 "required": true,
@@ -365,13 +394,6 @@ module.exports = {
                             "groupMain": {"type": "boolean", "required": false}
                         }
                     }
-                }
-            },
-            "awareness": {
-                "required": true,
-                "source": ["body.awareness"],
-                "validation": {
-                    "type": "boolean"
                 }
             },
 
