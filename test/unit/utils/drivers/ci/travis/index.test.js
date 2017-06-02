@@ -610,7 +610,7 @@ describe("testing ci travis index.js", function () {
 		});
 	});
 
-	describe.skip("testing listSettings", function () {
+	describe("testing listSettings", function () {
 		before(function (done) {
 			nock('https://my.travis')
 				.get('/repos/123456/settings?access_token=access1')
@@ -628,7 +628,6 @@ describe("testing ci travis index.js", function () {
 			var options = {
 				log: {
 					debug: function (data) {
-						console.log(data);
 					}
 				},
 				_id: 'aaa',
@@ -644,7 +643,7 @@ describe("testing ci travis index.js", function () {
 			};
 			utils.listSettings(options, function (error, body) {
 				assert.ok(body);
-				assert.ok(body.maximum_number_of_builds);
+				assert.ok(body.builds_only_with_travis_yml);
 				done();
 			});
 		});

@@ -3,7 +3,7 @@ var assert = require("assert");
 var helper = require("../../../../helper.js");
 var utils = helper.requireModule('./utils/drivers/ci/index.js');
 
-describe("testing ci index.js", function () {
+describe.skip("testing ci index.js", function () {
 	
 	describe("testing addEnvVar", function () {
 		

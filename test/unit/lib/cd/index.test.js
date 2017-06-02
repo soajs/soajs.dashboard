@@ -62,7 +62,7 @@ var req = {
 
 var helpers = {
 	checkRecordConfig: function (req, envs, record, cb) {
-		var servicesList = [ {
+		var servicesList = [{
 			id: 'gzquhel9wdcrfhvpimj9r6g7o',
 			mode: 'replicated',
 			repo: 'soajs.controller',
@@ -87,7 +87,7 @@ var helpers = {
 			},
 			branch: 'master',
 			strategy: 'update'
-		} ];
+		}];
 		return cb(null, servicesList);
 	},
 	processOneService: function (req, BL, oneService, deployer, callback) {
@@ -132,17 +132,19 @@ var helpers = {
 		];
 		return fcb(null, envsSample);
 	},
-	doesServiceHaveUpdates: function (req, config, updateList, oneService, catalogs, soajsImages, cb) {
-		return cb();
+	doesServiceHaveUpdates: function (req, config, updateList, oneService, catalogs, images, cb) {
+		return cb(null, true);
 	},
 	getLatestSOAJSImageInfo: function (config, cb) {
 		var images = [];
 		return cb(null, images);
 	},
-	getServices: function (config, req, deployer, cb) {
-		var services = [ {
-			_id: ''
-		} ];
+	getServices: function (config, req, deployer, {}, cb) {
+		var services = [
+			{
+				_id: '1'
+			}
+		];
 		return cb(null, services);
 	},
 	callDeployer: function (config, req, registry, deployer, opName, cb) {
@@ -251,10 +253,65 @@ describe("testing services.js", function () {
 	
 	describe("testing getUpdates", function () {
 		
-		it("Success", function (done) {
+		it("Success getUpdates", function (done) {
+			mongoStub.findEntries = function (soajs, opts, cb) {
+				var records = [
+					{
+						"_id": '12',
+						"name": "serviceCatalog",
+						"type": "soajs",
+						"description": "This is a test catalog for deploying service instances",
+						"recipe": {
+							"deployOptions": {
+								"image": {
+									"prefix": "soajstest",
+									"name": "soajs",
+									"tag": "latest"
+								}
+							},
+							"buildOptions": {
+								"settings": {
+									"accelerateDeployment": true
+								},
+								"env": {
+									"SOAJS_GIT_TOKEN": {
+										"type": "computed",
+										"value": "$SOAJS_GIT_TOKEN"
+									},
+									"SOAJS_DEPLOY_HA": {
+										"type": "computed",
+										"value": "$SOAJS_DEPLOY_HA"
+									},
+									"SOAJS_HA_NAME": {
+										"type": "computed",
+										"value": "$SOAJS_HA_NAME"
+									},
+									"SOAJS_MONGO_PORT": {
+										"type": "computed",
+										"value": "$SOAJS_MONGO_PORT_N"
+									}
+								},
+								"cmd": {
+									"deploy": {
+										"command": [
+											"bash",
+											"-c"
+										],
+										"args": [
+											"node index.js -T service"
+										]
+									}
+								}
+							}
+						}
+					}];
+				return cb(null, records);
+			};
 			req.soajs.inputmaskData = {};
-			cd.getUpdates(config, req, deployer, helpers, function (error, body) {
-				// assert.ok(body);
+			cd.getUpdates(config, req, deployer, helpers, {}, function (error, body) {
+				console.log(error);
+				console.log(body);
+				assert.ok(body);
 				done();
 			});
 		});
@@ -263,7 +320,7 @@ describe("testing services.js", function () {
 	
 	describe("testing cdDeploy", function () {
 		
-		it("Success", function (done) {
+		it("Success cdDeploy", function (done) {
 			mongoStub.findEntries = function (soajs, opts, cb) {
 				if (opts.collection === 'cicd') {
 					var records = [
@@ -273,24 +330,89 @@ describe("testing services.js", function () {
 							settings: {
 								domain: 'api.travis-ci.org',
 								owner: 'soajs',
-								gitToken: '1234567890',
+								gitToken: 'aaaabbbb',
 								ciToken: 'abcd1234'
 							},
 							recipe: 'sudo ******',
 							type: 'ci'
-						} ];
+						}];
 					return cb(null, records);
 				}
 				cb(null, []);
 			};
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'cicd') {
+					var record = {
+						"_id": '5928052b61',
+						"DEV": {
+							"branch": "master",
+							"strategy": "notify",
+							"controller": {
+								"branch": "master",
+								"strategy": "update",
+								"v2": {
+									"branch": "master",
+									"strategy": "notify"
+								}
+							}
+						},
+						"type": "cd"
+					};
+					return cb(null, record);
+				}
+				cb(null, []);
+			};
 			
-			req.soajs.inputmaskData = {};
+			req.soajs.inputmaskData = {
+				deploy_token: "aaaabbbb"
+			};
 			cd.cdDeploy(config, req, deployer, helpers, function (error, body) {
-				// assert.ok(body);
+				assert.ok(body);
 				done();
 			});
 		});
 		
 	});
-	
+
+	describe("testing markRead", function () {
+
+		it("Success markRead by id", function (done) {
+			req.soajs.inputmaskData = {
+				data: {
+					id: '1'
+				}
+			};
+			cd.markRead(config, req, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+
+		it("Success markRead all", function (done) {
+			req.soajs.inputmaskData = {
+				data: {
+					all: '1'
+				}
+			};
+			cd.markRead(config, req, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+	describe("testing saveConfig", function () {
+
+		it("Success saveConfig", function (done) {
+			req.soajs.inputmaskData = {
+				config: {}
+			};
+			cd.saveConfig(config, req, helpers, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+
+	});
+
 });

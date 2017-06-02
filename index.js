@@ -1172,7 +1172,7 @@ service.init(function () {
 	 */
 	service.get("/cd/updates", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.getUpdates(config, req, deployer, cdHelpers, function (error, data) {
+			BL.getUpdates(config, req, deployer, cdHelpers, cloudServicesBL, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
