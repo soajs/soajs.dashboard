@@ -2,6 +2,7 @@
 
 var request = require("request");
 var fs = require("fs");
+var path = require("path");
 var mkdirp = require("mkdirp");
 var rimraf = require("rimraf");
 
@@ -35,17 +36,17 @@ function checkIfError (error, options, cb, callback) {
 				};
 			}
 		}
-		
+
 		return cb(error);
 	}
-	
+
 	return callback();
 }
 
 var driver = {
-	
+
 	helper: {},
-	
+
 	"login": function (soajs, data, model, options, cb) {
 		data.checkIfAccountExists(soajs, model, options, function (error, count) {
 			checkIfError(error, {}, cb, function () {
@@ -80,7 +81,7 @@ var driver = {
 			});
 		});
 	},
-	
+
 	"logout": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error || !accountRecord, {}, cb, function () {
@@ -103,7 +104,7 @@ var driver = {
 			});
 		});
 	},
-	
+
 	"getRepos": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			checkIfError(error || !accountRecord, {}, cb, function () {
@@ -122,7 +123,7 @@ var driver = {
 			});
 		});
 	},
-	
+
 	"getBranches": function (soajs, data, model, options, cb) {
 		data.getAccount(soajs, model, options, function (error, accountRecord) {
 			// todo : add code
@@ -143,7 +144,7 @@ var driver = {
 			});
 		});
 	},
-	
+
 	"getJSONContent": function (soajs, data, model, options, cb) {
 		driver.helper.getRepoContent(options, function (error, response) {
 			checkIfError(error, {}, cb, function () {
@@ -153,14 +154,13 @@ var driver = {
 					configFile = configFile.toString().replace(/require\s*\(.+\)/g, '""');
 					var repoConfigsFolder = config.gitAccounts.github.repoConfigsFolder;
 					var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
-					
 					var fileInfo = {
 						configDirPath: configDirPath,
-						configFilePath: repoConfigsFolder + options.path,
+						configFilePath: path.join(repoConfigsFolder, options.path),
 						configFile: configFile,
 						soajs: soajs
 					};
-					
+
 					driver.helper.writeFile(fileInfo, function (error) {
 						checkIfError(error, {}, cb, function () {
 							var repoConfig;
@@ -173,7 +173,7 @@ var driver = {
 							catch (e) {
 								return cb(e);
 							}
-							
+
 							return cb(null, repoConfig, configSHA);
 						});
 					});
@@ -181,7 +181,7 @@ var driver = {
 			});
 		});
 	},
-	
+
 	"getAnyContent": function (soajs, data, model, options, cb) {
 		driver.helper.getRepoContent(options, function (error, response) {
 			checkIfError(error, {}, cb, function () {

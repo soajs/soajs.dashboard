@@ -284,7 +284,12 @@ var errors = {
     "980": "Error while updating hook. Ensure the hook ID and the access token are correct.",
 
 	"981": "Unable to get repository settings",
-	"982": "Unable to update repository settings"
+	"982": "Unable to update repository settings",
+
+	"983": "soa.js file does not exist or is not a valid soajs configuration file",
+	"984": "Unable to parse swagger.yml file",
+	"985": "swagger.yml file validation failed",
+	"986": "Validation for output config.js file failed"
 };
 
 
