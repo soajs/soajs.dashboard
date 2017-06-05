@@ -174,6 +174,7 @@ var lib = {
 						allRepos[ i ].status = 'active';
 					}
 
+					allRepos[i].type = oneRepo.type;
 					found = true;
 					break;
 				}

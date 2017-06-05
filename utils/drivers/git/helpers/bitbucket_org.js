@@ -21,20 +21,20 @@ function checkIfError (error, options, cb, callback) {
 				};
 			}
 		}
-		
+
 		return cb(error);
 	}
-	
+
 	return callback();
 }
 
 function requester (options, cb) {
 	options.json = true;
-	
+
 	if (!options.headers) {
 		options.headers = {};
 	}
-	
+
 	options.headers[ 'Content-Type' ] = 'application/json';
 	request(options, function (error, response, body) {
 		return cb(error, body);
@@ -42,22 +42,22 @@ function requester (options, cb) {
 }
 
 var bitbucket = {
-	
+
 	getUserRecord: function (data, cb) {
 		var options = {
 			method: 'GET',
 			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getUserRecord.replace('%USERNAME%', data.owner)
 		};
-		
+
 		if (data.token) {
 			options.headers = {
 				'Auth': 'Bearer ' + data.token
 			};
 		}
-		
+
 		return requester(options, cb);
 	},
-	
+
 	getRepoBranches: function (data, cb) {
 		var repoInfo;
 		if (data.name) {
@@ -66,23 +66,23 @@ var bitbucket = {
 		else {
 			repoInfo = [ data.owner, data.repo ];
 		}
-		
+
 		var options = {
 			method: 'GET',
 			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getBranches
 				.replace('%USERNAME%', repoInfo[ 0 ])
 				.replace('%REPO_NAME%', repoInfo[ 1 ])
 		};
-		
+
 		if (data.token) {
 			options.headers = {
 				authorization: 'Bearer ' + data.token
 			};
 		}
-		
+
 		return requester(options, cb);
 	},
-	
+
 	getContent: function (data, cb) {
 		var options = {
 			method: 'GET',
@@ -92,16 +92,16 @@ var bitbucket = {
 				.replace('%BRANCH%', data.ref)
 				.replace('%FILE_PATH%', data.path)
 		};
-		
+
 		if (data.token) {
 			options.headers = {
 				authorization: 'Bearer ' + data.token
 			};
 		}
-		
+
 		return requester(options, cb);
 	},
-	
+
 	getAllRepos: function (data, cb) {
 		var options = {
 			method: 'GET'
@@ -111,7 +111,7 @@ var bitbucket = {
 			options.headers = {
 				authorization: 'Bearer ' + data.token
 			};
-			
+
 			return requester(options, cb);
 		}
 		else {
@@ -120,12 +120,12 @@ var bitbucket = {
 				if (error) {
 					return cb(error);
 				}
-				
+
 				return cb(null, userRecord.repositories);
 			});
 		}
 	},
-	
+
 	getToken: function (data, cb) {
 		//generates or refreshes a oauth token
 		var formData = {};
@@ -138,7 +138,7 @@ var bitbucket = {
 			formData.grant_type = 'refresh_token';
 			formData.refresh_token = data.tokenInfo.refresh_token;
 		}
-		
+
 		var options = {
 			method: 'POST',
 			json: true,
@@ -152,7 +152,7 @@ var bitbucket = {
 			},
 			form: formData
 		};
-		
+
 		return requester(options, cb);
 	}
 };
@@ -160,37 +160,37 @@ var bitbucket = {
 var lib = {
 	"createAuthToken": function (options, cb) {
 		options.action = 'generate';
-		
+
 		bitbucket.getToken(options, function (error, authInfo) {
 			if (error || authInfo.error) {
 				return cb(error || authInfo);
 			}
-			
+
 			return cb(null, authInfo);
 		});
 	},
-	
+
 	"checkAuthToken": function (soajs, options, model, accountRecord, cb) {
 		if (!options.tokenInfo) {
 			return cb(null, false);
 		}
-		
+
 		var expiryDate = options.tokenInfo.created + options.tokenInfo.expires_in - 300000; //5min extra for extra assurance when deploying
 		var currentDate = (new Date).getTime();
-		
+
 		if (currentDate > expiryDate) {
 			options.action = 'refresh';
-			
+
 			bitbucket.getToken(options, function (error, tokenInfo) {
 				if (error || tokenInfo.error) {
 					return cb(error || tokenInfo.error);
 				}
-				
+
 				accountRecord.token = tokenInfo.access_token;
 				accountRecord.tokenInfo.refresh_token = tokenInfo.refresh_token;
 				accountRecord.tokenInfo.created = (new Date).getTime();
 				accountRecord.tokenInfo.expires_in = tokenInfo.expires_in * 1000;
-				
+
 				var opts = {
 					collection: 'git_accounts',
 					record: accountRecord
@@ -199,12 +199,12 @@ var lib = {
 					if (error) {
 						return cb(error);
 					}
-					
+
 					var newTokenInfo = {
 						token: accountRecord.token,
 						tokenInfo: accountRecord.tokenInfo
 					};
-					
+
 					return cb(null, true, newTokenInfo);
 				});
 			});
@@ -213,28 +213,28 @@ var lib = {
 			return cb(null, false);
 		}
 	},
-	
+
 	checkUserRecord: function (options, cb) {
 		bitbucket.getUserRecord(options, function (error, record) {
 			if (error) {
 				return cb(error);
 			}
-			
+
 			if (!record || record === 'None') {
 				return cb({ message: 'User does not exist' });
 			}
-			
+
 			return cb(null, record);
 		});
 	},
-	
+
 	getAllRepos: function (options, cb) {
 		return bitbucket.getAllRepos(options, cb);
 	},
-	
+
 	buildReposArray: function (allRepos) {
 		var repos = [];
-		
+
 		if (allRepos && Array.isArray(allRepos)) {
 			allRepos.forEach(function (oneRepo) {
 				repos.push({
@@ -249,19 +249,19 @@ var lib = {
 		else {
 			repos = null;
 		}
-		
+
 		return repos;
 	},
-	
+
 	addReposStatus: function (allRepos, activeRepos, cb) {
 		if (!Array.isArray(allRepos)) {
 			allRepos = [];
 		}
-		
+
 		if (!activeRepos || activeRepos.length === 0) {
 			return cb(allRepos);
 		}
-		
+
 		var found;
 		activeRepos.forEach(function (oneRepo) {
 			found = false;
@@ -272,7 +272,8 @@ var lib = {
 					} else {
 						allRepos[ i ].status = 'active';
 					}
-					
+
+					allRepos[i].type = oneRepo.type;
 					found = true;
 					break;
 				}
@@ -290,14 +291,14 @@ var lib = {
 				});
 			}
 		});
-		
+
 		return cb(allRepos);
 	},
-	
+
 	getRepoBranches: function (options, cb) {
 		return bitbucket.getRepoBranches(options, cb);
 	},
-	
+
 	buildBranchesArray: function (allBranches) {
 		var branches = [], branchNames = Object.keys(allBranches);
 		branchNames.forEach(function (oneBranch) {
@@ -310,11 +311,11 @@ var lib = {
 		});
 		return branches;
 	},
-	
+
 	getRepoContent: function (options, cb) {
 		return bitbucket.getContent(options, cb);
 	},
-	
+
 	"writeFile": function (options, cb) {
 		fs.exists(options.configDirPath, function (exists) {
 			if (exists) {
@@ -325,7 +326,7 @@ var lib = {
 			else {
 				write();
 			}
-			
+
 			function write () {
 				mkdirp(options.configDirPath, function (error) {
 					checkIfError(error, {}, cb, function () {
@@ -337,14 +338,14 @@ var lib = {
 			}
 		});
 	},
-	
+
 	"clearDir": function (options, cb) {
 		rimraf(options.repoConfigsFolder, function (error) {
 			if (error) {
 				options.soajs.log.warn("Failed to clean repoConfigs directory, proceeding ...");
 				options.soajs.log.error(error);
 			}
-			
+
 			return cb();
 		});
 	}

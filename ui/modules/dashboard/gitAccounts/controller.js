@@ -318,23 +318,26 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                                         $scope.displayAlert('success', translation.repoHasBeenActivated[LANG]);
 
                                         repo.status = 'active';
-                                        var repoAddSuccess = $modal.open({
-                                            templateUrl: 'repoAddSuccess.tmpl',
-                                            backdrop: true,
-                                            keyboard: true,
-                                            controller: function ($scope) {
-                                                fixBackDrop();
-                                                if (Array.isArray(response)) {
-                                                    $scope.added = response;
-                                                } else {
-                                                    $scope.added = [response];
-                                                }
 
-                                                $scope.ok = function () {
-                                                    repoAddSuccess.close();
+                                        if (Array.isArray(response) || (typeof (response) === 'object' && response.repo)) {
+                                            var repoAddSuccess = $modal.open({
+                                                templateUrl: 'repoAddSuccess.tmpl',
+                                                backdrop: true,
+                                                keyboard: true,
+                                                controller: function ($scope) {
+                                                    fixBackDrop();
+                                                    if (Array.isArray(response)) {
+                                                        $scope.added = response;
+                                                    } else {
+                                                        $scope.added = [response];
+                                                    }
+
+                                                    $scope.ok = function () {
+                                                        repoAddSuccess.close();
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 });
                             }
