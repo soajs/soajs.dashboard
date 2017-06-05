@@ -89,45 +89,26 @@ var envRecord = {
 		}
 	}
 };
+var deployer = helper.deployer;
 
-var deployer = {
-	maintenance: function (options, cb) {
-		return cb(null, true);
-	},
-	addNode: function (options, cb) {
-		return cb(null, true);
-	},
-	updateNode: function (options, cb) {
-		return cb(null, true);
-	},
-	deleteService: function (options, cb) {
-		return cb(null, true);
-	},
-	listServices: function (options, cb) {
-		var arr = [
-			{
-				env: [
-					'NODE_ENV=production',
-					'SOAJS_ENV=dev',
-					'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
-					'SOAJS_SRV_AUTOREGISTERHOST=true',
-					'SOAJS_SRV_MEMORY=200',
-					'SOAJS_GIT_OWNER=soajs',
-					'SOAJS_GIT_BRANCH=develop',
-					'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
-					'SOAJS_GIT_REPO=soajs.controller',
-					'SOAJS_DEPLOY_HA=swarm'
-				]
-			}
-		];
-		return cb(null, arr);
-	},
-	scaleService: function (options, cb) {
-		return cb(null);
-	},
-	getContainerLogs: function (data, cb) {
-		return;
-	}
+deployer.listServices = function (options, cb) {
+	var arr = [
+		{
+			env: [
+				'NODE_ENV=production',
+				'SOAJS_ENV=dev',
+				'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+				'SOAJS_SRV_AUTOREGISTERHOST=true',
+				'SOAJS_SRV_MEMORY=200',
+				'SOAJS_GIT_OWNER=soajs',
+				'SOAJS_GIT_BRANCH=develop',
+				'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+				'SOAJS_GIT_REPO=soajs.controller',
+				'SOAJS_DEPLOY_HA=swarm'
+			]
+		}
+	];
+	return cb(null, arr);
 };
 
 describe("testing services.js", function () {

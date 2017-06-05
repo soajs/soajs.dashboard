@@ -83,32 +83,7 @@ var envRecord = {
 	}
 };
 
-var deployer = {
-	addNode: function (options, cb) {
-		return cb(null, true);
-	},
-	updateNode: function (options, cb) {
-		return cb(null, true);
-	},
-	removeNode: function (options, cb) {
-		return cb(null, true);
-	},
-	listNodes: function (options, cb) {
-		var arr = [];
-		return cb(null, arr);
-	},
-	listServices: function (data, cb) {
-		var arr = [
-			{
-				labels: {
-					'soajs.env.code': 'dev'
-				},
-				ports: []
-			}
-		];
-		return cb(null, arr);
-	}
-};
+var deployer = helper.deployer;
 
 describe("testing nodes.js", function () {
 	
@@ -153,9 +128,9 @@ describe("testing nodes.js", function () {
 		});
 		
 	});
-
+	
 	describe("removeNode", function () {
-
+		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -166,11 +141,11 @@ describe("testing nodes.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("updateNode", function () {
-
+		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -181,11 +156,11 @@ describe("testing nodes.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("addNode", function () {
-
+		
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -196,7 +171,7 @@ describe("testing nodes.js", function () {
 				done();
 			});
 		});
-
+		
 	});
 	
 });

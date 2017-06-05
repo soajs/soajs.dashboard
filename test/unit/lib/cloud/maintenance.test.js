@@ -93,49 +93,29 @@ var envRecord = {
 	}
 };
 
-var deployer = {
-	maintenance: function (options, cb) {
-		return cb(null, true);
-	},
-	addNode: function (options, cb) {
-		return cb(null, true);
-	},
-	updateNode: function (options, cb) {
-		return cb(null, true);
-	},
-	removeNode: function (options, cb) {
-		return cb(null, true);
-	},
-	listNodes: function (options, cb) {
-		var arr = [];
-		return cb(null, arr);
-	},
-	getContainerLogs: function (data, cb) {
-		return;
-	}
-};
+var deployer = helper.deployer;
 
 describe("testing maintenance.js", function () {
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
-
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				maintenance = body;
@@ -143,11 +123,11 @@ describe("testing maintenance.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("streamLogs", function () {
-
+		
 		it("Failed", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
@@ -170,7 +150,7 @@ describe("testing maintenance.js", function () {
 				done();
 			});
 		});
-
+		
 		it.skip("Success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
@@ -182,11 +162,11 @@ describe("testing maintenance.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("maintenance", function () {
-
+		
 		it("Success service", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
@@ -198,13 +178,13 @@ describe("testing maintenance.js", function () {
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.serviceId = '123';
-
+			
 			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 		it("Success daemon", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				if (opts.collection === 'environment') {
@@ -216,12 +196,12 @@ describe("testing maintenance.js", function () {
 			req.soajs.inputmaskData.type = 'daemon';
 			req.soajs.inputmaskData.serviceName = 'test';
 			req.soajs.inputmaskData.serviceId = '123';
-
+			
 			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
 });

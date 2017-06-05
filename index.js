@@ -7,6 +7,7 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 
 var hostBL = require("./lib/host.js");
+var hostHelpers = require("./lib/helpers/host.js");
 var cloudServicesBL = require("./lib/cloud/services.js");
 var cloudDeployBL = require("./lib/cloud/deploy.js");
 var cloudNodesBL = require("./lib/cloud/nodes.js");
@@ -1496,7 +1497,7 @@ service.init(function () {
 	 */
 	service.get("/services/env/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.listHostEnv(config, req.soajs, deployer, function (error, data) {
+			BL.listHostEnv(config, req.soajs, deployer, hostHelpers, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

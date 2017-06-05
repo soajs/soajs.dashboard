@@ -13,12 +13,12 @@ var methods = {
 	"getEnvironment": function (soajs, model, code, cb) {
 		var opts = {
 			collection: envColl,
-			conditions: {code: code.toUpperCase()}
+			conditions: { code: code.toUpperCase() }
 		};
-
+		
 		model.findEntry(soajs, opts, cb);
 	},
-
+	
 	/**
 	 * HOSTS COLLECTION
 	 */
@@ -29,14 +29,14 @@ var methods = {
 				"env": env.toLowerCase()
 			}
 		};
-
+		
 		if (type && type !== '') {
 			opts.conditions["name"] = type;
 		}
-
+		
 		model.findEntries(soajs, opts, cb);
 	},
-
+	
 	"getHostEnv": function (soajs, model, cb) {
 		var opts = {
 			collection: hostsColl,
@@ -45,15 +45,14 @@ var methods = {
 			},
 			fields: 'env'
 		};
-
-		if(soajs.inputmaskData.version){
+		if (soajs.inputmaskData.version) {
 			opts.conditions.version = soajs.inputmaskData.version;
 		}
-
+		
 		model.distinctEntries(soajs, opts, cb);
 	},
-
-	"getEnvInfo": function (soajs, model,options, cb) {
+	
+	"getEnvInfo": function (soajs, model, options, cb) {
 		var opts = {
 			collection: envColl,
 			conditions: {
@@ -68,10 +67,10 @@ var methods = {
 				'domain': 1
 			}
 		};
-
+		
 		model.findEntries(soajs, opts, cb);
 	},
-
+	
 	"getOneHost": function (soajs, model, env, type, ip, hostname, cb) {
 		var opts = {
 			collection: hostsColl,
@@ -80,36 +79,36 @@ var methods = {
 				"name": type
 			}
 		};
-
+		
 		if (ip && ip !== '') {
 			opts.conditions["ip"] = ip;
 		}
-
+		
 		if (hostname && hostname !== '') {
 			opts.conditions["hostname"] = hostname;
 		}
-
+		
 		model.findEntry(soajs, opts, cb);
 	},
-
+	
 	"getService": function (soajs, model, condition, cb) {
 		var opts = {
 			collection: servicesColl,
 			conditions: condition
 		};
-
+		
 		model.findEntry(soajs, opts, cb);
 	},
-
+	
 	"getDaemon": function (soajs, model, condition, cb) {
 		var opts = {
 			collection: daemonsColl,
 			conditions: condition
 		};
-
+		
 		model.findEntry(soajs, opts, cb);
 	}
-
+	
 };
 
 module.exports = methods;

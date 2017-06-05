@@ -48,39 +48,7 @@ var mongoStub = {
 	}
 };
 
-var deployer = {
-
-	deleteNameSpace: function (options, cb) {
-		return cb(null, true);
-	},
-	listNameSpaces: function (options, cb) {
-		return cb(null, []);
-	},
-	addNode: function (options, cb) {
-		return cb(null, true);
-	},
-	updateNode: function (options, cb) {
-		return cb(null, true);
-	},
-	removeNode: function (options, cb) {
-		return cb(null, true);
-	},
-	listNodes: function (options, cb) {
-		var arr = [];
-		return cb(null, arr);
-	},
-	listServices: function (data, cb) {
-		var arr = [
-			{
-				labels: {
-					'soajs.env.code': 'dev'
-				},
-				ports: []
-			}
-		];
-		return cb(null, arr);
-	}
-};
+var deployer = helper.deployer;
 
 var envRecord = {
 	_id: '',
