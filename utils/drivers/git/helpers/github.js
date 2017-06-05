@@ -35,10 +35,10 @@ function checkIfError (error, options, cb, callback) {
 				};
 			}
 		}
-		
+
 		return cb(error);
 	}
-	
+
 	return callback();
 }
 
@@ -57,10 +57,10 @@ var lib = {
 				token: options.token
 			});
 		}
-		
+
 		return cb();
 	},
-	
+
 	"createAuthToken": function (options, cb) {
 		lib.authenticate({
 			type: 'basic',
@@ -77,13 +77,13 @@ var lib = {
 						token: response.token,
 						authId: response.id
 					};
-					
+
 					return cb(null, tokenInfo);
 				});
 			});
 		});
 	},
-	
+
 	"deleteAuthToken": function (options, cb) {
 		lib.authenticate({
 			type: 'basic',
@@ -97,7 +97,7 @@ var lib = {
 			});
 		});
 	},
-	
+
 	"checkUserRecord": function (options, cb) {
 		github.user.getFrom({
 			user: options.owner
@@ -109,11 +109,11 @@ var lib = {
 				}
 				return cb(error);
 			}
-			
+
 			return cb();
 		});
 	},
-	
+
 	"checkOrgRecord": function (options, cb) {
 		github.orgs.get({
 			org: options.owner
@@ -125,11 +125,11 @@ var lib = {
 				}
 				return cb(error);
 			}
-			
+
 			return cb();
 		});
 	},
-	
+
 	"getRepoBranches": function (options, cb) {
 		//if token exists, authentication will succeed, else no need to authenticate
 		lib.authenticate({ type: 'oauth', token: options.token }, function () {
@@ -160,7 +160,7 @@ var lib = {
 			});
 		});
 	},
-	
+
 	"getRepoContent": function (options, cb) {
 		lib.authenticate({ type: 'oauth', token: options.token }, function () {
 			github.repos.getContent(options, function (error, response) {
@@ -177,7 +177,7 @@ var lib = {
 			});
 		});
 	},
-	
+
 	"getAllRepos": function (options, cb) {
 		var reqOptions = {
 			url: '',
@@ -190,12 +190,12 @@ var lib = {
 				page: options.page
 			}
 		};
-		
+
 		if (options && options.token) {
 			reqOptions.url = config.gitAccounts.github.urls.getReposAuthUser;
 			reqOptions.headers.Authorization = 'token ' + options.token;
 			// options.qs.affiliation = 'owner, collaborator';
-			
+
 			request.get(reqOptions, function (error, response, body) {
 				return cb(error, (body) ? JSON.parse(body) : []);
 			});
@@ -204,7 +204,7 @@ var lib = {
 			if (options.type === 'personal') {
 				reqOptions.url = config.gitAccounts.github.urls.getReposNonAuthUser.replace('%OWNER%', options.owner);
 				reqOptions.qs.type = 'all';
-				
+
 				request.get(reqOptions, function (error, response, body) {
 					return cb(error, (body) ? JSON.parse(body) : []);
 				});
@@ -212,7 +212,7 @@ var lib = {
 			else if (options.type === 'organization') {
 				reqOptions.url = config.gitAccounts.github.urls.getReposPublicOrg.replace('%OWNER%', options.owner);
 				reqOptions.qs.type = 'all';
-				
+
 				request.get(reqOptions, function (error, response, body) {
 					checkIfError(body && body.indexOf('API rate limit exceeded') !== -1, {
 						code: 776,
@@ -224,7 +224,7 @@ var lib = {
 			}
 		}
 	},
-	
+
 	"addReposStatus": function (allRepos, activeRepos, cb) {
 		if (!Array.isArray(allRepos)) {
 			allRepos = [];
@@ -232,7 +232,7 @@ var lib = {
 		if (!activeRepos || activeRepos.length === 0) {
 			return cb(allRepos);
 		}
-		
+
 		var found;
 		activeRepos.forEach(function (oneRepo) {
 			found = false;
@@ -243,7 +243,8 @@ var lib = {
 					} else {
 						allRepos[ i ].status = 'active';
 					}
-					
+
+					allRepos[i].type = oneRepo.type;
 					found = true;
 					break;
 				}
@@ -261,10 +262,10 @@ var lib = {
 				});
 			}
 		});
-		
+
 		return cb(allRepos);
 	},
-	
+
 	"writeFile": function (options, cb) {
 		fs.exists(options.configDirPath, function (exists) {
 			if (exists) {
@@ -275,7 +276,7 @@ var lib = {
 			else {
 				write();
 			}
-			
+
 			function write () {
 				mkdirp(options.configDirPath, function (error) {
 					checkIfError(error, {}, cb, function () {
@@ -287,14 +288,14 @@ var lib = {
 			}
 		});
 	},
-	
+
 	"clearDir": function (options, cb) {
 		rimraf(options.repoConfigsFolder, function (error) {
 			if (error) {
 				options.soajs.log.warn("Failed to clean repoConfigs directory, proceeding ...");
 				options.soajs.log.error(error);
 			}
-			
+
 			return cb();
 		});
 	}
