@@ -12,10 +12,6 @@ var gaTranslation = {
         ENG: "No Git Accounts Added",
         FRA: "No Git Accounts Added"
     },
-    repositories: {
-        ENG: "Repositories",
-        FRA: "Repositories"
-    },
     noReposFound: {
         ENG: "No Repositories Found!",
         FRA: "No Repositories Found"
@@ -217,7 +213,7 @@ var gitAccountsNav = [
         'mainMenu': true,
         'tracker': true,
         'order': 4,
-        'scripts': ['modules/dashboard/gitAccounts/config.js', 'modules/dashboard/gitAccounts/controller.js'],
+        'scripts': ['modules/dashboard/gitAccounts/config.js', 'modules/dashboard/gitAccounts/controller.js', 'modules/dashboard/gitAccounts/services.js'],
         'ancestor': [translation.home[LANG]]
     }
 ];

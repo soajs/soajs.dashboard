@@ -1,6 +1,7 @@
 .customEntryBox {
-    width: 48% !important;
-    height: 196px !important;
+    width: 100% !important;
+    /*min-height: 196px !important;*/
+    /*height: auto;*/
     padding-left: 0px !important;
 }
 

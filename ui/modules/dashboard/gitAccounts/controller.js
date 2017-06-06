@@ -1,7 +1,7 @@
 'use strict';
 
 var gitAccountsApp = soajsApp.components;
-gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'injectFiles', function ($scope, $timeout, $modal, ngDataApi, injectFiles) {
+gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal', 'ngDataApi', 'injectFiles', 'repoSrv', function ($scope, $timeout, $modal, ngDataApi, injectFiles, repoSrv) {
     $scope.$parent.isUserLoggedIn();
 
     $scope.access = {};
@@ -25,9 +25,17 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             } else {
                 $scope.accounts = response;
 
+                $scope.accounts.forEach(function(oneAccount){
+                	oneAccount.hide = true;
+                });
+                
                 if ($scope.accounts.length > 0) {
                     var counter = 0;
                     $scope.listRepos($scope.accounts, counter, 'getRepos');
+                }
+                if($scope.accounts.length === 1){
+                	$scope.accounts[0].hide = false;
+                	$scope.accounts[0].icon = 'minus';
                 }
             }
         });
@@ -473,6 +481,31 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
             }
         });
     };
+	
+	$scope.configureRepo = function (oneRepo) {
+		repoSrv.configureRepo($scope, oneRepo, gitAccountsAppConfig);
+	};
+	
+	$scope.toggleStatus = function(status, oneRepo){
+		repoSrv.toggleStatus($scope, status, oneRepo, function(){
+			
+		});
+	};
+	
+	$scope.showHide = function (account) {
+		if (!account.hide) {
+			jQuery('#a_' + account._id + " .body .inner").slideUp();
+			account.icon = 'plus';
+			account.hide = true;
+			// jQuery('#s_' + account._id + " .header").addClass("closed");
+		}
+		else {
+			jQuery('#a_' + account._id + " .body .inner").slideDown();
+			// jQuery('#s_' + account._id + " .header").removeClass("closed");
+			account.icon = 'minus';
+			account.hide = false;
+		}
+	};
 
     injectFiles.injectCss("modules/dashboard/gitAccounts/gitAccounts.css");
     if ($scope.access.listAccounts) {
