@@ -301,6 +301,10 @@ var srTranslation = {
 		"ENG": "Default Route",
 		"FRA": "Default Route"
 	},
+	"serviceGroup": {
+		"ENG": "Group",
+		"FRA": "Group"
+	},
 	//list-daemons
 	"editDaemon": {
 		"ENG": "Edit Daemon",

@@ -1305,6 +1305,13 @@ module.exports = {
                     "l": "List Services",
                     "group": "Services"
                 },
+                'includeEnvs': {
+                    'source': ['query.includeEnvs'],
+                    'required': false,
+                    'validation': {
+                        'type': 'boolean'
+                    }
+                },
                 'serviceNames': {
                     'source': ['body.serviceNames'],
                     'required': false,
@@ -2260,6 +2267,41 @@ module.exports = {
             }
         },
         "put": {
+            "/services/settings/update": {
+                "_apiInfo": {
+                    "l": "Updates Service Settings",
+                    "group": "Services"
+                },
+                "id": {
+                    "source": ['query.id'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "env": {
+                    "source": ['body.env'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "version": {
+                    "source": ['body.version'],
+                    "required": true,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "settings": {
+                    "source": ['body.settings'],
+                    "required": true,
+                    "validation": {
+                        "type": "object"
+                    }
+                }
+            },
+
             "/cd/ledger/read":{
                 "_apiInfo": {
                     "l": "Mark as read",

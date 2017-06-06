@@ -11,7 +11,7 @@
 			<button class="btn btn-danger" ng-click="ok()">{{translation.close[LANG]}}</button>
 		</div>
 	</script>
-	
+
 	<div class="entryBoxes" ng-show="grid.rows">
 		<div ng-if="access.listServices">
 			<a href="" ng-click="listServices()" class="btn btn-primary f-right">
@@ -29,16 +29,13 @@
 							</a>{{service['name']|uppercase}}<span>[ {{service['port']}} ]</span>
 						</td>
 						<td>
-							<b>{{translation.extKeyRequired[LANG]}}</b>:<span>{{service.versions[service.latest]['extKeyRequired'] || false}}</span>
+							<span ng-if="service['group']"><b>{{translation.serviceGroup[LANG]}}</b>:<span>{{service['group'] || 'Misc.'}}</span></span>
 						</td>
 						<td>
 							<b>{{translation.requestTimeout[LANG]}}</b>:<span>{{service['requestTimeout'] || 0}}</span>
 						</td>
 						<td>
 							<b>{{translation.requestTimeoutRenewal[LANG]}}</b>:<span>{{service['requestTimeoutRenewal'] || 0}}</span>
-						</td>
-						<td>
-							<b>{{translation.awareness[LANG]}}</b>:<span>{{service.versions[service.latest]['awareness'] || false}}</span>
 						</td>
 						<!--Add swagger icon if a service were created using swagger editor-->
 						<td>
@@ -57,40 +54,104 @@
 			<div class="body grid" style="display:none;">
 				<tabset>
 					<tab ng-repeat="oneList in service.fixList" heading="Version {{oneList._ver}} {{(service.latest === oneList._ver)?'( Latest )':'' }}">
-						<fieldset ng-repeat="(grp, val) in oneList" class="" ng-if="grp!=='_ver'">
-							<legend>{{grp}}</legend>
-							<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
-							
-							<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
-								<tbody>
-									<tr>
-										<th class="labelApi">{{translation.label[LANG]}}</th>
-										<th class="routeApi">{{translation.route[LANG]}}</th>
-									</tr>
-									<tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-										<td>{{myApi.l}}
-										</td>
-										<td><span>{{myApi.v}}</span>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
-								<tbody>
-									<tr>
-										<th class="labelApi">{{translation.label[LANG]}}</th>
-										<th class="routeApi">{{translation.route[LANG]}}</th>
-									</tr>
-									<tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
-										<td>{{myApi.l}}</td>
-										<td class=""><span>{{myApi.v}}</span></td>
-									</tr>
-								</tbody>
-							</table>
-						</fieldset>
+						<br />
+						<accordion close-others="true">
+							<accordion-group is-open="true">
+								<accordion-heading><span class="icon icon-cog"></span>Settings</accordion-heading>
+								<label>Service configuration per environment</label>
+								<div class="entryBoxes entryBoxesGrid">
+									<div ng-repeat="env in envs">
+		                                <div class="entryBox greyBox" ng-style="{'width': '200px'}" ng-class="{ blueBox: oneList.settings[env] }">
+		                                    <b>{{env}} {{translation.environment[LANG]}}</b>&nbsp;&nbsp;
+		                                    <a href="" ng-style="{'float': 'right'}" ng-if="access.updateServiceSettings" ng-click="updateServiceSettings(env, oneList._ver, service)">
+		                                        <span class="icon icon-pencil" tooltip="{{translation.editServiceConfiguration[LANG]}}"></span>
+		                                    </a>
+		                                </div>
+		                            </div>
+								</div>
+							</accordion-group>
+
+							<accordion-group>
+								<accordion-heading><span class="icon icon-cloud"></span>API</accordion-heading>
+								<fieldset ng-repeat="(grp, val) in oneList.groups" class="" ng-if="grp!=='_ver'">
+									<legend>{{grp}}</legend>
+									<span ng-if="val.defaultApi"><label>{{translation.defaultRoute[LANG]}}:</label> {{val.defaultApi}}<br></span>
+
+									<table cellspacing="0" cellpadding="0" border="0" class="serviceApis" style="margin-right:15px">
+										<tbody>
+											<tr>
+												<th class="labelApi">{{translation.label[LANG]}}</th>
+												<th class="routeApi">{{translation.route[LANG]}}</th>
+											</tr>
+											<tr ng-repeat="myApi in val.apis1" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+												<td>{{myApi.l}}
+												</td>
+												<td><span>{{myApi.v}}</span>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<table ng-if="val.apis2.length>0" cellspacing="0" cellpadding="0" border="0" class="serviceApis">
+										<tbody>
+											<tr>
+												<th class="labelApi">{{translation.label[LANG]}}</th>
+												<th class="routeApi">{{translation.route[LANG]}}</th>
+											</tr>
+											<tr ng-repeat="myApi in val.apis2" ng-class-odd="'sApisOdd'" ng-class-even="'sApisEven'">
+												<td>{{myApi.l}}</td>
+												<td class=""><span>{{myApi.v}}</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</fieldset>
+							</accordion-group>
+						</accordion>
 					</tab>
 				</tabset>
 			</div>
 		</div>
 	</div>
 </section>
+
+<script type="text/ng-template" id="updateServiceSettings.tmpl">
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+	<div class="modal-body text-align-center">
+		<div class="form">
+			<label>
+				<input type="checkbox" ng-model="settings.extKeyRequired" ng-true-value="true" ng-false-value="false" />
+				&nbsp;&nbsp;External Key Required
+			</label>
+			<br />
+			<label>
+				<input type="checkbox" ng-model="settings.oauth" ng-true-value="true" ng-false-value="false" />
+				&nbsp;&nbsp;oAuth
+			</label>
+			<br />
+			<label>
+				<input type="checkbox" ng-model="settings.urac" ng-true-value="true" ng-false-value="false" disabled />
+				&nbsp;&nbsp;URAC
+			</label>
+			<br />
+			<label>
+				<input type="checkbox" ng-model="settings.urac_Profile" ng-true-value="true" ng-false-value="false" disabled />
+				&nbsp;&nbsp;URAC Profile
+			</label>
+			<br />
+			<label>
+				<input type="checkbox" ng-model="settings.urac_ACL" ng-true-value="true" ng-false-value="false" disabled />
+				&nbsp;&nbsp;URAC ACL
+			</label>
+			<br />
+			<label>
+				<input type="checkbox" ng-model="settings.provision_ACL" ng-true-value="true" ng-false-value="false" disabled />
+				&nbsp;&nbsp;Provision ACL
+			</label>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="onSubmit()">Update</button>
+		<button class="btn btn-danger" ng-click="closeModal()">Cancel</button>
+	</div>
+</script>
