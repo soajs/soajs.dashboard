@@ -1,9 +1,20 @@
 <section ng-controller="ciAppCtrl">
 	<div ng-if="!ciData.list || ciData.list.length === 0">
-		<ngform></ngform>
+		<h3>Choose a provider to configure your CI</h3>
+		<br />
+		<button class="btn btn-default provider-button" type="button" ng-click="getRecipe('travis')">
+			<img ng-src="{{travisImagePath}}" alt="Travis Logo"/><br /><br />
+			<label>Travis - Test and Deploy with Confidence.</label>
+		</button>
+		<button class="btn btn-default provider-button" type="button" disabled>
+			<img ng-src="{{droneImagePath}}" alt="Drone Logo"/><br /><br />
+			<label>Drone - An open source Continuous Integration server built on Docker.</label><br />
+			<label>Coming Soon!</label>
+		</button>
 	</div>
     <div ng-if="ciData.list && ciData.list.length > 0">
-	    <tabset>
+		<ngform></ngform>
+	    <!-- <tabset>
 		    <tab heading="Configuration Recipe" ng-click="getRecipe()">
 			    <br />
 				<ngform></ngform>
@@ -47,6 +58,6 @@
 				    </div>
 			    </div>
 		    </tab>
-	    </tabset>
+	    </tabset> -->
     </div>
 </section>
