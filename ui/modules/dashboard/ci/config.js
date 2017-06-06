@@ -4,44 +4,29 @@ var ciAppConfig = {
 		f1: {
 			entries: [
 				{
-					'name': 'driver',
-					'label': 'Choose Driver',
-					'type': 'select',
-					'value': [{'v': 'travis', 'l': "Travis", 'selected': true}],
+					'name': 'domain',
+					'label': 'Domain',
+					'type': 'text',
+					'value': 'api.travis-ci.org',
+					'placeholder': "",
 					'required': true,
-					'fieldMsg': "Select which driver you would like to integrated with."
+					'fieldMsg': "Enter the domain value"
 				},
 				{
-					'name': 'settings',
-					'label': 'Settings',
-					'type': 'group',
-					'entries': [
-						{
-							'name': 'domain',
-							'label': 'Domain',
-							'type': 'text',
-							'value': 'api.travis-ci.org',
-							'placeholder': "",
-							'required': true,
-							'fieldMsg': "Enter the domain value"
-						},
-						{
-							'name': 'owner',
-							'label': 'Owner',
-							'type': 'text',
-							'value': '',
-							'required': true,
-							'fieldMsg': "Enter the Owner of the account"
-						},
-						{
-							'name': 'gitToken',
-							'label': 'GIT Token',
-							'type': 'text',
-							'value': '',
-							'required': true,
-							'fieldMsg': "Enter the GIT Token Value"
-						},
-					]
+					'name': 'owner',
+					'label': 'Owner',
+					'type': 'text',
+					'value': '',
+					'required': true,
+					'fieldMsg': "Enter the Owner of the account"
+				},
+				{
+					'name': 'gitToken',
+					'label': 'GIT Token',
+					'type': 'text',
+					'value': '',
+					'required': true,
+					'fieldMsg': "Enter the GIT Token Value"
 				}
 			]
 		},
@@ -135,7 +120,7 @@ var ciAppConfig = {
 					// need to decrease count
 					delete form.formData['envName' + number];
 					delete form.formData['envVal' + number];
-					
+
 					form.entries.forEach(function (oneEntry) {
 						if (oneEntry.type === 'group' && oneEntry.name === 'envs') {
 							for (var i = oneEntry.entries.length - 1; i >= 0; i--) {
@@ -171,5 +156,5 @@ var ciAppConfig = {
 		delete: ['dashboard', '/ci', 'delete'],
 		download: ['dashboard', '/ci/download', 'get'],
 	}
-	
+
 };
