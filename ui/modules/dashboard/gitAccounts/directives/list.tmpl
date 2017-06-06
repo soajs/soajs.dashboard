@@ -149,3 +149,53 @@
         <button class="btn btn-danger" ng-click="cancel()">{{translation.cancel[LANG]}}</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="configureRepo.tmpl">
+	<div class="modal-body">
+		<div ng-if="noCiConfig">
+			<alert type="warning">No Continuous Integration Configuration Found. Please visit
+				<a href="" ng-click="goTOCI()">Continuous Integration</a>Section and configure a provider before you can proceed.
+			</alert>
+		</div>
+		<div ng-if="!noCiConfig">
+			<tabset>
+				<tab heading="Continuous Integration">
+					<br />
+					<div ng-show="activateRepo">
+						<div class="table w100 c-both">
+							<div class="f-left">
+								Continuous Integration has been detected however, this repository has not been activated yet.
+							</div>
+							<div class="f-right">
+								<a href="" ng-click="toggleStatus(true)" class="btn btn-sm btn-success">
+									<span class="icon icon-switch"></span>&nbsp;Turn On
+								</a>
+							</div>
+						</div>
+					</div>
+					<div ng-show="!activateRepo" id="ciRepo">
+						<div class="c-both w100 table">
+							<div class="f-left">
+								Repository <b>{{ciRepoName}}</b> is active, you can configure its settings.
+							</div>
+							<div class="f-right">
+								<a href="" ng-click="toggleStatus(false)" class="btn btn-sm btn-danger">
+									<span class="icon icon-switch"></span>&nbsp;Turn Off
+								</a>
+							</div>
+						</div>
+						<hr>
+					</div>
+					<ngform></ngform>
+				</tab>
+				<tab heading="Continuous Delivery">
+					<br />
+					<alert type="info">Coming Soon ...</alert>
+				</tab>
+			</tabset>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button ng-show="activateRepo" class="btn btn-danger" ng-click="cancel()">Close</button>
+	</div>
+</script>

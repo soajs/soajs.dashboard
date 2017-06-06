@@ -37,6 +37,9 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
                 	$scope.accounts[0].hide = false;
                 	$scope.accounts[0].icon = 'minus';
                 }
+                repoSrv.getCIRecipe($scope, function(error, response){
+                	$scope.ciData = response;
+                });
             }
         });
     };
@@ -484,12 +487,6 @@ gitAccountsApp.controller ('gitAccountsAppCtrl', ['$scope', '$timeout', '$modal'
 	
 	$scope.configureRepo = function (oneRepo) {
 		repoSrv.configureRepo($scope, oneRepo, gitAccountsAppConfig);
-	};
-	
-	$scope.toggleStatus = function(status, oneRepo){
-		repoSrv.toggleStatus($scope, status, oneRepo, function(){
-			
-		});
 	};
 	
 	$scope.showHide = function (account) {
