@@ -1,5 +1,9 @@
 'use strict';
 var gaTranslation = {
+    repositories: {
+        ENG: "Repositories",
+        FRA: "Repositories"
+    },
     addAccount: {
         ENG: "Add Account",
         FRA: "Add Account"
@@ -196,7 +200,7 @@ for (var attrname in gaTranslation) {
 var gitAccountsNav = [
     {
         'id': 'git-accounts',
-        'label': "Git Accounts",
+        'label': translation.repositories[LANG],
         'checkPermission': {
             'service': 'dashboard',
             'route': '/gitAccounts/accounts/list',
