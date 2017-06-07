@@ -9,7 +9,7 @@ uracApp.controller("uracListTenantsModuleQaCtrl", ['$scope', 'ngDataApi', '$cook
 		"listTenants": ['dashboard', '/tenant/list', 'get']
 	};
 	constructModulePermissions($scope, $scope.access, permissions);
-	
+
 	$scope.listTenants = function () {
 		overlayLoading.show();
 		var opts = {
@@ -34,9 +34,9 @@ uracApp.controller("uracListTenantsModuleQaCtrl", ['$scope', 'ngDataApi', '$cook
 				$scope.tenants = response;
 			}
 		});
-		
+
 	};
-	
+
 	$scope.changeCode = function (tenant) {
 		var newCode = tenant.code;
 		if (newCode && newCode !== '') {
@@ -50,7 +50,7 @@ uracApp.controller("uracListTenantsModuleQaCtrl", ['$scope', 'ngDataApi', '$cook
 			$scope.$parent.go('/urac-management/members');
 		}
 	};
-	
+
 	if ($scope.access.listTenants) {
 		if ($cookies.getObject('urac_merchant') && $cookies.getObject('urac_merchant').code) {
 			$scope.$parent.go('/urac-management/members');
@@ -63,7 +63,7 @@ uracApp.controller("uracListTenantsModuleQaCtrl", ['$scope', 'ngDataApi', '$cook
 		var user = $localStorage.soajs_user;
 		$scope.changeCode(user.tenant);
 	}
-	
+
 }]);
 
 uracApp.controller('uracMembersModuleQaCtrl', ['$scope', '$cookies', '$localStorage', function ($scope, $cookies, $localStorage) {
@@ -92,19 +92,19 @@ uracApp.controller('tenantMembersModuleQaCtrl', ['$scope', 'ngDataApi', '$cookie
 		$scope.totalCount = 0;
 		$scope.endLimit = usersModuleQaConfig.apiEndLimit;
 		$scope.keywords;
-		
+
 		$scope.members = angular.extend($scope);
 		$scope.members.access = $scope.$parent.access;
-		
+
 		$scope.$parent.$on('reloadTenantMembers', function (event) {
 			$scope.members.listMembers(true);
 		});
-		
+
 		$scope.members.getMore = function (startLimit) {
 			$scope.members.startLimit = startLimit;
 			$scope.members.listMembers(false);
 		};
-		
+
 		$scope.members.countMembers = function (cb) {
 			var opts = {
 				"method": "get",
@@ -129,9 +129,9 @@ uracApp.controller('tenantMembersModuleQaCtrl', ['$scope', 'ngDataApi', '$cookie
 				}
 				cb();
 			});
-			
+
 		};
-		
+
 		$scope.members.listMembers = function (firstCall) {
 			if (firstCall) {
 				$scope.members.pageActive = 1;
@@ -142,81 +142,81 @@ uracApp.controller('tenantMembersModuleQaCtrl', ['$scope', 'ngDataApi', '$cookie
 			else {
 				tenantMembersModuleQaHelper.listMembers($scope.members, usersModuleQaConfig.users, firstCall);
 			}
-			
+
 		};
-		
+
 		$scope.members.refresh = function () {
 			$scope.members.startLimit = 0;
 			$scope.members.listMembers(true);
 		};
-		
+
 		$scope.members.addMember = function () {
 			tenantMembersModuleQaHelper.addMember($scope.members, usersModuleQaConfig.users, true);
 		};
-		
+
 		$scope.members.editAcl = function (data) {
 			//tenantMembersModuleQaHelper.editAcl($scope.members, data);
 			$scope.members.$parent.go('/urac-management/' + data._id + '/editUserAcl');
 		};
-		
+
 		$scope.members.editMember = function (data) {
 			tenantMembersModuleQaHelper.editMember($scope.members, usersModuleQaConfig.users, data, true)
 		};
-		
+
 		$scope.members.activateMembers = function () {
 			tenantMembersModuleQaHelper.activateMembers($scope.members);
 		};
-		
+
 		$scope.members.deactivateMembers = function () {
 			tenantMembersModuleQaHelper.deactivateMembers($scope.members);
 		};
-		
+
 		//call default method
 		setTimeout(function () {
 			if ($scope.members.access.adminUser.list) {
 				$scope.members.listMembers(true);
 			}
 		}, 50);
-		
+
 	}]);
 
 uracApp.controller('tenantGroupsModuleQaCtrl', ['$scope', '$cookies', 'tenantGroupsModuleQaHelper', function ($scope, $cookies, tenantGroupsModuleQaHelper) {
 	$scope.groups = angular.extend($scope);
 	$scope.groups.access = $scope.$parent.access;
-	
+
 	$scope.groups.listGroups = function () {
 		tenantGroupsModuleQaHelper.listGroups($scope.groups, usersModuleQaConfig.groups);
 	};
-	
+
 	$scope.groups.addGroup = function () {
 		tenantGroupsModuleQaHelper.addGroup($scope.groups, usersModuleQaConfig.groups, true);
 	};
-	
+
 	$scope.groups.editGroup = function (data) {
 		tenantGroupsModuleQaHelper.editGroup($scope.groups, usersModuleQaConfig.groups, data, true);
 	};
-	
+
 	$scope.groups.deleteGroups = function (data) {
 		tenantGroupsModuleQaHelper.deleteGroups($scope.groups);
 	};
-	
+
 	$scope.groups.delete1Group = function (data) {
 		tenantGroupsModuleQaHelper.delete1Group($scope.groups, data, true);
 	};
-	
+
 	$scope.groups.assignUsers = function (data) {
 		tenantGroupsModuleQaHelper.assignUsers($scope.groups, usersModuleQaConfig.groups, data, {
 			'name': 'reloadTenantMembers',
 			params: {}
 		});
 	};
-	
+
 	setTimeout(function () {
 		if ($scope.groups.access.adminGroup.list) {
 			$scope.groups.listGroups();
 		}
 	}, 200);
-	
+
 }]);
 
 uracApp.controller('tokensModuleQaCtrl', ['$scope', 'ngDataApi', '$cookies', 'tokensModuleQaHelper', function ($scope, ngDataApi, $cookies, tokensModuleQaHelper) {
@@ -229,7 +229,7 @@ uracApp.controller('tokensModuleQaCtrl', ['$scope', 'ngDataApi', '$cookies', 'to
 
 	$scope.tokens = angular.extend($scope);
 	$scope.tokens.access = $scope.$parent.access;
-	
+
 	$scope.getPrev = function () {
 		$scope.tokens.startLimit = $scope.tokens.startLimit - $scope.tokens.increment;
 		if (0 <= $scope.tokens.startLimit) {
@@ -242,7 +242,7 @@ uracApp.controller('tokensModuleQaCtrl', ['$scope', 'ngDataApi', '$cookies', 'to
 			$scope.tokens.startLimit = 0;
 		}
 	};
-	
+
 	$scope.getNext = function () {
 		var startLimit = $scope.tokens.startLimit + $scope.tokens.increment;
 		if (startLimit < $scope.tokens.totalCount) {
@@ -254,7 +254,7 @@ uracApp.controller('tokensModuleQaCtrl', ['$scope', 'ngDataApi', '$cookies', 'to
 			$scope.tokens.showNext = false;
 		}
 	};
-	
+
 	$scope.getEnd = function () {
 		var startLimit = ($scope.tokens.totalPagesActive - 1) * $scope.tokens.endLimit;
 		if (startLimit < $scope.tokens.totalCount) {
@@ -274,21 +274,21 @@ uracApp.controller('tokensModuleQaCtrl', ['$scope', 'ngDataApi', '$cookies', 'to
 		}
 		tokensModuleQaHelper.listTokens($scope.tokens, tokensModuleQaConfig, firstCall);
 	};
-	
+
 	$scope.tokens.deleteTokens = function () {
 		tokensModuleQaHelper.deleteTokens($scope.tokens);
 	};
-	
+
 	$scope.tokens.delete1Token = function (data) {
 		tokensModuleQaHelper.delete1Token($scope.tokens, data, true);
 	};
-	
+
 	setTimeout(function () {
 		if ($scope.tokens.access.adminUser.list) {
 			$scope.tokens.listTokens(true);
 		}
 	}, 200);
-	
+
 }]);
 
 uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi', '$cookies', 'memAclModuleQaHelper', '$route', '$localStorage',
@@ -301,15 +301,15 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 		$scope.pckName = '';
 		$scope.environments_codes = [];
 		$scope.uracModuleQa = uracModuleQa;
-		
+
 		var tCode = $cookies.getObject('urac_merchant').code;
 		$scope.selectedEnv = $scope.$parent.currentSelectedEnvironment.toUpperCase();
 		$scope.userCookie = $localStorage.soajs_user;
-		
+
 		$scope.minimize = function (application, service, oneEnv) {
 			application.aclFill[oneEnv][service.name].collapse = true;
 		};
-		
+
 		$scope.expand = function (application, service, oneEnv) {
 			application.aclFill[oneEnv][service.name].collapse = false;
 		};
@@ -327,7 +327,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				}
 			}
 		};
-		
+
 		$scope.getEnvironments = function () {
 			getSendDataFromServer($scope, ngDataApi, {
 				"method": "get",
@@ -344,7 +344,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				}
 			});
 		};
-		
+
 		$scope.openApi = function (application, serviceName, oneEnv) {
 			var status = false;
 			for (var oneService in application.aclFill[oneEnv]) {
@@ -356,15 +356,15 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 			}
 			return status;
 		};
-		
+
 		$scope.checkForGroupDefault = function (aclFill, service, grp, val, myApi) {
 			memAclModuleQaHelper.checkForGroupDefault(aclFill, service, grp, val, myApi);
 		};
-		
+
 		$scope.applyRestriction = function (aclFill, service) {
 			memAclModuleQaHelper.applyRestriction(aclFill, service);
 		};
-		
+
 		$scope.getTenantAppInfo = function () {
 			function getServices(cb) {
 				var serviceNames;
@@ -381,12 +381,12 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
 					}
 					else {
-						$scope.tenantApp.services = response;
+						$scope.tenantApp.services = response.records;
 					}
 					cb();
 				});
 			}
-			
+
 			function getPackage(oneApplication, cb) {
 				var opts = {
 					"method": "get",
@@ -396,7 +396,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 						"productCode": oneApplication.product
 					}
 				};
-				
+
 				getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
 					if (error) {
 						$scope.$parent.displayAlert('danger', error.code, true, 'dashboard', error.message);
@@ -409,7 +409,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					}
 				});
 			}
-			
+
 			getUserGroupInfo(function () {
 				var opts = {
 					"method": "get",
@@ -418,7 +418,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 						"id": $cookies.getObject('urac_merchant').id
 					}
 				};
-				
+
 				getSendDataFromServer($scope, ngDataApi, opts, function (error, response) {
 					if (error) {
 						overlayLoading.hide();
@@ -457,7 +457,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					}
 				});
 			});
-			
+
 			function getUserGroupInfo(cb) {
 				var opts = {
 					"method": "get",
@@ -500,10 +500,10 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				});
 			}
 		};
-		
+
 		$scope.clearUserAcl = function () {
 			var postData = $scope.user;
-			
+
 			if (typeof(postData.config) === 'object') {
 				if (typeof(postData.config.packages) === 'object') {
 					$scope.tenantApp.applications.forEach(function (oneApplication) {
@@ -521,7 +521,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 			else {
 				postData.config = {};
 			}
-			
+
 			overlayLoading.show();
 			var opts = {
 				"method": "send",
@@ -534,7 +534,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				},
 				"data": postData
 			};
-			
+
 			getSendDataFromServer($scope, ngDataApi, opts, function (error) {
 				overlayLoading.hide();
 				if (error) {
@@ -548,7 +548,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 				}
 			});
 		};
-		
+
 		$scope.saveUserAcl = function () {
 			var postData = $scope.user;
 			if (typeof(postData.config) === 'object') {
@@ -561,7 +561,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					packages: {}
 				};
 			}
-			
+
 			var counter = 0;
 			var appsDone = [];
 			$scope.tenantApp.applications.forEach(function (oneApplication) {
@@ -580,7 +580,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					if (appsDone.indexOf(packageName) === -1) {
 						postData.config.packages[packageName].acl = result.data;
 					}
-					
+
 					appsDone.push(packageName);
 					counter++;
 				}
@@ -588,7 +588,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					$scope.$parent.displayAlert('danger', translation.needToChooseGroupAccessTypeSetGroups[LANG]);
 				}
 			});
-			
+
 			if (counter === $scope.tenantApp.applications.length) {
 				overlayLoading.show();
 				var opts = {
@@ -602,7 +602,7 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 					},
 					"data": postData
 				};
-				
+
 				getSendDataFromServer($scope, ngDataApi, opts, function (error) {
 					overlayLoading.hide();
 					if (error) {
@@ -620,5 +620,5 @@ uracApp.controller('uracAclModuleQaCtrl', ['$scope', '$routeParams', 'ngDataApi'
 		overlayLoading.show(function () {
 			$scope.getEnvironments();
 		});
-		
+
 	}]);

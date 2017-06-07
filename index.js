@@ -7,6 +7,7 @@ var product = require('./lib/product.js');
 var tenant = require('./lib/tenant.js');
 
 var hostBL = require("./lib/host.js");
+var hostHelpers = require("./lib/helpers/host.js");
 var cloudServicesBL = require("./lib/cloud/services.js");
 var cloudDeployBL = require("./lib/cloud/deploy.js");
 var cloudNodesBL = require("./lib/cloud/nodes.js");
@@ -15,22 +16,26 @@ var cloudNamespacesBL = require("./lib/cloud/namespaces.js");
 var catalogBL = require("./lib/catalog/index.js");
 var ciBL = require("./lib/ci/index.js");
 var cdBL = require("./lib/cd/index.js");
+var cdHelpers = require("./lib/helpers/cd/index.js");
 var tenantBL = require("./lib/tenant.js");
 var productBL = require('./lib/product.js');
 var servicesBL = require("./lib/services.js");
 var daemonsBL = require("./lib/daemons.js");
 var staticContentBL = require('./lib/staticContent.js');
 var gitAccountsBL = require("./lib/git.js");
+var gitHelpers = require("./lib/helpers/git.js");
+var gitModel = require('./models/git.js');
 var environmentBL = require('./lib/environment.js');
 var cbBL = require("./lib/contentbuilder.js");
 var swaggerBL = require("./lib/swagger.js");
 var gitAccounts = require("./lib/git.js");
 var daemons = require("./lib/daemons.js");
 var staticContent = require('./lib/staticContent.js');
-//var cb = require("./lib/contentbuilder.js");
+
 var analyticsBL = require("./lib/analytics.js");
 var gitDriver = require('./utils/drivers/git/index.js');
 var ciDriver = require('./utils/drivers/ci/index.js');
+var deployer = require("soajs").drivers;
 
 var dbModel = "mongo";
 
@@ -38,11 +43,11 @@ var service = new soajs.server.service(config);
 
 function checkMyAccess (req, res, cb) {
 	if (!req.soajs.uracDriver || !req.soajs.uracDriver.getProfile()) {
-		return res.jsonp(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 601, "msg": config.errors[ 601 ] }));
 	}
 	var myTenant = req.soajs.uracDriver.getProfile().tenant;
 	if (!myTenant || !myTenant.id) {
-		return res.jsonp(req.soajs.buildResponse({"code": 608, "msg": config.errors[608]}));
+		return res.jsonp(req.soajs.buildResponse({ "code": 608, "msg": config.errors[ 608 ] }));
 	}
 	else {
 		req.soajs.inputmaskData.id = myTenant.id.toString();
@@ -54,7 +59,7 @@ function initBLModel (req, res, BLModule, modelName, cb) {
 	BLModule.init(modelName, function (error, BL) {
 		if (error) {
 			req.soajs.log.error(error);
-			return res.json(req.soajs.buildResponse({"code": 407, "msg": config.errors[407]}));
+			return res.json(req.soajs.buildResponse({ "code": 407, "msg": config.errors[ 407 ] }));
 		}
 		else {
 			return cb(BL);
@@ -883,7 +888,7 @@ service.init(function () {
 	 */
 	service.get("/hosts/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.list(config, req.soajs, res, function (error, data) {
+			BL.list(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -896,7 +901,7 @@ service.init(function () {
 	 */
 	service.post("/hosts/maintenanceOperation", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.maintenanceOperation(config, req.soajs, res, function (error, data) {
+			BL.maintenanceOperation(config, req.soajs, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -913,7 +918,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/nodes/list", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.listNodes(config, req.soajs, function (error, data) {
+			BL.listNodes(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -926,7 +931,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/nodes/add", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.addNode(config, req.soajs, function (error, data) {
+			BL.addNode(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -939,7 +944,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/nodes/remove", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.removeNode(config, req.soajs, function (error, data) {
+			BL.removeNode(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -952,7 +957,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/nodes/update", function (req, res) {
 		initBLModel(req, res, cloudNodesBL, dbModel, function (BL) {
-			BL.updateNode(config, req.soajs, function (error, data) {
+			BL.updateNode(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -965,7 +970,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/list", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.listServices(config, req.soajs, function (error, data) {
+			BL.listServices(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -978,7 +983,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/soajs/deploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.deployService(config, req.soajs, service.registry, res, function (error, data) {
+			BL.deployService(config, req.soajs, service.registry, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -991,7 +996,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/redeploy", function (req, res) {
 		initBLModel(req, res, cloudDeployBL, dbModel, function (BL) {
-			BL.redeployService(config, req.soajs, service.registry, res, function (error, data) {
+			BL.redeployService(config, req.soajs, service.registry, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1004,7 +1009,7 @@ service.init(function () {
 	 */
 	service.put("/cloud/services/scale", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.scaleService(config, req.soajs, function (error, data) {
+			BL.scaleService(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1017,7 +1022,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/services/delete", function (req, res) {
 		initBLModel(req, res, cloudServicesBL, dbModel, function (BL) {
-			BL.deleteService(config, req.soajs, function (error, data) {
+			BL.deleteService(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1030,7 +1035,7 @@ service.init(function () {
 	 */
 	service.post("/cloud/services/maintenance", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
-			BL.maintenance(config, req.soajs, function (error, data) {
+			BL.maintenance(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1043,7 +1048,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/services/instances/logs", function (req, res) {
 		initBLModel(req, res, cloudMaintenanceBL, dbModel, function (BL) {
-			BL.streamLogs(config, req.soajs, res, function (error, data) {
+			BL.streamLogs(config, req.soajs, res, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1056,7 +1061,7 @@ service.init(function () {
 	 */
 	service.get("/cloud/namespaces/list", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.list(config, req.soajs, function (error, data) {
+			BL.list(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1069,7 +1074,7 @@ service.init(function () {
 	 */
 	service.delete("/cloud/namespaces/delete", function (req, res) {
 		initBLModel(req, res, cloudNamespacesBL, dbModel, function (BL) {
-			BL.delete(config, req.soajs, function (error, data) {
+			BL.delete(config, req.soajs, deployer, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1155,12 +1160,12 @@ service.init(function () {
 	 */
 	service.get("/cd", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.getConfig(config, req, function (error, data) {
+			BL.getConfig(config, req, cdHelpers, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
-	
+
 	/**
 	 * Get Get Update Notification Ledger
 	 * @param {String} API route
@@ -1168,7 +1173,7 @@ service.init(function () {
 	 */
 	service.get("/cd/updates", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.getUpdates(config, req, function (error, data) {
+			BL.getUpdates(config, req, deployer, cdHelpers, cloudServicesBL, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1181,7 +1186,7 @@ service.init(function () {
 	 */
 	service.post("/cd", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.saveConfig(config, req, function (error, data) {
+			BL.saveConfig(config, req, cdHelpers, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1194,60 +1199,60 @@ service.init(function () {
 	 */
 	service.post("/cd/deploy", function (req, res) {
 		initBLModel(req, res, cdBL, dbModel, function (BL) {
-			BL.cdDeploy(config, req, function (error, data) {
+			BL.cdDeploy(config, req, deployer, cdHelpers, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
 
-    /**
-     * Take action based on ledger notification
-     * @param {String} API route
-     * @param {Function} API middleware
-     */
-    service.put("/cd/action", function (req, res) {
-        initBLModel(req, res, cdBL, dbModel, function (BL) {
-            BL.cdAction(config, service.registry, req, function (error, data) {
-                return res.jsonp(req.soajs.buildResponse(error, data));
-            });
-        });
-    });
-
-    /**
-     * Lists the ledgers of a specific environment
-     * @param {String} API route
-     * @param {Function} API middleware
-     */
-    service.get("/cd/ledger", function (req, res) {
-        initBLModel(req, res, cdBL, dbModel, function (BL) {
-            BL.getLedger(config, req, function (error, data) {
-                return res.jsonp(req.soajs.buildResponse(error, data));
-            });
-        });
-    });
-
-
-    /**
-     * Marks records as read
-     * @param {String} API route
-     * @param {Function} API middleware
-     */
-    service.put("/cd/ledger/read", function (req, res) {
-        initBLModel(req, res, cdBL, dbModel, function (BL) {
-            BL.markRead(config, req, function (error, data) {
-                return res.jsonp(req.soajs.buildResponse(error, data));
-            });
-        });
-    });
 	/**
-	* Continuous Integration features
-	*/
+	 * Take action based on ledger notification
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cd/action", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.cdAction(config, service.registry, req, deployer, cdHelpers, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
 
 	/**
-	* Get a CI configuration
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Lists the ledgers of a specific environment
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.get("/cd/ledger", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.getLedger(config, req, cdHelpers, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+
+	/**
+	 * Marks records as read
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/cd/ledger/read", function (req, res) {
+		initBLModel(req, res, cdBL, dbModel, function (BL) {
+			BL.markRead(config, req, cdHelpers, function (error, data) {
+				return res.jsonp(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	/**
+	 * Continuous Integration features
+	 */
+
+	/**
+	 * Get a CI configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.getConfig(config, req, ciDriver, function (error, data) {
@@ -1270,10 +1275,10 @@ service.init(function () {
 	});
 
 	/**
-	* Save a CI configuration
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Save a CI configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.post("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.saveConfig(config, req, ciDriver, function (error, data) {
@@ -1283,10 +1288,10 @@ service.init(function () {
 	});
 
 	/**
-	* Delete a CI configuration
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Delete a CI configuration
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/ci", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.deleteConfig(config, req, ciDriver, function (error, data) {
@@ -1296,10 +1301,10 @@ service.init(function () {
 	});
 
 	/**
-	* Download a CI recipe
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Download a CI recipe
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/ci/download", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.downloadRecipe(config, req, res, ciDriver, function (error, data) {
@@ -1309,10 +1314,10 @@ service.init(function () {
 	});
 
 	/**
-	* Get ci repository settings and environment variables
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Get ci repository settings and environment variables
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/ci/settings", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.getRepoSettings(config, req, ciDriver, function (error, data) {
@@ -1322,10 +1327,10 @@ service.init(function () {
 	});
 
 	/**
-	* Update ci repository settings and environment variables
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Update ci repository settings and environment variables
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.put("/ci/settings", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.updateRepoSettings(config, req, ciDriver, function (error, data) {
@@ -1335,10 +1340,10 @@ service.init(function () {
 	});
 
 	/**
-	* Sync all CI repositories
-	* @param {String} API route
-	* @param {Function} API middleware
-	*/
+	 * Sync all CI repositories
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/ci/sync", function (req, res) {
 		initBLModel(req, res, ciBL, dbModel, function (BL) {
 			BL.syncRepos(config, req, ciDriver, function (error, data) {
@@ -1352,13 +1357,13 @@ service.init(function () {
 	 */
 
 	/**
- 	* Add a new git account
- 	* @param {String} API route
- 	* @param {Function} API middleware
- 	*/
+	 * Add a new git account
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.post("/gitAccounts/login", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.login(config, req, gitDriver, function (error, data) {
+			BL.login(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1371,7 +1376,7 @@ service.init(function () {
 	 */
 	service.delete("/gitAccounts/logout", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.logout(config, req, gitDriver, function (error, data) {
+			BL.logout(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1384,7 +1389,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/accounts/list", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.listAccounts(config, req, gitDriver, function (error, data) {
+			BL.listAccounts(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1397,7 +1402,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getRepos", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getRepos(config, req, gitDriver, function (error, data) {
+			BL.getRepos(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1410,7 +1415,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getYaml", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getFile(config, req, gitDriver, function (error, data) {
+			BL.getFile(config, req, gitDriver, deployer, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1423,7 +1428,7 @@ service.init(function () {
 	 */
 	service.get("/gitAccounts/getBranches", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.getBranches(config, req, gitDriver, function (error, data) {
+			BL.getBranches(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1436,7 +1441,7 @@ service.init(function () {
 	 */
 	service.post("/gitAccounts/repo/activate", function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.activateRepo(config, req, gitDriver, function (error, data) {
+			BL.activateRepo(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1449,7 +1454,7 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/deactivate', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.deactivateRepo(config, req, gitDriver, function (error, data) {
+			BL.deactivateRepo(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1462,7 +1467,7 @@ service.init(function () {
 	 */
 	service.put('/gitAccounts/repo/sync', function (req, res) {
 		initBLModel(req, res, gitAccountsBL, dbModel, function (BL) {
-			BL.syncRepo(config, req, gitDriver, function (error, data) {
+			BL.syncRepo(config, req, gitDriver, gitHelpers, gitModel, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
@@ -1486,13 +1491,26 @@ service.init(function () {
 	});
 
 	/**
+	 * Update service settings
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.put("/services/settings/update", function (req, res) {
+		initBLModel(req, res, servicesBL, dbModel, function (BL) {
+			BL.updateSettings(config, req, res, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+
+	/**
 	 * Get all environments where a specific service is deployed
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
 	service.get("/services/env/list", function (req, res) {
 		initBLModel(req, res, hostBL, dbModel, function (BL) {
-			BL.listHostEnv(config, req.soajs, res, function (error, data) {
+			BL.listHostEnv(config, req.soajs, deployer, hostHelpers, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

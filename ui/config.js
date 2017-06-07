@@ -29,7 +29,6 @@ var modules = {
 		"dashboard": {
 			services: 'modules/dashboard/services/install.js',
 			contentBuilder: 'modules/dashboard/contentBuilder/install.js',
-			staticContent: 'modules/dashboard/staticContent/install.js',
 			githubApp: 'modules/dashboard/gitAccounts/install.js',
 			swaggerEditorApp: 'modules/dashboard/swaggerEditor/install.js',
 			catalogs: 'modules/dashboard/catalogs/install.js',

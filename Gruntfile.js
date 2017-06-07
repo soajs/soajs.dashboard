@@ -140,6 +140,7 @@ module.exports = function (grunt) {
 				'index.js',
 				'lib/*.js',
 				'lib/helpers/*.js',
+				'lib/helpers/**/*.js',
 				'lib/*/*.js',
 				'models/*.js',
 				'schemas/*.js',
@@ -147,6 +148,7 @@ module.exports = function (grunt) {
 				'utils/*/*.js',
 				'utils/*/*/*.js',
 				'utils/*/*/*/*.js',
+				'utils/**/*.js',
 				'test/*.js'
 			],
 			options: {

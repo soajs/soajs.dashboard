@@ -17,10 +17,9 @@ var swaggerEditorNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 5,
+		'order': 6,
 		'scripts': ['modules/dashboard/swaggerEditor/config.js', 'modules/dashboard/swaggerEditor/controller.js', 'modules/dashboard/swaggerEditor/service.js'],
 		'ancestor': [translation.home[LANG]]
 	}
 ];
 navigation = navigation.concat(swaggerEditorNav);
-	

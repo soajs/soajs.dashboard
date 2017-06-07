@@ -19,7 +19,7 @@ var catalogNav = [
         },
         'mainMenu': true,
         'tracker': true,
-        'order': 4,
+        'order': 5,
         'scripts': ['modules/dashboard/catalogs/config.js', 'modules/dashboard/catalogs/controller.js'],
         'ancestor': [translation.home[LANG]]
     }

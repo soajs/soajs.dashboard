@@ -1,5 +1,9 @@
 'use strict';
 var gaTranslation = {
+    repositories: {
+        ENG: "Repositories",
+        FRA: "Repositories"
+    },
     addAccount: {
         ENG: "Add Account",
         FRA: "Add Account"
@@ -7,10 +11,6 @@ var gaTranslation = {
     noGitAccountsAdded: {
         ENG: "No Git Accounts Added",
         FRA: "No Git Accounts Added"
-    },
-    repositories: {
-        ENG: "Repositories",
-        FRA: "Repositories"
     },
     noReposFound: {
         ENG: "No Repositories Found!",
@@ -196,7 +196,7 @@ for (var attrname in gaTranslation) {
 var gitAccountsNav = [
     {
         'id': 'git-accounts',
-        'label': "Git Accounts",
+        'label': translation.repositories[LANG],
         'checkPermission': {
             'service': 'dashboard',
             'route': '/gitAccounts/accounts/list',
@@ -213,7 +213,7 @@ var gitAccountsNav = [
         'mainMenu': true,
         'tracker': true,
         'order': 4,
-        'scripts': ['modules/dashboard/gitAccounts/config.js', 'modules/dashboard/gitAccounts/controller.js'],
+        'scripts': ['modules/dashboard/gitAccounts/config.js', 'modules/dashboard/gitAccounts/controller.js', 'modules/dashboard/gitAccounts/services.js'],
         'ancestor': [translation.home[LANG]]
     }
 ];

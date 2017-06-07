@@ -8,6 +8,9 @@ var config = {
 };
 var req = {
 	soajs: {
+		servicesConfig: {
+			dashboard: {}
+		},
 		registry: {
 			coreDB: {
 				provision: {}
@@ -48,27 +51,71 @@ var mongoStub = {
 	}
 };
 
+var envRecord = {
+	_id: '',
+	code: 'DEV',
+	deployer: {
+		"type": "container",
+		"selected": "container.docker.local",
+		"container": {
+			"docker": {
+				"local": {
+					"socketPath": "/var/run/docker.sock"
+				},
+				"remote": {
+					"nodes": ""
+				}
+			},
+			"kubernetes": {
+				"local": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				},
+				"remote": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				}
+			}
+		}
+	},
+	services: {
+		config: {
+			ports: {
+				maintenanceInc: 5
+			}
+		}
+	}
+};
+
+var deployer = helper.deployer;
+
 describe("testing maintenance.js", function () {
-
+	
 	describe("testing init", function () {
-
+		
 		it("No Model Requested", function (done) {
 			utils.init(null, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Model Name not found", function (done) {
-
+			
 			utils.init('anyName', function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
 		it("Init", function (done) {
-
+			
 			utils.init('mongo', function (error, body) {
 				assert.ok(body);
 				maintenance = body;
@@ -76,11 +123,11 @@ describe("testing maintenance.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("streamLogs", function () {
-
+		
 		it("Failed", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {
@@ -98,11 +145,63 @@ describe("testing maintenance.js", function () {
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.serviceId = '123';
-			maintenance.streamLogs(config, req.soajs, {}, function (error, body) {
+			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
 				assert.ok(error);
 				done();
 			});
 		});
-
+		
+		it.skip("Success", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecord);
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.serviceId = '123';
+			maintenance.streamLogs(config, req.soajs, {}, deployer, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
+	});
+	
+	describe("maintenance", function () {
+		
+		it("Success service", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				return cb(null, {});
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'service';
+			req.soajs.inputmaskData.serviceName = 'test';
+			req.soajs.inputmaskData.serviceId = '123';
+			
+			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success daemon", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				if (opts.collection === 'environment') {
+					return cb(null, envRecord);
+				}
+				return cb(null, {});
+			};
+			req.soajs.inputmaskData.env = 'dev';
+			req.soajs.inputmaskData.type = 'daemon';
+			req.soajs.inputmaskData.serviceName = 'test';
+			req.soajs.inputmaskData.serviceId = '123';
+			
+			maintenance.maintenance(config, req.soajs, deployer, function (error, body) {
+				assert.ok(body);
+				done();
+			});
+		});
+		
 	});
 });

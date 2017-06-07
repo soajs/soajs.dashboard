@@ -48,6 +48,78 @@ var mongoStub = {
 	}
 };
 
+var deployer = helper.deployer;
+
+var envRecord = {
+	_id: '',
+	code: 'DEV',
+	deployer: {
+		"type": "container",
+		"selected": "container.docker.local",
+		"container": {
+			"docker": {
+				"local": {
+					"socketPath": "/var/run/docker.sock"
+				},
+				"remote": {
+					"nodes": ""
+				}
+			},
+			"kubernetes": {
+				"local": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				},
+				"remote": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				}
+			}
+		}
+	}
+};
+
+var envRecordKub = {
+	_id: '',
+	code: 'DEV',
+	deployer: {
+		"type": "container",
+		"selected": "container.kubernetes.local",
+		"container": {
+			"docker": {
+				"local": {
+					"socketPath": "/var/run/docker.sock"
+				},
+				"remote": {
+					"nodes": ""
+				}
+			},
+			"kubernetes": {
+				"local": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				},
+				"remote": {
+					"nginxDeployType": "",
+					"namespace": {},
+					"auth": {
+						"token": ""
+					}
+				}
+			}
+		}
+	}
+};
+
 describe("testing namespaces.js", function () {
 
 	describe("testing init", function () {
@@ -79,28 +151,52 @@ describe("testing namespaces.js", function () {
 
 	});
 
-	describe.skip("delete", function () {
+	describe("list", function () {
 
 		it("success", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
-				cb(null, {
-					_id: '',
-					code: 'DEV',
-					deployer: {
-						type: 'docker',
-						selected: 'container.docker.local',
-						container: {
-							docker: {}, kubernetes: {}
-						}
-					}
-				});
+				cb(null, envRecord);
 			};
-			req.soajs.inputmaskData.env = 'dev';
-			namespaces.delete(config, req.soajs, function (error, body) {
+			namespaces.list(config, req.soajs, deployer, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
+		it("success kubernetes", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecordKub);
+			};
+			namespaces.list(config, req.soajs, deployer, function (error, body) {
 				// assert.ok(error);
 				done();
 			});
 		});
 
 	});
+
+	describe("delete", function () {
+
+		it("success", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecord);
+			};
+			namespaces.delete(config, req.soajs, deployer, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
+		it("success kubernetes", function (done) {
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecordKub);
+			};
+			namespaces.delete(config, req.soajs, deployer, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
+	});
+
 });

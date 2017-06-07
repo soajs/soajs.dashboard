@@ -51,7 +51,7 @@ var mongoStub = {
 		cb(null, true);
 	}
 };
-// req.soajs.tenant.key.eKey
+
 var req = {
 	soajs: {
 		tenant: {
@@ -171,7 +171,6 @@ describe("testing services.js", function () {
 				settings: {
 					domain: 'api.travis-ci.org',
 					owner: 'soajsTestAccount',
-					gitToken: 'mygitToken',
 					ciToken: '1234'
 				},
 				recipe: 'sudo',
@@ -408,7 +407,6 @@ describe("testing services.js", function () {
 					settings: {
 						domain: 'api.travis-ci.org',
 						owner: 'soajsTestAccount',
-						gitToken: '36431b4301b',
 						ciToken: '8ZXvX0Mu'
 					},
 					recipe: 'sudo: required\nlanguage',
@@ -442,7 +440,6 @@ describe("testing services.js", function () {
 					settings: {
 						domain: 'api.travis-ci.org',
 						owner: 'soajsTestAccount',
-						gitToken: 'mygitToken',
 						ciToken: '8ZXvX0MudBH'
 					},
 					recipe: 'sudo: required\nlanguage',

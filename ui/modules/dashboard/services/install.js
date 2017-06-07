@@ -4,9 +4,17 @@ var srTranslation = {
 		"ENG": "Services",
 		"FRA": "Services"
 	},
+	"apiCatalog": {
+		"ENG": "API Catalog",
+		"FRA": "API Catalog"
+	},
 	"daemons": {
 		"ENG": "Daemons",
 		"FRA": "Daemons"
+	},
+	"daemonCatalog": {
+		"ENG": "Daemon Catalog",
+		"FRA": "Daemon Catalog"
 	},
 	//controller
 	"updateService": {
@@ -293,6 +301,10 @@ var srTranslation = {
 		"ENG": "Default Route",
 		"FRA": "Default Route"
 	},
+	"serviceGroup": {
+		"ENG": "Group",
+		"FRA": "Group"
+	},
 	//list-daemons
 	"editDaemon": {
 		"ENG": "Edit Daemon",
@@ -376,7 +388,7 @@ for (var attrname in srTranslation) {
 var servicesNav = [
 	{
 		'id': 'services',
-		'label': translation.services[LANG],
+		'label': translation.apiCatalog[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
 			'route': '/services/list',
@@ -392,13 +404,13 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 1,
+		'order': 2,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},
 	{
 		'id': 'daemons',
-		'label': 'Daemons',
+		'label': translation.daemonCatalog[LANG],
 		'checkPermission': {
 			'service': 'dashboard',
 			'route': '/daemons/list',
@@ -414,7 +426,7 @@ var servicesNav = [
 		},
 		'mainMenu': true,
 		'tracker': true,
-		'order': 2,
+		'order': 3,
 		'scripts': ['modules/dashboard/services/config.js', 'modules/dashboard/services/controller.js'],
 		'ancestor': [translation.home[LANG]]
 	},

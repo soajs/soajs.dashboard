@@ -57,6 +57,7 @@ var servicesConfig = {
 	},
 	permissions: {
 		'listServices': ['dashboard', '/services/list', 'post'],
+		'updateServiceSettings': ['dashboard', '/services/settings/update', 'put'],
 
 		'getEnv': ['dashboard', '/services/env/list', 'get'],
 
