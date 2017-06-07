@@ -157,7 +157,7 @@
 				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you can proceed.
 			</alert>
 		</div>
-        <div ng-if="noRepoCiConfig">
+        <div ng-if="noRepoCiConfig && !noCiConfig">
 			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.</alert>
 		</div>
 		<div ng-if="!noCiConfig && !noRepoCiConfig">
