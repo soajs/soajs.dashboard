@@ -256,21 +256,32 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						jQuery('#cd_' + name).slideDown()
 					}
 				};
-
-				$scope.setVersion = function(oneEnv,version) {
-					if($scope.cdConfiguration[oneEnv].cdData.versions[version]){
-						delete $scope.cdConfiguration[oneEnv].cdData.versions[version];
+				
+				$scope.cdShowHide = function(oneSrv, name){
+					if($scope.cdConfiguration[oneSrv].icon === 'minus'){
+						$scope.cdConfiguration[oneSrv].icon = 'plus';
+						jQuery('#cdc_' + name).slideUp();
 					}
 					else{
-						$scope.cdConfiguration[oneEnv].cdData.versions[version] = {
-							branch: $scope.cdConfiguration[oneEnv].obj.ha[version].branch
+						$scope.cdConfiguration[oneSrv].icon = 'minus';
+						jQuery('#cdc_' + name).slideDown()
+					}
+				};
+
+				$scope.setVersion = function(oneEnv, version, oneSrv) {
+					if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]){
+						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version];
+					}
+					else{
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
+							branch: $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].branch
 						};
 					}
 				};
 				
 				$scope.getCDRecipe = function(){
 					getCDRecipe($scope, oneRepo, function(){
-						console.log($scope.cdConfiguration);
+						//console.log($scope.cdConfiguration);
 					});
 				};
 				
@@ -354,22 +365,30 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					if(oneRepo.type ==='multi' && oneRepo.multi && oneRepo.multi.length > 0){
 						oneRepo.multi.forEach(function(oneSub){
 							currentScope.cdConfiguration[oneSub.name] = {
-								type: oneSub.type
+								type: oneSub.type,
+								icon: 'minus'
 							};
 						});
 					}
 					else{
 						var serviceName = oneRepo.full_name.split("/")[1];
 						currentScope.cdConfiguration[serviceName] = {
-							type: oneRepo.type
+							type: oneRepo.type,
+							icon: 'minus'
 						};
 					}
 					var max = Object.keys(currentScope.cdConfiguration).length;
+					currentScope.maxEntries = 0;
 					var repoCount =0;
 					for(var oneService in currentScope.cdConfiguration){
 						populateServiceInEnvironments(0, oneService, defaultCD, function(){
 							repoCount++;
 							if(repoCount === max){
+								for(var oneService in currentScope.cdConfiguration) {
+									if (currentScope.cdConfiguration[oneService].display) {
+										currentScope.maxEntries++;
+									}
+								}
 								return cb();
 							}
 						});
@@ -386,9 +405,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 			
 			currentScope.cdConfiguration[serviceName].name = serviceName;
+			currentScope.cdConfiguration[serviceName].display = false;
 			
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()] = {
-				"cdData" : currentScope.cdData[oneCDEnv.toUpperCase()][serviceName] || currentScope.cdData[oneCDEnv.toUpperCase()]
+				"cdData" : angular.copy(currentScope.cdData[oneCDEnv.toUpperCase()][serviceName]) || angular.copy(currentScope.cdData[oneCDEnv.toUpperCase()])
 			};
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()].cdData.versions = {};
 			
@@ -432,35 +452,36 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				for(var srv=0; srv < response.length; srv++){
 					var service = response[srv];
 					
-					if (service.labels && serviceName === service.labels['service.repo']){
-
-						currentScope.cdConfiguration[serviceName].label = service.labels['soajs.service.name'];
-						
-						var branch;
-						if (service.labels['service.branch']){
-							branch = service.labels['service.branch'];
-						}
-						////
-						if (!branch){
-							for (var x =0; x < service.env.length; x++) {
-								if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
-									branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
-									break;
+					if (service.labels){
+						if(serviceName === service.labels['service.repo'] || serviceName === service.labels['soajs.service.name']){
+							currentScope.cdConfiguration[serviceName].label = service.labels['soajs.service.name'];
+							var branch;
+							if (service.labels['service.branch']){
+								branch = service.labels['service.branch'];
+							}
+							////
+							if (!branch){
+								for (var x =0; x < service.env.length; x++) {
+									if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
+										branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
+										break;
+									}
 								}
 							}
-						}
-						////
-						if (branch) {
-							if(currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.indexOf(branch) === -1){
-								currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.push(branch);
-							}
-							service.branch = branch;
-							if (service.labels['soajs.service.version']){
-								var version = service.labels['soajs.service.version'];
-								currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha[version] = service;
-							}
-							else{
-								currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha = service;
+							////
+							if (branch) {
+								if(currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.indexOf(branch) === -1){
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.push(branch);
+								}
+								service.branch = branch;
+								if (service.labels['soajs.service.version']){
+									var version = service.labels['soajs.service.version'];
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha[version] = angular.copy(service);
+								}
+								else{
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha = angular.copy(service);
+								}
+								currentScope.cdConfiguration[serviceName].display = true;
 							}
 						}
 					}
@@ -475,16 +496,34 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 		var environments = currentScope.cdEnvs;
 		
 		environments.forEach(function(oneEnv){
-			configuration[currentScope.cdConfiguration.label] = {
-				branch: currentScope.cdConfiguration[oneEnv].cdData.branch,
-				strategy: currentScope.cdConfiguration[oneEnv].cdData.strategy
-			};
+			configuration[oneEnv] = angular.copy(currentScope.cdData[oneEnv]);
+			delete configuration[oneEnv].branch;
+			delete configuration[oneEnv].strategy;
+			delete configuration[oneEnv].default;
 			
-			for(var version in currentScope.cdConfiguration[oneEnv].cdData.versions){
-				configuration[currentScope.cdConfiguration.label]['v' + version] = {
-					branch: currentScope.cdConfiguration[oneEnv].cdData.versions[version].branch,
-					strategy: currentScope.cdConfiguration[oneEnv].cdData.versions[version].strategy
-				};
+			if(!configuration[oneEnv]){
+				configuration[oneEnv] = {};
+			}
+			
+			for(var oneRepo in currentScope.cdConfiguration){
+				var oneService = currentScope.cdConfiguration[oneRepo].label;
+				if(oneService){
+					if(!configuration[oneEnv][oneService]){
+						configuration[oneEnv][oneService] = {};
+					}
+					
+					configuration[oneEnv][oneService] = {
+						branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.branch,
+						strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.strategy
+					};
+					
+					for(var version in currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions){
+						configuration[oneEnv][oneService]['v' + version] = {
+							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
+							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy
+						};
+					}
+				}
 			}
 		});
 		

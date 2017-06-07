@@ -5,6 +5,13 @@
     padding-left: 0px !important;
 }
 
+.entryBox{
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
 .blueLi.active {
     background-color: #DFF0D8 !important;
     border-color: #3C763D !important;
@@ -142,4 +149,52 @@ li.accountType {
 
 #repoSettings #envs tr[class^="form-group tr-removeEnv"] td{
     padding-top:45px;
+}
+
+
+.configCd .entryServiceBoxes .service-container .serviceNameHead{
+    background-color: white;
+    border-bottom: none;
+}
+.configCd .serviceNameHead .serviceName{
+    width: 30%;
+}
+.configCd .form-control {
+    display: inline;
+    width: auto;
+    height: auto;
+    padding-bottom: 3px;
+    padding-top: 4px;
+}
+
+.configCd .entryServiceBoxes {
+    margin-top: 10px;
+}
+
+.configCd label,
+.configCd .entryServiceBoxes .service-container label {
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+.configCd select.form-control {
+    margin-top: 3px;
+    margin-bottom: 5px;
+    min-width: 120px;
+}
+
+.configCd .halfPage {
+    float: left;
+    width: 35%;
+}
+.configCd .branchLabel{
+    padding-top: 8px;
+}
+
+.font-16{
+    font-size:16px;
+}
+
+.font-14{
+    font-size:14px;
 }
