@@ -186,6 +186,9 @@
 						</div>
 						<hr>
 					</div>
+					<div ng-show="alerts.length >0">
+						<alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+					</div>
 					<ngform></ngform>
 				</tab>
 				<tab heading="Continuous Delivery">

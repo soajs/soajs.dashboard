@@ -50,6 +50,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 			keyboard: true,
 			controller: function ($scope) {
 				fixBackDrop();
+				
+				$scope.alerts = [];
 				$scope.noCiConfig = noCiConfig;
 				$scope.activateRepo = false;
 				$scope.ciRepoName = ciRepo.name;
@@ -74,14 +76,20 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 					});
 				};
 				
-				if(!noCiConfig){
-					if(!ciRepo.active){
-						$scope.activateRepo = true;
+				$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
+					$scope.alerts = [];
+					if (isCode) {
+						var msgT = getCodeMessage(msg, service, orgMesg);
+						if (msgT) {
+							msg = msgT;
+						}
 					}
-					else{
-						$scope.showCIConfigForm();
-					}
-				}
+					$scope.alerts.push({'type': type, 'msg': msg});
+				};
+				
+				$scope.closeAlert = function (index) {
+					$scope.alerts.splice(index, 1);
+				};
 				
 				$scope.showCIConfigForm = function(){
 					overlayLoading.show();
@@ -92,11 +100,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 							'id': ciRepo.id
 						}
 					}, function (error, response) {
+						overlayLoading.hide();
 						if (error) {
-							currentScope.displayAlert('danger', error.message);
+							$scope.displayAlert('danger', error.message);
 						}
 						else {
-							overlayLoading.hide();
 							var customEnvs = response.envs;
 							var formConfig = angular.copy(config.form.settings);
 							
@@ -222,6 +230,15 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 							});
 						}
 					});
+				};
+				
+				if(!noCiConfig){
+					if(!ciRepo.active){
+						$scope.activateRepo = true;
+					}
+					else{
+						$scope.showCIConfigForm();
+					}
 				}
 			}
 		});
