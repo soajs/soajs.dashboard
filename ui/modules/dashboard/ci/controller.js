@@ -157,7 +157,6 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 							routeName: '/dashboard/ci',
 							data: data
 						}, function (error, response) {
-							overlayLoading.hide();
 							if (error) {
 								$scope.form.displayAlert('danger', error.message);
 							}
