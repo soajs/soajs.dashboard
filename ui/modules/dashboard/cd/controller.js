@@ -11,6 +11,12 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.myEnv = $cookies.getObject('myEnv').code;
 	$scope.upgradeSpaceLink = cdAppConfig.upgradeSpaceLink;
 	$scope.updateCount;
+	$scope.upgradeCount;
+	
+	/**
+	 * remove the below
+	 */
+	
 	$scope.servicesNumber=[];
 
 	$scope.getRecipe = function () {
@@ -67,126 +73,6 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 	
-	$scope.saveUpdate = function() {
-		var configuration={};
-		configuration.branch = $scope.configuration.branch;
-		configuration.strategy = $scope.configuration.strategy;
-
-		for(var key in $scope.configuration){
-			if( key!== 'branch' && key !== 'strategy'){
-				if($scope.configuration[key].include){
-					configuration[key] = {
-						branch: $scope.configuration[key].branch,
-						strategy: $scope.configuration[key].strategy
-					};
-					for(var str in $scope.configuration[key]){
-						if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
-							if($scope.configuration[key][str].include){
-								configuration[key][str] = {
-									branch:$scope.configuration[key][str].branch,
-									strategy:$scope.configuration[key][str].strategy
-								};
-							}
-						}
-					}
-				}
-			}
-		}
-		$scope.cdData['DASHBOARD'] = {
-			"branch": "master",
-			"strategy": "notify"
-		};
-		$scope.cdData[$scope.myEnv] = configuration;
-		var data = $scope.cdData;
-		delete data.type;
-		delete data.soajsauth;
-		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			method: 'post',
-			routeName: '/dashboard/cd',
-			data: {
-				"config": data
-			}
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.displayAlert('success', 'Recipe Saved successfully');
-				$scope.getRecipe();
-			}
-		});
-	};
-	
-	$scope.getUpdates = function () {
-		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			method: 'get',
-			routeName: '/dashboard/cd/updates',
-			params: {
-				"env": $scope.myEnv
-			}
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				parseMyResponse(response);
-			}
-		});
-		
-		
-		function parseMyResponse(list) {
-			$scope.imageLedger = [];
-			$scope.catalogLedger = [];
-			
-			$scope.updateCount =0;
-			
-			list.forEach(function (oneEntry) {
-				$scope.updateCount++;
-				if($scope.myEnv.toLowerCase() === 'dashboard'){
-					oneEntry.rms = true;
-				}
-				else if(oneEntry.labels && oneEntry.labels['soajs.content'] === 'true' && oneEntry.labels['soajs.service.name']){
-					if(SOAJSRMS.indexOf(oneEntry.labels['soajs.service.name'].toLowerCase()) !== -1){
-						oneEntry.rms = true;
-					}
-				}
-				switch (oneEntry.mode) {
-					case 'image':
-						$scope.imageLedger.push(oneEntry);
-						break;
-					case 'rebuild':
-						$scope.catalogLedger.push(oneEntry);
-						break;
-				}
-			});
-			
-			$scope.updateCount = "(" + $scope.updateCount + ")";
-		}
-	};
-	
-	$scope.getLedger = function () {
-		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			method: 'get',
-			routeName: '/dashboard/cd/ledger',
-			params: {
-				"env": $scope.myEnv
-			}
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				$scope.ledger = response;
-			}
-		});
-	};
-
 	$scope.getServices = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -244,6 +130,58 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
+	
+	$scope.saveRecipe = function() {
+		var configuration={};
+		configuration.branch = $scope.configuration.branch;
+		configuration.strategy = $scope.configuration.strategy;
+
+		for(var key in $scope.configuration){
+			if( key!== 'branch' && key !== 'strategy'){
+				if($scope.configuration[key].include){
+					configuration[key] = {
+						branch: $scope.configuration[key].branch,
+						strategy: $scope.configuration[key].strategy
+					};
+					for(var str in $scope.configuration[key]){
+						if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
+							if($scope.configuration[key][str].include){
+								configuration[key][str] = {
+									branch:$scope.configuration[key][str].branch,
+									strategy:$scope.configuration[key][str].strategy
+								};
+							}
+						}
+					}
+				}
+			}
+		}
+		$scope.cdData['DASHBOARD'] = {
+			"branch": "master",
+			"strategy": "notify"
+		};
+		$scope.cdData[$scope.myEnv] = configuration;
+		var data = $scope.cdData;
+		delete data.type;
+		delete data.soajsauth;
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
+			}
+		});
+	};
 
 	$scope.assignService = function(name) {
 		if(!$scope.configuration[name].strategy){
@@ -272,7 +210,95 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			$scope.configuration[name][version.versionLabel].strategy = 'notify';
 		}
 	};
-
+	
+	/**
+	 * remove the above
+	 */
+	
+	$scope.getUpdates = function () {
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cd/updates',
+			params: {
+				"env": $scope.myEnv
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				parseMyResponse(response);
+			}
+		});
+		
+		
+		function parseMyResponse(list) {
+			$scope.imageLedger = [];
+			$scope.catalogLedger = [];
+			
+			$scope.upgradeCount =0;
+			
+			list.forEach(function (oneEntry) {
+				$scope.upgradeCount++;
+				if($scope.myEnv.toLowerCase() === 'dashboard'){
+					oneEntry.rms = true;
+				}
+				else if(oneEntry.labels && oneEntry.labels['soajs.content'] === 'true' && oneEntry.labels['soajs.service.name']){
+					if(SOAJSRMS.indexOf(oneEntry.labels['soajs.service.name'].toLowerCase()) !== -1){
+						oneEntry.rms = true;
+					}
+				}
+				switch (oneEntry.mode) {
+					case 'image':
+						$scope.imageLedger.push(oneEntry);
+						break;
+					case 'rebuild':
+						$scope.catalogLedger.push(oneEntry);
+						break;
+				}
+			});
+			if($scope.upgradeCount > 0){
+				$scope.upgradeCount = "(" + $scope.upgradeCount + ")";
+			}
+			else{
+				$scope.upgradeCount = null;
+			}
+		}
+	};
+	
+	$scope.getLedger = function () {
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cd/ledger',
+			params: {
+				"env": $scope.myEnv
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.ledger = response;
+				$scope.updateCount = 0;
+				$scope.ledger.forEach(function(oneLedgerEntry){
+					if(oneLedgerEntry.notify && !oneLedgerEntry.manual){
+						$scope.updateCount++;
+					}
+				});
+				if($scope.updateCount > 0){
+					$scope.updateCount = "(" + $scope.updateCount + ")";
+				}
+				else{
+					$scope.updateCount = null;
+				}
+			}
+		});
+	};
+	
 	$scope.updateEntry = function (oneEntry, operation) {
 		var formConfig = {
 			entries: []
@@ -489,8 +515,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	
 	// Start here
 	if ($scope.access.get) {
-		$scope.getServices();
-		$scope.getRecipe();
+		$scope.getLedger();
+		$scope.getUpdates();
 	}
-	
 }]);
