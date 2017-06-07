@@ -541,7 +541,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 			else {
 				currentScope.displayAlert('success', 'Recipe Saved successfully');
-				getCDRecipe(currentScope, cb);
+				currentScope.getCDRecipe();
 			}
 		});
 	}
