@@ -27,10 +27,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 	
 	function configureRepo (currentScope, oneRepo, config) {
 		var noCiConfig = false;
+		var noRepoCiConfig = false;
+
 		if(!currentScope.ciData.settings.settings || Object.keys(currentScope.ciData.settings.settings).length ===0){
 			noCiConfig = true;
 		}
-		
+
 		let ciRepo;
 		for(let i=0; i < currentScope.ciData.list.length; i++){
 			if(currentScope.ciData.list[i].name === oneRepo.full_name){
@@ -40,32 +42,35 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 		}
 		
 		if(!ciRepo){
-			noCiConfig = true;
+            noRepoCiConfig = true;
 		}
-		
-		var configureRepo = $modal.open({
+
+        var configureRepo = $modal.open({
 			templateUrl: 'configureRepo.tmpl',
 			size: 'lg',
 			backdrop: true,
 			keyboard: true,
 			controller: function ($scope) {
 				fixBackDrop();
-				
+
 				$scope.alerts = [];
 				$scope.noCiConfig = noCiConfig;
+				$scope.noRepoCiConfig = noRepoCiConfig;
 				$scope.activateRepo = false;
-				$scope.ciRepoName = ciRepo.name;
+				if(ciRepo) {
+                    $scope.ciRepoName = ciRepo.name;
+                }
 				$scope.goTOCI = function(){
 					currentScope.$parent.go('#/continuous-integration');
 					configureRepo.close();
 				};
-				
+
 				$scope.cancel = function(){
 					configureRepo.close();
 				};
-				
+
 				$scope.toggleStatus = function(status){
-					toggleStatus(currentScope, status, ciRepo, function(){
+					toggleStatus($scope, status, ciRepo, function(){
 						$scope.activateRepo = !status;
 						if(status){
 							$scope.showCIConfigForm();
@@ -75,7 +80,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 						}
 					});
 				};
-				
+
 				$scope.displayAlert = function (type, msg, isCode, service, orgMesg) {
 					$scope.alerts = [];
 					if (isCode) {
@@ -86,11 +91,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 					}
 					$scope.alerts.push({'type': type, 'msg': msg});
 				};
-				
+
 				$scope.closeAlert = function (index) {
 					$scope.alerts.splice(index, 1);
 				};
-				
+
 				$scope.showCIConfigForm = function(){
 					overlayLoading.show();
 					getSendDataFromServer(currentScope, ngDataApi, {
@@ -107,7 +112,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 						else {
 							var customEnvs = response.envs;
 							var formConfig = angular.copy(config.form.settings);
-							
+
 							for (var oneVar in currentScope.ciData.variables) {
 								formConfig.entries[1].entries.push({
 									'name': oneVar,
@@ -117,12 +122,12 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 									'type': 'text'
 								});
 							}
-							
+
 							formConfig.entries[1].entries.push({
 								"type":"html",
 								"value": "<br /><p><em>Once you submit this form, the above SOAJS environment variables will be added to your repository configuration.</em></p>"
 							});
-							
+
 							var count = 0;
 							formConfig.entries[2].entries = [];
 							customEnvs.forEach(function (enVar) {
@@ -141,15 +146,15 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 									count++;
 								}
 							});
-							
-							
+
+
 							var oneClone = angular.copy(config.form.envVar);
 							for (var i = 0; i < oneClone.length; i++) {
 								oneClone[i].name = oneClone[i].name.replace("%count%", count);
 							}
 							formConfig.entries[2].entries = formConfig.entries[2].entries.concat(oneClone);
 							count++;
-							
+
 							formConfig.entries.push({
 								"name": "addEnv",
 								"type": "html",
@@ -163,7 +168,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 									count++;
 								}
 							});
-							
+
 							var options = {
 								timeout: $timeout,
 								entries: formConfig.entries,
@@ -184,14 +189,14 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 													"maximum_number_of_builds": formData.maximum_number_of_builds
 												}
 											};
-											
+
 											data.variables = {};
 											for (var i = 0; i < count; i++) {
 												if(!currentScope.ciData.variables[formData['envName' + i]]){
 													data.variables[formData['envName' + i]] = formData['envVal' + i];
 												}
 											}
-											
+
 											overlayLoading.show();
 											getSendDataFromServer(currentScope, ngDataApi, {
 												method: 'put',
@@ -224,15 +229,15 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 									}
 								]
 							};
-							
+
 							buildForm($scope, null, options, function(){
-								
+
 							});
 						}
 					});
 				};
-				
-				if(!noCiConfig){
+
+				if(!noCiConfig && !noRepoCiConfig){
 					if(!ciRepo.active){
 						$scope.activateRepo = true;
 					}
@@ -259,7 +264,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 				currentScope.displayAlert('danger', error.message);
 			}
 			else {
-				var statusL = (status === 'on') ? 'Enabled' : 'Disabled';
+				var statusL = (status) ? 'Enabled' : 'Disabled';
 				currentScope.displayAlert('success', 'Recipe ' + statusL + ' successfully');
 				return cb();
 			}

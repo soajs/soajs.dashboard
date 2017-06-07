@@ -154,10 +154,13 @@
 	<div class="modal-body">
 		<div ng-if="noCiConfig">
 			<alert type="warning">No Continuous Integration Configuration Found. Please visit
-				<a href="" ng-click="goTOCI()">Continuous Integration</a>Section and configure a provider before you can proceed.
+				<a href="" ng-click="goTOCI()">Continuous Integration</a> Section and configure a provider before you can proceed.
 			</alert>
 		</div>
-		<div ng-if="!noCiConfig">
+        <div ng-if="noRepoCiConfig">
+			<alert type="warning">This repository does not belong to the specified Continuous Integration Strategy.</alert>
+		</div>
+		<div ng-if="!noCiConfig && !noRepoCiConfig">
 			<tabset>
 				<tab heading="Continuous Integration">
 					<br />
@@ -199,6 +202,6 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button ng-show="activateRepo" class="btn btn-danger" ng-click="cancel()">Close</button>
+		<button ng-show="activateRepo || noRepoCiConfig" class="btn btn-danger" ng-click="cancel()">Close</button>
 	</div>
 </script>
