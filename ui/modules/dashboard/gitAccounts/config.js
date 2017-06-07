@@ -270,7 +270,20 @@ var gitAccountsAppConfig = {
 					});
 				}
 			}
-		]
+		],
+		cd: {
+			entries: [
+				{
+					'name': 'cd',
+					'label': 'Continuous Delivery Strategy',
+					'type': 'jsoneditor',
+					'required': true,
+					'height': "300px",
+					'fixedHeight': true,
+					'fieldMsg': "Provide an optional Continuous Delivery Update strategy for each environment."
+				}
+			]
+		},
 	},
 	'permissions': {
 		listAccounts: ['dashboard', '/gitAccounts/accounts/list', 'get'],

@@ -165,6 +165,19 @@ var lib = {
 		var found;
 		activeRepos.forEach(function (oneRepo) {
 			found = false;
+			var multi;
+			if(oneRepo.type ==='multi' && oneRepo.configSHA && oneRepo.configSHA.length > 0){
+				if(!Array.isArray(multi)){
+					multi =[];
+				}
+				oneRepo.configSHA.forEach(function(oneSub){
+					multi.push({
+						type: oneSub.contentType,
+						name: oneSub.contentName
+					})
+				});
+			}
+			
 			for (var i = 0; i < allRepos.length; i++) {
 				if (allRepos[ i ].full_name.toLowerCase() === oneRepo.name.toLowerCase()) {
 
@@ -175,6 +188,9 @@ var lib = {
 					}
 
 					allRepos[i].type = oneRepo.type;
+					if(multi && multi.length > 0){
+						allRepos[i].multi = multi;
+					}
 					found = true;
 					break;
 				}
@@ -182,14 +198,19 @@ var lib = {
 			if (!found) {
 				//USING THE SAME RECORD FORMAT AS GITHUB API RESPONSES
 				var repoInfo = oneRepo.name.split('/');
-				allRepos.push({
+				var newRepo = {
 					full_name: oneRepo.name,
 					owner: {
 						login: repoInfo[ 0 ]
 					},
 					name: repoInfo[ 1 ],
-					status: 'deleted'
-				});
+					status: 'deleted',
+					type: oneRepo.type
+				};
+				if(multi && multi.length > 0){
+					newRepo.multi = multi;
+				}
+				allRepos.push(newRepo);
 			}
 		});
 

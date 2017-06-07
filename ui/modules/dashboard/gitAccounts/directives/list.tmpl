@@ -191,9 +191,74 @@
 					</div>
 					<ngform></ngform>
 				</tab>
-				<tab heading="Continuous Delivery">
-					<br />
-					<alert type="info">Coming Soon ...</alert>
+				<tab heading="Continuous Delivery" ng-click="getCDRecipe()">
+					<br>
+					<div class="configCd">
+						<fieldset ng-repeat="oneEnv in cdEnvs">
+							<legend>{{oneEnv}}</legend>
+								<p>
+									Default Environment Strategy is set to <b>Notify</b> when updates are pushed to branch <b>Master</b>.
+								</p>
+								<fieldset>
+									<legend class="font-16">Default Strategy</legend>
+									<p>
+										<span ng-if="cdConfiguration[oneEnv].cdData.default">
+											This service has not Custom Strategy and is currently configured to use the Environment's Default.
+										</span>
+										<span ng-if="!cdConfiguration[oneEnv].cdData.branch">
+											The strategy of this service overrides the Environment's default as follow:
+										</span>
+									</p>
+									<div class="clearfix">
+										<div class="halfPage branchLabel">
+											<label>Branch:</label>
+											<select class="form-control" data-ng-model="cdConfiguration[oneEnv].cdData.branch">
+												<option ng-repeat="myBranch in cdConfiguration[oneEnv].obj.branches" value="{{myBranch}}">{{myBranch}}</option>
+											</select>
+										</div>
+										<div class="halfPage">
+											<label>Strategy:</label>
+											<select class="form-control" data-ng-model="cdConfiguration[oneEnv].cdData.strategy">
+												<option value="notify">notify</option>
+												<option value="update">update</option>
+											</select>
+										</div>
+									</div>
+									<div class="fieldMsg">This Strategy is applicable on all versions of <b>{{cdConfiguration.name}}</b> in this Environment.</div>
+								</fieldset>
+									
+								<table width="100%" border="0">
+									<tr ng-repeat="(version, versionInfo) in cdConfiguration[oneEnv].obj.ha">
+										<td>
+											<fieldset>
+												<legend  class="font-14">
+													<input ng-click="setVersion(oneEnv, version)" type="checkbox">&nbsp;&nbsp;<label class="version">Version:</label> {{version}}
+												</legend>
+												<div ng-show="cdConfiguration[oneEnv].cdData.versions[version]">
+													<p>
+														Override the default <b>{{cdConfiguration.name}}</b> strategy for version <b>{{version}}</b>.
+													</p>
+													<div class="halfPage branchLabel">
+														<label class="">Branch:</label> {{versionInfo.branch}}
+													</div>
+													<div class="halfPage">
+														<label class="">Strategy:</label>
+														<select class="form-control" data-ng-model="cdConfiguration[oneEnv].cdData.versions[version].strategy">
+															<option value="notify">notify</option>
+															<option value="update">update</option>
+														</select>
+													</div>
+													<div class="fieldMsg">This Strategy is applicable only for <b>{{name}}</b> Version <b>{{version.versionLabel}}</b> and in this Environment.</div>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
+						</fieldset>
+						<div class="table c-both w100">
+							<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe()" value="Save Settings" type="submit">
+						</div>
+					</div>
 				</tab>
 			</tabset>
 		</div>
