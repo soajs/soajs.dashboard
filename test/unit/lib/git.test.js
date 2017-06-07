@@ -614,7 +614,7 @@ describe("testing git.js", function () {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, {});
 			};
-			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, cb) {
+			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb(null);
 			};
 		});
@@ -784,7 +784,7 @@ describe("testing git.js", function () {
 		});
 
 		it.skip("Fail syncRepo outOfSync", function (done) {
-			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, cb) {
+			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb('outOfSync');
 			};
 
@@ -802,7 +802,7 @@ describe("testing git.js", function () {
 		});
 
 		it.skip("Success syncRepo upToDate", function (done) {
-			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, cb) {
+			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb(null, 'upToDate');
 			};
 
