@@ -122,20 +122,21 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 		var currentScope = $scope;
 		$modal.open({
 			templateUrl: "updateServiceSettings.tmpl",
-			size: 'm',
+			size: 'lg',
 			backdrop: true,
 			keyboard: true,
 			controller: function ($scope, $modalInstance) {
 				fixBackDrop();
 
-				$scope.title = 'Update ' + serviceRecord.name + ' settings in ' + env;
+				$scope.title = 'Update ' + serviceRecord.name + ' service settings in ' + env + ' Environment';
+				var versionedRecord = serviceRecord.versions[version];
 				$scope.settings = {
-					extKeyRequired: false,
-					oauth: false,
-					urac: false,
-					urac_Profile: false,
-					urac_ACL: false,
-					provision_ACL: false
+					extKeyRequired: versionedRecord.extKeyRequired || false,
+					oauth: versionedRecord.oauth ||false,
+					urac: versionedRecord.urac || false,
+					urac_Profile: versionedRecord.urac_Profile || false,
+					urac_ACL: versionedRecord.urac_ACL || false,
+					provision_ACL: versionedRecord.provision_ACL || false
 				};
 				if (serviceRecord.versions[version] && serviceRecord.versions[version][env]) {
 					var versionEnvRecord = serviceRecord.versions[version][env];
@@ -147,7 +148,11 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 					$scope.settings.urac_ACL = versionEnvRecord.urac_ACL || false;
 					$scope.settings.provision_ACL = versionEnvRecord.provision_ACL || false;
 				}
-
+				
+				$scope.onOff = function(oneSetting){
+					$scope.settings[oneSetting] = !$scope.settings[oneSetting];
+				};
+				
 				$scope.onSubmit = function () {
 					overlayLoading.show();
 					getSendDataFromServer($scope, ngDataApi, {
