@@ -52,6 +52,17 @@ var mongoStub = {
 
 var deployer = helper.deployer;
 var registry = {
+	loadByEnv: function (options, cb) {
+		// registry.serviceConfig.ports.maintenanceInc
+		var data = {
+			serviceConfig: {
+				ports: {
+					maintenanceInc: 5
+				}
+			}
+		};
+		return cb(null, data);
+	},
 	coreDB: {
 		provision: {}
 	}
@@ -60,6 +71,17 @@ var envRecord = {
 	_id: '',
 	code: 'DEV',
 	dbs: {
+		clusters: {
+			clusterName: {
+				credentials: {},
+				"servers": [
+					{
+						"host": "localhost",
+						"port": 9200
+					}
+				]
+			}
+		},
 		config: {
 			session: {
 				cluster: "clusterName"
@@ -126,10 +148,10 @@ describe("testing deploy.js", function () {
 		});
 		
 	});
-
+	
 	// "deployService": function (config, soajs, registry, deployer, cbMain) {
 	describe("deployService", function () {
-
+		
 		it("Success deployService. service", function (done) {
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				var catalogRecord = {
@@ -179,19 +201,25 @@ describe("testing deploy.js", function () {
 				return cb(null, envRecord);
 			};
 			req.soajs.inputmaskData = {
+				deployConfig: {
+					replication: {
+						mode: ""
+					}
+				},
 				recipe: {
 					_id: '123456'
-				}
+				},
+				custom: {}
 			};
 			req.soajs.inputmaskData.env = 'dev';
 			req.soajs.inputmaskData.type = 'service';
 			req.soajs.inputmaskData.serviceName = 'test';
-
+			
 			deploy.deployService(config, req.soajs, registry, deployer, function (error, body) {
 				assert.ok(body);
 				done();
 			});
 		});
-
+		
 	});
 });

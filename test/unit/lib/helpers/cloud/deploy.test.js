@@ -46,6 +46,13 @@ describe("testing deploy.js", function () {
 	var context = {
 		catalog: {
 			recipe: {
+				deployOptions: {
+					image: {
+						name: "soajs",
+						prefix: ""
+					},
+					voluming: {}
+				},
 				buildOptions: {
 					env: {}
 				}
@@ -132,6 +139,13 @@ describe("testing deploy.js", function () {
 				},
 				catalog: {
 					recipe: {
+						deployOptions: {
+							image: {
+								name: "soajs",
+								prefix: ""
+							},
+							voluming: {}
+						},
 						buildOptions: {
 							env: {
 								NODE_ENV: {
@@ -275,7 +289,8 @@ describe("testing deploy.js", function () {
 				dbs: {
 					clusters: {
 						oneCluster: {
-							servers: {}
+							servers: {},
+							credentials: {}
 						}
 					},
 					config: {
@@ -347,16 +362,18 @@ describe("testing deploy.js", function () {
 					}
 				}
 			};
+			
 			mongoStub.findEntry = function (soajs, opts, cb) {
 				cb(null, envRecord);
 			};
 		});
 		it("Success deployContainer", function (done) {
+			console.log('deploy Container');
+			console.log('deploy Container');
 			helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
 				done();
 			});
 		});
 		
 	});
-	// deployContainer: function (config, context, soajs, deployer, BL, cbMain) {
 });
