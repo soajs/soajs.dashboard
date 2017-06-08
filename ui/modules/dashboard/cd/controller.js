@@ -13,6 +13,17 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.updateCount;
 	$scope.upgradeCount;
 	
+	$scope.cdShowHide = function(oneSrv){
+		if($scope.configuration[oneSrv].icon === 'minus'){
+			$scope.configuration[oneSrv].icon = 'plus';
+			jQuery('#cdc_' + oneSrv).slideUp();
+		}
+		else{
+			$scope.configuration[oneSrv].icon = 'minus';
+			jQuery('#cdc_' + oneSrv).slideDown()
+		}
+	};
+	
 	$scope.getRecipe = function () {
 		
 		overlayLoading.show();
@@ -34,15 +45,49 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			if(response[$scope.myEnv.toUpperCase()]){
 				$scope.configuration = angular.copy(response[$scope.myEnv.toUpperCase()]);
 				for(var service in $scope.configuration){
-					$scope.maxEntries++;
-					$scope.configuration[service].versions = {};
-					for(var i in $scope.configuration[service]){
-						if(i !== 'branch' && i !== 'strategy' && i !== 'versions'){
-							$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
-							delete $scope.configuration[service][i];
+					if(service !== 'pause'){
+						$scope.maxEntries++;
+						$scope.configuration[service].icon = 'minus';
+						$scope.configuration[service].versions = {};
+						for(var i in $scope.configuration[service]){
+							if(i !== 'branch' && i !== 'strategy' && i !== 'versions' && i !== 'icon'){
+								$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
+								delete $scope.configuration[service][i];
+							}
 						}
 					}
 				}
+			}
+		});
+	};
+	
+	$scope.pauseRecipe = function(pause){
+		
+		delete $scope.cdData[$scope.myEnv].pause;
+		if(pause){
+			$scope.cdData[$scope.myEnv].pause = pause;
+		}
+		
+		var data = $scope.cdData;
+		delete data._id;
+		delete data.type;
+		delete data.soajsauth;
+		
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
 			}
 		});
 	};
