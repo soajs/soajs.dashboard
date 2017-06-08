@@ -40,13 +40,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				console.log(data);
+				
 			},
 			error: function (data) {
-				console.log(data);
+				
 			},
 			info: function (data) {
-				console.log(data);
+				
 			}
 		},
 		inputmaskData: {}
@@ -95,7 +95,7 @@ describe("testing catalog.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success with version", function (done) {
 			req.soajs.inputmaskData = {
 				version: true
@@ -105,7 +105,7 @@ describe("testing catalog.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 });

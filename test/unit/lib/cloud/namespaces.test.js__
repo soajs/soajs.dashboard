@@ -15,13 +15,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				console.log(data);
+				
 			},
 			error: function (data) {
-				console.log(data);
+				
 			},
 			info: function (data) {
-				console.log(data);
+				
 			}
 		},
 		inputmaskData: {}

@@ -178,7 +178,7 @@ describe("testing ci travis index.js", function () {
 			var options = {
 				log: {
 					debug: function (data) {
-						console.log(data);
+						
 					}
 				},
 				_id: 'aaa',
@@ -449,7 +449,6 @@ describe("testing ci travis index.js", function () {
 			var options = {
 				log: {
 					debug: function (data) {
-						// console.log(data);
 					}
 				},
 				_id: '592806440e',
@@ -533,7 +532,6 @@ describe("testing ci travis index.js", function () {
 			var options = {
 				log: {
 					debug: function (data) {
-						// console.log(data);
 					}
 				},
 				_id: 'aaa',
@@ -587,7 +585,7 @@ describe("testing ci travis index.js", function () {
 			var options = {
 				log: {
 					debug: function (data) {
-						console.log(data);
+						
 					}
 				},
 				hook: { id: 1234, active: false },
