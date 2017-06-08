@@ -44,6 +44,10 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			$scope.maxEntries = 0;
 			if(response[$scope.myEnv.toUpperCase()]){
 				$scope.configuration = angular.copy(response[$scope.myEnv.toUpperCase()]);
+				if(Object.hasOwnProperty.call($scope.configuration, 'pause')){
+					$scope.paused = $scope.configuration.pause;
+				}
+				delete $scope.configuration.pause;
 				for(var service in $scope.configuration){
 					if(service !== 'pause'){
 						$scope.maxEntries++;
@@ -62,11 +66,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	};
 	
 	$scope.pauseRecipe = function(pause){
-		
-		delete $scope.cdData[$scope.myEnv].pause;
-		if(pause){
-			$scope.cdData[$scope.myEnv].pause = pause;
-		}
+		$scope.cdData[$scope.myEnv].pause = pause;
 		
 		var data = $scope.cdData;
 		delete data._id;
@@ -87,7 +87,9 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 			else {
 				$scope.displayAlert('success', 'Recipe Saved successfully');
-				$scope.getRecipe();
+				$timeout(function(){
+					$scope.getRecipe();
+				}, 200)
 			}
 		});
 	};

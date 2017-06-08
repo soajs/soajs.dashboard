@@ -6,10 +6,10 @@
 		</div>
 		<div ng-show="maxEntries > 0">
 			<div class="table c-both w100">
-				<a href="" class="btn btn-sm btn-danger f-right" ng-click="pauseRecipe(true)" ng-show="!configuration.pause">
+				<a href="" class="btn btn-sm btn-danger f-right" ng-click="pauseRecipe(true)" ng-show="!paused">
 					<span class="icon icon-pause2"></span> Pause Strategy
 				</a>
-				<a href="" class="btn btn-sm btn-primary f-right" ng-click="pauseRecipe(false)" ng-show="configuration.pause">
+				<a href="" class="btn btn-sm btn-primary f-right" ng-click="pauseRecipe(false)" ng-show="paused">
 					<span class="icon icon-play3"></span> Turn On Strategy
 				</a>
 			</div>
