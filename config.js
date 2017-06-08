@@ -1043,7 +1043,14 @@ module.exports = {
                     'validation':{
                         'type': 'number'
                     }
-                }
+                },
+	            'list':{
+		            'source': ['query.list'],
+		            'required': false,
+		            'validation':{
+			            'type': 'boolean'
+		            }
+	            }
             },
 
             "/ci/download": {
@@ -1908,14 +1915,13 @@ module.exports = {
                     "required": false,
                     "validation": {
                         "type": "object",
+	                    "properties":{
+                        	"pause":{"type":"boolean", "required": false}
+	                    },
                         "patternProperties": {
                             "^[a-zA-Z]{3,}$": {
                                 "type":"object",
                                 "required": true,
-                                "properties":{
-                                    "branch": {"type": "string", "required": true}, //{ "DEV": { "branch": "develop" } }
-                                    "strategy": {"type": "string", "enum": ["notify", "update"], "required": true}
-                                },
                                 "additionalProperties": { //pattern to match a service/daemon name { "DEV": { "branch": "develop", "urac": { "branch": "master" } } }
                                     "^[a-z0-9]+$": {
                                         "type": "object",

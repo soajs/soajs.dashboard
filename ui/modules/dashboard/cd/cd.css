@@ -51,6 +51,19 @@
     margin-top:5px;
 }
 
+
+.customEntryBox {
+    width: 100% !important;
+    padding-left: 0px !important;
+}
+
+.entryBox{
+    border: solid 1px #cccccc;
+    position: relative;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
 .configCd .entryServiceBoxes .service-container .serviceNameHead{
     background-color: white;
     border-bottom: none;

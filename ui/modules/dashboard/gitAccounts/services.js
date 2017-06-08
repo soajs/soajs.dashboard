@@ -1,6 +1,6 @@
 "use strict";
 var repoService = soajsApp.components;
-repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', function (ngDataApi, $timeout, $modal, $compile) {
+repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', function (ngDataApi, $timeout, $modal, $cookies) {
 	
 	function getCIRecipe(currentScope, cb){
 		overlayLoading.show();
@@ -245,6 +245,51 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 						$scope.showCIConfigForm();
 					}
 				}
+
+				$scope.showHide = function(oneService, name){
+					if(oneService.icon === 'minus'){
+						oneService.icon = 'plus';
+						jQuery('#cd_' + name).slideUp();
+					}
+					else{
+						oneService.icon = 'minus';
+						jQuery('#cd_' + name).slideDown()
+					}
+				};
+				
+				$scope.cdShowHide = function(oneSrv, name){
+					if($scope.cdConfiguration[oneSrv].icon === 'minus'){
+						$scope.cdConfiguration[oneSrv].icon = 'plus';
+						jQuery('#cdc_' + name).slideUp();
+					}
+					else{
+						$scope.cdConfiguration[oneSrv].icon = 'minus';
+						jQuery('#cdc_' + name).slideDown()
+					}
+				};
+
+				$scope.setVersion = function(oneEnv, version, oneSrv) {
+					if($scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version]){
+						delete $scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version];
+					}
+					else{
+						$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version] = {
+							branch: $scope.cdConfiguration[oneSrv][oneEnv].obj.ha[version].branch
+						};
+					}
+				};
+				
+				$scope.getCDRecipe = function(){
+					getCDRecipe($scope, oneRepo, function(){
+						//console.log($scope.cdConfiguration);
+					});
+				};
+				
+				$scope.saveRecipe = function(){
+					saveRecipe($scope, function(){
+						
+					});
+				};
 			}
 		});
 	}
@@ -271,200 +316,263 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$compile', f
 		});
 	}
 	
-	function getCDRecipe(){
-		// $scope.servicesNumber=[];
-		//
-		// $scope.getRecipe = function () {
-		//
-		// 	overlayLoading.show();
-		// 	getSendDataFromServer($scope, ngDataApi, {
-		// 		method: 'get',
-		// 		routeName: '/dashboard/cd'
-		// 	}, function (error, response) {
-		// 		overlayLoading.hide();
-		// 		if (error) {
-		// 			$scope.displayAlert('danger', error.message);
-		// 		}
-		//
-		// 		if(!response) {
-		// 			response = {};
-		// 		}
-		//
-		// 		if(!response['DASHBOARD']) {
-		// 			response['DASHBOARD'] = {
-		// 				"branch": "master",
-		// 				"strategy": "notify"
-		// 			};
-		// 		}
-		//
-		// 		if($scope.myEnv.toUpperCase() !== 'DASHBOARD') {
-		// 			if(!response[$scope.myEnv.toUpperCase()]) {
-		// 				response[$scope.myEnv.toUpperCase()] = {
-		// 					"branch": "master",
-		// 					"strategy": "notify"
-		// 				};
-		// 			}
-		// 		}
-		//
-		// 		$scope.cdData = response;
-		//
-		// 		if(response[$scope.myEnv.toUpperCase()]){
-		// 			$scope.configuration = response[$scope.myEnv.toUpperCase()];
-		// 			for (var key in $scope.configuration){
-		// 				if(key !=='branch' && key !== 'strategy' && key !== 'include'){
-		// 					if($scope.configuration[key]){
-		// 						$scope.configuration[key].include = true;
-		// 						for (var ver in response[key]){
-		// 							if(ver !=='branch' && ver !== 'strategy' && ver !== 'include'){
-		// 								if($scope.configuration[key][ver]){
-		// 									$scope.configuration[key][ver].include = true;
-		// 								}
-		// 							}
-		// 						}
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	});
-		// };
-		//
-		// $scope.getServices = function () {
-		// 	overlayLoading.show();
-		// 	getSendDataFromServer($scope, ngDataApi, {
-		// 		method: 'get',
-		// 		routeName: '/dashboard/cloud/services/list',
-		// 		params: {
-		// 			"env": $scope.myEnv.toLowerCase()
-		// 		}
-		// 	}, function (error, response) {
-		// 		overlayLoading.hide();
-		// 		if (error) {
-		// 			$scope.displayAlert('danger', error.message);
-		// 		}
-		// 		else {
-		// 			var objServices={};
-		// 			var branches=[];
-		// 			response.forEach(function(service){
-		// 				if (service.labels && service.labels['soajs.content']){
-		// 					var branch;
-		// 					if (service.labels['service.branch']){
-		// 						branch = service.labels['service.branch'];
-		// 					}
-		// 					////
-		// 					if (!branch){
-		// 						for (var x =0; x < service.env.length; x++) {
-		// 							if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
-		// 								branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
-		// 								break;
-		// 							}
-		// 						}
-		// 					}
-		// 					////
-		// 					if (branch) {
-		// 						service.branch = branch;
-		// 						if(branches.indexOf(branch) === -1){
-		// 							branches.push(branch);
-		// 						}
-		//
-		// 						if (service.labels['soajs.service.name']){
-		// 							service.serviceName = service.labels['soajs.service.name'];
-		// 							if(!objServices[service.serviceName]){
-		// 								objServices[service.serviceName]={
-		// 									versions:[]
-		// 								};
-		// 							}
-		// 							service.versionLabel = service.labels['soajs.service.version'];
-		// 							objServices[service.serviceName].versions.push(service);
-		// 						}
-		// 					}
-		// 				}
-		// 			});
-		// 			$scope.branches= branches;
-		// 			$scope.objServices = objServices;
-		// 			$scope.servicesNumber = Object.keys(objServices);
-		// 		}
-		// 	});
-		// };
-		//
-		// $scope.saveRecipe = function() {
-		// 	var configuration={};
-		// 	configuration.branch = $scope.configuration.branch;
-		// 	configuration.strategy = $scope.configuration.strategy;
-		//
-		// 	for(var key in $scope.configuration){
-		// 		if( key!== 'branch' && key !== 'strategy'){
-		// 			if($scope.configuration[key].include){
-		// 				configuration[key] = {
-		// 					branch: $scope.configuration[key].branch,
-		// 					strategy: $scope.configuration[key].strategy
-		// 				};
-		// 				for(var str in $scope.configuration[key]){
-		// 					if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
-		// 						if($scope.configuration[key][str].include){
-		// 							configuration[key][str] = {
-		// 								branch:$scope.configuration[key][str].branch,
-		// 								strategy:$scope.configuration[key][str].strategy
-		// 							};
-		// 						}
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// 	$scope.cdData['DASHBOARD'] = {
-		// 		"branch": "master",
-		// 		"strategy": "notify"
-		// 	};
-		// 	$scope.cdData[$scope.myEnv] = configuration;
-		// 	var data = $scope.cdData;
-		// 	delete data.type;
-		// 	delete data.soajsauth;
-		// 	overlayLoading.show();
-		// 	getSendDataFromServer($scope, ngDataApi, {
-		// 		method: 'post',
-		// 		routeName: '/dashboard/cd',
-		// 		data: {
-		// 			"config": data
-		// 		}
-		// 	}, function (error, response) {
-		// 		overlayLoading.hide();
-		// 		if (error) {
-		// 			$scope.displayAlert('danger', error.message);
-		// 		}
-		// 		else {
-		// 			$scope.displayAlert('success', 'Recipe Saved successfully');
-		// 			$scope.getRecipe();
-		// 		}
-		// 	});
-		// };
-		//
-		// $scope.assignService = function(name) {
-		// 	if(!$scope.configuration[name].strategy){
-		// 		$scope.configuration[name].strategy= 'notify';
-		// 	}
-		// 	$scope.objServices[name].icon = 'minus';
-		// 	jQuery('#cd_' + name).slideDown()
-		// 	$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
-		//
-		// };
-		//
-		// $scope.showHide = function(oneService, name){
-		// 	if(oneService.icon === 'minus'){
-		// 		oneService.icon = 'plus';
-		// 		jQuery('#cd_' + name).slideUp();
-		// 	}
-		// 	else{
-		// 		oneService.icon = 'minus';
-		// 		jQuery('#cd_' + name).slideDown()
-		// 	}
-		// };
-		//
-		// $scope.setVersion = function(name,version) {
-		// 	$scope.configuration[name][version.versionLabel].branch = version.branch;
-		// 	if(!$scope.configuration[name][version.versionLabel].strategy){
-		// 		$scope.configuration[name][version.versionLabel].strategy = 'notify';
-		// 	}
-		// };
+	function getEnvironments(currentScope, cb){
+		getSendDataFromServer(currentScope, ngDataApi, {
+			"method": "get",
+			"routeName": "/dashboard/environment/list"
+		}, function (error, response) {
+			if (error) {
+				currentScope.displayAlert('danger', error.code, true, 'dashboard', error.message);
+			}
+			else {
+				currentScope.cdEnvs = [];
+				response.forEach(function(oneEnv){
+					if(oneEnv.code.toLowerCase() !== 'dashboard'){
+						currentScope.cdEnvs.push(oneEnv.code);
+					}
+				});
+				return cb();
+			}
+		});
+	}
+	
+	function getCDRecipe(currentScope, oneRepo, cb){
+		currentScope.cdConfiguration = null;
+		overlayLoading.show();
+		getEnvironments(currentScope, function(){
+			
+			getSendDataFromServer(currentScope, ngDataApi, {
+				method: 'get',
+				routeName: '/dashboard/cd'
+			}, function (error, response) {
+				overlayLoading.hide();
+				if (error) {
+					currentScope.displayAlert('danger', error.message);
+					return cb();
+				}
+				else{
+					var defaultCD = {
+						"branch": "master",
+						"strategy": "notify",
+						"default": true
+					};
+					
+					if(!response) {
+						response = {};
+					}
+					currentScope.cdData = response;
+					currentScope.cdConfiguration = {};
+					if(oneRepo.type ==='multi' && oneRepo.multi && oneRepo.multi.length > 0){
+						oneRepo.multi.forEach(function(oneSub){
+							currentScope.cdConfiguration[oneSub.name] = {
+								type: oneSub.type,
+								icon: 'minus'
+							};
+						});
+					}
+					else{
+						var serviceName = oneRepo.full_name.split("/")[1];
+						currentScope.cdConfiguration[serviceName] = {
+							type: oneRepo.type,
+							icon: 'minus'
+						};
+					}
+					var max = Object.keys(currentScope.cdConfiguration).length;
+					currentScope.maxEntries = 0;
+					var repoCount =0;
+					for(var oneService in currentScope.cdConfiguration){
+						populateServiceInEnvironments(0, oneService, defaultCD, function(){
+							repoCount++;
+							if(repoCount === max){
+								for(var oneService in currentScope.cdConfiguration) {
+									if (currentScope.cdConfiguration[oneService].display) {
+										currentScope.maxEntries++;
+									}
+								}
+								return cb();
+							}
+						});
+					}
+				}
+			});
+		});
+		
+		function populateServiceInEnvironments(counter, serviceName, defaultCD, mCb){
+			var oneCDEnv = currentScope.cdEnvs[counter];
+			
+			if(!currentScope.cdData[oneCDEnv.toUpperCase()]) {
+				currentScope.cdData[oneCDEnv.toUpperCase()] = defaultCD;
+			}
+			
+			currentScope.cdConfiguration[serviceName].name = serviceName;
+			if(!Object.hasOwnProperty.call(currentScope.cdConfiguration[serviceName], 'display')){
+				currentScope.cdConfiguration[serviceName].display = false;
+			}
+			
+			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()] = {
+				"cdData" : {},
+				"display" : false
+			};
+			
+			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()].cdData.versions = {};
+			
+			getEnvServices(oneCDEnv, serviceName, function(){
+				counter++;
+				if(counter === currentScope.cdEnvs.length){
+					return mCb();
+				}
+				else{
+					populateServiceInEnvironments(counter, serviceName, defaultCD, mCb);
+				}
+			});
+		}
+		
+		function getEnvServices(envCode, serviceName, mCb){
+			getServiceInEnv(currentScope, envCode, serviceName, mCb);
+		}
+	}
+
+	function getServiceInEnv(currentScope, env, serviceName, cb) {
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cloud/services/list',
+			params: {
+				"env": env.toLowerCase()
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				if(!currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj){
+					currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj = {
+						branches: [],
+						ha: {}
+					};
+				}
+				
+				for(var srv=0; srv < response.length; srv++){
+					var service = response[srv];
+					
+					if (service.labels){
+						if(serviceName === service.labels['service.repo'] || serviceName === service.labels['soajs.service.name']){
+							currentScope.cdConfiguration[serviceName].label = service.labels['soajs.service.name'];
+							
+							//cdData was saved before, fill entries from arriving db of cdData
+							if(currentScope.cdData[env.toUpperCase()][currentScope.cdConfiguration[serviceName].label]){
+								currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData = angular.copy(currentScope.cdData[env.toUpperCase()][currentScope.cdConfiguration[serviceName].label]);
+								
+								var cdDataClone = angular.copy(currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData);
+								delete cdDataClone.branch;
+								delete cdDataClone.strategy;
+								if(Object.keys(cdDataClone).length > 0){
+									if(!currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions){
+										currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions = {};
+									}
+									for(var version in cdDataClone){
+										var v = version.replace('v', '');
+										currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions[v] = cdDataClone[version];
+									}
+								}
+								
+							}
+							
+							var branch;
+							if (service.labels['service.branch']){
+								branch = service.labels['service.branch'];
+							}
+							////
+							if (!branch){
+								for (var x =0; x < service.env.length; x++) {
+									if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
+										branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
+										break;
+									}
+								}
+							}
+							////
+							if (branch) {
+								if(currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.indexOf(branch) === -1){
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.branches.push(branch);
+								}
+								service.branch = branch;
+								if (service.labels['soajs.service.version']){
+									var version = service.labels['soajs.service.version'];
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha[version] = angular.copy(service);
+								}
+								else{
+									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha = angular.copy(service);
+								}
+								currentScope.cdConfiguration[serviceName].display = true;
+								currentScope.cdConfiguration[serviceName][env.toUpperCase()].display = true;
+							}
+						}
+					}
+				}
+			}
+			return cb();
+		});
+	}
+	
+	function saveRecipe(currentScope, cb) {
+		var configuration = {};
+		var environments = currentScope.cdEnvs;
+		
+		environments.forEach(function(oneEnv){
+			configuration[oneEnv] = angular.copy(currentScope.cdData[oneEnv]);
+			delete configuration[oneEnv].branch;
+			delete configuration[oneEnv].strategy;
+			delete configuration[oneEnv].default;
+			
+			if(!configuration[oneEnv]){
+				configuration[oneEnv] = {};
+			}
+			
+			for(var oneRepo in currentScope.cdConfiguration){
+				var oneService = currentScope.cdConfiguration[oneRepo].label;
+				if(oneService){
+					if(!configuration[oneEnv][oneService]){
+						configuration[oneEnv][oneService] = {};
+					}
+					
+					configuration[oneEnv][oneService] = {
+						branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.branch,
+						strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.strategy
+					};
+					
+					for(var version in currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions){
+						configuration[oneEnv][oneService]['v' + version] = {
+							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
+							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy
+						};
+					}
+					
+					if(Object.keys(configuration[oneEnv][oneService]).length === 0){
+						delete configuration[oneEnv][oneService];
+					}
+				}
+			}
+		});
+		
+		overlayLoading.show();
+		getSendDataFromServer(currentScope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": configuration
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				currentScope.displayAlert('danger', error.message);
+			}
+			else {
+				currentScope.displayAlert('success', 'Recipe Saved successfully');
+				currentScope.getCDRecipe();
+			}
+		});
 	}
 	
 	return {

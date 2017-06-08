@@ -13,14 +13,19 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.updateCount;
 	$scope.upgradeCount;
 	
-	/**
-	 * remove the below
-	 */
+	$scope.cdShowHide = function(oneSrv){
+		if($scope.configuration[oneSrv].icon === 'minus'){
+			$scope.configuration[oneSrv].icon = 'plus';
+			jQuery('#cdc_' + oneSrv).slideUp();
+		}
+		else{
+			$scope.configuration[oneSrv].icon = 'minus';
+			jQuery('#cdc_' + oneSrv).slideDown()
+		}
+	};
 	
-	$scope.servicesNumber=[];
-
 	$scope.getRecipe = function () {
-
+		
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'get',
@@ -30,41 +35,24 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			if (error) {
 				$scope.displayAlert('danger', error.message);
 			}
-
+			
 			if(!response) {
 				response = {};
 			}
 			
-			if(!response['DASHBOARD']) {
-				response['DASHBOARD'] = {
-					"branch": "master",
-					"strategy": "notify"
-				};
-			}
-			
-			if($scope.myEnv.toUpperCase() !== 'DASHBOARD') {
-				if(!response[$scope.myEnv.toUpperCase()]) {
-					response[$scope.myEnv.toUpperCase()] = {
-						"branch": "master",
-						"strategy": "notify"
-					};
-				}
-			}
-			
 			$scope.cdData = response;
-
+			$scope.maxEntries = 0;
 			if(response[$scope.myEnv.toUpperCase()]){
-				$scope.configuration = response[$scope.myEnv.toUpperCase()];
-				for (var key in $scope.configuration){
-					if(key !=='branch' && key !== 'strategy' && key !== 'include'){
-						if($scope.configuration[key]){
-							$scope.configuration[key].include = true;
-							for (var ver in response[key]){
-								if(ver !=='branch' && ver !== 'strategy' && ver !== 'include'){
-									if($scope.configuration[key][ver]){
-										$scope.configuration[key][ver].include = true;
-									}
-								}
+				$scope.configuration = angular.copy(response[$scope.myEnv.toUpperCase()]);
+				for(var service in $scope.configuration){
+					if(service !== 'pause'){
+						$scope.maxEntries++;
+						$scope.configuration[service].icon = 'minus';
+						$scope.configuration[service].versions = {};
+						for(var i in $scope.configuration[service]){
+							if(i !== 'branch' && i !== 'strategy' && i !== 'versions' && i !== 'icon'){
+								$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
+								delete $scope.configuration[service][i];
 							}
 						}
 					}
@@ -73,97 +61,18 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 		});
 	};
 	
-	$scope.getServices = function () {
-		overlayLoading.show();
-		getSendDataFromServer($scope, ngDataApi, {
-			method: 'get',
-			routeName: '/dashboard/cloud/services/list',
-			params: {
-				"env": $scope.myEnv.toLowerCase()
-			}
-		}, function (error, response) {
-			overlayLoading.hide();
-			if (error) {
-				$scope.displayAlert('danger', error.message);
-			}
-			else {
-				var objServices={};
-				var branches=[];
-				response.forEach(function(service){
-					if (service.labels && service.labels['soajs.content']){
-						var branch;
-						if (service.labels['service.branch']){
-							branch = service.labels['service.branch'];
-						}
-						////
-						if (!branch){
-							for (var x =0; x < service.env.length; x++) {
-								if(service.env[x].indexOf('SOAJS_GIT_BRANCH')!== -1){
-									branch = service.env[x].replace("SOAJS_GIT_BRANCH=", "");
-									break;
-								}
-							}
-						}
-						////
-						if (branch) {
-							service.branch = branch;
-							if(branches.indexOf(branch) === -1){
-								branches.push(branch);
-							}
-							
-							if (service.labels['soajs.service.name']){
-								service.serviceName = service.labels['soajs.service.name'];
-								if(!objServices[service.serviceName]){
-									objServices[service.serviceName]={
-										versions:[]
-									};
-								}
-								service.versionLabel = service.labels['soajs.service.version'];
-								objServices[service.serviceName].versions.push(service);
-							}
-						}
-					}
-				});
-				$scope.branches= branches;
-				$scope.objServices = objServices;
-				$scope.servicesNumber = Object.keys(objServices);
-			}
-		});
-	};
-	
-	$scope.saveRecipe = function() {
-		var configuration={};
-		configuration.branch = $scope.configuration.branch;
-		configuration.strategy = $scope.configuration.strategy;
-
-		for(var key in $scope.configuration){
-			if( key!== 'branch' && key !== 'strategy'){
-				if($scope.configuration[key].include){
-					configuration[key] = {
-						branch: $scope.configuration[key].branch,
-						strategy: $scope.configuration[key].strategy
-					};
-					for(var str in $scope.configuration[key]){
-						if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
-							if($scope.configuration[key][str].include){
-								configuration[key][str] = {
-									branch:$scope.configuration[key][str].branch,
-									strategy:$scope.configuration[key][str].strategy
-								};
-							}
-						}
-					}
-				}
-			}
+	$scope.pauseRecipe = function(pause){
+		
+		delete $scope.cdData[$scope.myEnv].pause;
+		if(pause){
+			$scope.cdData[$scope.myEnv].pause = pause;
 		}
-		$scope.cdData['DASHBOARD'] = {
-			"branch": "master",
-			"strategy": "notify"
-		};
-		$scope.cdData[$scope.myEnv] = configuration;
+		
 		var data = $scope.cdData;
+		delete data._id;
 		delete data.type;
 		delete data.soajsauth;
+		
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
 			method: 'post',
@@ -182,38 +91,44 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 		});
 	};
-
-	$scope.assignService = function(name) {
-		if(!$scope.configuration[name].strategy){
-			$scope.configuration[name].strategy= 'notify';
-		}
-		$scope.objServices[name].icon = 'minus';
-		jQuery('#cd_' + name).slideDown()
-		$scope.configuration[name].branch = $scope.objServices[name].versions[0].branch;
+	
+	$scope.saveRecipe = function() {
 		
-	};
-	
-	$scope.showHide = function(oneService, name){
-		if(oneService.icon === 'minus'){
-			oneService.icon = 'plus';
-			jQuery('#cd_' + name).slideUp();
+		var configuration={};
+		for(var service in $scope.configuration){
+			configuration[service] = {
+				branch: $scope.configuration[service].branch,
+				strategy: $scope.configuration[service].strategy
+			};
+			for(var version in $scope.configuration[service].versions){
+				configuration[service][version] = $scope.configuration[service].versions[version];
+			}
 		}
-		else{
-			oneService.icon = 'minus';
-			jQuery('#cd_' + name).slideDown()
-		}
+		
+		$scope.cdData[$scope.myEnv] = configuration;
+		var data = $scope.cdData;
+		delete data._id;
+		delete data.type;
+		delete data.soajsauth;
+		
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
+			}
+		});
 	};
-
-	$scope.setVersion = function(name,version) {
-		$scope.configuration[name][version.versionLabel].branch = version.branch;
-		if(!$scope.configuration[name][version.versionLabel].strategy){
-			$scope.configuration[name][version.versionLabel].strategy = 'notify';
-		}
-	};
-	
-	/**
-	 * remove the above
-	 */
 	
 	$scope.getUpdates = function () {
 		overlayLoading.show();

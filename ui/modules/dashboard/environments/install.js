@@ -1486,6 +1486,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 3,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/platforms-ctrl.js', 'modules/dashboard/environments/services/platforms.js'],
@@ -1507,6 +1508,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 4,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/clusters-ctrl.js', 'modules/dashboard/environments/services/clusters.js'],
@@ -1528,6 +1530,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 5,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/dbs-ctrl.js', 'modules/dashboard/environments/services/database.js'],
@@ -1549,6 +1552,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 6,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hosts-ctrl.js', 'modules/dashboard/environments/services/hosts.js', 'modules/dashboard/environments/services/deploy.js'],
@@ -1589,6 +1593,7 @@ var environmentsNav = [
 			'label': translation.deploy[LANG],
 			'position': 3
 		},
+		'order': 6,
 		'mainMenu': true,
 		'tracker': true,
 		'scripts': ['modules/dashboard/environments/config.js', 'modules/dashboard/environments/hacloud-ctrl.js', 'modules/dashboard/environments/services/nodes.js', 'modules/dashboard/environments/services/hacloud.js', 'modules/dashboard/environments/services/deploy.js'],

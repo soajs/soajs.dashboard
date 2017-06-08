@@ -18,7 +18,8 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			method: 'get',
 			routeName: '/dashboard/ci',
 			params: {
-				'port': (mydomainport || 80)
+				'port': (mydomainport || 80),
+				'list': false
 			}
 		}, function (error, response) {
 			overlayLoading.hide();
