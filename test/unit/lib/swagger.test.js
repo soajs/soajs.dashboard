@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/swagger.js');
+var utils = helper.requireModule('./lib/swagger/index.js');
 
 describe("testing swagger.js", function () {
 	

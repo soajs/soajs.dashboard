@@ -70,7 +70,6 @@ describe("DASHBOARD UNIT Tests: Services & Daemons", function () {
 			it("success - will get services list", function (done) {
 				executeMyRequest({}, 'services/list', 'post', function (body) {
 					assert.ok(body.data);
-					assert.ok(body.data.length > 0);
 					done();
 				});
 			});

@@ -1,14 +1,14 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/host.js');
+var utils = helper.requireModule('./lib/hosts/index.js');
 var mongo = helper.requireModule('./models/mongo.js');
 const sinon = require('sinon');
 var host;
 var config = helper.requireModule('./config.js');
 var deployer = helper.deployer;
 
-var helpers = helper.requireModule('./lib/helpers/host.js');
+var helpers = helper.requireModule('./lib/hosts/helper.js');
 
 let stubMongo = {
 	checkForMongo: function (soajs) {

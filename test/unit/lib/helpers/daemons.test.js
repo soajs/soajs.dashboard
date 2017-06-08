@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/helpers/daemons.js');
+var helpers = helper.requireModule('./lib/daemons/helper.js');
 
 describe("testing helper daemons.js", function () {
 	var soajs = {

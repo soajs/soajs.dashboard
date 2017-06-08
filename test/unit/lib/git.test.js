@@ -1,8 +1,8 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/git.js');
-var helpers = helper.requireModule('./lib/helpers/git.js');
+var utils = helper.requireModule('./lib/git/index.js');
+var helpers = helper.requireModule('./lib/git/helper.js');
 
 var lib;
 var config = helper.requireModule('./config.js');
@@ -606,7 +606,7 @@ describe("testing git.js", function () {
 			]
 		};
 		beforeEach(() => {
-			helpers = helper.requireModule('./lib/helpers/git.js');
+			helpers = helper.requireModule('./lib/git/helper.js');
 
 			gitModel.getAccount = function (soajs, model, options, cb) {
 				return cb(null, accountRecord);

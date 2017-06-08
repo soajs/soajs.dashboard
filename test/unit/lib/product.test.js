@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/product.js');
+var utils = helper.requireModule('./lib/product/index.js');
 
 describe("testing product.js", function () {
 	

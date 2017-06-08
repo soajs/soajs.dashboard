@@ -1711,7 +1711,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 						'access_token': access_token
 					}
 				}, 'settings/tenant/get', 'get', function (body) {
-					// console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.result);
 					assert.ok(body.data);
 					tenantId = body.data.tenant._id.toString();
@@ -2613,7 +2612,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 				request.get(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
-					console.log(JSON.stringify(body, null, 2));
 					assert.ok(body.data);
 					Authorization2 = body.data;
 					done();
@@ -2635,11 +2633,9 @@ describe("DASHBOARD UNIT Tests:", function () {
 					},
 					json: true
 				};
-				// console.log(options);
 				request.post(options, function (error, response, body) {
 					assert.ifError(error);
 					assert.ok(body);
-					// console.log(JSON.stringify(body, null, 2));
 					access_token = body.access_token;
 					assert.ok(body.access_token);
 					done();
@@ -2774,15 +2770,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 					assert.ifError(body.result);
 				
 				assert.deepEqual(body.errors.details[0], {"code": 467, "message": errorCodes[467]});
-				done();
-			});
-		});
-	});
-	
-	describe("static content tests", function () {
-		it("success - will list static content", function (done) {
-			executeMyRequest({}, "staticContent/list", 'post', function (body) {
-				assert.ok(body.data);
 				done();
 			});
 		});

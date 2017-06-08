@@ -570,23 +570,6 @@ describe("testing hosts deployment", function () {
 	});
 	
 	describe("testing controller deployment", function () {
-		
-		before('add static content record', function (done) {
-			var scRecord = {
-				"name": "Custom UI Test",
-				"dashUI": true,
-				"src": {
-					"provider": "github",
-					"owner": "soajs",
-					"repo": "soajs.dashboard" //dummy data
-				}
-			};
-			mongo.insert("staticContent", scRecord, function (error) {
-				assert.ifError(error);
-				done();
-			});
-		});
-		
 		it("success - deploy 1 controller service and delete it afterwards", function (done) {
 			var params = {
 				qs: {
@@ -615,7 +598,6 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
 
@@ -625,7 +607,6 @@ describe("testing hosts deployment", function () {
 						id: service.id,
 						mode: service.labels[ 'soajs.service.mode' ]
 					}, function (body) {
-						console.log(body);
 						assert.ok(body.result);
 						assert.ok(body.data);
 						done();
@@ -635,7 +616,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("success - deploy 1 controller and use the main file specified in src", function (done) {
-			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/index.js' } }, function (error) {
+			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/helper.js' } }, function (error) {
 				assert.ifError(error);
 				
 				var params = {
@@ -673,10 +654,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("success - deploy 1 nginx service with static content", function (done) {
-			mongo.findOne("staticContent", { name: "Custom UI Test" }, function (error, record) {
-				assert.ifError(error);
-				
+		it("success - deploy 1 nginx service", function (done) {
 				var params = {
 					qs: {
 						access_token: access_token
@@ -699,12 +677,10 @@ describe("testing hosts deployment", function () {
 				};
 
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
 				});
-			});
 		});
 
 	});
@@ -797,7 +773,6 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -987,33 +962,27 @@ describe("testing hosts deployment", function () {
 	
 	describe("testing redeploy service", function () {
 		var nginxDeployment, ctrlDeployment, uiRecord;
-		before("list services and get static content record", function (done) {
-			mongo.find('staticContent', {}, function (error, records) {
-				assert.ifError(error);
-
-				uiRecord = records[ 0 ];
-
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dev'
+		before("list services", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'dev'
+				}
+			};
+			executeMyRequest(params, "cloud/services/list", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				
+				for (var i = 0; i < body.data.length; i++) {
+					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+						ctrlDeployment = body.data[ i ];
 					}
-				};
-				executeMyRequest(params, "cloud/services/list", "get", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					
-					for (var i = 0; i < body.data.length; i++) {
-						if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
-							ctrlDeployment = body.data[ i ];
-						}
-						else if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
-							nginxDeployment = body.data[ i ];
-						}
+					else if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
+						nginxDeployment = body.data[ i ];
 					}
-					
-					done();
-				});
+				}
+				
+				done();
 			});
 		});
 		
@@ -1051,7 +1020,6 @@ describe("testing hosts deployment", function () {
 			};
 			
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
-				// console.log(body);
 				assert.ok(body);
 				done();
 			});
@@ -1104,7 +1072,6 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				console.log(JSON.stringify(body, null, 2));
 				assert.ok(body.data);
 				done();
 			});
@@ -1270,7 +1237,6 @@ describe("testing hosts deployment", function () {
 					id: service.id,
 					mode: service.labels[ 'soajs.service.mode' ]
 				}, function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();

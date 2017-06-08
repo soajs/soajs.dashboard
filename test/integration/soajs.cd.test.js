@@ -514,7 +514,7 @@ describe("testing hosts deployment", function () {
 										"-c"
 									],
 									"args": [
-										"node index.js -T service"
+										"node helper.js -T service"
 									]
 								}
 							}
@@ -601,7 +601,7 @@ describe("testing hosts deployment", function () {
 										"-c"
 									],
 									"args": [
-										"node index.js -T nginx"
+										"node helper.js -T nginx"
 									]
 								}
 							}
@@ -719,7 +719,7 @@ describe("testing hosts deployment", function () {
 										"-c"
 									],
 									"args": [
-										"node index.js -T service"
+										"node helper.js -T service"
 									]
 								}
 							}

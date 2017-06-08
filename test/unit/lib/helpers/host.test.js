@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var helpers = helper.requireModule('./lib/helpers/host.js');
+var helpers = helper.requireModule('./lib/hosts/helper.js');
 
 var mongoStub = {
 	checkForMongo: function (soajs) {

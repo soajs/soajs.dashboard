@@ -650,7 +650,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 				}
 			};
 			executeMyRequest(params, 'permissions/get', 'get', function (body) {
-				// console.log(JSON.stringify(body, null, 2));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();
@@ -664,7 +663,6 @@ describe("DASHBOARD UNIT TESTS for locked", function () {
 					'key': extKey
 				}
 			}, 'key/get', 'get', function (body) {
-				// console.log(JSON.stringify(body, null, 2));
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
 				done();

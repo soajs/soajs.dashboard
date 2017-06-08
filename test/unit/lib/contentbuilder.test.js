@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/contentbuilder.js');
+var utils = helper.requireModule('./lib/contentbuilder/index.js');
 
 describe("testing contentbuilder.js", function () {
 	

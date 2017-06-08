@@ -1007,9 +1007,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						"access": "public"
 					}
 				};
-				console.log(params);
 				executeMyRequest(params, 'gitAccounts/login', 'post', function (body) {
-					console.log(body);
 					assert.ok(body);
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
 						assert.ifError(error);

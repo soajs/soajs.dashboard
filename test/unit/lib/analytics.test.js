@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../helper.js");
-var utils = helper.requireModule('./lib/analytics.js');
+var utils = helper.requireModule('./lib/analytics/index.js');
 
 describe("testing analytics.js", function () {
 	
