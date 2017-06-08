@@ -54,7 +54,7 @@
 					<tab ng-repeat="oneList in service.fixList" heading="Version {{oneList._ver}} {{(service.latest === oneList._ver)?'( Latest )':'' }}">
 						<br />
 						<accordion close-others="true">
-							<accordion-group is-open="true">
+							<accordion-group is-open="true" class="blueAccordion">
 								<accordion-heading><span class="icon icon-cog"></span>Settings</accordion-heading>
 								<fieldset>
 									<legend>Environment(s)</legend>
@@ -71,7 +71,7 @@
 								</fieldset>
 							</accordion-group>
 
-							<accordion-group>
+							<accordion-group class="greenAccordion">
 								<accordion-heading><span class="icon icon-cloud"></span>API</accordion-heading>
 								<fieldset ng-repeat="(grp, val) in oneList.groups" class="" ng-if="grp!=='_ver'">
 									<legend>{{grp}}</legend>
@@ -125,7 +125,7 @@
 						<td width="80%">External Key Required</td>
 						<td width="20%">
 							<a href="" ng-click="onOff('extKeyRequired')" class="btn btn-sm" ng-class="{'btn-success': settings.extKeyRequired, 'btn-danger': !settings.extKeyRequired}">
-								<span class="icon icon-switch"></span>Turn {{(settings.extKeyRequired)? 'Off' : 'On'}}
+								<span class="icon icon-switch"></span>Turned {{(settings.extKeyRequired)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>
@@ -133,15 +133,15 @@
 						<td>oAuth</td>
 						<td>
 							<a href="" ng-click="onOff('oauth')" class="btn btn-sm" ng-class="{'btn-success': settings.oauth, 'btn-danger': !settings.oauth}">
-								<span class="icon icon-switch"></span>Turn {{(settings.oauth)? 'Off' : 'On'}}
+								<span class="icon icon-switch"></span>Turned {{(settings.oauth)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>
 					<tr class="odd">
 						<td>URAC</td>
 						<td>
-							<a href="" disabled="true" class="btn btn-sm" ng-class="{'btn-success': settings.urac, 'btn-danger': !settings.urac}">
-								<span class="icon icon-switch"></span>Turned {{(settings.urac)? 'Off' : 'On'}}
+							<a href="" disabled="true" class="btn btn-sm btn-link" style="color:#333;">
+								<span class="icon icon-switch"></span>Turned {{(settings.urac)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>
@@ -149,8 +149,8 @@
 					<tr class="even">
 						<td>URAC Profile</td>
 						<td>
-							<a href="" disabled="true" class="btn btn-sm" ng-class="{'btn-success': settings.urac_Profile, 'btn-danger': !settings.urac_Profile}">
-								<span class="icon icon-switch"></span>Turned {{(settings.urac_Profile)? 'Off' : 'On'}}
+							<a href="" disabled="true" class="btn btn-sm btn-link" style="color:#333;">
+								<span class="icon icon-switch"></span>Turned {{(settings.urac_Profile)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>
@@ -158,8 +158,8 @@
 					<tr class="odd">
 						<td>URAC ACL</td>
 						<td>
-							<a href="" disabled="true" class="btn btn-sm" ng-class="{'btn-success': settings.urac_ACL, 'btn-danger': !settings.urac_ACL}">
-								<span class="icon icon-switch"></span>Turned {{(settings.urac_ACL)? 'Off' : 'On'}}
+							<a href="" disabled="true" class="btn btn-sm btn-link" style="color:#333;">
+								<span class="icon icon-switch"></span>Turned {{(settings.urac_ACL)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>
@@ -167,8 +167,8 @@
 					<tr class="last even">
 						<td>Provision ACL</td>
 						<td>
-							<a href="" disabled="true" class="btn btn-sm" ng-class="{'btn-success': settings.provision_ACL, 'btn-danger': !settings.provision_ACL}">
-								<span class="icon icon-switch"></span>Turned {{(settings.provision_ACL)? 'Off' : 'On'}}
+							<a href="" disabled="true" class="btn btn-sm btn-link" style="color:#333;">
+								<span class="icon icon-switch"></span>Turned {{(settings.provision_ACL)? 'On' : 'Off'}}
 							</a>
 						</td>
 					</tr>

@@ -80,3 +80,33 @@ hr{
 .c85{
     width: 8.5cm;
 }
+
+.blueAccordion{
+    border: solid 1px #337ab7;
+}
+
+.blueAccordion .panel-heading{
+    background: #DEF1F7;
+}
+
+.blueAccordion .panel-body{
+    border-top-color: #337ab7 !important;
+}
+
+.greenAccordion{
+    border-color: #3c763d !important;
+}
+
+.greenAccordion .panel-heading{
+    background-color: #dff0d8 !important;
+}
+
+.greenAccordion .panel-body{
+    border-top-color: #337ab7 !important;
+}
+
+.blueAccordion .panel-heading a:focus,
+.greenAccordion .panel-heading a:focus{
+    outline:0;
+    text-decoration:none;
+}
