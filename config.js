@@ -1021,7 +1021,14 @@ module.exports = {
                     'validation':{
                         'type': 'number'
                     }
-                }
+                },
+	            'list':{
+		            'source': ['query.list'],
+		            'required': false,
+		            'validation':{
+			            'type': 'boolean'
+		            }
+	            }
             },
 
             "/ci/download": {
