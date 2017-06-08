@@ -1,8 +1,7 @@
 "use strict";
 const sinon = require('sinon');
-
 var assert = require("assert");
-var helper = require("../../helper.js");
+var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/environment/index.js');
 var mongoModel = helper.requireModule('./models/mongo.js');
 

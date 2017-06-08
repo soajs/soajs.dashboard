@@ -1,6 +1,6 @@
 "use strict";
 var assert = require("assert");
-var helper = require("../../helper.js");
+var helper = require("../../../helper.js");
 var utils = helper.requireModule('./lib/git/index.js');
 var helpers = helper.requireModule('./lib/git/helper.js');
 
