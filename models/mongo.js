@@ -38,11 +38,6 @@ function checkForMongo(soajs) {
 		mongo.ensureIndex(daemonsCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
 		mongo.ensureIndex(daemonsCollectionName, {name: 1, port: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
 
-		//staticContent
-		mongo.ensureIndex(staticContentCollectionName, {name: 1}, {unique: true}, errorLogger);
-		mongo.ensureIndex(staticContentCollectionName, {'src.owner': 1, 'src.repo': 1}, errorLogger);
-		mongo.ensureIndex(staticContentCollectionName, {name: 1, 'src.owner': 1, 'src.repo': 1}, errorLogger);
-
 		//daemon_grpconf
 		mongo.ensureIndex(groupConfigCollectionName, {daemon: 1}, errorLogger);
 		mongo.ensureIndex(groupConfigCollectionName, {name: 1}, errorLogger);

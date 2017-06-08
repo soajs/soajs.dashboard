@@ -889,21 +889,6 @@ module.exports = {
                 'commonFields': ['id', 'jobName']
             },
 
-            "/staticContent/list": {
-                _apiInfo: {
-                    "l": "List Static Content",
-                    "group": "Static Content"
-                },
-                'staticContentNames': {
-                    'source': ['body.staticContentNames'],
-                    'required': false,
-                    'validation': {
-                        'type': 'array',
-                        'items': {'type': 'string'}
-                    }
-                }
-            },
-
             "/hosts/list": {
                 _apiInfo: {
                     "l": "List Hosts",

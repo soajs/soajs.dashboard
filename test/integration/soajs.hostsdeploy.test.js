@@ -571,22 +571,6 @@ describe("testing hosts deployment", function () {
 	
 	describe("testing controller deployment", function () {
 		
-		before('add static content record', function (done) {
-			var scRecord = {
-				"name": "Custom UI Test",
-				"dashUI": true,
-				"src": {
-					"provider": "github",
-					"owner": "soajs",
-					"repo": "soajs.dashboard" //dummy data
-				}
-			};
-			mongo.insert("staticContent", scRecord, function (error) {
-				assert.ifError(error);
-				done();
-			});
-		});
-		
 		it("success - deploy 1 controller service and delete it afterwards", function (done) {
 			var params = {
 				qs: {
@@ -674,36 +658,32 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("success - deploy 1 nginx service with static content", function (done) {
-			mongo.findOne("staticContent", { name: "Custom UI Test" }, function (error, record) {
-				assert.ifError(error);
-				
-				var params = {
-					qs: {
-						access_token: access_token
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				"form": {
+					env: 'dev',
+					custom: {
+						type: 'nginx',
+						name: 'nginx'
 					},
-					"form": {
-						env: 'dev',
-						custom: {
-							type: 'nginx',
-							name: 'nginx'
-						},
-						recipe: '59034e43c69a1b962fc62212', // todo
-						deployConfig: {
-							memoryLimit: 209715200,
-							replication: {
-								mode: 'replicated',
-								replicas: 1
-							}
+					recipe: '59034e43c69a1b962fc62212', // todo
+					deployConfig: {
+						memoryLimit: 209715200,
+						replication: {
+							mode: 'replicated',
+							replicas: 1
 						}
 					}
-				};
+				}
+			};
 
-				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					console.log(body);
-					assert.ok(body.result);
-					assert.ok(body.data);
-					done();
-				});
+			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				console.log(body);
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
 			});
 		});
 
@@ -986,34 +966,29 @@ describe("testing hosts deployment", function () {
 	});
 	
 	describe("testing redeploy service", function () {
-		var nginxDeployment, ctrlDeployment, uiRecord;
+		var nginxDeployment, ctrlDeployment;
 		before("list services and get static content record", function (done) {
-			mongo.find('staticContent', {}, function (error, records) {
-				assert.ifError(error);
 
-				uiRecord = records[ 0 ];
-
-				var params = {
-					qs: {
-						access_token: access_token,
-						env: 'dev'
+			var params = {
+				qs: {
+					access_token: access_token,
+					env: 'dev'
+				}
+			};
+			executeMyRequest(params, "cloud/services/list", "get", function (body) {
+				assert.ok(body.result);
+				assert.ok(body.data);
+				
+				for (var i = 0; i < body.data.length; i++) {
+					if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
+						ctrlDeployment = body.data[ i ];
 					}
-				};
-				executeMyRequest(params, "cloud/services/list", "get", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					
-					for (var i = 0; i < body.data.length; i++) {
-						if (body.data[ i ].labels[ 'soajs.service.name' ] === 'controller') {
-							ctrlDeployment = body.data[ i ];
-						}
-						else if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
-							nginxDeployment = body.data[ i ];
-						}
+					else if (body.data[ i ].labels[ 'soajs.service.name' ] === 'nginx') {
+						nginxDeployment = body.data[ i ];
 					}
-					
-					done();
-				});
+				}
+				
+				done();
 			});
 		});
 		

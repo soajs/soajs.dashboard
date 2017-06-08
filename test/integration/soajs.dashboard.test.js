@@ -2778,13 +2778,4 @@ describe("DASHBOARD UNIT Tests:", function () {
 			});
 		});
 	});
-	
-	describe("static content tests", function () {
-		it("success - will list static content", function (done) {
-			executeMyRequest({}, "staticContent/list", 'post', function (body) {
-				assert.ok(body.data);
-				done();
-			});
-		});
-	});
 });
