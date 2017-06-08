@@ -6,13 +6,13 @@ var utils = helper.requireModule('./utils/utils.js');
 var soajs = {
 	log: {
 		debug: function (data) {
-			console.log(data);
+			
 		},
 		error: function (data) {
-			console.log(data);
+			
 		},
 		info: function (data) {
-			console.log(data);
+			
 		}
 	}
 };
