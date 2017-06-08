@@ -405,10 +405,13 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			}
 			
 			currentScope.cdConfiguration[serviceName].name = serviceName;
-			currentScope.cdConfiguration[serviceName].display = false;
+			if(!Object.hasOwnProperty.call(currentScope.cdConfiguration[serviceName], 'display')){
+				currentScope.cdConfiguration[serviceName].display = false;
+			}
 			
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()] = {
-				"cdData" : angular.copy(defaultCD)
+				"cdData" : {},
+				"display" : false
 			};
 			
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()].cdData.versions = {};
@@ -503,6 +506,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									currentScope.cdConfiguration[serviceName][env.toUpperCase()].obj.ha = angular.copy(service);
 								}
 								currentScope.cdConfiguration[serviceName].display = true;
+								currentScope.cdConfiguration[serviceName][env.toUpperCase()].display = true;
 							}
 						}
 					}
@@ -543,6 +547,10 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
 							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy
 						};
+					}
+					
+					if(Object.keys(configuration[oneEnv][oneService]).length === 0){
+						delete configuration[oneEnv][oneService];
 					}
 				}
 			}
