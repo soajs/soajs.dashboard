@@ -66,13 +66,13 @@ var req = {
 		},
 		log: {
 			debug: function (data) {
-				console.log(data);
+				
 			},
 			error: function (data) {
-				console.log(data);
+				
 			},
 			info: function (data) {
-				console.log(data);
+				
 			}
 		},
 		inputmaskData: {}
@@ -80,7 +80,7 @@ var req = {
 };
 var config = helper.requireModule('./config.js');
 
-describe("testing services.js", function () {
+describe("testing ci.js", function () {
 	beforeEach(() => {
 		var record = {
 			_id: '592806440effddeec7d52b55',
@@ -317,8 +317,7 @@ describe("testing services.js", function () {
 		after(() => {
 		});
 		
-		it("Success", function (done) {
-			
+		it("Success getRepoSettings", function (done) {
 			ci.getRepoSettings(config, req, ciDriver, function (error, body) {
 				// assert.ok(body);
 				done();

@@ -11,6 +11,7 @@ module.exports = {
 	 * @param {Callback Function} cb
 	 */
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
+		soajs.log.info('check Error Return');
 		if (data.error) {
 			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
