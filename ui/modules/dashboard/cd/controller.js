@@ -13,6 +13,82 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 	$scope.updateCount;
 	$scope.upgradeCount;
 	
+	$scope.getRecipe = function () {
+		
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'get',
+			routeName: '/dashboard/cd'
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			
+			if(!response) {
+				response = {};
+			}
+			
+			$scope.cdData = response;
+			
+			if(response[$scope.myEnv.toUpperCase()]){
+				$scope.configuration = response[$scope.myEnv.toUpperCase()];
+			}
+		});
+	};
+	
+	$scope.saveRecipe = function() {
+		var configuration={};
+		configuration.branch = $scope.configuration.branch;
+		configuration.strategy = $scope.configuration.strategy;
+		
+		for(var key in $scope.configuration){
+			if( key!== 'branch' && key !== 'strategy'){
+				if($scope.configuration[key].include){
+					configuration[key] = {
+						branch: $scope.configuration[key].branch,
+						strategy: $scope.configuration[key].strategy
+					};
+					for(var str in $scope.configuration[key]){
+						if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
+							if($scope.configuration[key][str].include){
+								configuration[key][str] = {
+									branch:$scope.configuration[key][str].branch,
+									strategy:$scope.configuration[key][str].strategy
+								};
+							}
+						}
+					}
+				}
+			}
+		}
+		$scope.cdData['DASHBOARD'] = {
+			"branch": "master",
+			"strategy": "notify"
+		};
+		$scope.cdData[$scope.myEnv] = configuration;
+		var data = $scope.cdData;
+		delete data.type;
+		delete data.soajsauth;
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
+			}
+		});
+	};
+	
 	$scope.getUpdates = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
