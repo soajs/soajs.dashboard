@@ -787,7 +787,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 
 					if ($scope.postData.solo === "true") $scope.postData.solo = true;
 					else $scope.postData.solo = false;
-
+					
+					if(Object.keys($scope.postData.jobs).length === 0){
+						$scope.message.danger = getCodeMessage(172, 'dashboard', "Please select a job to proceed");
+						return false;
+					}
+					
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "post",
 						"routeName": "/dashboard/daemons/groupConfig/add",
@@ -956,6 +961,12 @@ servicesApp.controller('daemonsCtrl', ['$scope', 'ngDataApi', '$timeout', '$moda
 					$scope.postData.status = parseInt($scope.postData.status);
 					if ($scope.postData.solo === "true") $scope.postData.solo = true;
 					else $scope.postData.solo = false;
+					
+					if(Object.keys($scope.postData.jobs).length === 0){
+						$scope.message.danger = getCodeMessage(172, 'dashboard', "Please select a job to proceed");
+						return false;
+					}
+					
 					getSendDataFromServer($scope, ngDataApi, {
 						"method": "put",
 						"routeName": "/dashboard/daemons/groupConfig/update",
