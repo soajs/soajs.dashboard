@@ -408,8 +408,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			currentScope.cdConfiguration[serviceName].display = false;
 			
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()] = {
-				"cdData" : angular.copy(currentScope.cdData[oneCDEnv.toUpperCase()][serviceName]) || angular.copy(currentScope.cdData[oneCDEnv.toUpperCase()])
+				"cdData" : angular.copy(defaultCD)
 			};
+			
 			currentScope.cdConfiguration[serviceName][oneCDEnv.toUpperCase()].cdData.versions = {};
 			
 			getEnvServices(oneCDEnv, serviceName, function(){
@@ -455,6 +456,26 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					if (service.labels){
 						if(serviceName === service.labels['service.repo'] || serviceName === service.labels['soajs.service.name']){
 							currentScope.cdConfiguration[serviceName].label = service.labels['soajs.service.name'];
+							
+							//cdData was saved before, fill entries from arriving db of cdData
+							if(currentScope.cdData[env.toUpperCase()][currentScope.cdConfiguration[serviceName].label]){
+								currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData = angular.copy(currentScope.cdData[env.toUpperCase()][currentScope.cdConfiguration[serviceName].label]);
+								
+								var cdDataClone = angular.copy(currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData);
+								delete cdDataClone.branch;
+								delete cdDataClone.strategy;
+								if(Object.keys(cdDataClone).length > 0){
+									if(!currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions){
+										currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions = {};
+									}
+									for(var version in cdDataClone){
+										var v = version.replace('v', '');
+										currentScope.cdConfiguration[serviceName][env.toUpperCase()].cdData.versions[v] = cdDataClone[version];
+									}
+								}
+								
+							}
+							
 							var branch;
 							if (service.labels['service.branch']){
 								branch = service.labels['service.branch'];

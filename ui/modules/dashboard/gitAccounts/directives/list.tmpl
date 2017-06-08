@@ -262,7 +262,7 @@
 												<td>
 													<fieldset>
 														<legend  class="font-14">
-															<input ng-click="setVersion(oneEnv, version, oneSrv)" type="checkbox">&nbsp;&nbsp;<label class="version">Version:</label> {{version}}
+															<input ng-click="setVersion(oneEnv, version, oneSrv)" ng-checked="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]" type="checkbox">&nbsp;&nbsp;<label class="version">Version:</label> {{version}}
 														</legend>
 														<div ng-show="cdConfiguration[oneSrv][oneEnv].cdData.versions[version]">
 															<p>
