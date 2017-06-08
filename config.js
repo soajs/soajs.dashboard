@@ -1886,6 +1886,9 @@ module.exports = {
                     "required": false,
                     "validation": {
                         "type": "object",
+	                    "properties":{
+                        	"pause":{"type":"boolean", "required": false}
+	                    },
                         "patternProperties": {
                             "^[a-zA-Z]{3,}$": {
                                 "type":"object",
