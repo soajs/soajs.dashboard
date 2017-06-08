@@ -1,3 +1,72 @@
-<section>
-	
+<section ng-controller="cdAppCtrl">
+	<div class="configCd entryBoxes entryBoxesGrid" ng-init="getRecipe()">
+		
+		<div ng-show="maxEntries === 0">
+			<alert type="info">No Continuous Delivery Strategy is configured in this environment.</alert>
+		</div>
+		<div ng-show="maxEntries > 0">
+			<div ng-repeat="(oneSrv, cdData) in configuration" class="entryBox customEntryBox">
+				<div class="header opened">{{oneSrv}}</div>
+				
+				<div class="body">
+					<div class="entryAction">
+						<a href="" ng-click="cdShowHide(oneSrv)">
+							<span class="icon icon-{{cdData.icon || 'plus'}}"></span>
+						</a>
+					</div>
+					<div class="inner" id="cdc_{{oneSrv}}">
+						<br/>
+						<fieldset>
+							<legend class="font-16">Default Strategy</legend>
+							<p>
+								The default strategy of this service in this Environment is:
+							</p>
+							<div>
+								<div class="halfPage branchLabel">
+									<label>Branch:</label>&nbsp;{{cdData.branch}}
+								</div>
+								<div class="halfPage">
+									<label>Strategy:</label>&nbsp;
+									<select class="form-control" data-ng-model="cdData.strategy">
+										<option value="notify">notify</option>
+										<option value="update">update</option>
+									</select>
+								</div>
+							</div>
+						</fieldset>
+						
+						<table width="100%" border="0">
+							<tr ng-repeat="(version, versionInfo) in cdData.versions">
+								<td>
+									<fieldset>
+										<legend class="font-14">
+											<label class="version">Version:</label> {{version}}
+										</legend>
+										<div ng-show="cdData.versions[version]">
+											<p>
+												Override the default strategy for version <b>{{version}}</b>.
+											</p>
+											<div class="halfPage branchLabel">
+												<label class="">Branch:</label>&nbsp;{{versionInfo.branch}}
+											</div>
+											<div class="halfPage">
+												<label class="">Strategy:</label>&nbsp;
+												<select class="form-control" data-ng-model="versionInfo.strategy">
+													<option value="notify">notify</option>
+													<option value="update">update</option>
+												</select>
+											</div>
+										</div>
+									</fieldset>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="table c-both w100">
+				<input class="btn btn-sm btn-primary f-right" ng-click="saveRecipe()" value="Save Settings" type="submit">
+			</div>
+		</div>
+	</div>
 </section>

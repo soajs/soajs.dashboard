@@ -30,63 +30,59 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			}
 			
 			$scope.cdData = response;
-			
+			$scope.maxEntries = 0;
 			if(response[$scope.myEnv.toUpperCase()]){
-				$scope.configuration = response[$scope.myEnv.toUpperCase()];
+				$scope.configuration = angular.copy(response[$scope.myEnv.toUpperCase()]);
+				for(var service in $scope.configuration){
+					$scope.maxEntries++;
+					$scope.configuration[service].versions = {};
+					for(var i in $scope.configuration[service]){
+						if(i !== 'branch' && i !== 'strategy' && i !== 'versions'){
+							$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
+							delete $scope.configuration[service][i];
+						}
+					}
+				}
 			}
 		});
 	};
 	
 	$scope.saveRecipe = function() {
-		// var configuration={};
-		// configuration.branch = $scope.configuration.branch;
-		// configuration.strategy = $scope.configuration.strategy;
-		//
-		// for(var key in $scope.configuration){
-		// 	if( key!== 'branch' && key !== 'strategy'){
-		// 		if($scope.configuration[key].include){
-		// 			configuration[key] = {
-		// 				branch: $scope.configuration[key].branch,
-		// 				strategy: $scope.configuration[key].strategy
-		// 			};
-		// 			for(var str in $scope.configuration[key]){
-		// 				if( str!== 'branch' && str !== 'strategy' && str !== 'include'){
-		// 					if($scope.configuration[key][str].include){
-		// 						configuration[key][str] = {
-		// 							branch:$scope.configuration[key][str].branch,
-		// 							strategy:$scope.configuration[key][str].strategy
-		// 						};
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// $scope.cdData['DASHBOARD'] = {
-		// 	"branch": "master",
-		// 	"strategy": "notify"
-		// };
-		// $scope.cdData[$scope.myEnv] = configuration;
-		// var data = $scope.cdData;
-		// delete data.type;
-		// delete data.soajsauth;
-		// overlayLoading.show();
-		// getSendDataFromServer($scope, ngDataApi, {
-		// 	method: 'post',
-		// 	routeName: '/dashboard/cd',
-		// 	data: {
-		// 		"config": data
-		// 	}
-		// }, function (error, response) {
-		// 	overlayLoading.hide();
-		// 	if (error) {
-		// 		$scope.displayAlert('danger', error.message);
-		// 	}
-		// 	else {
-		// 		$scope.displayAlert('success', 'Recipe Saved successfully');
-		// 		$scope.getRecipe();
-		// 	}
-		// });
+		
+		var configuration={};
+		for(var service in $scope.configuration){
+			configuration[service] = {
+				branch: $scope.configuration[service].branch,
+				strategy: $scope.configuration[service].strategy
+			};
+			for(var version in $scope.configuration[service].versions){
+				configuration[service][version] = $scope.configuration[service].versions[version];
+			}
+		}
+		
+		$scope.cdData[$scope.myEnv] = configuration;
+		var data = $scope.cdData;
+		delete data._id;
+		delete data.type;
+		delete data.soajsauth;
+		
+		overlayLoading.show();
+		getSendDataFromServer($scope, ngDataApi, {
+			method: 'post',
+			routeName: '/dashboard/cd',
+			data: {
+				"config": data
+			}
+		}, function (error, response) {
+			overlayLoading.hide();
+			if (error) {
+				$scope.displayAlert('danger', error.message);
+			}
+			else {
+				$scope.displayAlert('success', 'Recipe Saved successfully');
+				$scope.getRecipe();
+			}
+		});
 	};
 	
 	$scope.getUpdates = function () {
