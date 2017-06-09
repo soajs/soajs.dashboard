@@ -8,7 +8,7 @@ var async = require('async');
 
 var config = require('../../../../config.js');
 
-function checkIfError (error, options, cb, callback) {
+function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
 			if (typeof(error) === 'object' && error.code) {
@@ -28,14 +28,14 @@ function checkIfError (error, options, cb, callback) {
 	return callback();
 }
 
-function requester (options, cb) {
+function requester(options, cb) {
 	options.json = true;
 
 	if (!options.headers) {
 		options.headers = {};
 	}
 
-	options.headers[ 'Content-Type' ] = 'application/json';
+	options.headers['Content-Type'] = 'application/json';
 	request(options, function (error, response, body) {
 		return cb(error, body);
 	});
@@ -64,14 +64,14 @@ var bitbucket = {
 			repoInfo = data.name.split('/');
 		}
 		else {
-			repoInfo = [ data.owner, data.repo ];
+			repoInfo = [data.owner, data.repo];
 		}
 
 		var options = {
 			method: 'GET',
 			url: config.gitAccounts.bitbucket_org.apiDomain + config.gitAccounts.bitbucket_org.routes.getBranches
-				.replace('%USERNAME%', repoInfo[ 0 ])
-				.replace('%REPO_NAME%', repoInfo[ 1 ])
+				.replace('%USERNAME%', repoInfo[0])
+				.replace('%REPO_NAME%', repoInfo[1])
 		};
 
 		if (data.token) {
@@ -266,11 +266,11 @@ var lib = {
 		activeRepos.forEach(function (oneRepo) {
 			found = false;
 			var multi;
-			if(oneRepo.type ==='multi' && oneRepo.configSHA && oneRepo.configSHA.length > 0){
-				if(!Array.isArray(multi)){
-					multi =[];
+			if (oneRepo.type === 'multi' && oneRepo.configSHA && oneRepo.configSHA.length > 0) {
+				if (!Array.isArray(multi)) {
+					multi = [];
 				}
-				oneRepo.configSHA.forEach(function(oneSub){
+				oneRepo.configSHA.forEach(function (oneSub) {
 					multi.push({
 						type: oneSub.contentType,
 						name: oneSub.contentName
@@ -279,15 +279,15 @@ var lib = {
 			}
 			
 			for (var i = 0; i < allRepos.length; i++) {
-				if (allRepos[ i ].full_name === oneRepo.name) {
+				if (allRepos[i].full_name === oneRepo.name) {
 					if (oneRepo.status) {
-						allRepos[ i ].status = oneRepo.status;
+						allRepos[i].status = oneRepo.status;
 					} else {
-						allRepos[ i ].status = 'active';
+						allRepos[i].status = 'active';
 					}
 
 					allRepos[i].type = oneRepo.type;
-					if(multi && multi.length > 0){
+					if (multi && multi.length > 0) {
 						allRepos[i].multi = multi;
 					}
 					found = true;
@@ -300,13 +300,13 @@ var lib = {
 				var newRepo = {
 					full_name: oneRepo.name,
 					owner: {
-						login: repoInfo[ 0 ]
+						login: repoInfo[0]
 					},
-					name: repoInfo[ 1 ],
+					name: repoInfo[1],
 					status: 'deleted',
 					type: oneRepo.type
 				};
-				if(multi && multi.length > 0){
+				if (multi && multi.length > 0) {
 					newRepo.multi = multi;
 				}
 				allRepos.push(newRepo);
@@ -321,15 +321,18 @@ var lib = {
 	},
 
 	buildBranchesArray: function (allBranches) {
-		var branches = [], branchNames = Object.keys(allBranches);
-		branchNames.forEach(function (oneBranch) {
-			branches.push({
-				name: oneBranch,
-				commit: {
-					sha: allBranches[ oneBranch ].raw_node
-				}
+		var branches = [];
+		if (allBranches) {
+			var branchNames = Object.keys(allBranches);
+			branchNames.forEach(function (oneBranch) {
+				branches.push({
+					name: oneBranch,
+					commit: {
+						sha: allBranches[oneBranch].raw_node
+					}
+				});
 			});
-		});
+		}
 		return branches;
 	},
 
@@ -348,7 +351,7 @@ var lib = {
 				write();
 			}
 
-			function write () {
+			function write() {
 				mkdirp(options.configDirPath, function (error) {
 					checkIfError(error, {}, cb, function () {
 						fs.writeFile(options.configFilePath, options.configFile, function (error) {

@@ -1,13 +1,14 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../../../helper.js");
-var driver = helper.requireModule('./utils/drivers/git/github/index.js');
-var driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
+var driver = helper.requireModule('./utils/drivers/git/bitbucket_org/index.js');
+var driverHelper = helper.requireModule('./utils/drivers/git/bitbucket_org/helper.js');
 driver.helper = driverHelper;
 
-describe("testing git/github index.js", function () {
+describe("testing git/bitbucket_org index.js", function () {
 	var soajs = {};
 	var data = {
+		// data.checkIfAccountExists
 		getAccount: function (soajs, model, options, cb) {
 			var accountRecord = {
 				repos: []
@@ -16,12 +17,52 @@ describe("testing git/github index.js", function () {
 		},
 		removeAccount: function (soajs, model, id, cb) {
 			return cb(null, true);
+		},
+		checkIfAccountExists: function (soajs, model, options, cb) {
+			return cb(null, 0);
+		},
+		saveNewAccount: function (soajs, model, options, cb) {
+			return cb(null, true);
 		}
 	};
 	var model = {};
 	var options = {
-		provider: 'github'
+		tokenInfo: {},
+		provider: 'bitbucket_org'
 	};
+
+	describe("testing login", function () {
+		it("Success", function (done) {
+			driverHelper.createAuthToken = function (options, cb) {
+				return cb(null, {
+					access_token: "123456",
+					expires_in: 2000
+				});
+			};
+			driverHelper.checkUserRecord = function (options, cb) {
+				return cb(null, {
+					user: {
+						username: "john"
+					}
+				});
+			};
+			options.access = 'private';
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
+		it("Fail", function (done) {
+			data.checkIfAccountExists = function (soajs, model, id, cb) {
+				return cb(null, 1);
+			};
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+	});
 
 	describe("testing logout", function () {
 		it("Success", function (done) {
@@ -60,10 +101,7 @@ describe("testing git/github index.js", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
-					sha: "code",
-					content: "{}"
-				};
+				var content = "{}";
 				return cb(null, content);
 			};
 			driver.getJSONContent(soajs, data, model, options, function (error, body) {
@@ -77,10 +115,7 @@ describe("testing git/github index.js", function () {
 		it("Success", function (done) {
 			options.path = '';
 			driverHelper.getRepoContent = function (options, cb) {
-				var content = {
-					sha: "code",
-					content: "{}"
-				};
+				var content = "{}";
 				return cb(null, content);
 			};
 			driver.getAnyContent(soajs, data, model, options, function (error, body) {
