@@ -33,7 +33,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 		tokenInfo: {},
 		provider: 'bitbucket_enterprise'
 	};
-
+	
 	describe("testing login", function () {
 		it("Success private", function (done) {
 			driverHelper.createAuthToken = function (options, cb) {
@@ -51,7 +51,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Success public", function (done) {
 			driverHelper.createAuthToken = function (options, cb) {
 				return cb(null, {
@@ -68,7 +68,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Fail", function (done) {
 			data.checkIfAccountExists = function (soajs, model, id, cb) {
 				return cb(null, 1);
@@ -79,7 +79,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing logout", function () {
 		it("Success", function (done) {
 			driver.logout(soajs, data, model, options, function (error, body) {
@@ -88,10 +88,10 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getRepos", function () {
 		it("Success", function (done) {
-			driverHelper.getAllRepos = function (options, cb) {
+			driverHelper.getAllRepos = function (options, client, cb) {
 				return cb(null);
 			};
 			driver.getRepos(soajs, data, model, options, function (error, body) {
@@ -100,10 +100,10 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getBranches", function () {
 		it("Success", function (done) {
-			driverHelper.getRepoBranches = function (options, cb) {
+			driverHelper.getRepoBranches = function (options, client, cb) {
 				return cb(null);
 			};
 			driver.getBranches(soajs, data, model, options, function (error, body) {
@@ -112,11 +112,11 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getJSONContent", function () {
 		it("Success", function (done) {
 			options.path = '';
-			driverHelper.getRepoContent = function (options, cb) {
+			driverHelper.getRepoContent = function (options, client, cb) {
 				var content = {
 					lines: [{
 						text: ''
@@ -130,11 +130,11 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 	describe("testing getAnyContent", function () {
 		it("Success", function (done) {
 			options.path = '';
-			driverHelper.getRepoContent = function (options, cb) {
+			driverHelper.getRepoContent = function (options, client, cb) {
 				var content = {
 					lines: [{
 						text: ''
@@ -148,5 +148,5 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 			});
 		});
 	});
-
+	
 });
