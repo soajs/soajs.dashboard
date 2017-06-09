@@ -213,7 +213,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 												else {
 													currentScope.displayAlert('success', 'Repository Settings Updated.');
 													$scope.form.formData = {};
-													$scope.cancel();
+													$scope.showCIConfigForm();
 												}
 											});
 										}
