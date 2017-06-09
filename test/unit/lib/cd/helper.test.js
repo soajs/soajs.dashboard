@@ -108,13 +108,21 @@ describe("testing helper cd.js", function () {
 			
 		});
 		var oneService = {
+			serviceVersion: 1,
 			envRecord: envRecord,
 			service: {
 				labels: {}
 			},
 			strategy: 'update'
 		};
-		it("Success", function (done) {
+		it("Success update", function (done) {
+			helpers.processOneService(req, BL, oneService, deployer, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success notify", function (done) {
+			oneService.pause = true;
 			helpers.processOneService(req, BL, oneService, deployer, function (error, body) {
 				done();
 			});
@@ -182,7 +190,69 @@ describe("testing helper cd.js", function () {
 		beforeEach(() => {
 			
 		});
-		
+
+		it("Fail", function (done) {
+			var envs2 = [
+				{
+					record: envRecord,
+					services: [{
+						id: 'rp7d7bxvuo2m9dd75exmaol1w',
+						version: 18378,
+						name: 'dev-controller',
+						labels: {
+							'service.branch': 'master',
+							'service.image.ts': '1496063663358',
+							'service.repo': 'soajs.controller',
+							'soajs.catalog.id': '593038623b872a839c7bccea',
+							'soajs.catalog.v': '1',
+							'soajs.content': 'true',
+							'soajs.env.code': 'dev',
+							'soajs.service.group': '',
+							'soajs.service.label': 'dev-controller',
+							'soajs.service.mode': 'replicated',
+							'soajs.service.name': 'controller',
+							'soajs.service.repo.name': 'soajs_controller',
+							'soajs.service.type': 'service',
+							'soajs.service.version': '1'
+						},
+						env: ['NODE_ENV=production',
+							'SOAJS_ENV=dev',
+							'SOAJS_PROFILE=/opt/soajs/FILES/profiles/profile.js',
+							'SOAJS_SRV_AUTOREGISTERHOST=true',
+							'SOAJS_SRV_MEMORY=200',
+							'SOAJS_GIT_OWNER=soajs',
+							'SOAJS_GIT_BRANCH=master',
+							'SOAJS_GIT_COMMIT=67a61db0955803cddf94672b0192be28f47cf280',
+							'SOAJS_GIT_REPO=soajs.controller',
+							'SOAJS_DEPLOY_HA=swarm',
+							'SOAJS_HA_NAME={{.Task.Name}}',
+							'SOAJS_MONGO_NB=1',
+							'SOAJS_MONGO_IP_1=127.0.0.1',
+							'SOAJS_MONGO_PORT_1=27017',
+							'SOAJS_DEPLOY_ACC=true'],
+						ports: [],
+						tasks: [],
+						repo: 'soajs.controller',
+						branch: 'master'
+					}]
+				}
+			];
+			var record2 = {
+				_id: 'ffddeec7d52b61',
+				QA: {
+					branch: 'master',
+					strategy: 'notify',
+					controller: {
+						branch: 'master', strategy: 'update', v2: {}
+					}
+				},
+				type: 'cd'
+			};
+			helpers.checkRecordConfig(req, envs2, record2, function (error, body) {
+				done();
+			});
+		});
+
 		it("Success", function (done) {
 			helpers.checkRecordConfig(req, envs, record, function (error, body) {
 				done();
