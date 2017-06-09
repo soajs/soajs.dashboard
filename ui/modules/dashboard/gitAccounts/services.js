@@ -59,6 +59,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				$scope.activateRepo = false;
 				if(ciRepo) {
                     $scope.ciRepoName = ciRepo.name;
+					$scope.activateRepo = true;
                 }
 				$scope.goTOCI = function(){
 					currentScope.$parent.go('#/continuous-integration');
