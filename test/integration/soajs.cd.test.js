@@ -736,7 +736,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("success - deploy 1 service using catalog 1", function (done) {
+		it("success - deploy 1 service using catalog 1", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -772,7 +772,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("success - deploy 1 service using catalog2", function (done) {
+		it("success - deploy 1 service using catalog2", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -781,7 +781,7 @@ describe("testing hosts deployment", function () {
 					env: 'dev',
 					custom: {
 						type: 'nginx',
-						name: 'nginx',
+						name: 'nginx'
 					},
 					recipe: recipesInfo[1]._id.toString(),
 					deployConfig: {
@@ -802,7 +802,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("success - deploy 1 service using catalog3", function (done) {
+		it("success - deploy 1 service using catalog3", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -875,7 +875,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("fail - mimic call for cd/deploy of controller in dev", function(done){
+		it("fail - mimic call for cd/deploy of controller in dev", function(done){
 			mimicCall("invalid", null, function(body){
 				assert.equal(body.result, false);
 				assert.ok(body.errors);
@@ -883,7 +883,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("mimic call for cd/deploy of controller in dev", function(done){
+		it("mimic call for cd/deploy of controller in dev", function(done){
 			mimicCall("1234567890", null, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
@@ -891,7 +891,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("configure cd again with specific entry for controller", function(done){
+		it("configure cd again with specific entry for controller", function(done){
 			configureCD({
 				"DEV": {
 					"branch": "master",
@@ -908,7 +908,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
+		it("mimic call for cd/deploy of controller in dev again", function(done){
 			mimicCall("1234567890", null, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
@@ -916,7 +916,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("configure cd again with specific version for controller", function(done){
+		it("configure cd again with specific version for controller", function(done){
 			configureCD({
 				"DEV": {
 					"branch": "master",
@@ -937,7 +937,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
+		it("mimic call for cd/deploy of controller in dev again", function(done){
 			mimicCall("1234567890", 1, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
@@ -945,7 +945,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("get ledger", function(done){
+		it("get ledger", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -982,7 +982,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("mark all ledger entries as read", function(done){
+		it("mark all ledger entries as read", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token
@@ -1001,14 +1001,14 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("trigger catalog update", function(done){
+		it("trigger catalog update", function(done){
 			mongo.update('catalogs', {'name': "soajsCatalog"}, {$set:{v: 2, ts: new Date().getTime()}}, function(error){
 				assert.ifError(error);
 				done();
 			});
 		});
 		
-		it.skip("get updates", function(done){
+		it("get updates", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -1023,7 +1023,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("configure cd for automatic controller update", function(done){
+		it("configure cd for automatic controller update", function(done){
 			configureCD({
 				"DEV": {
 					"branch": "master",
@@ -1044,7 +1044,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("mimic call for cd/deploy of controller in dev again", function(done){
+		it("mimic call for cd/deploy of controller in dev again", function(done){
 			mimicCall("1234567890", 1, function(body){
 				assert.equal(body.result, true);
 				assert.ok(body.data);
@@ -1053,7 +1053,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		//todo: need to trigger get action api, redeploy and rebuild
-		it.skip("calling take action on redeploy", function(done){
+		it("calling take action on redeploy", function(done){
 			var options = {
 				qs: {
 					deploy_token: access_token,
@@ -1092,7 +1092,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it.skip("calling take action on rebuild", function(done){
+		it("calling take action on rebuild", function(done){
 			getServices('dev', function(list){
 				var lastEntry = list[list.length -1];
 				var options = {

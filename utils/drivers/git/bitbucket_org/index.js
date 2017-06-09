@@ -7,7 +7,7 @@ var async = require('async');
 
 var config = require('../../../../config.js');
 
-function checkIfError (error, options, cb, callback) {
+function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
 			if (typeof(error) === 'object' && error.code) {
@@ -27,9 +27,10 @@ function checkIfError (error, options, cb, callback) {
 	return callback();
 }
 
-var lib = require('./helpers/bitbucket_org.js');
+var lib = require('./helper.js');
 
 var driver = {
+	
 	helper: lib,
 	
 	login: function (soajs, data, model, options, cb) {
@@ -169,7 +170,7 @@ var driver = {
 									checkIfError(error, {}, cb, function () {
 										var repoConfig;
 										if (require.resolve(fileInfo.configFilePath)) {
-											delete require.cache[ require.resolve(fileInfo.configFilePath) ];
+											delete require.cache[require.resolve(fileInfo.configFilePath)];
 										}
 										try {
 											repoConfig = require(fileInfo.configFilePath);

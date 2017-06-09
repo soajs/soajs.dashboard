@@ -5,8 +5,9 @@ var rimraf = require('rimraf');
 
 var config = require('../../../../config.js');
 var BitbucketClient = require('bitbucket-server-nodejs').Client;
+var bitbucketClient;
 
-function checkIfError (error, options, cb, callback) {
+function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
 			if (typeof(error) === 'object' && error.code) {
@@ -26,7 +27,7 @@ function checkIfError (error, options, cb, callback) {
 	return callback();
 }
 
-var lib = require('./helpers/bitbucket_enterprise.js');
+var lib = require('./helper.js');
 
 var driver = {
 	helper: lib,
@@ -39,7 +40,7 @@ var driver = {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								driver.helper.authenticate(options);
+								driver.helper.authenticate(options, bitbucketClient);
 								data.saveNewAccount(soajs, model, options, cb);
 							});
 						});
@@ -58,7 +59,7 @@ var driver = {
 						tempClient.settings.get(options.owner)
 							.then(function () {
 								delete options.password;
-								driver.helper.authenticate(options);
+								driver.helper.authenticate(options, bitbucketClient);
 								
 								options.token = new Buffer(options.token).toString('base64');
 								data.saveNewAccount(soajs, model, options, cb);
@@ -97,7 +98,7 @@ var driver = {
 				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					driver.helper.authenticate(options);
+					driver.helper.authenticate(options, bitbucketClient);
 				}
 				
 				options.type = accountRecord.type;
@@ -107,7 +108,7 @@ var driver = {
 					return cb(error, null);
 				}
 				
-				driver.helper.getAllRepos(options, function (error, result) {
+				driver.helper.getAllRepos(options, bitbucketClient, function (error, result) {
 					checkIfError(error, {}, cb, function () {
 						driver.helper.addReposStatus(result, accountRecord.repos, function (repos) {
 							return cb(null, repos);
@@ -125,10 +126,10 @@ var driver = {
 				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					driver.helper.authenticate(options);
+					driver.helper.authenticate(options, bitbucketClient);
 				}
 				
-				driver.helper.getRepoBranches(options, function (error, branches) {
+				driver.helper.getRepoBranches(options, bitbucketClient, function (error, branches) {
 					checkIfError(error, {}, cb, function () {
 						var result = {
 							owner: options.owner,
@@ -148,7 +149,7 @@ var driver = {
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
 					options.domain = accountRecord.domain;
-					driver.helper.authenticate(options);
+					driver.helper.authenticate(options, bitbucketClient);
 				}
 				
 				driver.helper.getRepoContent(options, function (error, response) {
@@ -161,7 +162,7 @@ var driver = {
 						// concatenate them in one string
 						var content = "";
 						for (var i = 0; i < response.lines.length; ++i) {
-							content += response.lines[ i ].text + "\n";
+							content += response.lines[i].text + "\n";
 						}
 						
 						// remove all "require('...')" occurrences
@@ -182,7 +183,7 @@ var driver = {
 							checkIfError(error, {}, cb, function () {
 								var repoConfig;
 								if (require.resolve(fileInfo.configFilePath)) {
-									delete require.cache[ require.resolve(fileInfo.configFilePath) ];
+									delete require.cache[require.resolve(fileInfo.configFilePath)];
 								}
 								try {
 									repoConfig = require(fileInfo.configFilePath);
@@ -208,7 +209,7 @@ var driver = {
 		if (options.accountRecord.token) {
 			options.token = new Buffer(options.accountRecord.token, 'base64').toString();
 			options.domain = options.accountRecord.domain;
-			driver.helper.authenticate(options);
+			driver.helper.authenticate(options, bitbucketClient);
 		}
 		
 		driver.helper.getRepoContent(options, function (error, response) {
@@ -217,7 +218,7 @@ var driver = {
 				// concatenate them in one string
 				var content = "";
 				for (var i = 0; i < response.lines.length; ++i) {
-					content += response.lines[ i ].text + "\n";
+					content += response.lines[i].text + "\n";
 				}
 				
 				var downloadLink = 'https://' + config.gitAccounts.bitbucket_enterprise.downloadUrl
