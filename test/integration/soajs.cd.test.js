@@ -736,7 +736,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("success - deploy 1 service using catalog 1", function (done) {
+		it.skip("success - deploy 1 service using catalog 1", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -772,7 +772,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("success - deploy 1 service using catalog2", function (done) {
+		it.skip("success - deploy 1 service using catalog2", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
@@ -802,7 +802,7 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("success - deploy 1 service using catalog3", function (done) {
+		it.skip("success - deploy 1 service using catalog3", function (done) {
 			var params = {
 				qs: {
 					access_token: access_token
