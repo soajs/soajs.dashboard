@@ -45,7 +45,7 @@ describe("testing git/bitbucket_org helper.js", function () {
 	
 	describe("testing getRepoContent", function () {
 		it("Success", function (done) {
-			driverHelper.getRepoContent(options, function (error, body) {
+			driverHelper.getRepoContent(options, bitbucketClient, function (error, body) {
 				// assert.ok(body);
 				done();
 			});

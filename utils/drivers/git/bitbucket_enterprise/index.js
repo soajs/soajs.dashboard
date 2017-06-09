@@ -152,7 +152,7 @@ var driver = {
 					driver.helper.authenticate(options, bitbucketClient);
 				}
 				
-				driver.helper.getRepoContent(options, function (error, response) {
+				driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
 					checkIfError(error, {}, cb, function () {
 						
 						// bitbucket Client returns no 'sha', use the path instead, its unique
@@ -212,7 +212,7 @@ var driver = {
 			driver.helper.authenticate(options, bitbucketClient);
 		}
 		
-		driver.helper.getRepoContent(options, function (error, response) {
+		driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
 			checkIfError(error, {}, cb, function () {
 				// bitbucket Client returns file content as an array of lines
 				// concatenate them in one string

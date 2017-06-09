@@ -98,7 +98,7 @@ var lib = {
 			});
 	},
 	
-	"getRepoContent": function (options, cb) {
+	"getRepoContent": function (options, bitbucketClient, cb) {
 		var lines = [];
 		get(0, cb);
 		
