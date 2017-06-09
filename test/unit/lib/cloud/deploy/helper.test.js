@@ -43,7 +43,62 @@ describe("testing deploy.js", function () {
 	var BL = {
 		model: mongoStub
 	};
+	var envRecord = {
+		code: 'DEV',
+		deployer: {
+			"type": "container",
+			"selected": "container.kubernetes.local",
+			"container": {
+				"docker": {
+					"local": {
+						"socketPath": "/var/run/docker.sock"
+					},
+					"remote": {
+						"nodes": ""
+					}
+				},
+				"kubernetes": {
+					"local": {
+						"nginxDeployType": "",
+						"namespace": {},
+						"auth": {
+							"token": ""
+						}
+					},
+					"remote": {
+						"nginxDeployType": "",
+						"namespace": {},
+						"auth": {
+							"token": ""
+						}
+					}
+				}
+			}
+		},
+		dbs: {
+			clusters: {
+				analy: {
+					credentials: {
+						username: 'username',
+						password: 'password'
+					},
+					servers: [{ port: 123, host: 'host' }]
+				},
+				oneCluster: {
+					servers: []
+				}
+			},
+			config: {
+				session: {
+					cluster: 'oneCluster'
+				}
+			}
+		},
+		services: {},
+		profile: ''
+	};
 	var context = {
+		variables: {},
 		catalog: {
 			recipe: {
 				deployOptions: {
@@ -59,6 +114,32 @@ describe("testing deploy.js", function () {
 			}
 		}
 	};
+	describe("getAnalyticsEsInfo", function () {
+		beforeEach(() => {
+		});
+		it("Fail getAnalyticsEsInfo", function (done) {
+			helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
+				done();
+			});
+		});
+
+		it("Success getAnalyticsEsInfo", function (done) {
+			envRecord.dbs.databases = {
+				catalog: {},
+				commerce: {
+					cluster: 'analy',
+					useForAnalytics: true
+				}
+			};
+			mongoStub.findEntry = function (soajs, opts, cb) {
+				cb(null, envRecord);
+			};
+			helpers.getAnalyticsEsInfo(soajs, context, mongoStub, function (error, body) {
+				done();
+			});
+		});
+	});
+
 	describe("getGitRecord", function () {
 		var repo;
 		beforeEach(() => {
@@ -71,6 +152,55 @@ describe("testing deploy.js", function () {
 		});
 		
 	});
+	describe("checkPort", function () {
+		beforeEach(() => {
+		});
+		var cbMain = function (error, data) {
+			if (error) {
+				return error;
+			}
+		};
+		var context = {
+			catalog: {
+				recipe: {
+					deployOptions: {
+						ports: []
+					}
+				}
+			},
+			envRecord: envRecord
+		};
+		it("Fail. checkPort", function (done) {
+			helpers.checkPort(context, config, cbMain, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success checkPort", function (done) {
+			context = {
+				catalog: {
+					recipe: {
+						deployOptions: {
+							ports: [
+								{
+									published: false
+								},
+								{
+									published: true
+								}
+							]
+						}
+					}
+				},
+				envRecord: envRecord
+			};
+			helpers.checkPort(context, config, cbMain, function (error, body) {
+				done();
+			});
+		});
+		
+	});
+	
 	
 	describe("computeCatalogEnvVars", function () {
 		var envRecord = {
@@ -368,8 +498,65 @@ describe("testing deploy.js", function () {
 			};
 		});
 		it("Success deployContainer", function (done) {
-			console.log('deploy Container');
-			console.log('deploy Container');
+			helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployContainer options", function (done) {
+			soajs.inputmaskData = {
+				custom: {
+					image: {
+						tag: "2",
+						prefix: "1",
+						name: 'test'
+					},
+					env: {
+						NEW_VAR: "123"
+					}
+				},
+				deployConfig: {
+					replication: {
+						replicas: 2,
+						mode: ""
+					}
+				}
+			};
+			context.catalog.recipe.deployOptions = {
+				restartPolicy: {
+					maxAttempts: 5,
+					condition: {}
+				},
+				container: {
+					workingDir: 'name',
+					network: 'name'
+				},
+				image: {
+					name: "soajs",
+					prefix: ""
+				},
+				voluming: {}
+			};
+			
+			helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Success deployContainer rebuild", function (done) {
+			soajs.inputmaskData = {
+				custom: {
+					env: {
+						NEW_VAR: "123"
+					}
+				},
+				action: 'rebuild',
+				deployConfig: {
+					replication: {
+						mode: ""
+					}
+				}
+			};
 			helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
 				done();
 			});

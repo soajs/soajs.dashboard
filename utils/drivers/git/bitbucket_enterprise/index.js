@@ -40,7 +40,7 @@ var driver = {
 					if (options.access === 'public') { //in case of public access, no tokens are created, just verify that user/org exists and save
 						driver.helper.checkUserRecord(options, function (error) {
 							checkIfError(error, {}, cb, function () {
-								driver.helper.authenticate(options, bitbucketClient);
+								bitbucketClient = driver.helper.authenticate(options);
 								data.saveNewAccount(soajs, model, options, cb);
 							});
 						});

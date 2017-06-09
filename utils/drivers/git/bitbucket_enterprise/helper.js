@@ -7,8 +7,6 @@ var rimraf = require('rimraf');
 var config = require('../../../../config.js');
 var BitbucketClient = require('bitbucket-server-nodejs').Client;
 
-var bitbucketClient;
-
 function checkIfError(error, options, cb, callback) {
 	if (error) {
 		if (options && options.code) {
@@ -31,11 +29,11 @@ function checkIfError(error, options, cb, callback) {
 
 var lib = {
 	
-	"authenticate": function (options, passedClient) {
+	"authenticate": function (options) {
+		var bitbucketClient;
 		var domain = 'https://' + config.gitAccounts.bitbucket_enterprise.apiDomain.replace('%PROVIDER_DOMAIN%', options.domain);
 		if (options.access === 'public') {
 			bitbucketClient = new BitbucketClient(domain);
-			passedClient = bitbucketClient;
 		} else {
 			// has the form username:password
 			var credentials = options.token.split(':');
@@ -45,8 +43,8 @@ var lib = {
 				username: credentials[0],
 				password: credentials[1]
 			});
-			passedClient = bitbucketClient;
 		}
+		return bitbucketClient;
 	},
 	
 	"checkUserRecord": function (options, cb) {
