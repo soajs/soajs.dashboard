@@ -23,11 +23,9 @@ describe("testing ci travis index.js", function () {
 		params: { repoId: 123456 }
 	};
 	beforeEach(function (done) {
-		console.log('=======================================================');
 		done();
 	});
 	afterEach(function (done) {
-		console.log('%%%%%%%%%%%%% %%%%%%%%%%%%% %%%%%%%%%%%%% %%%%%%%%%%%%%');
 		done();
 	});
 	describe("testing generateToken", function () {

@@ -1,10 +1,9 @@
 "use strict";
-
 var fs = require("fs");
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
-var config = require('../../../config.js');
+var config = require('../../../../config.js');
 var BitbucketClient = require('bitbucket-server-nodejs').Client;
 
 function checkIfError (error, options, cb, callback) {

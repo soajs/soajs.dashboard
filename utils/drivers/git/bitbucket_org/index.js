@@ -1,12 +1,11 @@
 'use strict';
-
 var fs = require("fs");
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var request = require('request');
 var async = require('async');
 
-var config = require('../../../config.js');
+var config = require('../../../../config.js');
 
 function checkIfError (error, options, cb, callback) {
 	if (error) {
