@@ -570,6 +570,7 @@ describe("testing hosts deployment", function () {
 	});
 	
 	describe("testing controller deployment", function () {
+		
 		it("success - deploy 1 controller service and delete it afterwards", function (done) {
 			var params = {
 				qs: {
@@ -616,7 +617,7 @@ describe("testing hosts deployment", function () {
 		});
 		
 		it("success - deploy 1 controller and use the main file specified in src", function (done) {
-			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/helper.js' } }, function (error) {
+			mongo.update("services", { name: 'controller' }, { '$set': { 'src.main': '/index.js' } }, function (error) {
 				assert.ifError(error);
 				
 				var params = {
@@ -627,7 +628,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						custom: {
 							type: 'service',
-							name: 'controller',
+							name: 'controller'
 						},
 						recipe: '59034e43c69a1b962fc62213', // todo
 						gitSource: {
@@ -654,33 +655,34 @@ describe("testing hosts deployment", function () {
 			});
 		});
 		
-		it("success - deploy 1 nginx service", function (done) {
-				var params = {
-					qs: {
-						access_token: access_token
+		it("success - deploy 1 nginx service with static content", function (done) {
+			var params = {
+				qs: {
+					access_token: access_token
+				},
+				"form": {
+					env: 'dev',
+					custom: {
+						type: 'nginx',
+						name: 'nginx'
 					},
-					"form": {
-						env: 'dev',
-						custom: {
-							type: 'nginx',
-							name: 'nginx'
-						},
-						recipe: '59034e43c69a1b962fc62212', // todo
-						deployConfig: {
-							memoryLimit: 209715200,
-							replication: {
-								mode: 'replicated',
-								replicas: 1
-							}
+					recipe: '59034e43c69a1b962fc62212', // todo
+					deployConfig: {
+						memoryLimit: 209715200,
+						replication: {
+							mode: 'replicated',
+							replicas: 1
 						}
 					}
-				};
+				}
+			};
 
-				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					assert.ok(body.result);
-					assert.ok(body.data);
-					done();
-				});
+			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
+				console.log(body);
+				assert.ok(body.result);
+				assert.ok(body.data);
+				done();
+			});
 		});
 
 	});
@@ -961,8 +963,9 @@ describe("testing hosts deployment", function () {
 	});
 	
 	describe("testing redeploy service", function () {
-		var nginxDeployment, ctrlDeployment, uiRecord;
-		before("list services", function (done) {
+		var nginxDeployment, ctrlDeployment;
+		before("list services and get static content record", function (done) {
+
 			var params = {
 				qs: {
 					access_token: access_token,
