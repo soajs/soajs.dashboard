@@ -163,9 +163,7 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 					oneEntry.rms = true;
 				}
 				else if(oneEntry.labels && oneEntry.labels['soajs.content'] === 'true' && oneEntry.labels['soajs.service.name']){
-					if(SOAJSRMS.indexOf(oneEntry.labels['soajs.service.name'].toLowerCase()) !== -1){
-						oneEntry.rms = true;
-					}
+					oneEntry.rms = true;
 				}
 				switch (oneEntry.mode) {
 					case 'image':

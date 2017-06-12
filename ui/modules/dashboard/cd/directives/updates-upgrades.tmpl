@@ -147,7 +147,7 @@
 				<br>
 			</fieldset>
 			
-			<div ng-show="!imageLedger || imageLedger.length === 0 || !catalogLedger || catalogLedger.length === 0">
+			<div ng-show="(!imageLedger || imageLedger.length === 0) && (!catalogLedger || catalogLedger.length === 0)">
 				<alert type="info">
 					Your services are up to date in this environments.
 				</alert>
