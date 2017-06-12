@@ -13,8 +13,19 @@ describe("testing git/github helper.js", function () {
 	};
 
 	describe("testing authenticate", function () {
-		it("Success", function (done) {
+		it("Success type basic", function (done) {
 			driverHelper.authenticate(options, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		it("Success type oauth", function (done) {
+			var options1 = {
+				type: 'oauth',
+				token: '123456',
+				provider: 'github'
+			};
+			driverHelper.authenticate(options1, function (error, body) {
 				// assert.ok(body);
 				done();
 			});
@@ -55,7 +66,14 @@ describe("testing git/github helper.js", function () {
 	});
 
 	describe("testing getRepoBranches", function () {
-		it("Success", function (done) {
+		it("Success 1", function (done) {
+			driverHelper.getRepoBranches(options, function (error, body) {
+				// assert.ok(body);
+				done();
+			});
+		});
+		it("Success 2", function (done) {
+			options.name = 'abc/123';
 			driverHelper.getRepoBranches(options, function (error, body) {
 				// assert.ok(body);
 				done();
@@ -111,7 +129,13 @@ describe("testing git/github helper.js", function () {
 		it("Success", function (done) {
 			var allRepos = [
 				{
-					full_name: 'abc'
+					full_name: 'abccccc'
+				},
+				{
+					full_name: 'nameeeeee'
+				},
+				{
+					full_name: 'abc/123'
 				}
 			];
 			var activeRepos = [
@@ -127,8 +151,24 @@ describe("testing git/github helper.js", function () {
 					]
 				},
 				{
-					name: 'abc',
+					type: 'multi',
 					status: 'active',
+					name: 'nulti/repo',
+					configSHA: [
+						{
+							contentType: 'service',
+							contentName: 'name'
+						}
+					]
+				},
+				{
+					name: 'abccccc',
+					status: 'active',
+					type: 'service',
+					configSHA: '123456'
+				},
+				{
+					name: 'nameeeeee',
 					type: 'service',
 					configSHA: '123456'
 				}

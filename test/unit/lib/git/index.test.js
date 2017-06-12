@@ -515,7 +515,6 @@ describe("testing git.js", function () {
 				"id": '592be42296fe4eac1ccab1be'
 			};
 			lib.deactivateRepo(config, req, gitDriver, helpers, gitModel, function (error, body) {
-				console.log(error);
 				assert.ok(error);
 				done();
 			});
@@ -706,7 +705,7 @@ describe("testing git.js", function () {
 			});
 		});
 
-		it.skip("Fail syncRepo outOfSync", function (done) {
+		it("Fail syncRepo outOfSync", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb('outOfSync');
 			};
@@ -724,7 +723,7 @@ describe("testing git.js", function () {
 			});
 		});
 
-		it.skip("Success syncRepo upToDate", function (done) {
+		it("Success syncRepo upToDate", function (done) {
 			helpers.analyzeConfigSyncFile = function (req, repoConfig, path, configSHA, flag, cb) {
 				return cb(null, 'upToDate');
 			};
