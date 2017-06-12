@@ -99,7 +99,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 	describe("github login tests", function () {
 
-		it.skip("fail - wrong pw", function (done) {
+		it("fail - wrong pw", function (done) {
 			var params = {
 				form: {
 					"username": usernamePersonal,
@@ -175,7 +175,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 	});
 
-	describe.skip("github accounts tests", function () {
+	describe("github accounts tests", function () {
 
 		describe("list accounts", function () {
 
@@ -196,9 +196,9 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 	});
 
-	describe.skip("personal private acc", function () {
+	describe("personal private acc", function () {
 
-		describe.skip("github getRepos tests", function () {
+		describe("github getRepos tests", function () {
 
 			it("success - will getRepos", function (done) {
 				var params = {
@@ -487,7 +487,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					});
 				});
 
-				it("fail - cant logout active account", function (done) {
+				it.skip("fail - cant logout active account", function (done) {
 					var params = {
 						qs: {
 							"username": usernamePersonal,
@@ -509,6 +509,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			describe("repo sync tests", function () {
 
 				it("success - will sync repo - no change", function (done) {
+					console.log('usernamePersonal', usernamePersonal);
 					var params = {
 						qs: {
 							"id": gitAccId
@@ -524,167 +525,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-
-				it("success - will sync single repo - change", function (done) {
-					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						assert.ok(record);
-						assert.ok(record.repos);
-						record.repos.forEach(function (repo) {
-							if (repo.name === usernamePersonal + '/' + repoSingleSuccess) {
-								repo.configSHA = '931837a2e79e0f7c9e6ff288326c38dbac1bf021';
-							}
-						});
-						mongo.save("git_accounts", record, function (error) {
-							assert.ifError(error);
-							var params = {
-								qs: {
-									"id": gitAccId
-								},
-								form: {
-									"provider": "github",
-									owner: usernamePersonal,
-									repo: repoSingleSuccess
-								}
-							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-								assert.ok(body);
-								done();
-							});
-						});
-
-					});
-
-				});
-
-				it("success - will sync multi repo - add", function (done) {
-					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						assert.ok(record);
-						assert.ok(record.repos);
-						record.repos.forEach(function (repo) {
-							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
-								repo.configSHA.splice(0, 1);
-							}
-						});
-						mongo.save("git_accounts", record, function (error) {
-							assert.ifError(error);
-							var params = {
-								qs: {
-									"id": gitAccId
-								},
-								form: {
-									"provider": "github",
-									owner: usernamePersonal,
-									repo: repoMultiSuccess
-								}
-							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-								debugLog(body);
-								assert.ok(body);
-								//assert.ok(body.data);
-								done();
-							});
-						});
-					});
-
-				});
-
-				it("fail - sync repo - remove", function (done) {
-					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						assert.ok(record);
-						assert.ok(record.repos);
-						record.repos.forEach(function (repo) {
-							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
-								repo.configSHA = [];
-								repo.configSHA[0] = {
-									"contentType": "service",
-									"contentName": "sampleFake11",
-									"path": "/sampleFake11/config.js",
-									"sha": "95b14565e3fdd0048e351493056025a7020ea561"
-								};
-							}
-						});
-						var host = {
-							env: "dev",
-							name: "sampleFake11",
-							ip: "127.0.0.1",
-							version: 1
-						};
-						mongo.insert("hosts", host, function (error) {
-							mongo.save("git_accounts", record, function (error) {
-								assert.ifError(error);
-								var params = {
-									qs: {
-										"id": gitAccId
-									},
-									form: {
-										"provider": "github",
-										owner: usernamePersonal,
-										repo: repoMultiSuccess
-									}
-								};
-								executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-									debugLog(body);
-									assert.ok(body);
-									// assert.ok(body.errors);
-									//assert.deepEqual(body.errors.details[0], {"code": 768, "message": errorCodes[768]});
-									done();
-								});
-							});
-						});
-					});
-				});
-
-				it("success - will sync repo - remove", function (done) {
-					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						assert.ok(record);
-						assert.ok(record.repos);
-						record.repos.forEach(function (repo) {
-							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
-								repo.configSHA = [];
-								repo.configSHA[0] = {
-									"contentType": "service",
-									"contentName": "sampleFake1",
-									"path": "/sampleFake1/config.js",
-									"sha": "95b14565e3fdd0048e351493056025a7020ea561"
-								};
-
-								repo.configSHA[1] = {
-									"contentType": "daemon",
-									"contentName": "sampleFake2",
-									"path": "/sampleFake2/config.js",
-									"sha": "15b14565e3fdd0048e351493056025a7020ea561"
-								};
-
-								repo.configSHA[repo.configSHA.length] = {
-									"contentType": "static",
-									"contentName": "sampleFake3",
-									"path": "/sampleFake3/config.js",
-									"sha": "15b14565e3fdd0048e351493056025a7020ea567"
-								};
-							}
-						});
-						mongo.save("git_accounts", record, function (error) {
-							assert.ifError(error);
-							var params = {
-								qs: {
-									"id": gitAccId
-								},
-								form: {
-									"provider": "github",
-									owner: usernamePersonal,
-									repo: repoMultiSuccess
-								}
-							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-								debugLog(body);
-								assert.ok(body);
-								//assert.ok(body.data);
-								done();
-							});
-						});
-					});
-				});
-
+				
 				it("success - will sync multi repo - change", function (done) {
 
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
@@ -907,7 +748,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		});
 	});
 
-	describe("github logout tests", function () {
+	describe.skip("github logout tests", function () {
 
 		it("fail - logout - invalid id", function (done) {
 			var params = {
@@ -1007,9 +848,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						"access": "public"
 					}
 				};
-				console.log(params);
 				executeMyRequest(params, 'gitAccounts/login', 'post', function (body) {
-					console.log(body);
 					assert.ok(body);
 					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
 						assert.ifError(error);
@@ -1022,7 +861,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 		});
 
-		describe.skip("github repo tests", function () {
+		describe("github repo tests", function () {
 
 			describe("repo activate tests", function () {
 
@@ -1136,7 +975,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 		});
 	});
 
-	describe.skip("organization public acc", function () {
+	describe("organization public acc", function () {
 		var orgName = 'soajs';
 		var repoName = 'soajs.examples';
 
@@ -1163,7 +1002,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					});
 				});
 
-				it.skip("success - will getRepos again", function (done) {
+				it("success - will getRepos again", function (done) {
 					var params = {
 						qs: {
 							"id": soajsAccId,

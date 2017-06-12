@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/namespaces.js');
+var utils = helper.requireModule('./lib/cloud/namespaces/index.js');
 var namespaces;
 var config = {
 	errors: {}

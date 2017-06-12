@@ -59,6 +59,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				$scope.activateRepo = false;
 				if(ciRepo) {
                     $scope.ciRepoName = ciRepo.name;
+					$scope.activateRepo = false;
                 }
 				$scope.goTOCI = function(){
 					currentScope.$parent.go('#/continuous-integration');
@@ -213,7 +214,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 												else {
 													currentScope.displayAlert('success', 'Repository Settings Updated.');
 													$scope.form.formData = {};
-													$scope.cancel();
+													$scope.showCIConfigForm();
 												}
 											});
 										}

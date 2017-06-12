@@ -4,32 +4,32 @@ var config = require('./config.js');
 
 var dashboardBL = {
 	environment: {
-		module: require("./lib/environment.js")
+		module: require("./lib/environment/index.js")
 	},
 	product: {
-		module: require("./lib/product.js")
+		module: require("./lib/product/index.js")
 	},
 	tenant: {
-		module: require("./lib/tenant.js")
+		module: require("./lib/tenant/index.js")
 	},
 	services: {
-		module: require("./lib/services.js")
+		module: require("./lib/services/index.js")
 	},
 	daemons: {
-		module: require("./lib/daemons.js")
+		module: require("./lib/daemons/index.js")
 	},
 	swagger: {
-		module: require("./lib/swagger.js")
+		module: require("./lib/swagger/index.js")
 	},
 	analytics: {
-		module: require("./lib/analytics.js")
+		module: require("./lib/analytics/index.js")
 	},
 	cb:{
-		module: require("./lib/contentbuilder")
+		module: require("./lib/contentbuilder/index")
 	},
 	hosts:{
-		module: require("./lib/host.js"),
-		helper: require("./lib/helpers/host.js")
+		module: require("./lib/hosts/index.js"),
+		helper: require("./lib/hosts/helper.js")
 	},
 	catalog:{
 		module: require("./lib/catalog/index.js")
@@ -40,29 +40,29 @@ var dashboardBL = {
 	},
 	cd:{
 		module: require("./lib/cd/index.js"),
-		helper: require("./lib/helpers/cd/index.js")
+		helper: require("./lib/cd/helper.js")
 	},
 	git: {
-		module: require('./lib/git.js'),
-		helper: require("./lib/helpers/git.js"),
+		module: require('./lib/git/index.js'),
+		helper: require("./lib/git/helper.js"),
 		driver: require('./utils/drivers/git/index.js'),
 		model: require('./models/git.js')
 	},
 	cloud:{
 		service:{
-			module: require("./lib/cloud/services.js")
+			module: require("./lib/cloud/services/index.js")
 		},
 		deploy:{
-			module: require("./lib/cloud/deploy.js")
+			module: require("./lib/cloud/deploy/index.js")
 		},
 		nodes:{
-			module: require("./lib/cloud/nodes.js")
+			module: require("./lib/cloud/nodes/index.js")
 		},
 		maintenance:{
-			module: require("./lib/cloud/maintenance.js")
+			module: require("./lib/cloud/maintenance/index.js")
 		},
 		namespace:{
-			module: require("./lib/cloud/namespaces.js")
+			module: require("./lib/cloud/namespaces/index.js")
 		}
 	}
 };

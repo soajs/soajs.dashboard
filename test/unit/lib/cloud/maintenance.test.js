@@ -1,7 +1,7 @@
 "use strict";
 var assert = require("assert");
 var helper = require("../../../helper.js");
-var utils = helper.requireModule('./lib/cloud/maintenance.js');
+var utils = helper.requireModule('./lib/cloud/maintenance/index.js');
 var maintenance;
 var config = {
 	errors: {}

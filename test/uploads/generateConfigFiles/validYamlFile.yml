@@ -1,0 +1,187 @@
+swagger: '2.0'
+info:
+  title: Catalog APIs
+  description: You can find documentation for all Catalog APIs here
+  version: "1.0.0"
+host: localhost
+basePath: /catalog
+produces:
+  - application/json
+paths:
+  /categories:
+    get:
+      summary: Get categories profile
+      description:  desc
+      parameters:
+        - $ref: '#/parameters/language'
+      responses:
+        400:
+          $ref: '#/responses/e400'
+        300:
+          $ref: '#/responses/e300'
+        200:
+          description: All categories retrieved
+  /products:
+    post:
+      summary: List products
+      description: desc
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/language'
+        - $ref: '#/parameters/limit'
+        - $ref: '#/parameters/index'
+        - $ref: '#/parameters/sortField'
+        - $ref: '#/parameters/sortOrder'
+        - name: searchData
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/searchData'
+      responses:
+        400:
+          $ref: '#/responses/e400'
+        300:
+          $ref: '#/responses/e300'
+        200:
+          description: all products returned
+  /product/{serial}:
+    get:
+      summary: Get one product
+      description:  desc
+      parameters:
+        - $ref: '#/parameters/serial'
+        - $ref: '#/parameters/language'
+      responses:
+        400:
+          $ref: '#/responses/e400'
+        401:
+          $ref: '#/responses/e401'
+        402:
+          description: Invalid group ID
+        300:
+          $ref: '#/responses/e300'
+        200:
+          description: Retrieved one product by serial
+  /merchants:
+    post:
+      summary: This api returns the list of all merchants (Sellers)
+      description:  desc
+      responses:
+        400:
+          $ref: '#/responses/e400'
+        300:
+          $ref: '#/responses/e300'
+        200:
+          description: All merchants returned
+
+responses:
+  e400:
+    description: Failed to connect to database
+  e401:
+    description: Invalid Product serial
+  e300:
+    description: Missing catalog
+
+parameters:
+  accountId:
+    name: accountId
+    required: false
+    in: query
+    type: string
+    description: "The account id of the lead"
+  serial:
+    name: serial
+    in: path
+    required: true
+    type: string
+  language:
+    name: language
+    in: query
+    required: false
+    type: string
+    default: en
+    enum:
+      - en
+      - fr
+    description: "The device language. en or fr"
+  index:
+    name: index
+    in: query
+    required: false
+    default: 0
+    type: number
+    description: The starting index
+  limit:
+    name: limit
+    in: query
+    required: false
+    type: number
+    default: 30
+    description: The number of records to get
+  sortField:
+    name: sortField
+    in: query
+    type: string
+    required: false
+    default: created
+    description: Sort records by this field
+    enum:
+      - created
+      - price
+  sortOrder:
+    name: sortOrder
+    in: query
+    type: string
+    required: false
+    default: DESC
+    description: Sorting order
+    enum:
+     - DESC
+     - ASC
+
+definitions:
+  searchData:
+    type: object
+    properties:
+      keyword:
+        type: string
+      category:
+        type: array
+        items:
+          type: string
+        description: Array that contains the Selected Category and all its children. limit search results to these categories
+      mid:
+        type: string
+        description: Search for products that are sold by only a certain merchant
+      pFilters:
+        type: object
+        description: Selected Filters While browsing Products Page Result
+      verticals:
+        type: array
+        items:
+          type: string
+        description: Array of Strings. When set, the api will get the products for specific vertical(s)
+      headings:
+        type: array
+        items:
+          type: string
+        description: Array of Strings.
+      serviceAreas:
+        type: array
+        items:
+          type: string
+        description: When set, the api will get the products for specific service area(s)
+      priceMin:
+        type: number
+      priceMax:
+        type: number
+      brand:
+        type: array
+        items:
+          type: string
+        description: Array of brands to limit search results
+      classifications:
+        type: array
+        items:
+          type: string
+        description: Array of classifications to limit search results

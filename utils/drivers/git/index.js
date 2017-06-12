@@ -2,7 +2,7 @@
 
 function getGitDriver (config, cbMain, cb) {
 	var gitDriver;
-	var path = __dirname + "/" + config.provider + ".js";
+	var path = __dirname + "/" + config.provider + "/index.js";
 	try {
 		gitDriver = require(path);
 	}
@@ -21,9 +21,9 @@ function getGitDriver (config, cbMain, cb) {
 
 function getGitHelperDriver (config) {
 	var helper;
-	
+	var path = __dirname + "/" + config.provider + "/helper.js";
 	try {
-		helper = require(__dirname + "/helpers/" + config.provider + ".js");
+		helper = require(__dirname + "/" + config.provider + "/helper.js");
 	}
 	catch (e) {
 		helper = null;

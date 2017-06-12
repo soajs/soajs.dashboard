@@ -2954,7 +2954,6 @@ describe("DASHBOARD UNIT Tests:", function () {
 
 			function checkIfKeyExists(code, cb) {
 				mongo.findOne("dashboard_extKeys", {'code': code}, function (error, result) {
-					console.log (result);
 					assert.ifError(error);
 					if (!result) {
 						cb(null, true);

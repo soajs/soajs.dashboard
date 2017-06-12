@@ -137,7 +137,6 @@ describe("Swagger", function () {
 					}
 				};
 				executeMyRequest(params, "swagger/simulate", 'post', function (result) {
-					console.log(JSON.stringify(result, null, 2));
 					assert.ok(result.data);
 					done();
 				});
@@ -397,7 +396,6 @@ describe("Swagger", function () {
 				var params = util.cloneObj(oParams);
 				params.form.data.yaml = fs.readFileSync(__dirname + "/swagger.invalid.test.yaml", "utf8").toString();
 				executeMyRequest(params, "swagger/generate", 'post', function (result) {
-					console.log(JSON.stringify(result, null, 2));
 					assert.ok(result.errors);
 					done();
 				});

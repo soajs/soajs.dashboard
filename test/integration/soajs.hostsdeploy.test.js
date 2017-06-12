@@ -599,7 +599,6 @@ describe("testing hosts deployment", function () {
 				}
 			};
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
 
@@ -609,7 +608,6 @@ describe("testing hosts deployment", function () {
 						id: service.id,
 						mode: service.labels[ 'soajs.service.mode' ]
 					}, function (body) {
-						console.log(body);
 						assert.ok(body.result);
 						assert.ok(body.data);
 						done();
@@ -630,7 +628,7 @@ describe("testing hosts deployment", function () {
 						env: 'dev',
 						custom: {
 							type: 'service',
-							name: 'controller',
+							name: 'controller'
 						},
 						recipe: '59034e43c69a1b962fc62213', // todo
 						gitSource: {
@@ -777,7 +775,6 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();
@@ -1026,7 +1023,6 @@ describe("testing hosts deployment", function () {
 			};
 			
 			executeMyRequest(params, "cloud/services/redeploy", "put", function (body) {
-				// console.log(body);
 				assert.ok(body);
 				done();
 			});
@@ -1079,7 +1075,6 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "analytics/activateAnalytics", "get", function (body) {
-				console.log(JSON.stringify(body, null, 2));
 				assert.ok(body.data);
 				done();
 			});
@@ -1245,7 +1240,6 @@ describe("testing hosts deployment", function () {
 					id: service.id,
 					mode: service.labels[ 'soajs.service.mode' ]
 				}, function (body) {
-					console.log(body);
 					assert.ok(body.result);
 					assert.ok(body.data);
 					done();

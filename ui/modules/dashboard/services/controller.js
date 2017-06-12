@@ -188,7 +188,7 @@ servicesApp.controller('servicesCtrl', ['$scope', '$timeout', '$modal', '$compil
 
 	//open new tab having the swagger ui to test our APIs
 	$scope.swaggerTest = function (serviceName) {
-		window.open("#/services/swaggerui/" + serviceName, "_blank");
+		$scope.$parent.go("#/services/swaggerui/" + serviceName, "_blank");
 	};
 
 	if ($scope.access.listServices) {
