@@ -747,74 +747,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			});
 		});
 	});
-
-	describe.skip("github logout tests", function () {
-
-		it("fail - logout - invalid id", function (done) {
-			var params = {
-				qs: {
-					"username": usernamePersonal,
-					"password": passwordPersonal,
-					"id": '1332742364',
-					"provider": "github"
-				}
-			};
-			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-				assert.ok(body);
-				//assert.deepEqual(body.errors.details[0], {"code": 701, "message": errorCodes[701]});
-				done();
-			});
-		});
-
-		it("fail - logout - wrong provider", function (done) {
-			var params = {
-				qs: {
-					"username": usernamePersonal,
-					"password": passwordPersonal,
-					"id": gitAccId,
-					"provider": "bitbucket"
-				}
-			};
-			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-				assert.ok(body);
-				//assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
-				done();
-			});
-		});
-
-		it("success - will logout personal private acc", function (done) {
-			var params = {
-				qs: {
-					"username": usernamePersonal,
-					"password": passwordPersonal,
-					"id": gitAccId,
-					"provider": "github"
-				}
-			};
-			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-				assert.ok(body);
-				done();
-			});
-		});
-
-		it("fail - logout again personal acc", function (done) {
-			var params = {
-				qs: {
-					"username": usernamePersonal,
-					"password": passwordPersonal,
-					"id": gitAccId,
-					"provider": "github"
-				}
-			};
-			executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-				assert.ok(body);
-				//assert.deepEqual(body.errors.details[0], {"code": 753, "message": errorCodes[753]});
-				done();
-			});
-		});
-
-	});
-
+	
 	describe("personal public acc", function () {
 		var gitAccId;
 

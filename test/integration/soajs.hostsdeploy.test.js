@@ -1046,15 +1046,5 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-
-	describe("testing kubernetes namespaces", function () {
-		
-		after("reset dashboard env deployer type to container", function (done) {
-			mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "container" } }, function (error) {
-				assert.ifError(error);
-				done();
-			});
-		});
-
-	});
+	
 });
