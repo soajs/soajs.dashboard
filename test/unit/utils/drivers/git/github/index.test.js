@@ -5,33 +5,34 @@ var driver = helper.requireModule('./utils/drivers/git/github/index.js');
 var driverHelper = helper.requireModule('./utils/drivers/git/github/helper.js');
 driver.helper = driverHelper;
 
-describe("testing git/github index.js", function () {
-	var soajs = {};
-	var data = {
-		getAccount: function (soajs, model, options, cb) {
-			var accountRecord = {
-				repos: []
-			};
-			return cb(null, accountRecord);
-		},
-		removeAccount: function (soajs, model, id, cb) {
-			return cb(null, true);
-		},
-		saveNewAccount: function (soajs, model, id, cb) {
-			return cb(null, true);
-		},
-		checkIfAccountExists: function (soajs, model, options, cb) {
-			return cb(null, 0);
-		}
+var soajs = {};
+var data = {
+	getAccount: function (soajs, model, options, cb) {
+		var accountRecord = {
+			repos: []
+		};
+		return cb(null, accountRecord);
+	},
+	removeAccount: function (soajs, model, id, cb) {
+		return cb(null, true);
+	},
+	saveNewAccount: function (soajs, model, id, cb) {
+		return cb(null, true);
+	},
+	checkIfAccountExists: function (soajs, model, options, cb) {
+		return cb(null, 0);
+	}
 
-	};
-	var model = {};
+};
+var model = {};
+
+describe("testing git/github index.js", function () {
 	var options = {
 		provider: 'github'
 	};
 
 	describe("testing login", function () {
-		it("Success login", function (done) {
+		it("Success public personal", function (done) {
 			options = {
 				owner: '123456789',
 				access: 'public',
@@ -43,6 +44,34 @@ describe("testing git/github index.js", function () {
 				done();
 			});
 		});
+
+		it("Success public organization", function (done) {
+			options = {
+				owner: '123456789',
+				access: 'public',
+				type: 'organization',
+				provider: 'github'
+			};
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
+		it("Success public organization", function (done) {
+			options = {
+				username: "username",
+				password: 'password',
+				owner: '123456789',
+				access: 'private',
+				provider: 'github'
+			};
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+
 	});
 
 	describe("testing logout", function () {
@@ -67,7 +96,7 @@ describe("testing git/github index.js", function () {
 	});
 
 	describe("testing getBranches", function () {
-		it("Success", function (done) {
+		it("Success 1", function (done) {
 			driverHelper.getRepoBranches = function (options, cb) {
 				return cb(null);
 			};

@@ -197,8 +197,6 @@ describe("testing ci travis index.js", function () {
 				params: { repoId: 123456 }
 			};
 			utils.updateEnvVar(options, function (error, body) {
-				console.log(error);
-				console.log(body);
 				// assert.ok(body);
 				done();
 			});
@@ -557,8 +555,6 @@ describe("testing ci travis index.js", function () {
 				}
 			};
 			utils.updateSettings(options, function (error, body) {
-				console.log(error);
-				// { error: 'Settings must be passed with a request' }
 				assert.ok(body);
 				done();
 			});

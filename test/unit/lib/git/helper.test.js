@@ -300,7 +300,6 @@ describe("testing helper git.js", function () {
 		};
 		it("Success", function (done) {
 			var options = helpers.buildDeployerOptions(envRecord, soajs, mongoStub);
-			console.log(options);
 			assert.ok(options);
 			assert.ok(options.strategy);
 			assert.ok(options.deployerConfig);
