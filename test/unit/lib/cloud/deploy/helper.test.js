@@ -279,7 +279,8 @@ describe("testing deploy.js", function () {
 						buildOptions: {
 							env: {
 								NODE_ENV: {
-									type: 'static', value: 'production'
+									type: 'static', 
+									value: 'production'
 								},
 								SOAJS_ENV: { type: 'computed', value: '$SOAJS_ENV' },
 								SOAJS_PROFILE: {
