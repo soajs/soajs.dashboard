@@ -16,12 +16,34 @@ describe("testing git/github index.js", function () {
 		},
 		removeAccount: function (soajs, model, id, cb) {
 			return cb(null, true);
+		},
+		saveNewAccount: function (soajs, model, id, cb) {
+			return cb(null, true);
+		},
+		checkIfAccountExists: function (soajs, model, options, cb) {
+			return cb(null, 0);
 		}
+
 	};
 	var model = {};
 	var options = {
 		provider: 'github'
 	};
+
+	describe("testing login", function () {
+		it("Success login", function (done) {
+			options = {
+				owner: '123456789',
+				access: 'public',
+				type: 'personal',
+				provider: 'github'
+			};
+			driver.login(soajs, data, model, options, function (error, body) {
+				// assert.ok(error);
+				done();
+			});
+		});
+	});
 
 	describe("testing logout", function () {
 		it("Success", function (done) {
