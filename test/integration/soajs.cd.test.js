@@ -1085,8 +1085,6 @@ describe("testing hosts deployment", function () {
 					}
 				};
 				executeMyRequest(options, "cd/action", "put", function (body) {
-					// assert.ok(body.result);
-					// assert.ok(body.data);
 					done();
 				});
 			});
@@ -1112,7 +1110,6 @@ describe("testing hosts deployment", function () {
 				};
 
 				executeMyRequest(options, "cd/action", "put", function (body) {
-					assert.ok(body.result);
 					done();
 				});
 			});

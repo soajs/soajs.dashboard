@@ -487,23 +487,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					});
 				});
 
-				it.skip("fail - cant logout active account", function (done) {
-					var params = {
-						qs: {
-							"username": usernamePersonal,
-							"password": passwordPersonal,
-							"id": gitAccId,
-							"provider": "github"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-						assert.ok(body);
-						// assert.equal(body.result, false);
-						// assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
-						done();
-					});
-				});
-
 			});
 
 			describe("repo sync tests", function () {

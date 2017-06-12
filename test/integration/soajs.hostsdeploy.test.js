@@ -484,7 +484,6 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
