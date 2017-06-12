@@ -27,13 +27,10 @@ describe("testing helper git.js", function () {
 		registry: {},
 		log: {
 			debug: function (data) {
-				
 			},
 			error: function (data) {
-				
 			},
 			info: function (data) {
-				
 			}
 		},
 		inputmaskData: {},
@@ -43,14 +40,14 @@ describe("testing helper git.js", function () {
 		soajs: soajs
 	};
 	var res = {};
-
+	
 	describe("comparePaths", function () {
 		beforeEach(() => {
 		});
 		var remote = [];
 		var local = [];
 		it("Test 1: will remove", function (done) {
-			remote = [ '/sample1', '/sample2', '/sample3', '/sample4' ];
+			remote = ['/sample1', '/sample2', '/sample3', '/sample4'];
 			local = [
 				{
 					contentType: 'service',
@@ -63,12 +60,6 @@ describe("testing helper git.js", function () {
 					contentName: 'sampleFake2',
 					path: '/sampleFake2/config.js',
 					sha: '15b14565e3fdd0048e351493056025a7020ea561'
-				},
-				{
-					contentType: 'static',
-					contentName: 'sampleFake3',
-					path: '/sampleFake3/config.js',
-					sha: '15b14565e3fdd0048e351493056025a7020ea567'
 				}
 			];
 			soajs.inputmaskData = {
@@ -81,9 +72,9 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
-
+		
 		it("Test 2: will sync", function (done) {
-			remote = [ '/sample1', '/sample2', '/sample3', '/sample4' ];
+			remote = ['/sample1', '/sample2', '/sample3', '/sample4'];
 			local = [
 				{
 					contentType: 'service',
@@ -102,12 +93,6 @@ describe("testing helper git.js", function () {
 					contentName: 'sampledaemonsuccess1',
 					path: '/sample3/config.js',
 					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
-				},
-				{
-					contentType: 'static',
-					contentName: 'sampletest4',
-					path: '/sample4/config.js',
-					sha: '6cbeae3ed88e9e3296e05fd52a48533ba53c0931'
 				}
 			];
 			soajs.inputmaskData = {
@@ -120,15 +105,15 @@ describe("testing helper git.js", function () {
 				done();
 			});
 		});
-
+		
 	});
-
+	
 	describe("extractAPIsList", function () {
 		var output;
 		beforeEach(() => {
-
+			
 		});
-
+		
 		it("Success new style", function (done) {
 			var schema = {
 				commonFields: {},
@@ -152,7 +137,7 @@ describe("testing helper git.js", function () {
 			helpers.extractAPIsList(schema);
 			done();
 		});
-
+		
 		it("Success old style", function (done) {
 			var schema = {
 				'/one': {
@@ -168,13 +153,13 @@ describe("testing helper git.js", function () {
 		});
 		
 	});
-
+	
 	describe("validateFileContents", function () {
 		var output;
 		beforeEach(() => {
-
+			
 		});
-
+		
 		it("Fail. no type", function (done) {
 			var repoConfig = {
 				serviceGroup: "test",
@@ -184,13 +169,13 @@ describe("testing helper git.js", function () {
 				main: 'index.js',
 				prerequisites: {},
 				schema: {}
-
+				
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-
+		
 		it("Success service", function (done) {
 			var repoConfig = {
 				type: 'service',
@@ -221,13 +206,13 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-
+				
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-
+		
 		it("Success daemon", function (done) {
 			var repoConfig = {
 				type: 'daemon',
@@ -258,92 +243,19 @@ describe("testing helper git.js", function () {
 						}
 					}
 				}
-
+				
 			};
 			helpers.validateFileContents(req, res, repoConfig, function () {
 				done();
 			});
 		});
-
-		it("Success static", function (done) {
-			var repoConfig = {
-				type: 'static',
-				name: "test",
-				serviceVersion: 1,
-				servicePort: 3001,
-				requestTimeout: 30,
-				requestTimeoutRenewal: 5,
-				extKeyRequired: true,
-				main: 'index.js',
-				prerequisites: {},
-				schema: {
-					commonFields: {},
-					get: {
-						'/one': {
-							_apiInfo: {
-								l: 'label',
-								group: 'group',
-								groupMain: true
-							}
-						}
-					},
-					post: {
-						'/one': {
-							_apiInfo: {
-								l: 'label'
-							}
-						}
-					}
-				}
-
-			};
-			helpers.validateFileContents(req, res, repoConfig, function () {
-				done();
-			});
-		});
-
-		it("Fail static", function (done) {
-			var repoConfig = {
-				type: 'static',
-				serviceVersion: 1,
-				servicePort: 3001,
-				requestTimeout: 30,
-				requestTimeoutRenewal: 5,
-				extKeyRequired: true,
-				main: 'index.js',
-				prerequisites: {},
-				schema: {
-					commonFields: {},
-					get: {
-						'/one': {
-							_apiInfo: {
-								l: 'label',
-								group: 'group',
-								groupMain: true
-							}
-						}
-					},
-					post: {
-						'/one': {
-							_apiInfo: {
-								l: 'label'
-							}
-						}
-					}
-				}
-
-			};
-			helpers.validateFileContents(req, res, repoConfig, function () {
-				done();
-			});
-		});
-
+		
 	});
-
+	
 	describe("buildDeployerOptions", function () {
 		var output;
 		beforeEach(() => {
-
+			
 		});
 		var envRecord = {
 			_id: '',
@@ -394,7 +306,7 @@ describe("testing helper git.js", function () {
 			assert.ok(options.deployerConfig);
 			done();
 		});
-
+		
 	});
-
+	
 });

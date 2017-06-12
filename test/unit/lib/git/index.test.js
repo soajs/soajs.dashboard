@@ -150,12 +150,6 @@ var gitModel = {
 							contentName: 'sampledaemonsuccess1',
 							path: '/sample3/config.js',
 							sha: '1d4e3a0628618265b73d609b154f263837eb820f'
-						},
-						{
-							contentType: 'static',
-							contentName: 'sampletest4',
-							path: '/sample4/config.js',
-							sha: 'd0f80dc4fe46d354035cb95b317feac69b83b876'
 						}
 					]
 				}
@@ -403,59 +397,6 @@ describe("testing git.js", function () {
 			});
 		});
 		
-		it("success - will get Branches for static", function (done) {
-			gitModel.getAccount = function (soajs, model, options, cb) {
-				var accountRecord = {
-					"label": "Test personal public Account",
-					"owner": "soajsTestAccount",
-					"provider": "github",
-					"domain": "github.com",
-					"type": "personal",
-					"access": "public",
-					"token": "123",
-					repos: [
-						{
-							"name": "owner/repo",
-							"type": "service",
-							"configBranch": "master",
-							"configSHA": "df650c9da0f19d4f2b1fbc86f3924c54f2d7da1b"
-						}
-					]
-				};
-				return cb(null, accountRecord);
-			};
-			var record1 = {
-				src: {
-					owner: "unittest",
-					repo: "unittest"
-				}
-			};
-			var record2 = {
-				token: "abc",
-				provider: "github"
-			};
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				if (opts.conditions) {
-					if (opts.conditions.name === 'SampleTest4') {
-						return cb(null, record1);
-					}
-					else {
-						return cb(null, record2);
-					}
-				}
-				cb(null, {});
-			};
-			req.soajs.inputmaskData = {
-				"id": '592be42296fe4eac1ccab1be',
-				"name": "SampleTest4",
-				"type": "static"
-			};
-			
-			lib.getBranches(config, req, gitDriver, helpers, gitModel, function (error, body) {
-				assert.ok(body);
-				done();
-			});
-		});
 	});
 
 	describe("testing deactivateRepo", function () {
@@ -501,12 +442,6 @@ describe("testing git.js", function () {
 									contentName: 'sampledaemonsuccess1',
 									path: '/sample3/config.js',
 									sha: '1d4e3a0628618265b73d609b154f263837eb820f'
-								},
-								{
-									contentType: 'static',
-									contentName: 'sampletest4',
-									path: '/sample4/config.js',
-									sha: 'd0f80dc4fe46d354035cb95b317feac69b83b876'
 								}
 							]
 						}
@@ -667,12 +602,6 @@ describe("testing git.js", function () {
 								contentName: 'sampledaemonsuccess1',
 								path: '/sample3/config.js',
 								sha: '1d4e3a0628618265b73d609b154f263837eb820f'
-							},
-							{
-								contentType: 'static',
-								contentName: 'sampletest4',
-								path: '/sample4/config.js',
-								sha: 'd0f80dc4fe46d354035cb95b317feac69b83b876'
 							}
 						]
 					}
@@ -754,12 +683,6 @@ describe("testing git.js", function () {
 								contentName: 'sampledaemonsuccess1',
 								path: '/sample3/config.js',
 								sha: '1d4e3a0628618265b73d609b154f263837eb820f'
-							},
-							{
-								contentType: 'static',
-								contentName: 'sampletest4',
-								path: '/sample4/config.js',
-								sha: 'd0f80dc4fe46d354035cb95b317feac69b83b876'
 							}
 						]
 					}
