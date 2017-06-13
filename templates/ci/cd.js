@@ -73,12 +73,22 @@ var utils = {
         params.headers = {
             "key" : authKey,
             "Content-Type": "application/json"
-        }
+        };
+
+        params.json = true;
 
         try {
             config = require("./config.js");
-        }catch(e) {
-            console.log("Could not find a config file. Disregarding checks for services.");
+        }
+        catch(e) {
+            console.log("Could not find a config.js file, searching for custom config file [soa.js] ...");
+
+            try {
+                config = require('./soa.js');
+            }
+            catch(e) {
+                throw new Error(e);
+            }
         }
 
         params.body = {
@@ -119,6 +129,10 @@ var utils = {
 
 
 utils.init(function(err,response,body){
-
+    if (err) {
+        console.log(JSON.stringify (err, null, 2));
+    }
+    else {
+        console.log(JSON.stringify (body, null, 2));
+    }
 });
-
