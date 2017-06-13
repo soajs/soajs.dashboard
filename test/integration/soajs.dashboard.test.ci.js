@@ -89,20 +89,6 @@ describe("DASHBOARD TESTS: Continuous integration", function () {
 		})
 	});
 
-	it.skip("Success - get config", function (done) {
-		var params = {
-			"qs": {
-				"port": 80
-			}
-		};
-
-		executeMyRequest(params, 'ci', 'get', function (body) {
-			assert.ok(body.result);
-			repoToUse = body.data.list[0];
-			done();
-		});
-	});
-
 	it("Success - download recipe", function (done) {
 		var options = {
 			uri: 'http://localhost:4000/dashboard/ci/download',
