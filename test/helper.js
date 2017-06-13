@@ -22,6 +22,9 @@ module.exports = {
 		deployService: function (options, cb) {
 			return cb(null, {});
 		},
+        findService: function (options, cb) {
+            return cb(null, {});
+        },
 		deleteNameSpace: function (options, cb) {
 			return cb(null, true);
 		},
