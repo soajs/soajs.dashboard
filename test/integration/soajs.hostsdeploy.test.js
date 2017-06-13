@@ -484,7 +484,6 @@ describe("testing hosts deployment", function () {
 			};
 
 			executeMyRequest(params, "cloud/services/soajs/deploy", "post", function (body) {
-				console.log(body);
 				assert.ok(body.result);
 				assert.ok(body.data);
 				done();
@@ -1046,15 +1045,5 @@ describe("testing hosts deployment", function () {
 			});
 		});
 	});
-
-	describe("testing kubernetes namespaces", function () {
-		
-		after("reset dashboard env deployer type to container", function (done) {
-			mongo.update("environment", { code: "DASHBOARD" }, { $set: { "deployer.type": "container" } }, function (error) {
-				assert.ifError(error);
-				done();
-			});
-		});
-
-	});
+	
 });

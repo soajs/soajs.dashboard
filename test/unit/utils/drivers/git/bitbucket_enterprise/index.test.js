@@ -11,7 +11,9 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 		// data.checkIfAccountExists
 		getAccount: function (soajs, model, options, cb) {
 			var accountRecord = {
-				repos: []
+				repos: [],
+				token : "123456",
+				domain : "org"
 			};
 			return cb(null, accountRecord);
 		},
@@ -29,7 +31,10 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	var options = {
 		owner: '123',
 		password: '123',
-		accountRecord: {},
+		accountRecord: {
+			token : "123456",
+			domain : "org"
+		},
 		tokenInfo: {},
 		provider: 'bitbucket_enterprise'
 	};
@@ -115,7 +120,7 @@ describe("testing git/bitbucket_enterprise index.js", function () {
 	
 	describe("testing getJSONContent", function () {
 		it("Success", function (done) {
-			options.path = '';
+			options.path = '/-/>??.??';
 			driverHelper.getRepoContent = function (options, client, cb) {
 				var content = {
 					lines: [{
