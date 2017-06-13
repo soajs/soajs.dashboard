@@ -309,8 +309,6 @@ describe("testing services.js", function () {
 			};
 			req.soajs.inputmaskData = {};
 			cd.getUpdates(config, req, deployer, helpers, {}, function (error, body) {
-				console.log(error);
-				console.log(body);
 				assert.ok(body);
 				done();
 			});

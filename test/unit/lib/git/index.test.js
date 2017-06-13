@@ -636,27 +636,27 @@ describe("testing git.js", function () {
             });
         });
 
-    });
+	});
 
-    describe("testing syncRepo", function () {
-        var accountRecord = {
-            "label": "Test personal public Account",
-            "owner": "soajsTestAccount",
-            "provider": "github",
-            "domain": "github.com",
-            "type": "personal",
-            "access": "public",
-            repos: [
-                {
-                    "name": "owner/repo",
-                    "type": "service",
-                    "configBranch": "master",
-                    "configSHA": "df650c9da0f19d4f2b1fbc86f3924c54f2d7da1b"
-                }
-            ]
-        };
-        beforeEach(() => {
-            helpers = helper.requireModule('./lib/git/helper.js');
+	describe("testing syncRepo", function () {
+		var accountRecord = {
+			"label": "Test personal public Account",
+			"owner": "soajsTestAccount",
+			"provider": "github",
+			"domain": "github.com",
+			"type": "personal",
+			"access": "public",
+			repos: [
+				{
+					"name": "owner/repo",
+					"type": "service",
+					"configBranch": "master",
+					"configSHA": "df650c9da0f19d4f2b1fbc86f3924c54f2d7da1b"
+				}
+			]
+		};
+		beforeEach(() => {
+			helpers = helper.requireModule('./lib/git/helper.js');
 
             gitModel.getAccount = function (soajs, model, options, cb) {
                 return cb(null, accountRecord);

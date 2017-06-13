@@ -490,7 +490,8 @@ describe("testing deploy.js", function () {
 								}
 							}
 						}
-					}
+					},
+                    v:1
 				}
 			};
 			
@@ -538,8 +539,9 @@ describe("testing deploy.js", function () {
 				},
 				voluming: {}
 			};
-			
-			helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+
+
+            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
 				done();
 			});
 		});
@@ -562,6 +564,63 @@ describe("testing deploy.js", function () {
 				done();
 			});
 		});
-		
+
+        it("Success deployContainer with Kubernetes - null mode", function (done){
+            soajs.inputmaskData = {
+                custom: {
+                    env: {
+                        NEW_VAR: "123"
+                    }
+                },
+                deployConfig: {
+                    replication: {
+                        mode: ""
+                    },
+                    isKubernetes : true
+                }
+            };
+            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+                done();
+            });
+        });
+
+        it("Success deployContainer with Kubernetes - replicated mode", function (done){
+            soajs.inputmaskData = {
+                custom: {
+                    env: {
+                        NEW_VAR: "123"
+                    }
+                },
+                deployConfig: {
+                    replication: {
+                        mode: "replicated"
+                    },
+                    isKubernetes : true
+                }
+            };
+            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+                done();
+            });
+        });
+        it("Success deployContainer with Kubernetes - global mode", function (done){
+            soajs.inputmaskData = {
+                custom: {
+                    env: {
+                        NEW_VAR: "123"
+                    }
+                },
+                deployConfig: {
+                    replication: {
+                        mode: "global"
+                    },
+                    isKubernetes : true
+                }
+            };
+            helpers.deployContainer(config, context, soajs, deployer, BL, function (error, body) {
+                done();
+            });
+        });
+
+
 	});
 });

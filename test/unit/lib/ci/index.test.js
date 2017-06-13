@@ -241,7 +241,7 @@ describe("testing ci.js", function () {
 			});
 		});
 		
-		it.skip("saveConfig failed recipe", function (done) {
+		it("Failed recipe", function (done) {
 			var configData = {
 				"config": {
 					"driver": "travis",
@@ -424,36 +424,36 @@ describe("testing ci.js", function () {
 		
 	});
 	
-	describe.skip("testing downloadRecipe", function () {
-		
-		before(() => {
-		});
-		after(() => {
-		});
-		
-		it("Success downloadRecipe", function (done) {
-			mongoStub.findEntry = function (soajs, opts, cb) {
-				var rec = {
-					_id: 'ffddeec7d52b55',
-					driver: 'travis',
-					settings: {
-						domain: 'api.travis-ci.org',
-						owner: 'soajsTestAccount',
-						ciToken: '8ZXvX0MudBH'
-					},
-					recipe: 'sudo: required\nlanguage',
-					type: 'ci'
-				};
-				cb(null, rec);
-			};
-			req.soajs.inputmaskData = {
-				"port": 80
-			};
-			ci.downloadRecipe(config, req, ciDriver, function (error, body) {
-				assert.ok(body);
-				done();
-			});
-		});
-		
-	});
+	// describe("testing downloadRecipe", function () {
+	//	
+	// 	before(() => {
+	// 	});
+	// 	after(() => {
+	// 	});
+	//	
+	// 	it("Success downloadRecipe", function (done) {
+	// 		mongoStub.findEntry = function (soajs, opts, cb) {
+	// 			var rec = {
+	// 				_id: 'ffddeec7d52b55',
+	// 				driver: 'travis',
+	// 				settings: {
+	// 					domain: 'api.travis-ci.org',
+	// 					owner: 'soajsTestAccount',
+	// 					ciToken: '8ZXvX0MudBH'
+	// 				},
+	// 				recipe: 'sudo: required\nlanguage',
+	// 				type: 'ci'
+	// 			};
+	// 			cb(null, rec);
+	// 		};
+	// 		req.soajs.inputmaskData = {
+	// 			"port": 80
+	// 		};
+	// 		ci.downloadRecipe(config, req, ciDriver, function (error, body) {
+	// 			assert.ok(body);
+	// 			done();
+	// 		});
+	// 	});
+	//	
+	// });
 });
