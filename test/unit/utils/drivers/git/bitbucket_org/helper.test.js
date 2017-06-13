@@ -10,19 +10,49 @@ describe("testing git/bitbucket_org helper.js", function () {
 		provider: 'bitbucket_org'
 	};
 	
+	before(function(done){
+		// TODO - under construction
+		var nock = require("nock");
+		nock('https://api.bitbucket.org')
+			.get('/1.0/users/')
+			.query(true)
+			.reply(200, {"result": true, "data": {}});
+		
+		nock('https://bitbucket.org')
+			.post('/site/oauth2/access_token',"*")
+			.query(true)
+			.reply(200, {"result": true, "data": {"basePrice": 333, "discountedPrice": 333}});
+		done();
+	});
+	
 	describe("testing checkUserRecord", function () {
 		it("Success", function (done) {
+			options.token = '123';
+			
 			driverHelper.checkUserRecord(options, function (error, body) {
 				// assert.ok(body);
+				delete options.token;
 				done();
 			});
 		});
 	});
 	
 	describe("testing getRepoBranches", function () {
-		it("Success", function (done) {
+		
+		it("Success without name", function (done) {
 			driverHelper.getRepoBranches(options, function (error, body) {
 				// assert.ok(body);
+				done();
+			});
+		});
+		
+		it("Success with name", function (done) {
+			options.token = '123';
+			options.name = 'test';
+			driverHelper.getRepoBranches(options, function (error, body) {
+				// assert.ok(body);
+				delete options.token;
+				delete options.name;
 				done();
 			});
 		});
@@ -38,8 +68,10 @@ describe("testing git/bitbucket_org helper.js", function () {
 		
 		it("Success wth token", function (done) {
 			options.token = '123';
+			
 			driverHelper.getAllRepos(options, function (error, body) {
 				// assert.ok(body);
+				delete options.token;
 				done();
 			});
 		});
@@ -65,8 +97,9 @@ describe("testing git/bitbucket_org helper.js", function () {
 	
 	describe("testing checkAuthToken", function () {
 		// soajs, options, model, accountRecord,
+		
 		var accountRecord = {};
-		it("Success generate", function (done) {
+		it.skip("Success generate", function (done) {
 			options.action = 'generate';
 			options.tokenInfo = {};
 			driverHelper.checkAuthToken(soajs, options, model, accountRecord, function (error, body) {
@@ -78,9 +111,11 @@ describe("testing git/bitbucket_org helper.js", function () {
 		it("Success refresh", function (done) {
 			options.action = 'refresh';
 			options.tokenInfo = {
+				refresh_token : '1234',
 				created: 700000,
 				expires_in: 1234522
 			};
+			
 			driverHelper.checkAuthToken(soajs, options, model, accountRecord, function (error, body) {
 				// assert.ok(body);
 				done();
@@ -91,8 +126,10 @@ describe("testing git/bitbucket_org helper.js", function () {
 	describe("testing getRepoContent", function () {
 		it("Success", function (done) {
 			options.path = '';
+			options.token = '123';
 			driverHelper.getRepoContent(options, function (error, body) {
 				// assert.ok(body);
+				delete options.token;
 				done();
 			});
 		});
