@@ -103,30 +103,6 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 			submitLabel = "Update";
 		}
 
-		formConfig.entries[0].onAction = function (id, data, form) {
-			if ($scope.ciData.settings && Object.keys($scope.ciData.settings).length > 0) {
-				if (data !== $scope.ciData.settings.driver) {
-					form.formData.domain = '';
-					form.formData.owner = '';
-					form.formData.gitToken = '';
-				}
-				else {
-					form.formData.domain = $scope.ciData.settings.settings.domain;
-					form.formData.owner = $scope.ciData.settings.settings.owner;
-					form.formData.gitToken = $scope.ciData.settings.settings.gitToken;
-				}
-			}
-			else {
-				form.formData.domain = '';
-				form.formData.owner = '';
-				form.formData.gitToken = '';
-
-				if (data === 'travis') {
-					form.formData.domain = "api.travis-ci.org";
-				}
-			}
-		};
-
 		var options = {
 			timeout: $timeout,
 			form: formConfig,
