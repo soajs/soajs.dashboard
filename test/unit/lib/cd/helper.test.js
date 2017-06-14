@@ -41,7 +41,7 @@ var deployer = {
 var BL = {
 	model: mongoStub
 };
-describe("testing helper cd.js", function () {
+describe("testing helper soajs.cd.js", function () {
 	var soajs = {
 		registry: {
 			coreDB: {
@@ -50,13 +50,13 @@ describe("testing helper cd.js", function () {
 		},
 		log: {
 			debug: function (data) {
-				
+
 			},
 			error: function (data) {
-				
+
 			},
 			info: function (data) {
-				
+
 			}
 		},
 		inputmaskData: {},
@@ -105,7 +105,7 @@ describe("testing helper cd.js", function () {
 	};
 	describe("processOneService", function () {
 		beforeEach(() => {
-			
+
 		});
 		var oneService = {
 			serviceVersion: 1,
@@ -127,12 +127,12 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("checkRecordConfig", function () {
 		beforeEach(() => {
-			
+
 		});
 
 		it("Fail", function (done) {
@@ -523,10 +523,10 @@ describe("testing helper cd.js", function () {
 			});
 		});
 	});
-	
+
 	describe("getEnvsServices", function () {
 		beforeEach(() => {
-			
+
 		});
 		var envs = [
 			envRecord
@@ -546,14 +546,14 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("doesServiceHaveUpdates", function () {
 		beforeEach(() => {
-			
+
 		});
-		
+
 		it("Fail 1", function (done) {
 			var updateList = [];
 			var oneService = {};
@@ -563,7 +563,7 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Fail 2", function (done) {
 			var updateList = [];
 			var oneService = {
@@ -582,7 +582,7 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Fail 3", function (done) {
 			req.soajs.inputmaskData = {
 				env: 'dev'
@@ -605,7 +605,7 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success doesServiceHaveUpdates", function (done) {
 			req.soajs.inputmaskData = {
 				env: 'dev'
@@ -672,7 +672,7 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 		it("Success doesServiceHaveUpdates with v", function (done) {
 			nock('http://my.docker.com')
 				.get('/')
@@ -688,7 +688,7 @@ describe("testing helper cd.js", function () {
 						}
 					]
 				});
-			
+
 			req.soajs.inputmaskData = {
 				env: 'dev'
 			};
@@ -755,22 +755,22 @@ describe("testing helper cd.js", function () {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("getLatestSOAJSImageInfo", function () {
 		beforeEach(() => {
-			
+
 		});
-		
+
 		it("Success getLatestSOAJSImageInfo", function (done) {
 			helpers.getLatestSOAJSImageInfo(config, function (error, body) {
 				done();
 			});
 		});
-		
+
 	});
-	
+
 	describe("getServices", function () {
 		var cloudServices = {
 			init: function (modelName, cb) {
@@ -834,5 +834,5 @@ describe("testing helper cd.js", function () {
 	// 		});
 	// 	});
 	// });
-	
+
 });
