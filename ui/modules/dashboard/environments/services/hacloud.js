@@ -27,6 +27,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 					}
 					else {
 						if (response && response.length > 0) {
+                            currentScope.rawServicesResponse = angular.copy(response);
 							currentScope.hosts = {
 								'soajs': {
 									"label": "SOAJS"
