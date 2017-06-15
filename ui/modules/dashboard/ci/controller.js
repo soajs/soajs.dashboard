@@ -11,7 +11,9 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 
 	$scope.travisImagePath = "./themes/" + themeToUse + "/img/travis_logo.png";
 	$scope.droneImagePath = "./themes/" + themeToUse + "/img/drone_logo.png";
-
+	$scope.jenkinsImagePath = "./themes/" + themeToUse + "/img/jenkins_logo.png";
+	$scope.teamCityImagePath = "./themes/" + themeToUse + "/img/teamcity_logo.png";
+	
 	$scope.checkRecipe = function () {
 		overlayLoading.show();
 		getSendDataFromServer($scope, ngDataApi, {
@@ -136,6 +138,7 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 						}, function (error, response) {
 							if (error) {
 								$scope.form.displayAlert('danger', error.message);
+								overlayLoading.hide();
 							}
 							else {
 								$scope.modalInstance.close();

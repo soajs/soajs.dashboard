@@ -1,0 +1,14 @@
+malformed: "malformed"
+info:
+  description: SOAJS
+  version: 1.0.0
+  malformed
+-     malformed:malformed
+-      "malformed/malformed malformed malformed malformed"
+produces:
+- "application/json"
+definitions:
+  malformed: object
+    malformed malformed malformed: integer
+      malformed malformed weessage:
+        type: string
