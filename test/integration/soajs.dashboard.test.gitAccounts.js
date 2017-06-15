@@ -349,7 +349,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					};
 					mongo.insert("services", srv, function (error) {
 						executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-							assert.equal(body.result, false);
+							assert.ok(body.result);
 							//assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
 							mongo.remove('services', {'name': 'testService'}, function (error) {
 								assert.ifError(error);
@@ -448,7 +448,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					};
 					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
 						assert.ok(body);
-						//assert.ok(body.data);
+						assert.ok(body.data);
 						done();
 					});
 				});
@@ -483,169 +483,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
 						assert.ok(body);
 						// assert.deepEqual(body.errors.details[0], {"code": 759, "message": errorCodes[759]});
-						done();
-					});
-				});
-
-			});
-
-			describe("repo sync tests", function () {
-
-				it("success - will sync repo - no change", function (done) {
-					console.log('usernamePersonal', usernamePersonal);
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							"provider": "github",
-							owner: usernamePersonal,
-							repo: repoSingleSuccess
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
-				
-				it("success - will sync multi repo - change", function (done) {
-
-					mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-						assert.ok(record);
-						assert.ok(record.repos);
-						record.repos.forEach(function (repo) {
-							if (repo.name === usernamePersonal + '/' + repoMultiSuccess) {
-								repo.configSHA.forEach(function (service) {
-									service.sha = '6cbeae3ed88e9e3296e05fd52a48533ba53c0931';
-								});
-							}
-						});
-						mongo.save("git_accounts", record, function (error) {
-							assert.ifError(error);
-							var params = {
-								qs: {
-									"id": gitAccId
-								},
-								form: {
-									"provider": "github",
-									owner: usernamePersonal,
-									repo: repoMultiSuccess
-								}
-							};
-							executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-								assert.ok(body);
-								//assert.ok(body.data);
-								done();
-							});
-						});
-
-					});
-
-				});
-
-				it("fail - out of sync repo", function (done) {
-					var serviceName = 'sampleSuccessSingle';
-					mongo.update("services", {'name': serviceName}, {
-						"$set": {
-							"port": 9000
-						}
-					}, function (error) {
-						assert.ifError(error);
-
-						mongo.findOne('git_accounts', {'owner': usernamePersonal}, function (error, record) {
-							assert.ok(record);
-							assert.ok(record.repos);
-							record.repos.forEach(function (repo) {
-								if (repo.name === usernamePersonal + '/' + repoSingleSuccess) {
-									repo.configSHA = '911837a2e79e0f7c9e6ff288326c38dbac1bf021';
-								}
-							});
-							mongo.save("git_accounts", record, function (error) {
-								assert.ifError(error);
-								var params = {
-									qs: {
-										"id": gitAccId
-									},
-									form: {
-										"provider": "github",
-										owner: usernamePersonal,
-										repo: repoSingleSuccess
-									}
-								};
-								executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-									assert.ok(body);
-									// assert.equal(body.data.status, 'outOfSync');
-									done();
-								});
-							});
-
-						});
-
-					});
-
-				});
-
-			});
-
-			describe("repo deactivate tests", function () {
-
-				it("success - will deactivate single repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoSingleSuccess
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will deactivate multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoMultiSuccess
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will deactivate static repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoStaticContent
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will deactivate daemon repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId,
-							owner: usernamePersonal,
-							repo: repoSingleDaemon
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
 						done();
 					});
 				});
@@ -712,6 +549,7 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				done();
 			});
 		});
+
 		it("fail - wrong file path", function(done){
 			var params = {
 				qs: {
@@ -839,55 +677,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 
 			});
 
-			describe("repo sync tests", function () {
-
-				it("success - will sync repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							"provider": "github",
-							owner: usernamePersonal,
-							repo: repoSingleSuccess
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
-
-			});
-
-			describe("repo deactivate tests", function () {
-
-				it("fail - deactivate multi repo", function (done) {
-					var host = {
-						env: "dev",
-						name: "sampleSuccess1",
-						ip: "127.0.0.1",
-						version: 1
-					};
-					mongo.insert("hosts", host, function (error) {
-						var params = {
-							qs: {
-								"id": gitAccId,
-								owner: usernamePersonal,
-								repo: repoMultiSuccess
-							}
-						};
-						executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-							debugLog(body);
-							assert.ok(body);
-							//assert.equal(body.errors.codes[0], 766);
-							mongo.remove("hosts", {name: "sampleSuccess1"}, function (error) {
-								done();
-							});
-						});
-					});
-				});
-			});
 		});
 	});
 
@@ -949,25 +738,6 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 						done();
 					});
 				});
-			});
-
-			describe("repo deactivate tests", function () {
-
-				it("fail - cannot deactivate urac repo - running service", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId,
-							owner: orgName,
-							repo: 'soajs.urac'
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
-						assert.ok(body);
-						//assert.deepEqual(body.errors.details[0], {"code": 766, "message": errorCodes[766]});
-						done();
-					});
-				});
-
 			});
 
 		});

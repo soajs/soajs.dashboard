@@ -19,8 +19,71 @@ var mongoStub = {
 	},
 	saveEntry: function (soajs, opts, cb) {
 		cb(null, true);
+	},
+	countEntries: function (soajs, opts, cb) {
+		cb(null, 0);
 	}
 };
+var gitDriver = {
+	logout: function (soajs, gitModel, model, options, cb) {
+		return cb(null);
+	},
+	login: function (soajs, gitModel, model, record, cb) {
+		return cb(null);
+	},
+	getAnyContent: function (soajs, gitModel, model, options, cb) {
+		return cb(null, {});
+	},
+	getJSONContent: function (soajs, gitModel, model, obj, cb) {
+		var repoConfig = {
+			type: ''
+		};
+		if (obj.accountId === '123multi' && obj.path === '/config.js') {
+			repoConfig = {
+				type: 'multi',
+				folders: [
+					'/sample2', '/sample3', 'sample4'
+				]
+			};
+		}
+		var configSHA = 'hash';
+		cb(null, repoConfig, configSHA);
+	},
+	getRepos: function (soajs, data, model, options, cb) {
+		var repos = [
+			{
+				id: 55780678,
+				name: 'deployDemo',
+				full_name: 'soajsTestAccount/deployDemo',
+				owner: {}
+			},
+			{
+				id: 5578067811,
+				name: 'deployDemo11',
+				full_name: 'soajsTestAccount/deployDemo11',
+				owner: {
+					type: 'Organization'
+				}
+			}
+		];
+		return cb(null, repos);
+	},
+	getBranches: function (soajs, data, model, options, cb) {
+		var branches = {
+			"branches": [
+				{
+					"name": "master",
+					"commit": {
+						"sha": "16e67b49a590d061d8a518b16360f387118f1475",
+						"url": "https://api.github.com/repos/soajsTestAccount/testMulti/commits/16e67b49a590d061d8a518b16360f387118f1475"
+					}
+				}
+			]
+		};
+		return cb(null, branches);
+	}
+};
+var gitModel = {};
 
 describe("testing helper git.js", function () {
 	var soajs = {
@@ -41,12 +104,65 @@ describe("testing helper git.js", function () {
 	};
 	var res = {};
 	
+	describe("getCustomRepoFiles", function () {
+		beforeEach(() => {
+		});
+		it("Fail 1: soa.js", function (done) {
+			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
+				var error = {
+					reason: 'soa.js'
+				};
+				cb(error);
+			};
+			soajs.inputmaskData = {};
+			// options.gitConfig.provider
+			var options = {
+				gitConfig: {
+					provider: 'github'
+				},
+				gitModel: gitModel,
+				git: gitDriver,
+				model: mongoStub
+			};
+			helpers.getCustomRepoFiles(options, req, function (error, body) {
+				done();
+			});
+		});
+		
+		it("Fail 2: swagger.yml", function (done) {
+			gitDriver.getAnyContent = function (soajs, gitModel, model, options, cb) {
+				var error = {
+					reason: 'swagger.yml'
+				};
+				return cb(error);
+			};
+			
+			gitDriver.getJSONContent = function (soajs, gitModel, model, obj, cb) {
+				var repoConfig = {};
+				cb(null, repoConfig);
+			};
+			soajs.inputmaskData = {};
+			// options.gitConfig.provider
+			var options = {
+				gitConfig: {
+					provider: 'github'
+				},
+				gitModel: gitModel,
+				git: gitDriver,
+				model: mongoStub
+			};
+			helpers.getCustomRepoFiles(options, req, function (error, body) {
+				done();
+			});
+		});
+	});
+	
 	describe("comparePaths", function () {
 		beforeEach(() => {
 		});
 		var remote = [];
 		var local = [];
-		it("Test 1: will remove", function (done) {
+		it("Success: will remove", function (done) {
 			remote = ['/sample1', '/sample2', '/sample3', '/sample4'];
 			local = [
 				{
@@ -73,7 +189,7 @@ describe("testing helper git.js", function () {
 			});
 		});
 		
-		it("Test 2: will sync", function (done) {
+		it("Success: will sync", function (done) {
 			remote = ['/sample1', '/sample2', '/sample3', '/sample4'];
 			local = [
 				{
@@ -109,7 +225,6 @@ describe("testing helper git.js", function () {
 	});
 	
 	describe("extractAPIsList", function () {
-		var output;
 		beforeEach(() => {
 			
 		});
@@ -155,12 +270,10 @@ describe("testing helper git.js", function () {
 	});
 	
 	describe("validateFileContents", function () {
-		var output;
 		beforeEach(() => {
 			
 		});
-		
-		it("Fail. no type", function (done) {
+		it("No type", function (done) {
 			var repoConfig = {
 				serviceGroup: "test",
 				serviceVersion: 1,
@@ -252,8 +365,135 @@ describe("testing helper git.js", function () {
 		
 	});
 	
+	describe("analyzeConfigSyncFile", function () {
+		var path;
+		var configSHA = {};
+		var flags;
+		before(() => {
+			soajs.data = {
+				repoType: "",
+				repoContentTypes: {}
+			};
+		});
+		it("Fail. no type", function (done) {
+			var repoConfig = {
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {}
+				
+			};
+			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
+				done();
+			});
+		});
+		
+		it("Success service", function (done) {
+			var repoConfig = {
+				type: 'service',
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				requestTimeoutRenewal: 5,
+				extKeyRequired: true,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {
+					commonFields: {},
+					get: {
+						'/one': {
+							_apiInfo: {
+								l: 'label',
+								group: 'group',
+								groupMain: true
+							}
+						}
+					},
+					post: {
+						'/one': {
+							_apiInfo: {
+								l: 'label'
+							}
+						}
+					}
+				}
+				
+			};
+			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
+				done();
+			});
+		});
+		
+		it("Success daemon", function (done) {
+			var repoConfig = {
+				type: 'daemon',
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				requestTimeoutRenewal: 5,
+				extKeyRequired: true,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {
+					commonFields: {},
+					get: {
+						'/one': {
+							_apiInfo: {
+								l: 'label',
+								group: 'group',
+								groupMain: true
+							}
+						}
+					},
+					post: {
+						'/one': {
+							_apiInfo: {
+								l: 'label'
+							}
+						}
+					}
+				}
+				
+			};
+			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
+				done();
+			});
+		});
+		
+		it("Success Multi", function (done) {
+			var repoConfig = {
+				type: 'multi',
+				folders: []
+				
+			};
+			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
+				done();
+			});
+		});
+
+		it("Fail Multi", function (done) {
+			var repoConfig = {
+				type: 'multi',
+				folders: []
+			};
+			soajs.data = {
+				repoType: "mutli",
+				repoContentTypes: {
+					urac: 'service'
+				}
+			};
+			helpers.analyzeConfigSyncFile(req, repoConfig, path, configSHA, flags, function () {
+				done();
+			});
+		});
+	});
+	
 	describe("buildDeployerOptions", function () {
-		var output;
 		beforeEach(() => {
 			
 		});
@@ -306,6 +546,194 @@ describe("testing helper git.js", function () {
 			done();
 		});
 		
+	});
+
+	describe("getServiceInfo", function () {
+		var path;
+		var flags;
+		var provider = 'github';
+		beforeEach(() => {
+
+		});
+		it("No type", function (done) {
+			var repoConfig = {
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {}
+			};
+			helpers.getServiceInfo(req, repoConfig, path, flags, provider);
+			done();
+		});
+
+		it("Success service", function (done) {
+			var repoConfig = {
+				type: 'service',
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				requestTimeoutRenewal: 5,
+				extKeyRequired: true,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {
+					commonFields: {},
+					get: {
+						'/one': {
+							_apiInfo: {
+								l: 'label',
+								group: 'group',
+								groupMain: true
+							}
+						}
+					},
+					post: {
+						'/one': {
+							_apiInfo: {
+								l: 'label'
+							}
+						}
+					}
+				}
+
+			};
+			helpers.getServiceInfo(req, repoConfig, path, flags, provider);
+			done();
+		});
+
+		it("Success daemon", function (done) {
+			var repoConfig = {
+				type: 'daemon',
+				serviceGroup: "test",
+				serviceVersion: 1,
+				servicePort: 3001,
+				requestTimeout: 30,
+				requestTimeoutRenewal: 5,
+				extKeyRequired: true,
+				main: 'index.js',
+				prerequisites: {},
+				schema: {
+					commonFields: {},
+					get: {
+						'/one': {
+							_apiInfo: {
+								l: 'label',
+								group: 'group',
+								groupMain: true
+							}
+						}
+					},
+					post: {
+						'/one': {
+							_apiInfo: {
+								l: 'label'
+							}
+						}
+					}
+				}
+
+			};
+			helpers.getServiceInfo(req, repoConfig, path, flags, provider);
+			done();
+		});
+
+	});
+
+	describe("checkCanAdd", function () {
+		var type;
+		var info = {
+			name: 'name'
+		};
+		before(() => {
+			mongoStub.countEntries = function (soajs, opts, cb) {
+				cb(null, 1);
+			}
+		});
+		// model, soajs, type, info, flags, cb
+		it("No type", function (done) {
+			type = 'none';
+			helpers.checkCanAdd(mongoStub, soajs, type, info, function () {
+				done();
+			});
+		});
+
+		it("Success service", function (done) {
+			type = 'service';
+			helpers.checkCanAdd(mongoStub, soajs, type, info, function () {
+				done();
+			});
+		});
+
+		it("Success daemon", function (done) {
+			type = 'daemon';
+			helpers.checkCanAdd(mongoStub, soajs, type, info, function () {
+				done();
+			});
+		});
+
+	});
+
+	describe("checkCanSync", function () {
+		var type;
+		var info = {
+			name: 'name'
+		};
+		var flags;
+		before(() => {
+			mongoStub.countEntries = function (soajs, opts, cb) {
+				cb(null, 1);
+			}
+		});
+		// model, soajs, type, info, flags, cb
+		it("Fail. no type", function (done) {
+			helpers.checkCanSync(mongoStub, soajs, type, info, flags, function () {
+				done();
+			});
+		});
+
+		it("Success service", function (done) {
+			type = 'service';
+			helpers.checkCanSync(mongoStub, soajs, type, info, flags, function () {
+				done();
+			});
+		});
+
+		it("Success daemon", function (done) {
+			type = 'daemon';
+			helpers.checkCanSync(mongoStub, soajs, type, info, flags, function () {
+				done();
+			});
+		});
+
+	});
+
+	describe("extractDaemonJobs", function () {
+		it("Success", function (done) {
+			var schema = {
+				"testJob": {
+					"l": "test Job"
+				}
+			};
+			helpers.extractDaemonJobs(schema);
+			done();
+		});
+
+	});
+
+	describe("cleanConfigDir", function () {
+		var options = {
+			repoConfigsFolder: 'path.js'
+		};
+		it("Success", function (done) {
+			helpers.cleanConfigDir(req, options, function () {
+				done();
+			});
+		});
+
 	});
 	
 });

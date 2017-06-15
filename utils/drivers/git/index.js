@@ -23,7 +23,7 @@ function getGitHelperDriver (config) {
 	var helper;
 	var path = __dirname + "/" + config.provider + "/helper.js";
 	try {
-		helper = require(__dirname + "/" + config.provider + "/helper.js");
+		helper = require(path);
 	}
 	catch (e) {
 		helper = null;
