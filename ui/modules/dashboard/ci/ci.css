@@ -1,5 +1,6 @@
 .provider-button {
     margin-left: 1% !important;
+    margin-bottom: 1% !important;
     width: 48% !important;
     height: 250px !important;
 }
@@ -63,4 +64,7 @@ div.infoTableContainer{
 
 .bottom-body-spacing{
     padding-bottom:5px;
+}
+.ci_logo {
+    height: 48%;
 }
