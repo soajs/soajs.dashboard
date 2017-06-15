@@ -3,12 +3,20 @@
 		<h3>Choose a provider to configure your CI</h3>
 		<br />
 		<button class="btn btn-default provider-button" type="button" ng-click="getRecipe('travis')">
-			<img ng-src="{{travisImagePath}}" alt="Travis Logo"/><br /><br />
+			<img class="ci_logo" ng-src="{{travisImagePath}}" alt="Travis Logo"/><br /><br />
 			<label>Travis - Test and Deploy with Confidence.</label>
-		</button>
-		<button class="btn btn-default provider-button" type="button" disabled>
-			<img ng-src="{{droneImagePath}}" alt="Drone Logo"/><br /><br />
+		</button><!--
+        --><button class="btn btn-default provider-button" type="button" disabled>
+			<img class="ci_logo" ng-src="{{droneImagePath}}" alt="Drone Logo"/><br /><br />
 			<label>Drone - An open source Continuous Integration server built on Docker.</label><br />
+			<label>Coming Soon!</label><!--
+        --></button><button class="btn btn-default provider-button" type="button" disabled>
+			<img class="ci_logo" ng-src="{{jenkinsImagePath}}" alt="Jenkins Logo"/><br /><br />
+			<label>Jenkins - An open source Automation Server</label><br />
+			<label>Coming Soon!</label><!--
+        --></button><button class="btn btn-default provider-button" type="button" disabled>
+			<img class="ci_logo" ng-src="{{teamCityImagePath}}" alt="TeamCity Logo"/><br /><br />
+			<label>TeamCity - A Java-based build management and Continuous integration server.</label><br />
 			<label>Coming Soon!</label>
 		</button>
 	</div>
