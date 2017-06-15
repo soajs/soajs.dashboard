@@ -287,7 +287,7 @@ var errors = {
 	"982": "Unable to update repository settings",
 
 	"983": "soa.js file does not exist or is not a valid soajs configuration file",
-	"984": "Unable to parse swagger.yml file",
+	"984": "Unable to parse yml file",
 	"985": "swagger.yml file validation failed",
 	"986": "Validation for output config.js file failed"
 };
