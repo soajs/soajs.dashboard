@@ -262,6 +262,54 @@ describe("testing ci.js", function () {
 			});
 		});
 		
+		it("Failed recipe - non object", function (done) {
+			var configData = {
+				"config": {
+					"driver": "travis",
+					"settings": {
+						"domain": "api.travis-ci.org",
+						"owner": "soajsTestAccount",
+						"gitToken": '11111'
+					},
+					"recipe": '"string"'
+				}
+			};
+			req.soajs.inputmaskData = {
+				config: configData.config
+			};
+			ci.saveConfig(config, req, ciDriver, function (error, body) {
+				assert.ok(error);
+				done();
+			});
+		});
+		
+		it("Failed recipe malformed data", function (done) {
+			var path = __dirname + "/../../../uploads/invalid.yml";
+			fs.readFile(path, { "encoding": "utf8" }, function (error, data) {
+				assert.ifError(error);
+				// assert.ok(data);
+				
+				var configData = {
+					"config": {
+						"driver": "travis",
+						"settings": {
+							"domain": "api.travis-ci.org",
+							"owner": "soajsTestAccount",
+							"gitToken": '11111'
+						},
+						"recipe": data
+					}
+				};
+				req.soajs.inputmaskData = {
+					config: configData.config
+				};
+				ci.saveConfig(config, req, ciDriver, function (error, body) {
+					assert.ok(error);
+					done();
+				});
+			});
+		});
+		
 	});
 	
 	describe("testing deleteConfig", function () {
