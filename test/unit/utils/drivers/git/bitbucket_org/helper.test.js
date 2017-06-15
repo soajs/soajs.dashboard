@@ -96,17 +96,14 @@ describe("testing git/bitbucket_org helper.js", function () {
 	});
 	
 	describe("testing checkAuthToken", function () {
-		// soajs, options, model, accountRecord,
-		
 		var accountRecord = {};
-		it.skip("Success generate", function (done) {
-			options.action = 'generate';
-			options.tokenInfo = {};
-			driverHelper.checkAuthToken(soajs, options, model, accountRecord, function (error, body) {
-				// assert.ok(body);
-				done();
-			});
-		});
+		// it.skip("Success generate", function (done) {
+		// 	options.action = 'generate';
+		// 	options.tokenInfo = {};
+		// 	driverHelper.checkAuthToken(soajs, options, model, accountRecord, function (error, body) {
+		// 		done();
+		// 	});
+		// });
 		
 		it("Success refresh", function (done) {
 			options.action = 'refresh';

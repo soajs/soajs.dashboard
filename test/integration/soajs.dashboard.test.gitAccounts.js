@@ -234,205 +234,11 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 				});
 			});
 
-			it("fail - get Branches wrong provider", function (done) {
-				var params = {
-					qs: {
-						"id": gitAccId,
-						"provider": "bitbucket",
-						"name": "soajsTestAccount/testMulti",
-						"type": "repo"
-					}
-				};
-				executeMyRequest(params, 'gitAccounts/getBranches', 'get', function (body) {
-					assert.ok(body);
-					// assert.ok(body.errors);
-					// assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
-					done();
-				});
-			});
-
 		});
 
 		describe("github repo tests", function () {
 
 			describe("repo activate tests", function () {
-
-				it("fail - will not activate repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoName1Fail,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
-
-				it("fail 2 - will not activate repo", function (done) {
-					// missing config info
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoName2Fail,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
-
-				it("fail 3 - will not activate repo", function (done) {
-					// Missing multi repository config data
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: 'test.MultiEmpty',
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.deepEqual(body.errors.details[0], {"code": 761, "message": errorCodes[761]});
-						done();
-					});
-				});
-
-				it("fail to activate personal multi repo", function (done) {
-					// inject service with port 3002
-					var srv = {
-						"name": "testService",
-						"port": 3002,
-						"requestTimeout": 30,
-						"requestTimeoutRenewal": 5,
-						"src": {
-							"provider": "github",
-							"owner": "ownerName",
-							"repo": "testRepoName"
-						},
-						"versions": {
-							"1": {
-								"extKeyRequired": true,
-								"apis": []
-							}
-						}
-					};
-
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoMultiSuccess,
-							configBranch: "master"
-						}
-					};
-					mongo.insert("services", srv, function (error) {
-						executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-							assert.ok(body.result);
-							//assert.deepEqual(body.errors.details[0], {"code": 762, "message": errorCodes[762]});
-							mongo.remove('services', {'name': 'testService'}, function (error) {
-								assert.ifError(error);
-								done();
-							});
-						});
-					});
-				});
-
-				it("fail - wrong provider", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "bitbucket",
-							owner: usernamePersonal,
-							repo: repoSingleSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body.errors);
-						//assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
-						done();
-					});
-				});
-
-				it("success - will activate single service repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoSingleSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will activate single static repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoStaticContent,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will activate single daemon repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoSingleDaemon,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
 
 				it("success - will activate multi repo", function (done) {
 					var params = {
@@ -487,6 +293,46 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 					});
 				});
 
+			});
+
+			describe("repo sync tests", function () {
+
+				it("success - will sync repo - no change", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId
+						},
+						form: {
+							"provider": "github",
+							owner: usernamePersonal,
+							repo: repoSingleSuccess
+						}
+					};
+					executeMyRequest(params, 'gitAccounts/repo/sync', 'put', function (body) {
+						assert.ok(body);
+						done();
+					});
+				});
+
+			});
+
+			describe("repo deactivate tests", function () {
+
+				it("success - will deactivate single repo", function (done) {
+					var params = {
+						qs: {
+							"id": gitAccId,
+							owner: usernamePersonal,
+							repo: repoSingleSuccess
+						}
+					};
+					executeMyRequest(params, 'gitAccounts/repo/deactivate', 'put', function (body) {
+						assert.ok(body);
+						//assert.ok(body.data);
+						done();
+					});
+				});
+				
 			});
 
 		});
@@ -614,133 +460,11 @@ describe("DASHBOARD Tests: Git Accounts", function () {
 			});
 
 		});
-
-		describe("github repo tests", function () {
-
-			describe("repo activate tests", function () {
-
-				it("success - will activate single repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoSingleSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will activate multi repo", function (done) {
-					var params = {
-						qs: {
-							"id": gitAccId
-						},
-						form: {
-							provider: "github",
-							owner: usernamePersonal,
-							repo: repoMultiSuccess,
-							configBranch: "master"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						debugLog(body);
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("fail - cant logout active acc", function (done) {
-					var params = {
-						qs: {
-							"username": usernamePersonal,
-							"password": passwordPersonal,
-							"id": gitAccId,
-							"provider": "github"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/logout', 'delete', function (body) {
-						assert.ok(body);
-						// assert.equal(body.result, false);
-						// assert.deepEqual(body.errors.details[0], {"code": 754, "message": errorCodes[754]});
-						done();
-					});
-				});
-
-			});
-
-		});
 	});
 
 	describe("organization public acc", function () {
 		var orgName = 'soajs';
 		var repoName = 'soajs.examples';
-
-		describe("repo tests", function () {
-
-			describe("repo activate and getRepos", function () {
-
-				it("success org - will activate repo", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId
-						},
-						form: {
-							provider: "github",
-							owner: orgName,
-							repo: repoName,
-							configBranch: "develop"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/repo/activate', 'post', function (body) {
-						assert.ok(body);
-						//assert.ok(body.data);
-						done();
-					});
-				});
-
-				it("success - will getRepos again", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId,
-							"page": 1,
-							"per_page": 50,
-							"provider": "github"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/getRepos', 'get', function (body) {
-						assert.ok(body);
-						done();
-					});
-				});
-
-				it("fail - getRepos wrong provider", function (done) {
-					var params = {
-						qs: {
-							"id": soajsAccId,
-							"page": 1,
-							"per_page": 50,
-							"provider": "bitbucket"
-						}
-					};
-					executeMyRequest(params, 'gitAccounts/getRepos', 'get', function (body) {
-						assert.ok(body);
-						// assert.ok(body.errors);
-						// assert.deepEqual(body.errors.details[0], {code: 778, message: errorCodes[778]});
-						done();
-					});
-				});
-			});
-
-		});
 
 		describe("login & logout", function () {
 			before(function (done) {
