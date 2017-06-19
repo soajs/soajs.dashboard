@@ -15,7 +15,7 @@ var ciNav = [
         'pillar': {
             'name': 'development',
             'label': translation.develop[LANG],
-            'position': 6
+            'position': 1
         },
         'mainMenu': true,
         'tracker': true,
