@@ -1776,7 +1776,7 @@ module.exports = {
                             "owner": {"required": true, "type": "string"},
                             "repo": {"required": true, "type": "string"},
                             "branch": {"required": true, "type": "string"},
-                            "commit": {"required": true, "type": "string"}
+                            "commit": {"required": false, "type": "string"}
                         }
                     }
                 },
