@@ -1979,7 +1979,7 @@ module.exports = {
 	                    "properties":{
                         	"pause":{"type":"boolean", "required": false}
 	                    },
-                        "patternProperties": {
+                        "additionalProperties": {
                             "^[a-zA-Z]{3,}$": {
                                 "type":"object",
                                 "required": true,
