@@ -1,5 +1,7 @@
 'use strict';
 var fs = require("fs");
+var crypto = require("crypto");
+
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var request = require('request');
@@ -161,6 +163,10 @@ var driver = {
 								var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
 								var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 								
+								var configSHA = options.repo + options.path;
+								var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+								configSHA = hash.update(configSHA).digest('hex');
+								
 								var fileInfo = {
 									configDirPath: configDirPath,
 									configFilePath: repoConfigsFolder + options.path,
@@ -181,7 +187,7 @@ var driver = {
 											soajs.log.error(e);
 										}
 										repoConfig = repoConfig || { "type" : "custom" };
-										return cb(null, repoConfig, '');
+										return cb(null, repoConfig, configSHA);
 									});
 								});
 							});

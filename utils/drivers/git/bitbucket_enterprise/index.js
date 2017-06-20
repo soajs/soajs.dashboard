@@ -1,5 +1,7 @@
 "use strict";
 var fs = require("fs");
+var crypto = require("crypto");
+
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
@@ -160,6 +162,8 @@ var driver = {
 						
 						// bitbucket Client returns no 'sha', use the path instead, its unique
 						var configSHA = options.repo + options.path;
+						var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+						configSHA = hash.update(configSHA).digest('hex');
 						
 						// bitbucket Client returns file content as an array of lines
 						// concatenate them in one string
