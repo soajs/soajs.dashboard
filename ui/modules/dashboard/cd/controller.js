@@ -49,12 +49,12 @@ cdApp.controller('cdAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 				}
 				delete $scope.configuration.pause;
 				for(var service in $scope.configuration){
-					if(service !== 'pause'){
+					if(['pause', 'deploy', 'options'].indexOf(service) === -1){
 						$scope.maxEntries++;
 						$scope.configuration[service].icon = 'minus';
 						$scope.configuration[service].versions = {};
 						for(var i in $scope.configuration[service]){
-							if(i !== 'branch' && i !== 'strategy' && i !== 'versions' && i !== 'icon'){
+							if (['branch', 'strategy', 'versions', 'icon', 'deploy', 'options'].indexOf(i) === -1) {
 								$scope.configuration[service].versions[i] = angular.copy($scope.configuration[service][i]);
 								delete $scope.configuration[service][i];
 							}

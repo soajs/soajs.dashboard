@@ -3,6 +3,9 @@
 		<tab heading="Updates {{updateCount}}" ng-click="getLedger()">
 			<br/>
 			<input ng-show="ledger && ledger.length > 0" type="button" class="btn btn-sm btn-primary" ng-confirm-click="Clicking this button means you have read all the ledger entries. Are you sure you want to proceed?" ng-click="readAll()" value="Mark All as Read"/>
+			<a href="" class="btn btn-sm btn-primary f-right" ng-click="getLedger()">
+				<span class="icon icon-loop2"></span> Refresh
+			</a>
 			<div class="grid" ng-show="ledger && ledger.length > 0">
 				<div class="table">
 					<div ng-repeat="oneEntry in ledger" ng-class="{'first': $first, 'last': $last, 'notread' : !oneEntry.read }" ng-class-odd="'odd'" ng-class-even="'even'" class="row w100 c-both">
