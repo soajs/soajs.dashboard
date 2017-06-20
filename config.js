@@ -2453,15 +2453,57 @@ module.exports = {
                         "oneOf":[
                             {
                             	"type": "object",
+								"additionalProperties": false,
 								"properties": {
                                     "id": {
                                         'required': true,
                                         'validation': {
                                             'type': 'string'
                                         }
-                                    }
+                                    },
+									"action": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
                                 }
                             },
+							{
+								"type": "object",
+								"properties": {
+                                    "env": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+									"serviceName": {
+										'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+									},
+									"serviceVersion": {
+										'required': false,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+									},
+									"id": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+									"action": {
+                                        'required': true,
+                                        'validation': {
+                                            'type': 'string'
+                                        }
+                                    },
+                                }
+							},
                             {
                                 "type": "object",
                                 "properties": {
@@ -2505,7 +2547,14 @@ module.exports = {
                             }
                         ]
                     }
-                }
+                },
+				"deployOptions": {
+					'required': false,
+					"source": ["body.deployOptions"],
+					'validation': {
+						'type': 'object'
+					}
+				}
             },
 
             "/environment/update": {

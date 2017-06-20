@@ -162,7 +162,6 @@ ciApp.controller('ciAppCtrl', ['$scope', '$timeout', '$modal', '$cookies', 'ngDa
 								$scope.form.displayAlert('danger', error.message);
 							}
 							else {
-								$scope.modalInstance.close();
 								$scope.form.displayAlert('success', 'Recipe Saved successfully');
 								$scope.form.formData = {};
 								$scope.checkRecipe();
