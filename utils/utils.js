@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-	
+
 	/**
 	 * Check if error is available and return it in response, else return callback function
 	 *
@@ -11,7 +11,6 @@ module.exports = {
 	 * @param {Callback Function} cb
 	 */
 	checkErrorReturn: function (soajs, mainCb, data, cb) {
-		soajs.log.info('check Error Return');
 		if (data.error) {
 			if (typeof (data.error) === 'object') {
 				soajs.log.error(data.error);
@@ -54,7 +53,7 @@ module.exports = {
         for (var i = 0; i < selected.length; i++) {
             envDeployer = envDeployer[selected[i]];
         }
-	    
+
         options.deployerConfig = envDeployer;
         options.soajs = { registry: soajs.registry };
         options.model = BL.model;
