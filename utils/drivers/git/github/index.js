@@ -170,9 +170,9 @@ var driver = {
 								repoConfig = require(fileInfo.configFilePath);
 							}
 							catch (e) {
-								return cb(e);
+								soajs.log.error(e);
 							}
-
+							repoConfig = repoConfig || { "type" : "custom" };
 							return cb(null, repoConfig, configSHA);
 						});
 					});

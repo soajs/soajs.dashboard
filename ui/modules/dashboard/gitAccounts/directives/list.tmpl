@@ -47,7 +47,7 @@
 						                <a href="" ng-if="access.deactivateRepo && repo.status" ng-click="deactivateRepo(account._id, repo)" ng-style="{'margin-top': '-19px'}" ng-confirm-click="Are you sure you want to deactivate this repository?">
 							                <span class="icon icon-cross" tooltip="{{translation.deactivate[LANG]}}"></span>
 						                </a>
-						                <a href="" ng-if="access.syncRepo && repo.status === 'active' && repo.type !== 'custom'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
+						                <a href="" ng-if="access.syncRepo && repo.status === 'active'" ng-click="syncRepo(account, repo)" ng-style="{'margin-top': '-19px'}">
 							                <span class="icon icon-loop2" tooltip="{{translation.sync[LANG]}}"></span>
 						                </a>
 						                <a href="" ng-if="repo.status" ng-click="configureRepo(repo)" ng-style="{'margin-top': '-19px'}">
@@ -83,12 +83,11 @@
                     <th>{{translation.type[LANG]}}</th>
                     <th>{{translation.link[LANG]}}</th>
                 </tr>
-                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'">
+                <tr ng-repeat="entry in added" ng-class-even="'even'" ng-class-odd="'odd'" ng-show="['service','daemon'].indexOf(entry.type) !== -1">
                     <td>{{entry.name}}</td>
                     <td>{{entry.type}}</td>
                     <td ng-if="entry.type === 'service'"><a href="#/services" ng-click="ok()">{{translation.link[LANG]}}</a></td>
                     <td ng-if="entry.type === 'daemon'"><a href="#/daemons" ng-click="ok()">{{translation.link[LANG]}}</a></td>
-                    <td ng-if="entry.type === 'static'"><a href="#/static-content" ng-click="ok()">{{translation.link[LANG]}}</a></td>
                 </tr>
                 </tbody>
             </table>

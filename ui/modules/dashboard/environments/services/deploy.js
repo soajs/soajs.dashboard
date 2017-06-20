@@ -874,14 +874,7 @@ deployService.service('deploySrv', ['ngDataApi', '$timeout', '$modal', function 
 
         //filter out service information that already exist
         function filterServiceInfo(service) {
-            var deployedServices = [];
-            var group = service.group;
-            if (group && group !== '') {
-                group = group.toLowerCase().replace(/\s+/g, '-').replace(/_/g, '-')
-            }
-            if (currentScope.hosts.soajs.groups && currentScope.hosts.soajs.groups[group]) {
-                deployedServices = currentScope.hosts.soajs.groups[group].list;
-            }
+            var deployedServices = currentScope.rawServicesResponse;
 
             if (!service.group && service.name === 'controller') {
                 if (currentScope.hosts.soajs.groups) {

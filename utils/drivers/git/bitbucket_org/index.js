@@ -1,5 +1,7 @@
 'use strict';
 var fs = require("fs");
+var crypto = require("crypto");
+
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var request = require('request');
@@ -20,7 +22,9 @@ function checkIfError(error, options, cb, callback) {
 				};
 			}
 		}
-		
+		if(!error.code && error.statusCode){
+			error.code = error.statusCode;
+		}
 		return cb(error);
 	}
 	
@@ -159,6 +163,10 @@ var driver = {
 								var repoConfigsFolder = config.gitAccounts.bitbucket_org.repoConfigsFolder;
 								var configDirPath = repoConfigsFolder + options.path.substring(0, options.path.lastIndexOf('/'));
 								
+								var configSHA = options.repo + options.path;
+								var hash = crypto.createHash(config.gitAccounts.bitbucket_enterprise.hash.algorithm);
+								configSHA = hash.update(configSHA).digest('hex');
+								
 								var fileInfo = {
 									configDirPath: configDirPath,
 									configFilePath: repoConfigsFolder + options.path,
@@ -176,10 +184,10 @@ var driver = {
 											repoConfig = require(fileInfo.configFilePath);
 										}
 										catch (e) {
-											return cb(e);
+											soajs.log.error(e);
 										}
-										
-										return cb(null, repoConfig, '');
+										repoConfig = repoConfig || { "type" : "custom" };
+										return cb(null, repoConfig, configSHA);
 									});
 								});
 							});

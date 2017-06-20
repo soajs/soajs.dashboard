@@ -155,6 +155,9 @@ module.exports = {
             oauth: {
                 domain: 'https://bitbucket.org/site/oauth2/access_token'
             },
+	        "hash":{
+		        "algorithm": "sha256"
+	        },
             repoConfigsFolder: __dirname + '/repoConfigs',
             defaultConfigFilePath: "config.js",
             customConfigFilesPath: {
@@ -170,6 +173,9 @@ module.exports = {
                 "soajsFile": "soa.js",
                 "swaggerFile": "swagger.yml"
             },
+	        "hash":{
+            	"algorithm": "sha256"
+	        },
             // required for OAuth
             apiDomain: '%PROVIDER_DOMAIN%/rest/api/1.0',
             downloadUrl: '%PROVIDER_DOMAIN%/projects/%PROJECT_NAME%/repos/%REPO_NAME%/browse/%PATH%?at=%BRANCH%&raw'
