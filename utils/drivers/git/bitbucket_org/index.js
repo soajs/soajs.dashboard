@@ -20,7 +20,9 @@ function checkIfError(error, options, cb, callback) {
 				};
 			}
 		}
-		
+		if(!error.code && error.statusCode){
+			error.code = error.statusCode;
+		}
 		return cb(error);
 	}
 	
@@ -176,9 +178,9 @@ var driver = {
 											repoConfig = require(fileInfo.configFilePath);
 										}
 										catch (e) {
-											return cb(e);
+											soajs.log.error(e);
 										}
-										
+										repoConfig = repoConfig || { "type" : "custom" };
 										return cb(null, repoConfig, '');
 									});
 								});

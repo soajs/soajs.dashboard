@@ -20,6 +20,9 @@ function checkIfError(error, options, cb, callback) {
 				};
 			}
 		}
+		if(!error.code && error.statusCode){
+			error.code = error.statusCode;
+		}
 		
 		return cb(error);
 	}
@@ -59,7 +62,7 @@ var driver = {
 						tempClient.settings.get(options.owner)
 							.then(function () {
 								delete options.password;
-								driver.helper.authenticate(options, bitbucketClient);
+								bitbucketClient = driver.helper.authenticate(options);
 								
 								options.token = new Buffer(options.token).toString('base64');
 								data.saveNewAccount(soajs, model, options, cb);
@@ -98,7 +101,7 @@ var driver = {
 				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					driver.helper.authenticate(options, bitbucketClient);
+					bitbucketClient = driver.helper.authenticate(options);
 				}
 				
 				options.type = accountRecord.type;
@@ -126,7 +129,7 @@ var driver = {
 				
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
-					driver.helper.authenticate(options, bitbucketClient);
+					bitbucketClient = driver.helper.authenticate(options);
 				}
 				
 				driver.helper.getRepoBranches(options, bitbucketClient, function (error, branches) {
@@ -149,7 +152,7 @@ var driver = {
 				if (accountRecord.token) {
 					options.token = new Buffer(accountRecord.token, 'base64').toString();
 					options.domain = accountRecord.domain;
-					driver.helper.authenticate(options, bitbucketClient);
+					bitbucketClient = driver.helper.authenticate(options);
 				}
 				
 				driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
@@ -189,13 +192,11 @@ var driver = {
 									repoConfig = require(fileInfo.configFilePath);
 								}
 								catch (e) {
-									return cb(e);
+									soajs.log.error(e);
 								}
-								
-								driver.helper.clearDir({ repoConfigsFolder: repoConfigsFolder }, function (error) {
-									checkIfError(error, {}, cb, function () {
-										return cb(null, repoConfig, configSHA);
-									});
+								repoConfig = repoConfig || { "type" : "custom" };
+								driver.helper.clearDir({ repoConfigsFolder: repoConfigsFolder }, function () {
+									return cb(null, repoConfig, configSHA);
 								});
 							});
 						});
@@ -209,7 +210,7 @@ var driver = {
 		if (options.accountRecord.token) {
 			options.token = new Buffer(options.accountRecord.token, 'base64').toString();
 			options.domain = options.accountRecord.domain;
-			driver.helper.authenticate(options, bitbucketClient);
+			bitbucketClient = driver.helper.authenticate(options);
 		}
 		
 		driver.helper.getRepoContent(options, bitbucketClient, function (error, response) {
