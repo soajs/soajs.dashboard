@@ -143,6 +143,10 @@ module.exports = {
         "clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
     },
 
+	"CD": {
+		"dotReplacement": "__dot__"
+	},
+
     "gitAccounts": {
         "bitbucket_org": {
             apiDomain: 'https://api.bitbucket.org/1.0',
