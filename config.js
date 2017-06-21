@@ -143,7 +143,7 @@ module.exports = {
         "clustersList": ['mysql', 'sql', "mongo", 'mongodb', "es", 'elasticsearch']
     },
 
-	"CD": {
+	"tokens": {
 		"dotValue": ".",
 		"dotToken": "__dot__",
 		"dotRegexString": "\\."
