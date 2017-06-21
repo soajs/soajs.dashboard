@@ -144,7 +144,9 @@ module.exports = {
     },
 
 	"CD": {
-		"dotReplacement": "__dot__"
+		"dotValue": ".",
+		"dotToken": "__dot__",
+		"dotRegexString": "\\."
 	},
 
     "gitAccounts": {
