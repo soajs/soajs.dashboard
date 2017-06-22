@@ -13,7 +13,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 		currentScope.soajsServices = false;
         currentScope.controllers =[];
 		if (currentScope.access.listHosts) {
-			
+
 			getUpdatesNotifications(function(){
 				getSendDataFromServer(currentScope, ngDataApi, {
 					"method": "get",
@@ -49,10 +49,10 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									"list": []
 								}
 							};
-							
+
 							for (var j = 0; j < response.length; j++) {
 								response[j].expanded = true;
-								
+
 								for(var u=0; u < currentScope.updatesNotifications.length; u++){
 									if(response[j].id === currentScope.updatesNotifications[u].id){
 										switch (currentScope.updatesNotifications[u].mode) {
@@ -71,7 +71,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										}
 									}
 								}
-								
+
 								var failures = 0;
 								response[j].tasks.forEach(function (oneTask) {
 									if (['running', 'preparing', 'pending', 'starting'].indexOf(oneTask.status.state.toLowerCase()) === -1) {
@@ -79,13 +79,13 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										oneTask.hideIt = true;
 									}
 								});
-								
+
 								if (failures === response[j].tasks.length) {
 									response[j].hideIt = true;
 								}
-								
+
 								response[j].failures = failures;
-								
+
 								if(response[j].labels && response[j].labels['soajs.content'] === 'true'){
 									currentScope.soajsServices = true;
 									if(response[j].labels['soajs.service.name'] === 'controller' && !response[j].labels['soajs.service.group']){
@@ -100,7 +100,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 										if(!currentScope.hosts.soajs.groups){
 											currentScope.hosts.soajs.groups = {};
 										}
-										
+
 										response[j]['color'] = 'green';
 										response[j]['healthy'] = true;
 										var groupName = response[j].labels['soajs.service.group'];
@@ -110,7 +110,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 												list: []
 											};
 										}
-										
+
 										if(response[j].labels['soajs.service.name'] === 'controller'){
 											currentScope.hosts.soajs.groups[groupName].list.unshift(response[j]);
 											currentScope.controllers.push(response[j]);
@@ -129,7 +129,11 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 									currentScope.hosts[myGroup].list.push(response[j]);
 								}
 							}
-							
+
+							if (!currentScope.hosts.soajs.groups || Object.keys(currentScope.hosts.soajs.groups).length === 0) {
+								currentScope.envDeployed = false;
+							}
+
 							step2();
 						}
 						else{
@@ -175,7 +179,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 				return cb();
 			}
 		}
-		
+
 		function getUpdatesNotifications(cb){
 			//check for code updates
 			getSendDataFromServer(currentScope, ngDataApi, {
@@ -197,7 +201,7 @@ hacloudServices.service('hacloudSrv', ['ngDataApi', '$timeout', '$modal', '$sce'
 							})
 						}
 					});
-					
+
 					//check for image or catalog recipe updates
 					getSendDataFromServer(currentScope, ngDataApi, {
 						method: 'get',
