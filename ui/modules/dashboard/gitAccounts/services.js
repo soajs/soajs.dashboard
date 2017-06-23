@@ -329,6 +329,9 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 									$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit = 500;
 								}
 							}
+							else {
+								$scope.cdConfiguration[oneSrv][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit /= 1048576;
+							}
 							if (service.type === 'daemon' && service.grpConf) {
 								$scope.groupConfigs = service.grpConf;
 							}
@@ -548,7 +551,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 						}
 					});
 				});
-			} else{
+			} else {
 				mCb();
 			}
 		}
@@ -563,8 +566,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 				method: 'get',
 				routeName: '/dashboard/gitAccounts/getBranches',
 				params: {
-					'id':currentScope.gitAccount._id,
-					'provider' : currentScope.gitAccount.provider,
+					'id': currentScope.gitAccount._id,
+					'provider': currentScope.gitAccount.provider,
 					'name': oneRepo.full_name,
 					'type': 'repo'
 				}
@@ -642,22 +645,22 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 			if (!cdData.versions) {
 				cdData.versions = {};
 			}
-			if(cdData.branch || cdData.strategy || cdData.options){
+			if (cdData.branch || cdData.strategy || cdData.options) {
 				cdData.versions['Default'] = {};
 			}
-			if(cdData.branch){
+			if (cdData.branch) {
 				cdData.versions['Default'].branch = cdData.branch;
 				delete cdData.branch;
 			}
-			if(cdData.strategy){
+			if (cdData.strategy) {
 				cdData.versions['Default'].strategy = cdData.strategy;
 				delete cdData.strategy;
 			}
-			if(cdData.options){
+			if (cdData.options) {
 				cdData.versions['Default'].options = cdData.options;
 				delete cdData.options;
 			}
-			if(cdData.deploy){
+			if (cdData.deploy) {
 				cdData.versions['Default'].deploy = cdData.deploy;
 				currentScope.setDeploy(env.toUpperCase(), 'Default', serviceName, true, counter);
 				counter++;
@@ -678,7 +681,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					}
 				}
 			}
-			if(cdData.versions && Object.keys(cdData.versions).length === 0){
+			if (cdData.versions && Object.keys(cdData.versions).length === 0) {
 				delete cdData.versions;
 			}
 		}
@@ -766,8 +769,8 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 					configuration[oneEnv][oneRepo] = {};
 				}
 				for (var version in currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions) {
-					if(version === 'Default'){
-						configuration[oneEnv][oneRepo]= {
+					if (version === 'Default') {
+						configuration[oneEnv][oneRepo] = {
 							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
 							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
 							deploy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].deploy
@@ -779,7 +782,7 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							configuration[oneEnv][oneRepo].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
 						}
 					}
-					else{
+					else {
 						configuration[oneEnv][oneRepo]['v' + version] = {
 							branch: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].branch,
 							strategy: currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].strategy,
@@ -792,8 +795,11 @@ repoService.service('repoSrv', ['ngDataApi', '$timeout', '$modal', '$cookies', f
 							configuration[oneEnv][oneRepo]['v' + version].options = currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options;
 						}
 					}
+					if (currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig && currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit) {
+						currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions[version].options.deployConfig.memoryLimit *= 1048576;
+					}
 				}
-				if(!currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions || Object.keys(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions).length === 0){
+				if (!currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions || Object.keys(currentScope.cdConfiguration[oneRepo][oneEnv].cdData.versions).length === 0) {
 					delete configuration[oneEnv][oneRepo];
 				}
 				if (configuration[oneEnv] && configuration[oneEnv][oneRepo] && Object.keys(configuration[oneEnv][oneRepo]).length === 0) {
