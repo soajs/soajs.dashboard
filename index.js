@@ -1280,7 +1280,7 @@ service.init(function () {
 	/**
 	 * Continuous Integration features
 	 */
-	
+
 	/**
 	 * Get CI Accounts
 	 * @param {String} API route
@@ -1288,12 +1288,12 @@ service.init(function () {
 	 */
 	service.get("/ci", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.listCIAccounts(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.listCIAccounts(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
-	
+
 	/**
 	 * Get CI providers
 	 * @param {String} API route
@@ -1301,7 +1301,7 @@ service.init(function () {
 	 */
 	service.get("/ci/providers", function (req, res) {
 		initBLModel(req, res, dashboardBL.ci.module, dbModel, function (BL) {
-			BL.listUniqueProviders(config, req, dashboardBL.ci.driver, function (error, data) {
+			BL.listUniqueProviders(config, req, function (error, data) {
 				return res.jsonp(req.soajs.buildResponse(error, data));
 			});
 		});
